@@ -12,15 +12,6 @@ public abstract class AbstractCommand {
 	protected String description = "Unset description";
 	protected String cmd = "unimplemented";
 	protected NovaBot bot;
-	protected boolean requiresOp = true;
-
-	protected void setOpOnly(boolean opOnly) {
-		requiresOp = opOnly;
-	}
-
-	public boolean isOpOnly() {
-		return requiresOp;
-	}
 
 	protected void setDescription(String d) {
 		this.description = d;
