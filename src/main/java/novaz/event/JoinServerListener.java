@@ -7,11 +7,8 @@ import novaz.db.table.TServers;
 import novaz.db.table.TUser;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.impl.events.GuildCreateEvent;
-import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
-
-import java.util.List;
 
 /**
  * Whenever the bot joins a discord server
@@ -31,8 +28,6 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 
 		System.out.println("[event] BOT JOINED SERVER!");
 		IGuild guild = event.getGuild();
-		List<IChannel> channels = guild.getChannels();
-		System.out.println(guild.getID() + guild.getName());
 		IUser owner = guild.getOwner();
 
 		RUser user = TUser.findBy(owner.getID());
@@ -44,12 +39,12 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 		server.name = guild.getName();
 		server.owner = user.id;
 		TServers.update(server);
-
-		System.out.println(String.format("OWNED: %s %s", owner.getID(), owner.getName()));
-		System.out.println("CHANNELS ON HERE:::");
-		for (IChannel c : channels) {
-			System.out.println(String.format("-> %20s %s", c.getID(), c.getName()));
-		}
+		//@todo do something with channels? maybe default channels for each type of message (events, notifications, commands, etc.)
+//		List<IChannel> channels = guild.getChannels();
+//		System.out.println(String.format("OWNED: %s %s", owner.getID(), owner.getName()));
+//		for (IChannel c : channels) {
+//			System.out.println(String.format("-> %20s %s", c.getID(), c.getName()));
+//		}
 
 	}
 

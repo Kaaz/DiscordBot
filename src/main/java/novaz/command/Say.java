@@ -3,33 +3,34 @@ package novaz.command;
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
 import novaz.main.NovaBot;
+import sx.blah.discord.handle.obj.IUser;
 
 /**
  * Gemaakt op 10-8-2016
  */
-public class Say extends AbstractCommand{
-		public Say(NovaBot b) {
-			super(b);
-			setOpOnly(true);
-			setCmd("say");
-		}
+public class Say extends AbstractCommand {
+	public Say(NovaBot b) {
+		super(b);
+		setCmd("say");
+	}
 
-		@Override
-		public String execute(String[] args, String sender, boolean isOp) {
-			boolean first=true;
-			String ret = "";
-			if(args.length >0){
-				for(String s: args){
-					if(first){
-						first=false;
-						ret += s;
-					}
-					else{
-						ret += " " + s;
-					}
-
+	@Override
+	public String execute(String[] args, IUser author) {
+		boolean first = true;
+		String ret = "";
+		if (args.length > 0) {
+			for (String s : args) {
+				if (first) {
+					first = false;
+					ret += s;
+				} else {
+					ret += " " + s;
 				}
+
 			}
-			return TextHandler.get("permission_denied");
+			return ret;
+		} else {
+			return TextHandler.get("command_say_whatexactly");
 		}
+	}
 }

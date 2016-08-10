@@ -1,6 +1,7 @@
 package novaz.core;
 
 import novaz.main.NovaBot;
+import sx.blah.discord.handle.obj.IUser;
 
 /**
  * Gemaakt op 10-8-2016
@@ -46,5 +47,5 @@ public abstract class AbstractCommand {
 		return "Type !" + cmd;
 	}
 
-	public abstract String execute(String[] args, String sender, boolean isOp);
+	public abstract String execute(String[] args, IUser author);
 }

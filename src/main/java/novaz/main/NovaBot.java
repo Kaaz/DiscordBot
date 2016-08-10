@@ -5,7 +5,12 @@ import novaz.handler.CommandHandler;
 import org.reflections.Reflections;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MessageBuilder;
+import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +24,7 @@ public class NovaBot {
 
 	public void markReady(boolean ready) {
 		this.isReady = ready;
+		commandHandler.load();
 	}
 
 	public NovaBot() throws DiscordException {
@@ -58,5 +64,19 @@ public class NovaBot {
 			}
 		}
 		return false;
+	}
+
+	public void sendMessage(IChannel channel, String content) {
+		try {
+			new MessageBuilder(instance).withChannel(channel).withContent(content).build();
+		} catch (RateLimitException | DiscordException | MissingPermissionsException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void handleMessage(IGuild guild, IChannel channel, IUser author, String content) {
+		if (content.startsWith(CommandHandler.commandPrefix)) {
+			commandHandler.process(guild, channel, author, content);
+		}
 	}
 }

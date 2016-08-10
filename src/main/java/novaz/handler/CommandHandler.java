@@ -4,6 +4,9 @@ import novaz.core.AbstractCommand;
 import novaz.db.WebDb;
 import novaz.main.NovaBot;
 import org.reflections.Reflections;
+import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IUser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
@@ -25,14 +28,14 @@ public class CommandHandler {
 		bot = b;
 	}
 
-	public void process(String sender, String message) {
-		String[] input = message.split(" ");
+	public void process(IGuild guild, IChannel channel, IUser author, String content) {
+		String[] input = content.split(" ");
 		String args[] = new String[input.length - 1];
 		for (int i = 1; i < input.length; i++) {
 			args[i - 1] = input[i];
 		}
 		if (chatCommands.containsKey(input[0])) {
-//			bot.msg(chatCommands.get(input[0]).execute(args, sender, userIsOp));
+			bot.sendMessage(channel, chatCommands.get(input[0]).execute(args, author));
 		} else if (customCommands.containsKey(input[0])) {
 //			bot.msg(customCommands.get(input[0]));
 		} else {
