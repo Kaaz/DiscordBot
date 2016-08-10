@@ -14,7 +14,7 @@ public class Eightball extends AbstractCommand {
 					"As I see it, yes",
 					"Better not tell you now",
 					"Cannot predict now",
-					"Don\'t count on it",
+					"Don't count on it",
 					"If you say so",
 					"In your dreams",
 					"It is certain",
@@ -25,7 +25,7 @@ public class Eightball extends AbstractCommand {
 					"Signs point to yes",
 					"Sure, sure",
 					"Very doubtful",
-					"When life gives you rice, you make rice",
+					"When life gives you lemon, you drink it",
 					"Without a doubt",
 					"Wow, Much no, very yes, so maybe",
 					"Yes, definitely",
@@ -41,6 +41,6 @@ public class Eightball extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IUser author) {
 
-		return a[(int) (Math.random() * a.length)];
+		return ":8ball: " + a[(int) (Math.random() * a.length)] + " :8ball:";
 	}
 }
