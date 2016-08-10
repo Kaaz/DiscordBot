@@ -11,6 +11,9 @@ import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
+/**
+ * The bot recieves a message
+ */
 public class MessageReceivedListener extends AbstractEventListener<MessageReceivedEvent> {
 	public MessageReceivedListener(NovaBot novaBot) {
 		super(novaBot);

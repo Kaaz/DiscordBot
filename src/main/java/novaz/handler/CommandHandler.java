@@ -1,10 +1,13 @@
 package novaz.handler;
 
 import novaz.core.AbstractCommand;
+import novaz.db.WebDb;
 import novaz.main.NovaBot;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -13,7 +16,7 @@ import java.util.Set;
  */
 public class CommandHandler {
 
-	public final String commandPrefix = "!";
+	public final static String commandPrefix = "!";
 	private NovaBot bot;
 	private HashMap<String, AbstractCommand> chatCommands;
 	private HashMap<String, String> customCommands;
@@ -22,7 +25,7 @@ public class CommandHandler {
 		bot = b;
 	}
 
-	public void process(String sender, String message, boolean userIsOp) {
+	public void process(String sender, String message) {
 		String[] input = message.split(" ");
 		String args[] = new String[input.length - 1];
 		for (int i = 1; i < input.length; i++) {
@@ -39,29 +42,27 @@ public class CommandHandler {
 
 	public void load() {
 		loadCommands();
-		loadCustomCommands();
+		loadCustomCommands(1);
 	}
 
-//	public String[] getCommands() {
-//		return MapUtil.mapKeysToArray(chatCommands);
-//	}
+	public void addCustomCommand(int serverId, String input, String output) {
+		try {
+			WebDb.get().query("DELETE FROM commands WHERE input = ? AND server = ?", input, serverId);
+			WebDb.get().query("INSERT INTO commands (server,input,output) VALUES(?, ?, ?)", serverId, input, output);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		loadCustomCommands(serverId);
+	}
 
-//	public String[] getCustomCommands() {
-//		return MapUtil.mapKeysToArray(customCommands);
-//	}
-
-//		public void addCustomCommand (String input, String output){
-//		log.info("adding the command " + input);
-//		Db.query("DELETE FROM command WHERE input = ? AND channel = ?", input, bot.defaultChannel);
-//		Db.query("INSERT INTO command (channel,input,output) VALUES(?, ?, ?)", bot.defaultChannel, input, output);
-//			loadCustomCommands();
-//		}
-
-//	public void removeCustomCommand(String input) {
-//		log.info("Deleting the command: " + input);
-//		Db.query("DELETE FROM command WHERE input = ? AND channel = ?", input, bot.defaultChannel);
-//		loadCustomCommands();
-//	}
+	public void removeCustomCommand(int serverId, String input) {
+		try {
+			WebDb.get().query("DELETE FROM commands WHERE input = ? AND server = ?", input, serverId);
+			loadCustomCommands(serverId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	private void loadCommands() {
 		chatCommands = new HashMap<>();
@@ -79,17 +80,17 @@ public class CommandHandler {
 		}
 	}
 
-	private void loadCustomCommands() {
+	private void loadCustomCommands(int serverId) {
 		customCommands = new HashMap<>();
-//		try (ResultSet r = Db.select("SELECT input, output FROM command WHERE channel = ? ", bot.defaultChannel)) {
-//			while (r != null && r.next()) {
-//				if (!chatCommands.containsKey(commandPrefix + r.getString("input")) && !customCommands.containsKey(commandPrefix + r.getString("input"))) {
-//					customCommands.put(commandPrefix + r.getString("input"), r.getString("output"));
-//				}
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
+		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands WHERE server = ? ", serverId)) {
+			while (r != null && r.next()) {
+				if (!chatCommands.containsKey(commandPrefix + r.getString("input")) && !customCommands.containsKey(commandPrefix + r.getString("input"))) {
+					customCommands.put(commandPrefix + r.getString("input"), r.getString("output"));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
 }

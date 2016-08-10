@@ -4,6 +4,9 @@ import novaz.core.AbstractEventListener;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 
+/**
+ * Successfully logged in to discord
+ */
 public class ReadyListener extends AbstractEventListener<ReadyEvent> {
 	public ReadyListener(NovaBot novaBot) {
 		super(novaBot);

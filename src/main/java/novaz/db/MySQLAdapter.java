@@ -105,4 +105,11 @@ public class MySQLAdapter {
 		}
 	}
 
+	public int insert(String sql, Object... params) throws SQLException {
+		try (PreparedStatement query = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+			resolveParameters(query, params);
+			return query.executeUpdate();
+		}
+	}
+
 }
