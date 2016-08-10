@@ -6,7 +6,8 @@ import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
- * Gemaakt op 10-8-2016
+ * !say
+ * make the bot say something
  */
 public class Say extends AbstractCommand {
 	public Say(NovaBot b) {
