@@ -1,14 +1,17 @@
 package novaz.main;
 
+import novaz.core.ConfigurationBuilder;
 import novaz.db.WebDb;
-import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
+
+import java.io.File;
+import java.io.IOException;
 
 public class Launcher {
 
-	static IDiscordClient client;
 
-	public static void main(String[] args) throws DiscordException {
+	public static void main(String[] args) throws DiscordException, IOException {
+		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		WebDb.init();
 		NovaBot nb = new NovaBot();
 	}

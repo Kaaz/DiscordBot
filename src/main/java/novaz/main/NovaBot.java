@@ -1,6 +1,7 @@
 package novaz.main;
 
 import novaz.core.AbstractEventListener;
+import novaz.core.Logger;
 import novaz.handler.CommandHandler;
 import org.reflections.Reflections;
 import sx.blah.discord.api.ClientBuilder;
@@ -25,10 +26,11 @@ public class NovaBot {
 	public void markReady(boolean ready) {
 		this.isReady = ready;
 		commandHandler.load();
+		setUserName(Config.BOT_NAME);
 	}
 
 	public NovaBot() throws DiscordException {
-		instance = new ClientBuilder().withToken("MjEyODM0MDYxMzA2MDM2MjI0.CoxpSw.9tqLPIvn1gUXaq1cT-_tdKYGT7s").login();
+		instance = new ClientBuilder().withToken(Config.BOT_TOKEN).login();
 		registerEvents();
 		registerHandlers();
 	}
@@ -55,7 +57,7 @@ public class NovaBot {
 	}
 
 	public boolean setUserName(String newName) {
-		if (isReady) {
+		if (isReady && !getUserName().equals(newName)) {
 			try {
 				instance.changeUsername(newName);
 				return true;
