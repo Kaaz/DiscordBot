@@ -2,6 +2,7 @@ package novaz.command;
 
 import novaz.core.AbstractCommand;
 import novaz.main.NovaBot;
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
@@ -39,7 +40,7 @@ public class Eightball extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IUser author) {
+	public String execute(String[] args, IChannel channel, IUser author) {
 
 		return ":8ball: " + a[(int) (Math.random() * a.length)] + " :8ball:";
 	}

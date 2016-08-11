@@ -35,11 +35,11 @@ public class CommandHandler {
 			args[i - 1] = input[i];
 		}
 		if (chatCommands.containsKey(input[0])) {
-			bot.sendMessage(channel, chatCommands.get(input[0]).execute(args, author));
+			bot.sendMessage(channel, chatCommands.get(input[0]).execute(args, channel, author));
 		} else if (customCommands.containsKey(input[0])) {
-//			bot.msg(customCommands.get(input[0]));
+			bot.sendMessage(channel, customCommands.get(input[0]));
 		} else {
-//			bot.msg(TextHandler.get("unknown_command"));
+			bot.sendMessage(channel, TextHandler.get("unknown_command"));
 		}
 	}
 
@@ -85,7 +85,8 @@ public class CommandHandler {
 
 	private void loadCustomCommands(int serverId) {
 		customCommands = new HashMap<>();
-		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands WHERE server = ? ", serverId)) {
+		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands ")) {
+//		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands WHERE server = ? ", serverId)) {
 			while (r != null && r.next()) {
 				if (!chatCommands.containsKey(commandPrefix + r.getString("input")) && !customCommands.containsKey(commandPrefix + r.getString("input"))) {
 					customCommands.put(commandPrefix + r.getString("input"), r.getString("output"));

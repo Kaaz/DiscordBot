@@ -3,6 +3,7 @@ package novaz.command;
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
 import novaz.main.NovaBot;
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
@@ -16,7 +17,7 @@ public class Say extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IUser author) {
+	public String execute(String[] args, IChannel channel, IUser author) {
 		boolean first = true;
 		String ret = "";
 		if (args.length > 0) {
