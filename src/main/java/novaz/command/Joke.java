@@ -26,6 +26,7 @@ public class Joke extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
+		bot.sendMessage(channel, TextHandler.get("command_joke_wait"));
 		String joketxt = getJokeFromWeb(author.getName());
 		if (joketxt != null) {
 			return StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getID() + ">"));

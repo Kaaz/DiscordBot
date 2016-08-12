@@ -35,7 +35,7 @@ public class Cats extends AbstractCommand {
 			String inputLine = in.readLine();
 			JsonParser parser = new JsonParser();
 			JsonObject array = parser.parse(inputLine).getAsJsonObject();
-			return array.get("facts").getAsString();
+			return ":cat:  " + array.get("facts").getAsString();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
