@@ -9,7 +9,6 @@ import java.io.IOException;
 
 public class Launcher {
 
-
 	public static void main(String[] args) throws DiscordException, IOException {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		WebDb.init();

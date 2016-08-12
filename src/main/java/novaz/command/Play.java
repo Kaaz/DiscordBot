@@ -27,7 +27,7 @@ public class Play extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		String filename = "test";
+		String filename;
 		if (args.length > 0) {
 			String videocode = extractvideocodefromyoutubeurl(args[0]);
 			File filecheck = new File(Config.MUSIC_DIRECTORY + videocode + ".mp3");

@@ -82,7 +82,8 @@ public class NovaBot {
 		}
 		return false;
 	}
-	public void playAudioFromFile(String filename, IGuild guild){
+
+	public void playAudioFromFile(String filename, IGuild guild) {
 		System.out.println(Config.MUSIC_DIRECTORY + filename);
 		File file = new File(Config.MUSIC_DIRECTORY + filename); // Get file
 		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild); // Get AudioPlayer for guild
@@ -91,6 +92,11 @@ public class NovaBot {
 		} catch (IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void setVolume(IGuild guild, float vol) {
+		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild);
+		player.setVolume(vol);
 	}
 
 	public void sendMessage(IChannel channel, String content) {
