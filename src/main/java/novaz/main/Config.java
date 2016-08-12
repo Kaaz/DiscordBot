@@ -21,4 +21,12 @@ public class Config {
 	//directory where all the music is stored
 	@Option
 	public static String MUSIC_DIRECTORY = "H:/music/";
+	@Option
+	public static String DB_HOST = "localhost";
+	@Option
+	public static String DB_USER = "root";
+	@Option
+	public static String DB_PASS = "";
+	@Option
+	public static String DB_NAME = "discord";
 }

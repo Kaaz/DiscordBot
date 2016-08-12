@@ -1,5 +1,7 @@
 package novaz.db;
 
+import novaz.main.Config;
+
 import java.util.HashMap;
 
 public class WebDb {
@@ -21,6 +23,6 @@ public class WebDb {
 
 	public static void init() {
 		connections.clear();
-		connections.put("discord", new MySQLAdapter("localhost", "root", "", "discord"));
+		connections.put("discord", new MySQLAdapter(Config.DB_HOST, Config.DB_USER, Config.DB_PASS, Config.DB_NAME));
 	}
 }
