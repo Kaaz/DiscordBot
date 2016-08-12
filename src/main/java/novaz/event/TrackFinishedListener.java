@@ -12,7 +12,7 @@ import java.io.FilenameFilter;
 import java.util.Optional;
 
 /**
- * Successfully logged in to discord
+ * Track finished event
  */
 public class TrackFinishedListener extends AbstractEventListener<TrackFinishEvent> {
 	public TrackFinishedListener(NovaBot novaBot) {
