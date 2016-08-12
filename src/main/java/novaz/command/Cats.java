@@ -24,15 +24,6 @@ public class Cats extends AbstractCommand {
 		setCmd("catfact");
 	}
 
-	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
-		String catFact = getCatFact();
-		if (catFact != null) {
-			return StringEscapeUtils.unescapeHtml4(catFact);
-		}
-		return TextHandler.get("command_joke_not_today");
-	}
-
 	public static String getCatFact() {
 		try {
 			URL loginurl = new URL("http://catfacts-api.appspot.com/api/facts");
@@ -49,5 +40,14 @@ public class Cats extends AbstractCommand {
 			System.out.println(e);
 		}
 		return null;
+	}
+
+	@Override
+	public String execute(String[] args, IChannel channel, IUser author) {
+		String catFact = getCatFact();
+		if (catFact != null) {
+			return StringEscapeUtils.unescapeHtml4(catFact);
+		}
+		return TextHandler.get("command_joke_not_today");
 	}
 }

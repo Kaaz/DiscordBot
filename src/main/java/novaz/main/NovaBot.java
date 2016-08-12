@@ -28,16 +28,16 @@ public class NovaBot {
 	private boolean isReady = false;
 	private CommandHandler commandHandler;
 
-	public void markReady(boolean ready) {
-		this.isReady = ready;
-		commandHandler.load();
-		setUserName(Config.BOT_NAME);
-	}
-
 	public NovaBot() throws DiscordException {
 		instance = new ClientBuilder().withToken(Config.BOT_TOKEN).login();
 		registerEvents();
 		registerHandlers();
+	}
+
+	public void markReady(boolean ready) {
+		this.isReady = ready;
+		commandHandler.load();
+		setUserName(Config.BOT_NAME);
 	}
 
 	private void registerEvents() {

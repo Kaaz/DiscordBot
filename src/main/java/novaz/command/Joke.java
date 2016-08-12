@@ -28,7 +28,7 @@ public class Joke extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		String joketxt = getJokeFromWeb(author.getName());
 		if (joketxt != null) {
-			return StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@"+author.getID()+">"));
+			return StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getID() + ">"));
 		}
 		return TextHandler.get("command_joke_not_today");
 	}

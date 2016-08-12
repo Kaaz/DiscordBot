@@ -14,18 +14,17 @@ public abstract class AbstractCommand {
 	protected String cmd = "unimplemented";
 	protected NovaBot bot;
 
-	protected void setDescription(String d) {
-		this.description = d;
+	public AbstractCommand(NovaBot bot) {
+		this.bot = bot;
 	}
 
 	public String getDescription() {
 		return description;
 	}
 
-	public AbstractCommand(NovaBot bot) {
-		this.bot = bot;
+	protected void setDescription(String d) {
+		this.description = d;
 	}
-
 
 	public String getCmd() {
 		return cmd;

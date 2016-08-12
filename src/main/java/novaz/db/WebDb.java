@@ -14,7 +14,8 @@ public class WebDb {
 		System.out.println(String.format("The MySQL connection '%s' is not set!", key));
 		return null;
 	}
-	public static MySQLAdapter get(){
+
+	public static MySQLAdapter get() {
 		return connections.get(DEFAULT_CONNECTION);
 	}
 

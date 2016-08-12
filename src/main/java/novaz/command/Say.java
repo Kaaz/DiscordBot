@@ -28,7 +28,6 @@ public class Say extends AbstractCommand {
 				} else {
 					ret += " " + s;
 				}
-
 			}
 			return ret;
 		} else {
