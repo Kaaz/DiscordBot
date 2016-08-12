@@ -6,17 +6,16 @@ import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.util.audio.AudioPlayer;
 import sx.blah.discord.util.audio.events.TrackFinishEvent;
-import sx.blah.discord.util.audio.events.TrackStartEvent;
+import sx.blah.discord.util.audio.events.TrackSkipEvent;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Optional;
 
 /**
  * Track finished event
  */
-public class TrackFinishedListener extends AbstractEventListener<TrackFinishEvent> {
-	public TrackFinishedListener(NovaBot novaBot) {
+public class TrackSkipListener extends AbstractEventListener<TrackSkipEvent> {
+	public TrackSkipListener(NovaBot novaBot) {
 		super(novaBot);
 	}
 
@@ -26,16 +25,19 @@ public class TrackFinishedListener extends AbstractEventListener<TrackFinishEven
 	}
 
 	@Override
-	public void handle(TrackFinishEvent event) {
+	public void handle(TrackSkipEvent event) {
 		System.out.println("EVENT::: TRACK END");
-		String botmsg = ":notes:";
-		Optional<AudioPlayer.Track> newTrack = event.getNewTrack();
-		if (!newTrack.isPresent()) {
+//		String botmsg = ":notes:";
+//		Optional<AudioPlayer.Track> newTrack = event.getNewTrack();
+//		if (!newTrack.isPresent()) {
 //			botmsg += ":notes: No more tracks to play, starting randomly :100: :100: :notes: ";
+		if (event.getPlayer().getPlaylistSize() == 0) {
 			novaBot.addSongToQueue(getRandomSong(), event.getPlayer().getGuild());
-		} else {
-//			botmsg = " next song!";
 		}
+//		} else {
+//			botmsg = " next song!";
+//		}
+
 		IChannel channel = event.getPlayer().getGuild().getChannels().get(0);
 //		novaBot.sendMessage(channel, botmsg);
 	}
