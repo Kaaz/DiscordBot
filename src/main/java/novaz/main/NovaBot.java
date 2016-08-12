@@ -83,7 +83,7 @@ public class NovaBot {
 		return false;
 	}
 
-	public void playAudioFromFile(String filename, IGuild guild) {
+	public void addSongToQueue(String filename, IGuild guild) {
 		System.out.println(Config.MUSIC_DIRECTORY + filename);
 		File file = new File(Config.MUSIC_DIRECTORY + filename); // Get file
 		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild);

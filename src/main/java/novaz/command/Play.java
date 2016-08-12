@@ -37,7 +37,7 @@ public class Play extends AbstractCommand {
 			}
 			if (filecheck.exists()) {
 				filename = videocode;
-				bot.playAudioFromFile(filename + ".mp3", channel.getGuild());
+				bot.addSongToQueue(filename + ".mp3", channel.getGuild());
 				return TextHandler.get("music_added_to_queue");
 			}
 		}
