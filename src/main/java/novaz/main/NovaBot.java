@@ -86,12 +86,17 @@ public class NovaBot {
 	public void playAudioFromFile(String filename, IGuild guild) {
 		System.out.println(Config.MUSIC_DIRECTORY + filename);
 		File file = new File(Config.MUSIC_DIRECTORY + filename); // Get file
-		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild); // Get AudioPlayer for guild
+		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild);
 		try {
 			player.queue(file);
 		} catch (IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void skipCurrentSong(IGuild guild) {
+		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild);
+		player.skip();
 	}
 
 	public void setVolume(IGuild guild, float vol) {

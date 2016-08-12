@@ -29,4 +29,5 @@ public class Config {
 	public static String DB_PASS = "";
 	@Option
 	public static String DB_NAME = "discord";
+	public static String EOL = System.getProperty("line.separator");
 }
