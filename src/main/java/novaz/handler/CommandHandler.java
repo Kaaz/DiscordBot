@@ -43,6 +43,10 @@ public class CommandHandler {
 		}
 	}
 
+	public String[] getCommands() {
+		return chatCommands.keySet().toArray(new String[chatCommands.keySet().size()]);
+	}
+
 	public void load() {
 		loadCommands();
 		loadCustomCommands(1);

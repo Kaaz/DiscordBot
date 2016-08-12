@@ -22,7 +22,7 @@ public class SetVolume extends AbstractCommand {
 			float volume;
 			try {
 				volume = Float.parseFloat(args[1]);
-				if (volume > 0 && volume < 100) {
+				if (volume > 0 && volume <= 100) {
 					bot.setVolume(channel.getGuild(), volume / 100F);
 					return TextHandler.get("command_setvolume_changed");
 				}
