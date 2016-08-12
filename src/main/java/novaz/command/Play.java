@@ -32,6 +32,7 @@ public class Play extends AbstractCommand {
 			String videocode = extractvideocodefromyoutubeurl(args[0]);
 			File filecheck = new File(Config.MUSIC_DIRECTORY + videocode + ".mp3");
 			if (!filecheck.exists()) {
+				bot.sendMessage(channel, TextHandler.get("music_downloading_hang_on"));
 				downloadfromYoutube(videocode);
 			}
 			if (filecheck.exists()) {
