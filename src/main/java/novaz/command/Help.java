@@ -21,7 +21,11 @@ public class Help extends AbstractCommand {
 		if (args.length > 0) {
 			return TextHandler.get("command_help_donno");
 		} else {
-			return TextHandler.get("command_help_sorry");
+			String ret = "Commands:";
+			for (String command : bot.commandHandler.getCommands()) {
+				ret += " " + command;
+			}
+			return ret;
 		}
 	}
 }

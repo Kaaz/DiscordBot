@@ -26,7 +26,7 @@ public class NovaBot {
 
 	private IDiscordClient instance;
 	private boolean isReady = false;
-	private CommandHandler commandHandler;
+	public CommandHandler commandHandler;
 
 	public NovaBot() throws DiscordException {
 		instance = new ClientBuilder().withToken(Config.BOT_TOKEN).login();
