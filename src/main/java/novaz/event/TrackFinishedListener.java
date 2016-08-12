@@ -26,16 +26,19 @@ public class TrackFinishedListener extends AbstractEventListener<TrackFinishEven
 
 	@Override
 	public void handle(TrackFinishEvent event) {
+		System.out.println("EVENT::: TRACK FINISHED");
 		String botmsg = ":notes:";
-		int itemsInQueue = event.getPlayer().getPlaylistSize();
-		AudioPlayer.Track oldTrack = event.getOldTrack();
 		Optional<AudioPlayer.Track> newTrack = event.getNewTrack();
 		if (!newTrack.isPresent()) {
 			botmsg += ":notes: No more tracks to play, starting randomly :100: :100: :notes: ";
 			novaBot.addSongToQueue(getRandomSong(), event.getPlayer().getGuild());
 		}
+		else{
+			botmsg=" next song!";
+		}
 		IChannel channel = event.getPlayer().getGuild().getChannels().get(0);
 		novaBot.sendMessage(channel, botmsg);
+		event.getPlayer().isReady();
 	}
 
 	private String getRandomSong() {

@@ -29,7 +29,7 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 		System.out.println("[event] BOT JOINED SERVER!");
 		IGuild guild = event.getGuild();
 		IUser owner = guild.getOwner();
-
+		novaBot.setVolume(guild,0.05F);
 		RUser user = TUser.findBy(owner.getID());
 		user.discord_id = owner.getID();
 		user.name = owner.getName();
@@ -39,6 +39,7 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 		server.name = guild.getName();
 		server.owner = user.id;
 		TServers.update(server);
+
 		//@todo do something with channels? maybe default channels for each type of message (events, notifications, commands, etc.)
 //		List<IChannel> channels = guild.getChannels();
 //		System.out.println(String.format("OWNED: %s %s", owner.getID(), owner.getName()));
