@@ -14,7 +14,11 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
+import sx.blah.discord.util.audio.AudioPlayer;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
@@ -78,6 +82,16 @@ public class NovaBot {
 		}
 		return false;
 	}
+	public void playAudioFromFile(String filename, IGuild guild){
+		System.out.println(Config.MUSIC_DIRECTORY + filename);
+		File file = new File(Config.MUSIC_DIRECTORY + filename); // Get file
+		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild); // Get AudioPlayer for guild
+		try {
+			player.queue(file);
+		} catch (IOException | UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void sendMessage(IChannel channel, String content) {
 		try {
@@ -88,7 +102,7 @@ public class NovaBot {
 	}
 
 	public void handleMessage(IGuild guild, IChannel channel, IUser author, String content) {
-		if (content.startsWith(CommandHandler.commandPrefix)) {
+		if (content.startsWith(Config.BOT_COMMAND_PREFIX)) {
 			commandHandler.process(guild, channel, author, content);
 		}
 	}

@@ -2,6 +2,7 @@ package novaz.handler;
 
 import novaz.core.AbstractCommand;
 import novaz.db.WebDb;
+import novaz.main.Config;
 import novaz.main.NovaBot;
 import org.reflections.Reflections;
 import sx.blah.discord.handle.obj.IChannel;
@@ -19,7 +20,6 @@ import java.util.Set;
  */
 public class CommandHandler {
 
-	public final static String commandPrefix = "!";
 	private NovaBot bot;
 	private HashMap<String, AbstractCommand> chatCommands;
 	private HashMap<String, String> customCommands;
@@ -74,8 +74,8 @@ public class CommandHandler {
 		for (Class<? extends AbstractCommand> s : classes) {
 			try {
 				AbstractCommand c = s.getConstructor(NovaBot.class).newInstance(bot);
-				if (!chatCommands.containsKey(commandPrefix + c.getCmd())) {
-					chatCommands.put(commandPrefix + c.getCmd(), c);
+				if (!chatCommands.containsKey(Config.BOT_COMMAND_PREFIX + c.getCmd())) {
+					chatCommands.put(Config.BOT_COMMAND_PREFIX + c.getCmd(), c);
 				}
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				e.printStackTrace();
@@ -88,8 +88,8 @@ public class CommandHandler {
 		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands ")) {
 //		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands WHERE server = ? ", serverId)) {
 			while (r != null && r.next()) {
-				if (!chatCommands.containsKey(commandPrefix + r.getString("input")) && !customCommands.containsKey(commandPrefix + r.getString("input"))) {
-					customCommands.put(commandPrefix + r.getString("input"), r.getString("output"));
+				if (!chatCommands.containsKey(Config.BOT_COMMAND_PREFIX + r.getString("input")) && !customCommands.containsKey(Config.BOT_COMMAND_PREFIX + r.getString("input"))) {
+					customCommands.put(Config.BOT_COMMAND_PREFIX + r.getString("input"), r.getString("output"));
 				}
 			}
 		} catch (SQLException e) {

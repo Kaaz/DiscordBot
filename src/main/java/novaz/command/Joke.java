@@ -26,8 +26,6 @@ public class Joke extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		boolean first = true;
-		String ret = "";
 		String joketxt = getJokeFromWeb(author.getName());
 		if (joketxt != null) {
 			return StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@"+author.getID()+">"));
@@ -35,7 +33,7 @@ public class Joke extends AbstractCommand {
 		return TextHandler.get("command_joke_not_today");
 	}
 
-	public static String getJokeFromWeb(String username) {
+	private String getJokeFromWeb(String username) {
 		try {
 			URL loginurl = new URL("http://api.icndb.com/jokes/random?firstName=&lastName=" + username);
 			URLConnection yc = loginurl.openConnection();

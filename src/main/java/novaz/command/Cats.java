@@ -26,8 +26,6 @@ public class Cats extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		boolean first = true;
-		String ret = "";
 		String catFact = getCatFact();
 		if (catFact != null) {
 			return StringEscapeUtils.unescapeHtml4(catFact);
