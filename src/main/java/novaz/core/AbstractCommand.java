@@ -1,5 +1,6 @@
 package novaz.core;
 
+import novaz.main.Config;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -35,7 +36,7 @@ public abstract class AbstractCommand {
 	}
 
 	public String getUsage() {
-		return "Type !" + cmd;
+		return "Type "+ Config.BOT_COMMAND_PREFIX + cmd;
 	}
 
 	public abstract String execute(String[] args, IChannel channel, IUser author);

@@ -43,6 +43,13 @@ public class CommandHandler {
 		}
 	}
 
+	public AbstractCommand getCommand(String key) {
+		if (chatCommands.containsKey(Config.BOT_COMMAND_PREFIX + key)) {
+			return chatCommands.get(Config.BOT_COMMAND_PREFIX + key);
+		}
+		return null;
+	}
+
 	public String[] getCommands() {
 		return chatCommands.keySet().toArray(new String[chatCommands.keySet().size()]);
 	}

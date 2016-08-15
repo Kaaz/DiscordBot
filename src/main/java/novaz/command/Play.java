@@ -1,6 +1,9 @@
 package novaz.command;
 
 import novaz.core.AbstractCommand;
+import novaz.db.model.RMusic;
+import novaz.db.table.TMusic;
+import novaz.handler.MusicPlayerHandler;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
@@ -27,17 +30,26 @@ public class Play extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		String filename;
 		if (args.length > 0) {
+			boolean justDownloaded = false;
 			String videocode = extractvideocodefromyoutubeurl(args[0]);
 			File filecheck = new File(Config.MUSIC_DIRECTORY + videocode + ".mp3");
 			if (!filecheck.exists()) {
 				bot.sendMessage(channel, TextHandler.get("music_downloading_hang_on"));
 				downloadfromYoutube(videocode);
+				justDownloaded = true;
 			}
 			if (filecheck.exists()) {
-				filename = videocode;
-				bot.addSongToQueue(filename + ".mp3", channel.getGuild());
+				if (justDownloaded) {
+					RMusic rec = TMusic.findByYoutubeId(videocode);
+					rec.title = MusicPlayerHandler.getTitleFromYoutube(videocode);
+					rec.youtubecode = videocode;
+					rec.filename = videocode + ".mp3";
+					TMusic.update(rec);
+					bot.addSongToQueue(videocode + ".mp3", channel.getGuild());
+					return ":notes: Found *" + rec.title + "* And added it to the queue";
+				}
+				bot.addSongToQueue(videocode + ".mp3", channel.getGuild());
 				return TextHandler.get("music_added_to_queue");
 			}
 		}

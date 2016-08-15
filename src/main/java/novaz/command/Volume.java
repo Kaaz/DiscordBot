@@ -7,13 +7,14 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
- * !setvolume <vol>
+ * !volume [vol]
  * sets the volume of the music player
+ * With no params returns the current volume
  */
-public class SetVolume extends AbstractCommand {
-	public SetVolume(NovaBot b) {
+public class Volume extends AbstractCommand {
+	public Volume(NovaBot b) {
 		super(b);
-		setCmd("setvolume");
+		setCmd("volume");
 	}
 
 	@Override
@@ -24,11 +25,12 @@ public class SetVolume extends AbstractCommand {
 				volume = Float.parseFloat(args[0]);
 				if (volume > 0 && volume <= 100) {
 					bot.setVolume(channel.getGuild(), volume / 100F);
-					return TextHandler.get("command_setvolume_changed");
+					return TextHandler.get("command_volume_changed");
 				}
 			} catch (NumberFormatException ignored) {
 			}
+			return TextHandler.get("command_volume_invalid_parameters");
 		}
-		return TextHandler.get("command_setvolume_invalid_parameters");
+		return "Current volume: " + bot.getVolume(channel.getGuild()) * 100 + "%";
 	}
 }

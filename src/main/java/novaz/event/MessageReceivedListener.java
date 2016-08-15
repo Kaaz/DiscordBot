@@ -21,6 +21,6 @@ public class MessageReceivedListener extends AbstractEventListener<MessageReceiv
 	@Override
 	public void handle(MessageReceivedEvent event) {
 		IMessage message = event.getMessage();
-		novaBot.handleMessage(message.getGuild(), message.getChannel(), message.getAuthor(), message.getContent());
+		novaBot.handleMessage(message.getGuild(), message.getChannel(), message.getAuthor(), message);
 	}
 }

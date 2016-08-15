@@ -1,0 +1,24 @@
+package novaz.command;
+
+import novaz.core.AbstractCommand;
+import novaz.handler.TextHandler;
+import novaz.main.NovaBot;
+import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IUser;
+
+/**
+ * !reload
+ * reloads config
+ */
+public class Reload extends AbstractCommand {
+	public Reload(NovaBot b) {
+		super(b);
+		setCmd("reload");
+	}
+
+	@Override
+	public String execute(String[] args, IChannel channel, IUser author) {
+		bot.loadConfiguration();
+		return TextHandler.get("command_reload_success");
+	}
+}

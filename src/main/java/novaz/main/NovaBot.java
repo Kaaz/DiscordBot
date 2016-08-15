@@ -4,11 +4,14 @@ import novaz.core.AbstractEventListener;
 import novaz.db.model.RServer;
 import novaz.db.table.TServers;
 import novaz.handler.CommandHandler;
+import novaz.handler.MusicPlayerHandler;
+import novaz.handler.TextHandler;
 import org.reflections.Reflections;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
@@ -20,6 +23,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 import java.util.Set;
 
 public class NovaBot {
@@ -27,17 +31,23 @@ public class NovaBot {
 	private IDiscordClient instance;
 	private boolean isReady = false;
 	public CommandHandler commandHandler;
+	private float volume;
 
 	public NovaBot() throws DiscordException {
+		registerHandlers();
 		instance = new ClientBuilder().withToken(Config.BOT_TOKEN).login();
 		registerEvents();
-		registerHandlers();
 	}
 
 	public void markReady(boolean ready) {
 		this.isReady = ready;
-		commandHandler.load();
 		setUserName(Config.BOT_NAME);
+		loadConfiguration();
+	}
+
+	public void loadConfiguration() {
+		commandHandler.load();
+		TextHandler.getInstance().load();
 	}
 
 	private void registerEvents() {
@@ -84,7 +94,7 @@ public class NovaBot {
 	}
 
 	public void addSongToQueue(String filename, IGuild guild) {
-		System.out.println("Adding: "+Config.MUSIC_DIRECTORY + filename);
+		System.out.println("Adding: " + Config.MUSIC_DIRECTORY + filename);
 		File file = new File(Config.MUSIC_DIRECTORY + filename); // Get file
 		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild);
 		try {
@@ -95,8 +105,7 @@ public class NovaBot {
 	}
 
 	public void skipCurrentSong(IGuild guild) {
-		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild);
-		player.skip();
+		MusicPlayerHandler.getAudioPlayerForGuild(guild, this).skipSong();
 	}
 
 	public void setVolume(IGuild guild, float vol) {
@@ -104,17 +113,31 @@ public class NovaBot {
 		player.setVolume(vol);
 	}
 
-	public void sendMessage(IChannel channel, String content) {
+	public IMessage sendMessage(IChannel channel, String content) {
 		try {
-			new MessageBuilder(instance).withChannel(channel).withContent(content).build();
+			return new MessageBuilder(instance).withChannel(channel).withContent(content).build();
 		} catch (RateLimitException | DiscordException | MissingPermissionsException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
-	public void handleMessage(IGuild guild, IChannel channel, IUser author, String content) {
-		if (content.startsWith(Config.BOT_COMMAND_PREFIX)) {
-			commandHandler.process(guild, channel, author, content);
+	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage content) {
+		if (content.getContent().startsWith(Config.BOT_COMMAND_PREFIX)) {
+			commandHandler.process(guild, channel, author, content.getContent());
 		}
+	}
+
+	public float getVolume(IGuild guild) {
+		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild);
+		return player.getVolume();
+	}
+
+	public void trackEnded(AudioPlayer.Track oldTrack, Optional<AudioPlayer.Track> nextTrack, IGuild guild) {
+		MusicPlayerHandler.getAudioPlayerForGuild(guild, this).onTrackEnded(oldTrack, nextTrack);
+	}
+
+	public void trackStarted(AudioPlayer.Track track, IGuild guild) {
+		MusicPlayerHandler.getAudioPlayerForGuild(guild, this).onTrackStarted(track);
 	}
 }

@@ -77,7 +77,7 @@ public class TextHandler {
 		}
 	}
 
-	private void load() {
+	public void load() {
 		dictionary = new HashMap<>();
 		try (ResultSet rs = WebDb.get().select("SELECT id, keyphrase, text FROM template_texts")) {
 			while (rs.next()) {
