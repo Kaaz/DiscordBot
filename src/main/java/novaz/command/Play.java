@@ -8,7 +8,11 @@ import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -35,9 +39,14 @@ public class Play extends AbstractCommand {
 			String videocode = extractvideocodefromyoutubeurl(args[0]);
 			File filecheck = new File(Config.MUSIC_DIRECTORY + videocode + ".mp3");
 			if (!filecheck.exists()) {
-				bot.sendMessage(channel, TextHandler.get("music_downloading_hang_on"));
+				IMessage msg = bot.sendMessage(channel, TextHandler.get("music_downloading_hang_on"));
 				downloadfromYoutube(videocode);
 				justDownloaded = true;
+				try {
+					msg.delete();
+				} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
+					e.printStackTrace();
+				}
 			}
 			if (filecheck.exists()) {
 				if (justDownloaded) {

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Timer;
 
 public class NovaBot {
 
@@ -32,6 +33,7 @@ public class NovaBot {
 	private boolean isReady = false;
 	public CommandHandler commandHandler;
 	private float volume;
+	public final Timer timer = new Timer();
 
 	public NovaBot() throws DiscordException {
 		registerHandlers();
@@ -124,7 +126,7 @@ public class NovaBot {
 
 	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage content) {
 		if (content.getContent().startsWith(Config.BOT_COMMAND_PREFIX)) {
-			commandHandler.process(guild, channel, author, content.getContent());
+			commandHandler.process(guild, channel, author, content);
 		}
 	}
 

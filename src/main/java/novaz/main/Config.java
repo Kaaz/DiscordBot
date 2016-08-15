@@ -30,4 +30,5 @@ public class Config {
 	@Option
 	public static String DB_NAME = "discord";
 	public static String EOL = System.getProperty("line.separator");
+	public static long DELETE_MESSAGES_AFTER = 120000;
 }

@@ -7,13 +7,18 @@ import novaz.main.NovaBot;
 import org.reflections.Reflections;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.TimerTask;
 
 /**
  * Handles all the commands
@@ -28,19 +33,32 @@ public class CommandHandler {
 		bot = b;
 	}
 
-	public void process(IGuild guild, IChannel channel, IUser author, String content) {
-		String[] input = content.split(" ");
+	public void process(IGuild guild, IChannel channel, IUser author, IMessage content) {
+		IMessage mymsg;
+		String[] input = content.getContent().split(" ");
 		String args[] = new String[input.length - 1];
 		for (int i = 1; i < input.length; i++) {
 			args[i - 1] = input[i];
 		}
 		if (chatCommands.containsKey(input[0])) {
-			bot.sendMessage(channel, chatCommands.get(input[0]).execute(args, channel, author));
+			mymsg = bot.sendMessage(channel, chatCommands.get(input[0]).execute(args, channel, author));
 		} else if (customCommands.containsKey(input[0])) {
-			bot.sendMessage(channel, customCommands.get(input[0]));
+			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));
 		} else {
-			bot.sendMessage(channel, TextHandler.get("unknown_command"));
+			mymsg = bot.sendMessage(channel, TextHandler.get("unknown_command"));
 		}
+		bot.timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				try {
+					mymsg.delete();
+					content.delete();
+				} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
+//					e.printStackTrace();
+				}
+			}
+		}, Config.DELETE_MESSAGES_AFTER);
+
 	}
 
 	public AbstractCommand getCommand(String key) {

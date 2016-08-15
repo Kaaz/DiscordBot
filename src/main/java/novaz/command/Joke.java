@@ -7,7 +7,11 @@ import novaz.handler.TextHandler;
 import novaz.main.NovaBot;
 import org.apache.commons.lang3.StringEscapeUtils;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -26,8 +30,13 @@ public class Joke extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		bot.sendMessage(channel, TextHandler.get("command_joke_wait"));
+		IMessage msg = bot.sendMessage(channel, TextHandler.get("command_joke_wait"));
 		String joketxt = getJokeFromWeb(author.getName());
+		try {
+			msg.delete();
+		} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
+			e.printStackTrace();
+		}
 		if (joketxt != null) {
 			return StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getID() + ">"));
 		}
