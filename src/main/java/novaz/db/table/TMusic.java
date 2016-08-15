@@ -2,14 +2,14 @@ package novaz.db.table;
 
 import novaz.core.Logger;
 import novaz.db.WebDb;
-import novaz.db.model.RMusic;
+import novaz.db.model.OMusic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class TMusic {
-	public static RMusic findByYoutubeId(String youtubeCode) {
-		RMusic music = new RMusic();
+	public static OMusic findByYoutubeId(String youtubeCode) {
+		OMusic music = new OMusic();
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT id, youtubecode, filename, title, artist, lastplaydate, banned  " +
 						"FROM playlist " +
@@ -21,8 +21,8 @@ public class TMusic {
 		return music;
 	}
 
-	public static RMusic findByFileName(String filename) {
-		RMusic music = new RMusic();
+	public static OMusic findByFileName(String filename) {
+		OMusic music = new OMusic();
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT id, youtubecode, filename, title, artist, lastplaydate, banned  " +
 						"FROM playlist " +
@@ -35,8 +35,8 @@ public class TMusic {
 	}
 
 
-	private static RMusic fillRecord(ResultSet resultset) throws SQLException {
-		RMusic music = new RMusic();
+	private static OMusic fillRecord(ResultSet resultset) throws SQLException {
+		OMusic music = new OMusic();
 		if (resultset.next()) {
 			music.id = resultset.getInt("id");
 			music.youtubecode = resultset.getString("youtubecode");
@@ -49,7 +49,7 @@ public class TMusic {
 		return music;
 	}
 
-	public static void update(RMusic record) {
+	public static void update(OMusic record) {
 		if (record.id == 0) {
 			insert(record);
 			return;
@@ -65,7 +65,7 @@ public class TMusic {
 		}
 	}
 
-	public static void insert(RMusic record) {
+	public static void insert(OMusic record) {
 		try {
 			record.id = WebDb.get().insert(
 					"INSERT INTO playlist(youtubecode, filename, title, artist, lastplaydate, banned) " +

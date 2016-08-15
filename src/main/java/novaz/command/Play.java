@@ -1,7 +1,7 @@
 package novaz.command;
 
 import novaz.core.AbstractCommand;
-import novaz.db.model.RMusic;
+import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
 import novaz.handler.MusicPlayerHandler;
 import novaz.handler.TextHandler;
@@ -41,7 +41,7 @@ public class Play extends AbstractCommand {
 			}
 			if (filecheck.exists()) {
 				if (justDownloaded) {
-					RMusic rec = TMusic.findByYoutubeId(videocode);
+					OMusic rec = TMusic.findByYoutubeId(videocode);
 					rec.title = MusicPlayerHandler.getTitleFromYoutube(videocode);
 					rec.youtubecode = videocode;
 					rec.filename = videocode + ".mp3";

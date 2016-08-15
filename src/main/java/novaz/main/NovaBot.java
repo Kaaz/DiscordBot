@@ -1,7 +1,7 @@
 package novaz.main;
 
 import novaz.core.AbstractEventListener;
-import novaz.db.model.RServer;
+import novaz.db.model.OServer;
 import novaz.db.table.TServers;
 import novaz.handler.CommandHandler;
 import novaz.handler.MusicPlayerHandler;
@@ -64,12 +64,12 @@ public class NovaBot {
 	}
 
 	public void addCustomCommand(IGuild server, String command, String output) {
-		RServer serv = TServers.findBy(server.getID());
+		OServer serv = TServers.findBy(server.getID());
 		commandHandler.addCustomCommand(serv.id, command, output);
 	}
 
 	public void removeCustomCommand(IGuild server, String command) {
-		RServer serv = TServers.findBy(server.getID());
+		OServer serv = TServers.findBy(server.getID());
 		commandHandler.removeCustomCommand(serv.id, command);
 	}
 

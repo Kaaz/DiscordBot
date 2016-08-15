@@ -2,7 +2,7 @@ package novaz.db.table;
 
 import novaz.core.Logger;
 import novaz.db.WebDb;
-import novaz.db.model.RUser;
+import novaz.db.model.OUser;
 
 import java.sql.ResultSet;
 
@@ -10,8 +10,8 @@ import java.sql.ResultSet;
  * Created on 10-8-2016
  */
 public class TUser {
-	public static RUser findBy(String discordId) {
-		RUser s = new RUser();
+	public static OUser findBy(String discordId) {
+		OUser s = new OUser();
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT id, discord_id, name  " +
 						"FROM users " +
@@ -27,7 +27,7 @@ public class TUser {
 		return s;
 	}
 
-	public static void update(RUser record) {
+	public static void update(OUser record) {
 		if (record.id == 0) {
 			insert(record);
 			return;
@@ -43,7 +43,7 @@ public class TUser {
 		}
 	}
 
-	public static void insert(RUser record) {
+	public static void insert(OUser record) {
 		try {
 			record.id = WebDb.get().insert(
 					"INSERT INTO users(discord_id, name) " +

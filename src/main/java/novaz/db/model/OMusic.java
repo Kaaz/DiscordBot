@@ -1,6 +1,6 @@
 package novaz.db.model;
 
-public class RMusic {
+public class OMusic {
 	public int id = 0;
 	public String youtubecode = "";
 	public String filename = "";

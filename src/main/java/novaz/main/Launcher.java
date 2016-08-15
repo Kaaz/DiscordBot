@@ -4,7 +4,7 @@ import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import novaz.core.ConfigurationBuilder;
 import novaz.db.WebDb;
-import novaz.db.model.RMusic;
+import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
 import novaz.handler.MusicPlayerHandler;
 import sx.blah.discord.util.DiscordException;
@@ -32,7 +32,7 @@ public class Launcher {
 			String videocode = file.replace(".mp3", "");
 			System.out.println(getTitleFromYoutube(videocode));
 
-			RMusic rec = TMusic.findByYoutubeId(videocode);
+			OMusic rec = TMusic.findByYoutubeId(videocode);
 			rec.title = MusicPlayerHandler.getTitleFromYoutube(videocode);
 			rec.youtubecode = videocode;
 			rec.filename = videocode + ".mp3";

@@ -1,8 +1,8 @@
 package novaz.event;
 
 import novaz.core.AbstractEventListener;
-import novaz.db.model.RServer;
-import novaz.db.model.RUser;
+import novaz.db.model.OServer;
+import novaz.db.model.OUser;
 import novaz.db.table.TServers;
 import novaz.db.table.TUser;
 import novaz.main.NovaBot;
@@ -30,11 +30,11 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 		IGuild guild = event.getGuild();
 		IUser owner = guild.getOwner();
 		novaBot.setVolume(guild,0.05F);
-		RUser user = TUser.findBy(owner.getID());
+		OUser user = TUser.findBy(owner.getID());
 		user.discord_id = owner.getID();
 		user.name = owner.getName();
 		TUser.update(user);
-		RServer server = TServers.findBy(guild.getID());
+		OServer server = TServers.findBy(guild.getID());
 		server.discord_id = guild.getID();
 		server.name = guild.getName();
 		server.owner = user.id;

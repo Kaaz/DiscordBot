@@ -2,7 +2,7 @@ package novaz.db.table;
 
 import novaz.core.Logger;
 import novaz.db.WebDb;
-import novaz.db.model.RServer;
+import novaz.db.model.OServer;
 
 import java.sql.ResultSet;
 
@@ -10,8 +10,8 @@ import java.sql.ResultSet;
  * Created on 10-8-2016
  */
 public class TServers {
-	public static RServer findBy(String discordId) {
-		RServer s = new RServer();
+	public static OServer findBy(String discordId) {
+		OServer s = new OServer();
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT id, discord_id, name, owner  " +
 						"FROM servers " +
@@ -28,7 +28,7 @@ public class TServers {
 		return s;
 	}
 
-	public static void update(RServer record) {
+	public static void update(OServer record) {
 		if (record.id == 0) {
 			insert(record);
 			return;
@@ -44,7 +44,7 @@ public class TServers {
 		}
 	}
 
-	public static void insert(RServer record) {
+	public static void insert(OServer record) {
 		try {
 			record.id = WebDb.get().insert(
 					"INSERT INTO servers(discord_id, name, owner) " +

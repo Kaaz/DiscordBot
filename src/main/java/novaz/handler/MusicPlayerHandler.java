@@ -1,6 +1,6 @@
 package novaz.handler;
 
-import novaz.db.model.RMusic;
+import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
 import novaz.main.Config;
 import novaz.main.NovaBot;
@@ -72,7 +72,7 @@ public class MusicPlayerHandler {
 		if (metadata.containsKey("file")) {
 			if (metadata.get("file") instanceof File) {
 				File f = (File) metadata.get("file");
-				RMusic music = TMusic.findByFileName(f.getName());
+				OMusic music = TMusic.findByFileName(f.getName());
 				if (music.title.isEmpty()) {
 					msg = "plz send help:: " + f.getName();
 				} else {
