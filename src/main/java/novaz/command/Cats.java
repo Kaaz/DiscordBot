@@ -62,6 +62,6 @@ public class Cats extends AbstractCommand {
 		if (catFact != null) {
 			return StringEscapeUtils.unescapeHtml4(catFact);
 		}
-		return TextHandler.get("command_joke_not_today");
+		return TextHandler.get("command_catfact_not_today");
 	}
 }
