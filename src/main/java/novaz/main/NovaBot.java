@@ -29,7 +29,7 @@ import java.util.Timer;
 
 public class NovaBot {
 
-	private IDiscordClient instance;
+	public IDiscordClient instance;
 	private boolean isReady = false;
 	public CommandHandler commandHandler;
 	private float volume;
@@ -141,5 +141,9 @@ public class NovaBot {
 
 	public void trackStarted(AudioPlayer.Track track, IGuild guild) {
 		MusicPlayerHandler.getAudioPlayerForGuild(guild, this).onTrackStarted(track);
+	}
+
+	public void stopMusic(IGuild guild) {
+		MusicPlayerHandler.getAudioPlayerForGuild(guild, this).stopMusic();
 	}
 }

@@ -87,6 +87,7 @@ public class MusicPlayerHandler {
 		if (activeMsg != null) {
 			try {
 				activeMsg.delete();
+				activeMsg = null;
 			} catch (MissingPermissionsException | RateLimitException | DiscordException ignored) {
 			}
 		}
@@ -122,5 +123,9 @@ public class MusicPlayerHandler {
 			System.out.println(e);
 		}
 		return StringEscapeUtils.unescapeHtml4(ret);
+	}
+
+	public void stopMusic() {
+		AudioPlayer.getAudioPlayerForGuild(guild).clear();
 	}
 }
