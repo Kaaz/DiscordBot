@@ -9,10 +9,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+/**
+ * Handles the text templates
+ * <p>
+ * templates are stored in the database,
+ */
 public class TextHandler {
 
-	private static TextHandler instance = new TextHandler();
-	private static Random rnd;
+	private static final TextHandler instance = new TextHandler();
+	private Random rnd;
 	private HashMap<String, ArrayList<String>> dictionary;
 
 	private TextHandler() {
@@ -24,7 +29,7 @@ public class TextHandler {
 		return instance;
 	}
 
-	public static int countTemplates() {
+	public int countTemplates() {
 		int count = 0;
 		for (ArrayList<String> list : instance.dictionary.values()) {
 			count += list.size();
@@ -32,7 +37,13 @@ public class TextHandler {
 		return count;
 	}
 
-	public static void remove(String keyPhrase, String text) {
+	/**
+	 * deletes a specific entry
+	 *
+	 * @param keyPhrase keyphrase
+	 * @param text      text
+	 */
+	public void remove(String keyPhrase, String text) {
 		if (instance.dictionary.containsKey(keyPhrase)) {
 			if (instance.dictionary.get(keyPhrase).contains(text)) {
 				instance.dictionary.get(keyPhrase).remove(text);
@@ -45,9 +56,15 @@ public class TextHandler {
 		}
 	}
 
-	public static void add(String keyPhrase, String text) {
+	/**
+	 * adds a template for a keyphrase
+	 *
+	 * @param keyPhrase keyphrase
+	 * @param text      the text
+	 */
+	public void add(String keyPhrase, String text) {
 		if (!instance.dictionary.containsKey(keyPhrase)) {
-			instance.dictionary.put(keyPhrase, new ArrayList<String>());
+			instance.dictionary.put(keyPhrase, new ArrayList<>());
 		}
 		instance.dictionary.get(keyPhrase).add(text);
 		try {
@@ -57,7 +74,13 @@ public class TextHandler {
 		}
 	}
 
-	public static String get(String keyPhrase) {
+	/**
+	 * gets a "random" keyphrase
+	 *
+	 * @param keyPhrase keyphrase to return
+	 * @return a random string out of the options for the keyphrase
+	 */
+	public String get(String keyPhrase) {
 		if (instance.dictionary.containsKey(keyPhrase)) {
 			ArrayList<String> list = instance.dictionary.get(keyPhrase);
 			return list.get(rnd.nextInt(list.size()));
@@ -65,9 +88,14 @@ public class TextHandler {
 		return "keyPhrase: '" + keyPhrase + "'";
 	}
 
-	public static void reload(String keyPhrase) {
+	/**
+	 * Refresh only a keyphase
+	 *
+	 * @param keyPhrase phrase to refresh
+	 */
+	public void reload(String keyPhrase) {
 		if (!instance.dictionary.containsKey(keyPhrase)) {
-			instance.dictionary.put(keyPhrase, new ArrayList<String>());
+			instance.dictionary.put(keyPhrase, new ArrayList<>());
 		}
 		instance.dictionary.get(keyPhrase).clear();
 		try (ResultSet rs = WebDb.get().select("SELECT text FROM template_texts WHERE keyphrase = ?", keyPhrase)) {
@@ -77,6 +105,9 @@ public class TextHandler {
 		}
 	}
 
+	/**
+	 * refreshes the data from the database
+	 */
 	public void load() {
 		dictionary = new HashMap<>();
 		try (ResultSet rs = WebDb.get().select("SELECT id, keyphrase, text FROM template_texts")) {
