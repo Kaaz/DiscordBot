@@ -16,10 +16,9 @@ public class Launcher {
 	public static void main(String[] args) throws DiscordException, IOException {
 		WebDb.init();
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
-		if(Config.BOT_ENABLED.equalsIgnoreCase("true")){
+		if (Config.BOT_ENABLED.equalsIgnoreCase("true")) {
 			NovaBot nb = new NovaBot();
-		}
-		else{
+		} else {
 			Logger.fatal("Bot not enabled, enable it in the config. You can do this by setting bot_enabled=true");
 		}
 	}

@@ -32,6 +32,8 @@ public class Config {
 	public static String DB_PASS = "";
 	@Option
 	public static String DB_NAME = "discord";
+
 	public static String EOL = System.getProperty("line.separator");
 	public static long DELETE_MESSAGES_AFTER = 120000;
+	public static String CREATOR_ID = "97433066384928768";
 }

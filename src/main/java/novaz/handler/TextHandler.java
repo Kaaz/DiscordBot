@@ -11,7 +11,7 @@ import java.util.Random;
 
 /**
  * Handles the text templates
- * <p>
+ * <p/>
  * templates are stored in the database,
  */
 public class TextHandler {
@@ -27,6 +27,20 @@ public class TextHandler {
 
 	public static TextHandler getInstance() {
 		return instance;
+	}
+
+	/**
+	 * gets a "random" keyphrase
+	 *
+	 * @param keyPhrase keyphrase to return
+	 * @return a random string out of the options for the keyphrase
+	 */
+	public static String get(String keyPhrase) {
+		if (instance.dictionary.containsKey(keyPhrase)) {
+			ArrayList<String> list = instance.dictionary.get(keyPhrase);
+			return list.get(instance.rnd.nextInt(list.size()));
+		}
+		return "keyPhrase: '" + keyPhrase + "'";
 	}
 
 	public int countTemplates() {
@@ -72,20 +86,6 @@ public class TextHandler {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * gets a "random" keyphrase
-	 *
-	 * @param keyPhrase keyphrase to return
-	 * @return a random string out of the options for the keyphrase
-	 */
-	public static String get(String keyPhrase) {
-		if (instance.dictionary.containsKey(keyPhrase)) {
-			ArrayList<String> list = instance.dictionary.get(keyPhrase);
-			return list.get(instance.rnd.nextInt(list.size()));
-		}
-		return "keyPhrase: '" + keyPhrase + "'";
 	}
 
 	/**

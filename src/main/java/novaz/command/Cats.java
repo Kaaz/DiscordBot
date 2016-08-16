@@ -23,21 +23,6 @@ public class Cats extends AbstractCommand {
 		super(b);
 	}
 
-	@Override
-	public String getDescription() {
-		return "Cat facts!";
-	}
-
-	@Override
-	public String getCommand() {
-		return "catfact";
-	}
-
-	@Override
-	public String getUsage() {
-		return "";
-	}
-
 	public static String getCatFact() {
 		try {
 			URL loginurl = new URL("http://catfacts-api.appspot.com/api/facts");
@@ -54,6 +39,21 @@ public class Cats extends AbstractCommand {
 			System.out.println(e);
 		}
 		return null;
+	}
+
+	@Override
+	public String getDescription() {
+		return "Cat facts!";
+	}
+
+	@Override
+	public String getCommand() {
+		return "catfact";
+	}
+
+	@Override
+	public String getUsage() {
+		return "";
 	}
 
 	@Override

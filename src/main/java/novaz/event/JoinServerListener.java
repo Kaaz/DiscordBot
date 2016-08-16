@@ -29,7 +29,7 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 		System.out.println("[event] BOT JOINED SERVER!");
 		IGuild guild = event.getGuild();
 		IUser owner = guild.getOwner();
-		novaBot.setVolume(guild,0.05F);
+		novaBot.setVolume(guild, 0.05F);
 		OUser user = TUser.findBy(owner.getID());
 		user.discord_id = owner.getID();
 		user.name = owner.getName();

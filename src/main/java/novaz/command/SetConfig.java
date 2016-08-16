@@ -1,7 +1,10 @@
 package novaz.command;
 
 import novaz.core.AbstractCommand;
+import novaz.handler.GuildSettings;
 import novaz.handler.TextHandler;
+import novaz.handler.guildsettings.DefaultGuildSettings;
+import novaz.main.Config;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -27,13 +30,26 @@ public class SetConfig extends AbstractCommand {
 
 	@Override
 	public String getUsage() {
-		return "config <set|get> <property> <value>";
+		return "config or config <property> or config <property> <value>";
 	}
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		boolean first = true;
-		String ret = "";
-		return TextHandler.get("command_say_whatexactly");
+		int count = args.length;
+		if (channel.getGuild().getOwner().equals(author) || author.getID().equals(Config.CREATOR_ID)) {
+			if (count == 0) {
+				return "Todo, list of configurations";
+			} else {
+				if (!DefaultGuildSettings.isValidKey(args[0])) {
+					return TextHandler.get("command_config_key_not_exists");
+				}
+				if (count >= 2) {
+					GuildSettings.get(channel.getGuild(), bot).set(args[0], args[1]);
+					return TextHandler.get("command_config_key_modified");
+				}
+				return "Current value for '" + args[0] + "' = '" + GuildSettings.get(channel.getGuild(), bot).getOrDefault(args[0]) + "'";
+			}
+		}
+		return TextHandler.get("command_config_no_permission");
 	}
 }

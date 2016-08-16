@@ -4,9 +4,10 @@ import novaz.core.AbstractEventListener;
 import novaz.db.model.OServer;
 import novaz.db.table.TServers;
 import novaz.handler.CommandHandler;
-import novaz.handler.GuildSettingsHandler;
+import novaz.handler.GuildSettings;
 import novaz.handler.MusicPlayerHandler;
 import novaz.handler.TextHandler;
+import novaz.handler.guildsettings.defaults.SettingBotChannel;
 import org.reflections.Reflections;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -24,22 +25,45 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.Timer;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class NovaBot {
 
 	public IDiscordClient instance;
-	private boolean isReady = false;
 	public CommandHandler commandHandler;
 	public Timer timer = new Timer();
+	private boolean isReady = false;
+	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
 
 
 	public NovaBot() throws DiscordException {
 		registerHandlers();
 		instance = new ClientBuilder().withToken(Config.BOT_TOKEN).login();
 		registerEvents();
+	}
+
+	public IChannel getDefaultChannel(IGuild guild) {
+		if (!defaultChannels.containsKey(guild)) {
+			String channelName = GuildSettings.get(guild, this).getOrDefault(SettingBotChannel.class);
+			System.out.println("Scanning for channel with name '" + channelName + "'");
+			List<IChannel> channelList = guild.getChannels();
+			boolean foundChannel = false;
+			for (IChannel channel : channelList) {
+				System.out.println("CHANNELNAME::::" + channel.getName());
+				if (channel.getName().equalsIgnoreCase(channelName)) {
+					foundChannel = true;
+					System.out.println("FOUND ONE!!!!!!!!");
+					defaultChannels.put(guild, channel);
+					break;
+				}
+			}
+			if (!foundChannel) {
+				System.out.println("COULDNT FIND IT");
+				defaultChannels.put(guild, channelList.get(0));
+			}
+		}
+		return defaultChannels.get(guild);
 	}
 
 	public void markReady(boolean ready) {
@@ -52,6 +76,7 @@ public class NovaBot {
 	public void loadConfiguration() {
 		commandHandler.load();
 		TextHandler.getInstance().load();
+		defaultChannels = new ConcurrentHashMap<>();
 	}
 
 	private void registerEvents() {

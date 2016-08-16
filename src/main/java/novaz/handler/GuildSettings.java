@@ -10,35 +10,42 @@ import sx.blah.discord.handle.obj.IGuild;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Guildspecific configurations, such as which channel is for music
  */
-public class GuildSettingsHandler {
-	private final static Map<IGuild, GuildSettingsHandler> settingInstance = new ConcurrentHashMap<>();
+public class GuildSettings {
+	private final static Map<IGuild, GuildSettings> settingInstance = new ConcurrentHashMap<>();
 	private final IGuild guild;
 	private final NovaBot bot;
+	private final Map<String, String> settings;
 	private int id = 0;
 	private boolean initialized = false;
-	private final Map<String, String> settings;
 
-	public static GuildSettingsHandler getSettingsFor(IGuild guild, NovaBot bot) {
-		if (settingInstance.containsKey(guild)) {
-			return settingInstance.get(guild);
-		} else {
-			return new GuildSettingsHandler(guild, bot);
-		}
-	}
-
-	private GuildSettingsHandler(IGuild guild, NovaBot bot) {
+	private GuildSettings(IGuild guild, NovaBot bot) {
 		this.guild = guild;
 		this.bot = bot;
 		this.settings = new ConcurrentHashMap<>();
 		settingInstance.put(guild, this);
 		this.id = TServers.findBy(guild.getID()).id;
 		loadSettings();
+	}
+
+	public static GuildSettings get(IGuild guild, NovaBot bot) {
+		if (settingInstance.containsKey(guild)) {
+			return settingInstance.get(guild);
+		} else {
+			return new GuildSettings(guild, bot);
+		}
+	}
+
+	public String getOrDefault(Class<? extends AbstractGuildSetting> clazz) {
+		return getOrDefault(DefaultGuildSettings.getKey(clazz));
+	}
+
+	public String getOrDefault(String key) {
+		return settings.get(key);
 	}
 
 	/**
@@ -73,5 +80,18 @@ public class GuildSettingsHandler {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean set(String key, String value) {
+		if (DefaultGuildSettings.isValidKey(key)) {
+			try {
+				WebDb.get().insert("INSERT INTO guild_settings (guild, name, config) VALUES(?, ?, ?) " +
+						"ON DUPLICATE KEY UPDATE config=?", id, key, value, value);
+				return true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 }

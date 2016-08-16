@@ -26,11 +26,17 @@ public class DefaultGuildSettings {
 	public static Map<String, AbstractGuildSetting> getDefaults() {
 		return defaultSettings;
 	}
-	public static String getDefault(String key){
+
+	public static String getDefault(String key) {
 		return defaultSettings.get(key).getDefault();
 	}
+
 	public static String getDefault(Class<? extends AbstractGuildSetting> clazz) {
 		return defaultSettings.get(getKey(clazz)).getDefault();
+	}
+
+	public static boolean isValidKey(String key) {
+		return defaultSettings.containsKey(key);
 	}
 
 	public static String getKey(Class<? extends AbstractGuildSetting> clazz) {

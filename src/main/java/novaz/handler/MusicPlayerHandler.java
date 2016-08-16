@@ -24,6 +24,12 @@ public class MusicPlayerHandler {
 	private final NovaBot bot;
 	private IMessage activeMsg;
 
+	private MusicPlayerHandler(IGuild guild, NovaBot bot) {
+		this.guild = guild;
+		this.bot = bot;
+		playerInstances.put(guild, this);
+	}
+
 	public static MusicPlayerHandler getAudioPlayerForGuild(IGuild guild, NovaBot bot) {
 		if (playerInstances.containsKey(guild)) {
 			return playerInstances.get(guild);
@@ -42,12 +48,6 @@ public class MusicPlayerHandler {
 		if (ap.getPlaylistSize() == 0) {
 			playRandomSong();
 		}
-	}
-
-	private MusicPlayerHandler(IGuild guild, NovaBot bot) {
-		this.guild = guild;
-		this.bot = bot;
-		playerInstances.put(guild, this);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class MusicPlayerHandler {
 				}
 			}
 		}
-		activeMsg = bot.sendMessage(guild.getChannels().get(0), msg);
+		activeMsg = bot.sendMessage(bot.getDefaultChannel(guild), msg);
 	}
 
 	/**
