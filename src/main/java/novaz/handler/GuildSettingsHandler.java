@@ -1,12 +1,8 @@
 package novaz.handler;
 
-import sx.blah.discord.handle.obj.IGuild;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * Guildspecific configurations, such as which channel is for music
+ */
 public class GuildSettingsHandler {
-
-//	private final static Map<IGuild, GuildSettings> guildmap = new ConcurrentHashMap<>();
 
 }

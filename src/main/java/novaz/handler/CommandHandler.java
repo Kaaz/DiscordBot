@@ -33,6 +33,14 @@ public class CommandHandler {
 		bot = b;
 	}
 
+	/**
+	 * directs the command to the right class
+	 *
+	 * @param guild   which server
+	 * @param channel which channel
+	 * @param author  author
+	 * @param content message
+	 */
 	public void process(IGuild guild, IChannel channel, IUser author, IMessage content) {
 		IMessage mymsg;
 		String[] input = content.getContent().split(" ");
@@ -61,6 +69,10 @@ public class CommandHandler {
 
 	}
 
+	/**
+	 * @param key command without the Config.BOT_COMMAND_PREFIX
+	 * @return instance of Command for Key or null
+	 */
 	public AbstractCommand getCommand(String key) {
 		if (chatCommands.containsKey(Config.BOT_COMMAND_PREFIX + key)) {
 			return chatCommands.get(Config.BOT_COMMAND_PREFIX + key);
@@ -68,6 +80,11 @@ public class CommandHandler {
 		return null;
 	}
 
+	/**
+	 * Lists the active commands
+	 *
+	 * @return list of code-commands
+	 */
 	public String[] getCommands() {
 		return chatCommands.keySet().toArray(new String[chatCommands.keySet().size()]);
 	}
@@ -77,6 +94,13 @@ public class CommandHandler {
 		loadCustomCommands(1);
 	}
 
+	/**
+	 * Add a custom static command
+	 *
+	 * @param serverId id of server
+	 * @param input    command
+	 * @param output   return
+	 */
 	public void addCustomCommand(int serverId, String input, String output) {
 		try {
 			WebDb.get().query("DELETE FROM commands WHERE input = ? AND server = ?", input, serverId);
@@ -87,6 +111,12 @@ public class CommandHandler {
 		loadCustomCommands(serverId);
 	}
 
+	/**
+	 * removes a custom command
+	 *
+	 * @param serverId id of server
+	 * @param input    command
+	 */
 	public void removeCustomCommand(int serverId, String input) {
 		try {
 			WebDb.get().query("DELETE FROM commands WHERE input = ? AND server = ?", input, serverId);
@@ -96,6 +126,9 @@ public class CommandHandler {
 		}
 	}
 
+	/**
+	 * initializes the commands
+	 */
 	private void loadCommands() {
 		chatCommands = new HashMap<>();
 		Reflections reflections = new Reflections("novaz.command");
@@ -112,6 +145,11 @@ public class CommandHandler {
 		}
 	}
 
+	/**
+	 * Loads all the custom commands
+	 *
+	 * @param serverId id of server
+	 */
 	private void loadCustomCommands(int serverId) {
 		customCommands = new HashMap<>();
 		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands ")) {

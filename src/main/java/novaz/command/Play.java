@@ -3,10 +3,10 @@ package novaz.command;
 import novaz.core.AbstractCommand;
 import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
-import novaz.handler.MusicPlayerHandler;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
+import novaz.util.YTUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -14,9 +14,7 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
-import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +38,7 @@ public class Play extends AbstractCommand {
 			File filecheck = new File(Config.MUSIC_DIRECTORY + videocode + ".mp3");
 			if (!filecheck.exists()) {
 				IMessage msg = bot.sendMessage(channel, TextHandler.get("music_downloading_hang_on"));
-				downloadfromYoutube(videocode);
+				YTUtil.downloadfromYoutubeAsMp3(videocode);
 				justDownloaded = true;
 				try {
 					msg.delete();
@@ -51,7 +49,7 @@ public class Play extends AbstractCommand {
 			if (filecheck.exists()) {
 				if (justDownloaded) {
 					OMusic rec = TMusic.findByYoutubeId(videocode);
-					rec.title = MusicPlayerHandler.getTitleFromYoutube(videocode);
+					rec.title = YTUtil.getTitleFromPage(videocode);
 					rec.youtubecode = videocode;
 					rec.filename = videocode + ".mp3";
 					TMusic.update(rec);
@@ -71,40 +69,5 @@ public class Play extends AbstractCommand {
 			return matcher.group(7);
 		}
 		return url;
-	}
-
-	private boolean downloadfromYoutube(String videocode) {
-		System.out.println("YT:: downloading " + videocode);
-		System.out.println("YT:: https://www.youtube.com/watch?v=" + videocode);
-		List<String> infoArgs = new LinkedList<>();
-		infoArgs.add(Config.YOUTUBEDL_EXE);
-		infoArgs.add("--verbose");
-		infoArgs.add("--no-check-certificate");
-		infoArgs.add("-x"); //audio only
-		infoArgs.add("--prefer-avconv");
-		infoArgs.add("--ffmpeg-location");
-		infoArgs.add(Config.YOUTUBEDL_BIN);
-		infoArgs.add("--audio-format");
-		infoArgs.add("mp3");
-		infoArgs.add("--output");
-		infoArgs.add(Config.MUSIC_DIRECTORY + videocode + ".%(ext)s");
-		infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
-		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
-		builder.redirectErrorStream(true);
-		Process process = null;
-		try {
-			process = builder.start();
-			InputStream stdout = process.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
-			String line = "";
-			while ((line = reader.readLine()) != null) {
-				System.out.println("YT: " + line);
-			}
-			process.waitFor();
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
 	}
 }
