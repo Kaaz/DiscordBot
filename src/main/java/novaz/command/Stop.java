@@ -13,7 +13,21 @@ import sx.blah.discord.handle.obj.IUser;
 public class Stop extends AbstractCommand {
 	public Stop(NovaBot b) {
 		super(b);
-		setCmd("stop");
+	}
+
+	@Override
+	public String getDescription() {
+		return "stops playing music";
+	}
+
+	@Override
+	public String getCommand() {
+		return "stop";
+	}
+
+	@Override
+	public String getUsage() {
+		return "";
 	}
 
 	@Override

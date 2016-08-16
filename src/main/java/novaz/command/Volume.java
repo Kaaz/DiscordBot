@@ -14,7 +14,21 @@ import sx.blah.discord.handle.obj.IUser;
 public class Volume extends AbstractCommand {
 	public Volume(NovaBot b) {
 		super(b);
-		setCmd("volume");
+	}
+
+	@Override
+	public String getDescription() {
+		return "gets and sets the volume of the music";
+	}
+
+	@Override
+	public String getCommand() {
+		return "volume";
+	}
+
+	@Override
+	public String getUsage() {
+		return "volume or volume <1 to 100>";
 	}
 
 	@Override

@@ -16,8 +16,21 @@ public class CustomCommand extends AbstractCommand {
 
 	public CustomCommand(NovaBot b) {
 		super(b);
-		setCmd("command");
-		setDescription("The usage for !" + this.getCmd() + ": <add|delete> <command> <action>");
+	}
+
+	@Override
+	public String getDescription() {
+		return "Add and remove custom commands";
+	}
+
+	@Override
+	public String getCommand() {
+		return "command";
+	}
+
+	@Override
+	public String getUsage() {
+		return "<add|delete> <command> <action>";
 	}
 
 	@Override

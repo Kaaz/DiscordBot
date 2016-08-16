@@ -21,7 +21,21 @@ import java.net.URLConnection;
 public class Cats extends AbstractCommand {
 	public Cats(NovaBot b) {
 		super(b);
-		setCmd("catfact");
+	}
+
+	@Override
+	public String getDescription() {
+		return "Cat facts!";
+	}
+
+	@Override
+	public String getCommand() {
+		return "catfact";
+	}
+
+	@Override
+	public String getUsage() {
+		return "";
 	}
 
 	public static String getCatFact() {

@@ -25,7 +25,21 @@ import java.net.URLConnection;
 public class Joke extends AbstractCommand {
 	public Joke(NovaBot b) {
 		super(b);
-		setCmd("joke");
+	}
+
+	@Override
+	public String getDescription() {
+		return "An attempt to be funny";
+	}
+
+	@Override
+	public String getCommand() {
+		return "joke";
+	}
+
+	@Override
+	public String getUsage() {
+		return "";
 	}
 
 	@Override

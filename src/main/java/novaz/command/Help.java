@@ -14,7 +14,21 @@ import sx.blah.discord.handle.obj.IUser;
 public class Help extends AbstractCommand {
 	public Help(NovaBot b) {
 		super(b);
-		setCmd("help");
+	}
+
+	@Override
+	public String getDescription() {
+		return "An attempt to help out";
+	}
+
+	@Override
+	public String getCommand() {
+		return "help";
+	}
+
+	@Override
+	public String getUsage() {
+		return "help or help <command>";
 	}
 
 	@Override
@@ -23,7 +37,7 @@ public class Help extends AbstractCommand {
 			AbstractCommand c = bot.commandHandler.getCommand(args[0]);
 			if (c != null) {
 				return ":information_source: :information_desk_person: " + Config.EOL +
-						"Usage for " + c.getCmd() + Config.EOL +
+						"Usage for " + c.getCommand() + Config.EOL +
 						c.getUsage() + Config.EOL +
 						c.getDescription();
 			}

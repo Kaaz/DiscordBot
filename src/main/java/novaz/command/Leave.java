@@ -16,7 +16,21 @@ import java.util.List;
 public class Leave extends AbstractCommand {
 	public Leave(NovaBot b) {
 		super(b);
-		setCmd("leave");
+	}
+
+	@Override
+	public String getDescription() {
+		return "Leaves the voicechannel";
+	}
+
+	@Override
+	public String getCommand() {
+		return "leave";
+	}
+
+	@Override
+	public String getUsage() {
+		return "";
 	}
 
 	@Override

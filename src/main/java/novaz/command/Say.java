@@ -13,7 +13,21 @@ import sx.blah.discord.handle.obj.IUser;
 public class Say extends AbstractCommand {
 	public Say(NovaBot b) {
 		super(b);
-		setCmd("say");
+	}
+
+	@Override
+	public String getDescription() {
+		return "repeats you";
+	}
+
+	@Override
+	public String getCommand() {
+		return "say";
+	}
+
+	@Override
+	public String getUsage() {
+		return "say <anything>";
 	}
 
 	@Override

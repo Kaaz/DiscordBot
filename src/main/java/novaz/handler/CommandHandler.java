@@ -136,8 +136,8 @@ public class CommandHandler {
 		for (Class<? extends AbstractCommand> s : classes) {
 			try {
 				AbstractCommand c = s.getConstructor(NovaBot.class).newInstance(bot);
-				if (!chatCommands.containsKey(Config.BOT_COMMAND_PREFIX + c.getCmd())) {
-					chatCommands.put(Config.BOT_COMMAND_PREFIX + c.getCmd(), c);
+				if (!chatCommands.containsKey(Config.BOT_COMMAND_PREFIX + c.getCommand())) {
+					chatCommands.put(Config.BOT_COMMAND_PREFIX + c.getCommand(), c);
 				}
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				e.printStackTrace();

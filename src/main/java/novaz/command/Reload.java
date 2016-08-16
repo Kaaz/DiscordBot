@@ -13,7 +13,21 @@ import sx.blah.discord.handle.obj.IUser;
 public class Reload extends AbstractCommand {
 	public Reload(NovaBot b) {
 		super(b);
-		setCmd("reload");
+	}
+
+	@Override
+	public String getDescription() {
+		return "reloads the configuration";
+	}
+
+	@Override
+	public String getCommand() {
+		return "reload";
+	}
+
+	@Override
+	public String getUsage() {
+		return "";
 	}
 
 	@Override

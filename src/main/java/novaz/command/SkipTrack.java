@@ -13,7 +13,21 @@ import sx.blah.discord.handle.obj.IUser;
 public class SkipTrack extends AbstractCommand {
 	public SkipTrack(NovaBot b) {
 		super(b);
-		setCmd("skip");
+	}
+
+	@Override
+	public String getDescription() {
+		return "skip current track";
+	}
+
+	@Override
+	public String getCommand() {
+		return "skip";
+	}
+
+	@Override
+	public String getUsage() {
+		return "";
 	}
 
 	@Override

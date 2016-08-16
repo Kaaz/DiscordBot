@@ -20,14 +20,29 @@ import java.util.regex.Pattern;
 
 /**
  * !play
- * plays a file/url
+ * plays a youtube link
+ * yea.. play is probably not a good name at the moment
  */
 public class Play extends AbstractCommand {
-	Pattern yturl = Pattern.compile("^.*((youtu.be/)|(v/)|(/u/\\w/)|(embed/)|(watch\\?))\\\\??v?=?([^#\\\\&\\?]*).*");
+	private final Pattern yturl = Pattern.compile("^.*((youtu.be/)|(v/)|(/u/\\w/)|(embed/)|(watch\\?))\\\\??v?=?([^#\\\\&\\?]*).*");
 
 	public Play(NovaBot b) {
 		super(b);
-		setCmd("play");
+	}
+
+	@Override
+	public String getDescription() {
+		return "Plays a song from youtube";
+	}
+
+	@Override
+	public String getCommand() {
+		return "play";
+	}
+
+	@Override
+	public String getUsage() {
+		return "play <youtubelink> or play <youtubevideocode>";
 	}
 
 	@Override

@@ -16,7 +16,21 @@ import sx.blah.discord.util.MissingPermissionsException;
 public class JoinMe extends AbstractCommand {
 	public JoinMe(NovaBot b) {
 		super(b);
-		setCmd("joinme");
+	}
+
+	@Override
+	public String getDescription() {
+		return "joins your voicechannel";
+	}
+
+	@Override
+	public String getCommand() {
+		return "joinme";
+	}
+
+	@Override
+	public String getUsage() {
+		return "";
 	}
 
 	@Override
