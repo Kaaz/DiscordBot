@@ -94,4 +94,8 @@ public class GuildSettings {
 		}
 		return false;
 	}
+
+	public Map<String, String> getSettings() {
+		return settings;
+	}
 }
