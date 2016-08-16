@@ -80,10 +80,10 @@ public class TextHandler {
 	 * @param keyPhrase keyphrase to return
 	 * @return a random string out of the options for the keyphrase
 	 */
-	public String get(String keyPhrase) {
+	public static String get(String keyPhrase) {
 		if (instance.dictionary.containsKey(keyPhrase)) {
 			ArrayList<String> list = instance.dictionary.get(keyPhrase);
-			return list.get(rnd.nextInt(list.size()));
+			return list.get(instance.rnd.nextInt(list.size()));
 		}
 		return "keyPhrase: '" + keyPhrase + "'";
 	}
