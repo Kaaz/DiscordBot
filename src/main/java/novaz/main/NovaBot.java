@@ -33,7 +33,7 @@ public class NovaBot {
 	public IDiscordClient instance;
 	private boolean isReady = false;
 	public CommandHandler commandHandler;
-	public final Timer timer = new Timer();
+	public Timer timer = new Timer();
 
 
 	public NovaBot() throws DiscordException {
@@ -46,6 +46,7 @@ public class NovaBot {
 		this.isReady = ready;
 		setUserName(Config.BOT_NAME);
 		loadConfiguration();
+		timer = new Timer();
 	}
 
 	public void loadConfiguration() {

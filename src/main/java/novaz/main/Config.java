@@ -4,6 +4,9 @@ import novaz.core.annotation.Option;
 
 public class Config {
 	//display name of the bot
+
+	@Option
+	public static String BOT_ENABLED = "false";
 	@Option
 	public static String BOT_NAME = "NovaBot";
 	//token used to login to discord

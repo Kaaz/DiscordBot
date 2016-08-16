@@ -25,7 +25,7 @@
 		<dependency>
 			<groupId>com.github.austinv11</groupId>
 			<artifactId>Discord4J</artifactId>
-			<version>5e89125</version>
+			<version>LATEST</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

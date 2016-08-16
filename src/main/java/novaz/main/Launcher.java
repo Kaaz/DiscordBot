@@ -1,6 +1,7 @@
 package novaz.main;
 
 import novaz.core.ConfigurationBuilder;
+import novaz.core.Logger;
 import novaz.db.WebDb;
 import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
@@ -15,7 +16,12 @@ public class Launcher {
 	public static void main(String[] args) throws DiscordException, IOException {
 		WebDb.init();
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
-		NovaBot nb = new NovaBot();
+		if(Config.BOT_ENABLED.equalsIgnoreCase("true")){
+			NovaBot nb = new NovaBot();
+		}
+		else{
+			Logger.fatal("Bot not enabled, enable it in the config. You can do this by setting bot_enabled=true");
+		}
 	}
 
 	/**
