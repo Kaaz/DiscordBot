@@ -126,6 +126,7 @@ public class MusicPlayerHandler {
 	}
 
 	public void stopMusic() {
+		clearMessage();
 		AudioPlayer.getAudioPlayerForGuild(guild).clear();
 	}
 }
