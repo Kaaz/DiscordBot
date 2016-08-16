@@ -4,6 +4,7 @@ import novaz.core.AbstractEventListener;
 import novaz.db.model.OServer;
 import novaz.db.table.TServers;
 import novaz.handler.CommandHandler;
+import novaz.handler.GuildSettingsHandler;
 import novaz.handler.MusicPlayerHandler;
 import novaz.handler.TextHandler;
 import org.reflections.Reflections;
@@ -32,8 +33,8 @@ public class NovaBot {
 	public IDiscordClient instance;
 	private boolean isReady = false;
 	public CommandHandler commandHandler;
-	private float volume;
 	public final Timer timer = new Timer();
+
 
 	public NovaBot() throws DiscordException {
 		registerHandlers();
