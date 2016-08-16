@@ -87,6 +87,7 @@ public class GuildSettings {
 			try {
 				WebDb.get().insert("INSERT INTO guild_settings (guild, name, config) VALUES(?, ?, ?) " +
 						"ON DUPLICATE KEY UPDATE config=?", id, key, value, value);
+				settings.put(key, value);
 				return true;
 			} catch (SQLException e) {
 				e.printStackTrace();

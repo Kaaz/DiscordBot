@@ -40,7 +40,7 @@ public class SetConfig extends AbstractCommand {
 		int count = args.length;
 		if (channel.getGuild().getOwner().equals(author) || author.getID().equals(Config.CREATOR_ID)) {
 			if (count == 0) {
-				String ret = "```ini" + Config.EOL;
+				String ret = "```bash" + Config.EOL;
 				ret += "Current Settings" + Config.EOL;
 				ret += "---------------------------------------- " + Config.EOL;
 				Map<String, String> settings = GuildSettings.get(channel.getGuild(), bot).getSettings();

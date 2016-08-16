@@ -46,20 +46,16 @@ public class NovaBot {
 	public IChannel getDefaultChannel(IGuild guild) {
 		if (!defaultChannels.containsKey(guild)) {
 			String channelName = GuildSettings.get(guild, this).getOrDefault(SettingBotChannel.class);
-			System.out.println("Scanning for channel with name '" + channelName + "'");
 			List<IChannel> channelList = guild.getChannels();
 			boolean foundChannel = false;
 			for (IChannel channel : channelList) {
-				System.out.println("CHANNELNAME::::" + channel.getName());
 				if (channel.getName().equalsIgnoreCase(channelName)) {
 					foundChannel = true;
-					System.out.println("FOUND ONE!!!!!!!!");
 					defaultChannels.put(guild, channel);
 					break;
 				}
 			}
 			if (!foundChannel) {
-				System.out.println("COULDNT FIND IT");
 				defaultChannels.put(guild, channelList.get(0));
 			}
 		}
