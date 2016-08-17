@@ -70,12 +70,15 @@ public class CommandHandler {
 	}
 
 	/**
-	 * @param key command without the Config.BOT_COMMAND_PREFIX
+	 * @param key command with or without the Config.BOT_COMMAND_PREFIX
 	 * @return instance of Command for Key or null
 	 */
 	public AbstractCommand getCommand(String key) {
-		if (chatCommands.containsKey(Config.BOT_COMMAND_PREFIX + key)) {
-			return chatCommands.get(Config.BOT_COMMAND_PREFIX + key);
+		if (!key.startsWith(Config.BOT_COMMAND_PREFIX)) {
+			key = Config.BOT_COMMAND_PREFIX + key;
+		}
+		if (chatCommands.containsKey(key)) {
+			return chatCommands.get(key);
 		}
 		return null;
 	}

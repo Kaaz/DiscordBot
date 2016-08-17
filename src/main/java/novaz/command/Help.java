@@ -7,6 +7,9 @@ import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 /**
  * !help
  * help function
@@ -52,11 +55,20 @@ public class Help extends AbstractCommand {
 			}
 			return TextHandler.get("command_help_donno");
 		} else {
-			String ret = "Commands:";
-			for (String command : bot.commandHandler.getCommands()) {
-				ret += " " + command;
+			String ret = ":information_source: All available commands:" + Config.EOL;
+			ret += "```ini" + Config.EOL;
+			int counter = 0;
+			ArrayList<String> sortedList = new ArrayList<>();
+			Collections.addAll(sortedList, bot.commandHandler.getCommands());
+			Collections.sort(sortedList);
+			for (String command : sortedList) {
+				counter++;
+				ret += String.format("%-16s", command);
+				if (counter % 5 == 0) {
+					ret += Config.EOL;
+				}
 			}
-			return ret;
+			return ret + Config.EOL + "```" + Config.EOL + "for more details about a command use **!help <command>**" + Config.EOL;
 		}
 	}
 }
