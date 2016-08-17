@@ -2,6 +2,7 @@ package novaz.command;
 
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
+import novaz.main.Config;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -45,7 +46,12 @@ public class Template extends AbstractCommand {
 				switch (args[0]) {
 					case "toggledebug":
 						if (bot.isCreator(author)) {
-							return "hello " + author.mention();
+							Config.SHOW_KEYPHRASE = !Config.SHOW_KEYPHRASE;
+							if (Config.SHOW_KEYPHRASE) {
+								return "Keyphrases shown ";
+							} else {
+								return "Keyphrases are being translated";
+							}
 						}
 						return TextHandler.get("not_yet_implemented");
 					case "list":
