@@ -68,7 +68,7 @@ public class Help extends AbstractCommand {
 					ret += Config.EOL;
 				}
 			}
-			return ret + Config.EOL + "```" + Config.EOL + "for more details about a command use **!help <command>**" + Config.EOL;
+			return ret + Config.EOL + "```" + Config.EOL + "for more details about a command use **" + Config.BOT_COMMAND_PREFIX + "help <command>**" + Config.EOL;
 		}
 	}
 }
