@@ -42,7 +42,9 @@ public class Play extends AbstractCommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[]{"play <youtubelink> or play <youtubevideocode>"};
+		return new String[]{
+				"play <youtubelink>",
+				"play <youtubevideocode>"};
 	}
 
 	@Override

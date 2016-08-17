@@ -3,7 +3,6 @@ package novaz.command;
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
 import novaz.main.NovaBot;
-import sx.blah.discord.handle.audio.IAudioManager;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IVoiceChannel;
@@ -39,7 +38,6 @@ public class JoinMe extends AbstractCommand {
 		if (voiceChannel == null) {
 			return TextHandler.get("command_joinme_cantfindyou");
 		}
-		IAudioManager audioManager = channel.getGuild().getAudioManager();
 		try {
 			voiceChannel.join();
 		} catch (MissingPermissionsException e) {

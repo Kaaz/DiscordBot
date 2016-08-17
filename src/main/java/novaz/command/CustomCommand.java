@@ -30,7 +30,9 @@ public class CustomCommand extends AbstractCommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[]{"<add|delete> <command> <action>"};
+		return new String[]{
+				"command add <command> <action> //adds a command",
+				"command delete <command> //deletes a command"};
 	}
 
 	@Override
