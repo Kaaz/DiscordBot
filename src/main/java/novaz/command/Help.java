@@ -38,7 +38,7 @@ public class Help extends AbstractCommand {
 		if (args.length > 0) {
 			AbstractCommand c = bot.commandHandler.getCommand(args[0]);
 			if (c != null) {
-				String ret = "Help function " + Config.EOL;
+				String ret = " Help :information_source: " + Config.EOL;
 				ret += "**command:** " + Config.EOL + Config.BOT_COMMAND_PREFIX + c.getCommand() + Config.EOL;
 				ret += "**Description:** " + Config.EOL + c.getDescription() + Config.EOL;
 				if (c.getUsage().length > 0) {
@@ -49,7 +49,6 @@ public class Help extends AbstractCommand {
 					ret += "```";
 				}
 				return ret;
-
 			}
 			return TextHandler.get("command_help_donno");
 		} else {

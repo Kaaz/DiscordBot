@@ -6,6 +6,8 @@ import novaz.main.Config;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
@@ -14,6 +16,8 @@ import sx.blah.discord.util.audio.AudioPlayer;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -116,11 +120,37 @@ public class MusicPlayerHandler {
 	 */
 	public void playRandomSong() {
 		String randomSong = getRandomSong();
-		try {
-			AudioPlayer.getAudioPlayerForGuild(guild).queue(new File(Config.MUSIC_DIRECTORY + randomSong));
-		} catch (IOException | UnsupportedAudioFileException e) {
-			e.printStackTrace();
+		guild.getVoiceChannels();
+		bot.instance.getConnectedVoiceChannels();
+		List<IUser> usersInVoiceChannel = getUsersInVoiceChannel();
+		if (usersInVoiceChannel.size() > 0) {
+			try {
+				AudioPlayer.getAudioPlayerForGuild(guild).queue(new File(Config.MUSIC_DIRECTORY + randomSong));
+			} catch (IOException | UnsupportedAudioFileException e) {
+				e.printStackTrace();
+			}
 		}
+	}
+
+	public List<IUser> getUsersInVoiceChannel() {
+		ArrayList<IUser> userList = new ArrayList<>();
+		List<IVoiceChannel> connectedVoiceChannels = bot.instance.getOurUser().getConnectedVoiceChannels();
+		IVoiceChannel currentChannel = null;
+		for (IVoiceChannel channel : connectedVoiceChannels) {
+			if (channel.getGuild().equals(guild)) {
+				currentChannel = channel;
+				break;
+			}
+		}
+		if (currentChannel != null) {
+			List<IUser> connectedUsers = currentChannel.getConnectedUsers();
+			for (IUser user : connectedUsers) {
+				if (!user.equals(bot.instance.getOurUser())) {
+					userList.add(user);
+				}
+			}
+		}
+		return userList;
 	}
 
 	/**
@@ -130,4 +160,5 @@ public class MusicPlayerHandler {
 		clearMessage();
 		AudioPlayer.getAudioPlayerForGuild(guild).clear();
 	}
+
 }
