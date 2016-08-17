@@ -38,11 +38,11 @@ public class Help extends AbstractCommand {
 		if (args.length > 0) {
 			AbstractCommand c = bot.commandHandler.getCommand(args[0]);
 			if (c != null) {
-				String ret = ":information_source: :information_desk_person: ";
-				ret += ":information_source: Help for " + Config.BOT_COMMAND_PREFIX + c.getCommand() + Config.EOL;
-				ret += c.getDescription() + Config.EOL;
+				String ret = "Help function " + Config.EOL;
+				ret += "**command:** " + Config.EOL + Config.BOT_COMMAND_PREFIX + c.getCommand() + Config.EOL;
+				ret += "**Description:** " + Config.EOL + c.getDescription() + Config.EOL;
 				if (c.getUsage().length > 0) {
-					ret += "Usage:```php";
+					ret += "**Usages**:```php" + Config.EOL;
 					for (String line : c.getUsage()) {
 						ret += line + Config.EOL;
 					}
