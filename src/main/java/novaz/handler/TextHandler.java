@@ -2,6 +2,7 @@ package novaz.handler;
 
 
 import novaz.db.WebDb;
+import novaz.main.Config;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,11 +37,11 @@ public class TextHandler {
 	 * @return a random string out of the options for the keyphrase
 	 */
 	public static String get(String keyPhrase) {
-		if (instance.dictionary.containsKey(keyPhrase)) {
+		if (!Config.SHOW_KEYPHRASE && instance.dictionary.containsKey(keyPhrase)) {
 			ArrayList<String> list = instance.dictionary.get(keyPhrase);
 			return list.get(instance.rnd.nextInt(list.size()));
 		}
-		return "keyPhrase: '" + keyPhrase + "'";
+		return "**'" + keyPhrase + "'**";
 	}
 
 	public int countTemplates() {

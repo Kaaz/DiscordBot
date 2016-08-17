@@ -35,5 +35,6 @@ public class Config {
 
 	public static String EOL = System.getProperty("line.separator");
 	public static long DELETE_MESSAGES_AFTER = 120000;
+	public static boolean SHOW_KEYPHRASE = false;
 	public static String CREATOR_ID = "97433066384928768";
 }

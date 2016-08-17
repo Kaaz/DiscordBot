@@ -32,7 +32,9 @@ public class SetConfig extends AbstractCommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[]{"config or config <property> or config <property> <value>"};
+		return new String[]{"config //overview",
+				"config <property> //check details of property",
+				"config <property> <value> //sets property"};
 	}
 
 	@Override
