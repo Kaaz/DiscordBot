@@ -42,8 +42,10 @@ public class Help extends AbstractCommand {
 			AbstractCommand c = bot.commandHandler.getCommand(args[0]);
 			if (c != null) {
 				String ret = " Help :information_source: " + Config.EOL;
-				ret += "**command:** " + Config.EOL + Config.BOT_COMMAND_PREFIX + c.getCommand() + Config.EOL;
-				ret += "**Description:** " + Config.EOL + c.getDescription() + Config.EOL;
+				ret += "**command:** " + Config.EOL +
+						Config.BOT_COMMAND_PREFIX + " " + c.getCommand() + Config.EOL;
+				ret += "**Description:** " + Config.EOL +
+						" " + c.getDescription() + Config.EOL;
 				if (c.getUsage().length > 0) {
 					ret += "**Usages**:```php" + Config.EOL;
 					for (String line : c.getUsage()) {
@@ -55,8 +57,8 @@ public class Help extends AbstractCommand {
 			}
 			return TextHandler.get("command_help_donno");
 		} else {
-			String ret = ":information_source: All available commands:" + Config.EOL;
-			ret += "```ini" + Config.EOL;
+			String ret = ":information_source: All available commands:" + Config.EOL +
+					"```ini" + Config.EOL;
 			int counter = 0;
 			ArrayList<String> sortedList = new ArrayList<>();
 			Collections.addAll(sortedList, bot.commandHandler.getCommands());
@@ -68,7 +70,9 @@ public class Help extends AbstractCommand {
 					ret += Config.EOL;
 				}
 			}
-			return ret + Config.EOL + "```" + Config.EOL + "for more details about a command use **" + Config.BOT_COMMAND_PREFIX + "help <command>**" + Config.EOL;
+			return ret + Config.EOL +
+					"```" + Config.EOL +
+					"for more details about a command use **" + Config.BOT_COMMAND_PREFIX + "help <command>**" + Config.EOL;
 		}
 	}
 }
