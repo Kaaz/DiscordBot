@@ -38,9 +38,9 @@ public class SetConfig extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		int count = args.length;
-		if (channel.getGuild().getOwner().equals(author) || author.getID().equals(Config.CREATOR_ID)) {
+		if (bot.isOwner(channel.getGuild(), author)) {
 			if (count == 0) {
-				String ret = "```bash" + Config.EOL;
+				String ret = "```php" + Config.EOL;
 				ret += "Current Settings" + Config.EOL;
 				ret += "---------------------------------------- " + Config.EOL;
 				Map<String, String> settings = GuildSettings.get(channel.getGuild(), bot).getSettings();

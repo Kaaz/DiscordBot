@@ -43,6 +43,34 @@ public class NovaBot {
 		registerEvents();
 	}
 
+	/**
+	 * check if a user is the owner of a guild or isCreator
+	 *
+	 * @param guild the server
+	 * @param user  the user to check
+	 * @return user is owner
+	 */
+	public boolean isOwner(IGuild guild, IUser user) {
+		return guild.getOwner().equals(user) || isCreator(user);
+	}
+
+	/**
+	 * checks if user is creator
+	 *
+	 * @param user user to check
+	 * @return is creator?
+	 */
+	public boolean isCreator(IUser user) {
+		return user.getID().equals(Config.CREATOR_ID);
+	}
+
+	/**
+	 * Gets the default channel to output to
+	 * if configured channel can't be found, return the first channel
+	 *
+	 * @param guild the guild to check
+	 * @return default chat channel
+	 */
 	public IChannel getDefaultChannel(IGuild guild) {
 		if (!defaultChannels.containsKey(guild)) {
 			String channelName = GuildSettings.get(guild, this).getOrDefault(SettingBotChannel.class);
@@ -119,7 +147,6 @@ public class NovaBot {
 	}
 
 	public void addSongToQueue(String filename, IGuild guild) {
-		System.out.println("Adding: " + Config.MUSIC_DIRECTORY + filename);
 		File file = new File(Config.MUSIC_DIRECTORY + filename); // Get file
 		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild);
 		try {
