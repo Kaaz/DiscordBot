@@ -2,7 +2,6 @@ package novaz.command;
 
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
-import novaz.main.Config;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -27,21 +26,20 @@ public class Template extends AbstractCommand {
 	}
 
 	@Override
-	public String getUsage() {
-		return "Usage for " + getCommand() + "```php" + Config.EOL +
-				"template list //lists all keyphrases" + Config.EOL +
-				"template list <keyphrase> //lists all options for keyphrase" + Config.EOL +
-				"template remove <keyphrase> <index> //removes selected template for keyphrase" + Config.EOL +
-				"template add <keyphrase> <text...> //adds a template for keyphrase" + Config.EOL +
-				"template toggledebug //shows keyphrases instead of text" + Config.EOL +
-				"```";
+	public String[] getUsage() {
+		return new String[]{
+				"template list //lists all keyphrases",
+				"template list <keyphrase> //lists all options for keyphrase",
+				"template remove <keyphrase> <index> //removes selected template for keyphrase",
+				"template add <keyphrase> <text...> //adds a template for keyphrase",
+				"template toggledebug //shows keyphrases instead of text"};
 	}
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.isOwner(channel.getGuild(), author)) {
 			if (args.length == 0) {
-				return getUsage();
+				return getUsage()[0];//@todo plz
 			}
 			if (args.length >= 1) {
 				switch (args[0]) {

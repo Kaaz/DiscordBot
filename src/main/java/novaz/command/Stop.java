@@ -26,8 +26,8 @@ public class Stop extends AbstractCommand {
 	}
 
 	@Override
-	public String getUsage() {
-		return "";
+	public String[] getUsage() {
+		return new String[]{};
 	}
 
 	@Override

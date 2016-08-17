@@ -31,7 +31,7 @@ public abstract class AbstractCommand {
 	 *
 	 * @return command usage
 	 */
-	public abstract String getUsage();
+	public abstract String[] getUsage();
 
 	public abstract String execute(String[] args, IChannel channel, IUser author);
 }

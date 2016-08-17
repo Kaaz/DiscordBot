@@ -3,24 +3,24 @@ package novaz.handler.guildsettings.defaults;
 import novaz.handler.guildsettings.AbstractGuildSetting;
 
 
-public class SettingBotChannel extends AbstractGuildSetting {
+public class SettingCommandPrefix extends AbstractGuildSetting {
 	@Override
 	public String getKey() {
-		return "bot_channel";
+		return "command_prefix";
 	}
 
 	@Override
 	public String getDefault() {
-		return "general";
+		return "!";
 	}
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"Channel where the bots default output goes to"};
+		return new String[]{"Prefix for commands"};
 	}
 
 	@Override
 	public boolean isValidValue(String input) {
-		return true;
+		return input != null && input.length() > 0 && input.length() < 3;
 	}
 }

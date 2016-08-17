@@ -27,8 +27,8 @@ public class Volume extends AbstractCommand {
 	}
 
 	@Override
-	public String getUsage() {
-		return "volume or volume <1 to 100>";
+	public String[] getUsage() {
+		return new String[]{"volume", "volume <1 to 100>"};
 	}
 
 	@Override

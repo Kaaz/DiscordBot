@@ -49,8 +49,8 @@ public class Eightball extends AbstractCommand {
 	}
 
 	@Override
-	public String getUsage() {
-		return "";
+	public String[] getUsage() {
+		return new String[]{};
 	}
 
 	@Override

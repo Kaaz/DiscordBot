@@ -38,8 +38,8 @@ public class Joke extends AbstractCommand {
 	}
 
 	@Override
-	public String getUsage() {
-		return "";
+	public String[] getUsage() {
+		return new String[]{};
 	}
 
 	@Override

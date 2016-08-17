@@ -26,8 +26,8 @@ public class Say extends AbstractCommand {
 	}
 
 	@Override
-	public String getUsage() {
-		return "say <anything>";
+	public String[] getUsage() {
+		return new String[]{"say <anything>"};
 	}
 
 	@Override
