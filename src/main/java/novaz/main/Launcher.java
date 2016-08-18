@@ -6,14 +6,12 @@ import novaz.db.WebDb;
 import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
 import novaz.util.YTUtil;
-import sx.blah.discord.util.DiscordException;
 
 import java.io.File;
-import java.io.IOException;
 
 public class Launcher {
 
-	public static void main(String[] args) throws DiscordException, IOException {
+	public static void main(String[] args) throws Exception {
 		WebDb.init();
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		if (Config.BOT_ENABLED.equalsIgnoreCase("true")) {

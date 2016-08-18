@@ -4,10 +4,8 @@ import novaz.core.AbstractEventListener;
 import novaz.db.model.OMusic;
 import novaz.db.model.OServer;
 import novaz.db.table.TServers;
-import novaz.handler.CommandHandler;
-import novaz.handler.GuildSettings;
-import novaz.handler.MusicPlayerHandler;
-import novaz.handler.TextHandler;
+import novaz.handler.*;
+import novaz.handler.guildsettings.DefaultGuildSettings;
 import novaz.handler.guildsettings.defaults.SettingBotChannel;
 import org.reflections.Reflections;
 import sx.blah.discord.api.ClientBuilder;
@@ -36,6 +34,7 @@ public class NovaBot {
 	public Timer timer = new Timer();
 	private boolean isReady = false;
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
+	private ChatBotHandler chatBotHandler = null;
 
 
 	public NovaBot() throws DiscordException {
@@ -102,6 +101,7 @@ public class NovaBot {
 		commandHandler.load();
 		TextHandler.getInstance().load();
 		defaultChannels = new ConcurrentHashMap<>();
+		chatBotHandler = new ChatBotHandler();
 	}
 
 	private void registerEvents() {
@@ -178,6 +178,11 @@ public class NovaBot {
 	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage content) {
 		if (content.getContent().startsWith(Config.BOT_COMMAND_PREFIX)) {
 			commandHandler.process(guild, channel, author, content);
+		} else if (
+				Config.BOT_CHATTING_ENABLED.equals("true") &&
+						!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild(), this).getOrDefault(SettingBotChannel.class))
+						&& channel.getName().equals(GuildSettings.get(channel.getGuild(), this).getOrDefault(SettingBotChannel.class))) {
+			this.sendMessage(channel, this.chatBotHandler.chat(content.getContent()));
 		}
 	}
 

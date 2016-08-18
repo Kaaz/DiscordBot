@@ -14,6 +14,8 @@ public class Config {
 	public static String BOT_TOKEN = "mybottokenhere";
 	//prefix for all commands !help etc.
 	@Option
+	public static String BOT_CHATTING_ENABLED = "true";
+	@Option
 	public static String BOT_COMMAND_PREFIX = "!";
 	//location of youtubedl.exe
 	@Option
