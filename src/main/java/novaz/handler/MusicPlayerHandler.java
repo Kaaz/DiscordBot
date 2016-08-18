@@ -125,19 +125,27 @@ public class MusicPlayerHandler {
 
 	/**
 	 * Adds a random song from the music directory to the queue
+	 *
+	 * @return successfully started playing
 	 */
-	public void playRandomSong() {
+	public boolean playRandomSong() {
 		String randomSong = getRandomSong();
 		guild.getVoiceChannels();
-		bot.instance.getConnectedVoiceChannels();
-		List<IUser> usersInVoiceChannel = getUsersInVoiceChannel();
-		if (usersInVoiceChannel.size() > 0) {
-			try {
-				AudioPlayer.getAudioPlayerForGuild(guild).queue(new File(Config.MUSIC_DIRECTORY + randomSong));
-			} catch (IOException | UnsupportedAudioFileException e) {
-				e.printStackTrace();
-			}
+		if (bot.instance.getConnectedVoiceChannels().isEmpty()) {
+			return false;
 		}
+		List<IUser> usersInVoiceChannel = getUsersInVoiceChannel();
+		if (usersInVoiceChannel.isEmpty()) {
+			return false;
+		}
+		try {
+			AudioPlayer.getAudioPlayerForGuild(guild).queue(new File(Config.MUSIC_DIRECTORY + randomSong));
+			return true;
+		} catch (IOException | UnsupportedAudioFileException e) {
+			e.printStackTrace();
+
+		}
+		return false;
 	}
 
 	public List<IUser> getUsersInVoiceChannel() {
@@ -164,6 +172,7 @@ public class MusicPlayerHandler {
 	/**
 	 * Clears existing message and stops playing music for guild
 	 */
+
 	public void stopMusic() {
 		clearMessage();
 		AudioPlayer.getAudioPlayerForGuild(guild).clear();

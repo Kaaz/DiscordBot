@@ -205,4 +205,8 @@ public class NovaBot {
 	public List<IUser> getCurrentlyListening(IGuild guild) {
 		return MusicPlayerHandler.getAudioPlayerForGuild(guild, this).getUsersInVoiceChannel();
 	}
+
+	public boolean playRandomSong(IGuild guild) {
+		return MusicPlayerHandler.getAudioPlayerForGuild(guild, this).playRandomSong();
+	}
 }
