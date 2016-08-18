@@ -38,10 +38,14 @@ public class Join extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
+		IVoiceChannel currentlyConnected = bot.instance.getConnectedVoiceChannels().get(0);
 		if (args.length == 0) {
 			IVoiceChannel voiceChannel = author.getConnectedVoiceChannels().get(0);
 			if (voiceChannel == null) {
 				return TextHandler.get("command_join_cantfindyou");
+			}
+			if (voiceChannel.equals(currentlyConnected)) {
+				return TextHandler.get("command_join_already_there");
 			}
 			try {
 				voiceChannel.join();
@@ -51,16 +55,19 @@ public class Join extends AbstractCommand {
 			return TextHandler.get("command_join_joinedyou");
 		} else {
 			String channelname = Misc.concat(args);
-			IVoiceChannel unicornChannel = null;
+			IVoiceChannel targetChannel = null;
 			for (IVoiceChannel vc : channel.getGuild().getVoiceChannels()) {
 				if (vc.getName().equalsIgnoreCase(channelname)) {
-					unicornChannel = vc;
+					targetChannel = vc;
 					break;
 				}
 			}
-			if (unicornChannel != null) {
+			if (targetChannel != null) {
+				if (targetChannel.equals(currentlyConnected)) {
+					return TextHandler.get("command_join_already_there");
+				}
 				try {
-					unicornChannel.join();
+					targetChannel.join();
 				} catch (MissingPermissionsException e) {
 					return TextHandler.get("command_join_nopermssiontojoin");
 				}

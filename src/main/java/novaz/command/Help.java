@@ -43,12 +43,12 @@ public class Help extends AbstractCommand {
 			AbstractCommand c = bot.commandHandler.getCommand(args[0]);
 			if (c != null) {
 				String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + Config.EOL;
-				ret += ":gear: **command:** " + Config.EOL +
+				ret += ":keyboard: **command:** " + Config.EOL +
 						Misc.makeTable(Config.BOT_COMMAND_PREFIX + c.getCommand());
 				ret += ":notepad_spiral: **Description:** " + Config.EOL +
 						Misc.makeTable(c.getDescription());
 				if (c.getUsage().length > 0) {
-					ret += ":mega: **Usages**:```php" + Config.EOL;
+					ret += ":gear: **Usages**:```php" + Config.EOL;
 					for (String line : c.getUsage()) {
 						ret += line + Config.EOL;
 					}
