@@ -38,7 +38,10 @@ public class Join extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		IVoiceChannel currentlyConnected = bot.instance.getConnectedVoiceChannels().get(0);
+		IVoiceChannel currentlyConnected = null;
+		if (!bot.instance.getConnectedVoiceChannels().isEmpty()) {
+			currentlyConnected = bot.instance.getConnectedVoiceChannels().get(0);
+		}
 		if (args.length == 0) {
 			IVoiceChannel voiceChannel = author.getConnectedVoiceChannels().get(0);
 			if (voiceChannel == null) {
