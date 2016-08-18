@@ -26,12 +26,17 @@ public class MusicPlayerHandler {
 	private final static Map<IGuild, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
 	private final IGuild guild;
 	private final NovaBot bot;
+	private OMusic currentlyPlaying = new OMusic();
 	private IMessage activeMsg;
 
 	private MusicPlayerHandler(IGuild guild, NovaBot bot) {
 		this.guild = guild;
 		this.bot = bot;
 		playerInstances.put(guild, this);
+	}
+
+	public OMusic getCurrentlyPlaying() {
+		return currentlyPlaying;
 	}
 
 	public static MusicPlayerHandler getAudioPlayerForGuild(IGuild guild, NovaBot bot) {
@@ -49,6 +54,7 @@ public class MusicPlayerHandler {
 		clearMessage();
 		AudioPlayer ap = AudioPlayer.getAudioPlayerForGuild(guild);
 		ap.skip();
+		currentlyPlaying = new OMusic();
 		if (ap.getPlaylistSize() == 0) {
 			playRandomSong();
 		}
@@ -74,6 +80,7 @@ public class MusicPlayerHandler {
 	 */
 	public void onTrackEnded(AudioPlayer.Track oldTrack, Optional<AudioPlayer.Track> nextTrack) {
 		clearMessage();
+		currentlyPlaying = new OMusic();
 		if (!nextTrack.isPresent()) {
 			playRandomSong();
 		}
@@ -92,6 +99,7 @@ public class MusicPlayerHandler {
 			if (metadata.get("file") instanceof File) {
 				File f = (File) metadata.get("file");
 				OMusic music = TMusic.findByFileName(f.getName());
+				currentlyPlaying = music;
 				if (music.title.isEmpty()) {
 					msg = "plz send help:: " + f.getName();
 				} else {

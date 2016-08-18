@@ -1,6 +1,7 @@
 package novaz.main;
 
 import novaz.core.AbstractEventListener;
+import novaz.db.model.OMusic;
 import novaz.db.model.OServer;
 import novaz.db.table.TServers;
 import novaz.handler.CommandHandler;
@@ -195,5 +196,13 @@ public class NovaBot {
 
 	public void stopMusic(IGuild guild) {
 		MusicPlayerHandler.getAudioPlayerForGuild(guild, this).stopMusic();
+	}
+
+	public OMusic getCurrentlyPlayingSong(IGuild guild) {
+		return MusicPlayerHandler.getAudioPlayerForGuild(guild, this).getCurrentlyPlaying();
+	}
+
+	public List<IUser> getCurrentlyListening(IGuild guild) {
+		return MusicPlayerHandler.getAudioPlayerForGuild(guild, this).getUsersInVoiceChannel();
 	}
 }
