@@ -40,6 +40,16 @@ public class Misc {
 	}
 
 	/**
+	 * @param tableText text
+	 * @return formatted table
+	 */
+	public static String makeTable(String tableText) {
+		return "```php" + Config.EOL
+				+ tableText + Config.EOL +
+				"```" + Config.EOL;
+	}
+
+	/**
 	 * Turns an array into a string with spaces
 	 *
 	 * @param list array
