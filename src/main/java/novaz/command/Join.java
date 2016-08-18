@@ -64,7 +64,7 @@ public class Join extends AbstractCommand {
 				} catch (MissingPermissionsException e) {
 					return TextHandler.get("command_join_nopermssiontojoin");
 				}
-				return TextHandler.get("command_join_joinedyou");
+				return TextHandler.get("command_join_joined");
 			}
 			return TextHandler.get("command_join_cantfindchannel");
 		}
