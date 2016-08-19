@@ -2,13 +2,13 @@ package novaz.command;
 
 import novaz.core.AbstractCommand;
 import novaz.db.model.OMusic;
+import novaz.handler.MusicPlayerHandler;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import novaz.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.audio.AudioPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +56,8 @@ public class CurrentTrack extends AbstractCommand {
 		ret += "**Title** " + Config.EOL;
 		ret += " " + song.title + Config.EOL;
 		ret += "**Status** " + Config.EOL;
-		AudioPlayer audioPlayerForGuild = AudioPlayer.getAudioPlayerForGuild(channel.getGuild());
-		ret += " " + getMediaplayerProgressbar(audioPlayerForGuild.getCurrentTrack().getCurrentTrackTime(), audioPlayerForGuild.getCurrentTrack().getTotalTrackTime(), audioPlayerForGuild.getVolume()) + Config.EOL;
+		MusicPlayerHandler musicHandler = MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot);
+		ret += " " + getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL;
 		List<IUser> userlist = bot.getCurrentlyListening(channel.getGuild());
 		if (userlist.size() > 0) {
 			ret += "Currently Listening: " + Config.EOL;
@@ -67,9 +67,10 @@ public class CurrentTrack extends AbstractCommand {
 		return ret;
 	}
 
-	private String getMediaplayerProgressbar(long current, long max, float volume) {
+	private String getMediaplayerProgressbar(long startTime, long duration, float volume) {
+		long current = System.currentTimeMillis() / 1000 - startTime;
 		String bar = ":arrow_forward: ";
-		int activeBLock = (int) ((float) current / (float) max * (float) BLOCK_PARTS);
+		int activeBLock = (int) ((float) current / (float) duration * (float) BLOCK_PARTS);
 		for (int i = 0; i < BLOCK_PARTS; i++) {
 			if (i == activeBLock) {
 				bar += BLOCK_ACTIVE;
@@ -77,7 +78,7 @@ public class CurrentTrack extends AbstractCommand {
 				bar += BLOCK_INACTIVE;
 			}
 		}
-		bar += " [" + Misc.longToTime(current) + "/" + Misc.longToTime(current) + "] ";
+		bar += " [" + Misc.getDurationString(current) + "/" + Misc.getDurationString(duration) + "] ";
 		if (volume >= SOUND_TRESHHOLD) {
 			bar += SOUND_LOUD;
 		} else {

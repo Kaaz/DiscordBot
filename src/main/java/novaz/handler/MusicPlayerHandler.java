@@ -1,5 +1,8 @@
 package novaz.handler;
 
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
 import novaz.main.Config;
@@ -28,6 +31,8 @@ public class MusicPlayerHandler {
 	private final NovaBot bot;
 	private OMusic currentlyPlaying = new OMusic();
 	private IMessage activeMsg;
+	private long currentSongLength = 0;
+	private long currentSongStartTimeInSeconds = 0;
 
 	private MusicPlayerHandler(IGuild guild, NovaBot bot) {
 		this.guild = guild;
@@ -45,6 +50,24 @@ public class MusicPlayerHandler {
 		} else {
 			return new MusicPlayerHandler(guild, bot);
 		}
+	}
+
+	/**
+	 * When did the currently playing song start?
+	 *
+	 * @return timestamp in seconds
+	 */
+	public long getCurrentSongStartTime() {
+		return currentSongStartTimeInSeconds;
+	}
+
+	/**
+	 * track duration of current song
+	 *
+	 * @return duration in seconds
+	 */
+	public long getCurrentSongLength() {
+		return currentSongLength;
 	}
 
 	/**
@@ -80,6 +103,7 @@ public class MusicPlayerHandler {
 	 */
 	public void onTrackEnded(AudioPlayer.Track oldTrack, Optional<AudioPlayer.Track> nextTrack) {
 		clearMessage();
+		currentSongLength = 0;
 		currentlyPlaying = new OMusic();
 		if (!nextTrack.isPresent()) {
 			playRandomSong();
@@ -98,8 +122,10 @@ public class MusicPlayerHandler {
 		if (metadata.containsKey("file")) {
 			if (metadata.get("file") instanceof File) {
 				File f = (File) metadata.get("file");
+				getMp3Details(f);
 				OMusic music = TMusic.findByFileName(f.getName());
 				currentlyPlaying = music;
+				currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000;
 				if (music.title.isEmpty()) {
 					msg = "plz send help:: " + f.getName();
 				} else {
@@ -108,6 +134,15 @@ public class MusicPlayerHandler {
 			}
 		}
 		activeMsg = bot.sendMessage(bot.getDefaultChannel(guild), msg);
+	}
+
+	private void getMp3Details(File f) {
+		try {
+			Mp3File mp3file = new Mp3File(f);
+			currentSongLength = mp3file.getLengthInSeconds();
+		} catch (IOException | InvalidDataException | UnsupportedTagException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -178,4 +213,7 @@ public class MusicPlayerHandler {
 		AudioPlayer.getAudioPlayerForGuild(guild).clear();
 	}
 
+	public float getVolume() {
+		return AudioPlayer.getAudioPlayerForGuild(guild).getVolume();
+	}
 }
