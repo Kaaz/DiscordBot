@@ -1,6 +1,7 @@
 package novaz.core;
 
 import novaz.core.annotation.Option;
+import novaz.db.WebDb;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
@@ -47,6 +48,7 @@ public class ConfigurationBuilder {
 			} catch (IllegalAccessException e) {
 				Logger.fatal("Could not load configuration, IllegalAccessException");
 			}
+			WebDb.init();
 		});
 		properties.store(new FileOutputStream(configFile), null);
 	}

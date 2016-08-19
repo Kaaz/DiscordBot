@@ -2,7 +2,6 @@ package novaz.main;
 
 import novaz.core.ConfigurationBuilder;
 import novaz.core.Logger;
-import novaz.db.WebDb;
 import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
 import novaz.util.YTUtil;
@@ -12,7 +11,7 @@ import java.io.File;
 public class Launcher {
 
 	public static void main(String[] args) throws Exception {
-		WebDb.init();
+
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		if (Config.BOT_ENABLED.equalsIgnoreCase("true")) {
 			NovaBot nb = new NovaBot();

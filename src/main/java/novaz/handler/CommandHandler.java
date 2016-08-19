@@ -29,6 +29,9 @@ public class CommandHandler {
 	private HashMap<String, AbstractCommand> chatCommands;
 	private HashMap<String, String> customCommands;
 
+	public CommandHandler() {
+	}
+
 	public CommandHandler(NovaBot b) {
 		bot = b;
 	}
