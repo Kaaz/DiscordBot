@@ -18,22 +18,22 @@ public class Misc {
 	/**
 	 * Makes a table-like display of list of items
 	 *
-	 * @param items    items in the table
-	 * @param colSize  length of a column(filled up with whitespace)
-	 * @param colCount amount of columns
+	 * @param items        items in the table
+	 * @param columnLength length of a column(filled up with whitespace)
+	 * @param columns      amount of columns
 	 * @return formatted table
 	 */
-	public static String makeTable(ArrayList<String> items, int colSize, int colCount) {
+	public static String makeTable(ArrayList<String> items, int columnLength, int columns) {
 		String ret = "```ini" + Config.EOL;
 		int counter = 0;
 		for (String item : items) {
 			counter++;
-			ret += String.format("%-" + colSize + "s", item);
-			if (counter % colCount == 0) {
+			ret += String.format("%-" + columnLength + "s", item);
+			if (counter % columns == 0) {
 				ret += Config.EOL;
 			}
 		}
-		if (counter % colCount != 0) {
+		if (counter % columns != 0) {
 			ret += Config.EOL;
 		}
 		return ret + "```" + Config.EOL;
@@ -61,5 +61,9 @@ public class Misc {
 			joiner.add(s);
 		}
 		return joiner.toString();
+	}
+
+	public static String longToTime(long current) {
+		return "" + current;
 	}
 }

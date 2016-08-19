@@ -45,9 +45,8 @@ public class CommandHandler {
 		IMessage mymsg;
 		String[] input = content.getContent().split(" ");
 		String args[] = new String[input.length - 1];
-		for (int i = 1; i < input.length; i++) {
-			args[i - 1] = input[i];
-		}
+		args[0] = args[0].toLowerCase();
+		System.arraycopy(input, 1, args, 0, input.length - 1);
 		if (chatCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, chatCommands.get(input[0]).execute(args, channel, author));
 		} else if (customCommands.containsKey(input[0])) {
@@ -156,7 +155,6 @@ public class CommandHandler {
 	private void loadCustomCommands(int serverId) {
 		customCommands = new HashMap<>();
 		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands ")) {
-//		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands WHERE server = ? ", serverId)) {
 			while (r != null && r.next()) {
 				if (!chatCommands.containsKey(Config.BOT_COMMAND_PREFIX + r.getString("input")) && !customCommands.containsKey(Config.BOT_COMMAND_PREFIX + r.getString("input"))) {
 					customCommands.put(Config.BOT_COMMAND_PREFIX + r.getString("input"), r.getString("output"));

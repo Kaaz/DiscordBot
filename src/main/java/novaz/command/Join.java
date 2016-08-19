@@ -51,6 +51,9 @@ public class Join extends AbstractCommand {
 				return TextHandler.get("command_join_already_there");
 			}
 			try {
+				if (currentlyConnected != null) {
+					currentlyConnected.leave();
+				}
 				voiceChannel.join();
 			} catch (MissingPermissionsException e) {
 				return TextHandler.get("command_join_nopermssiontojoin");
@@ -70,6 +73,9 @@ public class Join extends AbstractCommand {
 					return TextHandler.get("command_join_already_there");
 				}
 				try {
+					if (currentlyConnected != null) {
+						currentlyConnected.leave();
+					}
 					targetChannel.join();
 				} catch (MissingPermissionsException e) {
 					return TextHandler.get("command_join_nopermssiontojoin");
