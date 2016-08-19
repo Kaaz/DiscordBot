@@ -78,6 +78,8 @@ public class MusicPlayerHandler {
 		AudioPlayer ap = AudioPlayer.getAudioPlayerForGuild(guild);
 		ap.skip();
 		currentlyPlaying = new OMusic();
+		currentSongLength = 0;
+		currentSongStartTimeInSeconds = 0;
 		if (ap.getPlaylistSize() == 0) {
 			playRandomSong();
 		}
@@ -210,6 +212,8 @@ public class MusicPlayerHandler {
 
 	public void stopMusic() {
 		clearMessage();
+		currentSongLength = 0;
+		currentlyPlaying = new OMusic();
 		AudioPlayer.getAudioPlayerForGuild(guild).clear();
 	}
 

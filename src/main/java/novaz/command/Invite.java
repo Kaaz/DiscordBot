@@ -32,8 +32,8 @@ public class Invite extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		return "I am honored :stuck_out_tongue_closed_eyes: Thanks for wanting to invite me! :hugging: " + Config.EOL +
-				"You can add me to your guild/server with the following :link: : " + Config.EOL +
+		return "I am honored you'd want to invite me! :hugging: " + Config.EOL +
+				"You can add me to your guild/server with the following link : " + Config.EOL +
 				"https://discordapp.com/oauth2/authorize?=&client_id=209769201689296896&scope=bot";
 	}
 }

@@ -52,7 +52,7 @@ public class CurrentTrack extends AbstractCommand {
 		if (song.id == 0) {
 			return TextHandler.get("command_currentlyplaying_nosong");
 		}
-		String ret = ":notes: Song info " + Config.EOL;
+		String ret = ":notes: Currently playing " + Config.EOL;
 		ret += "**Title** " + Config.EOL;
 		ret += " " + song.title + Config.EOL;
 		ret += "**Status** " + Config.EOL;
