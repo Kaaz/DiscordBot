@@ -29,9 +29,11 @@ public class Readme {
 		Collections.addAll(sortedCommandList, commandHandler.getCommands());
 		Collections.sort(sortedCommandList);
 		for (String commandName : sortedCommandList) {
-			System.out.println("* ["+commandName+"](#"+commandName+")");
+			AbstractCommand command = commandHandler.getCommand(commandName);
+			System.out.println("* [" + command.getCommand() + "](#" + command.getCommand() + ")");
 		}
 	}
+
 	private static void readmeCommandDetailsList() {
 		CommandHandler commandHandler = new CommandHandler();
 		commandHandler.load();

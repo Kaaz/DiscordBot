@@ -14,28 +14,29 @@ A Java bot for [Discord](discordapp.com) using the [Discord4J interface](https:/
 
 ### Commands
 
+Commands are prefixed with a "!" by default, this can be configured.
 For a list of commands in discord the **help** command can be used.  
 For more information about a command use **help \<commandname\>**
 
 Current list of all available commands. See below for a more detailed list
 
-* [!8ball](#!8ball)
-* [!catfact](#!catfact)
-* [!command](#!command)
-* [!config](#!config)
-* [!current](#!current)
-* [!exit](#!exit)
-* [!help](#!help)
-* [!join](#!join)
-* [!joke](#!joke)
-* [!leave](#!leave)
-* [!play](#!play)
-* [!reload](#!reload)
-* [!say](#!say)
-* [!skip](#!skip)
-* [!stop](#!stop)
-* [!template](#!template)
-* [!volume](#!volume)
+* [8ball](#8ball)
+* [catfact](#catfact)
+* [command](#command)
+* [config](#config)
+* [current](#current)
+* [exit](#exit)
+* [help](#help)
+* [join](#join)
+* [joke](#joke)
+* [leave](#leave)
+* [play](#play)
+* [reload](#reload)
+* [say](#say)
+* [skip](#skip)
+* [stop](#stop)
+* [template](#template)
+* [volume](#volume)
 
 ## Warning
 
