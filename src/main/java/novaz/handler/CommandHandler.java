@@ -45,7 +45,7 @@ public class CommandHandler {
 		IMessage mymsg;
 		String[] input = content.getContent().split(" ");
 		String args[] = new String[input.length - 1];
-		args[0] = args[0].toLowerCase();
+		input[0] = input[0].toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
 		if (chatCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, chatCommands.get(input[0]).execute(args, channel, author));
