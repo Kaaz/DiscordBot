@@ -1,6 +1,6 @@
 # DiscordBot
 
-A Java bot for [Discord](discordapp.com) using the [Discord4J interface](https://github.com/austinv11/Discord4J/).
+A Java bot for [Discord](https://discordapp.com/) using the [Discord4J interface](https://github.com/austinv11/Discord4J/).
 
 
 ## What can it do?
