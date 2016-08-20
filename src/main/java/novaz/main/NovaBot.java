@@ -38,6 +38,7 @@ public class NovaBot {
 	private boolean isReady = false;
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
 	private ChatBotHandler chatBotHandler = null;
+	public String mentionMe;
 
 
 	public NovaBot() throws DiscordException {
@@ -97,6 +98,7 @@ public class NovaBot {
 		this.isReady = ready;
 		setUserName(Config.BOT_NAME);
 		loadConfiguration();
+		mentionMe = "<@" + this.instance.getOurUser().getID() + ">";
 		timer = new Timer();
 	}
 
@@ -182,7 +184,7 @@ public class NovaBot {
 		return null;
 	}
 
-	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage content) {
+	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage message) {
 		if (author.isBot()) {
 			return;
 		}
@@ -190,14 +192,15 @@ public class NovaBot {
 				!channel.getName().equalsIgnoreCase(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			return;
 		}
-		if (content.getContent().startsWith(GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class))) {
-			commandHandler.process(guild, channel, author, content);
+		if (message.getContent().startsWith(GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class)) ||
+				message.getContent().startsWith(mentionMe)) {
+			commandHandler.process(guild, channel, author, message);
 		} else if (
 				Config.BOT_CHATTING_ENABLED.equals("true") &&
 						GuildSettings.get(guild).getOrDefault(SettingEnableChatBot.class).equals("true") &&
 						!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))
 						&& channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
-			this.sendMessage(channel, this.chatBotHandler.chat(content.getContent()));
+			this.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
 		}
 	}
 

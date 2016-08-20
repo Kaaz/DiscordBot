@@ -57,7 +57,11 @@ public class CommandHandler {
 	 */
 	public void process(IGuild guild, IChannel channel, IUser author, IMessage content) {
 		IMessage mymsg;
-		String[] input = content.getContent().split(" ");
+		String inputMessage = content.getContent();
+		if (inputMessage.startsWith(bot.mentionMe)) {
+			inputMessage = inputMessage.replace(bot.mentionMe, "").trim();
+		}
+		String[] input = inputMessage.split(" ");
 		String args[] = new String[input.length - 1];
 		input[0] = filterPrefix(input[0], guild).toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
@@ -76,7 +80,6 @@ public class CommandHandler {
 						mymsg.delete();
 						content.delete();
 					} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
-//					e.printStackTrace();
 					}
 				}
 			}, Config.DELETE_MESSAGES_AFTER);
