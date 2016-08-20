@@ -39,7 +39,7 @@ public class CommandHandler {
 		bot = b;
 	}
 
-	public String filterPrefix(String command, IGuild guild) {
+	public static String filterPrefix(String command, IGuild guild) {
 		String prefix = GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
 		if (command.startsWith(prefix)) {
 			command = command.substring(prefix.length());
