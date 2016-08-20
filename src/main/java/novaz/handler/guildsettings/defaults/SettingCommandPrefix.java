@@ -21,6 +21,6 @@ public class SettingCommandPrefix extends AbstractGuildSetting {
 
 	@Override
 	public boolean isValidValue(String input) {
-		return input != null && input.length() > 0 && input.length() < 3;
+		return input != null && input.length() > 0 && input.length() <= 3;
 	}
 }

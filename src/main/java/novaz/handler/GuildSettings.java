@@ -38,7 +38,6 @@ public class GuildSettings {
 	}
 
 	/**
-	 *
 	 * @param clazz class to search
 	 * @return the setting or default value
 	 */
