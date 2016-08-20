@@ -1,5 +1,6 @@
 package novaz.command;
 
+import com.vdurmont.emoji.EmojiParser;
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
@@ -40,7 +41,7 @@ public class Template extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.isOwner(channel.getGuild(), author)) {
 			if (args.length == 0) {
-				return getUsage()[0];//@todo plz
+				return "See help template";//@todo plz
 			}
 			if (args.length >= 1) {
 				switch (args[0]) {
@@ -54,9 +55,18 @@ public class Template extends AbstractCommand {
 							}
 						}
 						return TextHandler.get("not_yet_implemented");
-					case "list":
-					case "remove":
 					case "add":
+						if (args.length >= 3) {
+							String text = "";
+							for (int i = 2; i < args.length; i++) {
+								text += " " + args[i];
+							}
+							TextHandler.getInstance().add(args[1], EmojiParser.parseToAliases(text));
+							return TextHandler.get("command_template_added");
+						}
+						return TextHandler.get("command_template_added_failed");
+					case "remove":
+					case "list":
 						return TextHandler.get("not_yet_implemented");
 					default:
 						return TextHandler.get("command_template_invalid_option");
