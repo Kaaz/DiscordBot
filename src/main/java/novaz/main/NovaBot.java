@@ -6,7 +6,10 @@ import novaz.db.model.OServer;
 import novaz.db.table.TServers;
 import novaz.handler.*;
 import novaz.handler.guildsettings.DefaultGuildSettings;
+import novaz.handler.guildsettings.defaults.SettingActiveChannels;
 import novaz.handler.guildsettings.defaults.SettingBotChannel;
+import novaz.handler.guildsettings.defaults.SettingCommandPrefix;
+import novaz.handler.guildsettings.defaults.SettingEnableChatBot;
 import org.reflections.Reflections;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -73,7 +76,7 @@ public class NovaBot {
 	 */
 	public IChannel getDefaultChannel(IGuild guild) {
 		if (!defaultChannels.containsKey(guild)) {
-			String channelName = GuildSettings.get(guild, this).getOrDefault(SettingBotChannel.class);
+			String channelName = GuildSettings.get(guild).getOrDefault(SettingBotChannel.class);
 			List<IChannel> channelList = guild.getChannels();
 			boolean foundChannel = false;
 			for (IChannel channel : channelList) {
@@ -95,6 +98,10 @@ public class NovaBot {
 		setUserName(Config.BOT_NAME);
 		loadConfiguration();
 		timer = new Timer();
+	}
+
+	public void loadConfiguration(IGuild guild) {
+
 	}
 
 	public void loadConfiguration() {
@@ -176,12 +183,20 @@ public class NovaBot {
 	}
 
 	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage content) {
-		if (content.getContent().startsWith(Config.BOT_COMMAND_PREFIX)) {
+		if (author.isBot()) {
+			return;
+		}
+		if (GuildSettings.get(guild).getOrDefault(SettingActiveChannels.class).equals("mine") &&
+				!channel.getName().equalsIgnoreCase(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
+			return;
+		}
+		if (content.getContent().startsWith(GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class))) {
 			commandHandler.process(guild, channel, author, content);
 		} else if (
 				Config.BOT_CHATTING_ENABLED.equals("true") &&
-						!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild(), this).getOrDefault(SettingBotChannel.class))
-						&& channel.getName().equals(GuildSettings.get(channel.getGuild(), this).getOrDefault(SettingBotChannel.class))) {
+						GuildSettings.get(guild).getOrDefault(SettingEnableChatBot.class).equals("true") &&
+						!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))
+						&& channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			this.sendMessage(channel, this.chatBotHandler.chat(content.getContent()));
 		}
 	}

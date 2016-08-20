@@ -4,7 +4,6 @@ import novaz.db.WebDb;
 import novaz.db.table.TServers;
 import novaz.handler.guildsettings.AbstractGuildSetting;
 import novaz.handler.guildsettings.DefaultGuildSettings;
-import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IGuild;
 
 import java.sql.ResultSet;
@@ -13,33 +12,36 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Guildspecific configurations, such as which channel is for music
+ * Guild specific configurations, such as which channel is for music
  */
 public class GuildSettings {
 	private final static Map<IGuild, GuildSettings> settingInstance = new ConcurrentHashMap<>();
 	private final IGuild guild;
-	private final NovaBot bot;
 	private final Map<String, String> settings;
 	private int id = 0;
 	private boolean initialized = false;
 
-	private GuildSettings(IGuild guild, NovaBot bot) {
+	private GuildSettings(IGuild guild) {
 		this.guild = guild;
-		this.bot = bot;
 		this.settings = new ConcurrentHashMap<>();
 		settingInstance.put(guild, this);
 		this.id = TServers.findBy(guild.getID()).id;
 		loadSettings();
 	}
 
-	public static GuildSettings get(IGuild guild, NovaBot bot) {
+	public static GuildSettings get(IGuild guild) {
 		if (settingInstance.containsKey(guild)) {
 			return settingInstance.get(guild);
 		} else {
-			return new GuildSettings(guild, bot);
+			return new GuildSettings(guild);
 		}
 	}
 
+	/**
+	 *
+	 * @param clazz class to search
+	 * @return the setting or default value
+	 */
 	public String getOrDefault(Class<? extends AbstractGuildSetting> clazz) {
 		return getOrDefault(DefaultGuildSettings.getKey(clazz));
 	}

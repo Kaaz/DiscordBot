@@ -2,6 +2,9 @@ package novaz.handler;
 
 import novaz.core.AbstractCommand;
 import novaz.db.WebDb;
+import novaz.handler.guildsettings.defaults.SettingBotChannel;
+import novaz.handler.guildsettings.defaults.SettingCleanupMessages;
+import novaz.handler.guildsettings.defaults.SettingCommandPrefix;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import org.reflections.Reflections;
@@ -36,6 +39,14 @@ public class CommandHandler {
 		bot = b;
 	}
 
+	public String filterPrefix(String command, IGuild guild) {
+		String prefix = GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
+		if (command.startsWith(prefix)) {
+			command = command.substring(prefix.length());
+		}
+		return command;
+	}
+
 	/**
 	 * directs the command to the right class
 	 *
@@ -48,7 +59,7 @@ public class CommandHandler {
 		IMessage mymsg;
 		String[] input = content.getContent().split(" ");
 		String args[] = new String[input.length - 1];
-		input[0] = input[0].toLowerCase();
+		input[0] = filterPrefix(input[0].toLowerCase(), guild);
 		System.arraycopy(input, 1, args, 0, input.length - 1);
 		if (chatCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, chatCommands.get(input[0]).execute(args, channel, author));
@@ -57,18 +68,30 @@ public class CommandHandler {
 		} else {
 			mymsg = bot.sendMessage(channel, TextHandler.get("unknown_command"));
 		}
-		bot.timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				try {
-					mymsg.delete();
-					content.delete();
-				} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
+		if (shouldCleanUpMessages(guild, channel)) {
+			bot.timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					try {
+						mymsg.delete();
+						content.delete();
+					} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
 //					e.printStackTrace();
+					}
 				}
-			}
-		}, Config.DELETE_MESSAGES_AFTER);
+			}, Config.DELETE_MESSAGES_AFTER);
+		}
+	}
 
+	public boolean shouldCleanUpMessages(IGuild guild, IChannel channel) {
+		String cleanupMethod = GuildSettings.get(guild).getOrDefault(SettingCleanupMessages.class);
+		String mychannel = GuildSettings.get(guild).getOrDefault(SettingBotChannel.class);
+		if (cleanupMethod.equals("yes")) {
+			return true;
+		} else if (cleanupMethod.equals("nonstandard") && !channel.getName().equalsIgnoreCase(mychannel)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -76,8 +99,8 @@ public class CommandHandler {
 	 * @return instance of Command for Key or null
 	 */
 	public AbstractCommand getCommand(String key) {
-		if (!key.startsWith(Config.BOT_COMMAND_PREFIX)) {
-			key = Config.BOT_COMMAND_PREFIX + key;
+		if (key.startsWith(Config.BOT_COMMAND_PREFIX)) {
+			key = key.substring(Config.BOT_COMMAND_PREFIX.length());
 		}
 		if (chatCommands.containsKey(key)) {
 			return chatCommands.get(key);
@@ -141,8 +164,8 @@ public class CommandHandler {
 		for (Class<? extends AbstractCommand> s : classes) {
 			try {
 				AbstractCommand c = s.getConstructor(NovaBot.class).newInstance(bot);
-				if (!chatCommands.containsKey(Config.BOT_COMMAND_PREFIX + c.getCommand())) {
-					chatCommands.put(Config.BOT_COMMAND_PREFIX + c.getCommand(), c);
+				if (!chatCommands.containsKey(c.getCommand())) {
+					chatCommands.put(c.getCommand(), c);
 				}
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				e.printStackTrace();
@@ -159,8 +182,8 @@ public class CommandHandler {
 		customCommands = new HashMap<>();
 		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands ")) {
 			while (r != null && r.next()) {
-				if (!chatCommands.containsKey(Config.BOT_COMMAND_PREFIX + r.getString("input")) && !customCommands.containsKey(Config.BOT_COMMAND_PREFIX + r.getString("input"))) {
-					customCommands.put(Config.BOT_COMMAND_PREFIX + r.getString("input"), r.getString("output"));
+				if (!chatCommands.containsKey(r.getString("input")) && !customCommands.containsKey(r.getString("input"))) {
+					customCommands.put(r.getString("input"), r.getString("output"));
 				}
 			}
 		} catch (SQLException e) {

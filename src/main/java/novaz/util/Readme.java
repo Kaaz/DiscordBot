@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Collection of methos to help me out in maintaining the readme file
+ * Collection of methods to help me out in maintaining the readme file
  */
 public class Readme {
 
@@ -22,7 +22,8 @@ public class Readme {
 	/**
 	 * makes a sorted list of all commands with description
 	 */
-	private static void readmeCommandSimpleList() {
+	private static String readmeCommandSimpleList() {
+		String s = "";
 		CommandHandler commandHandler = new CommandHandler();
 		commandHandler.load();
 		ArrayList<String> sortedCommandList = new ArrayList<>();
@@ -30,11 +31,13 @@ public class Readme {
 		Collections.sort(sortedCommandList);
 		for (String commandName : sortedCommandList) {
 			AbstractCommand command = commandHandler.getCommand(commandName);
-			System.out.println("* [" + command.getCommand() + "](#" + command.getCommand() + ")");
+			s += "* [" + command.getCommand() + "](#" + command.getCommand() + ")" + Config.EOL;
 		}
+		return s;
 	}
 
-	private static void readmeCommandDetailsList() {
+	private static String readmeCommandDetailsList() {
+		String text = "";
 		CommandHandler commandHandler = new CommandHandler();
 		commandHandler.load();
 		ArrayList<String> sortedCommandList = new ArrayList<>();
@@ -42,22 +45,19 @@ public class Readme {
 		Collections.sort(sortedCommandList);
 		for (String commandName : sortedCommandList) {
 			AbstractCommand command = commandHandler.getCommand(commandName);
-
-			System.out.println("### " + command.getCommand());
-			System.out.println();
-			System.out.println(command.getDescription());
-			System.out.println();
+			text += "### " + command.getCommand() + Config.EOL + Config.EOL;
+			text += command.getDescription() + Config.EOL + Config.EOL;
 			if (command.getUsage().length > 0) {
-				System.out.println();
-				System.out.println("#### Usage");
-				System.out.println();
-				System.out.println("```php");
+				text += Config.EOL;
+				text += "#### Usage" + Config.EOL + Config.EOL;
+				text += "```php" + Config.EOL;
 				for (String line : command.getUsage()) {
-					System.out.println(line);
+					text += line + Config.EOL;
 				}
-				System.out.println("```");
+				text += ("```") + Config.EOL;
 			}
 		}
+		return text;
 	}
 
 }

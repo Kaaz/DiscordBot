@@ -45,9 +45,9 @@ public class SetConfig extends AbstractCommand {
 				String ret = "```php" + Config.EOL;
 				ret += "Current Settings" + Config.EOL;
 				ret += "---------------------------------------- " + Config.EOL;
-				Map<String, String> settings = GuildSettings.get(channel.getGuild(), bot).getSettings();
+				Map<String, String> settings = GuildSettings.get(channel.getGuild()).getSettings();
 				for (Map.Entry<String, String> entry : settings.entrySet()) {
-					ret += String.format("%16s = %s", entry.getKey(), entry.getValue()) + Config.EOL;
+					ret += String.format("%-16s = %s", entry.getKey(), entry.getValue()) + Config.EOL;
 				}
 				return ret + "```";
 			} else {
@@ -55,10 +55,12 @@ public class SetConfig extends AbstractCommand {
 					return TextHandler.get("command_config_key_not_exists");
 				}
 				if (count >= 2) {
-					GuildSettings.get(channel.getGuild(), bot).set(args[0], args[1]);
-					return TextHandler.get("command_config_key_modified");
+					if (GuildSettings.get(channel.getGuild()).set(args[0], args[1])) {
+						return TextHandler.get("command_config_key_modified");
+					}
+					return TextHandler.get("command_config_key_invalid_value");
 				}
-				return "Current value for '" + args[0] + "' = '" + GuildSettings.get(channel.getGuild(), bot).getOrDefault(args[0]) + "'";
+				return "Current value for '" + args[0] + "' = '" + GuildSettings.get(channel.getGuild()).getOrDefault(args[0]) + "'";
 			}
 		}
 		return TextHandler.get("command_config_no_permission");
