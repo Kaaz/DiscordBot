@@ -185,7 +185,7 @@ public class NovaBot {
 	}
 
 	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage message) {
-		if (author.isBot()) {
+		if (!isReady || author.isBot()) {
 			return;
 		}
 		if (GuildSettings.get(guild).getOrDefault(SettingActiveChannels.class).equals("mine") &&
