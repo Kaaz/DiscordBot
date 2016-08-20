@@ -41,7 +41,11 @@ public class Template extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.isOwner(channel.getGuild(), author)) {
 			if (args.length == 0) {
-				return "See help template";//@todo plz
+				String usage = ":gear: **Options**:```php" + Config.EOL;
+				for (String line : getUsage()) {
+					usage += line + Config.EOL;
+				}
+				return usage + "```";
 			}
 			if (args.length >= 1) {
 				switch (args[0]) {
