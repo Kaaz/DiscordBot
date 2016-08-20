@@ -23,7 +23,7 @@ public class CurrentTrack extends AbstractCommand {
 	private final String BLOCK_ACTIVE = ":radio_button:";
 	private final String SOUND_CHILL = ":sound:";
 	private final String SOUND_LOUD = ":loud_sound:";
-	private final float SOUND_TRESHHOLD = 0.6F;
+	private final float SOUND_TRESHHOLD = 0.4F;
 
 	private final int BLOCK_PARTS = 10;
 
@@ -52,24 +52,30 @@ public class CurrentTrack extends AbstractCommand {
 		if (song.id == 0) {
 			return TextHandler.get("command_currentlyplaying_nosong");
 		}
-		String ret = ":notes: Currently playing " + Config.EOL;
-		ret += "**Title** " + Config.EOL;
-		ret += " " + song.title + Config.EOL;
-		ret += "**Status** " + Config.EOL;
+		String ret = "Currently playing " + Config.EOL + Config.EOL;
+//		ret += "**Title** " + Config.EOL;
+		ret += ":notes: " + song.title + Config.EOL;
+//		ret += "**Status** " + Config.EOL;
 		MusicPlayerHandler musicHandler = MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot);
-		ret += " " + getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL;
+		ret += getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL;
 		List<IUser> userlist = bot.getCurrentlyListening(channel.getGuild());
 		if (userlist.size() > 0) {
-			ret += "Currently Listening: " + Config.EOL;
+			ret += ":headphones:  Listeners" + Config.EOL;
 			ArrayList<String> displayList = userlist.stream().map(IUser::getName).collect(Collectors.toCollection(ArrayList::new));
 			ret += Misc.makeTable(displayList);
 		}
 		return ret;
 	}
 
+	/**
+	 * @param startTime timestamp (in seconds) of the moment the song started playing
+	 * @param duration  current song length in seconds
+	 * @param volume    volume of the player
+	 * @return a formatted mediaplayer
+	 */
 	private String getMediaplayerProgressbar(long startTime, long duration, float volume) {
 		long current = System.currentTimeMillis() / 1000 - startTime;
-		String bar = ":arrow_forward: ";
+		String bar = ":pause_button: ";
 		int activeBLock = (int) ((float) current / (float) duration * (float) BLOCK_PARTS);
 		for (int i = 0; i < BLOCK_PARTS; i++) {
 			if (i == activeBLock) {

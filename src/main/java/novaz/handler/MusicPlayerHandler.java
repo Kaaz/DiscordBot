@@ -3,6 +3,7 @@ package novaz.handler;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
+import novaz.db.WebDb;
 import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
 import novaz.main.Config;
@@ -19,11 +20,14 @@ import sx.blah.discord.util.audio.AudioPlayer;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class MusicPlayerHandler {
 	private final static Map<IGuild, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
@@ -89,12 +93,22 @@ public class MusicPlayerHandler {
 	 * retreives a random .mp3 file from the music directory
 	 *
 	 * @return filename
-	 * @todo make it less random
 	 */
 	private String getRandomSong() {
-		File folder = new File(Config.MUSIC_DIRECTORY);
-		String[] fileList = folder.list((dir, name) -> name.toLowerCase().endsWith(".mp3"));
-		return fileList[(int) (Math.random() * (double) fileList.length)];
+		ArrayList<String> potentialSongs = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT filename " +
+						"FROM playlist " +
+						"WHERE banned = 0 " +
+						"ORDER BY lastplaydate ASC " +
+						"LIMIT 100")) {
+			while (rs.next()) {
+				potentialSongs.add(rs.getString("filename"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return potentialSongs.get((int) (Math.random() * (double) potentialSongs.size()));
 	}
 
 	/**
@@ -128,6 +142,8 @@ public class MusicPlayerHandler {
 				OMusic music = TMusic.findByFileName(f.getName());
 				currentlyPlaying = music;
 				currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000;
+				music.lastplaydate = currentSongStartTimeInSeconds;
+				TMusic.update(music);
 				if (music.title.isEmpty()) {
 					msg = "plz send help:: " + f.getName();
 				} else {
@@ -197,11 +213,7 @@ public class MusicPlayerHandler {
 		}
 		if (currentChannel != null) {
 			List<IUser> connectedUsers = currentChannel.getConnectedUsers();
-			for (IUser user : connectedUsers) {
-				if (!user.equals(bot.instance.getOurUser())) {
-					userList.add(user);
-				}
-			}
+			userList.addAll(connectedUsers.stream().filter(user -> !user.equals(bot.instance.getOurUser())).collect(Collectors.toList()));
 		}
 		return userList;
 	}

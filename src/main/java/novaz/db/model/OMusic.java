@@ -6,6 +6,6 @@ public class OMusic {
 	public String filename = "";
 	public String title = "";
 	public String artist = "";
-	public int lastplaydate = 0;
+	public long lastplaydate = 0;
 	public int banned = 0;
 }

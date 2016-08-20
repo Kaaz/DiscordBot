@@ -43,7 +43,7 @@ public class TMusic {
 			music.filename = resultset.getString("filename");
 			music.title = resultset.getString("title");
 			music.artist = resultset.getString("artist");
-			music.lastplaydate = resultset.getInt("lastplaydate");
+			music.lastplaydate = resultset.getLong("lastplaydate");
 			music.banned = resultset.getInt("banned");
 		}
 		return music;
