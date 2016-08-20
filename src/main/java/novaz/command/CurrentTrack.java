@@ -54,7 +54,7 @@ public class CurrentTrack extends AbstractCommand {
 		}
 		String ret = "Currently playing " + ":notes: " + song.title + Config.EOL + Config.EOL;
 		MusicPlayerHandler musicHandler = MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot);
-		ret += getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL;
+		ret += getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL;
 		List<IUser> userlist = bot.getCurrentlyListening(channel.getGuild());
 		if (userlist.size() > 0) {
 			ret += ":headphones:  Listeners" + Config.EOL;

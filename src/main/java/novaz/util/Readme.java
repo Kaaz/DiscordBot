@@ -6,6 +6,11 @@ import novaz.handler.CommandHandler;
 import novaz.main.Config;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -16,7 +21,16 @@ public class Readme {
 
 	public static void main(String[] args) throws Exception {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
-		readmeCommandDetailsList();
+
+		String template = readFile("readme_template.md", StandardCharsets.UTF_8);
+		template = template.replace("%_COMMANDS_LIST_SIMPLE_%", readmeCommandSimpleList());
+		template = template.replace("%_COMMANDS_LIST_DETAILS_%", readmeCommandDetailsList());
+		Files.write(Paths.get("./readme.md"), template.getBytes(StandardCharsets.UTF_8));
+	}
+
+	static String readFile(String path, Charset encoding) throws IOException {
+		byte[] encoded = Files.readAllBytes(Paths.get(path));
+		return new String(encoded, encoding);
 	}
 
 	/**

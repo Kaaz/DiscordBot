@@ -11,11 +11,10 @@ A Java bot for [Discord](https://discordapp.com/) using the [Discord4J interface
 * play/download music
 * customizable globally and per guild/server
 
-
 ### Commands
 
 Commands are prefixed with a "!" by default, this can be configured.
-For a list of commands in discord the **help** command can be used.  
+For a list of commands in discord the **help** command can be used.
 For more information about a command use **help \<commandname\>**
 
 Current list of all available commands. See below for a more detailed list
@@ -27,6 +26,8 @@ Current list of all available commands. See below for a more detailed list
 * [current](#current)
 * [exit](#exit)
 * [help](#help)
+* [info](#info)
+* [invite](#invite)
 * [join](#join)
 * [joke](#joke)
 * [leave](#leave)
@@ -37,6 +38,7 @@ Current list of all available commands. See below for a more detailed list
 * [stop](#stop)
 * [template](#template)
 * [volume](#volume)
+
 
 ## Warning
 
@@ -98,6 +100,14 @@ An attempt to help out
 help //index of all commands
 help <command> //usage for that command
 ```
+### info
+
+Shows info about the bot
+
+### invite
+
+Provides an invite link to add the bot to your server.
+
 ### join
 
 joins a voicechannel
