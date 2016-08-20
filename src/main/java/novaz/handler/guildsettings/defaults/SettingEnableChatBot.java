@@ -21,6 +21,6 @@ public class SettingEnableChatBot extends AbstractGuildSetting {
 
 	@Override
 	public boolean isValidValue(String input) {
-		return input != null && (input.equals("yes") || input.equals("no"));
+		return input != null && (input.equals("true") || input.equals("false"));
 	}
 }
