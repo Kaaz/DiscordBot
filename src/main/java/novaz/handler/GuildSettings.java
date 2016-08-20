@@ -83,8 +83,16 @@ public class GuildSettings {
 		}
 	}
 
-	public boolean set(String key, String value) {
+	public String[] getDescription(String key) {
 		if (DefaultGuildSettings.isValidKey(key)) {
+			return DefaultGuildSettings.get(key).getDescription();
+		}
+		return new String[]{};
+	}
+
+	public boolean set(String key, String value) {
+		if (DefaultGuildSettings.isValidKey(key) &&
+				DefaultGuildSettings.get(key).isValidValue(value)) {
 			try {
 				WebDb.get().insert("INSERT INTO guild_settings (guild, name, config) VALUES(?, ?, ?) " +
 						"ON DUPLICATE KEY UPDATE config=?", id, key, value, value);
@@ -99,5 +107,12 @@ public class GuildSettings {
 
 	public Map<String, String> getSettings() {
 		return settings;
+	}
+
+	public String getDefaultValue(String key) {
+		if (DefaultGuildSettings.isValidKey(key)) {
+			return DefaultGuildSettings.get(key).getDefault();
+		}
+		return "";
 	}
 }

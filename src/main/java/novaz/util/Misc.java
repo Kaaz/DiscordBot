@@ -2,7 +2,7 @@ package novaz.util;
 
 import novaz.main.Config;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
 
 public class Misc {
@@ -11,7 +11,7 @@ public class Misc {
 	 * @param items items in the table
 	 * @return formatted table
 	 */
-	public static String makeTable(ArrayList<String> items) {
+	public static String makeTable(List<String> items) {
 		return makeTable(items, 16, 4);
 	}
 
@@ -23,7 +23,7 @@ public class Misc {
 	 * @param columns      amount of columns
 	 * @return formatted table
 	 */
-	public static String makeTable(ArrayList<String> items, int columnLength, int columns) {
+	public static String makeTable(List<String> items, int columnLength, int columns) {
 		String ret = "```ini" + Config.EOL;
 		int counter = 0;
 		for (String item : items) {

@@ -30,6 +30,9 @@ public class DefaultGuildSettings {
 	public static String getDefault(String key) {
 		return defaultSettings.get(key).getDefault();
 	}
+	public static AbstractGuildSetting get(String key) {
+		return defaultSettings.get(key);
+	}
 
 	public static String getDefault(Class<? extends AbstractGuildSetting> clazz) {
 		return defaultSettings.get(getKey(clazz)).getDefault();

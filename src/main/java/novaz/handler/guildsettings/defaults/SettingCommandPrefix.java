@@ -16,7 +16,7 @@ public class SettingCommandPrefix extends AbstractGuildSetting {
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"Prefix for commands"};
+		return new String[]{"Prefix for commands (between 1 and 3 characters)"};
 	}
 
 	@Override
