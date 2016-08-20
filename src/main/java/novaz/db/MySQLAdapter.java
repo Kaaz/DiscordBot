@@ -30,6 +30,8 @@ public class MySQLAdapter {
 			dataSource.setPort(3306);
 			dataSource.setDatabaseName(DB_NAME);
 			dataSource.setZeroDateTimeBehavior("convertToNull");
+			dataSource.setUseUnicode(true);
+			dataSource.setCharacterEncoding("utf-8");
 			return dataSource.getConnection();
 		} catch (SQLException e) {
 			System.out.println("Can't connect to the database! Make sure the database settings are corrent and the database server is running");
