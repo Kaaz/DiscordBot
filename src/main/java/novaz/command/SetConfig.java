@@ -55,21 +55,19 @@ public class SetConfig extends AbstractCommand {
 				if (!DefaultGuildSettings.isValidKey(args[0])) {
 					return TextHandler.get("command_config_key_not_exists");
 				}
-				if (count >= 2) {
-					if (GuildSettings.get(channel.getGuild()).set(args[0], args[1])) {
-						return TextHandler.get("command_config_key_modified");
-					}
-					String tblContent = "";
-					GuildSettings setting = GuildSettings.get(channel.getGuild());
-					for (String s : setting.getDescription(args[0])) {
-						tblContent += s + Config.EOL;
-					}
-					return TextHandler.get("command_config_key_invalid_value") + Config.EOL + Config.EOL +
-							"Default value: '" + setting.getDefaultValue(args[0]) + "'" + Config.EOL + Config.EOL +
-							"Description: " + Config.EOL +
-							Misc.makeTable(tblContent);
+				if (count >= 2 && GuildSettings.get(channel.getGuild()).set(args[0], args[1])) {
+					return TextHandler.get("command_config_key_modified");
 				}
-				return "Current value for '" + args[0] + "' = '" + GuildSettings.get(channel.getGuild()).getOrDefault(args[0]) + "'";
+				String tblContent = "";
+				GuildSettings setting = GuildSettings.get(channel.getGuild());
+				for (String s : setting.getDescription(args[0])) {
+					tblContent += s + Config.EOL;
+				}
+				return "Config help for **" + args[0] + "**" + Config.EOL + Config.EOL +
+						"Current value: \"**" + GuildSettings.get(channel.getGuild()).getOrDefault(args[0]) + "**\"" + Config.EOL +
+						"Default value: \"**" + setting.getDefaultValue(args[0]) + "**\"" + Config.EOL + Config.EOL +
+						"Description: " + Config.EOL +
+						Misc.makeTable(tblContent);
 			}
 		}
 		return TextHandler.get("command_config_no_permission");
