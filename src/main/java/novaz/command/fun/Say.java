@@ -1,4 +1,4 @@
-package novaz.command;
+package novaz.command.fun;
 
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;

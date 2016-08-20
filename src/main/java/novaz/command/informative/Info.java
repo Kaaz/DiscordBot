@@ -1,4 +1,4 @@
-package novaz.command;
+package novaz.command.informative;
 
 import novaz.core.AbstractCommand;
 import novaz.handler.GuildSettings;

@@ -1,4 +1,4 @@
-package novaz.command;
+package novaz.command.music;
 
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
@@ -7,22 +7,22 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
- * !exit
- * completely stops the program
+ * !skip
+ * skips current active track
  */
-public class Exit extends AbstractCommand {
-	public Exit(NovaBot b) {
+public class SkipTrack extends AbstractCommand {
+	public SkipTrack(NovaBot b) {
 		super(b);
 	}
 
 	@Override
 	public String getDescription() {
-		return "completely shuts the bot down";
+		return "skip current track";
 	}
 
 	@Override
 	public String getCommand() {
-		return "exit";
+		return "skip";
 	}
 
 	@Override
@@ -32,10 +32,7 @@ public class Exit extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (bot.isCreator(author)) {
-			bot.sendMessage(channel, "I am being killed :sob: farewell world! :wave: ");
-			System.exit(0);
-		}
-		return TextHandler.get("command_joinme_joinedyou");
+		bot.skipCurrentSong(channel.getGuild());
+		return TextHandler.get("command_skip_song_skipped");
 	}
 }

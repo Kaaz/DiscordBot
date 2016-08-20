@@ -1,5 +1,6 @@
-package novaz.command;
+package novaz.command.informative;
 
+import novaz.command.CommandCategory;
 import novaz.core.AbstractCommand;
 import novaz.handler.CommandHandler;
 import novaz.handler.GuildSettings;
@@ -13,6 +14,7 @@ import sx.blah.discord.handle.obj.IUser;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * !help
@@ -62,11 +64,22 @@ public class Help extends AbstractCommand {
 			}
 			return TextHandler.get("command_help_donno");
 		} else {
-			String ret = ":information_source: All available commands:" + Config.EOL;
-			ArrayList<String> sortedList = new ArrayList<>();
-			Collections.addAll(sortedList, bot.commandHandler.getCommands());
-			Collections.sort(sortedList);
-			ret += Misc.makeTable(sortedList);
+			String ret = "I know the following commands: " + Config.EOL + Config.EOL;
+			HashMap<CommandCategory, ArrayList<String>> commandList = new HashMap<>();
+			AbstractCommand[] commandObjects = bot.commandHandler.getCommandObjects();
+			for (AbstractCommand command : commandObjects) {
+				if (!commandList.containsKey(command.getCommandCategory())) {
+					commandList.put(command.getCommandCategory(), new ArrayList<>());
+				}
+				commandList.get(command.getCommandCategory()).add(command.getCommand());
+			}
+			commandList.forEach((k, v) -> Collections.sort(v));
+			for (CommandCategory category : CommandCategory.values()) {
+				if (commandList.containsKey(category)) {
+					ret += category.getEmoticon() + " " + category.getPackageName() + Config.EOL;
+					ret += Misc.makeTable(commandList.get(category));
+				}
+			}
 			return ret + "for more details about a command use **" + CommandPrefix + "help <command>**" + Config.EOL;
 		}
 	}

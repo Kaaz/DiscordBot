@@ -1,4 +1,4 @@
-package novaz.command;
+package novaz.command.music;
 
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
@@ -7,22 +7,22 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
- * !skip
- * skips current active track
+ * !stop
+ * make the bot stop playing music
  */
-public class SkipTrack extends AbstractCommand {
-	public SkipTrack(NovaBot b) {
+public class Stop extends AbstractCommand {
+	public Stop(NovaBot b) {
 		super(b);
 	}
 
 	@Override
 	public String getDescription() {
-		return "skip current track";
+		return "stops playing music";
 	}
 
 	@Override
 	public String getCommand() {
-		return "skip";
+		return "stop";
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class SkipTrack extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		bot.skipCurrentSong(channel.getGuild());
-		return TextHandler.get("command_skip_song_skipped");
+		bot.stopMusic(channel.getGuild());
+		return TextHandler.get("command_stop_success");
 	}
 }

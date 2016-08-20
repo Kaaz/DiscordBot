@@ -1,4 +1,4 @@
-package novaz.command;
+package novaz.command.administrative;
 
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
@@ -7,22 +7,22 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
- * !stop
- * make the bot stop playing music
+ * !reload
+ * reloads config
  */
-public class Stop extends AbstractCommand {
-	public Stop(NovaBot b) {
+public class Reload extends AbstractCommand {
+	public Reload(NovaBot b) {
 		super(b);
 	}
 
 	@Override
 	public String getDescription() {
-		return "stops playing music";
+		return "reloads the configuration";
 	}
 
 	@Override
 	public String getCommand() {
-		return "stop";
+		return "reload";
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class Stop extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		bot.stopMusic(channel.getGuild());
-		return TextHandler.get("command_stop_success");
+		bot.loadConfiguration();
+		return TextHandler.get("command_reload_success");
 	}
 }

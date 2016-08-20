@@ -1,5 +1,6 @@
 package novaz.handler;
 
+import novaz.command.CommandCategory;
 import novaz.core.AbstractCommand;
 import novaz.db.WebDb;
 import novaz.handler.guildsettings.defaults.SettingBotChannel;
@@ -120,6 +121,10 @@ public class CommandHandler {
 		return chatCommands.keySet().toArray(new String[chatCommands.keySet().size()]);
 	}
 
+	public AbstractCommand[] getCommandObjects() {
+		return chatCommands.values().toArray(new AbstractCommand[chatCommands.values().size()]);
+	}
+
 	public void load() {
 		loadCommands();
 		loadCustomCommands(1);
@@ -166,7 +171,9 @@ public class CommandHandler {
 		Set<Class<? extends AbstractCommand>> classes = reflections.getSubTypesOf(AbstractCommand.class);
 		for (Class<? extends AbstractCommand> s : classes) {
 			try {
+				String packageName = s.getPackage().getName();
 				AbstractCommand c = s.getConstructor(NovaBot.class).newInstance(bot);
+				c.setCommandCategory(CommandCategory.fromPackage(packageName.substring(packageName.lastIndexOf(".") + 1)));
 				if (!chatCommands.containsKey(c.getCommand())) {
 					chatCommands.put(c.getCommand(), c);
 				}

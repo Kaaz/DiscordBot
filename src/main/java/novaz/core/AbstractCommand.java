@@ -1,5 +1,6 @@
 package novaz.core;
 
+import novaz.command.CommandCategory;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -7,6 +8,7 @@ import sx.blah.discord.handle.obj.IUser;
 public abstract class AbstractCommand {
 
 	protected NovaBot bot;
+	protected CommandCategory commandCategory = CommandCategory.UNKNOWN;
 
 	public AbstractCommand(NovaBot bot) {
 		this.bot = bot;
@@ -32,6 +34,14 @@ public abstract class AbstractCommand {
 	 * @return command usage
 	 */
 	public abstract String[] getUsage();
+
+	public CommandCategory getCommandCategory() {
+		return commandCategory;
+	}
+
+	public void setCommandCategory(CommandCategory newCategory) {
+		commandCategory = newCategory;
+	}
 
 	public abstract String execute(String[] args, IChannel channel, IUser author);
 }

@@ -1,4 +1,4 @@
-package novaz.command;
+package novaz.command.administrative;
 
 import com.vdurmont.emoji.EmojiParser;
 import novaz.core.AbstractCommand;

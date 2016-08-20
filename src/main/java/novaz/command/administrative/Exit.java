@@ -1,4 +1,4 @@
-package novaz.command;
+package novaz.command.administrative;
 
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
@@ -7,22 +7,22 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
- * !reload
- * reloads config
+ * !exit
+ * completely stops the program
  */
-public class Reload extends AbstractCommand {
-	public Reload(NovaBot b) {
+public class Exit extends AbstractCommand {
+	public Exit(NovaBot b) {
 		super(b);
 	}
 
 	@Override
 	public String getDescription() {
-		return "reloads the configuration";
+		return "completely shuts the bot down";
 	}
 
 	@Override
 	public String getCommand() {
-		return "reload";
+		return "exit";
 	}
 
 	@Override
@@ -32,7 +32,10 @@ public class Reload extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		bot.loadConfiguration();
-		return TextHandler.get("command_reload_success");
+		if (bot.isCreator(author)) {
+			bot.sendMessage(channel, "I am being killed :sob: farewell world! :wave: ");
+			System.exit(0);
+		}
+		return TextHandler.get("command_joinme_joinedyou");
 	}
 }

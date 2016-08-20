@@ -24,7 +24,7 @@ public class Misc {
 	 * @return formatted table
 	 */
 	public static String makeTable(List<String> items, int columnLength, int columns) {
-		String ret = "```ini" + Config.EOL;
+		String ret = "```" + Config.EOL;
 		int counter = 0;
 		for (String item : items) {
 			counter++;

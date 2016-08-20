@@ -1,4 +1,4 @@
-package novaz.command;
+package novaz.command.music;
 
 import novaz.core.AbstractCommand;
 import novaz.db.model.OMusic;
