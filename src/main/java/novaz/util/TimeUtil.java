@@ -14,17 +14,17 @@ public class TimeUtil {
 		time = time * 1000;
 		long now = System.currentTimeMillis();
 		if (time > now || time <= 0) {
-			return "";
+			return "???";
 		}
 		long diff = now - time;
 		if (diff < MINUTE_MILLIS) {
-			return "playing";
+			return "now";
 		} else if (diff < 2 * MINUTE_MILLIS) {
 			return "~1m";
 		} else if (diff < 50 * MINUTE_MILLIS) {
 			return diff / MINUTE_MILLIS + "m";
 		} else if (diff < 90 * MINUTE_MILLIS) {
-			return "1h";
+			return "~1h";
 		} else if (diff < 24 * HOUR_MILLIS) {
 			return diff / HOUR_MILLIS + "h";
 		} else if (diff < 48 * HOUR_MILLIS) {
