@@ -101,7 +101,7 @@ public class MusicPlayerHandler {
 						"FROM playlist " +
 						"WHERE banned = 0 " +
 						"ORDER BY lastplaydate ASC " +
-						"LIMIT 50")) {
+						"LIMIT 25")) {
 			while (rs.next()) {
 				potentialSongs.add(rs.getString("filename"));
 			}

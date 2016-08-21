@@ -57,7 +57,7 @@ public class CommandHandler {
 	 * @param content message
 	 */
 	public void process(IGuild guild, IChannel channel, IUser author, IMessage content) {
-		IMessage mymsg;
+		IMessage mymsg = null;
 		String inputMessage = content.getContent();
 		if (inputMessage.startsWith(bot.mentionMe)) {
 			inputMessage = inputMessage.replace(bot.mentionMe, "").trim();
@@ -70,15 +70,16 @@ public class CommandHandler {
 			mymsg = bot.sendMessage(channel, chatCommands.get(input[0]).execute(args, channel, author));
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));
-		} else {
+		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN.equalsIgnoreCase("true")) {
 			mymsg = bot.sendMessage(channel, String.format(TextHandler.get("unknown_command"), GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class) + "help"));
 		}
-		if (shouldCleanUpMessages(guild, channel)) {
+		if (mymsg != null && shouldCleanUpMessages(guild, channel)) {
+			final IMessage finalMymsg = mymsg;
 			bot.timer.schedule(new TimerTask() {
 				@Override
 				public void run() {
 					try {
-						mymsg.delete();
+						finalMymsg.delete();
 						content.delete();
 					} catch (MissingPermissionsException | RateLimitException | DiscordException ignored) {
 					}

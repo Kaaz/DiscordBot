@@ -17,6 +17,8 @@ public class Config {
 	public static String BOT_CHATTING_ENABLED = "true";
 	@Option
 	public static String BOT_COMMAND_PREFIX = "!";
+	@Option
+	public static String BOT_COMMAND_SHOW_UNKNOWN = "false";
 	//location of youtubedl.exe
 	@Option
 	public static String YOUTUBEDL_EXE = "H:/youtube-dl.exe";
