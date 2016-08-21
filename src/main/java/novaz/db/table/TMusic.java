@@ -6,6 +6,8 @@ import novaz.db.model.OMusic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TMusic {
 	public static OMusic findByYoutubeId(String youtubeCode) {
@@ -27,7 +29,9 @@ public class TMusic {
 				"SELECT id, youtubecode, filename, title, artist, lastplaydate, banned  " +
 						"FROM playlist " +
 						"WHERE filename = ? ", filename)) {
-			music = fillRecord(rs);
+			if (rs.next()) {
+				music = fillRecord(rs);
+			}
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}
@@ -37,15 +41,13 @@ public class TMusic {
 
 	private static OMusic fillRecord(ResultSet resultset) throws SQLException {
 		OMusic music = new OMusic();
-		if (resultset.next()) {
-			music.id = resultset.getInt("id");
-			music.youtubecode = resultset.getString("youtubecode");
-			music.filename = resultset.getString("filename");
-			music.title = resultset.getString("title");
-			music.artist = resultset.getString("artist");
-			music.lastplaydate = resultset.getLong("lastplaydate");
-			music.banned = resultset.getInt("banned");
-		}
+		music.id = resultset.getInt("id");
+		music.youtubecode = resultset.getString("youtubecode");
+		music.filename = resultset.getString("filename");
+		music.title = resultset.getString("title");
+		music.artist = resultset.getString("artist");
+		music.lastplaydate = resultset.getLong("lastplaydate");
+		music.banned = resultset.getInt("banned");
 		return music;
 	}
 
@@ -74,5 +76,18 @@ public class TMusic {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static List<OMusic> getRecentlyPlayed(int limit) {
+		List<OMusic> history = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select("SELECT * FROM playlist ORDER BY lastplaydate DESC LIMIT ?", limit)) {
+			while (rs.next()) {
+				history.add(fillRecord(rs));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return history;
 	}
 }

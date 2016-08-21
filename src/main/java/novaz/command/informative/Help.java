@@ -74,9 +74,9 @@ public class Help extends AbstractCommand {
 				commandList.get(command.getCommandCategory()).add(command.getCommand());
 			}
 			commandList.forEach((k, v) -> Collections.sort(v));
-//			ret += styleTablePerCategory(commandList);
+			ret += styleTablePerCategory(commandList);
 //			ret += styleIndentedTable(commandList);
-			ret += styleOneTable(commandList);
+//			ret += styleOneTable(commandList);
 			return ret + "for more details about a command use **" + CommandPrefix + "help <command>**" + Config.EOL;
 		}
 	}

@@ -32,6 +32,7 @@ Current list of all available commands. See below for a more detailed list
 * [joke](#joke)
 * [leave](#leave)
 * [play](#play)
+* [playlist](#playlist)
 * [reload](#reload)
 * [say](#say)
 * [skip](#skip)
@@ -137,6 +138,17 @@ Plays a song from youtube
 ```php
 play <youtubelink>
 play <youtubevideocode>
+```
+### playlist
+
+information about the playlist/history
+
+
+#### Usage
+
+```php
+playlist //playlist queue
+playlist history //list of recently played songs
 ```
 ### reload
 
