@@ -16,7 +16,9 @@ public class TMusic {
 				"SELECT id, youtubecode, filename, title, artist, lastplaydate, banned  " +
 						"FROM playlist " +
 						"WHERE youtubecode = ? ", youtubeCode)) {
-			music = fillRecord(rs);
+			if (rs.next()) {
+				music = fillRecord(rs);
+			}
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}
