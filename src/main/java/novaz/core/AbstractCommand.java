@@ -39,6 +39,11 @@ public abstract class AbstractCommand {
 		return commandCategory;
 	}
 
+	/**
+	 * The command will be set to the category matching the last part of the package name.
+	 *
+	 * @param newCategory category of the command
+	 */
 	public void setCommandCategory(CommandCategory newCategory) {
 		commandCategory = newCategory;
 	}

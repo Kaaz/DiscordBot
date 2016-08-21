@@ -74,13 +74,79 @@ public class Help extends AbstractCommand {
 				commandList.get(command.getCommandCategory()).add(command.getCommand());
 			}
 			commandList.forEach((k, v) -> Collections.sort(v));
-			for (CommandCategory category : CommandCategory.values()) {
-				if (commandList.containsKey(category)) {
-					ret += category.getEmoticon() + " " + category.getPackageName() + Config.EOL;
-					ret += Misc.makeTable(commandList.get(category));
-				}
-			}
+//			ret += styleTablePerCategory(commandList);
+//			ret += styleIndentedTable(commandList);
+			ret += styleOneTable(commandList);
 			return ret + "for more details about a command use **" + CommandPrefix + "help <command>**" + Config.EOL;
 		}
+	}
+
+	private String styleOneTable(HashMap<CommandCategory, ArrayList<String>> map) {
+		ArrayList<String> list = new ArrayList<>();
+		int columns = 4;
+		int index = 0;
+		for (CommandCategory category : CommandCategory.values()) {
+			if (map.containsKey(category)) {
+				while (index % columns != 0) {
+					index++;
+					list.add("");
+				}
+				list.add(" > " + category.getPackageName());
+				for (int i = 1; i < columns; i++) {
+					list.add("");
+					index++;
+				}
+				index++;
+				for (String cmd : map.get(category)) {
+					list.add(cmd);
+					index++;
+				}
+				for (int i = 0; i < columns; i++) {
+					list.add("");
+					index++;
+				}
+			}
+		}
+		return Misc.makeTable(list, 16, columns);
+	}
+
+	private String styleTablePerCategory(HashMap<CommandCategory, ArrayList<String>> map) {
+		String table = "";
+		for (CommandCategory category : CommandCategory.values()) {
+			if (map.containsKey(category)) {
+				table += category.getEmoticon() + " " + category.getPackageName() + Config.EOL;
+				table += Misc.makeTable(map.get(category));
+			}
+		}
+		return table;
+	}
+
+	private String styleIndentedTable(HashMap<CommandCategory, ArrayList<String>> map) {
+		ArrayList<String> list = new ArrayList<>();
+		int columns = 4;
+		int index = 0;
+		for (CommandCategory category : CommandCategory.values()) {
+			if (map.containsKey(category)) {
+				list.add(category.getPackageName());
+				index++;
+				for (int i = 0; i < columns; i++) {
+					list.add("");
+					index++;
+				}
+				for (String cmd : map.get(category)) {
+					if (index % columns == 0) {
+						list.add("");
+						index++;
+					}
+					list.add(cmd);
+					index++;
+				}
+				while (index % columns != 0) {
+					index++;
+					list.add("");
+				}
+			}
+		}
+		return Misc.makeTable(list, 16, columns);
 	}
 }

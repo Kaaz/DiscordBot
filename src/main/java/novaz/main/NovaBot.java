@@ -195,11 +195,9 @@ public class NovaBot {
 		if (message.getContent().startsWith(GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class)) ||
 				message.getContent().startsWith(mentionMe)) {
 			commandHandler.process(guild, channel, author, message);
-		} else if (
-				Config.BOT_CHATTING_ENABLED.equals("true") &&
-						GuildSettings.get(guild).getOrDefault(SettingEnableChatBot.class).equals("true") &&
-						!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))
-						&& channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
+		} else if (Config.BOT_CHATTING_ENABLED.equals("true") && GuildSettings.get(guild).getOrDefault(SettingEnableChatBot.class).equals("true") &&
+				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))
+				&& channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			this.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
 		}
 	}

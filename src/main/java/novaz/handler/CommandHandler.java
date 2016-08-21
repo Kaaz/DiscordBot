@@ -71,7 +71,7 @@ public class CommandHandler {
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));
 		} else {
-			mymsg = bot.sendMessage(channel, TextHandler.get("unknown_command"));
+			mymsg = bot.sendMessage(channel, String.format(TextHandler.get("unknown_command"), GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class) + "help"));
 		}
 		if (shouldCleanUpMessages(guild, channel)) {
 			bot.timer.schedule(new TimerTask() {
@@ -80,7 +80,7 @@ public class CommandHandler {
 					try {
 						mymsg.delete();
 						content.delete();
-					} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
+					} catch (MissingPermissionsException | RateLimitException | DiscordException ignored) {
 					}
 				}
 			}, Config.DELETE_MESSAGES_AFTER);

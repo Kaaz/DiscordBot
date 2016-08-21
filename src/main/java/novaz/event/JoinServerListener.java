@@ -39,14 +39,6 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 		server.name = guild.getName();
 		server.owner = user.id;
 		TServers.update(server);
-
-		//@todo do something with channels? maybe default channels for each type of message (events, notifications, commands, etc.)
-//		List<IChannel> channels = guild.getChannels();
-//		System.out.println(String.format("OWNED: %s %s", owner.getID(), owner.getName()));
-//		for (IChannel c : channels) {
-//			System.out.println(String.format("-> %20s %s", c.getID(), c.getName()));
-//		}
-
 	}
 
 }
