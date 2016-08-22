@@ -114,7 +114,7 @@ public class Help extends AbstractCommand {
 		String table = "";
 		for (CommandCategory category : CommandCategory.values()) {
 			if (map.containsKey(category)) {
-				table += category.getEmoticon() + " " + category.getPackageName() + Config.EOL;
+				table += category.getEmoticon() + " " + category.getDisplayName() + Config.EOL;
 				table += Misc.makeTable(map.get(category));
 			}
 		}
