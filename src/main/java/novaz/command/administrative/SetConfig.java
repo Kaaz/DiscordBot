@@ -44,12 +44,13 @@ public class SetConfig extends AbstractCommand {
 		int count = args.length;
 		if (bot.isOwner(channel.getGuild(), author)) {
 			if (count == 0) {
-				String ret = "```php" + Config.EOL;
-				ret += "Current Settings" + Config.EOL;
-				ret += "---------------------------------------- " + Config.EOL;
+				String ret = "```ini" + Config.EOL;
+				ret += "Current Settings for " + channel.getGuild().getName() + Config.EOL;
+				ret += "------------------------------------------------------------ " + Config.EOL;
 				Map<String, String> settings = GuildSettings.get(channel.getGuild()).getSettings();
+				ret += String.format("%-24s| %-16s| %s", "Setting name", "current value", "default value") + Config.EOL;
 				for (Map.Entry<String, String> entry : settings.entrySet()) {
-					ret += String.format("%-16s = %s", entry.getKey(), entry.getValue()) + Config.EOL;
+					ret += String.format("%-24s| %-16s| %s", entry.getKey(), entry.getValue(), DefaultGuildSettings.getDefault(entry.getKey())) + Config.EOL;
 				}
 				return ret + "```";
 			} else {
