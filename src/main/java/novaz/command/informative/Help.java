@@ -38,8 +38,8 @@ public class Help extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"help //index of all commands",
-				"help <command> //usage for that command"};
+				"help            //index of all commands",
+				"help <command>  //usage for that command"};
 	}
 
 	@Override

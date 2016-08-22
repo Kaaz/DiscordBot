@@ -36,8 +36,8 @@ public class Playlist extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"playlist //playlist queue",
-				"playlist history //list of recently played songs"
+				"playlist          //playlist queue",
+				"playlist history  //list of recently played songs"
 		};
 	}
 

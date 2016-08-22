@@ -27,11 +27,24 @@ public class SkipTrack extends AbstractCommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[]{};
+		return new String[]{
+				"skip      //skips current track",
+				"skip perm //skips permanently; never hear this song again"
+		};
 	}
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
+		if (args.length >= 1) {
+			switch (args[0]) {
+				case "perm":
+				case "permanent":
+					return TextHandler.get("command_skip_permanent_success");
+				default:
+					return TextHandler.get("command_invalid_usage");
+			}
+
+		}
 		bot.skipCurrentSong(channel.getGuild());
 		return TextHandler.get("command_skip_song_skipped");
 	}

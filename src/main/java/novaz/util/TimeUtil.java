@@ -29,8 +29,9 @@ public class TimeUtil {
 			return diff / HOUR_MILLIS + "h";
 		} else if (diff < 48 * HOUR_MILLIS) {
 			return "yesterday";
-		} else {
+		} else if (diff < 14 * DAY_MILLIS) {
 			return diff / DAY_MILLIS + "d";
 		}
+		return ">2w";
 	}
 }

@@ -6,6 +6,7 @@ import novaz.db.WebDb;
 import novaz.handler.guildsettings.defaults.SettingBotChannel;
 import novaz.handler.guildsettings.defaults.SettingCleanupMessages;
 import novaz.handler.guildsettings.defaults.SettingCommandPrefix;
+import novaz.handler.guildsettings.defaults.SettingShowUnknownCommands;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import org.reflections.Reflections;
@@ -70,7 +71,8 @@ public class CommandHandler {
 			mymsg = bot.sendMessage(channel, chatCommands.get(input[0]).execute(args, channel, author));
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));
-		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN.equalsIgnoreCase("true")) {
+		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN.equalsIgnoreCase("true") ||
+				GuildSettings.get(guild).getOrDefault(SettingShowUnknownCommands.class).equals("true")) {
 			mymsg = bot.sendMessage(channel, String.format(TextHandler.get("unknown_command"), GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class) + "help"));
 		}
 		if (mymsg != null && shouldCleanUpMessages(guild, channel)) {

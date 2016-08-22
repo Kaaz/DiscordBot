@@ -31,8 +31,8 @@ public class Join extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"join //attempts to join you",
-				"join <channelname> //attempts to join channelname"
+				"join                //attempts to join you",
+				"join <channelname>  //attempts to join channelname"
 		};
 	}
 

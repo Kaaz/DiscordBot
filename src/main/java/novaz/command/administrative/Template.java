@@ -30,11 +30,11 @@ public class Template extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"template list //lists all keyphrases",
-				"template list <keyphrase> //lists all options for keyphrase",
-				"template remove <keyphrase> <index> //removes selected template for keyphrase",
-				"template add <keyphrase> <text...> //adds a template for keyphrase",
-				"template toggledebug //shows keyphrases instead of text"};
+				"template list                        //lists all keyphrases",
+				"template list <keyphrase>            //lists all options for keyphrase",
+				"template remove <keyphrase> <index>  //removes selected template for keyphrase",
+				"template add <keyphrase> <text...>   //adds a template for keyphrase",
+				"template toggledebug                 //shows keyphrases instead of text"};
 	}
 
 	@Override

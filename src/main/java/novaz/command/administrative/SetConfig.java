@@ -33,8 +33,9 @@ public class SetConfig extends AbstractCommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[]{"config //overview",
-				"config <property> //check details of property",
+		return new String[]{
+				"config                    //overview",
+				"config <property>         //check details of property",
 				"config <property> <value> //sets property"};
 	}
 

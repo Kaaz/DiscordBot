@@ -102,10 +102,6 @@ public class NovaBot {
 		timer = new Timer();
 	}
 
-	public void loadConfiguration(IGuild guild) {
-
-	}
-
 	public void loadConfiguration() {
 		commandHandler.load();
 		TextHandler.getInstance().load();
@@ -188,16 +184,17 @@ public class NovaBot {
 		if (!isReady || author.isBot()) {
 			return;
 		}
-		if (GuildSettings.get(guild).getOrDefault(SettingActiveChannels.class).equals("mine") &&
+		GuildSettings settings = GuildSettings.get(guild);
+		if (settings.getOrDefault(SettingActiveChannels.class).equals("mine") &&
 				!channel.getName().equalsIgnoreCase(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			return;
 		}
-		if (message.getContent().startsWith(GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class)) ||
+		if (message.getContent().startsWith(settings.getOrDefault(SettingCommandPrefix.class)) ||
 				message.getContent().startsWith(mentionMe)) {
 			commandHandler.process(guild, channel, author, message);
-		} else if (Config.BOT_CHATTING_ENABLED.equals("true") && GuildSettings.get(guild).getOrDefault(SettingEnableChatBot.class).equals("true") &&
-				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))
-				&& channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
+		} else if (Config.BOT_CHATTING_ENABLED.equals("true") && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
+				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class)) &&
+				channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			this.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
 		}
 	}
