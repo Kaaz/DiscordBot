@@ -20,6 +20,11 @@ import sx.blah.discord.util.RateLimitException;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * !play
@@ -27,6 +32,9 @@ import java.sql.SQLException;
  * yea.. play is probably not a good name at the moment
  */
 public class Play extends AbstractCommand {
+
+	private final Pattern musicResultFilterPattern = Pattern.compile("^#[0-9]{1,2}$");
+	private Map<String, ArrayList<Integer>> userFilteredSongs = new ConcurrentHashMap<>();
 
 	public Play(NovaBot b) {
 		super(b);
@@ -48,7 +56,8 @@ public class Play extends AbstractCommand {
 				"play <youtubelink>                   //download and plays song",
 				"play <youtubevideocode>              //download and plays song",
 				"play <part of title>                 //shows search results",
-				"play <part of title> #<resultnumber> //add result # to the queue"
+				"play <part of title>                 //search for song ",
+				"play #<resultnumber>                 //add result # to the queue"
 		};
 	}
 
@@ -62,6 +71,34 @@ public class Play extends AbstractCommand {
 		}
 		if (args.length > 0) {
 			boolean justDownloaded = false;
+			if (args[0].startsWith("#")) {
+				Matcher filterMatch = musicResultFilterPattern.matcher(args[0]);
+				if (!filterMatch.matches()) {
+					return TextHandler.get("command_play_filter_match_invalid");
+				}
+				if (userFilteredSongs.containsKey(author.getID()) && userFilteredSongs.get(author.getID()) != null) {
+					int selectedIndex = Ints.tryParse(args[0].replace("#", ""));
+					if (userFilteredSongs.get(author.getID()).size() + 1 >= selectedIndex && selectedIndex > 0) {
+						int songId = userFilteredSongs.get(author.getID()).get(selectedIndex - 1);
+						try (ResultSet rs = WebDb.get().select("SELECT filename, title, artist FROM playlist WHERE id = ?", songId)) {
+							if (rs.next()) {
+								bot.addSongToQueue(rs.getString("filename"), channel.getGuild());
+							}
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						userFilteredSongs.remove(author.getID());
+						return TextHandler.get("music_added_to_queue");
+					} else {
+						return TextHandler.get("command_play_filter_match_no_such_index");
+					}
+				} else {
+					return TextHandler.get("command_play_no_results_saved");
+				}
+			}
+			if (userFilteredSongs.containsKey(author.getID())) {
+				userFilteredSongs.remove(author.getID());
+			}
 			String videocode = YTUtil.extractCodeFromUrl(args[0]);
 			if (YTUtil.isValidYoutubeCode(videocode)) {
 				File filecheck = new File(Config.MUSIC_DIRECTORY + videocode + ".mp3");
@@ -90,37 +127,30 @@ public class Play extends AbstractCommand {
 				}
 			} else {
 				String concatArgs = "";
-				int selectedIndex = -1;
-				for (int i = 0; i < args.length; i++) {
-					String part = args[i];
-					if (part.startsWith("#")) {
-						selectedIndex = Ints.tryParse(part.replace("#", ""));
-						break;
-					}
-					//it converts a yt link to an mp3
-					concatArgs += " " + part;
+				for (String s : args) {
+					concatArgs += s;
 				}
-				long startTime = System.currentTimeMillis();
-				try (ResultSet rs = WebDb.get().select("SELECT levenshtein_ratio(LOWER(title),?) AS matchrating, title, filename " +
+				try (ResultSet rs = WebDb.get().select("SELECT id, levenshtein_ratio(LOWER(title),?) AS matchrating, title, filename " +
 						"FROM playlist " +
 						"ORDER BY matchrating DESC " +
 						"LIMIT 10", concatArgs)) {
 					String results = "";
 					int i = 0;
+					ArrayList<Integer> songIdArray = new ArrayList<>();
 					while (rs.next()) {
 						i++;
-						if (selectedIndex > 0 && i == selectedIndex) {
-							bot.addSongToQueue(rs.getString("filename"), channel.getGuild());
-							return TextHandler.get("music_added_to_queue") + " " + rs.getString("title");
-						}
+						songIdArray.add(rs.getInt("id"));
+						userFilteredSongs.get(author.getID());
 						results += String.format("%2s %7s %s", i, rs.getInt("matchrating"), rs.getString("title")) + Config.EOL;
 					}
 					if (!results.isEmpty()) {
+						userFilteredSongs.put(author.getID(), songIdArray);
+
 						return "Results ```" + Config.EOL +
 								String.format("%2s %7s %s", "#", "match %", "song") + Config.EOL +
 								results + Config.EOL +
 								"```" + Config.EOL +
-								"Append **#<resultnumber>** to add it to the music queue. Eg: **#1** to play the first result." + Config.EOL;
+								"Use the command  **play #<resultnumber>** to add it to the music queue. Eg: **play #1** to play the first result." + Config.EOL;
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
