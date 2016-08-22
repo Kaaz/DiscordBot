@@ -56,7 +56,6 @@ public class Play extends AbstractCommand {
 				"play <youtubelink>                   //download and plays song",
 				"play <youtubevideocode>              //download and plays song",
 				"play <part of title>                 //shows search results",
-				"play <part of title>                 //search for song ",
 				"play #<resultnumber>                 //add result # to the queue"
 		};
 	}

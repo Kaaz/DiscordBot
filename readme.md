@@ -139,7 +139,6 @@ Plays a song from youtube
 play <youtubelink>                   //download and plays song
 play <youtubevideocode>              //download and plays song
 play <part of title>                 //shows search results
-play <part of title>                 //search for song 
 play #<resultnumber>                 //add result # to the queue
 ```
 ### playlist
