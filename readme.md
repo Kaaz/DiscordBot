@@ -136,10 +136,10 @@ Plays a song from youtube
 #### Usage
 
 ```php
-play <youtubelink>                   //download and plays song
-play <youtubevideocode>              //download and plays song
-play <part of title>                 //shows search results
-play #<resultnumber>                 //add result # to the queue
+play <youtubelink>        //download and plays song
+play <youtubevideocode>   //download and plays song
+play <part of title>      //shows search results
+play #<resultnumber>      //add result # to the queue
 ```
 ### playlist
 
