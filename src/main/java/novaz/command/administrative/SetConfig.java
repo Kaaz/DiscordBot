@@ -45,10 +45,10 @@ public class SetConfig extends AbstractCommand {
 		if (bot.isOwner(channel.getGuild(), author)) {
 			if (count == 0) {
 				String ret = "```ini" + Config.EOL;
-				ret += "Current Settings for " + channel.getGuild().getName() + Config.EOL;
-				ret += "------------------------------------------------------------ " + Config.EOL;
+				ret += "Current Settings for " + channel.getGuild().getName() + Config.EOL + Config.EOL;
 				Map<String, String> settings = GuildSettings.get(channel.getGuild()).getSettings();
 				ret += String.format("%-24s| %-16s| %s", "Setting name", "current value", "default value") + Config.EOL;
+				ret += "------------------------+-----------------+----------------- " + Config.EOL;
 				for (Map.Entry<String, String> entry : settings.entrySet()) {
 					ret += String.format("%-24s| %-16s| %s", entry.getKey(), entry.getValue(), DefaultGuildSettings.getDefault(entry.getKey())) + Config.EOL;
 				}
