@@ -13,10 +13,7 @@ import novaz.handler.guildsettings.defaults.SettingEnableChatBot;
 import org.reflections.Reflections;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
@@ -99,6 +96,7 @@ public class NovaBot {
 		setUserName(Config.BOT_NAME);
 		loadConfiguration();
 		mentionMe = "<@" + this.instance.getOurUser().getID() + ">";
+		instance.changeStatus(Status.game("with human pets"));
 		timer = new Timer();
 	}
 
