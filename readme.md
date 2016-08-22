@@ -67,8 +67,8 @@ Add and remove custom commands
 #### Usage
 
 ```php
-command add <command> <action> //adds a command
-command delete <command> //deletes a command
+command add <command> <action>  //adds a command
+command delete <command>        //deletes a command
 ```
 ### config
 
@@ -78,8 +78,8 @@ Gets/sets the configuration of the bot
 #### Usage
 
 ```php
-config //overview
-config <property> //check details of property
+config                    //overview
+config <property>         //check details of property
 config <property> <value> //sets property
 ```
 ### current
@@ -98,8 +98,8 @@ An attempt to help out
 #### Usage
 
 ```php
-help //index of all commands
-help <command> //usage for that command
+help            //index of all commands
+help <command>  //usage for that command
 ```
 ### info
 
@@ -117,8 +117,8 @@ joins a voicechannel
 #### Usage
 
 ```php
-join //attempts to join you
-join <channelname> //attempts to join channelname
+join                //attempts to join you
+join <channelname>  //attempts to join channelname
 ```
 ### joke
 
@@ -147,8 +147,8 @@ information about the playlist/history
 #### Usage
 
 ```php
-playlist //playlist queue
-playlist history //list of recently played songs
+playlist          //playlist queue
+playlist history  //list of recently played songs
 ```
 ### reload
 
@@ -168,6 +168,13 @@ say <anything>
 
 skip current track
 
+
+#### Usage
+
+```php
+skip      //skips current track
+skip perm //skips permanently; never hear this song again
+```
 ### stop
 
 stops playing music
@@ -180,11 +187,11 @@ adds/removes templates
 #### Usage
 
 ```php
-template list //lists all keyphrases
-template list <keyphrase> //lists all options for keyphrase
-template remove <keyphrase> <index> //removes selected template for keyphrase
-template add <keyphrase> <text...> //adds a template for keyphrase
-template toggledebug //shows keyphrases instead of text
+template list                        //lists all keyphrases
+template list <keyphrase>            //lists all options for keyphrase
+template remove <keyphrase> <index>  //removes selected template for keyphrase
+template add <keyphrase> <text...>   //adds a template for keyphrase
+template toggledebug                 //shows keyphrases instead of text
 ```
 ### volume
 
@@ -194,6 +201,6 @@ gets and sets the volume of the music
 #### Usage
 
 ```php
-volume //shows current volume
-volume <1 to 100> //sets volume
+volume              //shows current volume
+volume <1 to 100>   //sets volume
 ```
