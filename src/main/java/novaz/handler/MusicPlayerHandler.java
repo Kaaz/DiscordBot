@@ -191,8 +191,16 @@ public class MusicPlayerHandler {
 		if (usersInVoiceChannel.isEmpty()) {
 			return false;
 		}
+		return addToQueue(randomSong);
+	}
+
+	public boolean addToQueue(String filename) {
+		File f = new File(Config.MUSIC_DIRECTORY + filename);
+		if (!f.exists() || !f.getName().endsWith(".mp3")) {
+			return false;
+		}
 		try {
-			AudioPlayer.getAudioPlayerForGuild(guild).queue(new File(Config.MUSIC_DIRECTORY + randomSong));
+			AudioPlayer.getAudioPlayerForGuild(guild).queue(f);
 			return true;
 		} catch (IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
@@ -231,5 +239,19 @@ public class MusicPlayerHandler {
 
 	public float getVolume() {
 		return AudioPlayer.getAudioPlayerForGuild(guild).getVolume();
+	}
+
+	public List<OMusic> getQueue() {
+		ArrayList<OMusic> list = new ArrayList<>();
+		List<AudioPlayer.Track> trackList = AudioPlayer.getAudioPlayerForGuild(guild).getPlaylist();
+		for (AudioPlayer.Track track : trackList) {
+			Map<String, Object> metadata = track.getMetadata();
+			if (metadata.containsKey("file") && metadata.get("file") instanceof File) {
+				list.add(TMusic.findByFileName(((File) metadata.get("file")).getName()));
+			} else {
+				list.add(new OMusic());
+			}
+		}
+		return list;
 	}
 }

@@ -3,6 +3,7 @@ package novaz.command.music;
 import novaz.core.AbstractCommand;
 import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
+import novaz.handler.MusicPlayerHandler;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
@@ -44,15 +45,28 @@ public class Playlist extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (args.length == 0) {
-			return TextHandler.get("not_yet_implemented");
+			MusicPlayerHandler player = MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot);
+			List<OMusic> queue = player.getQueue();
+			String ret = "Music Queue" + Config.EOL;
+			if (queue.size() == 0) {
+				ret += "The queue is currently empty. " + Config.EOL +
+						"To add a song use the **play** command!";
+			} else {
+				int i = 0;
+				for (OMusic song : queue) {
+					i++;
+					ret += String.format("#%03d %s", i, song.title) + Config.EOL;
+				}
+			}
+			return ret;
 		} else if (args.length >= 1 && args[0].equals("history")) {
 			List<OMusic> recentlyPlayed = TMusic.getRecentlyPlayed(10);
 			if (recentlyPlayed.size() > 0) {
 				String ret = "List of recently played music " + Config.EOL;
 				ret += String.format("    %-16s %s", ":watch:", ":notes:") + Config.EOL;
-				String tableContent= "";
+				String tableContent = "";
 				for (OMusic song : recentlyPlayed) {
-					tableContent+= String.format("%-7s%s", TimeUtil.getTimeAgo(song.lastplaydate), song.title) + Config.EOL;
+					tableContent += String.format("%-7s%s", TimeUtil.getTimeAgo(song.lastplaydate), song.title) + Config.EOL;
 				}
 				return ret + Misc.makeTable(tableContent);
 			} else {
