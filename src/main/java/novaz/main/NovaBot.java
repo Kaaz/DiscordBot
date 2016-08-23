@@ -29,14 +29,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class NovaBot {
 
+	public final long startupTimeStamp;
 	public IDiscordClient instance;
 	public CommandHandler commandHandler;
 	public Timer timer = new Timer();
+	public String mentionMe;
 	private boolean isReady = false;
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
 	private ChatBotHandler chatBotHandler = null;
-	public String mentionMe;
-	public final long startupTimeStamp;
 
 
 	public NovaBot() throws DiscordException {

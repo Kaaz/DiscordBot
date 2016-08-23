@@ -26,10 +26,6 @@ public class TextHandler {
 		load();
 	}
 
-	public String[] getPhrases() {
-		return dictionary.keySet().toArray(new String[dictionary.keySet().size()]);
-	}
-
 	public static TextHandler getInstance() {
 		return instance;
 	}
@@ -46,6 +42,10 @@ public class TextHandler {
 			return list.get(instance.rnd.nextInt(list.size()));
 		}
 		return "**'" + keyPhrase + "'**";
+	}
+
+	public String[] getPhrases() {
+		return dictionary.keySet().toArray(new String[dictionary.keySet().size()]);
 	}
 
 	public int countTemplates() {

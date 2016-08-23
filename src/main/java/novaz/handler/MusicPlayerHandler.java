@@ -44,16 +44,16 @@ public class MusicPlayerHandler {
 		playerInstances.put(guild, this);
 	}
 
-	public OMusic getCurrentlyPlaying() {
-		return currentlyPlaying;
-	}
-
 	public static MusicPlayerHandler getAudioPlayerForGuild(IGuild guild, NovaBot bot) {
 		if (playerInstances.containsKey(guild)) {
 			return playerInstances.get(guild);
 		} else {
 			return new MusicPlayerHandler(guild, bot);
 		}
+	}
+
+	public OMusic getCurrentlyPlaying() {
+		return currentlyPlaying;
 	}
 
 	/**
