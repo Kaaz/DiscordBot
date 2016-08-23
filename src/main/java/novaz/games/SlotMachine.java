@@ -27,6 +27,21 @@ public class SlotMachine {
 		}
 	}
 
+	/**
+	 * Check if all
+	 *
+	 * @return the slot that won or null in case of lost
+	 */
+	public Slot winSlot() {
+		int winningSlot = results[0];
+		for (int i = 1; i < wheels; i++) {
+			if (results[i] != results[i - 1]) {
+				return null;
+			}
+		}
+		return slotOptions[results[0] % slotOptions.length];
+	}
+
 	public boolean gameInProgress() {
 		return wheels > currentWheel;
 	}

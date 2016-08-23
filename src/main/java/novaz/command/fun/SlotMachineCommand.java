@@ -54,6 +54,13 @@ public class SlotMachineCommand extends AbstractCommand {
 							slotMachine.spin();
 							msg.edit(slotMachine.toString());
 						} else {
+							Slot slot = slotMachine.winSlot();
+							String gameresult = "";
+							if (slot != null) {
+								gameresult = "You rolled 3 **" + slot.getName() + "** and won **" + slot.getTriplePayout() + "**";
+							} else {
+								gameresult = "Aw you lose, better luck next time!";
+							}
 							msg.edit(slotMachine.toString() + Config.EOL + "Game done you %s %s");
 							this.cancel();
 						}
@@ -66,8 +73,9 @@ public class SlotMachineCommand extends AbstractCommand {
 		String ret = "The slotmachine!" + Config.EOL;
 		ret += "payout is as follows: " + Config.EOL;
 		for (Slot s : Slot.values()) {
-			ret += s.getEmote() + s.getEmote() + s.getEmote() + " = " + s.getTriplePayout() + Config.EOL;
+			ret += String.format("%1$s %1$s %1$s", s.getEmote()) + " = " + s.getTriplePayout() + Config.EOL;
 		}
+		ret += "type **slot play** to give it a shot!";
 		return ret;
 	}
 }
