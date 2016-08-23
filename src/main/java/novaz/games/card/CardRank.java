@@ -10,10 +10,10 @@ public enum CardRank {
 	EIGHT("eight", " 8"),
 	NINE("nine", " 9"),
 	TEN("ten", "10"),
-	JACK("jack", "J"),
-	QUEEN("queen", "Q"),
-	KING("king", "K"),
-	ACE("ace", "A");
+	JACK("jack", " J"),
+	QUEEN("queen", " Q"),
+	KING("king", " K"),
+	ACE("ace", " A");
 
 	private String cardName;
 	private String emoticon;
