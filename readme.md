@@ -1,6 +1,7 @@
 # DiscordBot
 
-A Java bot for [Discord](https://discordapp.com/) using the [Discord4J interface](https://github.com/austinv11/Discord4J/).
+A Java bot for [Discord](https://discordapp.com/) using the [Discord4J interface](https://github.com/austinv11/Discord4J/).  
+It uses mysql to store data, a create script can be found in the sql folder
 
 
 ## What can it do?
