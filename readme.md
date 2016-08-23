@@ -23,6 +23,7 @@ For more information about a command use **help \<commandname\>**
 Current list of all available commands. See below for a more detailed list
 
 * [8ball](#8ball)
+* [blackjack](#blackjack)
 * [catfact](#catfact)
 * [command](#command)
 * [config](#config)
@@ -60,6 +61,18 @@ On the first run it will generate a config file and stop running. You'll need to
 
 See what the magic 8ball has to say
 
+### blackjack
+
+Is being worked on!
+
+
+#### Usage
+
+```php
+blackjack        //check status
+blackjack hit    //hits
+blackjack stand  //stands
+```
 ### catfact
 
 Cat facts!
