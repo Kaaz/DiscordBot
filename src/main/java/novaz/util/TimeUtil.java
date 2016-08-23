@@ -38,7 +38,7 @@ public class TimeUtil {
 		} else if (diff < 24 * HOUR_MILLIS) {
 			return diff / HOUR_MILLIS + (shortText ? "h" : " Hours ago");
 		} else if (diff < 48 * HOUR_MILLIS) {
-			return "yesterday";
+			return shortText ? "~1d" : "yesterday";
 		} else if (diff < 14 * DAY_MILLIS || !shortText) {
 			return diff / DAY_MILLIS + (shortText ? "d" : " Days ago");
 		}
