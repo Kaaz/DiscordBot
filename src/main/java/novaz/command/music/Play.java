@@ -137,6 +137,9 @@ public class Play extends AbstractCommand {
 					int i = 0;
 					ArrayList<Integer> songIdArray = new ArrayList<>();
 					while (rs.next()) {
+						if (rs.getInt("matchrating") < 10) {
+							continue;
+						}
 						i++;
 						songIdArray.add(rs.getInt("id"));
 						userFilteredSongs.get(author.getID());
