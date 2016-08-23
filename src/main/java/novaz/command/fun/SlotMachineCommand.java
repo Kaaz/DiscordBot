@@ -2,6 +2,7 @@ package novaz.command.fun;
 
 import novaz.core.AbstractCommand;
 import novaz.games.SlotMachine;
+import novaz.games.slotmachine.Slot;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
@@ -42,24 +43,31 @@ public class SlotMachineCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		final SlotMachine slotMachine = new SlotMachine();
-		final IMessage msg = bot.sendMessage(channel, "Slotmachine preparing!");
-		bot.timer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				try {
-					if (slotMachine.gameInProgress()) {
-						slotMachine.spin();
-						msg.edit(slotMachine.toString());
-					} else {
-						msg.edit(slotMachine.toString() + Config.EOL + "Game done you %s %s");
+		if (args.length >= 1 && args[0].equals("play")) {
+			final SlotMachine slotMachine = new SlotMachine();
+			final IMessage msg = bot.sendMessage(channel, "Slotmachine preparing!");
+			bot.timer.scheduleAtFixedRate(new TimerTask() {
+				@Override
+				public void run() {
+					try {
+						if (slotMachine.gameInProgress()) {
+							slotMachine.spin();
+							msg.edit(slotMachine.toString());
+						} else {
+							msg.edit(slotMachine.toString() + Config.EOL + "Game done you %s %s");
+							this.cancel();
+						}
+					} catch (Exception ignored) {
 						this.cancel();
 					}
-				} catch (Exception ignored) {
-					this.cancel();
 				}
-			}
-		}, 1000L, SPIN_INTERVAL);
-		return "";
+			}, 1000L, SPIN_INTERVAL);
+		}
+		String ret = "The slotmachine!" + Config.EOL;
+		ret += "payout is as follows: " + Config.EOL;
+		for (Slot s : Slot.values()) {
+			ret += s.getEmote() + s.getEmote() + s.getEmote() + " = " + s.getTriplePayout() + Config.EOL;
+		}
+		return ret;
 	}
 }
