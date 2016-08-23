@@ -68,7 +68,10 @@ public class CommandHandler {
 		input[0] = filterPrefix(input[0], guild).toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
 		if (chatCommands.containsKey(input[0])) {
-			mymsg = bot.sendMessage(channel, chatCommands.get(input[0]).execute(args, channel, author));
+			String commandOutput = chatCommands.get(input[0]).execute(args, channel, author);
+			if (!commandOutput.isEmpty()) {
+				mymsg = bot.sendMessage(channel, commandOutput);
+			}
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN.equalsIgnoreCase("true") ||

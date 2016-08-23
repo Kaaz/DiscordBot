@@ -11,7 +11,6 @@ import java.io.File;
 public class Launcher {
 
 	public static void main(String[] args) throws Exception {
-
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		if (Config.BOT_ENABLED.equalsIgnoreCase("true")) {
 			NovaBot nb = new NovaBot();

@@ -40,8 +40,7 @@ public class Info extends AbstractCommand {
 		IUser user = bot.instance.getUserByID(Config.CREATOR_ID);
 		return "Who am I you say?" + Config.EOL +
 				"I am a person and as for confusing you, that is not my problem :joy:." + Config.EOL +
-				"Currently active on **" + bot.instance.getGuilds().size() + "** guilds. " + Config.EOL +
-				"Last time I restarted was  **" + onlineFor + "**" + Config.EOL +
+				"Currently active on **" + bot.instance.getGuilds().size() + "** guilds and the last time I restarted was  **" + onlineFor + "**." + Config.EOL +
 				"There are various actions I can perform actions type **" + cmdPrefix + "help** for a full list" + Config.EOL +
 				"If I can't help you out, you can always try to poke **" + user.getName() + "#" + user.getDiscriminator() + "**";
 	}
