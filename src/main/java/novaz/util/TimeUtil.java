@@ -30,17 +30,17 @@ public class TimeUtil {
 		if (diff < MINUTE_MILLIS) {
 			return "now";
 		} else if (diff < 2 * MINUTE_MILLIS) {
-			return shortText ? "~1m" : "About a minute ago";
+			return shortText ? "~1m" : "about a minute ago";
 		} else if (diff < 50 * MINUTE_MILLIS) {
-			return diff / MINUTE_MILLIS + (shortText ? "m" : " Minutes ago");
+			return diff / MINUTE_MILLIS + (shortText ? "m" : " minutes ago");
 		} else if (diff < 90 * MINUTE_MILLIS) {
 			return shortText ? "~1h" : "About an hour ago";
 		} else if (diff < 24 * HOUR_MILLIS) {
-			return diff / HOUR_MILLIS + (shortText ? "h" : " Hours ago");
+			return diff / HOUR_MILLIS + (shortText ? "h" : " hours ago");
 		} else if (diff < 48 * HOUR_MILLIS) {
 			return shortText ? "~1d" : "yesterday";
 		} else if (diff < 14 * DAY_MILLIS || !shortText) {
-			return diff / DAY_MILLIS + (shortText ? "d" : " Days ago");
+			return diff / DAY_MILLIS + (shortText ? "d" : " days ago");
 		}
 		return ">2w";
 	}
