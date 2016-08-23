@@ -74,7 +74,7 @@ public class SlotMachineCommand extends AbstractCommand {
 			String ret = "The slotmachine!" + Config.EOL;
 			ret += "payout is as follows: " + Config.EOL;
 			for (Slot s : Slot.values()) {
-				ret += String.format("%1$s %1$s %1$s", s.getEmote()) + " = " + s.getTriplePayout() + Config.EOL;
+				ret += String.format("%1$s %1$s %1$s = %2$s" + Config.EOL, s.getEmote(), s.getTriplePayout());
 			}
 			ret += "type **slot play** to give it a shot!";
 			return ret;

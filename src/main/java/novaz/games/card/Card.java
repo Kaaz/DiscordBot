@@ -12,11 +12,11 @@ public class Card {
 		this.suit = suit;
 	}
 
-	public CardRank rank() {
+	public CardRank getRank() {
 		return rank;
 	}
 
-	public CardSuit suit() {
+	public CardSuit getSuit() {
 		return suit;
 	}
 
@@ -25,7 +25,7 @@ public class Card {
 	}
 
 	public String toEmote() {
-		return suit.getEmoticon() + rank.getEmoticon();
+		return "[" + suit.getEmoticon() + rank.getEmoticon() + "]";
 	}
 
 	private static final List<Card> protoDeck = new ArrayList<Card>();
