@@ -39,8 +39,10 @@ Current list of all available commands. See below for a more detailed list
 * [reload](#reload)
 * [say](#say)
 * [skip](#skip)
+* [slot](#slot)
 * [stop](#stop)
 * [template](#template)
+* [test](#test)
 * [volume](#volume)
 
 
@@ -180,6 +182,17 @@ skip current track
 skip      //skips current track
 skip perm //skips permanently; never hear this song again
 ```
+### slot
+
+Feeling lucky? try the slotmachine! You might just win a hand full of air!
+
+
+#### Usage
+
+```php
+slot      //displays info and payout table
+slot play //plays the game
+```
 ### stop
 
 stops playing music
@@ -197,6 +210,16 @@ template list <keyphrase>            //lists all options for keyphrase
 template remove <keyphrase> <index>  //removes selected template for keyphrase
 template add <keyphrase> <text...>   //adds a template for keyphrase
 template toggledebug                 //shows keyphrases instead of text
+```
+### test
+
+no one truly knows
+
+
+#### Usage
+
+```php
+lorem ipsum dolar sit amet
 ```
 ### volume
 
