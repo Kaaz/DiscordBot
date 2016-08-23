@@ -61,7 +61,7 @@ public class SlotMachineCommand extends AbstractCommand {
 							} else {
 								gameresult = "Aw you lose, better luck next time!";
 							}
-							msg.edit(slotMachine.toString() + Config.EOL + "Game done you %s %s");
+							msg.edit(slotMachine.toString() + Config.EOL + gameresult);
 							this.cancel();
 						}
 					} catch (Exception ignored) {
@@ -69,13 +69,15 @@ public class SlotMachineCommand extends AbstractCommand {
 					}
 				}
 			}, 1000L, SPIN_INTERVAL);
+		} else {
+			String ret = "The slotmachine!" + Config.EOL;
+			ret += "payout is as follows: " + Config.EOL;
+			for (Slot s : Slot.values()) {
+				ret += String.format("%1$s %1$s %1$s", s.getEmote()) + " = " + s.getTriplePayout() + Config.EOL;
+			}
+			ret += "type **slot play** to give it a shot!";
+			return ret;
 		}
-		String ret = "The slotmachine!" + Config.EOL;
-		ret += "payout is as follows: " + Config.EOL;
-		for (Slot s : Slot.values()) {
-			ret += String.format("%1$s %1$s %1$s", s.getEmote()) + " = " + s.getTriplePayout() + Config.EOL;
-		}
-		ret += "type **slot play** to give it a shot!";
-		return ret;
+		return "";
 	}
 }
