@@ -5,6 +5,7 @@ import novaz.handler.GuildSettings;
 import novaz.handler.guildsettings.defaults.SettingCommandPrefix;
 import novaz.main.Config;
 import novaz.main.NovaBot;
+import novaz.util.TimeUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -34,11 +35,13 @@ public class Info extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
+		String onlineFor = TimeUtil.getTimeAgo(bot.startupTimeStamp, false);
 		String cmdPrefix = GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);
 		IUser user = bot.instance.getUserByID(Config.CREATOR_ID);
 		return "Who am I you say?" + Config.EOL +
 				"I am a person and as for confusing you, that is not my problem :joy:." + Config.EOL +
 				"Currently active on **" + bot.instance.getGuilds().size() + "** guilds. " + Config.EOL +
+				"Last time I restarted was  **" + onlineFor + "**" + Config.EOL +
 				"There are various actions I can perform actions type **" + cmdPrefix + "help** for a full list" + Config.EOL +
 				"If I can't help you out, you can always try to poke **" + user.getName() + "#" + user.getDiscriminator() + "**";
 	}

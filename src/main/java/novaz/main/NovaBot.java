@@ -36,12 +36,14 @@ public class NovaBot {
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
 	private ChatBotHandler chatBotHandler = null;
 	public String mentionMe;
+	public final long startupTimeStamp;
 
 
 	public NovaBot() throws DiscordException {
 		registerHandlers();
 		instance = new ClientBuilder().withToken(Config.BOT_TOKEN).login();
 		registerEvents();
+		startupTimeStamp = System.currentTimeMillis() / 1000L;
 	}
 
 	/**
