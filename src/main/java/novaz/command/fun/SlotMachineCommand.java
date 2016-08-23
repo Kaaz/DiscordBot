@@ -45,7 +45,7 @@ public class SlotMachineCommand extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (args.length >= 1 && args[0].equals("play")) {
 			final SlotMachine slotMachine = new SlotMachine();
-			final IMessage msg = bot.sendMessage(channel, "Slotmachine preparing!");
+			final IMessage msg = bot.sendMessage(channel, slotMachine.toString());
 			bot.timer.scheduleAtFixedRate(new TimerTask() {
 				@Override
 				public void run() {
