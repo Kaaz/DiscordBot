@@ -74,10 +74,8 @@ public class SlotMachine {
 
 		}
 		for (int i = 0; i < wheels; i++) {
-			System.out.print(results[i] + " ");
 			table += machineLine[i] + "|" + Config.EOL;
 		}
-		System.out.println("");
 		return table;
 	}
 }

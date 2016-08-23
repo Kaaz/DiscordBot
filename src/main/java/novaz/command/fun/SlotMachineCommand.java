@@ -65,6 +65,7 @@ public class SlotMachineCommand extends AbstractCommand {
 							this.cancel();
 						}
 					} catch (Exception ignored) {
+						System.out.println(ignored);
 						this.cancel();
 					}
 				}
