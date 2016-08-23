@@ -1,7 +1,9 @@
 # DiscordBot
 
 A Java bot for [Discord](https://discordapp.com/) using the [Discord4J interface](https://github.com/austinv11/Discord4J/).  
-It uses mysql to store data, a create script can be found in the sql folder
+It uses mysql to store data, a create script can be found in the sql folder  
+To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [avconv](https://libav.org/avconv.html)
+
 
 
 ## What can it do?
