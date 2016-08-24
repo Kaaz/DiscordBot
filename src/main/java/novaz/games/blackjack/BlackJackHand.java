@@ -30,7 +30,7 @@ public class BlackJackHand extends CardHand {
 	public String printHand() {
 		StringBuilder hand = new StringBuilder();
 		for (Card card : cardsInHand) {
-			hand.append(card.toEmote());
+			hand.append(card.toEmote()).append(" ");
 		}
 		return hand.toString();
 	}

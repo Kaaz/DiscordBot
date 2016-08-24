@@ -2,56 +2,115 @@ package novaz.games;
 
 import novaz.games.blackjack.BlackJackHand;
 import novaz.games.card.Card;
+import novaz.main.Config;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Blackjack {
 
-	BlackJackHand dealer;
-	Map<String, BlackJackHand> playerHands;
-	ArrayList<Card> deck;
+	private final String playerMention;
+	private BlackJackHand dealerHand;
+	private BlackJackHand playerHand;
+	private ArrayList<Card> deck;
+	private boolean gameInProgress = true;
+	private boolean playerStands = false;
 
-	public Blackjack() {
+	public Blackjack(String playerMention) {
+		this.playerMention = playerMention;
 
 		resetGame();
 	}
 
-	public String printHand(String player) {
-		if (playerHands.containsKey(player)) {
-			return playerHands.get(player).printHand();
-		}
-		return "";
+	/**
+	 * Is the game still going?
+	 *
+	 * @return gamestatus
+	 */
+	public boolean isInProgress() {
+		return gameInProgress;
 	}
 
-	public int getValue(String player) {
-		if (playerHands.containsKey(player)) {
-			return playerHands.get(player).getValue();
-		}
-		return 0;
+	public boolean playerIsStanding() {
+		return playerStands;
+	}
+
+	public String printPlayerHand() {
+		return playerHand.printHand();
+	}
+
+	public int getPlayerValue() {
+		return playerHand.getValue();
+	}
+
+	public int getDealerValue() {
+		return dealerHand.getValue();
 	}
 
 	private Card drawCard() {
 		return deck.remove(0);
 	}
 
-	public void hit(String player) {
-		if (!playerHands.containsKey(player)) {
-			playerHands.put(player, new BlackJackHand());
+	public void hit() {
+		if (playerStands) {
+			return;
 		}
-		if (playerHands.get(player).getValue() == 0) {
-			playerHands.get(player).add(drawCard());
+		if (playerHand.getValue() == 0) {
+			playerHand.add(drawCard());
 		}
-		playerHands.get(player).add(drawCard());
+		playerHand.add(drawCard());
+		if (dealerHand.getValue() == 0) {
+			dealerHand.add(drawCard());
+			dealerHand.add(drawCard());
+		}
+		if (getPlayerValue() > 21) {
+			gameInProgress = false;
+		}
+	}
+
+	public boolean dealerHit() {
+		if (getPlayerValue() <= 21 && getDealerValue() < 21 && getDealerValue() < getPlayerValue()) {
+			dealerHand.add(drawCard());
+			return true;
+		}
+		gameInProgress = false;
+		return false;
+	}
+
+	public void stand() {
+		playerStands = true;
 	}
 
 	public void resetGame() {
 
-		dealer = new BlackJackHand();
-		playerHands = new ConcurrentHashMap<>();
+		dealerHand = new BlackJackHand();
+		playerHand = new BlackJackHand();
 		deck = Card.newDeck();
 		Collections.shuffle(deck);
+		gameInProgress = true;
+		playerStands = false;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder game = new StringBuilder("Blackjack game: " + Config.EOL);
+		game.append(String.format("Dealers hand (%s):" + Config.EOL, getDealerValue()));
+		game.append(dealerHand.printHand()).append(Config.EOL);
+		game.append(Config.EOL);
+		game.append(String.format("%s's hand (%s):" + Config.EOL, playerMention, getPlayerValue()));
+		game.append(playerHand.printHand()).append(Config.EOL);
+		if (getPlayerValue() > 21) {
+			game.append("**Bust!** I win, better luck next time.").append(Config.EOL);
+		} else if (!gameInProgress) {
+			game.append(Config.EOL);
+			if (getPlayerValue() == getDealerValue()) {
+				game.append("Looks like it ended in a draw");
+			} else if (getPlayerValue() > getDealerValue() || getDealerValue() > 21) {
+				game.append("Alright you win this one.");
+			} else {
+				game.append("Yey! I win");
+			}
+		}
+		return game.toString();
 	}
 }

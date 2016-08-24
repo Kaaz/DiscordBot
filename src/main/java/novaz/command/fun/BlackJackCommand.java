@@ -6,9 +6,11 @@ import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.util.Map;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -16,6 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * play a game of blackjack with the bot
  */
 public class BlackJackCommand extends AbstractCommand {
+	public final long DEALER_TURN_INTERVAL = 2000L;
+
 	public BlackJackCommand(NovaBot b) {
 		super(b);
 	}
@@ -45,27 +49,48 @@ public class BlackJackCommand extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (args.length == 0) {
 			if (playerGames.containsKey(author.getID())) {
-				return "Blackjack" + Config.EOL +
-						"You are still in a game. To finish type **blackjack stand**" + Config.EOL +
-						"Your Current hand (" + playerGames.get(author.getID()).getValue(author.getID()) + "):" + Config.EOL +
-						playerGames.get(author.getID()).printHand(author.getID());
+				return "You are still in a game. To finish type **blackjack stand**" + Config.EOL +
+						playerGames.get(author.getID()).toString();
 			}
 			return "You are not playing a game, to start use **blackjack hit**";
 		}
 		if (args[0].equalsIgnoreCase("hit")) {
-			if (!playerGames.containsKey(author.getID())) {
-				playerGames.put(author.getID(), new Blackjack());
+			if (!playerGames.containsKey(author.getID()) || !playerGames.get(author.getID()).isInProgress()) {
+				playerGames.put(author.getID(), new Blackjack(author.mention()));
 			}
-			playerGames.get(author.getID()).hit(author.getID());
-			return "Blackjack" + Config.EOL +
-					"Your Current hand (" + playerGames.get(author.getID()).getValue(author.getID()) + "):" + Config.EOL +
-					playerGames.get(author.getID()).printHand(author.getID());
+			if (playerGames.get(author.getID()).isInProgress() && !playerGames.get(author.getID()).playerIsStanding()) {
+				playerGames.get(author.getID()).hit();
+				return playerGames.get(author.getID()).toString();
+			}
+			return "";
 		} else if (args[0].equalsIgnoreCase("stand")) {
-			return TextHandler.get("command_not_implemented");
-		} else if (args[0].equalsIgnoreCase("reset")) {
-			playerGames.put(author.getID(), new Blackjack());
-			return "only this time";
+			if (playerGames.containsKey(author.getID())) {
+				if (!playerGames.get(author.getID()).playerIsStanding()) {
+					IMessage msg = bot.sendMessage(channel, playerGames.get(author.getID()).toString());
+					playerGames.get(author.getID()).stand();
+					bot.timer.scheduleAtFixedRate(new TimerTask() {
+						@Override
+						public void run() {
+							try {
+								boolean didHit = playerGames.get(author.getID()).dealerHit();
+								msg.edit(playerGames.get(author.getID()).toString());
+								if (!didHit) {
+									playerGames.remove(author.getID());
+									this.cancel();
+								}
+							} catch (Exception ignored) {
+								System.out.println(ignored);
+								this.cancel();
+								playerGames.remove(author.getID());
+							}
+						}
+					}, 1000L, DEALER_TURN_INTERVAL);
+				}
+				return "";
+			}
+			return "You are not playing a game, to start use **blackjack hit**";
 		}
-		return TextHandler.get("command_not_implemented");
+
+		return TextHandler.get("command_invalid_use");
 	}
 }
