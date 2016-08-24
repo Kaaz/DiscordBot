@@ -48,7 +48,7 @@ public class BlackJackCommand extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (args.length == 0) {
-			if (playerGames.containsKey(author.getID())) {
+			if (playerGames.containsKey(author.getID()) && playerGames.get(author.getID()).isInProgress()) {
 				return "You are still in a game. To finish type **blackjack stand**" + Config.EOL +
 						playerGames.get(author.getID()).toString();
 			}
