@@ -5,6 +5,8 @@ import com.google.code.chatterbotapi.ChatterBotFactory;
 import com.google.code.chatterbotapi.ChatterBotSession;
 import com.google.code.chatterbotapi.ChatterBotType;
 
+import java.util.Locale;
+
 public class ChatBotHandler {
 	int failedAttempts = 0;
 	ChatterBotSession botsession = null;
@@ -15,7 +17,7 @@ public class ChatBotHandler {
 	public ChatterBotSession getSession() throws Exception {
 		ChatterBotFactory factory = new ChatterBotFactory();
 		ChatterBot bot1 = factory.create(ChatterBotType.CLEVERBOT);
-		return bot1.createSession();
+		return bot1.createSession(Locale.ENGLISH);
 	}
 
 	public boolean isEnabled() {

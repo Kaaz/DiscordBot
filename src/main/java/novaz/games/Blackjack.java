@@ -69,7 +69,7 @@ public class Blackjack {
 	}
 
 	public boolean dealerHit() {
-		if (getPlayerValue() <= 21 && getDealerValue() < 21 && getDealerValue() < getPlayerValue()) {
+		if (getPlayerValue() <= 21 && getDealerValue() < 21 && getDealerValue() <= getPlayerValue()) {
 			dealerHand.add(drawCard());
 			return true;
 		}

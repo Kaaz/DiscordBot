@@ -10,6 +10,7 @@ import novaz.handler.guildsettings.defaults.SettingActiveChannels;
 import novaz.handler.guildsettings.defaults.SettingBotChannel;
 import novaz.handler.guildsettings.defaults.SettingCommandPrefix;
 import novaz.handler.guildsettings.defaults.SettingEnableChatBot;
+import novaz.util.Misc;
 import org.reflections.Reflections;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -176,14 +177,22 @@ public class NovaBot {
 			return new MessageBuilder(instance).withChannel(channel).withContent(content).build();
 		} catch (RateLimitException | DiscordException | MissingPermissionsException e) {
 			e.printStackTrace();
+			sendErrorToMe(e, "content", content);
 		}
 		return null;
+	}
+
+	public void handlePrivateMessage(IPrivateChannel channel, IUser author, IMessage message) {
+		if (!author.getID().equals(Config.CREATOR_ID) || !message.getContent().startsWith(Config.BOT_COMMAND_PREFIX)) {
+			this.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
+		}
 	}
 
 	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage message) {
 		if (!isReady || author.isBot()) {
 			return;
 		}
+
 		GuildSettings settings = GuildSettings.get(guild);
 		if (settings.getOrDefault(SettingActiveChannels.class).equals("mine") &&
 				!channel.getName().equalsIgnoreCase(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
@@ -196,6 +205,33 @@ public class NovaBot {
 				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class)) &&
 				channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			this.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
+		}
+	}
+
+	public void sendErrorToMe(Exception error, Object... extradetails) {
+		try {
+			IPrivateChannel pmChannel = this.instance.getOrCreatePMChannel(instance.getUserByID(Config.CREATOR_ID));
+			String errorMessage = "I'm sorry to inform you that I've encountered a **" + error.getClass().getName() + "**" + Config.EOL;
+			errorMessage += "Message: " + Config.EOL;
+			errorMessage += error.getLocalizedMessage() + Config.EOL;
+			String stack = "";
+			for (StackTraceElement stackTrace : error.getStackTrace()) {
+				stack += stackTrace.toString() + Config.EOL;
+			}
+			errorMessage += "Accompanied stacktrace: " + Config.EOL + Misc.makeTable(stack) + Config.EOL;
+			if (extradetails.length > 0) {
+				errorMessage += "Extra information: " + Config.EOL;
+				for (int i = 1; i < extradetails.length; i += 2) {
+					if (extradetails[i] != null) {
+						errorMessage += extradetails[i - 1] + " = " + extradetails[i] + Config.EOL;
+					} else if (extradetails[i - 1] != null) {
+						errorMessage += extradetails[i - 1];
+					}
+				}
+			}
+			pmChannel.sendMessage(errorMessage);
+		} catch (DiscordException | RateLimitException | MissingPermissionsException e) {
+			e.printStackTrace();
 		}
 	}
 

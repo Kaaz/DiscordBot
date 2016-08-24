@@ -4,6 +4,7 @@ import novaz.core.AbstractEventListener;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IPrivateChannel;
 
 /**
  * The bot recieves a message
@@ -21,6 +22,10 @@ public class MessageReceivedListener extends AbstractEventListener<MessageReceiv
 	@Override
 	public void handle(MessageReceivedEvent event) {
 		IMessage message = event.getMessage();
-		novaBot.handleMessage(message.getGuild(), message.getChannel(), message.getAuthor(), message);
+		if (event.getMessage().getChannel() instanceof IPrivateChannel) {
+			novaBot.handlePrivateMessage((IPrivateChannel) message.getChannel(), message.getAuthor(), message);
+		} else {
+			novaBot.handleMessage(message.getGuild(), message.getChannel(), message.getAuthor(), message);
+		}
 	}
 }
