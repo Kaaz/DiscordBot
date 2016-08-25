@@ -113,7 +113,7 @@ current               //info about the currently playing song
 current title <title> //sets title of current song
 current artist        //sets the artist of current song
 current correct       //accept the systems suggestion of title/artist
-current reversed      //accept the systems suggestion of title/artist in reverse [title=artist,artist=title]
+current reversed      //accept the systems suggestion in reverse [title=artist,artist=title]
 ```
 ### exit
 
@@ -167,7 +167,7 @@ Plays a song from youtube
 ```php
 play <youtubelink>        //download and plays song
 play <youtubevideocode>   //download and plays song
-play <part of youtubeTitle>      //shows search results
+play <part of title>      //shows search results
 play #<resultnumber>      //add result # to the queue
 ```
 ### playlist

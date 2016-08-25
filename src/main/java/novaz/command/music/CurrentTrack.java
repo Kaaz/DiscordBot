@@ -49,7 +49,7 @@ public class CurrentTrack extends AbstractCommand {
 				"current title <title> //sets title of current song",
 				"current artist        //sets the artist of current song",
 				"current correct       //accept the systems suggestion of title/artist",
-				"current reversed      //accept the systems suggestion of title/artist in reverse [title=artist,artist=title]",
+				"current reversed      //accept the systems suggestion in reverse [title=artist,artist=title]",
 		};
 	}
 
