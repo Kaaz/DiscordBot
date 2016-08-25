@@ -144,10 +144,10 @@ public class MusicPlayerHandler {
 				currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000;
 				music.lastplaydate = currentSongStartTimeInSeconds;
 				TMusic.update(music);
-				if (music.title.isEmpty()) {
+				if (music.youtubeTitle.isEmpty()) {
 					msg = "plz send help:: " + f.getName();
 				} else {
-					msg = "Now playing " + music.title;
+					msg = "Now playing " + music.youtubeTitle;
 				}
 			}
 		}

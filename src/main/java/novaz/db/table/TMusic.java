@@ -13,7 +13,7 @@ public class TMusic {
 	public static OMusic findByYoutubeId(String youtubeCode) {
 		OMusic music = new OMusic();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, youtubecode, filename, title, artist, lastplaydate, banned  " +
+				"SELECT id, youtubecode, filename, youtube_title,title, artist, lastplaydate, banned  " +
 						"FROM playlist " +
 						"WHERE youtubecode = ? ", youtubeCode)) {
 			if (rs.next()) {
@@ -28,7 +28,7 @@ public class TMusic {
 	public static OMusic findByFileName(String filename) {
 		OMusic music = new OMusic();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, youtubecode, filename, title, artist, lastplaydate, banned  " +
+				"SELECT id, youtubecode, filename, youtube_title,title, artist, lastplaydate, banned  " +
 						"FROM playlist " +
 						"WHERE filename = ? ", filename)) {
 			if (rs.next()) {
@@ -46,6 +46,7 @@ public class TMusic {
 		music.id = resultset.getInt("id");
 		music.youtubecode = resultset.getString("youtubecode");
 		music.filename = resultset.getString("filename");
+		music.youtubeTitle = resultset.getString("youtube_title");
 		music.title = resultset.getString("title");
 		music.artist = resultset.getString("artist");
 		music.lastplaydate = resultset.getLong("lastplaydate");
@@ -60,9 +61,9 @@ public class TMusic {
 		}
 		try {
 			WebDb.get().query(
-					"UPDATE playlist SET  youtubecode = ?, filename = ?, title = ?, artist = ?, lastplaydate = ?, banned = ? " +
+					"UPDATE playlist SET  youtubecode = ?, filename = ?, youtube_title = ?, title = ?,artist = ?, lastplaydate = ?, banned = ? " +
 							"WHERE id = ? ",
-					record.youtubecode, record.filename, record.title, record.artist, record.lastplaydate, record.banned, record.id
+					record.youtubecode, record.filename, record.youtubeTitle, record.title, record.artist, record.lastplaydate, record.banned, record.id
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -72,9 +73,9 @@ public class TMusic {
 	public static void insert(OMusic record) {
 		try {
 			record.id = WebDb.get().insert(
-					"INSERT INTO playlist(youtubecode, filename, title, artist, lastplaydate, banned) " +
-							"VALUES (?,?,?,?,?,?)",
-					record.youtubecode, record.filename, record.title, record.artist, record.lastplaydate, record.banned);
+					"INSERT INTO playlist(youtubecode, filename, youtube_title,title, artist, lastplaydate, banned) " +
+							"VALUES (?,?,?,?,?,?,?)",
+					record.youtubecode, record.filename, record.youtubeTitle, record.title, record.artist, record.lastplaydate, record.banned);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

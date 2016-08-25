@@ -2,6 +2,7 @@ package novaz.command.music;
 
 import novaz.core.AbstractCommand;
 import novaz.db.model.OMusic;
+import novaz.db.table.TMusic;
 import novaz.handler.MusicPlayerHandler;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
@@ -43,7 +44,13 @@ public class CurrentTrack extends AbstractCommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[]{};
+		return new String[]{
+				"current               //info about the currently playing song",
+				"current title <title> //sets title of current song",
+				"current artist        //sets the artist of current song",
+				"current correct       //accept the systems suggestion of title/artist",
+				"current reversed      //accept the systems suggestion of title/artist in reverse [title=artist,artist=title]",
+		};
 	}
 
 	@Override
@@ -53,11 +60,59 @@ public class CurrentTrack extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
+		boolean helpedOut = false;
 		OMusic song = bot.getCurrentlyPlayingSong(channel.getGuild());
 		if (song.id == 0) {
 			return TextHandler.get("command_currentlyplaying_nosong");
 		}
-		String ret = "Currently playing " + ":notes: " + song.title + Config.EOL + Config.EOL;
+		boolean titleIsEmpty = song.title == null || song.title.isEmpty();
+		boolean artistIsEmpty = song.artist == null || song.artist.isEmpty();
+		String guessTitle = "";
+		String guessArtist = "";
+
+		if (song.youtubeTitle.toLowerCase().chars().filter(e -> e == '-').count() == 1) {
+			String[] splitTitle = song.youtubeTitle.split("-");
+			guessTitle = splitTitle[1].trim();
+			guessArtist = splitTitle[0].trim();
+		}
+
+		if (args.length >= 1) {
+			String value = "";
+			for (int i = 1; i < args.length; i++) {
+				value += args[i] + " ";
+			}
+			value = value.trim();
+			if (args.length > 1 && args[0].equalsIgnoreCase("title")) {
+				song.title = value;
+				TMusic.update(song);
+				helpedOut = true;
+			} else if (args.length > 1 && args[0].equalsIgnoreCase("artist")) {
+				song.artist = value;
+				TMusic.update(song);
+				helpedOut = true;
+			} else if (args[0].equalsIgnoreCase("correct")) {
+				song.artist = guessArtist;
+				song.title = guessTitle;
+				TMusic.update(song);
+				helpedOut = true;
+			} else if (args[0].equalsIgnoreCase("reversed")) {
+				song.artist = guessTitle;
+				song.title = guessArtist;
+				TMusic.update(song);
+				helpedOut = true;
+			} else {
+				return TextHandler.get("invalid_command_use");
+			}
+			titleIsEmpty = song.title == null || song.title.isEmpty();
+			artistIsEmpty = song.artist == null || song.artist.isEmpty();
+		}
+		String ret = "Currently playing " + ":notes: ";
+		if (titleIsEmpty || artistIsEmpty) {
+			ret += song.youtubeTitle;
+		} else {
+			ret += song.artist + " - " + song.title;
+		}
+		ret += Config.EOL + Config.EOL;
 		MusicPlayerHandler musicHandler = MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot);
 		ret += getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL;
 		List<IUser> userlist = bot.getCurrentlyListening(channel.getGuild());
@@ -65,6 +120,26 @@ public class CurrentTrack extends AbstractCommand {
 			ret += ":headphones:  Listeners" + Config.EOL;
 			ArrayList<String> displayList = userlist.stream().map(IUser::getName).collect(Collectors.toCollection(ArrayList::new));
 			ret += Misc.makeTable(displayList);
+		}
+		if (titleIsEmpty || artistIsEmpty) {
+			ret += "I am missing some information about this song. Could you help me out:question:" + Config.EOL;
+			ret += "If you know the title or artist of this song type **current artist <name>** or **current title <name>**" + Config.EOL;
+			if (!titleIsEmpty) {
+				ret += "Title: " + song.title + Config.EOL;
+			}
+			if (!artistIsEmpty) {
+				ret += "Artist: " + song.artist + Config.EOL;
+			}
+			if (!helpedOut) {
+				ret += Config.EOL + "If I can make a guess:" + Config.EOL;
+				ret += "artist: **" + guessArtist + "**" + Config.EOL;
+				ret += "title: **" + guessTitle + "**" + Config.EOL;
+				ret += "If thats correct type **current correct** or if its reversed **current reversed**";
+
+			}
+		}
+		if (helpedOut) {
+			ret += "Thanks for helping out " + author.mention() + "! Have a :cookie:!";
 		}
 		return ret;
 	}

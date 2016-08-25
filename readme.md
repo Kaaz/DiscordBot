@@ -42,6 +42,7 @@ Current list of all available commands. See below for a more detailed list
 * [skip](#skip)
 * [slot](#slot)
 * [stop](#stop)
+* [system](#system)
 * [template](#template)
 * [test](#test)
 * [volume](#volume)
@@ -104,6 +105,16 @@ config <property> <value> //sets property
 
 retrieves information about the song currently playing
 
+
+#### Usage
+
+```php
+current               //info about the currently playing song
+current title <title> //sets title of current song
+current artist        //sets the artist of current song
+current correct       //accept the systems suggestion of title/artist
+current reversed      //accept the systems suggestion of title/artist in reverse [title=artist,artist=title]
+```
 ### exit
 
 completely shuts the bot down
@@ -156,7 +167,7 @@ Plays a song from youtube
 ```php
 play <youtubelink>        //download and plays song
 play <youtubevideocode>   //download and plays song
-play <part of title>      //shows search results
+play <part of youtubeTitle>      //shows search results
 play #<resultnumber>      //add result # to the queue
 ```
 ### playlist
@@ -209,6 +220,10 @@ slot play //plays the game
 ### stop
 
 stops playing music
+
+### system
+
+Shows memory usage
 
 ### template
 

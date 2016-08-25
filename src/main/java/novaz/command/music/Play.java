@@ -84,7 +84,7 @@ public class Play extends AbstractCommand {
 					int selectedIndex = Ints.tryParse(args[0].replace("#", ""));
 					if (userFilteredSongs.get(author.getID()).size() + 1 >= selectedIndex && selectedIndex > 0) {
 						int songId = userFilteredSongs.get(author.getID()).get(selectedIndex - 1);
-						try (ResultSet rs = WebDb.get().select("SELECT filename, title, artist FROM playlist WHERE id = ?", songId)) {
+						try (ResultSet rs = WebDb.get().select("SELECT filename, youtube_title, artist FROM playlist WHERE id = ?", songId)) {
 							if (rs.next()) {
 								bot.addSongToQueue(rs.getString("filename"), channel.getGuild());
 							}
@@ -119,12 +119,12 @@ public class Play extends AbstractCommand {
 				if (filecheck.exists()) {
 					if (justDownloaded) {
 						OMusic rec = TMusic.findByYoutubeId(videocode);
-						rec.title = YTUtil.getTitleFromPage(videocode);
+						rec.youtubeTitle = YTUtil.getTitleFromPage(videocode);
 						rec.youtubecode = videocode;
 						rec.filename = videocode + ".mp3";
 						TMusic.update(rec);
 						bot.addSongToQueue(videocode + ".mp3", channel.getGuild());
-						return ":notes: Found *" + rec.title + "* And added it to the queue";
+						return ":notes: Found *" + rec.youtubeTitle + "* And added it to the queue";
 					}
 					bot.addSongToQueue(videocode + ".mp3", channel.getGuild());
 					return TextHandler.get("music_added_to_queue");
@@ -134,7 +134,7 @@ public class Play extends AbstractCommand {
 				for (String s : args) {
 					concatArgs += s;
 				}
-				try (ResultSet rs = WebDb.get().select("SELECT id, levenshtein_ratio(LOWER(title),?) AS matchrating, title, filename " +
+				try (ResultSet rs = WebDb.get().select("SELECT id, levenshtein_ratio(LOWER(youtube_title),?) AS matchrating, youtube_title, filename " +
 						"FROM playlist " +
 						"ORDER BY matchrating DESC " +
 						"LIMIT 10", concatArgs)) {
@@ -148,7 +148,7 @@ public class Play extends AbstractCommand {
 						i++;
 						songIdArray.add(rs.getInt("id"));
 						userFilteredSongs.get(author.getID());
-						results += String.format("%2s %7s %s", i, rs.getInt("matchrating"), rs.getString("title")) + Config.EOL;
+						results += String.format("%2s %7s %s", i, rs.getInt("matchrating"), rs.getString("youtube_title")) + Config.EOL;
 					}
 					if (!results.isEmpty()) {
 						userFilteredSongs.put(author.getID(), songIdArray);

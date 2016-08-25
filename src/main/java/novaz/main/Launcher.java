@@ -20,7 +20,7 @@ public class Launcher {
 	}
 
 	/**
-	 * helper function, retrieves title for mp3 files which contain youtube videocode as filename
+	 * helper function, retrieves youtubeTitle for mp3 files which contain youtube videocode as filename
 	 */
 	public static void fixExistingYoutubeFiles() {
 		File folder = new File(Config.MUSIC_DIRECTORY);
@@ -28,7 +28,7 @@ public class Launcher {
 		for (String file : fileList) {
 			String videocode = file.replace(".mp3", "");
 			OMusic rec = TMusic.findByYoutubeId(videocode);
-			rec.title = YTUtil.getTitleFromPage(videocode);
+			rec.youtubeTitle = YTUtil.getTitleFromPage(videocode);
 			rec.youtubecode = videocode;
 			rec.filename = videocode + ".mp3";
 			TMusic.update(rec);

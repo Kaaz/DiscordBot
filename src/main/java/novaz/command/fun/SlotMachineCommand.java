@@ -58,10 +58,10 @@ public class SlotMachineCommand extends AbstractCommand {
 					try {
 						if (slotMachine.gameInProgress()) {
 							slotMachine.spin();
-							msg.edit(slotMachine.toString());
-						} else {
-							Slot slot = slotMachine.winSlot();
+						}
+						if (!slotMachine.gameInProgress()) {
 							String gameresult = "";
+							Slot slot = slotMachine.winSlot();
 							if (slot != null) {
 								gameresult = "You rolled 3 **" + slot.getName() + "** and won **" + slot.getTriplePayout() + "**";
 							} else {
@@ -69,13 +69,15 @@ public class SlotMachineCommand extends AbstractCommand {
 							}
 							msg.edit(slotMachine.toString() + Config.EOL + gameresult);
 							this.cancel();
+						} else {
+							msg.edit(slotMachine.toString());
 						}
 					} catch (DiscordException e) {
 						if (!e.getErrorMessage().contains("502")) {
-							bot.sendErrorToMe(e, "blackjackgame", author.getID());
+							bot.sendErrorToMe(e, "slotmachine", author.getID(), "channel", channel.mention());
 						}
 					} catch (Exception e) {
-						bot.sendErrorToMe(e, "blackjackgame", author.getID());
+						bot.sendErrorToMe(e, "slotmachine", author.getID(), "channel", channel.mention());
 						this.cancel();
 					}
 				}
