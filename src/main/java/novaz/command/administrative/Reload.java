@@ -31,6 +31,11 @@ public class Reload extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		bot.loadConfiguration();
 		return TextHandler.get("command_reload_success");

@@ -61,6 +61,11 @@ public class Play extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[0];
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.instance.getConnectedVoiceChannels().size() == 0) {
 			return TextHandler.get("music_not_in_voicechannel");

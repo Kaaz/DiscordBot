@@ -34,6 +34,11 @@ public class SystemCommand extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.isCreator(author)) {
 			final Runtime runtime = Runtime.getRuntime();
@@ -46,16 +51,16 @@ public class SystemCommand extends AbstractCommand {
 			long memoryAllocated = runtime.totalMemory();
 			long memoryFree = runtime.freeMemory();
 			sb.append("Free memory: ");
-			sb.append(format.format(memoryFree / 1024 / 1000)).append(" MB");
+			sb.append(format.format(memoryFree / 1048576)).append(" MB");
 			sb.append(Config.EOL);
 			sb.append("Allocated memory: ");
-			sb.append(format.format(memoryAllocated / 1024 / 1000)).append(" MB");
+			sb.append(format.format(memoryAllocated / 1048576)).append(" MB");
 			sb.append(Config.EOL);
 			sb.append("Max memory: ");
-			sb.append(format.format(memoryLimit / 1024 / 1000)).append(" MB");
+			sb.append(format.format(memoryLimit / 1048576)).append(" MB");
 			sb.append(Config.EOL);
 			sb.append("Total free memory: ");
-			sb.append(format.format((memoryFree + (memoryLimit - memoryAllocated)) / 1024 / 1000)).append(" MB");
+			sb.append(format.format((memoryFree + (memoryLimit - memoryAllocated)) / 1048576)).append(" MB");
 			sb.append(Config.EOL);
 			sb.append("```");
 			return sb.toString();

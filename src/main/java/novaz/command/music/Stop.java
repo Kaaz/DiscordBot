@@ -31,6 +31,11 @@ public class Stop extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[0];
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		bot.stopMusic(channel.getGuild());
 		return TextHandler.get("command_stop_success");

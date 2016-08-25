@@ -57,6 +57,11 @@ public class Cats extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		String catFact = getCatFact();
 		if (catFact != null) {

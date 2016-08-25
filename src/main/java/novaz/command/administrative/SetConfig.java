@@ -40,6 +40,11 @@ public class SetConfig extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		int count = args.length;
 		if (bot.isOwner(channel.getGuild(), author)) {

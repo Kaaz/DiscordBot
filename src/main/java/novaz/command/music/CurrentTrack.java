@@ -47,6 +47,11 @@ public class CurrentTrack extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[0];
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		OMusic song = bot.getCurrentlyPlayingSong(channel.getGuild());
 		if (song.id == 0) {

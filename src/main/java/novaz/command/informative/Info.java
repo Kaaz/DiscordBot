@@ -34,6 +34,11 @@ public class Info extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		String onlineFor = TimeUtil.getTimeAgo(bot.startupTimeStamp, false);
 		String cmdPrefix = GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);

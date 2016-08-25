@@ -35,6 +35,13 @@ public abstract class AbstractCommand {
 	 */
 	public abstract String[] getUsage();
 
+	/**
+	 * aliases to call the command
+	 *
+	 * @return array of aliases
+	 */
+	public abstract String[] getAliases();
+
 	public CommandCategory getCommandCategory() {
 		return commandCategory;
 	}

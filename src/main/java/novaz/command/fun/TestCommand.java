@@ -35,6 +35,11 @@ public class TestCommand extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (!bot.isCreator(author)) {
 			return "";

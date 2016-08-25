@@ -43,6 +43,11 @@ public class Playlist extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[0];
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (args.length == 0) {
 			MusicPlayerHandler player = MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot);

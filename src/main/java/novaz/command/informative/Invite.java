@@ -31,6 +31,11 @@ public class Invite extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		return "I am honored you'd want to invite me! :hugging: " + Config.EOL +
 				"You can add me to your guild/server with the following link : " + Config.EOL +

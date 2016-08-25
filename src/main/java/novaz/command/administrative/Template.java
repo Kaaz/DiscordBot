@@ -38,6 +38,11 @@ public class Template extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.isOwner(channel.getGuild(), author)) {
 			if (args.length == 0) {

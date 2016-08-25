@@ -36,6 +36,11 @@ public class CustomCommand extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (args.length >= 2 && Arrays.asList(valid_actions).contains(args[0])) {
 			if (args[0].equals("add") && args.length > 2) {

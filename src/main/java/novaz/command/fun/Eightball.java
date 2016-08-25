@@ -54,6 +54,11 @@ public class Eightball extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 
 		return ":crystal_ball: " + a[(int) (Math.random() * a.length)];

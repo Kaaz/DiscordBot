@@ -42,6 +42,11 @@ public class SlotMachineCommand extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (args.length >= 1 && args[0].equals("play")) {
 			final SlotMachine slotMachine = new SlotMachine();

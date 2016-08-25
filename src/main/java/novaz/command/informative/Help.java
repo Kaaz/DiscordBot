@@ -43,6 +43,11 @@ public class Help extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		String CommandPrefix = GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);
 		if (args.length > 0) {

@@ -31,6 +31,11 @@ public class Exit extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.isCreator(author)) {
 			bot.sendMessage(channel, "I am being killed :sob: farewell world! :wave: ");

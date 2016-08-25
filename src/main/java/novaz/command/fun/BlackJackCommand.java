@@ -46,6 +46,11 @@ public class BlackJackCommand extends AbstractCommand {
 	}
 
 	@Override
+	public String[] getAliases() {
+		return new String[]{};
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (args.length == 0) {
 			if (playerGames.containsKey(author.getID()) && playerGames.get(author.getID()).isInProgress()) {
