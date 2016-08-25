@@ -147,7 +147,11 @@ public class MusicPlayerHandler {
 				if (music.youtubeTitle.isEmpty()) {
 					msg = "plz send help:: " + f.getName();
 				} else {
-					msg = "Now playing " + music.youtubeTitle;
+					if (music.artist != null && music.title != null) {
+						msg = "Now playing " + music.artist + " - " + music.title;
+					} else {
+						msg = "Now playing " + music.youtubeTitle + " ** need details about song! ** check out **current**";
+					}
 				}
 			}
 		}
