@@ -8,6 +8,7 @@ import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.DiscordException;
 
 import java.util.TimerTask;
 
@@ -69,8 +70,12 @@ public class SlotMachineCommand extends AbstractCommand {
 							msg.edit(slotMachine.toString() + Config.EOL + gameresult);
 							this.cancel();
 						}
-					} catch (Exception ignored) {
-						System.out.println(ignored);
+					} catch (DiscordException e) {
+						if (!e.getErrorMessage().contains("502")) {
+							bot.sendErrorToMe(e, "blackjackgame", author.getID());
+						}
+					} catch (Exception e) {
+						bot.sendErrorToMe(e, "blackjackgame", author.getID());
 						this.cancel();
 					}
 				}

@@ -51,7 +51,7 @@ public class TestCommand extends AbstractCommand {
 		int index = 0;
 		for (Card c : cards) {
 			index++;
-			ret += " [" + c.toEmote() + "] ";
+			ret += " " + c.toEmote() + " ";
 			if (index % cardsPerLine == 0) {
 				ret += Config.EOL;
 			}

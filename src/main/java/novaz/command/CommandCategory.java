@@ -4,6 +4,7 @@ public enum CommandCategory {
 	INFORMATIVE("informative", ":information_source:", "Information"),
 	ADMINISTRATIVE("administrative", ":oncoming_police_car:", "Administration"),
 	MUSIC("music", ":musical_note:", "Music"),
+	ECONOMY("economy", ":moneybag:", "Money"),
 	FUN("fun", ":game_die:", "Fun"),
 	UNKNOWN("nopackage", ":question:", "Misc");
 	private final String packageName;

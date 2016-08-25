@@ -215,8 +215,14 @@ public class NovaBot {
 			errorMessage += "Message: " + Config.EOL;
 			errorMessage += error.getLocalizedMessage() + Config.EOL;
 			String stack = "";
-			for (StackTraceElement stackTrace : error.getStackTrace()) {
+			int maxTrace = 5;
+			StackTraceElement[] stackTrace1 = error.getStackTrace();
+			for (int i = 0; i < stackTrace1.length; i++) {
+				StackTraceElement stackTrace = stackTrace1[i];
 				stack += stackTrace.toString() + Config.EOL;
+				if (i > maxTrace) {
+					break;
+				}
 			}
 			errorMessage += "Accompanied stacktrace: " + Config.EOL + Misc.makeTable(stack) + Config.EOL;
 			if (extradetails.length > 0) {
