@@ -36,6 +36,6 @@ public class Exit extends AbstractCommand {
 			bot.sendMessage(channel, "I am being killed :sob: farewell world! :wave: ");
 			System.exit(0);
 		}
-		return TextHandler.get("command_joinme_joinedyou");
+		return TextHandler.get("command_no_permission");
 	}
 }
