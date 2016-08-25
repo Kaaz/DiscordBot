@@ -11,7 +11,7 @@ public class SettingActiveChannels extends AbstractGuildSetting {
 
 	@Override
 	public String getDefault() {
-		return "mine";
+		return "all";
 	}
 
 	@Override

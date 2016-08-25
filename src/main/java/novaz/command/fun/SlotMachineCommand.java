@@ -38,7 +38,7 @@ public class SlotMachineCommand extends AbstractCommand {
 	public String[] getUsage() {
 		return new String[]{
 				"slot      //displays info and payout table",
-				"slot play //plays the game",
+				"slot play //plays the game"
 		};
 	}
 
