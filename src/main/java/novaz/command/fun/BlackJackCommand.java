@@ -29,7 +29,7 @@ public class BlackJackCommand extends AbstractCommand {
 
 	@Override
 	public String getDescription() {
-		return "Is being worked on!";
+		return "play a game of blackjack!";
 	}
 
 	@Override
