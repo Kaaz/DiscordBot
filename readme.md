@@ -23,6 +23,7 @@ For more information about a command use **help \<commandname\>**
 Current list of all available commands. See below for a more detailed list
 
 * [8ball](#8ball)
+* [bank](#bank)
 * [blackjack](#blackjack)
 * [catfact](#catfact)
 * [command](#command)
@@ -45,6 +46,7 @@ Current list of all available commands. See below for a more detailed list
 * [system](#system)
 * [template](#template)
 * [test](#test)
+* [tic](#tic)
 * [volume](#volume)
 
 
@@ -62,9 +64,13 @@ On the first run it will generate a config file and stop running. You'll need to
 
 See what the magic 8ball has to say
 
+### bank
+
+For all your banking needs
+
 ### blackjack
 
-Is being worked on!
+play a game of blackjack!
 
 
 #### Usage
@@ -249,6 +255,10 @@ no one truly knows
 ```php
 lorem ipsum dolar sit amet
 ```
+### tic
+
+Play a game of tic tac toe with someone or with me!
+
 ### volume
 
 gets and sets the volume of the music

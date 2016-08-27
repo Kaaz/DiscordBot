@@ -132,12 +132,13 @@ public class Play extends AbstractCommand {
 			} else {
 				String concatArgs = "";
 				for (String s : args) {
-					concatArgs += s;
+					concatArgs += s.toLowerCase();
 				}
-				try (ResultSet rs = WebDb.get().select("SELECT id, levenshtein_ratio(LOWER(youtube_title),?) AS matchrating, youtube_title, filename " +
+				try (ResultSet rs = WebDb.get().select("SELECT id, GREATEST(levenshtein_ratio(LOWER(title),?),levenshtein_ratio(LOWER(artist),?)) AS matchrating, youtube_title,title,artist, filename " +
 						"FROM playlist " +
+						"WHERE artist IS NOT NULL AND title IS NOT NULL " +
 						"ORDER BY matchrating DESC " +
-						"LIMIT 10", concatArgs)) {
+						"LIMIT 10", concatArgs, concatArgs)) {
 					String results = "";
 					int i = 0;
 					ArrayList<Integer> songIdArray = new ArrayList<>();
@@ -148,13 +149,13 @@ public class Play extends AbstractCommand {
 						i++;
 						songIdArray.add(rs.getInt("id"));
 						userFilteredSongs.get(author.getID());
-						results += String.format("%2s %7s %s", i, rs.getInt("matchrating"), rs.getString("youtube_title")) + Config.EOL;
+						results += String.format("%2s %7s %s - %s", i, rs.getInt("matchrating"), rs.getString("artist"), rs.getString("title")) + Config.EOL;
 					}
 					if (!results.isEmpty()) {
 						userFilteredSongs.put(author.getID(), songIdArray);
 
 						return "Results ```" + Config.EOL +
-								String.format("%2s %7s %s", "#", "match %", "song") + Config.EOL +
+								String.format("%2s %7s %s - %s", "#", "match %", "artist", "title") + Config.EOL +
 								results + Config.EOL +
 								"```" + Config.EOL +
 								"Use the command  **play #<resultnumber>** to add it to the music queue. Eg: **play #1** to play the first result." + Config.EOL;

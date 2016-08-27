@@ -70,10 +70,10 @@ public class CurrentTrack extends AbstractCommand {
 		String guessTitle = "";
 		String guessArtist = "";
 
-		if (song.youtubeTitle.toLowerCase().chars().filter(e -> e == '-').count() == 1) {
+		if (song.youtubeTitle.toLowerCase().chars().filter(e -> e == '-').count() >= 1) {
 			String[] splitTitle = song.youtubeTitle.split("-");
-			guessTitle = splitTitle[1].trim();
-			guessArtist = splitTitle[0].trim();
+			guessTitle = splitTitle[splitTitle.length - 1].trim();
+			guessArtist = splitTitle[splitTitle.length - 2].trim();
 		}
 
 		if (args.length >= 1) {
@@ -130,7 +130,7 @@ public class CurrentTrack extends AbstractCommand {
 			if (!artistIsEmpty) {
 				ret += "Artist: " + song.artist + Config.EOL;
 			}
-			if (!helpedOut) {
+			if (!helpedOut && !"".equals(guessArtist) && !"".equals(guessTitle)) {
 				ret += Config.EOL + "If I can make a guess:" + Config.EOL;
 				ret += "artist: **" + guessArtist + "**" + Config.EOL;
 				ret += "title: **" + guessTitle + "**" + Config.EOL;
