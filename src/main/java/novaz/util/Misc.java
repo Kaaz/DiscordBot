@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Misc {
-	private static final Pattern mentionUserPattern = Pattern.compile("<@([0-9]{4,})>");
+	private static final Pattern mentionUserPattern = Pattern.compile("<@!?([0-9]{4,})>");
 	private static final String[] numberToEmote = {
 			":zero:",
 			":one:",

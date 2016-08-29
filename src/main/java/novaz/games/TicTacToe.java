@@ -77,7 +77,8 @@ public class TicTacToe {
 		if (isValidMove(player, boardIndex)) {
 			gameState = GameState.IN_PROGRESS;
 			board[boardIndex].setPlayer(currentPlayer);
-			currentPlayer = currentPlayer + 1 % PLAYERS_IN_GAME;
+			currentPlayer = (currentPlayer + 1) % PLAYERS_IN_GAME;
+			getWinner();
 		}
 	}
 
@@ -96,7 +97,10 @@ public class TicTacToe {
 	 */
 	public int getWinner() {
 		for (int[] combo : winCombos) {
-			if (!board[combo[0]].isFree() && board[combo[0]].getPlayer() == board[combo[1]].getPlayer() && board[combo[1]].getPlayer() == board[combo[2]].getPlayer()) {
+			if (board[combo[0]].isFree()) {
+				continue;
+			}
+			if (board[combo[0]].getPlayer() == board[combo[1]].getPlayer() && board[combo[1]].getPlayer() == board[combo[2]].getPlayer()) {
 				gameState = GameState.OVER;
 				return board[combo[0]].getPlayer();
 			}
@@ -126,9 +130,14 @@ public class TicTacToe {
 			game.append(TileState.X.getEmoticon()).append(" = ").append(players[0].getName()).append(Config.EOL);
 			game.append(TileState.O.getEmoticon()).append(" = ").append(players[1].getName()).append(Config.EOL);
 			game.append("It's the turn of ").append(players[currentPlayer].mention()).append(Config.EOL);
+			game.append("to play type **tic <number>**");
 		}
 		if (gameState.equals(GameState.OVER)) {
-			game.append("Its over! The winner is ").append(players[getWinner()].mention());
+			if (getWinner() == PLAYERS_IN_GAME) {
+				game.append("Its over! And its a draw!");
+			} else {
+				game.append("Its over! The winner is ").append(players[getWinner()].mention());
+			}
 		}
 		return game.toString();
 	}

@@ -10,23 +10,23 @@ public class TicTile {
 
 	public void setPlayer(int player) {
 		switch (player) {
-			case 1:
+			case 0:
 				this.player = player;
 				state = TileState.X;
 				break;
-			case 2:
+			case 1:
 				this.player = player;
 				state = TileState.O;
 				break;
 			default:
-				player = 0;
+				this.player = -1;
 				state = TileState.FREE;
 		}
 	}
 
 	private void reset() {
 		state = TileState.FREE;
-		player = 0;
+		player = -1;
 	}
 
 	public boolean isFree() {
