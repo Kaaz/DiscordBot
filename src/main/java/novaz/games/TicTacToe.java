@@ -6,6 +6,8 @@ import novaz.main.Config;
 import novaz.util.Misc;
 import sx.blah.discord.handle.obj.IUser;
 
+import java.util.Random;
+
 public class TicTacToe {
 	private static final int TILES_ON_BOARD = 9;
 	private static final int PLAYERS_IN_GAME = 2;
@@ -44,6 +46,10 @@ public class TicTacToe {
 		gameState = GameState.INITIALIZING;
 	}
 
+	public boolean waitingForPlayer() {
+		return gameState.equals(GameState.INITIALIZING);
+	}
+
 	/**
 	 * adds a player to the game
 	 *
@@ -51,14 +57,18 @@ public class TicTacToe {
 	 * @return if it added the player to the game or not
 	 */
 	public boolean addPlayer(IUser player) {
+		if (!gameState.equals(GameState.INITIALIZING)) {
+			return false;
+		}
 		for (int i = 0; i < PLAYERS_IN_GAME; i++) {
 			if (players[i] == null) {
 				players[i] = player;
+				if (i == (PLAYERS_IN_GAME - 1)) {
+					currentPlayer = new Random().nextInt(PLAYERS_IN_GAME);
+					gameState = GameState.READY;
+				}
 				return true;
 			}
-		}
-		if (players[PLAYERS_IN_GAME - 1] != null) {
-			gameState = GameState.READY;
 		}
 		return false;
 	}
@@ -76,7 +86,7 @@ public class TicTacToe {
 	}
 
 	public boolean isValidMove(IUser player, int boardIndex) {
-		return players[currentPlayer].equals(player) && boardIndex < TILES_ON_BOARD && board[boardIndex].isFree();
+		return !waitingForPlayer() && players[currentPlayer].equals(player) && boardIndex < TILES_ON_BOARD && board[boardIndex].isFree();
 	}
 
 	/**
@@ -97,13 +107,14 @@ public class TicTacToe {
 	@Override
 	public String toString() {
 		StringBuilder game = new StringBuilder();
+		game.append("Game of Tic").append(Config.EOL);
 		for (int i = 0; i < TILES_ON_BOARD; i++) {
 			if (board[i].getState().equals(TileState.FREE)) {
 				game.append(Misc.numberToEmote(i + 1));
 			} else {
 				game.append(board[i].getState().getEmoticon());
 			}
-			if (i + 1 % 3 == 0) {
+			if ((i + 1) % 3 == 0) {
 				game.append(Config.EOL);
 			}
 		}

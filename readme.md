@@ -257,8 +257,17 @@ lorem ipsum dolar sit amet
 ```
 ### tic
 
-Play a game of tic tac toe with someone or with me!
+Play a game of tic tac toe with someone
 
+
+#### Usage
+
+```php
+tic new      //starts a new session and wait for someone to join 
+tic cancel   //cancels the current session 
+tic @<user>  //requests to play a game with <user> 
+tic 1-9      //claims the tile  
+```
 ### volume
 
 gets and sets the volume of the music

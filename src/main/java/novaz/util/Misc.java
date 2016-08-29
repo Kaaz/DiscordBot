@@ -3,10 +3,14 @@ package novaz.util;
 import novaz.main.Config;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Misc {
-
+	private static final Pattern mentionUserPattern = Pattern.compile("<@([0-9]{4,})>");
 	private static final String[] numberToEmote = {
 			":zero:",
 			":one:",
@@ -20,6 +24,31 @@ public class Misc {
 			":nine:",
 			":ten:"
 	};
+	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+		for (Map.Entry<T, E> entry : map.entrySet()) {
+			if (Objects.equals(value, entry.getValue())) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+	/**
+	 * Checks if the string contains a mention for a user
+	 *
+	 * @return found a mention
+	 */
+	public static boolean isUserMention(String input) {
+		return mentionUserPattern.matcher(input).matches();
+	}
+
+	public static String mentionToId(String mention) {
+		String id = "";
+		Matcher matcher = mentionUserPattern.matcher(mention);
+		if (matcher.find()) {
+			id = matcher.group(1);
+		}
+		return id;
+	}
 
 	public static String numberToEmote(int number) {
 		if (number >= 0 && number < numberToEmote.length) {
