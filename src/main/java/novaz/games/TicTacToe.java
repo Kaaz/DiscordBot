@@ -3,6 +3,7 @@ package novaz.games;
 import novaz.games.tictactoe.TicTile;
 import novaz.games.tictactoe.TileState;
 import novaz.main.Config;
+import novaz.util.Misc;
 import sx.blah.discord.handle.obj.IUser;
 
 public class TicTacToe {
@@ -66,6 +67,7 @@ public class TicTacToe {
 		if (isValidMove(player, boardIndex)) {
 			gameState = GameState.IN_PROGRESS;
 			board[boardIndex].setPlayer(currentPlayer);
+			currentPlayer = currentPlayer + 1 % PLAYERS_IN_GAME;
 		}
 	}
 
@@ -96,7 +98,11 @@ public class TicTacToe {
 	public String toString() {
 		StringBuilder game = new StringBuilder();
 		for (int i = 0; i < TILES_ON_BOARD; i++) {
-			game.append(board[i].getState().getEmoticon());
+			if (board[i].getState().equals(TileState.FREE)) {
+				game.append(Misc.numberToEmote(i + 1));
+			} else {
+				game.append(board[i].getState().getEmoticon());
+			}
 			if (i + 1 % 3 == 0) {
 				game.append(Config.EOL);
 			}
