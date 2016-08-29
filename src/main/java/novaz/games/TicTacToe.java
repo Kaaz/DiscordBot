@@ -93,7 +93,7 @@ public class TicTacToe {
 	/**
 	 * checks if a player has won
 	 *
-	 * @return index of winner, -1 if there is no winner
+	 * @return index of winner, -1 if there is no winner, PLAYERS_IN_GAME if its a draw
 	 */
 	public int getWinner() {
 		for (int[] combo : winCombos) {
@@ -105,7 +105,12 @@ public class TicTacToe {
 				return board[combo[0]].getPlayer();
 			}
 		}
-		return -1;
+		for (TicTile tt : board) {
+			if (tt.isFree()) {
+				return -1;
+			}
+		}
+		return PLAYERS_IN_GAME;
 	}
 
 	@Override
