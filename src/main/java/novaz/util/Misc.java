@@ -7,6 +7,27 @@ import java.util.StringJoiner;
 
 public class Misc {
 
+	private static final String[] numberToEmote = {
+			":zero:",
+			":one:",
+			":two:",
+			":three:",
+			":four:",
+			":five:",
+			":six:",
+			":seven:",
+			":eight:",
+			":nine:",
+			":ten:"
+	};
+
+	public static String numberToEmote(int number) {
+		if (number >= 0 && number < numberToEmote.length) {
+			return numberToEmote[number];
+		}
+		return ":x:";
+	}
+
 	/**
 	 * @param items items in the table
 	 * @return formatted table
