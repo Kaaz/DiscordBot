@@ -125,12 +125,12 @@ public class NovaBot {
 
 	public void addCustomCommand(IGuild server, String command, String output) {
 		OServer serv = TServers.findBy(server.getID());
-		commandHandler.addCustomCommand(serv.id, command, output);
+		commandHandler.addCustomCommand(command, output);
 	}
 
 	public void removeCustomCommand(IGuild server, String command) {
 		OServer serv = TServers.findBy(server.getID());
-		commandHandler.removeCustomCommand(serv.id, command);
+		commandHandler.removeCustomCommand(command);
 	}
 
 	private void registerHandlers() {

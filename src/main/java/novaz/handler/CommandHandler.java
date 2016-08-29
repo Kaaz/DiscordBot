@@ -93,7 +93,7 @@ public class CommandHandler {
 		}
 	}
 
-	public boolean shouldCleanUpMessages(IGuild guild, IChannel channel) {
+	private boolean shouldCleanUpMessages(IGuild guild, IChannel channel) {
 		String cleanupMethod = GuildSettings.get(guild).getOrDefault(SettingCleanupMessages.class);
 		String mychannel = GuildSettings.get(guild).getOrDefault(SettingBotChannel.class);
 		if (cleanupMethod.equals("yes")) {
@@ -133,36 +133,34 @@ public class CommandHandler {
 
 	public void load() {
 		loadCommands();
-		loadCustomCommands(1);
+		loadCustomCommands();
 	}
 
 	/**
 	 * Add a custom static command
 	 *
-	 * @param serverId id of server
-	 * @param input    command
-	 * @param output   return
+	 * @param input  command
+	 * @param output return
 	 */
-	public void addCustomCommand(int serverId, String input, String output) {
+	public void addCustomCommand(String input, String output) {
 		try {
-			WebDb.get().query("DELETE FROM commands WHERE input = ? AND server = ?", input, serverId);
-			WebDb.get().query("INSERT INTO commands (server,input,output) VALUES(?, ?, ?)", serverId, input, output);
+			WebDb.get().query("DELETE FROM commands WHERE input = ? AND server = 1", input);
+			WebDb.get().query("INSERT INTO commands (server,input,output) VALUES(1, ?, ?)", input, output);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		loadCustomCommands(serverId);
+		loadCustomCommands();
 	}
 
 	/**
 	 * removes a custom command
 	 *
-	 * @param serverId id of server
-	 * @param input    command
+	 * @param input command
 	 */
-	public void removeCustomCommand(int serverId, String input) {
+	public void removeCustomCommand(String input) {
 		try {
-			WebDb.get().query("DELETE FROM commands WHERE input = ? AND server = ?", input, serverId);
-			loadCustomCommands(serverId);
+			WebDb.get().query("DELETE FROM commands WHERE input = ?", input);
+			loadCustomCommands();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -191,10 +189,8 @@ public class CommandHandler {
 
 	/**
 	 * Loads all the custom commands
-	 *
-	 * @param serverId id of server
 	 */
-	private void loadCustomCommands(int serverId) {
+	private void loadCustomCommands() {
 		customCommands = new HashMap<>();
 		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands ")) {
 			while (r != null && r.next()) {
