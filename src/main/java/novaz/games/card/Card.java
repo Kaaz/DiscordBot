@@ -28,7 +28,7 @@ public class Card {
 		return "[" + suit.getEmoticon() + rank.getEmoticon() + "]";
 	}
 
-	private static final List<Card> protoDeck = new ArrayList<Card>();
+	private static final List<Card> protoDeck = new ArrayList<>();
 
 	static {
 		for (CardSuit suit : CardSuit.values()) {
