@@ -59,6 +59,18 @@ public class Config {
 	@Option
 	public static String DB_NAME = "discord";
 
+	//Use trello integration
+	@Option
+	public static String TRELLO_ACTIVE = "false";
+
+	//Use trello integration
+	@Option
+	public static String TRELLO_API_KEY = "api-key-here";
+
+	//Use trello integration
+	@Option
+	public static String TRELLO_OAUTH_SECRET = "secret-here";
+
 	public static String EOL = System.getProperty("line.separator");
 	public static long DELETE_MESSAGES_AFTER = 120000;
 	public static boolean SHOW_KEYPHRASE = false;

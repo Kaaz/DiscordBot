@@ -11,18 +11,17 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Properties;
 import java.util.Set;
 
 public class ConfigurationBuilder {
 	private final File configFile;
-	private final Properties properties;
+	private final ConfigurationProperties properties;
 	private final Class configclass;
 
 	public ConfigurationBuilder(Class configclass, File configFile) {
 		this.configFile = configFile;
 		this.configclass = configclass;
-		this.properties = new Properties();
+		this.properties = new ConfigurationProperties();
 	}
 
 
