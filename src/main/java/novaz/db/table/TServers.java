@@ -5,11 +5,27 @@ import novaz.db.WebDb;
 import novaz.db.model.OServer;
 
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
+ * data communication with the table `servers`
  * Created on 10-8-2016
  */
 public class TServers {
+	private static Map<String, Integer> servercache = new HashMap<>();
+
+	public static int getCachedId(String discordId) {
+		if (!servercache.containsKey(discordId)) {
+			OServer server = findBy(discordId);
+			if (server.id == 0) {
+				insert(server);
+			}
+			servercache.put(discordId, server.id);
+		}
+		return servercache.get(discordId);
+	}
+
 	public static OServer findBy(String discordId) {
 		OServer s = new OServer();
 		try (ResultSet rs = WebDb.get().select(

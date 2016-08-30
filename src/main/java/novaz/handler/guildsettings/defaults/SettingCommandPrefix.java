@@ -1,6 +1,7 @@
 package novaz.handler.guildsettings.defaults;
 
 import novaz.handler.guildsettings.AbstractGuildSetting;
+import novaz.main.Config;
 
 
 public class SettingCommandPrefix extends AbstractGuildSetting {
@@ -11,7 +12,7 @@ public class SettingCommandPrefix extends AbstractGuildSetting {
 
 	@Override
 	public String getDefault() {
-		return "!";
+		return Config.BOT_COMMAND_PREFIX;
 	}
 
 	@Override

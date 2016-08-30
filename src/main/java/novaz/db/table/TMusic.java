@@ -9,6 +9,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * data communication with the table `playlist`
+ */
 public class TMusic {
 	public static OMusic findByYoutubeId(String youtubeCode) {
 		OMusic music = new OMusic();

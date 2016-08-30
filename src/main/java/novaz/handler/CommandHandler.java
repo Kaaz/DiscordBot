@@ -3,6 +3,9 @@ package novaz.handler;
 import novaz.command.CommandCategory;
 import novaz.core.AbstractCommand;
 import novaz.db.WebDb;
+import novaz.db.table.TCommandLog;
+import novaz.db.table.TServers;
+import novaz.db.table.TUser;
 import novaz.handler.guildsettings.defaults.SettingBotChannel;
 import novaz.handler.guildsettings.defaults.SettingCleanupMessages;
 import novaz.handler.guildsettings.defaults.SettingCommandPrefix;
@@ -71,6 +74,13 @@ public class CommandHandler {
 			String commandOutput = chatCommands.get(input[0]).execute(args, channel, author);
 			if (!commandOutput.isEmpty()) {
 				mymsg = bot.sendMessage(channel, commandOutput);
+			}
+			if (Config.BOT_COMMAND_LOGGING.equalsIgnoreCase("true")) {
+				StringBuilder usedArguments = new StringBuilder();
+				for (String arg : args) {
+					usedArguments.append(arg).append(" ");
+				}
+				TCommandLog.saveLog(TUser.getCachedId(author.getID()), TServers.getCachedId(guild.getID()), input[0], usedArguments.toString().trim());
 			}
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));

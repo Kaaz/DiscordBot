@@ -5,11 +5,28 @@ import novaz.db.WebDb;
 import novaz.db.model.OUser;
 
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
+ * data communication with the table `users`
  * Created on 10-8-2016
  */
 public class TUser {
+
+	private static Map<String, Integer> userCache = new HashMap<>();
+
+	public static int getCachedId(String discordId) {
+		if (!userCache.containsKey(discordId)) {
+			OUser user = findBy(discordId);
+			if (user.id == 0) {
+				insert(user);
+			}
+			userCache.put(discordId, user.id);
+		}
+		return userCache.get(discordId);
+	}
+
 	public static OUser findBy(String discordId) {
 		OUser s = new OUser();
 		try (ResultSet rs = WebDb.get().select(
