@@ -13,7 +13,7 @@ public class TrackFinishedListener extends AbstractEventListener<TrackFinishEven
 	}
 
 	@Override
-	public boolean listenerActivated() {
+	public boolean listenerIsActivated() {
 		return true;
 	}
 

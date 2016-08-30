@@ -116,7 +116,9 @@ public class NovaBot {
 		for (Class<? extends AbstractEventListener> c : classes) {
 			try {
 				AbstractEventListener eventListener = c.getConstructor(NovaBot.class).newInstance(this);
-				instance.getDispatcher().registerListener(eventListener);
+				if (eventListener.listenerIsActivated()) {
+					instance.getDispatcher().registerListener(eventListener);
+				}
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				e.printStackTrace();
 			}

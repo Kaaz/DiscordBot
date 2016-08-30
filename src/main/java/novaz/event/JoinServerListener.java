@@ -19,7 +19,7 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 	}
 
 	@Override
-	public boolean listenerActivated() {
+	public boolean listenerIsActivated() {
 		return true;
 	}
 

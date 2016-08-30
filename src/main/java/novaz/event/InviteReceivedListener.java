@@ -16,8 +16,8 @@ public class InviteReceivedListener extends AbstractEventListener<InviteReceived
 	}
 
 	@Override
-	public boolean listenerActivated() {
-		return true;
+	public boolean listenerIsActivated() {
+		return false;
 	}
 
 	@Override

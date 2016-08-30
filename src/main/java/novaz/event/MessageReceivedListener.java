@@ -15,7 +15,7 @@ public class MessageReceivedListener extends AbstractEventListener<MessageReceiv
 	}
 
 	@Override
-	public boolean listenerActivated() {
+	public boolean listenerIsActivated() {
 		return true;
 	}
 

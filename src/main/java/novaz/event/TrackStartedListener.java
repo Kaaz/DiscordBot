@@ -13,7 +13,7 @@ public class TrackStartedListener extends AbstractEventListener<TrackStartEvent>
 	}
 
 	@Override
-	public boolean listenerActivated() {
+	public boolean listenerIsActivated() {
 		return true;
 	}
 

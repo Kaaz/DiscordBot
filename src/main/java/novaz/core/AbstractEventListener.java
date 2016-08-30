@@ -11,5 +11,5 @@ public abstract class AbstractEventListener<eventType extends Event> implements 
 		this.novaBot = novaBot;
 	}
 
-	abstract public boolean listenerActivated();
+	abstract public boolean listenerIsActivated();
 }
