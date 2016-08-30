@@ -24,6 +24,7 @@ public class Misc {
 			":nine:",
 			":ten:"
 	};
+
 	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
 		for (Map.Entry<T, E> entry : map.entrySet()) {
 			if (Objects.equals(value, entry.getValue())) {
@@ -32,6 +33,7 @@ public class Misc {
 		}
 		return null;
 	}
+
 	/**
 	 * Checks if the string contains a mention for a user
 	 *

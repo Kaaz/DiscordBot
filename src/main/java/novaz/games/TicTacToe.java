@@ -110,6 +110,7 @@ public class TicTacToe {
 				return -1;
 			}
 		}
+		gameState = GameState.OVER;
 		return PLAYERS_IN_GAME;
 	}
 
