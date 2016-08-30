@@ -7,8 +7,6 @@ import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
-import java.text.NumberFormat;
-
 /**
  * !system
  * shows status of the bot's system
@@ -42,10 +40,6 @@ public class SystemCommand extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.isCreator(author)) {
 			final Runtime runtime = Runtime.getRuntime();
-			NumberFormat format = NumberFormat.getInstance();
-			format.setMinimumFractionDigits(2);
-			format.setMaximumFractionDigits(2);
-			format.setGroupingUsed(false);
 			StringBuilder sb = new StringBuilder();
 			long memoryLimit = runtime.maxMemory();
 			long memoryAllocated = runtime.totalMemory();
