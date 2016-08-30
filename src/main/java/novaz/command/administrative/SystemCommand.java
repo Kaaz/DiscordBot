@@ -46,25 +46,38 @@ public class SystemCommand extends AbstractCommand {
 			format.setMinimumFractionDigits(2);
 			format.setMaximumFractionDigits(2);
 			format.setGroupingUsed(false);
-			StringBuilder sb = new StringBuilder().append("```xl").append(Config.EOL);
+			StringBuilder sb = new StringBuilder();
 			long memoryLimit = runtime.maxMemory();
 			long memoryAllocated = runtime.totalMemory();
 			long memoryFree = runtime.freeMemory();
-			sb.append("Free memory: ");
-			sb.append(format.format(memoryFree / 1048576)).append(" MB");
-			sb.append(Config.EOL);
-			sb.append("Allocated memory: ");
-			sb.append(format.format(memoryAllocated / 1048576)).append(" MB");
-			sb.append(Config.EOL);
-			sb.append("Max memory: ");
-			sb.append(format.format(memoryLimit / 1048576)).append(" MB");
-			sb.append(Config.EOL);
-			sb.append("Total free memory: ");
-			sb.append(format.format((memoryFree + (memoryLimit - memoryAllocated)) / 1048576)).append(" MB");
-			sb.append(Config.EOL);
-			sb.append("```");
+
+			sb.append("System information: ").append(Config.EOL);
+			sb.append("Memory").append(Config.EOL);
+			sb.append(getProgressbar(memoryAllocated, memoryLimit));
+			sb.append(" [ ").append(numberInMb(memoryAllocated)).append(" / ").append(numberInMb(memoryLimit)).append(" ]").append(Config.EOL);
 			return sb.toString();
 		}
 		return TextHandler.get("command_no_permission");
 	}
+
+	private String getProgressbar(long current, long max) {
+		String bar = "";
+		final String BLOCK_INACTIVE = "▬";
+		final String BLOCK_ACTIVE = ":black_circle:";
+		final int BLOCK_PARTS = 12;
+		int activeBLock = (int) (((float) current / (float) max) * (float) BLOCK_PARTS);
+		for (int i = 0; i < BLOCK_PARTS; i++) {
+			if (i == activeBLock) {
+				bar += BLOCK_ACTIVE;
+			} else {
+				bar += BLOCK_INACTIVE;
+			}
+		}
+		return bar;
+	}
+
+	private String numberInMb(long number) {
+		return "" + (number / (1048576L)) + " mb";
+	}
+
 }
