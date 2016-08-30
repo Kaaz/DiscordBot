@@ -1,4 +1,4 @@
-package novaz.core;
+package novaz.core.configuration;
 
 
 import java.util.Collections;

@@ -12,7 +12,7 @@ public class Launcher {
 
 	public static void main(String[] args) throws Exception {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
-		if (Config.BOT_ENABLED.equalsIgnoreCase("true")) {
+		if (Config.BOT_ENABLED) {
 			NovaBot nb = new NovaBot();
 		} else {
 			Logger.fatal("Bot not enabled, enable it in the config. You can do this by setting bot_enabled=true");

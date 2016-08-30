@@ -5,7 +5,7 @@ import novaz.core.annotation.Option;
 public class Config {
 	//bot enabled? must be set to true in order to run
 	@Option
-	public static String BOT_ENABLED = "false";
+	public static boolean BOT_ENABLED = false;
 
 	//display name of the bot
 	@Option
@@ -17,7 +17,7 @@ public class Config {
 
 	//prefix for all commands !help etc.
 	@Option
-	public static String BOT_CHATTING_ENABLED = "true";
+	public static boolean BOT_CHATTING_ENABLED = true;
 
 	//default prefix to mark messages as commands
 	@Option
@@ -25,11 +25,11 @@ public class Config {
 
 	//save the usage of commands?
 	@Option
-	public static String BOT_COMMAND_LOGGING = "true";
+	public static boolean BOT_COMMAND_LOGGING = true;
 
 	//Reply to non existing commands?
 	@Option
-	public static String BOT_COMMAND_SHOW_UNKNOWN = "false";
+	public static boolean BOT_COMMAND_SHOW_UNKNOWN = false;
 
 	//location of youtubedl.exe
 	@Option
@@ -61,7 +61,7 @@ public class Config {
 
 	//Use trello integration
 	@Option
-	public static String TRELLO_ACTIVE = "false";
+	public static boolean TRELLO_ACTIVE = false;
 
 	//Use trello integration
 	@Option
