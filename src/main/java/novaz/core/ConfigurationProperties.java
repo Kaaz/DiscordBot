@@ -1,7 +1,10 @@
 package novaz.core;
 
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Vector;
 
 /**
  * Created on 30-8-2016
@@ -17,12 +20,7 @@ public class ConfigurationProperties extends Properties {
 			keyList.add(keysEnum.nextElement());
 		}
 
-		Collections.sort(keyList, new Comparator<Object>() {
-			@Override
-			public int compare(Object o1, Object o2) {
-				return o1.toString().compareTo(o2.toString());
-			}
-		});
+		Collections.sort(keyList, (o1, o2) -> o1.toString().compareTo(o2.toString()));
 
 		return keyList.elements();
 	}
