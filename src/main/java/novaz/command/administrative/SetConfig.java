@@ -10,6 +10,9 @@ import novaz.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,15 +52,21 @@ public class SetConfig extends AbstractCommand {
 		int count = args.length;
 		if (bot.isOwner(channel.getGuild(), author)) {
 			if (count == 0) {
-				String ret = "```ini" + Config.EOL;
-				ret += "Current Settings for " + channel.getGuild().getName() + Config.EOL + Config.EOL;
 				Map<String, String> settings = GuildSettings.get(channel.getGuild()).getSettings();
-				ret += String.format("%-24s| %-16s| %s", "Setting name", "current value", "default value") + Config.EOL;
-				ret += "------------------------+-----------------+-----------------" + Config.EOL;
+				String ret = "Current Settings for " + channel.getGuild().getName() + Config.EOL;
+				List<List<String>> data = new ArrayList<>();
 				for (Map.Entry<String, String> entry : settings.entrySet()) {
-					ret += String.format("%-24s| %-16s| %s", entry.getKey(), entry.getValue(), DefaultGuildSettings.getDefault(entry.getKey())) + Config.EOL;
+					List<String> row = new ArrayList<>();
+					row.add(entry.getKey());
+					row.add(entry.getValue());
+					row.add(DefaultGuildSettings.getDefault(entry.getKey()));
+					data.add(row);
 				}
-				return ret + "```";
+				List<String> headers = new ArrayList<>();
+				Collections.addAll(headers, "Setting name", "Current value", "Default value");
+				ret += Misc.makeAsciTable(headers,
+						data);
+				return ret;
 			} else {
 				if (!DefaultGuildSettings.isValidKey(args[0])) {
 					return TextHandler.get("command_config_key_not_exists");

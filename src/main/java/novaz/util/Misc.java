@@ -1,5 +1,6 @@
 package novaz.util;
 
+import com.google.common.base.Strings;
 import novaz.main.Config;
 
 import java.util.List;
@@ -123,6 +124,57 @@ public class Misc {
 			return twoDigitString(hours) + ":" + twoDigitString(minutes) + ":" + twoDigitString(seconds);
 		}
 		return twoDigitString(minutes) + ":" + twoDigitString(seconds);
+	}
+
+	public static String makeAsciTable(List<String> headers, List<List<String>> table) {
+		StringBuilder sb = new StringBuilder();
+		int padding = 1;
+		int[] widths = new int[headers.size()];
+		for (int i = 0; i < widths.length; i++) {
+			widths[i] = 0;
+		}
+		for (int i = 0; i < headers.size(); i++) {
+			if (headers.get(i).length() > widths[i]) {
+				widths[i] = headers.get(i).length();
+			}
+		}
+		for (List<String> row : table) {
+			for (int i = 0; i < row.size(); i++) {
+				String cell = row.get(i);
+				if (cell.length() > widths[i]) {
+					widths[i] = cell.length();
+				}
+			}
+		}
+		sb.append("```xl").append(Config.EOL);
+		String formatLine = "┃";
+		for (int width : widths) {
+			formatLine += " %-" + width + "s ┃";
+		}
+		formatLine += Config.EOL;
+		sb.append(appendSeperatorLine("┏", "┳", "┓", padding, widths));
+		sb.append(String.format(formatLine, headers.toArray()));
+		sb.append(appendSeperatorLine("┣", "╋", "┫", padding, widths));
+		for (List<String> row : table) {
+			sb.append(String.format(formatLine, row.toArray()));
+		}
+		sb.append(appendSeperatorLine("┗", "┻", "┛", padding, widths));
+		sb.append("```");
+		return sb.toString();
+	}
+
+	private static String appendSeperatorLine(String left, String middle, String right, int padding, int... sizes) {
+		boolean first = true;
+		StringBuilder ret = new StringBuilder();
+		for (int size : sizes) {
+			if (first) {
+				first = false;
+				ret.append(left).append(Strings.repeat("━", size + padding * 2));
+			} else {
+				ret.append(middle).append(Strings.repeat("━", size + padding * 2));
+			}
+		}
+		return ret.append(right).append(Config.EOL).toString();
 	}
 
 	private static String twoDigitString(long number) {
