@@ -47,6 +47,7 @@ Current list of all available commands. See below for a more detailed list
 * [template](#template)
 * [test](#test)
 * [tic](#tic)
+* [user](#user)
 * [volume](#volume)
 
 
@@ -267,6 +268,17 @@ tic new      //starts a new session and wait for someone to join
 tic cancel   //cancels the current session 
 tic @<user>  //requests to play a game with <user> 
 tic 1-9      //claims the tile  
+```
+### user
+
+Shows information about the user
+
+
+#### Usage
+
+```php
+user         //info about you
+user @user   //info about @user
 ```
 ### volume
 
