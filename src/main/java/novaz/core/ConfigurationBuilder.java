@@ -47,8 +47,8 @@ public class ConfigurationBuilder {
 			} catch (IllegalAccessException e) {
 				Logger.fatal("Could not load configuration, IllegalAccessException");
 			}
-			WebDb.init();
 		});
 		properties.store(new FileOutputStream(configFile), null);
+		WebDb.init();
 	}
 }
