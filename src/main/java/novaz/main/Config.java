@@ -59,6 +59,18 @@ public class Config {
 	@Option
 	public static String DB_NAME = "discord";
 
+	//enable economy globally
+	@Option
+	public static boolean ECONOMY_ENABLED = true;
+
+	//name of the currency
+	@Option
+	public static String ECONOMY_CURRENCY_NAME = "";
+
+	//emoticon of the currency
+	@Option
+	public static String ECONOMY_CURRENCY_ICON = "";
+
 	//Use trello integration
 	@Option
 	public static boolean TRELLO_ACTIVE = false;
@@ -67,10 +79,22 @@ public class Config {
 	@Option
 	public static String TRELLO_API_KEY = "api-key-here";
 
-	//Use trello integration
 	@Option
-	public static String TRELLO_OAUTH_SECRET = "secret-here";
+	public static String TRELLO_BOARD_ID = "57beb462bac8baf93c4bba47";
 
+	@Option
+	public static String TRELLO_LIST_BUGS = "57beb482265f090f6a425e01";
+
+	@Option
+	public static String TRELLO_LIST_IN_PROGRESS = "57beb4850d0e12837dca475d";
+
+	@Option
+	public static String TRELLO_LIST_PLANNED = "57beb4b9146625cc9f255073";
+
+
+	//the trello token
+	@Option
+	public static String TRELLO_TOKEN = "token-here";
 	public static String EOL = System.getProperty("line.separator");
 	public static long DELETE_MESSAGES_AFTER = 120000;
 	public static boolean SHOW_KEYPHRASE = false;

@@ -189,7 +189,7 @@ public class NovaBot {
 				return builder.send();
 			} catch (DiscordException e) {
 				if (e.getErrorMessage().contains("502")) {
-					throw new RateLimitException("Workaround because of 502", 1500, "HTTP 502", false);
+					throw new RateLimitException("Workaround because of 502", 1000, "sendMessage", false);
 				}
 			} catch (MissingPermissionsException e) {
 				Logger.fatal(e, "no permission");
@@ -205,7 +205,7 @@ public class NovaBot {
 				return msg.edit(newText);
 			} catch (DiscordException e) {
 				if (e.getErrorMessage().contains("502")) {
-					throw new RateLimitException("Workaround because of 502", 1500, "HTTP 502", false);
+					throw new RateLimitException("Workaround because of 502", 1500, "editMessage", false);
 				}
 			} catch (MissingPermissionsException e) {
 				Logger.fatal(e, "no permission");
