@@ -8,7 +8,6 @@ import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
 
 import java.util.Map;
 import java.util.TimerTask;
@@ -79,14 +78,14 @@ public class BlackJackCommand extends AbstractCommand {
 						public void run() {
 							try {
 								boolean didHit = playerGames.get(author.getID()).dealerHit();
-								msg.edit(playerGames.get(author.getID()).toString());
+								if (msg != null) {
+									bot.editMessage(msg, playerGames.get(author.getID()).toString());
+								} else {
+									bot.sendMessage(channel, playerGames.get(author.getID()).toString());
+								}
 								if (!didHit) {
 									playerGames.remove(author.getID());
 									this.cancel();
-								}
-							} catch (DiscordException e) {
-								if (!e.getErrorMessage().contains("502")) {
-									bot.sendErrorToMe(e, "blackjackgame", author.getID());
 								}
 							} catch (Exception e) {
 								bot.sendErrorToMe(e, "blackjackgame", author.getID());

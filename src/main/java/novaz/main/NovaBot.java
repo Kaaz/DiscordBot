@@ -1,6 +1,7 @@
 package novaz.main;
 
 import novaz.core.AbstractEventListener;
+import novaz.core.Logger;
 import novaz.db.model.OMusic;
 import novaz.db.model.OServer;
 import novaz.db.table.TServers;
@@ -15,10 +16,7 @@ import org.reflections.Reflections;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.*;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MessageBuilder;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
+import sx.blah.discord.util.*;
 import sx.blah.discord.util.audio.AudioPlayer;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -174,14 +172,47 @@ public class NovaBot {
 		player.setVolume(vol);
 	}
 
+
+	/**
+	 * @param channel channel to send to
+	 * @param content the message
+	 * @return IMessage or null
+	 */
 	public IMessage sendMessage(IChannel channel, String content) {
-		try {
-			return new MessageBuilder(instance).withChannel(channel).withContent(content).build();
-		} catch (RateLimitException | DiscordException | MissingPermissionsException e) {
-			e.printStackTrace();
-			sendErrorToMe(e, "content", content);
-		}
-		return null;
+		RequestBuffer.RequestFuture<IMessage> request = sendMessage(channel, new MessageBuilder(instance).withChannel(channel).withContent(content));
+		return request.get();
+	}
+
+	public RequestBuffer.RequestFuture<IMessage> sendMessage(IChannel channel, MessageBuilder builder) {
+		return RequestBuffer.request(() -> {
+			try {
+				return builder.send();
+			} catch (DiscordException e) {
+				if (e.getErrorMessage().contains("502")) {
+					throw new RateLimitException("Workaround because of 502", 1500, "HTTP 502", false);
+				}
+			} catch (MissingPermissionsException e) {
+				Logger.fatal(e, "no permission");
+				e.printStackTrace();
+			}
+			return null;
+		});
+	}
+
+	public RequestBuffer.RequestFuture<IMessage> editMessage(IMessage msg, String newText) {
+		return RequestBuffer.request(() -> {
+			try {
+				return msg.edit(newText);
+			} catch (DiscordException e) {
+				if (e.getErrorMessage().contains("502")) {
+					throw new RateLimitException("Workaround because of 502", 1500, "HTTP 502", false);
+				}
+			} catch (MissingPermissionsException e) {
+				Logger.fatal(e, "no permission");
+				e.printStackTrace();
+			}
+			return null;
+		});
 	}
 
 	public void handlePrivateMessage(IPrivateChannel channel, IUser author, IMessage message) {

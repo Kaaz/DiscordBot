@@ -8,7 +8,6 @@ import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
 
 import java.util.TimerTask;
 
@@ -59,22 +58,26 @@ public class SlotMachineCommand extends AbstractCommand {
 						if (slotMachine.gameInProgress()) {
 							slotMachine.spin();
 						}
+						String gameresult = "";
 						if (!slotMachine.gameInProgress()) {
-							String gameresult = "";
 							Slot slot = slotMachine.winSlot();
 							if (slot != null) {
 								gameresult = "You rolled 3 **" + slot.getName() + "** and won **" + slot.getTriplePayout() + "**";
 							} else {
 								gameresult = "Aw you lose, better luck next time!";
 							}
-							msg.edit(slotMachine.toString() + Config.EOL + gameresult);
+							if (msg != null) {
+								bot.editMessage(msg, slotMachine.toString() + Config.EOL + gameresult);
+							} else {
+								bot.sendMessage(channel, slotMachine.toString() + Config.EOL + gameresult);
+							}
 							this.cancel();
 						} else {
-							msg.edit(slotMachine.toString());
-						}
-					} catch (DiscordException e) {
-						if (!e.getErrorMessage().contains("502")) {
-							bot.sendErrorToMe(e, "slotmachine", author.getID(), "channel", channel.mention());
+							if (msg != null) {
+								bot.editMessage(msg, slotMachine.toString());
+							} else {
+								bot.sendMessage(channel, slotMachine.toString());
+							}
 						}
 					} catch (Exception e) {
 						bot.sendErrorToMe(e, "slotmachine", author.getID(), "channel", channel.mention());
