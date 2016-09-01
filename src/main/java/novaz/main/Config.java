@@ -31,6 +31,8 @@ public class Config {
 	@Option
 	public static boolean BOT_COMMAND_SHOW_UNKNOWN = false;
 
+	public static String MUSIC_DOWNLOAD_SOUNDCLOUD_EXE = "H:/";
+
 	//location of youtubedl.exe
 	@Option
 	public static String YOUTUBEDL_EXE = "H:/youtube-dl.exe";
@@ -91,10 +93,10 @@ public class Config {
 	@Option
 	public static String TRELLO_LIST_PLANNED = "57beb4b9146625cc9f255073";
 
-
 	//the trello token
 	@Option
 	public static String TRELLO_TOKEN = "token-here";
+
 	public static String EOL = System.getProperty("line.separator");
 	public static long DELETE_MESSAGES_AFTER = 120000;
 	public static boolean SHOW_KEYPHRASE = false;
