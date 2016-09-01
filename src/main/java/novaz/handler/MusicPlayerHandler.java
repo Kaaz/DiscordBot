@@ -107,6 +107,7 @@ public class MusicPlayerHandler {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+			bot.sendErrorToMe(e);
 		}
 		return potentialSongs.get((int) (Math.random() * (double) potentialSongs.size()));
 	}

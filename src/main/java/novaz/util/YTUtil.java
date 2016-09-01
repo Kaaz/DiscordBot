@@ -65,6 +65,7 @@ public class YTUtil {
 			ret = input.substring(start + 7, end - 10);
 		} catch (Exception e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 		return StringEscapeUtils.unescapeHtml4(ret);
 	}

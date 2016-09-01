@@ -26,6 +26,7 @@ public class Launcher {
 		File folder = new File(Config.MUSIC_DIRECTORY);
 		String[] fileList = folder.list((dir, name) -> name.toLowerCase().endsWith(".mp3"));
 		for (String file : fileList) {
+			System.out.println(file);
 			String videocode = file.replace(".mp3", "");
 			OMusic rec = TMusic.findByYoutubeId(videocode);
 			rec.youtubeTitle = YTUtil.getTitleFromPage(videocode);
