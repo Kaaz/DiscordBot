@@ -148,7 +148,7 @@ public class MusicPlayerHandler {
 				if (music.youtubeTitle.isEmpty()) {
 					msg = "plz send help:: " + f.getName();
 				} else {
-					if (music.artist != null && music.title != null) {
+					if (music.artist != null && music.title != null && !music.artist.trim().isEmpty() && !music.title.trim().isEmpty()) {
 						msg = "Now playing " + music.artist + " - " + music.title;
 					} else {
 						msg = "Now playing " + music.youtubeTitle + " ** need details about song! ** check out **current**";
@@ -202,7 +202,7 @@ public class MusicPlayerHandler {
 	public boolean addToQueue(String filename) {
 		File f = new File(Config.MUSIC_DIRECTORY + filename);
 		if (!f.exists() || !f.getName().endsWith(".mp3")) {
-			bot.sendErrorToMe(new Exception("nosongexception :("), "filename: ", f.getName(),"plz fix","I want music");
+			bot.sendErrorToMe(new Exception("nosongexception :("), "filename: ", f.getName(), "plz fix", "I want music");
 			return false;
 		}
 		try {

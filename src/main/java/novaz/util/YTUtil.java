@@ -104,6 +104,7 @@ public class YTUtil {
 				System.out.println("YT: " + line);
 			}
 			process.waitFor();
+			process.destroy();
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 			return false;

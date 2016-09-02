@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  */
 public class Play extends AbstractCommand {
 
-	private final Pattern musicResultFilterPattern = Pattern.compile("^#?[0-9]{1,2}$");
+	private final Pattern musicResultFilterPattern = Pattern.compile("^#?([0-9]{1,2})$");
 	private Map<String, ArrayList<Integer>> userFilteredSongs = new ConcurrentHashMap<>();
 
 	public Play(NovaBot b) {
