@@ -1,7 +1,7 @@
 package novaz.util;
 
+import com.wezinkhof.configuration.ConfigurationBuilder;
 import novaz.core.AbstractCommand;
-import novaz.core.ConfigurationBuilder;
 import novaz.handler.CommandHandler;
 import novaz.main.Config;
 

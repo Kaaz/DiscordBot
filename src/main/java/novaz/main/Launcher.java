@@ -2,6 +2,7 @@ package novaz.main;
 
 import com.wezinkhof.configuration.ConfigurationBuilder;
 import novaz.core.Logger;
+import novaz.db.WebDb;
 import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
 import novaz.util.YTUtil;
@@ -13,6 +14,7 @@ public class Launcher {
 	public static void main(String[] args) throws Exception {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		if (Config.BOT_ENABLED) {
+			WebDb.init();
 			NovaBot nb = new NovaBot();
 		} else {
 			Logger.fatal("Bot not enabled, enable it in the config. You can do this by setting bot_enabled=true");
