@@ -1,100 +1,101 @@
 package novaz.main;
 
-import novaz.core.annotation.Option;
+
+import com.wezinkhof.configuration.ConfigurationOption;
 
 public class Config {
 	//bot enabled? must be set to true in order to run
-	@Option
+	@ConfigurationOption
 	public static boolean BOT_ENABLED = false;
 
 	//display name of the bot
-	@Option
+	@ConfigurationOption
 	public static String BOT_NAME = "NovaBot";
 
 	//token used to login to discord
-	@Option
+	@ConfigurationOption
 	public static String BOT_TOKEN = "mybottokenhere";
 
 	//prefix for all commands !help etc.
-	@Option
+	@ConfigurationOption
 	public static boolean BOT_CHATTING_ENABLED = true;
 
 	//default prefix to mark messages as commands
-	@Option
+	@ConfigurationOption
 	public static String BOT_COMMAND_PREFIX = "!";
 
 	//save the usage of commands?
-	@Option
+	@ConfigurationOption
 	public static boolean BOT_COMMAND_LOGGING = true;
 
 	//Reply to non existing commands?
-	@Option
+	@ConfigurationOption
 	public static boolean BOT_COMMAND_SHOW_UNKNOWN = false;
 
 	public static String MUSIC_DOWNLOAD_SOUNDCLOUD_EXE = "H:/";
 
 	//location of youtubedl.exe
-	@Option
+	@ConfigurationOption
 	public static String YOUTUBEDL_EXE = "H:/youtube-dl.exe";
 
 	//folder with the binary files required for youtubedl
-	@Option
+	@ConfigurationOption
 	public static String YOUTUBEDL_BIN = "H:/music/bin/";
 
 	//directory where all the music is stored
-	@Option
+	@ConfigurationOption
 	public static String MUSIC_DIRECTORY = "H:/music/";
 
 	//mysql hostname
-	@Option
+	@ConfigurationOption
 	public static String DB_HOST = "localhost";
 
 	//mysql user
-	@Option
+	@ConfigurationOption
 	public static String DB_USER = "root";
 
 	//mysql password
-	@Option
+	@ConfigurationOption
 	public static String DB_PASS = "";
 
 	//mysql database name
-	@Option
+	@ConfigurationOption
 	public static String DB_NAME = "discord";
 
 	//enable economy globally
-	@Option
+	@ConfigurationOption
 	public static boolean ECONOMY_ENABLED = true;
 
 	//name of the currency
-	@Option
+	@ConfigurationOption
 	public static String ECONOMY_CURRENCY_NAME = "";
 
 	//emoticon of the currency
-	@Option
+	@ConfigurationOption
 	public static String ECONOMY_CURRENCY_ICON = "";
 
 	//Use trello integration
-	@Option
+	@ConfigurationOption
 	public static boolean TRELLO_ACTIVE = false;
 
 	//Use trello integration
-	@Option
+	@ConfigurationOption
 	public static String TRELLO_API_KEY = "api-key-here";
 
-	@Option
+	@ConfigurationOption
 	public static String TRELLO_BOARD_ID = "57beb462bac8baf93c4bba47";
 
-	@Option
+	@ConfigurationOption
 	public static String TRELLO_LIST_BUGS = "57beb482265f090f6a425e01";
 
-	@Option
+	@ConfigurationOption
 	public static String TRELLO_LIST_IN_PROGRESS = "57beb4850d0e12837dca475d";
 
-	@Option
+	@ConfigurationOption
 	public static String TRELLO_LIST_PLANNED = "57beb4b9146625cc9f255073";
 
 	//the trello token
-	@Option
+	@ConfigurationOption
 	public static String TRELLO_TOKEN = "token-here";
 
 	public static String EOL = System.getProperty("line.separator");

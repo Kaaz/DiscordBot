@@ -1,6 +1,6 @@
 package novaz.main;
 
-import novaz.core.ConfigurationBuilder;
+import com.wezinkhof.configuration.ConfigurationBuilder;
 import novaz.core.Logger;
 import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
