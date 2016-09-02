@@ -81,12 +81,12 @@
 		<dependency>
 			<groupId>com.github.MaikWezinkhof</groupId>
 			<artifactId>trello4j</artifactId>
-			<version>1.2</version>
+			<version>master-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.MaikWezinkhof</groupId>
 			<artifactId>ConfigurationBuilder</artifactId>
-			<version>0.1</version>
+			<version>master-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
