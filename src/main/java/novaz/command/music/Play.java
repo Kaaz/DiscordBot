@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  */
 public class Play extends AbstractCommand {
 
-	private final Pattern musicResultFilterPattern = Pattern.compile("^#[0-9]{1,2}$");
+	private final Pattern musicResultFilterPattern = Pattern.compile("^#?[0-9]{1,2}$");
 	private Map<String, ArrayList<Integer>> userFilteredSongs = new ConcurrentHashMap<>();
 
 	public Play(NovaBot b) {
@@ -56,7 +56,7 @@ public class Play extends AbstractCommand {
 				"play <youtubelink>        //download and plays song",
 				"play <youtubevideocode>   //download and plays song",
 				"play <part of title>      //shows search results",
-				"play #<resultnumber>      //add result # to the queue"
+				"play <resultnumber>      //add result # to the queue"
 		};
 	}
 
@@ -75,11 +75,9 @@ public class Play extends AbstractCommand {
 		}
 		if (args.length > 0) {
 			boolean justDownloaded = false;
-			if (args[0].startsWith("#")) {
-				Matcher filterMatch = musicResultFilterPattern.matcher(args[0]);
-				if (!filterMatch.matches()) {
-					return TextHandler.get("command_play_filter_match_invalid");
-				}
+			Matcher filterMatch = musicResultFilterPattern.matcher(args[0]);
+			if (filterMatch.matches()) {
+
 				if (userFilteredSongs.containsKey(author.getID()) && userFilteredSongs.get(author.getID()) != null) {
 					int selectedIndex = Ints.tryParse(args[0].replace("#", ""));
 					if (userFilteredSongs.get(author.getID()).size() + 1 >= selectedIndex && selectedIndex > 0) {
