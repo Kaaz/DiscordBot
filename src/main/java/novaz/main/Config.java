@@ -32,7 +32,13 @@ public class Config {
 	@ConfigurationOption
 	public static boolean BOT_COMMAND_SHOW_UNKNOWN = false;
 
+	//location of the soundcloud jar
+	@ConfigurationOption
 	public static String MUSIC_DOWNLOAD_SOUNDCLOUD_EXE = "H:/";
+
+	//token used to connect to soundcloud
+	@ConfigurationOption
+	public static String MUSIC_DOWNLOAD_SOUNDCLOUD_API_TOKEN = "some-token";
 
 	//location of youtubedl.exe
 	@ConfigurationOption
@@ -64,7 +70,11 @@ public class Config {
 
 	//enable economy globally
 	@ConfigurationOption
-	public static boolean ECONOMY_ENABLED = true;
+	public static boolean MODULE_ECONOMY_ENABLED = true;
+
+	//enable music globally
+	@ConfigurationOption
+	public static boolean MODULE_MUSIC_ENABLED = true;
 
 	//name of the currency
 	@ConfigurationOption

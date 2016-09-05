@@ -188,6 +188,13 @@ public class CommandHandler {
 				String packageName = s.getPackage().getName();
 				AbstractCommand c = s.getConstructor(NovaBot.class).newInstance(bot);
 				c.setCommandCategory(CommandCategory.fromPackage(packageName.substring(packageName.lastIndexOf(".") + 1)));
+				if (c.getCommandCategory().equals(CommandCategory.MUSIC) && !Config.MODULE_MUSIC_ENABLED) {
+					continue;
+				}
+				if (c.getCommandCategory().equals(CommandCategory.ECONOMY) && !Config.MODULE_ECONOMY_ENABLED) {
+					continue;
+				}
+
 				if (!chatCommands.containsKey(c.getCommand())) {
 					chatCommands.put(c.getCommand(), c);
 				}

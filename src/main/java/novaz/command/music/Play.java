@@ -9,6 +9,7 @@ import novaz.handler.MusicPlayerHandler;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
+import novaz.util.SCUtil;
 import novaz.util.YTUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -34,7 +35,14 @@ import java.util.regex.Pattern;
 public class Play extends AbstractCommand {
 
 	private final Pattern musicResultFilterPattern = Pattern.compile("^#?([0-9]{1,2})$");
+	private final Pattern soundCloudUrlPattern = Pattern.compile("^https?://soundcloud.com/([a-z0-9-]+)/(sets/)?([a-z0-9-]+)$");
 	private Map<String, ArrayList<Integer>> userFilteredSongs = new ConcurrentHashMap<>();
+
+//	goed: (playlist) https://soundcloud.com/*/sets/*
+//	https://soundcloud.com/easy-star-records/sets/easy-star-all-stars-radiodread
+//
+//	goed: (song) https://soundcloud.com/*/*
+//	https://soundcloud.com/easystarallstars/karma-police-gdc-remix
 
 	public Play(NovaBot b) {
 		super(b);
@@ -77,7 +85,6 @@ public class Play extends AbstractCommand {
 			boolean justDownloaded = false;
 			Matcher filterMatch = musicResultFilterPattern.matcher(args[0]);
 			if (filterMatch.matches()) {
-
 				if (userFilteredSongs.containsKey(author.getID()) && userFilteredSongs.get(author.getID()) != null) {
 					int selectedIndex = Ints.tryParse(args[0].replace("#", ""));
 					if (userFilteredSongs.get(author.getID()).size() + 1 >= selectedIndex && selectedIndex > 0) {
@@ -101,6 +108,12 @@ public class Play extends AbstractCommand {
 			if (userFilteredSongs.containsKey(author.getID())) {
 				userFilteredSongs.remove(author.getID());
 			}
+			Matcher scMatcher = soundCloudUrlPattern.matcher(args[0]);
+			if (SCUtil.isEnabled() && scMatcher.matches()) {
+				SCUtil.download(args[0]);
+				return "todo";
+			}
+
 			String videocode = YTUtil.extractCodeFromUrl(args[0]);
 			if (YTUtil.isValidYoutubeCode(videocode)) {
 				File filecheck = new File(Config.MUSIC_DIRECTORY + videocode + ".mp3");
