@@ -1,6 +1,5 @@
 package novaz.modules.pathofexile.analyzepart;
 
-import novaz.main.Config;
 import novaz.modules.pathofexile.IPoEAnalyzePart;
 import novaz.modules.pathofexile.enums.Rarity;
 import novaz.modules.pathofexile.obj.PoEItem;
@@ -22,11 +21,11 @@ public class AnalyzeRarityAndName implements IPoEAnalyzePart {
 		if (rarityMather.find()) {
 			item.rarity = Rarity.fromString(rarityMather.group(1));
 		}
-		String[] lines = text.split(Config.EOL);
+		String[] lines = text.split("\n");
 		for (String line : lines) {
-			System.out.println(line);
+			System.out.println(">>" + line + "<<");
 		}
-		if (lines.length == 3) {
+		if (lines.length >= 3) {
 			item.base = lines[2];
 			item.name = lines[1];
 		}

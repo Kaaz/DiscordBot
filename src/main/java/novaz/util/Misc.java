@@ -3,10 +3,7 @@ package novaz.util;
 import com.google.common.base.Strings;
 import novaz.main.Config;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -185,5 +182,24 @@ public class Misc {
 			return "0" + number;
 		}
 		return String.valueOf(number);
+	}
+
+	/**
+	 * Sorts a map by value descending
+	 *
+	 * @param map the map to sort
+	 * @param <K> key
+	 * @param <V> a sortable value
+	 * @return the same map but sorted descending
+	 */
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+		List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
+		Collections.sort(list, (o1, o2) -> -(o1.getValue()).compareTo(o2.getValue()));
+
+		Map<K, V> result = new LinkedHashMap<>();
+		for (Map.Entry<K, V> entry : list) {
+			result.put(entry.getKey(), entry.getValue());
+		}
+		return result;
 	}
 }
