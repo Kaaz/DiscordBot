@@ -2,6 +2,7 @@ package novaz.util;
 
 import com.wezinkhof.configuration.ConfigurationBuilder;
 import novaz.core.AbstractCommand;
+import novaz.db.WebDb;
 import novaz.handler.CommandHandler;
 import novaz.main.Config;
 
@@ -21,6 +22,7 @@ public class ReadmeHelper {
 
 	public static void main(String[] args) throws Exception {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
+		WebDb.init();
 
 		String template = readFile("readme_template.md", StandardCharsets.UTF_8);
 		template = template.replace("%_COMMANDS_LIST_SIMPLE_%", readmeCommandSimpleList());

@@ -59,9 +59,10 @@ public class Play extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"play <youtubelink>        //download and plays song",
-				"play <youtubevideocode>   //download and plays song",
-				"play <part of title>      //shows search results",
+				"play <youtubelink>       //download and plays song",
+				"play <soundcloudlink>    //download and plays song",
+				"play <youtubevideocode>  //download and plays song",
+				"play <part of title>     //shows search results",
 				"play <resultnumber>      //add result # to the queue"
 		};
 	}

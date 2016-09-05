@@ -38,6 +38,7 @@ Current list of all available commands. See below for a more detailed list
 * [leave](#leave)
 * [play](#play)
 * [playlist](#playlist)
+* [poeitem](#poeitem)
 * [reload](#reload)
 * [say](#say)
 * [skip](#skip)
@@ -141,6 +142,15 @@ help <command>  //usage for that command
 
 Shows info about the bot
 
+
+#### Usage
+
+```php
+info          //general info
+info planned  //see whats planned in the near future
+info bugs     //known bugs
+info progress //see whats currently being worked on
+```
 ### invite
 
 Provides an invite link to add the bot to your server.
@@ -172,10 +182,11 @@ Plays a song from youtube
 #### Usage
 
 ```php
-play <youtubelink>        //download and plays song
-play <youtubevideocode>   //download and plays song
-play <part of title>      //shows search results
-play #<resultnumber>      //add result # to the queue
+play <youtubelink>       //download and plays song
+play <soundcloudlink>    //download and plays song
+play <youtubevideocode>  //download and plays song
+play <part of title>     //shows search results
+play <resultnumber>      //add result # to the queue
 ```
 ### playlist
 
@@ -188,6 +199,10 @@ information about the playlist/history
 playlist          //playlist queue
 playlist history  //list of recently played songs
 ```
+### poeitem
+
+Analyzes an item from path of exile.
+
 ### reload
 
 reloads the configuration
