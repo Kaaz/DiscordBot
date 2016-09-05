@@ -17,7 +17,7 @@ import java.util.Collections;
 /**
  * Collection of methods to help me out in maintaining the readme file
  */
-public class Readme {
+public class ReadmeHelper {
 
 	public static void main(String[] args) throws Exception {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();

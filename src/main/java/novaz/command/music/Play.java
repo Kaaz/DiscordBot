@@ -1,5 +1,6 @@
 package novaz.command.music;
 
+import com.google.common.io.Files;
 import com.google.common.primitives.Ints;
 import novaz.core.AbstractCommand;
 import novaz.db.WebDb;
@@ -11,6 +12,7 @@ import novaz.main.Config;
 import novaz.main.NovaBot;
 import novaz.util.SCUtil;
 import novaz.util.YTUtil;
+import novaz.util.obj.SCFile;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -19,9 +21,11 @@ import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -37,12 +41,6 @@ public class Play extends AbstractCommand {
 	private final Pattern musicResultFilterPattern = Pattern.compile("^#?([0-9]{1,2})$");
 	private final Pattern soundCloudUrlPattern = Pattern.compile("^https?://soundcloud.com/([a-z0-9-]+)/(sets/)?([a-z0-9-]+)$");
 	private Map<String, ArrayList<Integer>> userFilteredSongs = new ConcurrentHashMap<>();
-
-//	goed: (playlist) https://soundcloud.com/*/sets/*
-//	https://soundcloud.com/easy-star-records/sets/easy-star-all-stars-radiodread
-//
-//	goed: (song) https://soundcloud.com/*/*
-//	https://soundcloud.com/easystarallstars/karma-police-gdc-remix
 
 	public Play(NovaBot b) {
 		super(b);
@@ -110,8 +108,32 @@ public class Play extends AbstractCommand {
 			}
 			Matcher scMatcher = soundCloudUrlPattern.matcher(args[0]);
 			if (SCUtil.isEnabled() && scMatcher.matches()) {
-				SCUtil.download(args[0]);
-				return "todo";
+				if (SCUtil.download(args[0])) {
+					List<SCFile> downloadedList = SCUtil.getDownloadedList();
+					String text = "Found **" + downloadedList.size() + "** song(s) and added to the queue. " + Config.EOL;
+					for (SCFile scFile : downloadedList) {
+						OMusic oMusic = TMusic.findByYoutubeId(scFile.id);
+						if (oMusic.id == 0) {
+							oMusic.youtubecode = scFile.id;
+							oMusic.artist = scFile.artist;
+							oMusic.title = scFile.title;
+							oMusic.filename = scFile.id + ".mp3";
+							oMusic.youtubeTitle = scFile.artist + " - " + scFile.title;
+							TMusic.insert(oMusic);
+							try {
+								Files.move(new File(Config.MUSIC_DIRECTORY + "soundcloud/" + scFile.filename), new File(Config.MUSIC_DIRECTORY + oMusic.filename));
+							} catch (IOException e) {
+								e.printStackTrace();
+								bot.sendErrorToMe(e, "moving file", Config.MUSIC_DIRECTORY + "soundcloud/" + scFile.filename, "target", Config.MUSIC_DIRECTORY + oMusic.filename);
+								continue;
+							}
+						}
+						text += String.format("%s - %s", oMusic.artist, oMusic.title) + Config.EOL;
+						bot.addSongToQueue(oMusic.filename, channel.getGuild());
+					}
+					return text;
+				}
+				return TextHandler.get("music_download_soundcloud_failed");
 			}
 
 			String videocode = YTUtil.extractCodeFromUrl(args[0]);

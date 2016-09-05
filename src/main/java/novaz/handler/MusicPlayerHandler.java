@@ -199,7 +199,7 @@ public class MusicPlayerHandler {
 		return addToQueue(randomSong);
 	}
 
-	public boolean addToQueue(String filename) {
+	private boolean addToQueue(String filename) {
 		File f = new File(Config.MUSIC_DIRECTORY + filename);
 		if (!f.exists() || !f.getName().endsWith(".mp3")) {
 			bot.sendErrorToMe(new Exception("nosongexception :("), "filename: ", f.getName(), "plz fix", "I want music");
@@ -260,4 +260,5 @@ public class MusicPlayerHandler {
 		}
 		return list;
 	}
+
 }

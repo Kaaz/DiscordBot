@@ -1,8 +1,14 @@
 package novaz.util;
 
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import novaz.main.Config;
+import novaz.util.obj.SCFile;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,8 +62,34 @@ public class SCUtil {
 		return true;
 	}
 
-	public static void processDownloadedFiles() {
+	/**
+	 * returns a list of downloaded files yet to process
+	 */
+	public static List<SCFile> getDownloadedList() {
 		File file = new File(Config.MUSIC_DIRECTORY + "soundcloud/");
+		File[] files = file.listFiles();
+		ArrayList<SCFile> ret = new ArrayList<>();
+		if (files == null) {
+			return ret;
+		}
+		for (File f : files) {
+			ret.add(getMp3Details(f));
+		}
+		return ret;
+	}
 
+	private static SCFile getMp3Details(File f) {
+		SCFile sc = new SCFile();
+		try {
+			Mp3File mp3file = new Mp3File(f);
+			ID3v2 tag3 = mp3file.getId3v2Tag();
+			sc.artist = tag3.getArtist();
+			sc.title = tag3.getTitle();
+			sc.id = "sc_" + f.getName().replace(".mp3", "");
+			sc.filename = f.getName();
+		} catch (IOException | InvalidDataException | UnsupportedTagException e) {
+			e.printStackTrace();
+		}
+		return sc;
 	}
 }
