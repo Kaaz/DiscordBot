@@ -11,12 +11,6 @@ import java.util.Random;
 public class TicTacToe {
 	private static final int TILES_ON_BOARD = 9;
 	private static final int PLAYERS_IN_GAME = 2;
-
-	private IUser[] players = new IUser[PLAYERS_IN_GAME];
-	private TicTile[] board = new TicTile[TILES_ON_BOARD];
-	private int currentPlayer;
-	private GameState gameState;
-
 	private final int[][] winCombos = {
 			{0, 1, 2},
 			{3, 4, 5},
@@ -27,6 +21,10 @@ public class TicTacToe {
 			{0, 4, 8},
 			{2, 4, 6}
 	};
+	private IUser[] players = new IUser[PLAYERS_IN_GAME];
+	private TicTile[] board = new TicTile[TILES_ON_BOARD];
+	private int currentPlayer;
+	private GameState gameState;
 
 	public TicTacToe() {
 		reset();

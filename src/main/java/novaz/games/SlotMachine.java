@@ -6,9 +6,9 @@ import novaz.main.Config;
 import java.util.Random;
 
 public class SlotMachine {
+	public final static String emptySLotIcon = ":white_small_square:";
 	private final Random rng;
 	private final Slot[] slotOptions = Slot.values();
-	public final static String emptySLotIcon = ":white_small_square:";
 	private final int wheels;
 	private final int[] results;
 	private int currentWheel;

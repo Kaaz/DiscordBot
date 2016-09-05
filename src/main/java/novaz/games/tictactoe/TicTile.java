@@ -1,11 +1,32 @@
 package novaz.games.tictactoe;
 
 public class TicTile {
-	private TileState state;
 	int player;
+	private TileState state;
 
 	public TicTile() {
 		reset();
+	}
+
+	private void reset() {
+		state = TileState.FREE;
+		player = -1;
+	}
+
+	public boolean isFree() {
+		return state.equals(TileState.FREE);
+	}
+
+	public TileState getState() {
+		return state;
+	}
+
+	public void setState(TileState state) {
+		this.state = state;
+	}
+
+	public int getPlayer() {
+		return player;
 	}
 
 	public void setPlayer(int player) {
@@ -22,26 +43,5 @@ public class TicTile {
 				this.player = -1;
 				state = TileState.FREE;
 		}
-	}
-
-	private void reset() {
-		state = TileState.FREE;
-		player = -1;
-	}
-
-	public boolean isFree() {
-		return state.equals(TileState.FREE);
-	}
-
-	public void setState(TileState state) {
-		this.state = state;
-	}
-
-	public TileState getState() {
-		return state;
-	}
-
-	public int getPlayer() {
-		return player;
 	}
 }

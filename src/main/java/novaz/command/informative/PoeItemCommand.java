@@ -2,7 +2,6 @@ package novaz.command.informative;
 
 import com.google.common.base.Joiner;
 import novaz.core.AbstractCommand;
-import novaz.handler.TextHandler;
 import novaz.main.NovaBot;
 import novaz.modules.pathofexile.ItemAnalyzer;
 import sx.blah.discord.handle.obj.IChannel;

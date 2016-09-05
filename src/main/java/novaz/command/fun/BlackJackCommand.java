@@ -19,12 +19,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BlackJackCommand extends AbstractCommand {
 	public final long DEALER_TURN_INTERVAL = 2000L;
+	private Map<String, Blackjack> playerGames = new ConcurrentHashMap<>();
 
 	public BlackJackCommand(NovaBot b) {
 		super(b);
 	}
-
-	private Map<String, Blackjack> playerGames = new ConcurrentHashMap<>();
 
 	@Override
 	public String getDescription() {

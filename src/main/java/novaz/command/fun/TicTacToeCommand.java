@@ -13,12 +13,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TicTacToeCommand extends AbstractCommand {
+	private Map<String, TicTacToe> playerGames = new ConcurrentHashMap<>();
+	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
 	public TicTacToeCommand(NovaBot b) {
 		super(b);
 	}
-
-	private Map<String, TicTacToe> playerGames = new ConcurrentHashMap<>();
-	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
 
 	@Override
 	public String getDescription() {

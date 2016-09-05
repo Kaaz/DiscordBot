@@ -63,7 +63,7 @@ public class SetConfig extends AbstractCommand {
 					data.add(row);
 				}
 				List<String> headers = new ArrayList<>();
-				Collections.addAll(headers, "Setting name", "Current value", "Default value");
+				Collections.addAll(headers, "Setting name", "Current", "Default");
 				ret += Misc.makeAsciTable(headers,
 						data);
 				return ret;

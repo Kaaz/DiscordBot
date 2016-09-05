@@ -11,12 +11,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ItemAnalyzer {
+	private static final String paragraphSplitter = "--------";
 	private final Pattern levelRequirementPattern = Pattern.compile("\nLevel: ([0-9]+)");
 	private PoEItem item;
 	private List<IPoEAnalyzePart> analyzers = new ArrayList<>();
 	private List<Boolean> hasAnalyzed = new ArrayList<>();
-
-	private static final String paragraphSplitter = "--------";
 
 	public ItemAnalyzer() {
 		loadAnalyzeParts();
