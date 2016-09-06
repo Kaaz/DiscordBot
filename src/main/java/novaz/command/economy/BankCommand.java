@@ -23,7 +23,11 @@ public class BankCommand extends AbstractCommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[]{};
+		return new String[]{
+				"bank                       //shows current balance",
+				"bank history               //shows last transactions",
+				"bank donate @user <amount> //donates <amount> to @user ",
+		};
 	}
 
 	@Override
@@ -38,6 +42,7 @@ public class BankCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
+
 		return TextHandler.get("command_not_implemented");
 	}
 }
