@@ -87,7 +87,7 @@ public class CommandHandler {
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));
 		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
-			mymsg = bot.sendMessage(channel, bot.chatBotHandler.chat(inputMessage));
+			mymsg = bot.sendMessage(channel, content.getAuthor().mention() + ", " + bot.chatBotHandler.chat(inputMessage));
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.get(guild).getOrDefault(SettingShowUnknownCommands.class).equals("true")) {
 			mymsg = bot.sendMessage(channel, String.format(TextHandler.get("unknown_command"), GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class) + "help"));
