@@ -62,9 +62,11 @@ public class CommandHandler {
 	 */
 	public void process(IGuild guild, IChannel channel, IUser author, IMessage content) {
 		IMessage mymsg = null;
+		boolean startedWithMention = false;
 		String inputMessage = content.getContent();
 		if (inputMessage.startsWith(bot.mentionMe)) {
 			inputMessage = inputMessage.replace(bot.mentionMe, "").trim();
+			startedWithMention = true;
 		}
 		String[] input = inputMessage.split(" ");
 		String args[] = new String[input.length - 1];
@@ -84,6 +86,8 @@ public class CommandHandler {
 			}
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));
+		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
+			mymsg = bot.sendMessage(channel, bot.chatBotHandler.chat(inputMessage));
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.get(guild).getOrDefault(SettingShowUnknownCommands.class).equals("true")) {
 			mymsg = bot.sendMessage(channel, String.format(TextHandler.get("unknown_command"), GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class) + "help"));

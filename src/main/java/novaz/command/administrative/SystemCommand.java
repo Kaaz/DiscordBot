@@ -43,7 +43,6 @@ public class SystemCommand extends AbstractCommand {
 			StringBuilder sb = new StringBuilder();
 			long memoryLimit = runtime.maxMemory();
 			long memoryAllocated = runtime.totalMemory();
-			long memoryFree = runtime.freeMemory();
 
 			sb.append("System information: ").append(Config.EOL);
 			sb.append("Memory").append(Config.EOL);
