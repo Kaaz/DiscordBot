@@ -39,7 +39,7 @@ public class MySQLAdapter {
 		return null;
 	}
 
-	public Connection getConnection() {
+	private Connection getConnection() {
 		if (c == null) {
 			c = createConnection();
 		}
@@ -97,7 +97,6 @@ public class MySQLAdapter {
 			}
 			index++;
 		}
-
 	}
 
 	public int query(String sql, Object... params) throws SQLException {
@@ -113,5 +112,4 @@ public class MySQLAdapter {
 			return query.executeUpdate();
 		}
 	}
-
 }

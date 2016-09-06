@@ -6,6 +6,7 @@ public enum CommandCategory {
 	MUSIC("music", ":musical_note:", "Music"),
 	ECONOMY("economy", ":moneybag:", "Money"),
 	FUN("fun", ":game_die:", "Fun"),
+	POE("poe", ":currency_exchange:", "Path of exile"),
 	UNKNOWN("nopackage", ":question:", "Misc");
 	private final String packageName;
 	private final String emoticon;

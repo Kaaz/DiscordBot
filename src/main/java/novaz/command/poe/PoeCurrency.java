@@ -1,4 +1,4 @@
-package novaz.command.informative;
+package novaz.command.poe;
 
 import novaz.core.AbstractCommand;
 import novaz.db.model.OPoEToken;

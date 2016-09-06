@@ -194,6 +194,9 @@ public class CommandHandler {
 				if (c.getCommandCategory().equals(CommandCategory.ECONOMY) && !Config.MODULE_ECONOMY_ENABLED) {
 					continue;
 				}
+				if (c.getCommandCategory().equals(CommandCategory.POE) && !Config.MODULE_POE_ENABLED) {
+					continue;
+				}
 
 				if (!chatCommands.containsKey(c.getCommand())) {
 					chatCommands.put(c.getCommand(), c);

@@ -1,4 +1,4 @@
-package novaz.command.informative;
+package novaz.command.poe;
 
 import com.google.common.base.Joiner;
 import novaz.core.AbstractCommand;

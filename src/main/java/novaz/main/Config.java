@@ -72,6 +72,10 @@ public class Config {
 	@ConfigurationOption
 	public static boolean MODULE_ECONOMY_ENABLED = true;
 
+	//enable poe globally
+	@ConfigurationOption
+	public static boolean MODULE_POE_ENABLED = true;
+
 	//enable music globally
 	@ConfigurationOption
 	public static boolean MODULE_MUSIC_ENABLED = true;
