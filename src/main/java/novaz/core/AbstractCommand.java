@@ -8,7 +8,7 @@ import sx.blah.discord.handle.obj.IUser;
 public abstract class AbstractCommand {
 
 	protected NovaBot bot;
-	protected CommandCategory commandCategory = CommandCategory.UNKNOWN;
+	private CommandCategory commandCategory = CommandCategory.UNKNOWN;
 
 	public AbstractCommand(NovaBot bot) {
 		this.bot = bot;
@@ -44,6 +44,24 @@ public abstract class AbstractCommand {
 
 	public CommandCategory getCommandCategory() {
 		return commandCategory;
+	}
+
+	/**
+	 * is a command enabled? it is by default
+	 *
+	 * @return wheneter the command is enabled
+	 */
+	public boolean isEnabled() {
+		return true;
+	}
+
+	/**
+	 * Is a command listed? it is by default
+	 *
+	 * @return wheneter it shows up in the !help list
+	 */
+	public boolean isListed() {
+		return true;
 	}
 
 	/**

@@ -32,6 +32,11 @@ public class BankCommand extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isListed() {
+		return false;
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		return TextHandler.get("command_not_implemented");
 	}

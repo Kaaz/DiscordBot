@@ -73,6 +73,9 @@ public class Help extends AbstractCommand {
 			HashMap<CommandCategory, ArrayList<String>> commandList = new HashMap<>();
 			AbstractCommand[] commandObjects = bot.commandHandler.getCommandObjects();
 			for (AbstractCommand command : commandObjects) {
+				if (!command.isListed() || !command.isEnabled()) {
+					continue;
+				}
 				if (!commandList.containsKey(command.getCommandCategory())) {
 					commandList.put(command.getCommandCategory(), new ArrayList<>());
 				}
