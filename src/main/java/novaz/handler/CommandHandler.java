@@ -6,10 +6,7 @@ import novaz.db.WebDb;
 import novaz.db.table.TCommandLog;
 import novaz.db.table.TServers;
 import novaz.db.table.TUser;
-import novaz.handler.guildsettings.defaults.SettingBotChannel;
-import novaz.handler.guildsettings.defaults.SettingCleanupMessages;
-import novaz.handler.guildsettings.defaults.SettingCommandPrefix;
-import novaz.handler.guildsettings.defaults.SettingShowUnknownCommands;
+import novaz.handler.guildsettings.defaults.*;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import org.reflections.Reflections;
@@ -86,7 +83,7 @@ public class CommandHandler {
 			}
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));
-		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
+		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED && GuildSettings.get(guild).getOrDefault(SettingEnableChatBot.class).equals("true")) {
 			mymsg = bot.sendMessage(channel, content.getAuthor().mention() + ", " + bot.chatBotHandler.chat(inputMessage));
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.get(guild).getOrDefault(SettingShowUnknownCommands.class).equals("true")) {
