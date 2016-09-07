@@ -11,16 +11,16 @@ import java.util.List;
  */
 public class ListingComment {
 
-    @Expose
-    public List<Comment> children;
-    @Expose
-    public String modhash;
-    @Expose
-    public String before;
-    @Expose
-    public String after;
+	@Expose
+	public List<Comment> children;
+	@Expose
+	public String modhash;
+	@Expose
+	public String before;
+	@Expose
+	public String after;
 
-    public ListingComment() {
-        this.children = new ArrayList<>();
-    }
+	public ListingComment() {
+		this.children = new ArrayList<>();
+	}
 }

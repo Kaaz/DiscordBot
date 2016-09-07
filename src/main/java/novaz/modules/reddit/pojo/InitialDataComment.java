@@ -7,8 +7,8 @@ import com.google.gson.annotations.Expose;
  */
 public class InitialDataComment {
 
-    @Expose
-    public ListingComment data;
-    @Expose
-    public String kind;
+	@Expose
+	public ListingComment data;
+	@Expose
+	public String kind;
 }

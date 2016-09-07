@@ -9,9 +9,9 @@ import java.util.List;
  */
 public class Image {
 
-    @Expose
-    public Source source;
+	@Expose
+	public Source source;
 
-    @Expose
-    public List<Source> resolutions;
+	@Expose
+	public List<Source> resolutions;
 }

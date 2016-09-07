@@ -9,6 +9,6 @@ import java.util.List;
  */
 public class ImagePreview {
 
-    @Expose
-    public List<Image> images;
+	@Expose
+	public List<Image> images;
 }
