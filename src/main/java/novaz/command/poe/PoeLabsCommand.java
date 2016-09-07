@@ -1,6 +1,7 @@
 package novaz.command.poe;
 
 import novaz.core.AbstractCommand;
+import novaz.main.Config;
 import novaz.main.NovaBot;
 import novaz.modules.reddit.RedditScraper;
 import novaz.modules.reddit.pojo.Comment;
@@ -59,11 +60,15 @@ public class PoeLabsCommand extends AbstractCommand {
 				String searchText = comment.data.body.toLowerCase();
 				if (args.length > 0) {
 					if (searchText.contains(args[0].toLowerCase())) {
-						return Misc.makeTable(comment.data.body);
+						return "Path of exile labirinth" + Config.EOL + Config.EOL +
+								post.data.title + Config.EOL +
+								Misc.makeTable(comment.data.body);
 					}
 				}
 				if (searchText.contains("normal") && searchText.contains("cruel") && searchText.contains("merciless")) {
-					return Misc.makeTable(comment.data.body);
+					return "Path of exile labirinth" + Config.EOL + Config.EOL +
+							post.data.title + Config.EOL +
+							Misc.makeTable(comment.data.body);
 				}
 			}
 		}
