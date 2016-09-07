@@ -67,7 +67,7 @@ public class Info extends AbstractCommand {
 					return "The following items are being worked on:" + Config.EOL + getListFor(Config.TRELLO_LIST_IN_PROGRESS, ":construction:");
 			}
 		}
-		String onlineFor = TimeUtil.getRelativeTime(bot.startupTimeStamp, false, );
+		String onlineFor = TimeUtil.getRelativeTime(bot.startupTimeStamp, false);
 		String cmdPrefix = GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);
 		IUser user = bot.instance.getUserByID(Config.CREATOR_ID);
 		return "Who am I you say?" + Config.EOL +
