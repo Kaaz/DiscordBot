@@ -76,13 +76,13 @@ public class PoeLabsCommand extends AbstractCommand {
 					Matcher m = imagePattern.matcher(searchText);
 					while (m.find()) {
 						if (m.group(1).equals(args[0].toLowerCase())) {
-							return "Path of exile labirinth" + Config.EOL + Config.EOL +
-									post.data.title + " [**"+args[0].toLowerCase()+"**]" + Config.EOL + m.group(2);
+							return "Path of Exile - Labirinth" + Config.EOL + Config.EOL +
+									post.data.title + " - **" + args[0].toLowerCase() + "**" + Config.EOL + m.group(2);
 						}
 					}
 				} else {
 					if (searchText.contains("normal") && searchText.contains("cruel") && searchText.contains("merciless")) {
-						return "Path of exile labirinth" + Config.EOL + Config.EOL +
+						return "Path of Exile -  Labirinth" + Config.EOL + Config.EOL +
 								post.data.title + Config.EOL +
 								Misc.makeTable(comment.data.body);
 					}
