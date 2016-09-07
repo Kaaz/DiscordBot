@@ -2,9 +2,9 @@ package novaz.modules.reddit;
 
 
 import com.google.gson.Gson;
-import novaz.modules.reddit.gson.Child;
-import novaz.modules.reddit.gson.CommentsResult;
-import novaz.modules.reddit.gson.SearchResult;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import novaz.modules.reddit.pojo.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -19,25 +19,37 @@ import java.util.List;
 import static org.apache.http.protocol.HTTP.USER_AGENT;
 
 public class RedditScraper {
-	final static Gson gson = new Gson();
+	private final static Gson gson = new GsonBuilder().
+			registerTypeAdapter(CommentData.class, new CommentDataDeserializer()).
+			excludeFieldsWithoutExposeAnnotation().
+			create();
 
-	public static List<Child> search(String subreddit, String arguments) {
+	public static List<Post> search(String subreddit, String arguments) {
+
 		String response = doRequest(RedditConstants.URL + RedditConstants.SUBREDDIT_INDICATOR + subreddit + RedditConstants.SEARCH_PAGE + arguments);
-		SearchResult searchResult = gson.fromJson(response, SearchResult.class);
-		List<Child> children = searchResult.getSearchResultData().getChildren();
-		if (children != null) {
-			return children;
+		InitialData listing = gson.fromJson(response, InitialData.class);
+		if (listing.data.children != null) {
+			return listing.data.children;
 		}
-		return new ArrayList<Child>();
+		return new ArrayList<>();
 	}
 
-	public static List<Child> getComments(String id) {
+	public static List<?> getComments(String id) {
 		String response = doRequest(RedditConstants.URL + "comments/" + id + ".json");
 		System.out.println(response);
 		//[{},{}] first element is about post, 2nd is with comments
-		CommentsResult[] searchResult = gson.fromJson(response, CommentsResult[].class);
-		if (searchResult.length >= 2) {
-			return searchResult[1].getData().getChildren();
+		List<InitialDataComment> initialData = gson.fromJson(response, new TypeToken<ArrayList<InitialDataComment>>() {
+		}.getType());
+		for (InitialDataComment initialDataComment : initialData) {
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			for (Comment child : initialDataComment.data.children) {
+				System.out.println(child.data.author);
+				System.out.println(child.data.body);
+				System.out.println(child.data);
+
+				System.out.println(child.data.created);
+				System.out.println(child.data.id);
+			}
 		}
 		return new ArrayList<>();
 	}
