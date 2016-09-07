@@ -38,7 +38,9 @@ Current list of all available commands. See below for a more detailed list
 * [leave](#leave)
 * [play](#play)
 * [playlist](#playlist)
+* [poec](#poec)
 * [poeitem](#poeitem)
+* [poelab](#poelab)
 * [reload](#reload)
 * [say](#say)
 * [skip](#skip)
@@ -70,6 +72,14 @@ See what the magic 8ball has to say
 
 For all your banking needs
 
+
+#### Usage
+
+```php
+bank                       //shows current balance
+bank history               //shows last transactions
+bank donate @user <amount> //donates <amount> to @user 
+```
 ### blackjack
 
 play a game of blackjack!
@@ -199,10 +209,33 @@ information about the playlist/history
 playlist          //playlist queue
 playlist history  //list of recently played songs
 ```
+### poec
+
+Returns a list of currency on your account
+
+
+#### Usage
+
+```php
+poec                   //returns list of currency for default league
+poec token <token>     //sets the session token
+poec league <league>   //currency for league
+```
 ### poeitem
 
 Analyzes an item from path of exile.
 
+### poelab
+
+Attempts to find a description from reddit for the Labyrinth instance.
+
+
+#### Usage
+
+```php
+poelab              //lists for all difficulties
+poelab <difficulty> //only for that difficulty
+```
 ### reload
 
 reloads the configuration
