@@ -71,7 +71,7 @@ public class Playlist extends AbstractCommand {
 				ret += String.format("    %-16s %s", ":watch:", ":notes:") + Config.EOL;
 				String tableContent = "";
 				for (OMusic song : recentlyPlayed) {
-					tableContent += String.format("%-7s%s", TimeUtil.getTimeAgo(song.lastplaydate), song.youtubeTitle) + Config.EOL;
+					tableContent += String.format("%-7s%s", TimeUtil.getRelativeTime(song.lastplaydate), song.youtubeTitle) + Config.EOL;
 				}
 				return ret + Misc.makeTable(tableContent);
 			} else {
