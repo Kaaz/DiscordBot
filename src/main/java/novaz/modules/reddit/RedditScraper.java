@@ -34,24 +34,15 @@ public class RedditScraper {
 		return new ArrayList<>();
 	}
 
-	public static List<?> getComments(String id) {
+	public static List<Comment> getComments(String id) {
 		String response = doRequest(RedditConstants.URL + "comments/" + id + ".json");
-		System.out.println(response);
-		//[{},{}] first element is about post, 2nd is with comments
 		List<InitialDataComment> initialData = gson.fromJson(response, new TypeToken<ArrayList<InitialDataComment>>() {
 		}.getType());
+		List<Comment> commentList = new ArrayList<>();
 		for (InitialDataComment initialDataComment : initialData) {
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			for (Comment child : initialDataComment.data.children) {
-				System.out.println(child.data.author);
-				System.out.println(child.data.body);
-				System.out.println(child.data);
-
-				System.out.println(child.data.created);
-				System.out.println(child.data.id);
-			}
+			commentList.addAll(initialDataComment.data.children);
 		}
-		return new ArrayList<>();
+		return commentList;
 	}
 
 	private static String doRequest(String url) {

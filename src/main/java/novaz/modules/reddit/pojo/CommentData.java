@@ -31,4 +31,5 @@ public class CommentData {
 
     @Expose
     public InitialDataComment replies;
+	public boolean isOp;
 }

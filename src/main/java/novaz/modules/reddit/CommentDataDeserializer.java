@@ -13,13 +13,17 @@ public class CommentDataDeserializer implements JsonDeserializer<CommentData> {
 	@Override
 	public CommentData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 		final JsonObject jsonObject = json.getAsJsonObject();
+		boolean isOp = false;
 
 		String author = null;
 		if (jsonObject.get("author") != null)
 			author = jsonObject.get("author").getAsString();
 
 		String body = null;
-		if (jsonObject.get("body") != null)
+		if (jsonObject.get("selftext") != null) {
+			body = jsonObject.get("selftext").getAsString();
+			isOp = true;
+		} else if (jsonObject.get("body") != null)
 			body = jsonObject.get("body").getAsString();
 
 		Long created = null;
@@ -55,6 +59,7 @@ public class CommentDataDeserializer implements JsonDeserializer<CommentData> {
 		}
 
 		CommentData commentData = new CommentData();
+		commentData.isOp = isOp;
 		commentData.author = author;
 		commentData.body = body;
 		commentData.created = created;

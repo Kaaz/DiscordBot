@@ -8,6 +8,9 @@ import novaz.db.table.TMusic;
 import novaz.util.YTUtil;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Launcher {
 
@@ -19,6 +22,8 @@ public class Launcher {
 		} else {
 			Logger.fatal("Bot not enabled, enable it in the config. You can do this by setting bot_enabled=true");
 		}
+		Collections.addAll(new ArrayList<>(), "123|123|432|32|123|432".split("|"));
+
 	}
 
 	/**
