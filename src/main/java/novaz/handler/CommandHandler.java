@@ -1,5 +1,6 @@
 package novaz.handler;
 
+import com.vdurmont.emoji.EmojiParser;
 import novaz.command.CommandCategory;
 import novaz.core.AbstractCommand;
 import novaz.db.WebDb;
@@ -79,7 +80,7 @@ public class CommandHandler {
 				for (String arg : args) {
 					usedArguments.append(arg).append(" ");
 				}
-				TCommandLog.saveLog(TUser.getCachedId(author.getID()), TServers.getCachedId(guild.getID()), input[0], usedArguments.toString().trim());
+				TCommandLog.saveLog(TUser.getCachedId(author.getID()), TServers.getCachedId(guild.getID()), input[0], EmojiParser.parseToAliases(usedArguments.toString()).trim());
 			}
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));
