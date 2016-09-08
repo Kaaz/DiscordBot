@@ -1,6 +1,8 @@
 package novaz.db.model;
 
-public class OMusic {
+import novaz.db.AbstractModel;
+
+public class OMusic extends AbstractModel{
 	public int id = 0;
 	public String youtubecode = "";
 	public String filename = "";
