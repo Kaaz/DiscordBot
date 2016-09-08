@@ -5,26 +5,25 @@ import novaz.core.Logger;
 import novaz.db.WebDb;
 import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
+import novaz.threads.ServiceHandlerThread;
 import novaz.util.YTUtil;
-import sx.blah.discord.Discord4J;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 public class Launcher {
+	public static boolean killAllThreads = false;
 
 	public static void main(String[] args) throws Exception {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		if (Config.BOT_ENABLED) {
 			WebDb.init();
 			NovaBot nb = new NovaBot();
+			Thread serviceHandler = new ServiceHandlerThread(nb);
+			serviceHandler.setDaemon(true);
+			serviceHandler.start();
 		} else {
 			Logger.fatal("Bot not enabled, enable it in the config. You can do this by setting bot_enabled=true");
 		}
-		Collections.addAll(new ArrayList<>(), "123|123|432|32|123|432".split("|"));
-
 	}
 
 	/**
@@ -43,4 +42,5 @@ public class Launcher {
 			TMusic.update(rec);
 		}
 	}
+
 }
