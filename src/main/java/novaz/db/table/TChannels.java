@@ -15,11 +15,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TChannels {
 	private static Map<String, Integer> channelCache = new ConcurrentHashMap<>();
 
-	public static int getCachedId(String discordId) {
+	public static int getCachedId(String discordId, String serverId) {
+		return getCachedId(discordId, TServers.getCachedId(serverId));
+	}
+
+	public static int getCachedId(String discordId, int serverId) {
 		if (!channelCache.containsKey(discordId)) {
 			OChannel channel = findBy(discordId);
 			if (channel.id == 0) {
 				channel.discord_id = discordId;
+				channel.server_id = serverId;
 				insert(channel);
 			}
 			channelCache.put(discordId, channel.id);

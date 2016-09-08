@@ -60,7 +60,7 @@ public class Subscribe extends AbstractCommand {
 		List<List<String>> tbl = new ArrayList<>();
 		if (args.length == 0) {
 			Collections.addAll(headers, "code", "name");
-			List<QActiveSubscriptions> subscriptionsForChannel = TSubscriptions.getSubscriptionsForChannel(TChannels.getCachedId(channel.getID()));
+			List<QActiveSubscriptions> subscriptionsForChannel = TSubscriptions.getSubscriptionsForChannel(TChannels.getCachedId(channel.getID(), channel.getGuild().getID()));
 			for (QActiveSubscriptions subscriptions : subscriptionsForChannel) {
 				ArrayList<String> row = new ArrayList<>();
 				row.add(subscriptions.code);
@@ -80,7 +80,7 @@ public class Subscribe extends AbstractCommand {
 				if (service.id == 0) {
 					return TextHandler.get("command_subscribe_invalid_service");
 				}
-				OSubscription subscription = TSubscriptions.findBy(TServers.getCachedId(channel.getGuild().getID()), TChannels.getCachedId(channel.getID()), service.id);
+				OSubscription subscription = TSubscriptions.findBy(TServers.getCachedId(channel.getGuild().getID()), TChannels.getCachedId(channel.getID(), channel.getGuild().getID()), service.id);
 				if (subscription.subscribed == 1) {
 					subscription.subscribed = 0;
 					TSubscriptions.insertOrUpdate(subscription);
@@ -111,10 +111,10 @@ public class Subscribe extends AbstractCommand {
 		if (service.id == 0) {
 			return TextHandler.get("command_subscribe_invalid_service");
 		}
-		OSubscription subscription = TSubscriptions.findBy(TServers.getCachedId(channel.getGuild().getID()), TChannels.getCachedId(channel.getID()), service.id);
+		OSubscription subscription = TSubscriptions.findBy(TServers.getCachedId(channel.getGuild().getID()), TChannels.getCachedId(channel.getID(), channel.getGuild().getID()), service.id);
 		if (subscription.subscribed == 0) {
 			subscription.subscribed = 1;
-			subscription.channelId = TChannels.getCachedId(channel.getID());
+			subscription.channelId = TChannels.getCachedId(channel.getID(), channel.getGuild().getID());
 			subscription.serverId = TServers.getCachedId(channel.getGuild().getID());
 			subscription.serviceId = service.id;
 			TSubscriptions.insertOrUpdate(subscription);
