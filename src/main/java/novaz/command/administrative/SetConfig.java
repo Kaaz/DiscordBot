@@ -3,7 +3,7 @@ package novaz.command.administrative;
 import novaz.core.AbstractCommand;
 import novaz.handler.GuildSettings;
 import novaz.handler.TextHandler;
-import novaz.handler.guildsettings.DefaultGuildSettings;
+import novaz.guildsettings.DefaultGuildSettings;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import novaz.util.Misc;

@@ -1,12 +1,12 @@
-package novaz.handler.guildsettings.defaults;
+package novaz.guildsettings.defaults;
 
-import novaz.handler.guildsettings.AbstractGuildSetting;
+import novaz.guildsettings.AbstractGuildSetting;
 
 
-public class SettingEnableChatBot extends AbstractGuildSetting {
+public class SettingUseEconomy extends AbstractGuildSetting {
 	@Override
 	public String getKey() {
-		return "chat_bot_enabled";
+		return "use_economy";
 	}
 
 	@Override
@@ -16,7 +16,9 @@ public class SettingEnableChatBot extends AbstractGuildSetting {
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"Chat with people"};
+		return new String[]{"Use the economy feature?",
+				"false -> nope!",
+				"true -> yep!"};
 	}
 
 	@Override

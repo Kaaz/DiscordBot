@@ -2,8 +2,8 @@ package novaz.handler;
 
 import novaz.db.WebDb;
 import novaz.db.table.TServers;
-import novaz.handler.guildsettings.AbstractGuildSetting;
-import novaz.handler.guildsettings.DefaultGuildSettings;
+import novaz.guildsettings.AbstractGuildSetting;
+import novaz.guildsettings.DefaultGuildSettings;
 import sx.blah.discord.handle.obj.IGuild;
 
 import java.sql.ResultSet;

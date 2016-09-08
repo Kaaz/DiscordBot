@@ -6,6 +6,7 @@ import novaz.db.WebDb;
 import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
 import novaz.util.YTUtil;
+import sx.blah.discord.Discord4J;
 
 import java.io.File;
 import java.util.ArrayList;

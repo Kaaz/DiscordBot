@@ -1,4 +1,4 @@
-package novaz.handler.guildsettings;
+package novaz.guildsettings;
 
 abstract public class AbstractGuildSetting {
 

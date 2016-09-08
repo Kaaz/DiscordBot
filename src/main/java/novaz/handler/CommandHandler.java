@@ -6,7 +6,7 @@ import novaz.db.WebDb;
 import novaz.db.table.TCommandLog;
 import novaz.db.table.TServers;
 import novaz.db.table.TUser;
-import novaz.handler.guildsettings.defaults.*;
+import novaz.guildsettings.defaults.*;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import org.reflections.Reflections;

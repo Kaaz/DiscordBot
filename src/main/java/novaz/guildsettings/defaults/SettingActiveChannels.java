@@ -1,6 +1,6 @@
-package novaz.handler.guildsettings.defaults;
+package novaz.guildsettings.defaults;
 
-import novaz.handler.guildsettings.AbstractGuildSetting;
+import novaz.guildsettings.AbstractGuildSetting;
 
 
 public class SettingActiveChannels extends AbstractGuildSetting {

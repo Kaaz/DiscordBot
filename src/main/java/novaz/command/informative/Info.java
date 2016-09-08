@@ -2,7 +2,7 @@ package novaz.command.informative;
 
 import novaz.core.AbstractCommand;
 import novaz.handler.GuildSettings;
-import novaz.handler.guildsettings.defaults.SettingCommandPrefix;
+import novaz.guildsettings.defaults.SettingCommandPrefix;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import novaz.util.TimeUtil;

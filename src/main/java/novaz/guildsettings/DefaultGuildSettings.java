@@ -1,4 +1,4 @@
-package novaz.handler.guildsettings;
+package novaz.guildsettings;
 
 import novaz.exceptions.DefaultSettingAlreadyExistsException;
 import org.reflections.Reflections;
@@ -51,7 +51,7 @@ public class DefaultGuildSettings {
 		if (initialized) {
 			return;
 		}
-		Reflections reflections = new Reflections("novaz.handler.guildsettings");
+		Reflections reflections = new Reflections("novaz.guildsettings");
 		Set<Class<? extends AbstractGuildSetting>> classes = reflections.getSubTypesOf(AbstractGuildSetting.class);
 		for (Class<? extends AbstractGuildSetting> clazz : classes) {
 			try {

@@ -41,6 +41,7 @@ Current list of all available commands. See below for a more detailed list
 * [poec](#poec)
 * [poeitem](#poeitem)
 * [poelab](#poelab)
+* [poll](#poll)
 * [reload](#reload)
 * [say](#say)
 * [skip](#skip)
@@ -235,6 +236,19 @@ Attempts to find a description from reddit for the Labyrinth instance.
 ```php
 poelab              //lists for all difficulties
 poelab <difficulty> //only for that difficulty
+```
+### poll
+
+Strawpoll: propose a question and choices for the chat to vote on
+
+
+#### Usage
+
+```php
+poll          //status of active poll 
+poll create <question> ;<duration in minutes>;<option1>;<option2>;<etc.> 
+              //creates a poll for the duration
+poll 1-9      //vote on the options
 ```
 ### reload
 
