@@ -5,26 +5,26 @@ import novaz.db.WebDb;
 import novaz.db.model.OChannel;
 
 import java.sql.ResultSet;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * data communication with the table `channels`
  * Created on 10-8-2016
  */
 public class TChannels {
-	private static Map<String, Integer> servercache = new HashMap<>();
+	private static Map<String, Integer> channelCache = new ConcurrentHashMap<>();
 
 	public static int getCachedId(String discordId) {
-		if (!servercache.containsKey(discordId)) {
+		if (!channelCache.containsKey(discordId)) {
 			OChannel channel = findBy(discordId);
 			if (channel.id == 0) {
 				channel.discord_id = discordId;
 				insert(channel);
 			}
-			servercache.put(discordId, channel.id);
+			channelCache.put(discordId, channel.id);
 		}
-		return servercache.get(discordId);
+		return channelCache.get(discordId);
 	}
 
 	public static OChannel findBy(String discordId) {
@@ -35,7 +35,7 @@ public class TChannels {
 						"WHERE discord_id = ? ", discordId)) {
 			if (rs.next()) {
 				s.id = rs.getInt("id");
-				s.id = rs.getInt("server_id");
+				s.server_id = rs.getInt("server_id");
 				s.discord_id = rs.getString("discord_id");
 				s.name = rs.getString("name");
 			}

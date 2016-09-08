@@ -5,20 +5,21 @@ import novaz.db.WebDb;
 import novaz.db.model.OServer;
 
 import java.sql.ResultSet;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * data communication with the table `servers`
  * Created on 10-8-2016
  */
 public class TServers {
-	private static Map<String, Integer> servercache = new HashMap<>();
+	private static Map<String, Integer> servercache = new ConcurrentHashMap<>();
 
 	public static int getCachedId(String discordId) {
 		if (!servercache.containsKey(discordId)) {
 			OServer server = findBy(discordId);
 			if (server.id == 0) {
+				server.discord_id = discordId;
 				insert(server);
 			}
 			servercache.put(discordId, server.id);

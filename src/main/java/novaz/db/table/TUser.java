@@ -5,8 +5,8 @@ import novaz.db.WebDb;
 import novaz.db.model.OUser;
 
 import java.sql.ResultSet;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * data communication with the table `users`
@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class TUser {
 
-	private static Map<String, Integer> userCache = new HashMap<>();
+	private static Map<String, Integer> userCache = new ConcurrentHashMap<>();
 
 	public static int getCachedId(String discordId) {
 		if (!userCache.containsKey(discordId)) {

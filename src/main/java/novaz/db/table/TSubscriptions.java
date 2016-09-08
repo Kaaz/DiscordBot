@@ -40,7 +40,7 @@ public class TSubscriptions {
 				QActiveSubscriptions row = new QActiveSubscriptions();
 				row.serviceId = rs.getInt("id");
 				row.code = rs.getString("name");
-				row.displayName = rs.getString("displayname");
+				row.displayName = rs.getString("display_name");
 				list.add(row);
 			}
 		} catch (SQLException e) {
