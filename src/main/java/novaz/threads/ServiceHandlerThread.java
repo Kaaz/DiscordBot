@@ -9,11 +9,8 @@ public class ServiceHandlerThread extends Thread {
 	public ServiceHandlerThread(NovaBot bot) {
 		super("ServiceHandler");
 		this.bot = bot;
-		collectServices();
 	}
-
-	private void collectServices() {
-
+	private void collectServices(){
 	}
 
 	@Override

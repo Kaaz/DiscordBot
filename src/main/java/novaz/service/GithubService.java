@@ -4,13 +4,18 @@ import novaz.core.AbstractService;
 import novaz.main.NovaBot;
 
 /**
- * Created on 8-9-2016
+ * check for news on github
  */
 public class GithubService extends AbstractService {
 
 
 	public GithubService(NovaBot b) {
 		super(b);
+	}
+
+	@Override
+	public long delayBetweenRuns() {
+		return 900_000;
 	}
 
 	@Override

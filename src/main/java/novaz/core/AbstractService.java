@@ -13,6 +13,13 @@ public abstract class AbstractService {
 	}
 
 	/**
+	 * miliseconds it should wait befor eattempting anothe run
+	 *
+	 * @return delay in miliseconds
+	 */
+	public abstract long delayBetweenRuns();
+
+	/**
 	 * Determines if the service should run
 	 *
 	 * @return should it run?
