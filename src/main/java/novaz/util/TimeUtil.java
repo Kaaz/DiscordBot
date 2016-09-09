@@ -33,7 +33,6 @@ public class TimeUtil {
 	 * @return string of x min ago
 	 */
 	public static String getRelativeTime(long time, boolean shortText) {
-		System.out.println(time);
 		time = time * 1000;
 		boolean future = false;
 		String chronology = "ago";

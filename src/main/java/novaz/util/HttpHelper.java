@@ -1,6 +1,5 @@
 package novaz.util;
 
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -38,22 +37,12 @@ public class HttpHelper {
 		if (headers != null) {
 			for (Map.Entry<String, String> entry : headers.entrySet()) {
 				request.addHeader(entry.getKey(), entry.getValue());
-				System.out.println(String.format("Setting `%s` TO `%s`", entry.getKey(), entry.getValue()));
-				System.out.println(String.format("Setting `%s` TO `%s`", entry.getKey(), entry.getValue()));
-				System.out.println(String.format("Setting `%s` TO `%s`", entry.getKey(), entry.getValue()));
-				System.out.println(String.format("Setting `%s` TO `%s`", entry.getKey(), entry.getValue()));
-				System.out.println(String.format("Setting `%s` TO `%s`", entry.getKey(), entry.getValue()));
-				System.out.println(String.format("Setting `%s` TO `%s`", entry.getKey(), entry.getValue()));
 			}
 		}
 		try {
 			HttpResponse response = client.execute(request);
 			BufferedReader rd = new BufferedReader(
 					new InputStreamReader(response.getEntity().getContent()));
-			for (Header header : response.getAllHeaders()) {
-				System.out.println(header.getName());
-				System.out.println(header.getValue());
-			}
 			StringBuilder result = new StringBuilder();
 			String line = "";
 			while ((line = rd.readLine()) != null) {
