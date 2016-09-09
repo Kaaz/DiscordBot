@@ -1,11 +1,6 @@
 package novaz.service;
 
 import novaz.core.AbstractService;
-import novaz.db.model.OChannel;
-import novaz.db.model.QActiveSubscriptions;
-import novaz.db.table.TChannels;
-import novaz.db.table.TServices;
-import novaz.db.table.TSubscriptions;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import novaz.modules.github.GitHub;
@@ -16,7 +11,6 @@ import sx.blah.discord.handle.obj.IChannel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 /**
  * check for news on github
@@ -24,7 +18,7 @@ import java.util.List;
 public class GithubService extends AbstractService {
 
 	private final SimpleDateFormat exportDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private final int MAX_COMMITS_PER_POST = 5;
+	private final static int MAX_COMMITS_PER_POST = 5;
 
 	public GithubService(NovaBot b) {
 		super(b);
@@ -51,7 +45,7 @@ public class GithubService extends AbstractService {
 
 	@Override
 	public void run() {
-		String totalMessage = "";
+		String totalMessage;
 		String commitsMessage = "";
 		long lastKnownCommitTimestamp = Long.parseLong("0" + getData("last_date"));
 		long newLastKnownCommitTimestamp = lastKnownCommitTimestamp;
@@ -83,17 +77,14 @@ public class GithubService extends AbstractService {
 				totalMessage = "There has been a commit to **" + Config.BOT_NAME + "**" + Config.EOL;
 			} else {
 				totalMessage = "There have been **" + commitCount + "** commits to **" + Config.BOT_NAME + "**" + Config.EOL;
-
 			}
 			totalMessage += Config.EOL + commitsMessage;
-			List<QActiveSubscriptions> subscriptionsForService = TSubscriptions.getSubscriptionsForService(TServices.getCachedId(getIdentifier()));
-			for (QActiveSubscriptions subscription : subscriptionsForService) {
-				OChannel oChannel = TChannels.findById(subscription.channelId);
-				IChannel broadcastChannel = bot.instance.getChannelByID(oChannel.discord_id);
-				bot.sendMessage(broadcastChannel, totalMessage);
+			for (IChannel iChannel : getSubscribedChannels()) {
+				bot.sendMessage(iChannel, totalMessage);
 			}
 		}
 		saveData("last_date", newLastKnownCommitTimestamp);
+
 	}
 
 	@Override

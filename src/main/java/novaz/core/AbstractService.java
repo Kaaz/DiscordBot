@@ -1,12 +1,19 @@
 package novaz.core;
 
+import novaz.db.model.OChannel;
 import novaz.db.model.OService;
 import novaz.db.model.OServiceVariable;
+import novaz.db.model.QActiveSubscriptions;
+import novaz.db.table.TChannels;
 import novaz.db.table.TServiceVariables;
 import novaz.db.table.TServices;
+import novaz.db.table.TSubscriptions;
 import novaz.main.NovaBot;
+import sx.blah.discord.handle.obj.IChannel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractService {
@@ -16,6 +23,26 @@ public abstract class AbstractService {
 	public AbstractService(NovaBot b) {
 		bot = b;
 		cache = new HashMap<>();
+	}
+
+	/**
+	 * retrieves a list of subscribed channels for service
+	 *
+	 * @return list of IChannels
+	 */
+	protected List<IChannel> getSubscribedChannels() {
+		List<IChannel> channels = new ArrayList<>();
+		List<QActiveSubscriptions> subscriptionsForService = TSubscriptions.getSubscriptionsForService(TServices.getCachedId(getIdentifier()));
+		for (QActiveSubscriptions activeSubscriptions : subscriptionsForService) {
+			OChannel databaseChannel = TChannels.findById(activeSubscriptions.channelId);
+			IChannel botChannel = bot.instance.getChannelByID(databaseChannel.discord_id);
+			if (botChannel != null) {
+				channels.add(botChannel);
+			} else {
+				bot.sendErrorToMe(new Exception("Subscription channel not found"), "channelID", databaseChannel.discord_id, "subscription", getIdentifier());
+			}
+		}
+		return channels;
 	}
 
 	/**
@@ -86,9 +113,9 @@ public abstract class AbstractService {
 	public abstract String getIdentifier();
 
 	/**
-	 * miliseconds it should wait befor eattempting anothe run
+	 * milliseconds it should wait before attempting another run
 	 *
-	 * @return delay in miliseconds
+	 * @return delay in milliseconds
 	 */
 	public abstract long getDelayBetweenRuns();
 
