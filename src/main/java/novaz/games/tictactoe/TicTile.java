@@ -1,7 +1,7 @@
 package novaz.games.tictactoe;
 
 public class TicTile {
-	int player;
+	private int player;
 	private TileState state;
 
 	public TicTile() {
