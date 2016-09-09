@@ -15,8 +15,8 @@ public class Launcher {
 
 	public static void main(String[] args) throws Exception {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
+		WebDb.init();
 		if (Config.BOT_ENABLED) {
-			WebDb.init();
 			NovaBot nb = new NovaBot();
 			Thread serviceHandler = new ServiceHandlerThread(nb);
 			serviceHandler.setDaemon(true);

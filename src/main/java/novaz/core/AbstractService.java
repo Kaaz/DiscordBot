@@ -1,5 +1,6 @@
 package novaz.core;
 
+import novaz.db.model.OService;
 import novaz.db.model.OServiceVariable;
 import novaz.db.table.TServiceVariables;
 import novaz.db.table.TServices;
@@ -22,9 +23,13 @@ public abstract class AbstractService {
 	 * Start the service
 	 */
 	public final void start() {
-		long lastRun = Long.parseLong("0" + getData("last_run"));
+		long lastRun = Long.parseLong("0" + getData("abs_last_service_run"));
 		long now = System.currentTimeMillis();
 		long next = lastRun + getDelayBetweenRuns();
+		OService service = TServices.findBy(getIdentifier());
+		if (service.activated == 0) {
+			return;
+		}
 		if (next <= now) {
 			if (!shouldIRun()) {
 				System.out.println("maybe not, it appears that I shouldn't run");
@@ -33,7 +38,7 @@ public abstract class AbstractService {
 			beforeRun();
 			run();
 			afterRun();
-			saveData("last_run", now);
+			saveData("abs_last_service_run", now);
 		} else {
 			System.out.println("I'm gonna run " + TimeUtil.getRelativeTime(next / 1000L, false));
 		}
@@ -45,7 +50,7 @@ public abstract class AbstractService {
 	 * @param key key used
 	 * @return the value of the key
 	 */
-	private String getData(String key) {
+	protected String getData(String key) {
 		return getDataObject(key).value;
 	}
 
@@ -69,7 +74,7 @@ public abstract class AbstractService {
 	 * @param key   the key
 	 * @param value Any value converted to string
 	 */
-	public void saveData(String key, Object value) {
+	protected void saveData(String key, Object value) {
 		OServiceVariable dataObject = getDataObject(key);
 		dataObject.variable = key;
 		dataObject.serviceId = TServices.getCachedId(getIdentifier());

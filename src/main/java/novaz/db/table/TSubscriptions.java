@@ -49,6 +49,27 @@ public class TSubscriptions {
 		return list;
 	}
 
+	public static List<QActiveSubscriptions> getSubscriptionsForService(int serviceId) {
+		ArrayList<QActiveSubscriptions> list = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select("" +
+				"SELECT se.id, su.channel_id, se.name,se.display_name  " +
+				"FROM subscriptions su " +
+				"JOIN services se ON se.id = su.service_id " +
+				"WHERE se.id = ? AND su.subscribed = 1 ", serviceId)) {
+			while (rs.next()) {
+				QActiveSubscriptions row = new QActiveSubscriptions();
+				row.serviceId = rs.getInt("id");
+				row.channelId = rs.getInt("channel_id");
+				row.code = rs.getString("name");
+				row.displayName = rs.getString("display_name");
+				list.add(row);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
 	private static OSubscription fillRecord(ResultSet resultset) throws SQLException {
 		OSubscription record = new OSubscription();
 		record.serverId = resultset.getInt("server_id");

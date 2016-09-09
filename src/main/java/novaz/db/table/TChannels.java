@@ -50,6 +50,24 @@ public class TChannels {
 		return s;
 	}
 
+	public static OChannel findById(int id) {
+		OChannel s = new OChannel();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT id, discord_id, server_id, name " +
+						"FROM channels " +
+						"WHERE id = ? ", id)) {
+			if (rs.next()) {
+				s.id = rs.getInt("id");
+				s.server_id = rs.getInt("server_id");
+				s.discord_id = rs.getString("discord_id");
+				s.name = rs.getString("name");
+			}
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return s;
+	}
+
 	public static void update(OChannel record) {
 		if (record.id == 0) {
 			insert(record);

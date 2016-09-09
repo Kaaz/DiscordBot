@@ -5,12 +5,12 @@ import novaz.core.Logger;
 import novaz.db.model.OMusic;
 import novaz.db.model.OServer;
 import novaz.db.table.TServers;
-import novaz.handler.*;
 import novaz.guildsettings.DefaultGuildSettings;
 import novaz.guildsettings.defaults.SettingActiveChannels;
 import novaz.guildsettings.defaults.SettingBotChannel;
 import novaz.guildsettings.defaults.SettingCommandPrefix;
 import novaz.guildsettings.defaults.SettingEnableChatBot;
+import novaz.handler.*;
 import novaz.util.Misc;
 import org.reflections.Reflections;
 import sx.blah.discord.api.ClientBuilder;
@@ -37,12 +37,15 @@ public class NovaBot {
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
 	public ChatBotHandler chatBotHandler = null;
 
-
 	public NovaBot() throws DiscordException {
 		registerHandlers();
 		instance = new ClientBuilder().withToken(Config.BOT_TOKEN).login();
 		registerEvents();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
+	}
+
+	public boolean isReady() {
+		return isReady;
 	}
 
 	/**
