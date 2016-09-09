@@ -33,9 +33,9 @@ public class NovaBot {
 	public CommandHandler commandHandler;
 	public Timer timer = new Timer();
 	public String mentionMe;
+	public ChatBotHandler chatBotHandler = null;
 	private boolean isReady = false;
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
-	public ChatBotHandler chatBotHandler = null;
 
 	public NovaBot() throws DiscordException {
 		registerHandlers();

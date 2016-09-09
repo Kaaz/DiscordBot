@@ -22,10 +22,10 @@ import java.util.regex.Pattern;
  * Analyzes an item from path of exile
  */
 public class PoeLabsCommand extends AbstractCommand {
-	private Pattern imagePattern = Pattern.compile("(?m)(normal|uber|merciless|cruel) lab notes[\\s]*(https?:.*(png|jpg))", Pattern.MULTILINE);
 	private static final Set<String> validArgs = new HashSet<>(Arrays.asList(
 			new String[]{"normal", "cruel", "merciless", "uber"}
 	));
+	private Pattern imagePattern = Pattern.compile("(?m)(normal|uber|merciless|cruel) lab notes[\\s]*(https?:.*(png|jpg))", Pattern.MULTILINE);
 
 	public PoeLabsCommand(NovaBot b) {
 		super(b);

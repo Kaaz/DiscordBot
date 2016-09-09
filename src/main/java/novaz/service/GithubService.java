@@ -47,7 +47,6 @@ public class GithubService extends AbstractService {
 
 	@Override
 	public void beforeRun() {
-		System.out.println("before running");
 	}
 
 	@Override
@@ -99,7 +98,6 @@ public class GithubService extends AbstractService {
 
 	@Override
 	public void afterRun() {
-		System.out.println("after running");
 	}
 
 	private String commitOutputFormat(Long timestamp, String message, String committer, String sha) {

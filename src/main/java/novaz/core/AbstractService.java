@@ -5,7 +5,6 @@ import novaz.db.model.OServiceVariable;
 import novaz.db.table.TServiceVariables;
 import novaz.db.table.TServices;
 import novaz.main.NovaBot;
-import novaz.util.TimeUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,15 +31,12 @@ public abstract class AbstractService {
 		}
 		if (next <= now) {
 			if (!shouldIRun()) {
-				System.out.println("maybe not, it appears that I shouldn't run");
 				return;
 			}
 			beforeRun();
 			run();
 			afterRun();
 			saveData("abs_last_service_run", now);
-		} else {
-			System.out.println("I'm gonna run " + TimeUtil.getRelativeTime(next / 1000L, false));
 		}
 	}
 

@@ -13,9 +13,8 @@ public class TimeUtil {
 	public static String getTimestampFormat(long time) {
 		try {
 			return timestamp.format(new Date(time));
-		}
-		catch(Exception e){
-			return "cant figure out ("+time+")";
+		} catch (Exception e) {
+			return "cant figure out (" + time + ")";
 		}
 	}
 

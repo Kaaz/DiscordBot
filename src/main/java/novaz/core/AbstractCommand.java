@@ -47,6 +47,15 @@ public abstract class AbstractCommand {
 	}
 
 	/**
+	 * The command will be set to the category matching the last part of the package name.
+	 *
+	 * @param newCategory category of the command
+	 */
+	public void setCommandCategory(CommandCategory newCategory) {
+		commandCategory = newCategory;
+	}
+
+	/**
 	 * is a command enabled? it is by default
 	 *
 	 * @return wheneter the command is enabled
@@ -62,15 +71,6 @@ public abstract class AbstractCommand {
 	 */
 	public boolean isListed() {
 		return true;
-	}
-
-	/**
-	 * The command will be set to the category matching the last part of the package name.
-	 *
-	 * @param newCategory category of the command
-	 */
-	public void setCommandCategory(CommandCategory newCategory) {
-		commandCategory = newCategory;
 	}
 
 	public abstract String execute(String[] args, IChannel channel, IUser author);

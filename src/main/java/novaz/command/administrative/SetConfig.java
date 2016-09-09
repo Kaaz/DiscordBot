@@ -1,9 +1,9 @@
 package novaz.command.administrative;
 
 import novaz.core.AbstractCommand;
+import novaz.guildsettings.DefaultGuildSettings;
 import novaz.handler.GuildSettings;
 import novaz.handler.TextHandler;
-import novaz.guildsettings.DefaultGuildSettings;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import novaz.util.Misc;

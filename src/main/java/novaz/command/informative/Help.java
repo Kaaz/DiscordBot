@@ -2,10 +2,10 @@ package novaz.command.informative;
 
 import novaz.command.CommandCategory;
 import novaz.core.AbstractCommand;
+import novaz.guildsettings.defaults.SettingCommandPrefix;
 import novaz.handler.CommandHandler;
 import novaz.handler.GuildSettings;
 import novaz.handler.TextHandler;
-import novaz.guildsettings.defaults.SettingCommandPrefix;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import novaz.util.Misc;
