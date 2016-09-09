@@ -10,7 +10,8 @@ public class ServiceHandlerThread extends Thread {
 		super("ServiceHandler");
 		this.bot = bot;
 	}
-	private void collectServices(){
+
+	private void collectServices() {
 	}
 
 	@Override

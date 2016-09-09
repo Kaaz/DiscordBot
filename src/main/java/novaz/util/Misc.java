@@ -123,7 +123,7 @@ public class Misc {
 		return twoDigitString(minutes) + ":" + twoDigitString(seconds);
 	}
 
-	public static String makeAsciTable(List<String> headers, List<List<String>> table) {
+	public static String makeAsciiTable(List<String> headers, List<List<String>> table) {
 		StringBuilder sb = new StringBuilder();
 		int padding = 1;
 		int[] widths = new int[headers.size()];
@@ -149,18 +149,18 @@ public class Misc {
 			formatLine += " %-" + width + "s ┃";
 		}
 		formatLine += Config.EOL;
-		sb.append(appendSeperatorLine("┏", "┳", "┓", padding, widths));
+		sb.append(appendSeparatorLine("┏", "┳", "┓", padding, widths));
 		sb.append(String.format(formatLine, headers.toArray()));
-		sb.append(appendSeperatorLine("┣", "╋", "┫", padding, widths));
+		sb.append(appendSeparatorLine("┣", "╋", "┫", padding, widths));
 		for (List<String> row : table) {
 			sb.append(String.format(formatLine, row.toArray()));
 		}
-		sb.append(appendSeperatorLine("┗", "┻", "┛", padding, widths));
+		sb.append(appendSeparatorLine("┗", "┻", "┛", padding, widths));
 		sb.append("```");
 		return sb.toString();
 	}
 
-	private static String appendSeperatorLine(String left, String middle, String right, int padding, int... sizes) {
+	private static String appendSeparatorLine(String left, String middle, String right, int padding, int... sizes) {
 		boolean first = true;
 		StringBuilder ret = new StringBuilder();
 		for (int size : sizes) {

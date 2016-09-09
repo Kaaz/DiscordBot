@@ -70,7 +70,7 @@ public class Subscribe extends AbstractCommand {
 			if (tbl.size() > 0) {
 				return "Active Subscriptions" + Config.EOL +
 						"This channel is currenty subscribed for: " +
-						Misc.makeAsciTable(headers, tbl);
+						Misc.makeAsciiTable(headers, tbl);
 			}
 			return TextHandler.get("command_subscribe_channel_has_no_subscriptions");
 		}
@@ -105,7 +105,7 @@ public class Subscribe extends AbstractCommand {
 			}
 			return "Subscriptions" + Config.EOL +
 					"Possible options to subscribe to: " +
-					Misc.makeAsciTable(headers, tbl);
+					Misc.makeAsciiTable(headers, tbl);
 		}
 		OService service = TServices.findBy(args[0].trim());
 		if (service.id == 0) {

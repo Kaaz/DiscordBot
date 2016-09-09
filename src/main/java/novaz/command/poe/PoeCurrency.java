@@ -111,7 +111,7 @@ public class PoeCurrency extends AbstractCommand {
 			row.add(String.valueOf(v));
 			tbl.add(row);
 		});
-		text += Misc.makeAsciTable(Arrays.asList("Currency", "#"), tbl);
+		text += Misc.makeAsciiTable(Arrays.asList("Currency", "#"), tbl);
 		return text;
 	}
 }
