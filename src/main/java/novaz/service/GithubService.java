@@ -102,8 +102,9 @@ public class GithubService extends AbstractService {
 
 	private String commitOutputFormat(Long timestamp, String message, String committer, String sha) {
 		String timeString = "";
-		if (System.currentTimeMillis() - timestamp > 1000 * 60 * 60) {//only when its 1h+
-			timeString = ":timer: " + TimeUtil.getRelativeTime(timestamp / 1000L, false);
+		long localtimestamp = timestamp + 1000 * 60 * 60 * 2;//+2hours cheat
+		if (System.currentTimeMillis() - localtimestamp > 1000 * 60 * 60) {//only when its 1h+
+			timeString = ":timer: " + TimeUtil.getRelativeTime(localtimestamp / 1000L, false);
 		}
 		String sb = ":arrow_up: `" + sha.substring(0, 7) + "`  " + timeString + " :bust_in_silhouette: " + committer + Config.EOL;
 		sb += "```" + Config.EOL + message + Config.EOL + "```" + Config.EOL;
