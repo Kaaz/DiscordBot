@@ -83,7 +83,7 @@ public class Play extends AbstractCommand {
 		if (args.length > 0) {
 			boolean justDownloaded = false;
 			Matcher filterMatch = musicResultFilterPattern.matcher(args[0]);
-			if (filterMatch.matches()) {
+			if (filterMatch.matches() && userFilteredSongs.containsKey(author.getID())) {
 				if (userFilteredSongs.containsKey(author.getID()) && userFilteredSongs.get(author.getID()) != null) {
 					int selectedIndex = Ints.tryParse(args[0].replace("#", ""));
 					if (userFilteredSongs.get(author.getID()).size() + 1 >= selectedIndex && selectedIndex > 0) {
