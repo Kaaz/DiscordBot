@@ -3,6 +3,7 @@ package novaz.handler;
 
 import novaz.db.WebDb;
 import novaz.main.Config;
+import novaz.main.NovaBot;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,18 +13,23 @@ import java.util.Random;
 
 /**
  * Handles the text templates
- * <p/>
+ * <p>
  * templates are stored in the database,
  */
 public class TextHandler {
 
 	private static final TextHandler instance = new TextHandler();
+	private NovaBot bot = null;
 	private Random rnd;
 	private HashMap<String, ArrayList<String>> dictionary;
 
 	private TextHandler() {
 		rnd = new Random();
 		load();
+	}
+
+	public static void setBot(NovaBot bot) {
+		instance.bot = bot;
 	}
 
 	public static TextHandler getInstance() {
@@ -40,6 +46,9 @@ public class TextHandler {
 		if (!Config.SHOW_KEYPHRASE && instance.dictionary.containsKey(keyPhrase)) {
 			ArrayList<String> list = instance.dictionary.get(keyPhrase);
 			return list.get(instance.rnd.nextInt(list.size()));
+		}
+		if (instance.bot != null) {
+			instance.bot.sendErrorToMe(new Exception("template_not_set"), "key", keyPhrase, "copy this", "!template add " + keyPhrase);
 		}
 		return "**'" + keyPhrase + "'**";
 	}

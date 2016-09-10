@@ -271,8 +271,21 @@ public class NovaBot {
 					}
 				}
 			}
-			pmChannel.sendMessage(errorMessage);
-		} catch (DiscordException | RateLimitException | MissingPermissionsException e) {
+			final String finalErrorMessage = errorMessage;
+			RequestBuffer.request(() -> {
+				try {
+					return pmChannel.sendMessage(finalErrorMessage);
+				} catch (DiscordException e) {
+					if (e.getErrorMessage().contains("502")) {
+						throw new RateLimitException("Workaround because of 502", 1500, "editMessage", false);
+					}
+				} catch (MissingPermissionsException e) {
+					Logger.fatal(e, "no permission");
+					e.printStackTrace();
+				}
+				return null;
+			});
+		} catch (DiscordException | RateLimitException e) {
 			e.printStackTrace();
 		}
 	}
