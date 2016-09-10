@@ -2,7 +2,7 @@ package novaz.command.fun;
 
 import novaz.core.AbstractCommand;
 import novaz.games.GameState;
-import novaz.games.TicTacToe;
+import novaz.games.tictactoe.TicTacToeGame;
 import novaz.games.tictactoe.TicGameTurn;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TicTacToeCommand extends AbstractCommand {
-	private Map<String, TicTacToe> playerGames = new ConcurrentHashMap<>();
+	private Map<String, TicTacToeGame> playerGames = new ConcurrentHashMap<>();
 	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
 
 	public TicTacToeCommand(NovaBot b) {
@@ -52,7 +52,7 @@ public class TicTacToeCommand extends AbstractCommand {
 		if (args.length > 0) {
 			if (args[0].equalsIgnoreCase("new")) {
 				if (!isInAGame(author.getID())) {
-					TicTacToe game = getOrCreateGame(author.getID());
+					TicTacToeGame game = getOrCreateGame(author.getID());
 					game.addPlayer(author);
 					return TextHandler.get("command_tic_game_created_waiting_for_player") + Config.EOL + game.toString();
 				} else {
@@ -71,7 +71,7 @@ public class TicTacToeCommand extends AbstractCommand {
 				String userId = Misc.mentionToId(args[0]);
 				IUser targetUser = bot.instance.getUserByID(userId);
 				if (isInAGame(targetUser.getID())) {
-					TicTacToe otherGame = getOrCreateGame(targetUser.getID());
+					TicTacToeGame otherGame = getOrCreateGame(targetUser.getID());
 					if (otherGame.waitingForPlayer()) {
 						otherGame.addPlayer(author);
 						joinGame(author.getID(), targetUser.getID());
@@ -79,7 +79,7 @@ public class TicTacToeCommand extends AbstractCommand {
 					}
 					return TextHandler.get("command_tic_target_already_in_a_game");
 				}
-				TicTacToe newGame = getOrCreateGame(author.getID());
+				TicTacToeGame newGame = getOrCreateGame(author.getID());
 				newGame.addPlayer(author);
 				newGame.addPlayer(targetUser);
 				joinGame(targetUser.getID(), author.getID());
@@ -87,7 +87,7 @@ public class TicTacToeCommand extends AbstractCommand {
 			} else if (args[0].matches("^\\d$")) {
 				int placementIndex = Integer.parseInt(args[0]) - 1;
 				if (isInAGame(author.getID())) {
-					TicTacToe game = getOrCreateGame(author.getID());
+					TicTacToeGame game = getOrCreateGame(author.getID());
 					if (game.waitingForPlayer()) {
 						return TextHandler.get("command_tic_waiting_for_player");
 					}
@@ -137,9 +137,9 @@ public class TicTacToeCommand extends AbstractCommand {
 		}
 	}
 
-	private TicTacToe getOrCreateGame(String playerId) {
+	private TicTacToeGame getOrCreateGame(String playerId) {
 		if (!isInAGame(playerId)) {
-			playerGames.put(playerId, new TicTacToe());
+			playerGames.put(playerId, new TicTacToeGame());
 			playersToGames.put(playerId, playerId);
 		}
 		return playerGames.get(playersToGames.get(playerId));

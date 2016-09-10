@@ -10,9 +10,6 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	private int activePlayerIndex = 0;
 	private int winnerIndex = -1;
 
-	AbstractGame() {
-	}
-
 	public IUser getPlayer(int index) {
 		return players[index];
 	}
