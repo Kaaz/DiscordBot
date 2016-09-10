@@ -1,31 +1,34 @@
 package novaz.games.connect4;
 
-import novaz.games.GamePlayer;
-
 /**
  * Created on 9-9-2016
  */
 public class C4Column {
 
 	private int spaceAvailable;
-	private GamePlayer[] column;
+	private int[] column;
 
 	C4Column(int size) {
 		this.spaceAvailable = size;
-		column = new GamePlayer[size];
+		column = new int[size];
 		for (int i = 0; i < column.length; i++) {
-			column[i] = GamePlayer.FREE;
+			column[i] = -1;
 		}
 	}
 
-	public boolean place(GamePlayer player) {
+	public boolean place(int player) {
 		if (hasSpace()) {
 			column[spaceAvailable - 1] = player;
+			spaceAvailable--;
 		}
 		return false;
 	}
 
 	public boolean hasSpace() {
-		return spaceAvailable == 0;
+		return spaceAvailable > 0;
+	}
+
+	public int getCol(int colindex) {
+		return column[colindex];
 	}
 }
