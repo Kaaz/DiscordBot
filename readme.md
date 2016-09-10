@@ -47,9 +47,9 @@ Current list of all available commands. See below for a more detailed list
 * [skip](#skip)
 * [slot](#slot)
 * [stop](#stop)
+* [subscribe](#subscribe)
 * [system](#system)
 * [template](#template)
-* [test](#test)
 * [tic](#tic)
 * [user](#user)
 * [volume](#volume)
@@ -130,6 +130,7 @@ retrieves information about the song currently playing
 ```php
 current               //info about the currently playing song
 current title <title> //sets title of current song
+current ban           //bans the current track from being randomly played
 current artist        //sets the artist of current song
 current correct       //accept the systems suggestion of title/artist
 current reversed      //accept the systems suggestion in reverse [title=artist,artist=title]
@@ -290,6 +291,20 @@ slot play //plays the game
 
 stops playing music
 
+### subscribe
+
+subscribe the channel to certain events
+
+
+#### Usage
+
+```php
+subscribe                //check what subscriptions are active
+subscribe <name>         //subscribe to subject
+subscribe stop <name>    //stop subscription to subject
+subscribe info <name>    //information about subject
+subscribe list           //See what subscription options there are
+```
 ### system
 
 Shows memory usage
@@ -307,16 +322,6 @@ template list <keyphrase>            //lists all options for keyphrase
 template remove <keyphrase> <index>  //removes selected template for keyphrase
 template add <keyphrase> <text...>   //adds a template for keyphrase
 template toggledebug                 //shows keyphrases instead of text
-```
-### test
-
-no one truly knows
-
-
-#### Usage
-
-```php
-lorem ipsum dolar sit amet
 ```
 ### tic
 

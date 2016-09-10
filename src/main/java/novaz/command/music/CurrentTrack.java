@@ -47,6 +47,7 @@ public class CurrentTrack extends AbstractCommand {
 		return new String[]{
 				"current               //info about the currently playing song",
 				"current title <title> //sets title of current song",
+				"current ban           //bans the current track from being randomly played",
 				"current artist        //sets the artist of current song",
 				"current correct       //accept the systems suggestion of title/artist",
 				"current reversed      //accept the systems suggestion in reverse [title=artist,artist=title]",
@@ -75,13 +76,17 @@ public class CurrentTrack extends AbstractCommand {
 			guessTitle = splitTitle[splitTitle.length - 1].trim();
 			guessArtist = splitTitle[splitTitle.length - 2].trim();
 		}
-
 		if (args.length >= 1) {
 			String value = "";
 			for (int i = 1; i < args.length; i++) {
 				value += args[i] + " ";
 			}
 			value = value.trim();
+			if (args[0].equalsIgnoreCase("ban") && bot.isOwner(channel.getGuild(), author)) {
+				song.banned = 1;
+				TMusic.update(song);
+				return TextHandler.get("command_current_banned_success");
+			}
 			if (args.length > 1 && args[0].equalsIgnoreCase("title")) {
 				song.title = value;
 				TMusic.update(song);
