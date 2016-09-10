@@ -1,7 +1,9 @@
 package novaz.command.fun;
 
 import novaz.core.AbstractCommand;
+import novaz.games.GameState;
 import novaz.games.TicTacToe;
+import novaz.games.tictactoe.TicGameTurn;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
@@ -92,12 +94,12 @@ public class TicTacToeCommand extends AbstractCommand {
 					if (!game.isTurnOf(author)) {
 						return TextHandler.get("command_tic_not_your_turn");
 					}
-					if (!game.isValidMove(author, placementIndex)) {
+					if (!game.isValidMove(author, new TicGameTurn(placementIndex))) {
 						return TextHandler.get("command_tic_not_a_valid_move");
 					}
-					game.doTurn(author, placementIndex);
+					game.playTurn(author, new TicGameTurn(placementIndex));
 					String gamestr = game.toString();
-					if (game.getWinner() > -1) {
+					if (game.getGameState().equals(GameState.OVER)) {
 						removeGame(author.getID());
 					}
 					return gamestr;
