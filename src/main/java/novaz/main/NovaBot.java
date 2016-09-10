@@ -101,6 +101,7 @@ public class NovaBot {
 		loadConfiguration();
 		mentionMe = "<@" + this.instance.getOurUser().getID() + ">";
 		instance.changeStatus(Status.game("with human pets"));
+		TextHandler.setBot(this);
 		timer = new Timer();
 	}
 
