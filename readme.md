@@ -26,6 +26,7 @@ Current list of all available commands. See below for a more detailed list
 * [bank](#bank)
 * [blackjack](#blackjack)
 * [catfact](#catfact)
+* [cf](#cf)
 * [command](#command)
 * [config](#config)
 * [current](#current)
@@ -97,6 +98,19 @@ blackjack stand  //stands
 
 Cat facts!
 
+### cf
+
+Play a game of connect four with
+
+
+#### Usage
+
+```php
+cf new      //starts a new session and wait for someone to join 
+cf cancel   //cancels the current session 
+cf @<user>  //requests to play a game with <user> 
+cf 1-7      //claims a tile  
+```
 ### command
 
 Add and remove custom commands
