@@ -16,6 +16,10 @@ public class C4Board {
 		this.columnSize = rows;
 	}
 
+	public int getValue(int column, int row) {
+		return cols[column].getCol(row);
+	}
+
 	/**
 	 * @param index the column to place it in
 	 * @return can the player place it?

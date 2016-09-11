@@ -38,7 +38,7 @@ public class ConnectFourCommand extends AbstractCommand {
 				"cf new      //starts a new session and wait for someone to join ",
 				"cf cancel   //cancels the current session ",
 				"cf @<user>  //requests to play a game with <user> ",
-				"cf 1-7      //claims the tile  ",
+				"cf 1-7      //claims a tile  ",
 		};
 	}
 
