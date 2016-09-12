@@ -100,7 +100,7 @@ public class CommandHandler {
 		if (chatCommands.containsKey(input[0])) {
 			AbstractCommand command = chatCommands.get(input[0]);
 			long cooldown = getCommandCooldown(command, author, channel);
-			if (!channel.isPrivate() || (channel.isPrivate() && command.isAllowedInPrivateChannel()) && cooldown <= 0) {
+			if ((!channel.isPrivate() || (channel.isPrivate() && command.isAllowedInPrivateChannel())) && cooldown <= 0) {
 				String commandOutput = command.execute(args, channel, author);
 				if (!commandOutput.isEmpty()) {
 					mymsg = bot.sendMessage(channel, commandOutput);
