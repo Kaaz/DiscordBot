@@ -24,6 +24,16 @@ public class ConnectFourGame extends AbstractGame<Connect4Turn> {
 	}
 
 	@Override
+	public String getCodeName() {
+		return "cf";
+	}
+
+	@Override
+	public String getFullname() {
+		return "Connect Four";
+	}
+
+	@Override
 	public int getTotalPlayers() {
 		return 2;
 	}

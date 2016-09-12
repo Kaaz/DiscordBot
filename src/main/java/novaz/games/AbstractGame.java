@@ -2,6 +2,8 @@ package novaz.games;
 
 import sx.blah.discord.handle.obj.IUser;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 import java.util.Random;
 
 public abstract class AbstractGame<turnType extends GameTurn> {
@@ -9,6 +11,37 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	private IUser[] players;
 	private int activePlayerIndex = 0;
 	private int winnerIndex = -1;
+
+	/**
+	 * gets a short name of the game, this name is used as input to create a new game and as an identifier in the database
+	 *
+	 * @return codeName of the game
+	 */
+	public abstract String getCodeName();
+
+	/**
+	 * a full version of the name, this is used to display
+	 *
+	 * @return full game name
+	 */
+	public abstract String getFullname();
+
+	/**
+	 * receives a new instance of turnType
+	 *
+	 * @return new instance of turnType
+	 */
+	public final turnType getGameTurnInstance() {
+		Class<?> turnTypeClass = (Class<?>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		turnType type;
+		try {
+			type = (turnType) turnTypeClass.getConstructor().newInstance();
+			return type;
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public IUser getPlayer(int index) {
 		return players[index];

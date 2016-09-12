@@ -35,6 +35,16 @@ public class TicTacToeGame extends AbstractGame<TicGameTurn> {
 	}
 
 	@Override
+	public String getCodeName() {
+		return "tic";
+	}
+
+	@Override
+	public String getFullname() {
+		return "Tic tac toe";
+	}
+
+	@Override
 	public int getTotalPlayers() {
 		return 2;
 	}

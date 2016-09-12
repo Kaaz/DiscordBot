@@ -5,4 +5,11 @@ package novaz.games;
  */
 public abstract class GameTurn {
 
+	public GameTurn() {
+
+	}
+
+	abstract public boolean parseInput(String input);
+
+	abstract public String getInputErrorMessage();
 }
