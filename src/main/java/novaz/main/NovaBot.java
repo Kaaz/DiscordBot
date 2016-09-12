@@ -224,8 +224,9 @@ public class NovaBot {
 	public void handlePrivateMessage(IPrivateChannel channel, IUser author, IMessage message) {
 		if (commandHandler.isCommand(channel, message.getContent())) {
 			commandHandler.process(channel, author, message);
+		} else {
+			this.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
 		}
-		this.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
 	}
 
 	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage message) {

@@ -31,7 +31,7 @@ public class GithubService extends AbstractService {
 
 	@Override
 	public long getDelayBetweenRuns() {
-		return 60_000;
+		return 900_000;
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class GithubService extends AbstractService {
 		if (System.currentTimeMillis() - localtimestamp > 1000 * 60 * 60) {//only when its 1h+
 			timeString = " :clock3: " + TimeUtil.getRelativeTime(localtimestamp / 1000L, false);
 		}
-		String sb = " :arrow_up: `" + sha.substring(0, 7) + "` "+" :bust_in_silhouette: " + committer + timeString + Config.EOL;
+		String sb = ":arrow_up: `" + sha.substring(0, 7) + "` " + " :bust_in_silhouette: " + committer + timeString + Config.EOL;
 		sb += ":pencil: `" + message + "`" + Config.EOL;
 		return sb;
 	}
