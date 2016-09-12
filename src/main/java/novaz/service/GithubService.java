@@ -78,13 +78,12 @@ public class GithubService extends AbstractService {
 			} else {
 				totalMessage = "There have been **" + commitCount + "** commits to **" + Config.BOT_NAME + "**" + Config.EOL;
 			}
-			totalMessage += Config.EOL + commitsMessage;
+			totalMessage += commitsMessage;
 			for (IChannel iChannel : getSubscribedChannels()) {
 				bot.sendMessage(iChannel, totalMessage);
 			}
 		}
 		saveData("last_date", newLastKnownCommitTimestamp);
-
 	}
 
 	@Override
@@ -97,8 +96,8 @@ public class GithubService extends AbstractService {
 		if (System.currentTimeMillis() - localtimestamp > 1000 * 60 * 60) {//only when its 1h+
 			timeString = ":timer: " + TimeUtil.getRelativeTime(localtimestamp / 1000L, false);
 		}
-		String sb = ":arrow_up: `" + sha.substring(0, 7) + "`  " + timeString + " :bust_in_silhouette: " + committer + Config.EOL;
-		sb += "```" + Config.EOL + message + Config.EOL + "```" + Config.EOL;
+		String sb = timeString + " :bust_in_silhouette: " + committer + ":arrow_up: `" + sha.substring(0, 7) + "`  " + Config.EOL;
+		sb += ":clipboard: `" + message + "`" + Config.EOL;
 		return sb;
 	}
 }
