@@ -48,10 +48,12 @@ public class ConnectFourCommand extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isAllowedInPrivateChannel() {
+		return false;
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if(channel.isPrivate()){
-			return TextHandler.get("command_not_for_private");
-		}
 		if (args.length > 0) {
 			if (args[0].equalsIgnoreCase("new")) {
 				if (!isInAGame(author.getID())) {

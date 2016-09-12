@@ -55,12 +55,14 @@ public class Subscribe extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isAllowedInPrivateChannel() {
+		return false;
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		List<String> headers = new ArrayList<>();
 		List<List<String>> tbl = new ArrayList<>();
-		if (channel.isPrivate()) {
-			return TextHandler.get("command_not_for_private");
-		}
 		if (args.length == 0) {
 			Collections.addAll(headers, "code", "name");
 			List<QActiveSubscriptions> subscriptionsForChannel = TSubscriptions.getSubscriptionsForChannel(TChannels.getCachedId(channel.getID(), channel.getGuild().getID()));

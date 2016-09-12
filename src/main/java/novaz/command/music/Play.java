@@ -57,6 +57,11 @@ public class Play extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isAllowedInPrivateChannel() {
+		return false;
+	}
+
+	@Override
 	public String[] getUsage() {
 		return new String[]{
 				"play <youtubelink>       //download and plays song",

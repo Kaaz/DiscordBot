@@ -48,9 +48,14 @@ public class SetConfig extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isAllowedInPrivateChannel() {
+		return false;
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		int count = args.length;
-		if (!channel.isPrivate() && bot.isOwner(channel, author)) {
+		if (bot.isOwner(channel, author)) {
 			if (count == 0) {
 				Map<String, String> settings = GuildSettings.get(channel.getGuild()).getSettings();
 				String ret = "Current Settings for " + channel.getGuild().getName() + Config.EOL;

@@ -11,7 +11,7 @@ public class SettingCleanupMessages extends AbstractGuildSetting {
 
 	@Override
 	public String getDefault() {
-		return "nonstandard";
+		return "no";
 	}
 
 	@Override
@@ -19,7 +19,7 @@ public class SettingCleanupMessages extends AbstractGuildSetting {
 		return new String[]{"Delete messages after a while? (yes;no;nonstandard)",
 				"yes -> Always delete messages",
 				"no -> Never delete messages",
-				"nonstandard -> delete messages outside of bot channel"};
+				"nonstandard -> delete messages outside of bot's default channel"};
 	}
 
 	@Override

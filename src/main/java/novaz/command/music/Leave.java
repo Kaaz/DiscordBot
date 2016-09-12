@@ -39,6 +39,11 @@ public class Leave extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isAllowedInPrivateChannel() {
+		return false;
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		boolean leftSomething = false;
 		List<IVoiceChannel> connectedVoiceChannels = bot.instance.getConnectedVoiceChannels();

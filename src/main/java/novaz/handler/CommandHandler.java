@@ -94,18 +94,22 @@ public class CommandHandler {
 		input[0] = filterPrefix(input[0], channel).toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
 		if (chatCommands.containsKey(input[0])) {
-			String commandOutput = chatCommands.get(input[0]).execute(args, channel, author);
-			if (!commandOutput.isEmpty()) {
-				mymsg = bot.sendMessage(channel, commandOutput);
-			}
-			if (Config.BOT_COMMAND_LOGGING) {
-				StringBuilder usedArguments = new StringBuilder();
-				for (String arg : args) {
-					usedArguments.append(arg).append(" ");
+			if (!channel.isPrivate() || (channel.isPrivate() && chatCommands.get(input[0]).isAllowedInPrivateChannel())) {
+				String commandOutput = chatCommands.get(input[0]).execute(args, channel, author);
+				if (!commandOutput.isEmpty()) {
+					mymsg = bot.sendMessage(channel, commandOutput);
 				}
-				if (!channel.isPrivate()) {
-					TCommandLog.saveLog(TUser.getCachedId(author.getID()), TServers.getCachedId(channel.getGuild().getID()), input[0], EmojiParser.parseToAliases(usedArguments.toString()).trim());
+				if (Config.BOT_COMMAND_LOGGING) {
+					StringBuilder usedArguments = new StringBuilder();
+					for (String arg : args) {
+						usedArguments.append(arg).append(" ");
+					}
+					if (!channel.isPrivate()) {
+						TCommandLog.saveLog(TUser.getCachedId(author.getID()), TServers.getCachedId(channel.getGuild().getID()), input[0], EmojiParser.parseToAliases(usedArguments.toString()).trim());
+					}
 				}
+			} else {
+				mymsg = bot.sendMessage(channel, TextHandler.get("command_not_for_private"));
 			}
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));
@@ -215,6 +219,9 @@ public class CommandHandler {
 				String packageName = s.getPackage().getName();
 				AbstractCommand c = s.getConstructor(NovaBot.class).newInstance(bot);
 				c.setCommandCategory(CommandCategory.fromPackage(packageName.substring(packageName.lastIndexOf(".") + 1)));
+				if (!c.isEnabled()) {
+					continue;
+				}
 				if (c.getCommandCategory().equals(CommandCategory.MUSIC) && !Config.MODULE_MUSIC_ENABLED) {
 					continue;
 				}

@@ -60,6 +60,11 @@ public class CurrentTrack extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isAllowedInPrivateChannel() {
+		return false;
+	}
+
+	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		boolean helpedOut = false;
 		OMusic song = bot.getCurrentlyPlayingSong(channel.getGuild());

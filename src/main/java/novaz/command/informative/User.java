@@ -54,9 +54,11 @@ public class User extends AbstractCommand {
 		if (infoUser != null) {
 			StringBuilder sb = new StringBuilder();
 			String nickname = infoUser.getName();
-			Optional<String> nicknameForGuild = infoUser.getNicknameForGuild(channel.getGuild());
-			if (nicknameForGuild.isPresent()) {
-				nickname = nicknameForGuild.get();
+			if (!channel.isPrivate()) {
+				Optional<String> nicknameForGuild = infoUser.getNicknameForGuild(channel.getGuild());
+				if (nicknameForGuild.isPresent()) {
+					nickname = nicknameForGuild.get();
+				}
 			}
 			sb.append("Querying for ").append(nickname).append(Config.EOL);
 			sb.append(":bust_in_silhouette: User: ").append(infoUser.getName()).append("#").append(infoUser.getDiscriminator()).append(Config.EOL);

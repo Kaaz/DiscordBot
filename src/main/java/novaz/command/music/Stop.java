@@ -31,6 +31,11 @@ public class Stop extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isAllowedInPrivateChannel() {
+		return false;
+	}
+
+	@Override
 	public String[] getAliases() {
 		return new String[0];
 	}

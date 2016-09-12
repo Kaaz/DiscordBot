@@ -56,6 +56,15 @@ public abstract class AbstractCommand {
 	}
 
 	/**
+	 * if the command can be used in a private messages
+	 *
+	 * @return can be used in private?
+	 */
+	public boolean isAllowedInPrivateChannel() {
+		return true;
+	}
+
+	/**
 	 * is a command enabled? it is by default
 	 *
 	 * @return wheneter the command is enabled
@@ -67,7 +76,7 @@ public abstract class AbstractCommand {
 	/**
 	 * Is a command listed? it is by default
 	 *
-	 * @return wheneter it shows up in the !help list
+	 * @return shows up in the !help list?
 	 */
 	public boolean isListed() {
 		return true;
