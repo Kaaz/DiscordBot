@@ -43,15 +43,15 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 		return null;
 	}
 
-	public IUser getPlayer(int index) {
+	protected IUser getPlayer(int index) {
 		return players[index];
 	}
 
-	public int getActivePlayerIndex() {
+	protected int getActivePlayerIndex() {
 		return activePlayerIndex;
 	}
 
-	public IUser getActivePlayer() {
+	protected IUser getActivePlayer() {
 		return players[activePlayerIndex];
 	}
 
@@ -59,7 +59,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 		winnerIndex = playerIndex;
 	}
 
-	public int getWinnerIndex() {
+	protected int getWinnerIndex() {
 		return winnerIndex;
 	}
 
