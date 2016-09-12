@@ -2,8 +2,11 @@ package novaz.handler;
 
 import com.vdurmont.emoji.EmojiParser;
 import novaz.command.CommandCategory;
+import novaz.command.ICommandCooldown;
 import novaz.core.AbstractCommand;
 import novaz.db.WebDb;
+import novaz.db.model.OCommandCooldown;
+import novaz.db.table.TCommandCooldown;
 import novaz.db.table.TCommandLog;
 import novaz.db.table.TServers;
 import novaz.db.table.TUser;
@@ -11,6 +14,7 @@ import novaz.guildsettings.DefaultGuildSettings;
 import novaz.guildsettings.defaults.*;
 import novaz.main.Config;
 import novaz.main.NovaBot;
+import novaz.util.TimeUtil;
 import org.reflections.Reflections;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -94,8 +98,10 @@ public class CommandHandler {
 		input[0] = filterPrefix(input[0], channel).toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
 		if (chatCommands.containsKey(input[0])) {
-			if (!channel.isPrivate() || (channel.isPrivate() && chatCommands.get(input[0]).isAllowedInPrivateChannel())) {
-				String commandOutput = chatCommands.get(input[0]).execute(args, channel, author);
+			AbstractCommand command = chatCommands.get(input[0]);
+			long cooldown = getCommandCooldown(command, author, channel);
+			if (!channel.isPrivate() || (channel.isPrivate() && command.isAllowedInPrivateChannel()) && cooldown <= 0) {
+				String commandOutput = command.execute(args, channel, author);
 				if (!commandOutput.isEmpty()) {
 					mymsg = bot.sendMessage(channel, commandOutput);
 				}
@@ -108,7 +114,9 @@ public class CommandHandler {
 						TCommandLog.saveLog(TUser.getCachedId(author.getID()), TServers.getCachedId(channel.getGuild().getID()), input[0], EmojiParser.parseToAliases(usedArguments.toString()).trim());
 					}
 				}
-			} else {
+			} else if (cooldown > 0) {
+				mymsg = bot.sendMessage(channel, String.format(TextHandler.get("command_on_cooldown"), TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false)));
+			} else if (!command.isAllowedInPrivateChannel()) {
 				mymsg = bot.sendMessage(channel, TextHandler.get("command_not_for_private"));
 			}
 		} else if (customCommands.containsKey(input[0])) {
@@ -132,6 +140,50 @@ public class CommandHandler {
 				}
 			}, Config.DELETE_MESSAGES_AFTER);
 		}
+	}
+
+	/**
+	 * checks if a command is on cooldown and returns the amount of seconds left before next usage
+	 *
+	 * @param command the command
+	 * @param author  the user who sent the command
+	 * @param channel the channel
+	 * @return seconds till next use
+	 */
+	private long getCommandCooldown(AbstractCommand command, IUser author, IChannel channel) {
+		if (command instanceof ICommandCooldown) {
+			long now = System.currentTimeMillis() / 1000L;
+			ICommandCooldown cd = (ICommandCooldown) command;
+			String targetId;
+			switch (cd.getCooldownScale()) {
+				case USER:
+					targetId = author.getID();
+					break;
+				case CHANNEL:
+					targetId = channel.getID();
+					break;
+				case GUILD:
+					if (channel.isPrivate()) {
+						bot.sendErrorToMe(new Exception("Command with guild-scale cooldown in private!"), "command", command.getCommand(), "user", author.getName());
+					}
+					targetId = channel.getGuild().getID();
+					break;
+				default:
+					targetId = "";
+			}
+			OCommandCooldown cooldown = TCommandCooldown.findBy(command.getCommand(), targetId, cd.getCooldownScale().getId());
+			if (cooldown.lastTime + cd.getCooldown() <= now) {
+
+				cooldown.command = command.getCommand();
+				cooldown.targetId = targetId;
+				cooldown.targetType = cd.getCooldownScale().getId();
+				cooldown.lastTime = now;
+				TCommandCooldown.insertOrUpdate(cooldown);
+				return 0;
+			}
+			return cooldown.lastTime + cd.getCooldown() - now;
+		}
+		return 0;
 	}
 
 	private boolean shouldCleanUpMessages(IChannel channel) {

@@ -1,5 +1,7 @@
 package novaz.command.fun;
 
+import novaz.command.CooldownScale;
+import novaz.command.ICommandCooldown;
 import novaz.core.AbstractCommand;
 import novaz.games.SlotMachine;
 import novaz.games.slotmachine.Slot;
@@ -14,7 +16,7 @@ import java.util.TimerTask;
 /**
  * Created on 23-8-2016
  */
-public class SlotMachineCommand extends AbstractCommand {
+public class SlotMachineCommand extends AbstractCommand implements ICommandCooldown {
 
 	public final long SPIN_INTERVAL = 2000L;
 
@@ -22,6 +24,15 @@ public class SlotMachineCommand extends AbstractCommand {
 		super(bot);
 	}
 
+	@Override
+	public long getCooldown() {
+		return 30L;
+	}
+
+	@Override
+	public CooldownScale getCooldownScale() {
+		return CooldownScale.USER;
+	}
 
 	@Override
 	public String getDescription() {

@@ -73,9 +73,9 @@ public class Info extends AbstractCommand {
 			response = "I'm batman";
 		}
 		return "What am I? *" + response + "*" + Config.EOL +
-				"Currently active on **" + bot.instance.getGuilds().size() + "** guilds and the last time I restarted was  **" + onlineFor + "**." + Config.EOL +
+				"Currently active on *" + bot.instance.getGuilds().size() + "* guilds and the last time I restarted was  *" + onlineFor + "*." + Config.EOL +
 				"There are various actions I can perform actions type **" + CommandHandler.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
-				"If I can't help you out, you can always try to poke **" + user.getName() + "#" + user.getDiscriminator() + "**";
+				"If I can't help you out, you can always try to poke *" + user.getName() + "#" + user.getDiscriminator() + "*";
 	}
 
 	private String getListFor(String listId, String itemPrefix) {
