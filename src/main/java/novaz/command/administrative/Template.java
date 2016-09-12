@@ -44,7 +44,7 @@ public class Template extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (bot.isOwner(channel.getGuild(), author)) {
+		if (bot.isOwner(channel, author)) {
 			if (args.length == 0) {
 				String usage = ":gear: **Options**:```php" + Config.EOL;
 				for (String line : getUsage()) {

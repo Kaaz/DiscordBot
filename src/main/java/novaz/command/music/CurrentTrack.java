@@ -82,7 +82,7 @@ public class CurrentTrack extends AbstractCommand {
 				value += args[i] + " ";
 			}
 			value = value.trim();
-			if (args[0].equalsIgnoreCase("ban") && bot.isOwner(channel.getGuild(), author)) {
+			if (args[0].equalsIgnoreCase("ban") && bot.isOwner(channel, author)) {
 				song.banned = 1;
 				TMusic.update(song);
 				return TextHandler.get("command_current_banned_success");

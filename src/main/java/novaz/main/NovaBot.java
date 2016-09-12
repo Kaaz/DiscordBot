@@ -8,7 +8,6 @@ import novaz.db.table.TServers;
 import novaz.guildsettings.DefaultGuildSettings;
 import novaz.guildsettings.defaults.SettingActiveChannels;
 import novaz.guildsettings.defaults.SettingBotChannel;
-import novaz.guildsettings.defaults.SettingCommandPrefix;
 import novaz.guildsettings.defaults.SettingEnableChatBot;
 import novaz.handler.*;
 import novaz.util.Misc;
@@ -51,12 +50,15 @@ public class NovaBot {
 	/**
 	 * check if a user is the owner of a guild or isCreator
 	 *
-	 * @param guild the server
-	 * @param user  the user to check
+	 * @param channel the channel
+	 * @param user    the user to check
 	 * @return user is owner
 	 */
-	public boolean isOwner(IGuild guild, IUser user) {
-		return guild.getOwner().equals(user) || isCreator(user);
+	public boolean isOwner(IChannel channel, IUser user) {
+		if (channel.isPrivate()) {
+			return isCreator(user);
+		}
+		return isCreator(user) || channel.getGuild().getOwner().equals(user);
 	}
 
 	/**
@@ -220,9 +222,10 @@ public class NovaBot {
 	}
 
 	public void handlePrivateMessage(IPrivateChannel channel, IUser author, IMessage message) {
-		if (!author.getID().equals(Config.CREATOR_ID) || !message.getContent().startsWith(Config.BOT_COMMAND_PREFIX)) {
-			this.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
+		if (commandHandler.isCommand(channel, message.getContent())) {
+			commandHandler.process(channel, author, message);
 		}
+		this.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
 	}
 
 	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage message) {
@@ -235,9 +238,8 @@ public class NovaBot {
 				!channel.getName().equalsIgnoreCase(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			return;
 		}
-		if (message.getContent().startsWith(settings.getOrDefault(SettingCommandPrefix.class)) ||
-				message.getContent().startsWith(mentionMe)) {
-			commandHandler.process(guild, channel, author, message);
+		if (commandHandler.isCommand(channel, message.getContent())) {
+			commandHandler.process(channel, author, message);
 		} else if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
 				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class)) &&
 				channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {

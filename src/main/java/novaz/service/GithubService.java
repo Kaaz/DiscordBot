@@ -94,9 +94,9 @@ public class GithubService extends AbstractService {
 		String timeString = "";
 		long localtimestamp = timestamp + 1000 * 60 * 60 * 2;//+2hours cheat
 		if (System.currentTimeMillis() - localtimestamp > 1000 * 60 * 60) {//only when its 1h+
-			timeString = ":clock3: " + TimeUtil.getRelativeTime(localtimestamp / 1000L, false);
+			timeString = " :clock3: " + TimeUtil.getRelativeTime(localtimestamp / 1000L, false);
 		}
-		String sb = timeString + " :bust_in_silhouette: " + committer + " :arrow_up: `" + sha.substring(0, 7) + "`  " + Config.EOL;
+		String sb = " :arrow_up: `" + sha.substring(0, 7) + "` "+" :bust_in_silhouette: " + committer + timeString + Config.EOL;
 		sb += ":pencil: `" + message + "`" + Config.EOL;
 		return sb;
 	}

@@ -42,7 +42,7 @@ public class CustomCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (args.length >= 2 && Arrays.asList(valid_actions).contains(args[0])) {
+		if (args.length >= 2 && Arrays.asList(valid_actions).contains(args[0]) && !channel.isPrivate()) {
 			if (args[0].equals("add") && args.length > 2) {
 				String output = "";
 				for (int i = 2; i < args.length; i++) {

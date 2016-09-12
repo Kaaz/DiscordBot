@@ -1,8 +1,7 @@
 package novaz.command.informative;
 
 import novaz.core.AbstractCommand;
-import novaz.guildsettings.defaults.SettingCommandPrefix;
-import novaz.handler.GuildSettings;
+import novaz.handler.CommandHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import novaz.util.TimeUtil;
@@ -68,12 +67,10 @@ public class Info extends AbstractCommand {
 			}
 		}
 		String onlineFor = TimeUtil.getRelativeTime(bot.startupTimeStamp, false);
-		String cmdPrefix = GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);
 		IUser user = bot.instance.getUserByID(Config.CREATOR_ID);
-		return "Who am I you say?" + Config.EOL +
-				"I am a person and as for confusing you, that is not my problem :joy:." + Config.EOL +
+		return bot.chatBotHandler.chat("Who are you?") + Config.EOL +
 				"Currently active on **" + bot.instance.getGuilds().size() + "** guilds and the last time I restarted was  **" + onlineFor + "**." + Config.EOL +
-				"There are various actions I can perform actions type **" + cmdPrefix + "help** for a full list" + Config.EOL +
+				"There are various actions I can perform actions type **" + CommandHandler.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
 				"If I can't help you out, you can always try to poke **" + user.getName() + "#" + user.getDiscriminator() + "**";
 	}
 

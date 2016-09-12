@@ -2,8 +2,8 @@ package novaz.command.fun;
 
 import novaz.core.AbstractCommand;
 import novaz.games.GameState;
-import novaz.games.tictactoe.TicTacToeGame;
 import novaz.games.tictactoe.TicGameTurn;
+import novaz.games.tictactoe.TicTacToeGame;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
@@ -49,6 +49,9 @@ public class TicTacToeCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
+		if (channel.isPrivate()) {
+			return TextHandler.get("command_not_for_private");
+		}
 		if (args.length > 0) {
 			if (args[0].equalsIgnoreCase("new")) {
 				if (!isInAGame(author.getID())) {

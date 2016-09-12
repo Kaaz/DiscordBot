@@ -4,6 +4,7 @@ import novaz.db.WebDb;
 import novaz.db.table.TServers;
 import novaz.guildsettings.AbstractGuildSetting;
 import novaz.guildsettings.DefaultGuildSettings;
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 
 import java.sql.ResultSet;
@@ -20,6 +21,20 @@ public class GuildSettings {
 	private final Map<String, String> settings;
 	private int id = 0;
 	private boolean initialized = false;
+
+	/**
+	 * Simplified method to get the setting for a channel instead of guild
+	 *
+	 * @param channel the channel to check
+	 * @param clazz   the Setting
+	 * @return the setting
+	 */
+	public static String getFor(IChannel channel, Class<? extends AbstractGuildSetting> clazz) {
+		if (channel.isPrivate()) {
+			return DefaultGuildSettings.getDefault(clazz);
+		}
+		return GuildSettings.get(channel.getGuild()).getOrDefault(clazz);
+	}
 
 	private GuildSettings(IGuild guild) {
 		this.guild = guild;

@@ -7,12 +7,12 @@ import novaz.db.WebDb;
 import novaz.db.table.TCommandLog;
 import novaz.db.table.TServers;
 import novaz.db.table.TUser;
+import novaz.guildsettings.DefaultGuildSettings;
 import novaz.guildsettings.defaults.*;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import org.reflections.Reflections;
 import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
@@ -42,8 +42,8 @@ public class CommandHandler {
 		bot = b;
 	}
 
-	public static String filterPrefix(String command, IGuild guild) {
-		String prefix = GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
+	public static String filterPrefix(String command, IChannel channel) {
+		String prefix = getCommandPrefix(channel);
 		if (command.startsWith(prefix)) {
 			command = command.substring(prefix.length());
 		}
@@ -51,24 +51,47 @@ public class CommandHandler {
 	}
 
 	/**
+	 * gets the command prefix for specified channel
+	 *
+	 * @param channel channel to check the prefix for
+	 * @return the command prefix
+	 */
+	public static String getCommandPrefix(IChannel channel) {
+		if (channel.isPrivate()) {
+			return DefaultGuildSettings.getDefault(SettingCommandPrefix.class);
+		}
+		return GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);
+	}
+
+	/**
+	 * checks if the the message in channel is a command
+	 *
+	 * @param channel the channel the message came from
+	 * @param msg     the message
+	 * @return whether or not the message is a command
+	 */
+	public boolean isCommand(IChannel channel, String msg) {
+		return msg.startsWith(getCommandPrefix(channel)) || msg.startsWith(bot.mentionMe);
+	}
+
+	/**
 	 * directs the command to the right class
 	 *
-	 * @param guild   which server
 	 * @param channel which channel
 	 * @param author  author
-	 * @param content message
+	 * @param msg     message
 	 */
-	public void process(IGuild guild, IChannel channel, IUser author, IMessage content) {
+	public void process(IChannel channel, IUser author, IMessage msg) {
 		IMessage mymsg = null;
 		boolean startedWithMention = false;
-		String inputMessage = content.getContent();
+		String inputMessage = msg.getContent();
 		if (inputMessage.startsWith(bot.mentionMe)) {
 			inputMessage = inputMessage.replace(bot.mentionMe, "").trim();
 			startedWithMention = true;
 		}
 		String[] input = inputMessage.split(" ");
 		String args[] = new String[input.length - 1];
-		input[0] = filterPrefix(input[0], guild).toLowerCase();
+		input[0] = filterPrefix(input[0], channel).toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
 		if (chatCommands.containsKey(input[0])) {
 			String commandOutput = chatCommands.get(input[0]).execute(args, channel, author);
@@ -80,24 +103,26 @@ public class CommandHandler {
 				for (String arg : args) {
 					usedArguments.append(arg).append(" ");
 				}
-				TCommandLog.saveLog(TUser.getCachedId(author.getID()), TServers.getCachedId(guild.getID()), input[0], EmojiParser.parseToAliases(usedArguments.toString()).trim());
+				if (!channel.isPrivate()) {
+					TCommandLog.saveLog(TUser.getCachedId(author.getID()), TServers.getCachedId(channel.getGuild().getID()), input[0], EmojiParser.parseToAliases(usedArguments.toString()).trim());
+				}
 			}
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));
-		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED && GuildSettings.get(guild).getOrDefault(SettingEnableChatBot.class).equals("true")) {
-			mymsg = bot.sendMessage(channel, content.getAuthor().mention() + ", " + bot.chatBotHandler.chat(inputMessage));
+		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED && GuildSettings.getFor(channel, SettingEnableChatBot.class).equals("true")) {
+			mymsg = bot.sendMessage(channel, msg.getAuthor().mention() + ", " + bot.chatBotHandler.chat(inputMessage));
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
-				GuildSettings.get(guild).getOrDefault(SettingShowUnknownCommands.class).equals("true")) {
-			mymsg = bot.sendMessage(channel, String.format(TextHandler.get("unknown_command"), GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class) + "help"));
+				GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
+			mymsg = bot.sendMessage(channel, String.format(TextHandler.get("unknown_command"), GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help"));
 		}
-		if (mymsg != null && shouldCleanUpMessages(guild, channel)) {
+		if (mymsg != null && shouldCleanUpMessages(channel)) {
 			final IMessage finalMymsg = mymsg;
 			bot.timer.schedule(new TimerTask() {
 				@Override
 				public void run() {
 					try {
 						finalMymsg.delete();
-						content.delete();
+						msg.delete();
 					} catch (MissingPermissionsException | RateLimitException | DiscordException ignored) {
 					}
 				}
@@ -105,9 +130,9 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean shouldCleanUpMessages(IGuild guild, IChannel channel) {
-		String cleanupMethod = GuildSettings.get(guild).getOrDefault(SettingCleanupMessages.class);
-		String mychannel = GuildSettings.get(guild).getOrDefault(SettingBotChannel.class);
+	private boolean shouldCleanUpMessages(IChannel channel) {
+		String cleanupMethod = GuildSettings.getFor(channel, SettingCleanupMessages.class);
+		String mychannel = GuildSettings.getFor(channel, SettingBotChannel.class);
 		if (cleanupMethod.equals("yes")) {
 			return true;
 		} else if (cleanupMethod.equals("nonstandard") && !channel.getName().equalsIgnoreCase(mychannel)) {
