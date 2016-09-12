@@ -48,7 +48,7 @@ public class TimeUtil {
 			diff = now - time;
 		}
 		if (diff < MINUTE_MILLIS) {
-			return (diff / SECOND_MILLIS) + (shortText ? "s" : " seconds" + chronology);
+			return (diff / SECOND_MILLIS) + (shortText ? "s" : " seconds " + chronology);
 		} else if (diff < 2 * MINUTE_MILLIS) {
 			return shortText ? "~1m" : "about a minute " + chronology;
 		} else if (diff < 50 * MINUTE_MILLIS) {
