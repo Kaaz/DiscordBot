@@ -43,13 +43,14 @@ public class PMCommand extends AbstractCommand {
 		}
 		if (args.length > 1) {
 			if (Misc.isUserMention(args[0])) {
-				IUser targetUser = bot.instance.getUserByID(args[0]);
+				IUser targetUser = bot.instance.getUserByID(Misc.mentionToId(args[0]));
 				if (targetUser != null) {
 					String message = "";
 					for (int i = 1; i < args.length; i++) {
 						message += " " + args[i];
 					}
 					bot.sendPrivateMessage(targetUser, message);
+					return TextHandler.get("command_pm_success");
 				} else {
 					return TextHandler.get("command_pm_cant_find_user");
 				}
@@ -57,6 +58,6 @@ public class PMCommand extends AbstractCommand {
 				return TextHandler.get("command_pm_not_a_user");
 			}
 		}
-		return TextHandler.get("command_invalid_usage");
+		return TextHandler.get("command_invalid_use");
 	}
 }
