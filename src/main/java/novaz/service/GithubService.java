@@ -89,7 +89,7 @@ public class GithubService extends AbstractService {
 			} else {
 				totalMessage = "There have been **" + commitCount + "** commits to **" + Config.BOT_NAME + "**" + Config.EOL;
 			}
-			if (commitCount < 3) {
+			if (commitCount <= 3) {
 				totalMessage += commitsMessage;
 			} else {
 				totalMessage += Misc.makeAsciiTable(Arrays.asList("hash", "by", "description"), tblContent);
