@@ -30,7 +30,7 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 	}
 
 	@Override
-	public long getCooldown() {
+	public long getCooldownDuration() {
 		return 15L;
 	}
 

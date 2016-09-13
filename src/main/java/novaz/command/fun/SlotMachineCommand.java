@@ -25,7 +25,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 	}
 
 	@Override
-	public long getCooldown() {
+	public long getCooldownDuration() {
 		return 30L;
 	}
 

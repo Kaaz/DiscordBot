@@ -10,7 +10,7 @@ public interface ICommandCooldown {
 	 *
 	 * @return cooldown in seconds
 	 */
-	long getCooldown();
+	long getCooldownDuration();
 
 	/**
 	 * cooldown on what scale?

@@ -175,7 +175,7 @@ public class CommandHandler {
 					targetId = "";
 			}
 			OCommandCooldown cooldown = TCommandCooldown.findBy(command.getCommand(), targetId, cd.getCooldownScale().getId());
-			if (cooldown.lastTime + cd.getCooldown() <= now) {
+			if (cooldown.lastTime + cd.getCooldownDuration() <= now) {
 
 				cooldown.command = command.getCommand();
 				cooldown.targetId = targetId;
@@ -184,7 +184,7 @@ public class CommandHandler {
 				TCommandCooldown.insertOrUpdate(cooldown);
 				return 0;
 			}
-			return cooldown.lastTime + cd.getCooldown() - now;
+			return cooldown.lastTime + cd.getCooldownDuration() - now;
 		}
 		return 0;
 	}
