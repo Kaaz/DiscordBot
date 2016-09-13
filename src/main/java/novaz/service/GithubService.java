@@ -6,11 +6,15 @@ import novaz.main.NovaBot;
 import novaz.modules.github.GitHub;
 import novaz.modules.github.GithubConstants;
 import novaz.modules.github.pojo.RepositoryCommit;
+import novaz.util.Misc;
 import novaz.util.TimeUtil;
 import sx.blah.discord.handle.obj.IChannel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * check for news on github
@@ -18,7 +22,7 @@ import java.text.SimpleDateFormat;
 public class GithubService extends AbstractService {
 
 	private final SimpleDateFormat exportDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private final static int MAX_COMMITS_PER_POST = 5;
+	private final static int MAX_COMMITS_PER_POST = 25;
 
 	public GithubService(NovaBot b) {
 		super(b);
@@ -51,7 +55,9 @@ public class GithubService extends AbstractService {
 		long newLastKnownCommitTimestamp = lastKnownCommitTimestamp;
 		RepositoryCommit[] changesSinceHash = GitHub.getChangesSinceTimestamp("MaikWezinkhof", "discordbot", lastKnownCommitTimestamp);
 		int commitCount = 0;//probably changesSinceHash.length - 1
+		List<List<String>> tblContent = new ArrayList<>();
 		for (int i = changesSinceHash.length - 1; i >= 0; i--) {
+			List<String> tableRow = new ArrayList<>();
 			RepositoryCommit commit = changesSinceHash[i];
 			Long timestamp = 0L;
 			try {
@@ -65,11 +71,16 @@ public class GithubService extends AbstractService {
 			}
 			if (timestamp > lastKnownCommitTimestamp) {
 				commitsMessage += commitOutputFormat(timestamp, message, committer, commit.getSha());
+
 				newLastKnownCommitTimestamp = timestamp;
 				commitCount++;
 				if (commitCount >= MAX_COMMITS_PER_POST) {
 					break;
 				}
+				tableRow.add(commit.getSha().substring(0, 7));
+				tableRow.add(committer);
+				tableRow.add(message);
+				tblContent.add(tableRow);
 			}
 		}
 		if (commitCount > 0) {
@@ -78,7 +89,11 @@ public class GithubService extends AbstractService {
 			} else {
 				totalMessage = "There have been **" + commitCount + "** commits to **" + Config.BOT_NAME + "**" + Config.EOL;
 			}
-			totalMessage += commitsMessage;
+			if (commitCount < 3) {
+				totalMessage += commitsMessage;
+			} else {
+				Misc.makeAsciiTable(Arrays.asList("#", "commit", "description"), tblContent);
+			}
 			for (IChannel iChannel : getSubscribedChannels()) {
 				bot.sendMessage(iChannel, totalMessage);
 			}
