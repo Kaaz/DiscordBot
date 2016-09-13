@@ -30,7 +30,7 @@ public class GuildSettings {
 	 * @return the setting
 	 */
 	public static String getFor(IChannel channel, Class<? extends AbstractGuildSetting> clazz) {
-		if (channel.isPrivate()) {
+		if (channel == null || channel.isPrivate()) {
 			return DefaultGuildSettings.getDefault(clazz);
 		}
 		return GuildSettings.get(channel.getGuild()).getOrDefault(clazz);

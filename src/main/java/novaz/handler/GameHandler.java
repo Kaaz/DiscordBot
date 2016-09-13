@@ -3,6 +3,7 @@ package novaz.handler;
 import novaz.games.AbstractGame;
 import novaz.games.GameState;
 import novaz.games.GameTurn;
+import novaz.guildsettings.defaults.SettingGameModule;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 import novaz.util.Misc;
@@ -21,12 +22,36 @@ public class GameHandler {
 	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
 	private final Map<String, Class<? extends AbstractGame>> gameClassMap;
 	private final Map<String, AbstractGame> gameInfoMap;
+	private Map<String, String> usersInPlayMode;
+	private static final String commandName = "game";
+
+	public boolean isInPlayMode(IUser user, IChannel channel) {
+		return usersInPlayMode.containsKey(user.getID()) && usersInPlayMode.get(user.getID()).equals(channel.getID());
+	}
+
+	public boolean isGameInput(IChannel channel, IUser player, String message) {
+		if (GuildSettings.getFor(channel, SettingGameModule.class).equals("true")) {
+			if (isInPlayMode(player, channel) || message.startsWith(CommandHandler.getCommandPrefix(channel) + commandName)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	GameHandler(NovaBot bot) {
 		this.bot = bot;
 		collectGameClasses();
 		gameClassMap = new HashMap<>();
 		gameInfoMap = new HashMap<>();
+		usersInPlayMode = new ConcurrentHashMap<>();
+	}
+
+	public final void execute(IUser player, IChannel channel, String message) {
+		if (isInPlayMode(player, channel)) {
+
+		}
+		String[] args = message.split(" ");
+		String gameMessage = handleGameInput(args, player);
 	}
 
 	private void collectGameClasses() {
@@ -117,7 +142,7 @@ public class GameHandler {
 		return newGame.toString();
 	}
 
-	public String handleMessage(String[] args, IChannel channel, IUser player) {
+	public String handleGameInput(String[] args, IUser player) {
 		if (args.length > 0) {
 			if (args[0].equalsIgnoreCase("new") && args.length > 1) {
 				return createGame(player, args[1]);
