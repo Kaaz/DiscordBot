@@ -1,7 +1,9 @@
 package novaz.service;
 
 import novaz.core.AbstractService;
+import novaz.main.Config;
 import novaz.main.NovaBot;
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IInvite;
 import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.util.DiscordException;
@@ -59,13 +61,16 @@ public class BotStatusService extends AbstractService {
 
 	@Override
 	public void run() {
+		IChannel channel = bot.instance.getChannelByID(MY_CHANNEL);
 		try {
-			List<IInvite> invites = bot.instance.getChannelByID(MY_CHANNEL).getInvites();
+			List<IInvite> invites = channel.getInvites();
 			if (invites.size() > 0) {
 				if (new Random().nextInt(100) < 20) {
-					bot.instance.changeStatus(Status.stream("Feedback at ", "https://discord.gg/" + invites.get(0).getInviteCode()));
+					bot.instance.changeStatus(Status.game("Feedback @ https://discord.gg/" + invites.get(0).getInviteCode()));
 					return;
 				}
+			} else {
+				bot.out.sendPrivateMessage(bot.instance.getUserByID(Config.CREATOR_ID), ":exclamation: I am out of invites for `" + channel.getName() + "` Click here to make more :D " + channel.mention());
 			}
 		} catch (DiscordException | RateLimitException | MissingPermissionsException e) {
 			bot.out.sendErrorToMe(e, "mychannel", MY_CHANNEL, "invite_error", ":sob:");
