@@ -1,5 +1,7 @@
 package novaz.command.informative;
 
+import novaz.command.CooldownScale;
+import novaz.command.ICommandCooldown;
 import novaz.core.AbstractCommand;
 import novaz.handler.CommandHandler;
 import novaz.main.Config;
@@ -19,12 +21,22 @@ import java.util.List;
  * !leave
  * make the bot leave
  */
-public class Info extends AbstractCommand {
+public class Info extends AbstractCommand implements ICommandCooldown {
 	private Trello trello;
 
 	public Info(NovaBot b) {
 		super(b);
 		trello = new TrelloImpl(Config.TRELLO_API_KEY, Config.TRELLO_TOKEN);
+	}
+
+	@Override
+	public long getCooldown() {
+		return 15L;
+	}
+
+	@Override
+	public CooldownScale getCooldownScale() {
+		return CooldownScale.CHANNEL;
 	}
 
 	@Override
