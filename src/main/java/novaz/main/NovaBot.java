@@ -33,6 +33,7 @@ public class NovaBot {
 	public Timer timer = new Timer();
 	public String mentionMe;
 	public ChatBotHandler chatBotHandler = null;
+	public GameHandler gameHandler = null;
 	private boolean isReady = false;
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
 
@@ -98,13 +99,14 @@ public class NovaBot {
 	}
 
 	public void markReady(boolean ready) {
-		this.isReady = ready;
 		setUserName(Config.BOT_NAME);
 		loadConfiguration();
 		mentionMe = "<@" + this.instance.getOurUser().getID() + ">";
 		instance.changeStatus(Status.game("with human pets"));
-		TextHandler.setBot(this);
 		timer = new Timer();
+		TextHandler.setBot(this);
+		gameHandler = new GameHandler(this);
+		this.isReady = ready;
 	}
 
 	public void loadConfiguration() {
@@ -239,7 +241,9 @@ public class NovaBot {
 				!channel.getName().equalsIgnoreCase(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			return;
 		}
-		if (commandHandler.isCommand(channel, message.getContent())) {
+		if (gameHandler.isGameInput(channel, author, message.getContent().toLowerCase())) {
+			gameHandler.execute(author, channel, message.getContent());
+		} else if (commandHandler.isCommand(channel, message.getContent())) {
 			commandHandler.process(channel, author, message);
 		} else if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
 				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class)) &&

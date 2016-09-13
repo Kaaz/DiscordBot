@@ -23,35 +23,64 @@ public class GameHandler {
 	private final Map<String, Class<? extends AbstractGame>> gameClassMap;
 	private final Map<String, AbstractGame> gameInfoMap;
 	private Map<String, String> usersInPlayMode;
-	private static final String commandName = "game";
+	private static final String COMMAND_NAME = "game";
 
-	public boolean isInPlayMode(IUser user, IChannel channel) {
+	private boolean isInPlayMode(IUser user, IChannel channel) {
 		return usersInPlayMode.containsKey(user.getID()) && usersInPlayMode.get(user.getID()).equals(channel.getID());
+	}
+
+	private void enterPlayMode(IChannel channel, IUser player) {
+		usersInPlayMode.put(player.getID(), channel.getID());
+	}
+
+	private void leavePlayMode(IUser player) {
+		if (usersInPlayMode.containsKey(player.getID())) {
+			usersInPlayMode.remove(player.getID());
+		}
 	}
 
 	public boolean isGameInput(IChannel channel, IUser player, String message) {
 		if (GuildSettings.getFor(channel, SettingGameModule.class).equals("true")) {
-			if (isInPlayMode(player, channel) || message.startsWith(CommandHandler.getCommandPrefix(channel) + commandName)) {
+			if (isInPlayMode(player, channel) || message.startsWith(CommandHandler.getCommandPrefix(channel) + COMMAND_NAME)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	GameHandler(NovaBot bot) {
+	public GameHandler(NovaBot bot) {
 		this.bot = bot;
-		collectGameClasses();
 		gameClassMap = new HashMap<>();
 		gameInfoMap = new HashMap<>();
 		usersInPlayMode = new ConcurrentHashMap<>();
+		collectGameClasses();
 	}
 
-	public final void execute(IUser player, IChannel channel, String message) {
-		if (isInPlayMode(player, channel)) {
-
+	public final void execute(IUser player, IChannel channel, String rawMessage) {
+		String message = rawMessage.toLowerCase();
+		if (!isInPlayMode(player, channel)) {
+			message = message.replace(CommandHandler.getCommandPrefix(channel) + COMMAND_NAME, "").trim();
+		}
+		switch (message) {
+			case "playmode":
+			case "enter":
+			case "play":
+				enterPlayMode(channel, player);
+				bot.sendMessage(channel, TextHandler.get("playmode_entering_mode"));
+				return;
+			case "exit":
+			case "leave":
+			case "stop":
+				leavePlayMode(player);
+				bot.sendMessage(channel, TextHandler.get("playmode_leaving_mode"));
+				return;
 		}
 		String[] args = message.split(" ");
-		String gameMessage = handleGameInput(args, player);
+		String gameMessage = executeGameMove(args, player);
+		if (isInPlayMode(player, channel)) {
+			gameMessage = TextHandler.get("playmode_in_mode_warning") + Config.EOL + gameMessage;
+		}
+		bot.sendMessage(channel, gameMessage);
 	}
 
 	private void collectGameClasses() {
@@ -63,9 +92,22 @@ public class GameHandler {
 				gameClassMap.put(abstractGame.getCodeName(), gameClass);
 				gameInfoMap.put(abstractGame.getCodeName(), abstractGame);
 			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+				System.out.println(e.getMessage());
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private String getFormattedGameList() {
+		List<List<String>> table = new ArrayList<>();
+
+		getGameList().forEach(game -> {
+			List<String> row = new ArrayList<>();
+			row.add(game.getCodeName());
+			row.add(game.getFullname());
+			table.add(row);
+		});
+		return Misc.makeAsciiTable(Arrays.asList("code", "gamename"), table);
 	}
 
 	public List<AbstractGame> getGameList() {
@@ -142,12 +184,17 @@ public class GameHandler {
 		return newGame.toString();
 	}
 
-	public String handleGameInput(String[] args, IUser player) {
+	public String executeGameMove(String[] args, IUser player) {
 		if (args.length > 0) {
 			if (args[0].equalsIgnoreCase("new") && args.length > 1) {
-				return createGame(player, args[1]);
+//				return createGame(player, args[1]);
 			} else if (args[0].equalsIgnoreCase("cancel")) {
 				return cancelGame(player);
+			} else if (args[0].equalsIgnoreCase("help")) {
+				return "Type list for a list of games, TODO FOR NOW";
+			} else if (args[0].equalsIgnoreCase("list")) {
+				return "A list of all available games" + Config.EOL + getFormattedGameList() + "to start one type new <@user> <gamecode> ";
+			} else if (args[0].equalsIgnoreCase("cancel")) {
 			} else if (Misc.isUserMention(args[0])) {
 				if (args.length > 1) {
 					return createGamefromUserMention(player, args[0], args[1]);
@@ -156,7 +203,7 @@ public class GameHandler {
 			} else if (args[0].matches("^\\d$")) {
 				return playTurn(player, args[0]);
 			} else {
-				return TextHandler.get("playmode_invalid_usage");
+				return "";//TextHandler.get("playmode_invalid_usage");
 			}
 		}
 		if (isInAGame(player.getID())) {
