@@ -1,7 +1,6 @@
 package novaz.core;
 
 import novaz.db.model.OChannel;
-import novaz.db.model.OService;
 import novaz.db.model.OServiceVariable;
 import novaz.db.model.QActiveSubscriptions;
 import novaz.db.table.TChannels;
@@ -52,10 +51,6 @@ public abstract class AbstractService {
 		long lastRun = Long.parseLong("0" + getData("abs_last_service_run"));
 		long now = System.currentTimeMillis();
 		long next = lastRun + getDelayBetweenRuns();
-		OService service = TServices.findBy(getIdentifier());
-		if (service.activated == 0) {
-			return;
-		}
 		if (next <= now) {
 			if (!shouldIRun()) {
 				return;

@@ -35,6 +35,7 @@ public class NovaBot {
 	public ChatBotHandler chatBotHandler = null;
 	public GameHandler gameHandler = null;
 	private boolean isReady = false;
+	public boolean statusLocked = false;
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
 
 	public NovaBot() throws DiscordException {
@@ -102,7 +103,6 @@ public class NovaBot {
 		setUserName(Config.BOT_NAME);
 		loadConfiguration();
 		mentionMe = "<@" + this.instance.getOurUser().getID() + ">";
-		instance.changeStatus(Status.game("with human pets"));
 		timer = new Timer();
 		TextHandler.setBot(this);
 		gameHandler = new GameHandler(this);
