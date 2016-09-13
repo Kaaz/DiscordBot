@@ -61,7 +61,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (args.length >= 1 && args[0].equals("play")) {
 			final SlotMachine slotMachine = new SlotMachine();
-			final IMessage msg = bot.sendMessage(channel, slotMachine.toString());
+			final IMessage msg = bot.out.sendMessage(channel, slotMachine.toString());
 			bot.timer.scheduleAtFixedRate(new TimerTask() {
 				@Override
 				public void run() {
@@ -78,20 +78,20 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 								gameresult = "Aw you lose, better luck next time!";
 							}
 							if (msg != null) {
-								bot.editMessage(msg, slotMachine.toString() + Config.EOL + gameresult);
+								bot.out.editMessage(msg, slotMachine.toString() + Config.EOL + gameresult);
 							} else {
-								bot.sendMessage(channel, slotMachine.toString() + Config.EOL + gameresult);
+								bot.out.sendMessage(channel, slotMachine.toString() + Config.EOL + gameresult);
 							}
 							this.cancel();
 						} else {
 							if (msg != null) {
-								bot.editMessage(msg, slotMachine.toString());
+								bot.out.editMessage(msg, slotMachine.toString());
 							} else {
-								bot.sendMessage(channel, slotMachine.toString());
+								bot.out.sendMessage(channel, slotMachine.toString());
 							}
 						}
 					} catch (Exception e) {
-						bot.sendErrorToMe(e, "slotmachine", author.getID(), "channel", channel.mention());
+						bot.out.sendErrorToMe(e, "slotmachine", author.getID(), "channel", channel.mention(), bot);
 						this.cancel();
 					}
 				}

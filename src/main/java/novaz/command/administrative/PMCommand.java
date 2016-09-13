@@ -49,7 +49,7 @@ public class PMCommand extends AbstractCommand {
 					for (int i = 1; i < args.length; i++) {
 						message += " " + args[i];
 					}
-					bot.sendPrivateMessage(targetUser, "You got a message from " + author.mention() + ": " + message);
+					bot.out.sendPrivateMessage(targetUser, "You got a message from " + author.mention() + ": " + message);
 					return TextHandler.get("command_pm_success");
 				} else {
 					return TextHandler.get("command_pm_cant_find_user");

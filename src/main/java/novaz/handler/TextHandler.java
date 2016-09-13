@@ -48,7 +48,7 @@ public class TextHandler {
 			return list.get(instance.rnd.nextInt(list.size()));
 		}
 		if (instance.bot != null) {
-			instance.bot.sendErrorToMe(new TemplateNotSetException(keyPhrase), "key", keyPhrase, "copy this", "**!template add " + keyPhrase + "** ");
+			instance.bot.out.sendErrorToMe(new TemplateNotSetException(keyPhrase), "key", keyPhrase, "copy this", "**!template add " + keyPhrase + "** ", instance.bot);
 		}
 		return "**'" + keyPhrase + "'**";
 	}

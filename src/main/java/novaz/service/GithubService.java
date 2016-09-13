@@ -95,7 +95,7 @@ public class GithubService extends AbstractService {
 				totalMessage += Misc.makeAsciiTable(Arrays.asList("hash", "by", "description"), tblContent);
 			}
 			for (IChannel iChannel : getSubscribedChannels()) {
-				bot.sendMessage(iChannel, totalMessage);
+				bot.out.sendMessage(iChannel, totalMessage);
 			}
 		}
 		saveData("last_date", newLastKnownCommitTimestamp);

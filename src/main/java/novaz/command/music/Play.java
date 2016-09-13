@@ -130,7 +130,7 @@ public class Play extends AbstractCommand {
 								Files.move(new File(Config.MUSIC_DIRECTORY + "soundcloud/" + scFile.filename), new File(Config.MUSIC_DIRECTORY + oMusic.filename));
 							} catch (IOException e) {
 								e.printStackTrace();
-								bot.sendErrorToMe(e, "moving file", Config.MUSIC_DIRECTORY + "soundcloud/" + scFile.filename, "target", Config.MUSIC_DIRECTORY + oMusic.filename);
+								bot.out.sendErrorToMe(e, "moving file", Config.MUSIC_DIRECTORY + "soundcloud/" + scFile.filename, "target", Config.MUSIC_DIRECTORY + oMusic.filename, bot);
 								continue;
 							}
 						}
@@ -146,7 +146,7 @@ public class Play extends AbstractCommand {
 			if (YTUtil.isValidYoutubeCode(videocode)) {
 				File filecheck = new File(Config.MUSIC_DIRECTORY + videocode + ".mp3");
 				if (!filecheck.exists()) {
-					IMessage msg = bot.sendMessage(channel, TextHandler.get("music_downloading_hang_on"));
+					IMessage msg = bot.out.sendMessage(channel, TextHandler.get("music_downloading_hang_on"));
 					YTUtil.downloadfromYoutubeAsMp3(videocode);
 					justDownloaded = true;
 					try {

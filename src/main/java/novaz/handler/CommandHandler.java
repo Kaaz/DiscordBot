@@ -103,7 +103,7 @@ public class CommandHandler {
 			if ((!channel.isPrivate() || (channel.isPrivate() && command.isAllowedInPrivateChannel())) && cooldown <= 0) {
 				String commandOutput = command.execute(args, channel, author);
 				if (!commandOutput.isEmpty()) {
-					mymsg = bot.sendMessage(channel, commandOutput);
+					mymsg = bot.out.sendMessage(channel, commandOutput);
 				}
 				if (Config.BOT_COMMAND_LOGGING) {
 					StringBuilder usedArguments = new StringBuilder();
@@ -115,17 +115,17 @@ public class CommandHandler {
 					}
 				}
 			} else if (cooldown > 0) {
-				mymsg = bot.sendMessage(channel, String.format(TextHandler.get("command_on_cooldown"), TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false)));
+				mymsg = bot.out.sendMessage(channel, String.format(TextHandler.get("command_on_cooldown"), TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false)));
 			} else if (!command.isAllowedInPrivateChannel()) {
-				mymsg = bot.sendMessage(channel, TextHandler.get("command_not_for_private"));
+				mymsg = bot.out.sendMessage(channel, TextHandler.get("command_not_for_private"));
 			}
 		} else if (customCommands.containsKey(input[0])) {
-			mymsg = bot.sendMessage(channel, customCommands.get(input[0]));
+			mymsg = bot.out.sendMessage(channel, customCommands.get(input[0]));
 		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED && GuildSettings.getFor(channel, SettingEnableChatBot.class).equals("true")) {
-			mymsg = bot.sendMessage(channel, msg.getAuthor().mention() + ", " + bot.chatBotHandler.chat(inputMessage));
+			mymsg = bot.out.sendMessage(channel, msg.getAuthor().mention() + ", " + bot.chatBotHandler.chat(inputMessage));
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
-			mymsg = bot.sendMessage(channel, String.format(TextHandler.get("unknown_command"), GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help"));
+			mymsg = bot.out.sendMessage(channel, String.format(TextHandler.get("unknown_command"), GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help"));
 		}
 		if (mymsg != null && shouldCleanUpMessages(channel)) {
 			final IMessage finalMymsg = mymsg;
@@ -164,7 +164,7 @@ public class CommandHandler {
 					break;
 				case GUILD:
 					if (channel.isPrivate()) {
-						bot.sendErrorToMe(new Exception("Command with guild-scale cooldown in private!"), "command", command.getCommand(), "user", author.getName());
+						bot.out.sendErrorToMe(new Exception("Command with guild-scale cooldown in private!"), "command", command.getCommand(), "user", author.getName(), bot);
 					}
 					targetId = channel.getGuild().getID();
 					break;

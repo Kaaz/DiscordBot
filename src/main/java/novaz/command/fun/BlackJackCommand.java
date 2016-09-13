@@ -71,7 +71,7 @@ public class BlackJackCommand extends AbstractCommand {
 		} else if (args[0].equalsIgnoreCase("stand")) {
 			if (playerGames.containsKey(author.getID())) {
 				if (!playerGames.get(author.getID()).playerIsStanding()) {
-					IMessage msg = bot.sendMessage(channel, playerGames.get(author.getID()).toString());
+					IMessage msg = bot.out.sendMessage(channel, playerGames.get(author.getID()).toString());
 					playerGames.get(author.getID()).stand();
 					bot.timer.scheduleAtFixedRate(new TimerTask() {
 						@Override
@@ -79,16 +79,16 @@ public class BlackJackCommand extends AbstractCommand {
 							try {
 								boolean didHit = playerGames.get(author.getID()).dealerHit();
 								if (msg != null) {
-									bot.editMessage(msg, playerGames.get(author.getID()).toString());
+									bot.out.editMessage(msg, playerGames.get(author.getID()).toString());
 								} else {
-									bot.sendMessage(channel, playerGames.get(author.getID()).toString());
+									bot.out.sendMessage(channel, playerGames.get(author.getID()).toString());
 								}
 								if (!didHit) {
 									playerGames.remove(author.getID());
 									this.cancel();
 								}
 							} catch (Exception e) {
-								bot.sendErrorToMe(e, "blackjackgame", author.getID());
+								bot.out.sendErrorToMe(e, "blackjackgame", author.getID(), bot);
 								this.cancel();
 								playerGames.remove(author.getID());
 							}

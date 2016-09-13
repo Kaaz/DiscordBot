@@ -107,7 +107,7 @@ public class MusicPlayerHandler {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			bot.sendErrorToMe(e);
+			bot.out.sendErrorToMe(e, bot);
 		}
 		return potentialSongs.get((int) (Math.random() * (double) potentialSongs.size()));
 	}
@@ -156,7 +156,7 @@ public class MusicPlayerHandler {
 				}
 			}
 		}
-		activeMsg = bot.sendMessage(bot.getDefaultChannel(guild), msg);
+		activeMsg = bot.out.sendMessage(bot.getDefaultChannel(guild), msg);
 	}
 
 	private void getMp3Details(File f) {
@@ -202,7 +202,7 @@ public class MusicPlayerHandler {
 	private boolean addToQueue(String filename) {
 		File f = new File(Config.MUSIC_DIRECTORY + filename);
 		if (!f.exists() || !f.getName().endsWith(".mp3")) {
-			bot.sendErrorToMe(new Exception("nosongexception :("), "filename: ", f.getName(), "plz fix", "I want music");
+			bot.out.sendErrorToMe(new Exception("nosongexception :("), "filename: ", f.getName(), "plz fix", "I want music", bot);
 			return false;
 		}
 		try {

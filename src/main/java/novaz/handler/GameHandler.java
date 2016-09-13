@@ -69,13 +69,13 @@ public class GameHandler {
 			case "enter":
 			case "play":
 				enterPlayMode(channel, player);
-				bot.sendMessage(channel, TextHandler.get("playmode_entering_mode"));
+				bot.out.sendMessage(channel, TextHandler.get("playmode_entering_mode"));
 				return;
 			case "exit":
 			case "leave":
 			case "stop":
 				leavePlayMode(player);
-				bot.sendMessage(channel, TextHandler.get("playmode_leaving_mode"));
+				bot.out.sendMessage(channel, TextHandler.get("playmode_leaving_mode"));
 				return;
 		}
 		String[] args = message.split(" ");
@@ -86,10 +86,10 @@ public class GameHandler {
 			gameMessage = showList(channel);
 		}
 		if (!gameMessage.isEmpty()) {
-			IMessage msg = bot.sendMessage(channel, gameMessage);
+			IMessage msg = bot.out.sendMessage(channel, gameMessage);
 			if (lastMessage.containsKey(channel.getID())) {
 				IMessage msgToDelete = lastMessage.remove(channel.getID());
-				bot.deleteMessage(msgToDelete);
+				bot.out.deleteMessage(msgToDelete);
 			}
 			lastMessage.put(channel.getID(), msg);
 		}

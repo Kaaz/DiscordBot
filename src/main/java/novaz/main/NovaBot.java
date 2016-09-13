@@ -1,7 +1,6 @@
 package novaz.main;
 
 import novaz.core.AbstractEventListener;
-import novaz.core.Logger;
 import novaz.db.model.OMusic;
 import novaz.db.model.OServer;
 import novaz.db.table.TServers;
@@ -10,12 +9,12 @@ import novaz.guildsettings.defaults.SettingActiveChannels;
 import novaz.guildsettings.defaults.SettingBotChannel;
 import novaz.guildsettings.defaults.SettingEnableChatBot;
 import novaz.handler.*;
-import novaz.util.Misc;
 import org.reflections.Reflections;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.*;
-import sx.blah.discord.util.*;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.RateLimitException;
 import sx.blah.discord.util.audio.AudioPlayer;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -33,7 +32,8 @@ public class NovaBot {
 	public Timer timer = new Timer();
 	public String mentionMe;
 	public ChatBotHandler chatBotHandler = null;
-	public GameHandler gameHandler = null;
+	private GameHandler gameHandler = null;
+	public OutgoingContentHandler out = null;
 	private boolean isReady = false;
 	public boolean statusLocked = false;
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
@@ -106,6 +106,7 @@ public class NovaBot {
 		timer = new Timer();
 		TextHandler.setBot(this);
 		gameHandler = new GameHandler(this);
+		out = new OutgoingContentHandler(this);
 		this.isReady = ready;
 	}
 
@@ -181,64 +182,11 @@ public class NovaBot {
 	}
 
 
-	/**
-	 * @param channel channel to send to
-	 * @param content the message
-	 * @return IMessage or null
-	 */
-	public IMessage sendMessage(IChannel channel, String content) {
-		RequestBuffer.RequestFuture<IMessage> request = sendMessage(channel, new MessageBuilder(instance).withChannel(channel).withContent(content));
-		return request.get();
-	}
-
-	public RequestBuffer.RequestFuture<IMessage> sendMessage(IChannel channel, MessageBuilder builder) {
-		return RequestBuffer.request(() -> {
-			try {
-				return builder.send();
-			} catch (DiscordException e) {
-				if (e.getErrorMessage().contains("502")) {
-					throw new RateLimitException("Workaround because of 502", 1000, "sendMessage", false);
-				}
-			} catch (MissingPermissionsException e) {
-				Logger.fatal(e, "no permission");
-				e.printStackTrace();
-			}
-			return null;
-		});
-	}
-
-	public void deleteMessage(IMessage message) {
-		RequestBuffer.request(() -> {
-			try {
-				message.delete();
-			} catch (MissingPermissionsException | DiscordException e) {
-				e.printStackTrace();
-			}
-			return null;
-		});
-	}
-
-	public RequestBuffer.RequestFuture<IMessage> editMessage(IMessage msg, String newText) {
-		return RequestBuffer.request(() -> {
-			try {
-				return msg.edit(newText);
-			} catch (DiscordException e) {
-				if (e.getErrorMessage().contains("502")) {
-					throw new RateLimitException("Workaround because of 502", 1500, "editMessage", false);
-				}
-			} catch (MissingPermissionsException e) {
-				Logger.fatal(e, "no permission");
-				e.printStackTrace();
-			}
-			return null;
-		});
-	}
-
 	public void handlePrivateMessage(IPrivateChannel channel, IUser author, IMessage message) {
 		if (commandHandler.isCommand(channel, message.getContent())) {
 			commandHandler.process(channel, author, message);
 		} else {
-			this.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
+			this.out.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
 		}
 	}
 
@@ -259,53 +207,8 @@ public class NovaBot {
 		} else if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
 				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class)) &&
 				channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
-			this.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
+			this.out.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
 		}
-	}
-
-	public void sendPrivateMessage(IUser target, String message) {
-		RequestBuffer.request(() -> {
-			try {
-				IPrivateChannel pmChannel = this.instance.getOrCreatePMChannel(target);
-				return pmChannel.sendMessage(message);
-			} catch (DiscordException e) {
-				if (e.getErrorMessage().contains("502")) {
-					throw new RateLimitException("Workaround because of 502", 1500, "editMessage", false);
-				}
-			} catch (MissingPermissionsException e) {
-				Logger.fatal(e, "no permission");
-				e.printStackTrace();
-			}
-			return null;
-		});
-	}
-
-	public void sendErrorToMe(Exception error, Object... extradetails) {
-		String errorMessage = "I'm sorry to inform you that I've encountered a **" + error.getClass().getName() + "**" + Config.EOL;
-		errorMessage += "Message: " + Config.EOL;
-		errorMessage += error.getLocalizedMessage() + Config.EOL;
-		String stack = "";
-		int maxTrace = 6;
-		StackTraceElement[] stackTrace1 = error.getStackTrace();
-		for (int i = 0; i < stackTrace1.length; i++) {
-			StackTraceElement stackTrace = stackTrace1[i];
-			stack += stackTrace.toString() + Config.EOL;
-			if (i > maxTrace) {
-				break;
-			}
-		}
-		errorMessage += "Accompanied stacktrace: " + Config.EOL + Misc.makeTable(stack) + Config.EOL;
-		if (extradetails.length > 0) {
-			errorMessage += "Extra information: " + Config.EOL;
-			for (int i = 1; i < extradetails.length; i += 2) {
-				if (extradetails[i] != null) {
-					errorMessage += extradetails[i - 1] + " = " + extradetails[i] + Config.EOL;
-				} else if (extradetails[i - 1] != null) {
-					errorMessage += extradetails[i - 1];
-				}
-			}
-		}
-		sendPrivateMessage(instance.getUserByID(Config.CREATOR_ID), errorMessage);
 	}
 
 	public float getVolume(IGuild guild) {

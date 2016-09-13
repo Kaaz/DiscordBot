@@ -38,7 +38,7 @@ public abstract class AbstractService {
 			if (botChannel != null) {
 				channels.add(botChannel);
 			} else {
-				bot.sendErrorToMe(new Exception("Subscription channel not found"), "channelID", databaseChannel.discord_id, "subscription", getIdentifier());
+				bot.out.sendErrorToMe(new Exception("Subscription channel not found"), "channelID", databaseChannel.discord_id, "subscription", getIdentifier(), bot);
 			}
 		}
 		return channels;

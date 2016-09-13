@@ -49,7 +49,7 @@ public class Joke extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		IMessage msg = bot.sendMessage(channel, TextHandler.get("command_joke_wait"));
+		IMessage msg = bot.out.sendMessage(channel, TextHandler.get("command_joke_wait"));
 		String joketxt = getJokeFromWeb(author.getName());
 		try {
 			msg.delete();
