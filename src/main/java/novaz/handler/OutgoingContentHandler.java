@@ -23,7 +23,7 @@ public class OutgoingContentHandler {
 	 * @return IMessage or null
 	 */
 	public IMessage sendMessage(IChannel channel, String content) {
-		RequestBuffer.RequestFuture<IMessage> request = bot.out.sendMessage(channel, new MessageBuilder(bot.instance).withChannel(channel).withContent(content));
+		RequestBuffer.RequestFuture<IMessage> request = bot.out.sendMessage(new MessageBuilder(bot.instance).withChannel(channel).withContent(content));
 		return request.get();
 	}
 
@@ -99,7 +99,7 @@ public class OutgoingContentHandler {
 		});
 	}
 
-	public RequestBuffer.RequestFuture<IMessage> sendMessage(IChannel channel, MessageBuilder builder) {
+	public RequestBuffer.RequestFuture<IMessage> sendMessage(MessageBuilder builder) {
 		return RequestBuffer.request(() -> {
 			try {
 				return builder.send();

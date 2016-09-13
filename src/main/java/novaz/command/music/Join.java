@@ -5,6 +5,7 @@ import novaz.handler.TextHandler;
 import novaz.main.NovaBot;
 import novaz.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.MissingPermissionsException;
@@ -48,22 +49,16 @@ public class Join extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		IVoiceChannel currentlyConnected = null;
-		if (!bot.instance.getConnectedVoiceChannels().isEmpty()) {
-			currentlyConnected = bot.instance.getConnectedVoiceChannels().get(0);
-		}
 		if (args.length == 0) {
 			IVoiceChannel voiceChannel = author.getConnectedVoiceChannels().get(0);
 			if (voiceChannel == null) {
 				return TextHandler.get("command_join_cantfindyou");
 			}
-			if (voiceChannel.equals(currentlyConnected)) {
+			if (voiceChannel.equals(getCurrentVoiceChannel(channel.getGuild()))) {
 				return TextHandler.get("command_join_already_there");
 			}
 			try {
-				if (currentlyConnected != null) {
-					currentlyConnected.leave();
-				}
+				leaveCurrentChannel(channel.getGuild());
 				voiceChannel.join();
 			} catch (MissingPermissionsException e) {
 				return TextHandler.get("command_join_nopermssiontojoin");
@@ -79,13 +74,11 @@ public class Join extends AbstractCommand {
 				}
 			}
 			if (targetChannel != null) {
-				if (targetChannel.equals(currentlyConnected)) {
+				if (targetChannel.equals(getCurrentVoiceChannel(channel.getGuild()))) {
 					return TextHandler.get("command_join_already_there");
 				}
 				try {
-					if (currentlyConnected != null) {
-						currentlyConnected.leave();
-					}
+					leaveCurrentChannel(channel.getGuild());
 					targetChannel.join();
 				} catch (MissingPermissionsException e) {
 					return TextHandler.get("command_join_nopermssiontojoin");
@@ -93,6 +86,22 @@ public class Join extends AbstractCommand {
 				return TextHandler.get("command_join_joined");
 			}
 			return TextHandler.get("command_join_cantfindchannel");
+		}
+	}
+
+	private IVoiceChannel getCurrentVoiceChannel(IGuild guild) {
+		for (IVoiceChannel channel : bot.instance.getConnectedVoiceChannels()) {
+			if (channel.getGuild().equals(guild)) {
+				return channel;
+			}
+		}
+		return null;
+	}
+
+	private void leaveCurrentChannel(IGuild guild) {
+		IVoiceChannel currentVoiceChannel = getCurrentVoiceChannel(guild);
+		if (currentVoiceChannel != null) {
+			currentVoiceChannel.leave();
 		}
 	}
 }
