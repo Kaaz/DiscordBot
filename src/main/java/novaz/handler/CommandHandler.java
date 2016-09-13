@@ -168,6 +168,9 @@ public class CommandHandler {
 					}
 					targetId = channel.getGuild().getID();
 					break;
+				case GLOBAL:
+					targetId = "GLOBAL";
+					break;
 				default:
 					targetId = "";
 			}
