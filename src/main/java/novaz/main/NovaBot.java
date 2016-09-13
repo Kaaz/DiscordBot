@@ -207,6 +207,17 @@ public class NovaBot {
 		});
 	}
 
+	public void deleteMessage(IMessage message) {
+		RequestBuffer.request(() -> {
+			try {
+				message.delete();
+			} catch (MissingPermissionsException | DiscordException e) {
+				e.printStackTrace();
+			}
+			return null;
+		});
+	}
+
 	public RequestBuffer.RequestFuture<IMessage> editMessage(IMessage msg, String newText) {
 		return RequestBuffer.request(() -> {
 			try {

@@ -9,6 +9,7 @@ import novaz.main.NovaBot;
 import novaz.util.Misc;
 import org.reflections.Reflections;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +23,7 @@ public class GameHandler {
 	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
 	private final Map<String, Class<? extends AbstractGame>> gameClassMap;
 	private final Map<String, AbstractGame> gameInfoMap;
+	private final Map<String, IMessage> lastMessage;
 	private Map<String, String> usersInPlayMode;
 	private static final String COMMAND_NAME = "game";
 
@@ -52,12 +54,13 @@ public class GameHandler {
 		this.bot = bot;
 		gameClassMap = new HashMap<>();
 		gameInfoMap = new HashMap<>();
+		lastMessage = new ConcurrentHashMap<>();
 		usersInPlayMode = new ConcurrentHashMap<>();
 		collectGameClasses();
 	}
 
 	public final void execute(IUser player, IChannel channel, String rawMessage) {
-		String message = rawMessage.toLowerCase();
+		String message = rawMessage.toLowerCase().trim();
 		if (!isInPlayMode(player, channel)) {
 			message = message.replace(CommandHandler.getCommandPrefix(channel) + COMMAND_NAME, "").trim();
 		}
@@ -76,11 +79,20 @@ public class GameHandler {
 				return;
 		}
 		String[] args = message.split(" ");
-		String gameMessage = executeGameMove(args, player);
+		String gameMessage = executeGameMove(args, player, channel);
 		if (isInPlayMode(player, channel)) {
-			gameMessage = TextHandler.get("playmode_in_mode_warning") + Config.EOL + gameMessage;
+			gameMessage = "*note: " + TextHandler.get("playmode_in_mode_warning") + "*" + Config.EOL + gameMessage;
+		} else if ("".equals(message) || message.equals("help")) {
+			gameMessage = showList(channel);
 		}
-		bot.sendMessage(channel, gameMessage);
+		if (!gameMessage.isEmpty()) {
+			IMessage msg = bot.sendMessage(channel, gameMessage);
+			if (lastMessage.containsKey(channel.getID())) {
+				IMessage msgToDelete = lastMessage.remove(channel.getID());
+				bot.deleteMessage(msgToDelete);
+			}
+			lastMessage.put(channel.getID(), msg);
+		}
 	}
 
 	private void collectGameClasses() {
@@ -184,27 +196,35 @@ public class GameHandler {
 		return newGame.toString();
 	}
 
-	public String executeGameMove(String[] args, IUser player) {
+	private String showHelp() {
+		return "Type list for a list of games, TODO FOR NOW";
+	}
+
+	private String showList(IChannel channel) {
+		return "A list of all available games" + Config.EOL +
+				getFormattedGameList() +
+				"to start one type `" + CommandHandler.getCommandPrefix(channel) + COMMAND_NAME + " <@user> <gamecode>`" + Config.EOL +
+				"You can enter *gamemode* by typing `" + CommandHandler.getCommandPrefix(channel) + COMMAND_NAME + " enter` " + Config.EOL +
+				"This makes it so that you don't have to prefix your messages with `" + CommandHandler.getCommandPrefix(channel) + COMMAND_NAME + "`";
+	}
+
+	public String executeGameMove(String[] args, IUser player, IChannel channel) {
 		if (args.length > 0) {
 			if (args[0].equalsIgnoreCase("new") && args.length > 1) {
 //				return createGame(player, args[1]);
 			} else if (args[0].equalsIgnoreCase("cancel")) {
 				return cancelGame(player);
 			} else if (args[0].equalsIgnoreCase("help")) {
-				return "Type list for a list of games, TODO FOR NOW";
+				return showHelp();
 			} else if (args[0].equalsIgnoreCase("list")) {
-				return "A list of all available games" + Config.EOL + getFormattedGameList() + "to start one type new <@user> <gamecode> ";
-			} else if (args[0].equalsIgnoreCase("cancel")) {
+				return showList(channel);
 			} else if (Misc.isUserMention(args[0])) {
 				if (args.length > 1) {
 					return createGamefromUserMention(player, args[0], args[1]);
 				}
 				return TextHandler.get("playmode_invalid_usage");
-			} else if (args[0].matches("^\\d$")) {
-				return playTurn(player, args[0]);
-			} else {
-				return "";//TextHandler.get("playmode_invalid_usage");
 			}
+			return playTurn(player, args[0]);
 		}
 		if (isInAGame(player.getID())) {
 			return String.valueOf(getGame(player.getID()));
@@ -222,17 +242,17 @@ public class GameHandler {
 				return TextHandler.get("playmode_waiting_for_player");
 			}
 			if (!game.isTurnOf(player)) {
-				return TextHandler.get("playmode_not_your_turn");
+				return game.toString() + Config.EOL + TextHandler.get("playmode_not_your_turn");
 			}
 			GameTurn gameTurnInstance = game.getGameTurnInstance();
 			if (gameTurnInstance == null) {
 				return "BEEP BOOP CONTACT KAAZ THIS SHIT IS ON FIRE **game.getGameTurnInstance()** failed somehow";
 			}
 			if (!gameTurnInstance.parseInput(input)) {
-				return gameTurnInstance.getInputErrorMessage();
+				return game.toString() + Config.EOL + ":exclamation: " + gameTurnInstance.getInputErrorMessage();
 			}
 			if (!game.isValidMove(player, gameTurnInstance)) {
-				return TextHandler.get("playmode_not_a_valid_move");
+				return game.toString() + Config.EOL + TextHandler.get("playmode_not_a_valid_move");
 			}
 			game.playTurn(player, gameTurnInstance);
 			String gamestr = game.toString();

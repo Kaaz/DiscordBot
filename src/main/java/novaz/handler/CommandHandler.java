@@ -61,7 +61,7 @@ public class CommandHandler {
 	 * @return the command prefix
 	 */
 	public static String getCommandPrefix(IChannel channel) {
-		if (channel.isPrivate()) {
+		if (channel == null || channel.isPrivate()) {
 			return DefaultGuildSettings.getDefault(SettingCommandPrefix.class);
 		}
 		return GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);
