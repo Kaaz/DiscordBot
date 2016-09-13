@@ -2,6 +2,7 @@ package novaz.handler;
 
 
 import novaz.db.WebDb;
+import novaz.exceptions.TemplateNotSetException;
 import novaz.main.Config;
 import novaz.main.NovaBot;
 
@@ -48,7 +49,7 @@ public class TextHandler {
 			return list.get(instance.rnd.nextInt(list.size()));
 		}
 		if (instance.bot != null) {
-			instance.bot.sendErrorToMe(new Exception("template_not_set"), "key", keyPhrase, "copy this", "!template add " + keyPhrase);
+			instance.bot.sendErrorToMe(new TemplateNotSetException(keyPhrase), "key", keyPhrase, "copy this", "!template add " + keyPhrase);
 		}
 		return "**'" + keyPhrase + "'**";
 	}
