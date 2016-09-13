@@ -14,7 +14,6 @@ import java.util.Random;
 
 /**
  * Handles the text templates
- * <p>
  * templates are stored in the database,
  */
 public class TextHandler {
@@ -49,7 +48,7 @@ public class TextHandler {
 			return list.get(instance.rnd.nextInt(list.size()));
 		}
 		if (instance.bot != null) {
-			instance.bot.sendErrorToMe(new TemplateNotSetException(keyPhrase), "key", keyPhrase, "copy this", "!template add " + keyPhrase);
+			instance.bot.sendErrorToMe(new TemplateNotSetException(keyPhrase), "key", keyPhrase, "copy this", "**!template add " + keyPhrase + "** ");
 		}
 		return "**'" + keyPhrase + "'**";
 	}

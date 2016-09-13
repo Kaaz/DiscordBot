@@ -8,8 +8,8 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
- * !say
- * make the bot say something
+ * !pm
+ * make the bot pm someone
  */
 public class PMCommand extends AbstractCommand {
 	public PMCommand(NovaBot b) {

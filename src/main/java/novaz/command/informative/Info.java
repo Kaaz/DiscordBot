@@ -18,8 +18,8 @@ import java.util.List;
 
 
 /**
- * !leave
- * make the bot leave
+ * !info
+ * some general information about the bot
  */
 public class Info extends AbstractCommand implements ICommandCooldown {
 	private Trello trello;
@@ -41,7 +41,7 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 
 	@Override
 	public String getDescription() {
-		return "Shows info about the bot";
+		return "Shows some general information about me and my future plans.";
 	}
 
 	@Override
