@@ -46,6 +46,7 @@ Current list of all available commands. See below for a more detailed list
 * [poelab](#poelab)
 * [poll](#poll)
 * [purge](#purge)
+* [r](#r)
 * [reload](#reload)
 * [say](#say)
 * [skip](#skip)
@@ -291,6 +292,16 @@ purges messages
 purge       //deletes non-pinned messages
 purge @user //deletes messages from user
 purge nova  //deletes my messages :(
+```
+### r
+
+Posts something from reddit
+
+
+#### Usage
+
+```php
+r <subreddit>
 ```
 ### reload
 
