@@ -81,14 +81,14 @@ public class CommandHandler {
 	/**
 	 * directs the command to the right class
 	 *
-	 * @param channel which channel
-	 * @param author  author
-	 * @param msg     message
+	 * @param channel          which channel
+	 * @param author           author
+	 * @param incommingMessage message
 	 */
-	public void process(IChannel channel, IUser author, IMessage msg) {
+	public void process(IChannel channel, IUser author, String incommingMessage) {
 		IMessage mymsg = null;
 		boolean startedWithMention = false;
-		String inputMessage = msg.getContent();
+		String inputMessage = incommingMessage;
 		if (inputMessage.startsWith(bot.mentionMe)) {
 			inputMessage = inputMessage.replace(bot.mentionMe, "").trim();
 			startedWithMention = true;
@@ -122,7 +122,7 @@ public class CommandHandler {
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.out.sendMessage(channel, customCommands.get(input[0]));
 		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED && GuildSettings.getFor(channel, SettingEnableChatBot.class).equals("true")) {
-			mymsg = bot.out.sendMessage(channel, msg.getAuthor().mention() + ", " + bot.chatBotHandler.chat(inputMessage));
+			mymsg = bot.out.sendMessage(channel, author.mention() + ", " + bot.chatBotHandler.chat(inputMessage));
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
 			mymsg = bot.out.sendMessage(channel, String.format(TextHandler.get("unknown_command"), GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help"));
@@ -134,7 +134,6 @@ public class CommandHandler {
 				public void run() {
 					try {
 						finalMymsg.delete();
-						msg.delete();
 					} catch (MissingPermissionsException | RateLimitException | DiscordException ignored) {
 					}
 				}

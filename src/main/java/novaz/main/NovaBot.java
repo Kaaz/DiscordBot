@@ -10,6 +10,8 @@ import novaz.guildsettings.defaults.SettingBotChannel;
 import novaz.guildsettings.defaults.SettingEnableChatBot;
 import novaz.handler.*;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.*;
@@ -37,6 +39,7 @@ public class NovaBot {
 	private boolean isReady = false;
 	public boolean statusLocked = false;
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
+	public static final Logger LOGGER = LoggerFactory.getLogger(NovaBot.class);
 
 	public NovaBot() throws DiscordException {
 		registerHandlers();
@@ -184,7 +187,7 @@ public class NovaBot {
 
 	public void handlePrivateMessage(IPrivateChannel channel, IUser author, IMessage message) {
 		if (commandHandler.isCommand(channel, message.getContent())) {
-			commandHandler.process(channel, author, message);
+			commandHandler.process(channel, author, message.getContent());
 		} else {
 			this.out.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
 		}
@@ -203,7 +206,7 @@ public class NovaBot {
 		if (gameHandler.isGameInput(channel, author, message.getContent().toLowerCase())) {
 			gameHandler.execute(author, channel, message.getContent());
 		} else if (commandHandler.isCommand(channel, message.getContent())) {
-			commandHandler.process(channel, author, message);
+			commandHandler.process(channel, author, message.getContent());
 		} else if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
 				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class)) &&
 				channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {

@@ -46,7 +46,7 @@ public class ServiceHandlerThread extends Thread {
 					}
 				}
 				lastTime = System.nanoTime();
-				sleep(30_000L);
+				sleep(10_000L);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

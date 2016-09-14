@@ -26,9 +26,9 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 	@Override
 	public void handle(GuildCreateEvent event) {
 
-		System.out.println("[event] BOT JOINED SERVER!");
 		IGuild guild = event.getGuild();
 		IUser owner = guild.getOwner();
+
 		novaBot.setVolume(guild, 0.05F);
 		OUser user = TUser.findBy(owner.getID());
 		user.discord_id = owner.getID();
@@ -39,6 +39,7 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 		server.name = guild.getName();
 		server.owner = user.id;
 		TServers.update(server);
+		NovaBot.LOGGER.info("[event] JOINED SERVER! " + guild.getName());
 	}
 
 }
