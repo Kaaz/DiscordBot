@@ -6,6 +6,7 @@ import novaz.games.GameTurn;
 import novaz.guildsettings.defaults.SettingGameModule;
 import novaz.main.Config;
 import novaz.main.NovaBot;
+import novaz.util.DisUtil;
 import novaz.util.Misc;
 import org.reflections.Reflections;
 import sx.blah.discord.handle.obj.IChannel;
@@ -170,7 +171,7 @@ public class GameHandler {
 		if (isInAGame(player.getID())) {
 			return TextHandler.get("playmode_already_in_game");
 		}
-		String userId = Misc.mentionToId(theMention);
+		String userId = DisUtil.mentionToId(theMention);
 		IUser targetUser = bot.instance.getUserByID(userId);
 		if (isInAGame(targetUser.getID())) {
 			AbstractGame otherGame = getGame(targetUser.getID());
@@ -218,7 +219,7 @@ public class GameHandler {
 				return showHelp();
 			} else if (args[0].equalsIgnoreCase("list")) {
 				return showList(channel);
-			} else if (Misc.isUserMention(args[0])) {
+			} else if (DisUtil.isUserMention(args[0])) {
 				if (args.length > 1) {
 					return createGamefromUserMention(player, args[0], args[1]);
 				}

@@ -4,7 +4,7 @@ import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
-import novaz.util.Misc;
+import novaz.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -47,8 +47,8 @@ public class User extends AbstractCommand {
 		IUser infoUser = null;
 		if (args.length == 0) {
 			infoUser = author;
-		} else if (Misc.isUserMention(args[0])) {
-			infoUser = bot.instance.getUserByID(Misc.mentionToId(args[0]));
+		} else if (DisUtil.isUserMention(args[0])) {
+			infoUser = bot.instance.getUserByID(DisUtil.mentionToId(args[0]));
 		}
 
 		if (infoUser != null) {

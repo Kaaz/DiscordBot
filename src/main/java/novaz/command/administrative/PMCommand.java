@@ -3,7 +3,7 @@ package novaz.command.administrative;
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
 import novaz.main.NovaBot;
-import novaz.util.Misc;
+import novaz.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -42,8 +42,8 @@ public class PMCommand extends AbstractCommand {
 			return TextHandler.get("command_no_permission");
 		}
 		if (args.length > 1) {
-			if (Misc.isUserMention(args[0])) {
-				IUser targetUser = bot.instance.getUserByID(Misc.mentionToId(args[0]));
+			if (DisUtil.isUserMention(args[0])) {
+				IUser targetUser = bot.instance.getUserByID(DisUtil.mentionToId(args[0]));
 				if (targetUser != null) {
 					String message = "";
 					for (int i = 1; i < args.length; i++) {

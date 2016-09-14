@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Misc {
-	private static final Pattern mentionUserPattern = Pattern.compile("<@!?([0-9]{4,})>");
 	private static final String[] numberToEmote = {
 			":zero:",
 			":one:",
@@ -30,24 +29,6 @@ public class Misc {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Checks if the string contains a mention for a user
-	 *
-	 * @return found a mention
-	 */
-	public static boolean isUserMention(String input) {
-		return mentionUserPattern.matcher(input).matches();
-	}
-
-	public static String mentionToId(String mention) {
-		String id = "";
-		Matcher matcher = mentionUserPattern.matcher(mention);
-		if (matcher.find()) {
-			id = matcher.group(1);
-		}
-		return id;
 	}
 
 	public static String numberToEmote(int number) {
