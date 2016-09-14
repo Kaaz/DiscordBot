@@ -2,6 +2,7 @@ package novaz.handler;
 
 import novaz.core.Logger;
 import novaz.main.Config;
+import novaz.main.Launcher;
 import novaz.main.NovaBot;
 import novaz.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
@@ -10,11 +11,16 @@ import sx.blah.discord.handle.obj.IPrivateChannel;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.*;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 public class OutgoingContentHandler {
 	private final NovaBot bot;
+	private final static long DELETE_INTERVAL = 500L;
+	private final MessageDeleter deleteThread;
 
 	public OutgoingContentHandler(NovaBot b) {
 		bot = b;
+		deleteThread = new MessageDeleter();
 	}
 
 	/**
@@ -89,14 +95,7 @@ public class OutgoingContentHandler {
 	}
 
 	public void deleteMessage(IMessage message) {
-		RequestBuffer.request(() -> {
-			try {
-				message.delete();
-			} catch (MissingPermissionsException | DiscordException e) {
-				e.printStackTrace();
-			}
-			return null;
-		});
+		deleteThread.offer(message);
 	}
 
 	public RequestBuffer.RequestFuture<IMessage> sendMessage(MessageBuilder builder) {
@@ -110,8 +109,55 @@ public class OutgoingContentHandler {
 			} catch (MissingPermissionsException e) {
 				Logger.fatal(e, "no permission");
 				e.printStackTrace();
+			} catch (RateLimitException e) {
+				System.out.println(e.getRetryDelay());
+				System.out.println(e.getMethod());
+				throw e;
 			}
 			return null;
 		});
+	}
+
+	/**
+	 * simple thread to delete messages, since it bugs out otherwise
+	 */
+	private class MessageDeleter extends Thread {
+		private LinkedBlockingQueue<IMessage> itemsToDelete = new LinkedBlockingQueue<>();
+		private volatile boolean processTerminated = false;
+
+		MessageDeleter() {
+			start();
+		}
+
+		public void run() {
+			try {
+				while (!Launcher.killAllThreads) {
+					final IMessage msgToDelete = itemsToDelete.take();
+					if (msgToDelete != null) {
+						RequestBuffer.request(() -> {
+							try {
+								msgToDelete.delete();
+								return true;
+							} catch (MissingPermissionsException | DiscordException e) {
+								System.out.println(e.getMessage());
+								e.printStackTrace();
+							}
+							return false;
+						});
+					} else {
+						System.out.println("MSG IS NULL");
+					}
+					Thread.sleep(DELETE_INTERVAL);
+				}
+			} catch (InterruptedException ignored) {
+			} finally {
+				processTerminated = true;
+			}
+		}
+
+		void offer(IMessage lm) {
+			if (processTerminated) return;
+			itemsToDelete.offer(lm);
+		}
 	}
 }

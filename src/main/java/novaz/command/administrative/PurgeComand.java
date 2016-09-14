@@ -3,11 +3,10 @@ package novaz.command.administrative;
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
 import novaz.main.NovaBot;
+import novaz.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
-
-import java.util.EnumSet;
 
 /**
  * !purge
@@ -36,7 +35,7 @@ public class PurgeComand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"purge       //deletes last 100 messages",
+				"purge       //deletes non-pinned messages",
 				"purge @user //deletes messages from user",
 				"purge nova  //deletes my messages :("
 		};
@@ -49,26 +48,36 @@ public class PurgeComand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		EnumSet<Permissions> permissions = channel.getModifiedPermissions(bot.instance.getOurUser());
-		if (args.length == 0) {
-			boolean hasManageMessages = permissions.contains(Permissions.MANAGE_MESSAGES);
-			channel.getMessages().stream().filter(msg -> !msg.isPinned()).forEach(
-					msg -> {
-						System.out.println(msg.getAuthor().getName() + ": " + msg.getContent());
-						if (hasManageMessages) {
-
-							bot.out.deleteMessage(msg);
-						} else {
-							if (msg.getAuthor().equals(bot.instance.getOurUser())) {
-								bot.out.deleteMessage(msg);
-							}
-						}
-					});
-			if (hasManageMessages) {
-				return TextHandler.get("command_purge_success");
+		boolean hasManageMessages = channel.getModifiedPermissions(bot.instance.getOurUser()).contains(Permissions.MANAGE_MESSAGES);
+		IUser toDeleteFrom = null;
+		boolean deleteAll = true;
+		if (args.length > 1) {
+			deleteAll = false;
+			if (DisUtil.isUserMention(args[0])) {
+				if (!hasManageMessages) {
+					return TextHandler.get("permission_missing_manage_messages");
+				}
+				toDeleteFrom = bot.instance.getUserByID(DisUtil.mentionToId(args[0]));
+			} else if (args[0].toLowerCase().equals("nova")) {
+				toDeleteFrom = bot.instance.getOurUser();
 			}
-			return TextHandler.get("permission_missing_manage_messages");
 		}
-		return TextHandler.get("command_invalid_use");
+		if (!bot.isOwner(channel, author) && !bot.instance.getOurUser().equals(author)) {
+			return TextHandler.get("command_invalid_use");
+		}
+		boolean finalDeleteAll = deleteAll;
+		IUser finalToDeleteFrom = toDeleteFrom;
+		channel.getMessages().stream().filter(msg -> !msg.isPinned()).forEach(
+				msg -> {
+					if (finalDeleteAll && hasManageMessages) {
+						bot.out.deleteMessage(msg);
+					} else if (!finalDeleteAll && finalToDeleteFrom != null && msg.getAuthor().equals(finalToDeleteFrom)) {
+						bot.out.deleteMessage(msg);
+					}
+				});
+		if (hasManageMessages) {
+			return TextHandler.get("command_purge_success");
+		}
+		return TextHandler.get("permission_missing_manage_messages");
 	}
 }
