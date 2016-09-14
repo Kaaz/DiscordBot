@@ -2,6 +2,7 @@ package novaz.db;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import novaz.exceptions.UnimplementedParameterException;
+import novaz.main.NovaBot;
 
 import java.sql.*;
 import java.util.Calendar;
@@ -34,7 +35,8 @@ public class MySQLAdapter {
 			dataSource.setCharacterEncoding("utf-8");
 			return dataSource.getConnection();
 		} catch (SQLException e) {
-			System.out.println("Can't connect to the database! Make sure the database settings are corrent and the database server is running");
+			NovaBot.LOGGER.error("Can't connect to the database! Make sure the database settings are corrent and the database server is running");
+			System.exit(-1);
 		}
 		return null;
 	}

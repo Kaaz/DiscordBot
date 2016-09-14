@@ -97,7 +97,7 @@ public class MusicPlayerHandler {
 	private String getRandomSong() {
 		ArrayList<String> potentialSongs = new ArrayList<>();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT filename " +
+				"SELECT filename, youtube_title, lastplaydate " +
 						"FROM playlist " +
 						"WHERE banned = 0 " +
 						"ORDER BY lastplaydate ASC " +

@@ -69,7 +69,7 @@ public class User extends AbstractCommand {
 				sb.append(":frame_photo: Avatar: ").append(infoUser.getAvatarURL());
 			}
 			if (infoUser.isBot()) {
-				sb.append("This user is a :robot:").append(Config.EOL);
+				sb.append(Config.EOL).append(":robot: This user is a bot (or pretends to be)");
 			}
 			return sb.toString();
 		}
