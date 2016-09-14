@@ -23,6 +23,7 @@ For more information about a command use **help \<commandname\>**
 Current list of all available commands. See below for a more detailed list
 
 * [8ball](#8ball)
+* [avatar](#avatar)
 * [bank](#bank)
 * [blackjack](#blackjack)
 * [catfact](#catfact)
@@ -39,10 +40,12 @@ Current list of all available commands. See below for a more detailed list
 * [leave](#leave)
 * [play](#play)
 * [playlist](#playlist)
+* [pm](#pm)
 * [poec](#poec)
 * [poeitem](#poeitem)
 * [poelab](#poelab)
 * [poll](#poll)
+* [purge](#purge)
 * [reload](#reload)
 * [say](#say)
 * [skip](#skip)
@@ -51,6 +54,7 @@ Current list of all available commands. See below for a more detailed list
 * [subscribe](#subscribe)
 * [system](#system)
 * [template](#template)
+* [test](#test)
 * [tic](#tic)
 * [user](#user)
 * [volume](#volume)
@@ -69,6 +73,10 @@ On the first run it will generate a config file and stop running. You'll need to
 ### 8ball
 
 See what the magic 8ball has to say
+
+### avatar
+
+Changes my avatar
 
 ### bank
 
@@ -100,16 +108,13 @@ Cat facts!
 
 ### cf
 
-Play a game of connect four with
+Deprecated, see game
 
 
 #### Usage
 
 ```php
-cf new      //starts a new session and wait for someone to join 
-cf cancel   //cancels the current session 
-cf @<user>  //requests to play a game with <user> 
-cf 1-7      //claims a tile  
+
 ```
 ### command
 
@@ -166,7 +171,7 @@ help <command>  //usage for that command
 ```
 ### info
 
-Shows info about the bot
+Shows some general information about me and my future plans.
 
 
 #### Usage
@@ -225,6 +230,16 @@ information about the playlist/history
 playlist          //playlist queue
 playlist history  //list of recently played songs
 ```
+### pm
+
+Send a message to user
+
+
+#### Usage
+
+```php
+pm <@user> <message..>
+```
 ### poec
 
 Returns a list of currency on your account
@@ -264,6 +279,18 @@ poll          //status of active poll
 poll create <question> ;<duration in minutes>;<option1>;<option2>;<etc.> 
               //creates a poll for the duration
 poll 1-9      //vote on the options
+```
+### purge
+
+purges messages
+
+
+#### Usage
+
+```php
+purge       //deletes non-pinned messages
+purge @user //deletes messages from user
+purge nova  //deletes my messages :(
 ```
 ### reload
 
@@ -337,18 +364,25 @@ template remove <keyphrase> <index>  //removes selected template for keyphrase
 template add <keyphrase> <text...>   //adds a template for keyphrase
 template toggledebug                 //shows keyphrases instead of text
 ```
-### tic
+### test
 
-Play a game of tic tac toe with someone
+no one truly knows
 
 
 #### Usage
 
 ```php
-tic new      //starts a new session and wait for someone to join 
-tic cancel   //cancels the current session 
-tic @<user>  //requests to play a game with <user> 
-tic 1-9      //claims the tile  
+lorem ipsum dolar sit amet
+```
+### tic
+
+Deprecated, see game
+
+
+#### Usage
+
+```php
+
 ```
 ### user
 
