@@ -1,6 +1,7 @@
 package novaz.service;
 
 import novaz.core.AbstractService;
+import novaz.handler.TextHandler;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -41,8 +42,9 @@ public class BotInformationService extends AbstractService {
 		IUser me = bot.instance.getOurUser();
 		for (IChannel channel : subscribedChannels) {
 			bot.commandHandler.getCommand("purge").execute(new String[]{}, channel, me);
-			bot.out.sendMessage(channel,bot.commandHandler.getCommand("info").execute(new String[]{}, channel, me));
-			bot.out.sendMessage(channel,bot.commandHandler.getCommand("help").execute(new String[]{}, channel, me));
+			bot.out.sendMessage(channel, TextHandler.get("bot_service_information_display_title"));
+			bot.out.sendMessage(channel, bot.commandHandler.getCommand("info").execute(new String[]{}, channel, me));
+			bot.out.sendMessage(channel, bot.commandHandler.getCommand("help").execute(new String[]{}, channel, me));
 		}
 	}
 

@@ -33,6 +33,8 @@ public class PostData {
 	public String post_hint;
 	@Expose
 	public ImagePreview preview;
+	@Expose
+	public boolean is_self;
 
 	@Expose
 	public String subreddit;

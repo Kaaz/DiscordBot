@@ -26,6 +26,16 @@ public class RedditScraper {
 		return new ArrayList<>();
 	}
 
+	public static List<Post> getDailyTop(String subreddit) {
+
+		String response = HttpHelper.doRequest(RedditConstants.URL + RedditConstants.SUBREDDIT_INDICATOR + subreddit + "/top.json?sort=top&t=day");
+		InitialData listing = gson.fromJson(response, InitialData.class);
+		if (listing.data != null && listing.data.children != null) {
+			return listing.data.children;
+		}
+		return new ArrayList<>();
+	}
+
 	public static List<Comment> getComments(String id) {
 		String response = HttpHelper.doRequest(RedditConstants.URL + "comments/" + id + ".json");
 		List<InitialDataComment> initialData = gson.fromJson(response, new TypeToken<ArrayList<InitialDataComment>>() {

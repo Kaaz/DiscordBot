@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Random;
 
 /**
  * !joke
@@ -50,7 +51,12 @@ public class Joke extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		IMessage msg = bot.out.sendMessage(channel, TextHandler.get("command_joke_wait"));
-		String joketxt = getJokeFromWeb(author.getName());
+		String joketxt = "";
+		if (new Random().nextInt(100) < 80) {
+			joketxt = bot.commandHandler.getCommand("r").execute(new String[]{"jokes"}, channel, author);
+		} else {
+			joketxt = getJokeFromWeb(author.getName());
+		}
 		try {
 			msg.delete();
 		} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
