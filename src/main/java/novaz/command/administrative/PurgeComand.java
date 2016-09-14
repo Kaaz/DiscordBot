@@ -51,7 +51,7 @@ public class PurgeComand extends AbstractCommand {
 		boolean hasManageMessages = channel.getModifiedPermissions(bot.instance.getOurUser()).contains(Permissions.MANAGE_MESSAGES);
 		IUser toDeleteFrom = null;
 		boolean deleteAll = true;
-		if (args.length > 1) {
+		if (args.length >= 1) {
 			deleteAll = false;
 			if (DisUtil.isUserMention(args[0])) {
 				if (!hasManageMessages) {
@@ -69,7 +69,7 @@ public class PurgeComand extends AbstractCommand {
 		IUser finalToDeleteFrom = toDeleteFrom;
 		channel.getMessages().stream().filter(msg -> !msg.isPinned()).forEach(
 				msg -> {
-					if (finalDeleteAll && hasManageMessages) {
+					if (finalDeleteAll && (hasManageMessages || msg.getAuthor().equals(bot.instance.getOurUser()))) {
 						bot.out.deleteMessage(msg);
 					} else if (!finalDeleteAll && finalToDeleteFrom != null && msg.getAuthor().equals(finalToDeleteFrom)) {
 						bot.out.deleteMessage(msg);

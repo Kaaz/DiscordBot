@@ -72,7 +72,6 @@ public class RedditCommand extends AbstractCommand {
 			if (post.data.domain.equals("imgur.com")) {
 				break;
 			}
-
 		} while (dailyTop.size() > 0);
 		if (post.data.is_self) {
 			return ":newspaper:" + Config.EOL + post.data.getTitle() + Config.EOL + post.data.getSelftext();
