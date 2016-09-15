@@ -47,7 +47,9 @@ public class ReadmeHelper {
 		Collections.sort(sortedCommandList);
 		for (String commandName : sortedCommandList) {
 			AbstractCommand command = commandHandler.getCommand(commandName);
-			s += "* [" + command.getCommand() + "](#" + command.getCommand() + ")" + Config.EOL;
+			if (command.isListed() && command.isEnabled()) {
+				s += "* [" + command.getCommand() + "](#" + command.getCommand() + ")" + Config.EOL;
+			}
 		}
 		return s;
 	}
@@ -61,6 +63,9 @@ public class ReadmeHelper {
 		Collections.sort(sortedCommandList);
 		for (String commandName : sortedCommandList) {
 			AbstractCommand command = commandHandler.getCommand(commandName);
+			if (!command.isEnabled() || !command.isListed()) {
+				continue;
+			}
 			text += "### " + command.getCommand() + Config.EOL + Config.EOL;
 			text += command.getDescription() + Config.EOL + Config.EOL;
 			if (command.getUsage().length > 0) {

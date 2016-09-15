@@ -24,10 +24,8 @@ Current list of all available commands. See below for a more detailed list
 
 * [8ball](#8ball)
 * [avatar](#avatar)
-* [bank](#bank)
 * [blackjack](#blackjack)
 * [catfact](#catfact)
-* [cf](#cf)
 * [command](#command)
 * [config](#config)
 * [current](#current)
@@ -48,6 +46,8 @@ Current list of all available commands. See below for a more detailed list
 * [purge](#purge)
 * [r](#r)
 * [reload](#reload)
+* [role](#role)
+* [rotate](#rotate)
 * [say](#say)
 * [skip](#skip)
 * [slot](#slot)
@@ -55,8 +55,6 @@ Current list of all available commands. See below for a more detailed list
 * [subscribe](#subscribe)
 * [system](#system)
 * [template](#template)
-* [test](#test)
-* [tic](#tic)
 * [user](#user)
 * [volume](#volume)
 
@@ -79,18 +77,6 @@ See what the magic 8ball has to say
 
 Changes my avatar
 
-### bank
-
-For all your banking needs
-
-
-#### Usage
-
-```php
-bank                       //shows current balance
-bank history               //shows last transactions
-bank donate @user <amount> //donates <amount> to @user 
-```
 ### blackjack
 
 play a game of blackjack!
@@ -107,16 +93,6 @@ blackjack stand  //stands
 
 Cat facts!
 
-### cf
-
-Deprecated, see game
-
-
-#### Usage
-
-```php
-
-```
 ### command
 
 Add and remove custom commands
@@ -307,6 +283,29 @@ r <subreddit>
 
 reloads the configuration
 
+### role
+
+Role
+
+
+#### Usage
+
+```php
+role                     //lists roles
+role list                //lists roles
+role add @user <role>    //adds role to user
+role remove @user <role> //remove role from user
+```
+### rotate
+
+Rotate text!
+
+
+#### Usage
+
+```php
+rotate <text..> 
+```
 ### say
 
 repeats you
@@ -374,26 +373,6 @@ template list <keyphrase>            //lists all options for keyphrase
 template remove <keyphrase> <index>  //removes selected template for keyphrase
 template add <keyphrase> <text...>   //adds a template for keyphrase
 template toggledebug                 //shows keyphrases instead of text
-```
-### test
-
-no one truly knows
-
-
-#### Usage
-
-```php
-lorem ipsum dolar sit amet
-```
-### tic
-
-Deprecated, see game
-
-
-#### Usage
-
-```php
-
 ```
 ### user
 
