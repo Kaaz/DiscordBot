@@ -41,10 +41,10 @@ public class BotInformationService extends AbstractService {
 		List<IChannel> subscribedChannels = getSubscribedChannels();
 		IUser me = bot.instance.getOurUser();
 		for (IChannel channel : subscribedChannels) {
-			bot.commandHandler.getCommand("purge").execute(new String[]{}, channel, me);
+			bot.commands.getCommand("purge").execute(new String[]{}, channel, me);
 			bot.out.sendMessage(channel, TextHandler.get("bot_service_information_display_title"));
-			bot.out.sendMessage(channel, bot.commandHandler.getCommand("info").execute(new String[]{}, channel, me));
-			bot.out.sendMessage(channel, bot.commandHandler.getCommand("help").execute(new String[]{}, channel, me));
+			bot.out.sendMessage(channel, bot.commands.getCommand("info").execute(new String[]{}, channel, me));
+			bot.out.sendMessage(channel, bot.commands.getCommand("help").execute(new String[]{}, channel, me));
 		}
 	}
 

@@ -51,7 +51,7 @@ public class Help extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		String CommandPrefix = GuildSettings.getFor(channel, SettingCommandPrefix.class);
 		if (args.length > 0) {
-			AbstractCommand c = bot.commandHandler.getCommand(CommandHandler.filterPrefix(args[0], channel));
+			AbstractCommand c = bot.commands.getCommand(CommandHandler.filterPrefix(args[0], channel));
 			if (c != null) {
 				String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + Config.EOL;
 				ret += ":keyboard: **command:** " + Config.EOL +
@@ -71,7 +71,7 @@ public class Help extends AbstractCommand {
 		} else {
 			String ret = "I know the following commands: " + Config.EOL + Config.EOL;
 			HashMap<CommandCategory, ArrayList<String>> commandList = new HashMap<>();
-			AbstractCommand[] commandObjects = bot.commandHandler.getCommandObjects();
+			AbstractCommand[] commandObjects = bot.commands.getCommandObjects();
 			for (AbstractCommand command : commandObjects) {
 				if (!command.isListed() || !command.isEnabled()) {
 					continue;

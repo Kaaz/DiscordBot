@@ -53,7 +53,7 @@ public class Joke extends AbstractCommand {
 		IMessage msg = bot.out.sendMessage(channel, TextHandler.get("command_joke_wait"));
 		String joketxt = "";
 		if (new Random().nextInt(100) < 80) {
-			joketxt = bot.commandHandler.getCommand("r").execute(new String[]{"jokes"}, channel, author);
+			joketxt = bot.commands.getCommand("r").execute(new String[]{"jokes"}, channel, author);
 		} else {
 			joketxt = getJokeFromWeb(author.getName());
 		}

@@ -86,7 +86,7 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 		}
 		return "What am I? *" + response + "* " + Config.EOL +
 				"Currently active on " + bot.instance.getGuilds().size() + " guilds and the last time I restarted was  " + onlineFor + "." + Config.EOL +
-				"There are " + bot.commandHandler.getCommands().length + " commands I can perform type **" + CommandHandler.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
+				"There are " + bot.commands.getCommands().length + " commands I can perform type **" + CommandHandler.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
 				"If I can't help you out, you can always try to poke __" + user.getName() + "#" + user.getDiscriminator() + "__";
 	}
 

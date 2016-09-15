@@ -30,7 +30,7 @@ public class NovaBot {
 
 	public final long startupTimeStamp;
 	public IDiscordClient instance;
-	public CommandHandler commandHandler;
+	public CommandHandler commands;
 	public Timer timer = new Timer();
 	public String mentionMe;
 	public ChatBotHandler chatBotHandler = null;
@@ -102,6 +102,11 @@ public class NovaBot {
 		return defaultChannels.get(guild);
 	}
 
+	/**
+	 * Bot will start working once its marked ready
+	 *
+	 * @param ready ready to get started
+	 */
 	public void markReady(boolean ready) {
 		setUserName(Config.BOT_NAME);
 		loadConfiguration();
@@ -114,7 +119,7 @@ public class NovaBot {
 	}
 
 	public void loadConfiguration() {
-		commandHandler.load();
+		commands.load();
 		TextHandler.getInstance().load();
 		defaultChannels = new ConcurrentHashMap<>();
 		chatBotHandler = new ChatBotHandler();
@@ -137,16 +142,16 @@ public class NovaBot {
 
 	public void addCustomCommand(IGuild server, String command, String output) {
 		OServer serv = TServers.findBy(server.getID());
-		commandHandler.addCustomCommand(command, output);
+		commands.addCustomCommand(command, output);
 	}
 
 	public void removeCustomCommand(IGuild server, String command) {
 		OServer serv = TServers.findBy(server.getID());
-		commandHandler.removeCustomCommand(command);
+		commands.removeCustomCommand(command);
 	}
 
 	private void registerHandlers() {
-		commandHandler = new CommandHandler(this);
+		commands = new CommandHandler(this);
 	}
 
 	public String getUserName() {
@@ -186,8 +191,8 @@ public class NovaBot {
 
 
 	public void handlePrivateMessage(IPrivateChannel channel, IUser author, IMessage message) {
-		if (commandHandler.isCommand(channel, message.getContent())) {
-			commandHandler.process(channel, author, message.getContent());
+		if (commands.isCommand(channel, message.getContent())) {
+			commands.process(channel, author, message.getContent());
 		} else {
 			this.out.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
 		}
@@ -195,6 +200,9 @@ public class NovaBot {
 
 	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage message) {
 		if (!isReady || author.isBot()) {
+			if (author.getID().equals("214787394757591042")) {
+				out.sendMessage(channel, "?hamsterwheel");
+			}
 			return;
 		}
 
@@ -205,8 +213,8 @@ public class NovaBot {
 		}
 		if (gameHandler.isGameInput(channel, author, message.getContent().toLowerCase())) {
 			gameHandler.execute(author, channel, message.getContent());
-		} else if (commandHandler.isCommand(channel, message.getContent())) {
-			commandHandler.process(channel, author, message.getContent());
+		} else if (commands.isCommand(channel, message.getContent())) {
+			commands.process(channel, author, message.getContent());
 		} else if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
 				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class)) &&
 				channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {

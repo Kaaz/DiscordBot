@@ -18,14 +18,24 @@ import sx.blah.discord.util.RateLimitException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * !r
  * show something from reddit :)
  */
 public class RedditCommand extends AbstractCommand {
+
+	private static final Set<String> whitelistedDomains = new HashSet<String>(Arrays.asList(new String[]{
+			"imgur.com",
+			"i.imgur.com",
+			"i.redd.it",
+			"pbs.twimg.com",
+			"gfycat.com",
+			"file1.answcdn.com",
+			"i.reddituploads.com"
+	}));
+
 	public RedditCommand(NovaBot b) {
 		super(b);
 	}
@@ -69,7 +79,7 @@ public class RedditCommand extends AbstractCommand {
 			if (post.data.is_self) {
 				break;
 			}
-			if (post.data.domain.equals("imgur.com")) {
+			if (whitelistedDomains.contains(post.data.domain)) {
 				break;
 			}
 		} while (dailyTop.size() > 0);

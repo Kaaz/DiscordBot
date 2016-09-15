@@ -110,8 +110,7 @@ public class RotateCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		String totalString = "";
-		List<String> inputArray = new ArrayList<String>();
+		List<String> inputArray = new ArrayList<>();
 		String output = "";
 		for (String arg : args) {
 			inputArray.add(" ");
