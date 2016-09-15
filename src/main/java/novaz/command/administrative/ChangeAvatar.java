@@ -10,7 +10,7 @@ import sx.blah.discord.util.RateLimitException;
 
 /**
  * !avatar
- * reloads config
+ * manage avatar
  */
 public class ChangeAvatar extends AbstractCommand {
 	public ChangeAvatar(NovaBot b) {

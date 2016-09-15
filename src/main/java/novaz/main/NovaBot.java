@@ -200,9 +200,6 @@ public class NovaBot {
 
 	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage message) {
 		if (!isReady || author.isBot()) {
-			if (author.getID().equals("214787394757591042")) {
-				out.sendMessage(channel, "?hamsterwheel");
-			}
 			return;
 		}
 
