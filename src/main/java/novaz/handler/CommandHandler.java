@@ -241,6 +241,15 @@ public class CommandHandler {
 		return commands.keySet().toArray(new String[commands.keySet().size()]);
 	}
 
+	/**
+	 * Lists the active custom commands
+	 *
+	 * @return list of code-commands
+	 */
+	public String[] getCustomCommands() {
+		return customCommands.keySet().toArray(new String[customCommands.keySet().size()]);
+	}
+
 	public AbstractCommand[] getCommandObjects() {
 		return commands.values().toArray(new AbstractCommand[commands.values().size()]);
 	}

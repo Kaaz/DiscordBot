@@ -3,7 +3,9 @@ package novaz.command.administrative;
 import novaz.command.CommandVisibility;
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
+import novaz.main.Config;
 import novaz.main.NovaBot;
+import novaz.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -33,7 +35,10 @@ public class CustomCommand extends AbstractCommand {
 	public String[] getUsage() {
 		return new String[]{
 				"command add <command> <action>  //adds a command",
-				"command delete <command>        //deletes a command"};
+				"command delete <command>        //deletes a command",
+				"command list                    //shows a list of existing custom commands"
+
+		};
 	}
 
 	@Override
@@ -63,6 +68,8 @@ public class CustomCommand extends AbstractCommand {
 				bot.removeCustomCommand(channel.getGuild(), args[1]);
 				return "Removed !" + args[1];
 			}
+		} else if (args.length > 0 && args[0].equalsIgnoreCase("list")) {
+			return "All custom commands: " + Config.EOL + Misc.makeTable(Arrays.asList(bot.commands.getCustomCommands()));
 		} else {
 			return getDescription();
 		}
