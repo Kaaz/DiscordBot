@@ -1,5 +1,6 @@
 package novaz.command.administrative;
 
+import novaz.command.CommandVisibility;
 import novaz.core.AbstractCommand;
 import novaz.guildsettings.DefaultGuildSettings;
 import novaz.handler.GuildSettings;
@@ -48,8 +49,8 @@ public class SetConfig extends AbstractCommand {
 	}
 
 	@Override
-	public boolean isAllowedInPrivateChannel() {
-		return false;
+	public CommandVisibility getVisibility() {
+		return CommandVisibility.PUBLIC;
 	}
 
 	@Override

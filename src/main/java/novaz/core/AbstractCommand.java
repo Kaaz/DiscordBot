@@ -1,6 +1,7 @@
 package novaz.core;
 
 import novaz.command.CommandCategory;
+import novaz.command.CommandVisibility;
 import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -56,18 +57,18 @@ public abstract class AbstractCommand {
 	}
 
 	/**
-	 * if the command can be used in a private messages
+	 * where can the command be used?
 	 *
-	 * @return can be used in private?
+	 * @return private, public, both
 	 */
-	public boolean isAllowedInPrivateChannel() {
-		return true;
+	public CommandVisibility getVisibility() {
+		return CommandVisibility.BOTH;
 	}
 
 	/**
 	 * is a command enabled? it is by default
 	 *
-	 * @return wheneter the command is enabled
+	 * @return command is enabled?
 	 */
 	public boolean isEnabled() {
 		return true;

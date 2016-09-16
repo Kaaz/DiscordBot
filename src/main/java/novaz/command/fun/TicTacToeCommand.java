@@ -1,5 +1,6 @@
 package novaz.command.fun;
 
+import novaz.command.CommandVisibility;
 import novaz.core.AbstractCommand;
 import novaz.handler.CommandHandler;
 import novaz.main.NovaBot;
@@ -33,8 +34,8 @@ public class TicTacToeCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean isAllowedInPrivateChannel() {
-		return false;
+	public CommandVisibility getVisibility() {
+		return CommandVisibility.PUBLIC;
 	}
 
 	@Override

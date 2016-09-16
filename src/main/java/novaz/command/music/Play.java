@@ -2,6 +2,7 @@ package novaz.command.music;
 
 import com.google.common.io.Files;
 import com.google.common.primitives.Ints;
+import novaz.command.CommandVisibility;
 import novaz.core.AbstractCommand;
 import novaz.db.WebDb;
 import novaz.db.model.OMusic;
@@ -57,8 +58,8 @@ public class Play extends AbstractCommand {
 	}
 
 	@Override
-	public boolean isAllowedInPrivateChannel() {
-		return false;
+	public CommandVisibility getVisibility() {
+		return CommandVisibility.PUBLIC;
 	}
 
 	@Override

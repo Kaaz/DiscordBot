@@ -1,5 +1,6 @@
 package novaz.command.administrative;
 
+import novaz.command.CommandVisibility;
 import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
 import novaz.main.NovaBot;
@@ -41,8 +42,8 @@ public class CustomCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean isAllowedInPrivateChannel() {
-		return false;
+	public CommandVisibility getVisibility() {
+		return CommandVisibility.PUBLIC;
 	}
 
 	@Override

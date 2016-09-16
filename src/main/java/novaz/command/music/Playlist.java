@@ -1,5 +1,6 @@
 package novaz.command.music;
 
+import novaz.command.CommandVisibility;
 import novaz.core.AbstractCommand;
 import novaz.db.model.OMusic;
 import novaz.db.table.TMusic;
@@ -48,8 +49,8 @@ public class Playlist extends AbstractCommand {
 	}
 
 	@Override
-	public boolean isAllowedInPrivateChannel() {
-		return false;
+	public CommandVisibility getVisibility() {
+		return CommandVisibility.PUBLIC;
 	}
 
 	@Override

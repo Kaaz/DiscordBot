@@ -2,6 +2,7 @@ package novaz.handler;
 
 import com.vdurmont.emoji.EmojiParser;
 import novaz.command.CommandCategory;
+import novaz.command.CommandVisibility;
 import novaz.command.ICommandCooldown;
 import novaz.core.AbstractCommand;
 import novaz.db.WebDb;
@@ -18,6 +19,7 @@ import novaz.util.TimeUtil;
 import org.reflections.Reflections;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IPrivateChannel;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
@@ -106,7 +108,7 @@ public class CommandHandler {
 				command = commandsAlias.get(input[0]);
 			}
 			long cooldown = getCommandCooldown(command, author, channel);
-			if ((!channel.isPrivate() || (channel.isPrivate() && command.isAllowedInPrivateChannel())) && cooldown <= 0) {
+			if (hasRightVisibility(channel, command.getVisibility()) && cooldown <= 0) {
 				String commandOutput = command.execute(args, channel, author);
 				if (!commandOutput.isEmpty()) {
 					mymsg = bot.out.sendMessage(channel, commandOutput);
@@ -122,7 +124,7 @@ public class CommandHandler {
 				}
 			} else if (cooldown > 0) {
 				mymsg = bot.out.sendMessage(channel, String.format(TextHandler.get("command_on_cooldown"), TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false)));
-			} else if (!command.isAllowedInPrivateChannel()) {
+			} else if (!hasRightVisibility(channel, command.getVisibility())) {
 				mymsg = bot.out.sendMessage(channel, TextHandler.get("command_not_for_private"));
 			}
 		} else if (customCommands.containsKey(input[0])) {
@@ -145,6 +147,13 @@ public class CommandHandler {
 				}
 			}, Config.DELETE_MESSAGES_AFTER);
 		}
+	}
+
+	public boolean hasRightVisibility(IChannel channel, CommandVisibility visibility) {
+		if (channel instanceof IPrivateChannel) {
+			return visibility.isForPrivate();
+		}
+		return visibility.isForPublic();
 	}
 
 	/**

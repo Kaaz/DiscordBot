@@ -1,5 +1,6 @@
 package novaz.command.administrative;
 
+import novaz.command.CommandVisibility;
 import novaz.core.AbstractCommand;
 import novaz.db.model.OService;
 import novaz.db.model.OSubscription;
@@ -55,8 +56,8 @@ public class Subscribe extends AbstractCommand {
 	}
 
 	@Override
-	public boolean isAllowedInPrivateChannel() {
-		return false;
+	public CommandVisibility getVisibility() {
+		return CommandVisibility.PUBLIC;
 	}
 
 	@Override
