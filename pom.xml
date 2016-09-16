@@ -29,13 +29,13 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>novaz.main.NovaBot</mainClass>
+							<mainClass>novaz.main.Launcher</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
-					<finalName>${project.artifactId}-${project.version}
+					<finalName>${project.artifactId}-${project.version}_full
 					</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
