@@ -153,7 +153,7 @@ public class CommandHandler {
 		}
 	}
 
-	public boolean hasRightVisibility(IChannel channel, CommandVisibility visibility) {
+	private boolean hasRightVisibility(IChannel channel, CommandVisibility visibility) {
 		if (channel instanceof IPrivateChannel) {
 			return visibility.isForPrivate();
 		}
