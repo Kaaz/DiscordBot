@@ -2,6 +2,7 @@ package novaz.core;
 
 import novaz.db.model.OChannel;
 import novaz.db.model.OServiceVariable;
+import novaz.db.model.OSubscription;
 import novaz.db.model.QActiveSubscriptions;
 import novaz.db.table.TChannels;
 import novaz.db.table.TServiceVariables;
@@ -38,7 +39,13 @@ public abstract class AbstractService {
 			if (botChannel != null) {
 				channels.add(botChannel);
 			} else {
-				bot.out.sendErrorToMe(new Exception("Subscription channel not found"), "channelID", databaseChannel.discord_id, "subscription", getIdentifier(), bot);
+				OSubscription subscription = TSubscriptions.findBy(databaseChannel.server_id, databaseChannel.id, TServices.getCachedId(getIdentifier()));
+				subscription.subscribed = 0;
+				TSubscriptions.insertOrUpdate(subscription);
+				bot.out.sendErrorToMe(new Exception("Subscription channel not found"),
+						"result", "Now unsubscribed!",
+						"channelID", databaseChannel.discord_id,
+						"subscription", getIdentifier(), bot);
 			}
 		}
 		return channels;
