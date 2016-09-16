@@ -125,7 +125,11 @@ public class CommandHandler {
 			} else if (cooldown > 0) {
 				mymsg = bot.out.sendMessage(channel, String.format(TextHandler.get("command_on_cooldown"), TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false)));
 			} else if (!hasRightVisibility(channel, command.getVisibility())) {
-				mymsg = bot.out.sendMessage(channel, TextHandler.get("command_not_for_private"));
+				if (channel instanceof IPrivateChannel) {
+					mymsg = bot.out.sendMessage(channel, TextHandler.get("command_not_for_private"));
+				} else {
+					mymsg = bot.out.sendMessage(channel, TextHandler.get("command_not_for_public"));
+				}
 			}
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.out.sendMessage(channel, customCommands.get(input[0]));
