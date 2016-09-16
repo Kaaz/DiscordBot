@@ -13,6 +13,7 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -56,6 +57,10 @@ public class Help extends AbstractCommand {
 				String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + Config.EOL;
 				ret += ":keyboard: **command:** " + Config.EOL +
 						Misc.makeTable(CommandPrefix + c.getCommand());
+				if (c.getAliases().length > 0) {
+					ret += "Aliases: " + Config.EOL +
+							Misc.makeTable(Arrays.asList(c.getAliases()));
+				}
 				ret += ":notepad_spiral: **Description:** " + Config.EOL +
 						Misc.makeTable(c.getDescription());
 				if (c.getUsage().length > 0) {
