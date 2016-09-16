@@ -36,7 +36,8 @@ import java.util.TimerTask;
 public class CommandHandler {
 
 	private NovaBot bot;
-	private HashMap<String, AbstractCommand> chatCommands;
+	private HashMap<String, AbstractCommand> commands;
+	private HashMap<String, AbstractCommand> commandsAlias;
 	private HashMap<String, String> customCommands;
 
 	public CommandHandler() {
@@ -97,8 +98,13 @@ public class CommandHandler {
 		String args[] = new String[input.length - 1];
 		input[0] = filterPrefix(input[0], channel).toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
-		if (chatCommands.containsKey(input[0])) {
-			AbstractCommand command = chatCommands.get(input[0]);
+		if (commands.containsKey(input[0]) || commandsAlias.containsKey(input[0])) {
+			AbstractCommand command;
+			if (commands.containsKey(input[0])) {
+				command = commands.get(input[0]);
+			} else {
+				command = commandsAlias.get(input[0]);
+			}
 			long cooldown = getCommandCooldown(command, author, channel);
 			if ((!channel.isPrivate() || (channel.isPrivate() && command.isAllowedInPrivateChannel())) && cooldown <= 0) {
 				String commandOutput = command.execute(args, channel, author);
@@ -207,8 +213,8 @@ public class CommandHandler {
 		if (key.startsWith(Config.BOT_COMMAND_PREFIX)) {
 			key = key.substring(Config.BOT_COMMAND_PREFIX.length());
 		}
-		if (chatCommands.containsKey(key)) {
-			return chatCommands.get(key);
+		if (commands.containsKey(key)) {
+			return commands.get(key);
 		}
 		return null;
 	}
@@ -219,15 +225,16 @@ public class CommandHandler {
 	 * @return list of code-commands
 	 */
 	public String[] getCommands() {
-		return chatCommands.keySet().toArray(new String[chatCommands.keySet().size()]);
+		return commands.keySet().toArray(new String[commands.keySet().size()]);
 	}
 
 	public AbstractCommand[] getCommandObjects() {
-		return chatCommands.values().toArray(new AbstractCommand[chatCommands.values().size()]);
+		return commands.values().toArray(new AbstractCommand[commands.values().size()]);
 	}
 
 	public void load() {
 		loadCommands();
+		loadAliases();
 		loadCustomCommands();
 	}
 
@@ -265,7 +272,7 @@ public class CommandHandler {
 	 * initializes the commands
 	 */
 	private void loadCommands() {
-		chatCommands = new HashMap<>();
+		commands = new HashMap<>();
 		Reflections reflections = new Reflections("novaz.command");
 		Set<Class<? extends AbstractCommand>> classes = reflections.getSubTypesOf(AbstractCommand.class);
 		for (Class<? extends AbstractCommand> s : classes) {
@@ -286,11 +293,28 @@ public class CommandHandler {
 					continue;
 				}
 
-				if (!chatCommands.containsKey(c.getCommand())) {
-					chatCommands.put(c.getCommand(), c);
+				if (!commands.containsKey(c.getCommand())) {
+					commands.put(c.getCommand(), c);
 				}
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Loads aliases for the commands
+	 */
+	private void loadAliases() {
+		commandsAlias = new HashMap<>();
+		for (AbstractCommand command : commands.values()) {
+			for (String alias : command.getAliases()) {
+				if (!commandsAlias.containsKey(alias)) {
+					commandsAlias.put(alias, command);
+				} else {
+					NovaBot.LOGGER.warn("Duplicate alias found! The commands `%s` and `%s` use the alias `%s`",
+							command.getCommand(), commandsAlias.get(alias).getCommand(), alias);
+				}
 			}
 		}
 	}
@@ -302,7 +326,7 @@ public class CommandHandler {
 		customCommands = new HashMap<>();
 		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands ")) {
 			while (r != null && r.next()) {
-				if (!chatCommands.containsKey(r.getString("input")) && !customCommands.containsKey(r.getString("input"))) {
+				if (!commands.containsKey(r.getString("input")) && !customCommands.containsKey(r.getString("input"))) {
 					customCommands.put(r.getString("input"), r.getString("output"));
 				}
 			}
