@@ -80,12 +80,7 @@ public class CommandHandler {
 		input[0] = DisUtil.filterPrefix(input[0], channel).toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
 		if (commands.containsKey(input[0]) || commandsAlias.containsKey(input[0])) {
-			AbstractCommand command;
-			if (commands.containsKey(input[0])) {
-				command = commands.get(input[0]);
-			} else {
-				command = commandsAlias.get(input[0]);
-			}
+			AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
 			long cooldown = getCommandCooldown(command, author, channel);
 			if (hasRightVisibility(channel, command.getVisibility()) && cooldown <= 0) {
 				String commandOutput = command.execute(args, channel, author);
