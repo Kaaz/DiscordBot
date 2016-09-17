@@ -80,7 +80,7 @@ public class DisUtil {
 	public static String filterPrefix(String command, IChannel channel) {
 		String prefix = getCommandPrefix(channel);
 		if (command.startsWith(prefix)) {
-			command = command.substring(prefix.length());
+			return command.substring(prefix.length());
 		}
 		return command;
 	}

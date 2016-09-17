@@ -155,7 +155,7 @@ public class OutgoingContentHandler {
 			}
 		}
 
-		void offer(IMessage lm) {
+		public void offer(IMessage lm) {
 			if (processTerminated) return;
 			itemsToDelete.offer(lm);
 		}

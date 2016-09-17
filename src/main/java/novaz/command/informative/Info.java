@@ -76,6 +76,8 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 					return "The following bugs are known:" + Config.EOL + getListFor(Config.TRELLO_LIST_BUGS, ":exclamation:");
 				case "progress":
 					return "The following items are being worked on:" + Config.EOL + getListFor(Config.TRELLO_LIST_IN_PROGRESS, ":construction:");
+				default:
+					break;
 			}
 		}
 		String onlineFor = TimeUtil.getRelativeTime(bot.startupTimeStamp, false);

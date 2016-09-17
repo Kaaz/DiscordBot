@@ -4,8 +4,6 @@ import com.google.common.base.Strings;
 import novaz.main.Config;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Misc {
 	private static final String[] numberToEmote = {
@@ -97,11 +95,11 @@ public class Misc {
 	public static String getDurationString(long seconds) {
 		long hours = seconds / 3600;
 		long minutes = (seconds % 3600) / 60;
-		seconds = seconds % 60;
+		long secs = seconds % 60;
 		if (hours > 0) {
-			return twoDigitString(hours) + ":" + twoDigitString(minutes) + ":" + twoDigitString(seconds);
+			return twoDigitString(hours) + ":" + twoDigitString(minutes) + ":" + twoDigitString(secs);
 		}
-		return twoDigitString(minutes) + ":" + twoDigitString(seconds);
+		return twoDigitString(minutes) + ":" + twoDigitString(secs);
 	}
 
 	public static String makeAsciiTable(List<String> headers, List<List<String>> table) {

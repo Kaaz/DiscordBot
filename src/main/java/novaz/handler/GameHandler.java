@@ -78,12 +78,14 @@ public class GameHandler {
 				leavePlayMode(player);
 				bot.out.sendMessage(channel, TextHandler.get("playmode_leaving_mode"));
 				return;
+			default:
+				break;
 		}
 		String[] args = message.split(" ");
 		String gameMessage = executeGameMove(args, player, channel);
 		if (isInPlayMode(player, channel)) {
 			gameMessage = "*note: " + TextHandler.get("playmode_in_mode_warning") + "*" + Config.EOL + gameMessage;
-		} else if ("".equals(message) || message.equals("help")) {
+		} else if ("".equals(message) || "help".equals(message)) {
 			gameMessage = showList(channel);
 		}
 		if (!gameMessage.isEmpty()) {
