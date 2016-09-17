@@ -76,6 +76,10 @@ public class Config {
 	@ConfigurationOption
 	public static boolean MODULE_POE_ENABLED = true;
 
+	//enable hearthstone globally
+	@ConfigurationOption
+	public static boolean MODULE_HEARTHSTONE_ENABLED = true;
+
 	//enable music globally
 	@ConfigurationOption
 	public static boolean MODULE_MUSIC_ENABLED = true;
