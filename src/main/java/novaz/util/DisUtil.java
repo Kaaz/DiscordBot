@@ -4,11 +4,15 @@ import novaz.guildsettings.DefaultGuildSettings;
 import novaz.guildsettings.defaults.SettingCommandPrefix;
 import novaz.handler.GuildSettings;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IRole;
+import sx.blah.discord.handle.obj.IUser;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Utilities for discord objects
@@ -92,5 +96,16 @@ public class DisUtil {
 			return DefaultGuildSettings.getDefault(SettingCommandPrefix.class);
 		}
 		return GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);
+	}
+
+	/**
+	 * Gets a list of users with a certain role within a guild
+	 *
+	 * @param guild guild to search in
+	 * @param role  the role to search for
+	 * @return list of user with specified role
+	 */
+	public static List<IUser> getUsersByRole(IGuild guild, IRole role) {
+		return guild.getUsers().stream().filter((users) -> users.getRolesForGuild(guild).contains(role)).collect(Collectors.toList());
 	}
 }

@@ -42,6 +42,7 @@ public class TicTile {
 			default:
 				this.player = -1;
 				state = TileState.FREE;
+				break;
 		}
 	}
 }

@@ -14,7 +14,7 @@ public class GithubConstants {
 	//username, repository
 	private static final String COMMIT_ENDPOINT = ENDPOINT + "repos/%s/%s/commits";
 
-	static String getCommitEndPoint(String user, String repository, long timestamp) {
+	public static String getCommitEndPoint(String user, String repository, long timestamp) {
 		if (timestamp <= 0L) {
 			return getCommitEndPoint(user, repository);
 		}

@@ -165,6 +165,7 @@ public class CommandHandler {
 					break;
 				default:
 					targetId = "";
+					break;
 			}
 			OCommandCooldown cooldown = TCommandCooldown.findBy(command.getCommand(), targetId, cd.getCooldownScale().getId());
 			if (cooldown.lastTime + cd.getCooldownDuration() <= now) {
@@ -184,9 +185,9 @@ public class CommandHandler {
 	private boolean shouldCleanUpMessages(IChannel channel) {
 		String cleanupMethod = GuildSettings.getFor(channel, SettingCleanupMessages.class);
 		String mychannel = GuildSettings.getFor(channel, SettingBotChannel.class);
-		if (cleanupMethod.equals("yes")) {
+		if ("yes".equals(cleanupMethod)) {
 			return true;
-		} else if (cleanupMethod.equals("nonstandard") && !channel.getName().equalsIgnoreCase(mychannel)) {
+		} else if ("nonstandard".equals(cleanupMethod) && !channel.getName().equalsIgnoreCase(mychannel)) {
 			return true;
 		}
 		return false;
@@ -307,8 +308,9 @@ public class CommandHandler {
 				return Config.MODULE_POE_ENABLED;
 			case HEARTHSTONE:
 				return Config.MODULE_HEARTHSTONE_ENABLED;
+			default:
+				return true;
 		}
-		return true;
 	}
 
 	/**

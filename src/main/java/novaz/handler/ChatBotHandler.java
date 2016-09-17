@@ -8,11 +8,8 @@ import com.google.code.chatterbotapi.ChatterBotType;
 import java.util.Locale;
 
 public class ChatBotHandler {
-	int failedAttempts = 0;
-	ChatterBotSession botsession = null;
-
-	public ChatBotHandler() {
-	}
+	private int failedAttempts = 0;
+	private ChatterBotSession botsession = null;
 
 	public ChatterBotSession getSession() throws Exception {
 		ChatterBotFactory factory = new ChatterBotFactory();
