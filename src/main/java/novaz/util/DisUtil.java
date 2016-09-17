@@ -1,5 +1,10 @@
 package novaz.util;
 
+import novaz.guildsettings.DefaultGuildSettings;
+import novaz.guildsettings.defaults.SettingCommandPrefix;
+import novaz.handler.GuildSettings;
+import sx.blah.discord.handle.obj.IChannel;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -61,4 +66,31 @@ public class DisUtil {
 		return list;
 	}
 
+	/**
+	 * Filters the command prefix from the string
+	 *
+	 * @param command the text to filter form
+	 * @param channel the channel where the text came from
+	 * @return text with the prefix filtered
+	 */
+	public static String filterPrefix(String command, IChannel channel) {
+		String prefix = getCommandPrefix(channel);
+		if (command.startsWith(prefix)) {
+			command = command.substring(prefix.length());
+		}
+		return command;
+	}
+
+	/**
+	 * gets the command prefix for specified channel
+	 *
+	 * @param channel channel to check the prefix for
+	 * @return the command prefix
+	 */
+	public static String getCommandPrefix(IChannel channel) {
+		if (channel == null || channel.isPrivate()) {
+			return DefaultGuildSettings.getDefault(SettingCommandPrefix.class);
+		}
+		return GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);
+	}
 }

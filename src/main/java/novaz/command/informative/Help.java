@@ -3,11 +3,11 @@ package novaz.command.informative;
 import novaz.command.CommandCategory;
 import novaz.core.AbstractCommand;
 import novaz.guildsettings.defaults.SettingCommandPrefix;
-import novaz.handler.CommandHandler;
 import novaz.handler.GuildSettings;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
+import novaz.util.DisUtil;
 import novaz.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -52,7 +52,7 @@ public class Help extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		String CommandPrefix = GuildSettings.getFor(channel, SettingCommandPrefix.class);
 		if (args.length > 0) {
-			AbstractCommand c = bot.commands.getCommand(CommandHandler.filterPrefix(args[0], channel));
+			AbstractCommand c = bot.commands.getCommand(DisUtil.filterPrefix(args[0], channel));
 			if (c != null) {
 				String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + Config.EOL;
 				ret += ":keyboard: **command:** " + Config.EOL +

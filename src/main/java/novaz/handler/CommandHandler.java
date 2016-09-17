@@ -11,10 +11,10 @@ import novaz.db.table.TCommandCooldown;
 import novaz.db.table.TCommandLog;
 import novaz.db.table.TServers;
 import novaz.db.table.TUser;
-import novaz.guildsettings.DefaultGuildSettings;
 import novaz.guildsettings.defaults.*;
 import novaz.main.Config;
 import novaz.main.NovaBot;
+import novaz.util.DisUtil;
 import novaz.util.TimeUtil;
 import org.reflections.Reflections;
 import sx.blah.discord.handle.obj.IChannel;
@@ -49,27 +49,6 @@ public class CommandHandler {
 		bot = b;
 	}
 
-	public static String filterPrefix(String command, IChannel channel) {
-		String prefix = getCommandPrefix(channel);
-		if (command.startsWith(prefix)) {
-			command = command.substring(prefix.length());
-		}
-		return command;
-	}
-
-	/**
-	 * gets the command prefix for specified channel
-	 *
-	 * @param channel channel to check the prefix for
-	 * @return the command prefix
-	 */
-	public static String getCommandPrefix(IChannel channel) {
-		if (channel == null || channel.isPrivate()) {
-			return DefaultGuildSettings.getDefault(SettingCommandPrefix.class);
-		}
-		return GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);
-	}
-
 	/**
 	 * checks if the the message in channel is a command
 	 *
@@ -78,7 +57,7 @@ public class CommandHandler {
 	 * @return whether or not the message is a command
 	 */
 	public boolean isCommand(IChannel channel, String msg) {
-		return msg.startsWith(getCommandPrefix(channel)) || msg.startsWith(bot.mentionMe);
+		return msg.startsWith(DisUtil.getCommandPrefix(channel)) || msg.startsWith(bot.mentionMe);
 	}
 
 	/**
@@ -98,7 +77,7 @@ public class CommandHandler {
 		}
 		String[] input = inputMessage.split(" ");
 		String args[] = new String[input.length - 1];
-		input[0] = filterPrefix(input[0], channel).toLowerCase();
+		input[0] = DisUtil.filterPrefix(input[0], channel).toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
 		if (commands.containsKey(input[0]) || commandsAlias.containsKey(input[0])) {
 			AbstractCommand command;

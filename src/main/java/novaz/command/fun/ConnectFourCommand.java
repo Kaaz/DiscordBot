@@ -2,8 +2,8 @@ package novaz.command.fun;
 
 import novaz.command.CommandVisibility;
 import novaz.core.AbstractCommand;
-import novaz.handler.CommandHandler;
 import novaz.main.NovaBot;
+import novaz.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -46,6 +46,6 @@ public class ConnectFourCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		return "The games have been moved to the `" + CommandHandler.getCommandPrefix(channel) + "game` command";
+		return "The games have been moved to the `" + DisUtil.getCommandPrefix(channel) + "game` command";
 	}
 }
