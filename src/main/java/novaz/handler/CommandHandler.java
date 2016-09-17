@@ -305,16 +305,9 @@ public class CommandHandler {
 				if (!c.isEnabled()) {
 					continue;
 				}
-				if (c.getCommandCategory().equals(CommandCategory.MUSIC) && !Config.MODULE_MUSIC_ENABLED) {
+				if (!isCommandCategoryEnabled(c.getCommandCategory())) {
 					continue;
 				}
-				if (c.getCommandCategory().equals(CommandCategory.ECONOMY) && !Config.MODULE_ECONOMY_ENABLED) {
-					continue;
-				}
-				if (c.getCommandCategory().equals(CommandCategory.POE) && !Config.MODULE_POE_ENABLED) {
-					continue;
-				}
-
 				if (!commands.containsKey(c.getCommand())) {
 					commands.put(c.getCommand(), c);
 				}
@@ -322,6 +315,26 @@ public class CommandHandler {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Checks if the command category is enabled or not
+	 *
+	 * @param category the category to check
+	 * @return enabled?
+	 */
+	private boolean isCommandCategoryEnabled(CommandCategory category) {
+		switch (category) {
+			case MUSIC:
+				return Config.MODULE_ECONOMY_ENABLED;
+			case ECONOMY:
+				return Config.MODULE_ECONOMY_ENABLED;
+			case POE:
+				return Config.MODULE_POE_ENABLED;
+			case HEARTHSTONE:
+				return Config.MODULE_HEARTHSTONE_ENABLED;
+		}
+		return true;
 	}
 
 	/**
