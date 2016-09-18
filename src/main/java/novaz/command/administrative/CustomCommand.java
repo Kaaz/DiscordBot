@@ -53,6 +53,9 @@ public class CustomCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
+		if (!bot.isOwner(channel, author)) {
+			return TextHandler.get("permission_denied");
+		}
 		if (args.length >= 2 && Arrays.asList(valid_actions).contains(args[0])) {
 			if (args[0].equals("add") && args.length > 2) {
 				String output = "";
