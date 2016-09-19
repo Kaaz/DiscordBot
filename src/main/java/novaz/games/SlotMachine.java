@@ -33,7 +33,6 @@ public class SlotMachine {
 	 * @return the slot that won or null in case of lost
 	 */
 	public Slot winSlot() {
-		int winningSlot = results[0];
 		for (int i = 1; i < wheels; i++) {
 			if (results[i] != results[i - 1]) {
 				return null;

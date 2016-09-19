@@ -213,9 +213,7 @@ public class GameHandler {
 
 	public String executeGameMove(String[] args, IUser player, IChannel channel) {
 		if (args.length > 0) {
-			if (args[0].equalsIgnoreCase("new") && args.length > 1) {
-//				return createGame(player, args[1]);
-			} else if (args[0].equalsIgnoreCase("cancel")) {
+			if (args[0].equalsIgnoreCase("cancel")) {
 				return cancelGame(player);
 			} else if (args[0].equalsIgnoreCase("help")) {
 				return showHelp(channel);

@@ -30,7 +30,6 @@ public class ServiceHandlerThread extends Thread {
 
 	@Override
 	public void run() {
-		long lastTime = System.nanoTime();
 		while (!Launcher.killAllThreads) {
 			try {
 				if (bot.isReady()) {
@@ -45,7 +44,6 @@ public class ServiceHandlerThread extends Thread {
 						e.printStackTrace();
 					}
 				}
-				lastTime = System.nanoTime();
 				sleep(10_000L);
 			} catch (Exception e) {
 				e.printStackTrace();

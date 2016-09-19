@@ -2,8 +2,6 @@ package novaz.main;
 
 import novaz.core.AbstractEventListener;
 import novaz.db.model.OMusic;
-import novaz.db.model.OServer;
-import novaz.db.table.TServers;
 import novaz.guildsettings.DefaultGuildSettings;
 import novaz.guildsettings.defaults.SettingActiveChannels;
 import novaz.guildsettings.defaults.SettingBotChannel;
@@ -138,16 +136,6 @@ public class NovaBot {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public void addCustomCommand(IGuild server, String command, String output) {
-		OServer serv = TServers.findBy(server.getID());
-		commands.addCustomCommand(command, output);
-	}
-
-	public void removeCustomCommand(IGuild server, String command) {
-		OServer serv = TServers.findBy(server.getID());
-		commands.removeCustomCommand(command);
 	}
 
 	private void registerHandlers() {

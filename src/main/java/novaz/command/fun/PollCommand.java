@@ -7,12 +7,8 @@ import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 public class PollCommand extends AbstractCommand {
 	private static final int MAX_DURATION_IN_MINUTES = 10;
-	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
 
 	public PollCommand(NovaBot b) {
 		super(b);
@@ -54,9 +50,7 @@ public class PollCommand extends AbstractCommand {
 		if (args.length == 0) {
 			return "show overview";
 		}
-		if (args[0].matches("^\\d$")) {
-			//if poll is going on
-		} else if (args[0].equalsIgnoreCase("create")) {
+		if (args[0].equalsIgnoreCase("create")) {
 			//if poll is NOT going on
 			String argument = "";
 			for (int i = 1; i < args.length; i++) {

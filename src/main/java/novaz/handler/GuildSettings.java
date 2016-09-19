@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class GuildSettings {
 	private final static Map<IGuild, GuildSettings> settingInstance = new ConcurrentHashMap<>();
-	private final IGuild guild;
 	private final Map<String, String> settings;
 	private int id = 0;
 	private boolean initialized = false;
@@ -37,7 +36,6 @@ public class GuildSettings {
 	}
 
 	private GuildSettings(IGuild guild) {
-		this.guild = guild;
 		this.settings = new ConcurrentHashMap<>();
 		settingInstance.put(guild, this);
 		this.id = TServers.findBy(guild.getID()).id;

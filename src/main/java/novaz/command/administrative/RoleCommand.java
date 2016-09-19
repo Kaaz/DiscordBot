@@ -8,9 +8,7 @@ import novaz.main.NovaBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.Permissions;
 
-import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -63,12 +61,6 @@ public class RoleCommand extends AbstractCommand {
 			List<IRole> roles = channel.getGuild().getRoles();
 			for (IRole role : roles) {
 				out += String.format("%s (%s)" + Config.EOL, role.getName(), role.getID());
-				EnumSet<Permissions> permissions = role.getPermissions();
-//				out += "`";
-//				for (Permissions permission : permissions) {
-//					out += " " + permission.toString();
-//				}
-//				out += "`" + Config.EOL;
 			}
 			return out;
 		}

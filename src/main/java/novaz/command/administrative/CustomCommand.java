@@ -65,10 +65,10 @@ public class CustomCommand extends AbstractCommand {
 				if (args[0].startsWith("!")) {
 					args[0] = args[0].substring(1);
 				}
-				bot.addCustomCommand(channel.getGuild(), args[1], output.trim());
+				bot.commands.addCustomCommand(args[1], output.trim());
 				return "Added !" + args[1];
 			} else if (args[0].equals("delete")) {
-				bot.removeCustomCommand(channel.getGuild(), args[1]);
+				bot.commands.removeCustomCommand(args[1]);
 				return "Removed !" + args[1];
 			}
 		} else if (args.length > 0 && args[0].equalsIgnoreCase("list")) {

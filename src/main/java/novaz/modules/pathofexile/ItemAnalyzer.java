@@ -7,7 +7,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ItemAnalyzer {
@@ -64,16 +63,5 @@ public class ItemAnalyzer {
 
 	private String[] breakIntoParts(String toanalyze) {
 		return toanalyze.split(paragraphSplitter);
-	}
-
-	private void analyzeRarity(String toanalyze) {
-
-
-		// Grab levelPattern
-
-		Matcher matcher = levelRequirementPattern.matcher(toanalyze);
-		if (matcher.find()) {
-			item.requirementLevel = Integer.parseInt(matcher.group(1));
-		}
 	}
 }
