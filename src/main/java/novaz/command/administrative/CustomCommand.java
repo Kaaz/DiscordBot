@@ -48,7 +48,7 @@ public class CustomCommand extends AbstractCommand {
 
 	@Override
 	public CommandVisibility getVisibility() {
-		return CommandVisibility.PUBLIC;
+		return CommandVisibility.BOTH;
 	}
 
 	@Override
