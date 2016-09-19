@@ -50,13 +50,18 @@ public class Help extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		String CommandPrefix = GuildSettings.getFor(channel, SettingCommandPrefix.class);
+		String commandPrefix = GuildSettings.getFor(channel, SettingCommandPrefix.class);
 		if (args.length > 0) {
 			AbstractCommand c = bot.commands.getCommand(DisUtil.filterPrefix(args[0], channel));
 			if (c != null) {
 				String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + Config.EOL;
-				ret += ":keyboard: **command:** " + Config.EOL +
-						Misc.makeTable(CommandPrefix + c.getCommand());
+				ArrayList<String> aliases = new ArrayList<>();
+				aliases.add(commandPrefix + c.getCommand());
+				for (String alias : c.getAliases()) {
+					aliases.add(commandPrefix + alias);
+				}
+				ret += ":keyboard: **Accessible though:** " + Config.EOL +
+						Misc.makeTable(aliases, 16, 3);
 				if (c.getAliases().length > 0) {
 					ret += "Aliases: " + Config.EOL +
 							Misc.makeTable(Arrays.asList(c.getAliases()));
@@ -90,7 +95,7 @@ public class Help extends AbstractCommand {
 			ret += styleTablePerCategory(commandList);
 //			ret += styleIndentedTable(commandList);
 //			ret += styleOneTable(commandList);
-			return ret + "for more details about a command use **" + CommandPrefix + "help <command>**" + Config.EOL;
+			return ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL;
 		}
 	}
 
