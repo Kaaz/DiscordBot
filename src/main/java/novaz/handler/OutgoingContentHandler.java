@@ -33,6 +33,12 @@ public class OutgoingContentHandler {
 		return request.get();
 	}
 
+	/**
+	 * Sends an error to the Config.CREATOR_ID
+	 *
+	 * @param error        the Exception
+	 * @param extradetails extra details about the error
+	 */
 	public void sendErrorToMe(Exception error, Object... extradetails) {
 		String errorMessage = "I'm sorry to inform you that I've encountered a **" + error.getClass().getName() + "**" + Config.EOL;
 		errorMessage += "Message: " + Config.EOL;
@@ -61,6 +67,16 @@ public class OutgoingContentHandler {
 		sendPrivateMessage(bot.instance.getUserByID(Config.CREATOR_ID), errorMessage);
 	}
 
+	public void sendMessageToCreator(String message) {
+		sendPrivateMessage(bot.instance.getUserByID(Config.CREATOR_ID), message);
+	}
+
+	/**
+	 * Sends a private message to user
+	 *
+	 * @param target  the user to send it to
+	 * @param message the message
+	 */
 	public void sendPrivateMessage(IUser target, String message) {
 		RequestBuffer.request(() -> {
 			try {
@@ -78,6 +94,13 @@ public class OutgoingContentHandler {
 		});
 	}
 
+	/**
+	 * Edits an existing message
+	 *
+	 * @param msg     the message to edit
+	 * @param newText new content of the message
+	 * @return the message or null
+	 */
 	public RequestBuffer.RequestFuture<IMessage> editMessage(IMessage msg, String newText) {
 		return RequestBuffer.request(() -> {
 			try {
@@ -94,6 +117,11 @@ public class OutgoingContentHandler {
 		});
 	}
 
+	/**
+	 * Puts a message in the delete queue
+	 *
+	 * @param message the message to delete
+	 */
 	public void deleteMessage(IMessage message) {
 		deleteThread.offer(message);
 	}
