@@ -61,7 +61,7 @@ Current list of all available commands. See below for a more detailed list
 
 ## Warning
 
-This is mostly a toy/experiment project 
+This project is still in an early stage. Some things might not work or get changed drastically.
 
 ## Usage
 
@@ -103,6 +103,7 @@ Add and remove custom commands
 ```php
 command add <command> <action>  //adds a command
 command delete <command>        //deletes a command
+command list                    //shows a list of existing custom commands
 ```
 ### config
 
@@ -205,6 +206,7 @@ information about the playlist/history
 
 ```php
 playlist          //playlist queue
+playlist clear    //playlist queue
 playlist history  //list of recently played songs
 ```
 ### pm

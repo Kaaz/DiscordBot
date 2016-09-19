@@ -26,7 +26,7 @@ Current list of all available commands. See below for a more detailed list
 
 ## Warning
 
-This is mostly a toy/experiment project 
+This project is still in an early stage. Some things might not work or get changed drastically.
 
 ## Usage
 
