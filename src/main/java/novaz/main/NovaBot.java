@@ -7,6 +7,7 @@ import novaz.guildsettings.defaults.SettingActiveChannels;
 import novaz.guildsettings.defaults.SettingBotChannel;
 import novaz.guildsettings.defaults.SettingEnableChatBot;
 import novaz.handler.*;
+import novaz.role.RoleRankings;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,6 +114,8 @@ public class NovaBot {
 		TextHandler.setBot(this);
 		gameHandler = new GameHandler(this);
 		out = new OutgoingContentHandler(this);
+		RoleRankings.init();
+		RoleRankings.fixRoles(this.instance.getGuilds(),instance);
 		this.isReady = ready;
 	}
 

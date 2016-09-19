@@ -60,6 +60,9 @@ public class RoleCommand extends AbstractCommand {
 			String out = "I found the following roles" + Config.EOL;
 			List<IRole> roles = channel.getGuild().getRoles();
 			for (IRole role : roles) {
+				if (role.isEveryoneRole()) {
+					continue;
+				}
 				out += String.format("%s (%s)" + Config.EOL, role.getName(), role.getID());
 			}
 			return out;
