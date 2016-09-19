@@ -1,286 +1,132 @@
--- MySQL dump 10.13  Distrib 5.7.9, for Win64 (x86_64)
---
--- Host: localhost    Database: discord
--- ------------------------------------------------------
--- Server version	5.5.32
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `bank_reserverations`
---
-
-DROP TABLE IF EXISTS `bank_reserverations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `bank_reserverations` (
-  `id` int(11) NOT NULL,
-  `bank` int(11) NOT NULL,
-  `amount` int(11) NOT NULL,
-  `reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `reservation_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `bank_transactions`
---
-
-DROP TABLE IF EXISTS `bank_transactions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `bank_transactions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `bank_from` int(11) NOT NULL,
-  `bank_to` int(11) NOT NULL,
-  `transaction_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-  `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `banks`
---
-
-DROP TABLE IF EXISTS `banks`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `banks` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user` int(11) NOT NULL,
-  `current_balance` int(11) DEFAULT NULL,
-  `created_on` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `channels`
---
-
-DROP TABLE IF EXISTS `channels`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `channels` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `discord_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `server_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `channels_discord_id_uindex` (`discord_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `command_log`
---
-
-DROP TABLE IF EXISTS `command_log`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `command_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `guild` int(11) DEFAULT NULL,
-  `command` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `args` text COLLATE utf8_unicode_ci,
-  `execute_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=414 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `commands`
---
-
-DROP TABLE IF EXISTS `commands`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `commands` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `server` int(11) DEFAULT NULL,
-  `input` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `output` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `guild_settings`
---
-
-DROP TABLE IF EXISTS `guild_settings`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `guild_settings` (
-  `guild` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `config` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`guild`,`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `playlist`
---
-
-DROP TABLE IF EXISTS `playlist`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `playlist` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `youtubecode` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `filename` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `title` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `artist` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `lastplaydate` int(11) NOT NULL DEFAULT '0',
-  `banned` int(11) NOT NULL DEFAULT '0',
-  `youtube_title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `poe_token`
---
-
-DROP TABLE IF EXISTS `poe_token`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `poe_token` (
-  `user_id` int(11) NOT NULL,
-  `session_id` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `servers`
---
-
-DROP TABLE IF EXISTS `servers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `servers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `discord_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `name` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `owner` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `service_variables`
---
-
-DROP TABLE IF EXISTS `service_variables`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `service_variables` (
-  `service_id` int(11) NOT NULL,
-  `variable` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `value` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`service_id`,`variable`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `services`
---
-
-DROP TABLE IF EXISTS `services`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `services` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `display_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `description` text COLLATE utf8_unicode_ci,
-  `activated` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `subscription_service_name_uindex` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `subscriptions`
---
-
-DROP TABLE IF EXISTS `subscriptions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `subscriptions` (
-  `server_id` int(11) NOT NULL,
-  `channel_id` int(11) NOT NULL,
-  `service_id` int(11) NOT NULL DEFAULT '0',
-  `subscribed` int(11) DEFAULT NULL,
-  PRIMARY KEY (`server_id`,`channel_id`,`service_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `template_texts`
---
-
-DROP TABLE IF EXISTS `template_texts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `template_texts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `keyphrase` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `text` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `txt_search` (`keyphrase`)
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `users`
---
-
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `discord_id` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `name` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
---
--- Dumping routines for database 'discord'
---
-/*!50003 DROP FUNCTION IF EXISTS `levenshtein` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES' */ ;
+CREATE TABLE commands
+(
+  id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  server INT(11),
+  input VARCHAR(50) NOT NULL,
+  output TEXT NOT NULL
+);
+CREATE TABLE servers
+(
+  id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  discord_id VARCHAR(255) NOT NULL,
+  name VARCHAR(128),
+  owner INT(11) NOT NULL
+);
+CREATE TABLE template_texts
+(
+  id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  keyphrase VARCHAR(50) NOT NULL,
+  text VARCHAR(255) NOT NULL
+);
+CREATE INDEX txt_search ON template_texts (keyphrase);
+CREATE TABLE users
+(
+  id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  discord_id VARCHAR(64) NOT NULL,
+  name VARCHAR(128)
+);
+CREATE TABLE guild_settings
+(
+  guild INT(11) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  config VARCHAR(255) NOT NULL,
+  CONSTRAINT `PRIMARY` PRIMARY KEY (guild, name)
+);
+CREATE TABLE playlist
+(
+  id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  youtubecode VARCHAR(32) NOT NULL,
+  filename VARCHAR(64) NOT NULL,
+  title VARCHAR(128),
+  artist VARCHAR(128),
+  lastplaydate INT(11) DEFAULT '0' NOT NULL,
+  banned INT(11) DEFAULT '0' NOT NULL,
+  youtube_title VARCHAR(255)
+);
+CREATE TABLE bank_reserverations
+(
+  id INT(11) PRIMARY KEY NOT NULL,
+  bank INT(11) NOT NULL,
+  amount INT(11) NOT NULL,
+  reason VARCHAR(255),
+  reservation_time TIMESTAMP DEFAULT '0000-00-00 00:00:00' NOT NULL
+);
+CREATE TABLE bank_transactions
+(
+  id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  bank_from INT(11) NOT NULL,
+  bank_to INT(11) NOT NULL,
+  transaction_date TIMESTAMP DEFAULT '0000-00-00 00:00:00' NOT NULL,
+  description VARCHAR(255)
+);
+CREATE TABLE banks
+(
+  id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  user INT(11) NOT NULL,
+  current_balance INT(11),
+  created_on TIMESTAMP DEFAULT '0000-00-00 00:00:00' NOT NULL
+);
+CREATE TABLE command_log
+(
+  id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  user_id INT(11) NOT NULL,
+  guild INT(11),
+  command VARCHAR(64) NOT NULL,
+  args TEXT,
+  execute_date TIMESTAMP DEFAULT 'CURRENT_TIMESTAMP' NOT NULL
+);
+CREATE TABLE poe_token
+(
+  user_id INT(11) PRIMARY KEY NOT NULL,
+  session_id VARCHAR(128)
+);
+CREATE TABLE subscriptions
+(
+  server_id INT(11) NOT NULL,
+  channel_id INT(11) NOT NULL,
+  service_id INT(11) DEFAULT '0' NOT NULL,
+  subscribed INT(11),
+  CONSTRAINT `PRIMARY` PRIMARY KEY (server_id, channel_id, service_id)
+);
+CREATE TABLE service_variables
+(
+  service_id INT(11) NOT NULL,
+  variable VARCHAR(64) NOT NULL,
+  value VARCHAR(128),
+  CONSTRAINT `PRIMARY` PRIMARY KEY (service_id, variable)
+);
+CREATE TABLE services
+(
+  id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  name VARCHAR(32) NOT NULL,
+  display_name VARCHAR(64) NOT NULL,
+  description TEXT,
+  activated INT(11)
+);
+CREATE UNIQUE INDEX subscription_service_name_uindex ON services (name);
+CREATE TABLE channels
+(
+  id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  discord_id VARCHAR(255),
+  server_id INT(11),
+  name VARCHAR(255)
+);
+CREATE UNIQUE INDEX channels_discord_id_uindex ON channels (discord_id);
+CREATE TABLE command_cooldown
+(
+  command VARCHAR(64) NOT NULL,
+  target_id VARCHAR(64) DEFAULT '' NOT NULL,
+  target_type INT(11) DEFAULT '0' NOT NULL,
+  last_time INT(21) NOT NULL,
+  CONSTRAINT `PRIMARY` PRIMARY KEY (command, target_id, target_type)
+);
+CREATE TABLE guild_member
+(
+  guild_id INT(11) NOT NULL,
+  user_id INT(11) NOT NULL,
+  join_date TIMESTAMP DEFAULT 'CURRENT_TIMESTAMP' NOT NULL,
+  CONSTRAINT `PRIMARY` PRIMARY KEY (guild_id, user_id)
+);
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `levenshtein`( s1 VARCHAR(255), s2 VARCHAR(255) ) RETURNS int(11)
 DETERMINISTIC
