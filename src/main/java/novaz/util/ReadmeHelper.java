@@ -45,7 +45,7 @@ public class ReadmeHelper {
 		ArrayList<String> sortedCommandList = new ArrayList<>();
 		Collections.addAll(sortedCommandList, commandHandler.getCommands());
 		Collections.sort(sortedCommandList);
-		s += "Commands | | " + Config.EOL;
+		s += "Commands | | |" + Config.EOL;
 		s += "--- | --- | ---" + Config.EOL;
 		int columns = 3;
 		int currentColumn = 0;

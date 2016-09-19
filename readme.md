@@ -22,7 +22,7 @@ For more information about a command use **help \<commandname\>**
 
 Current list of all available commands. See below for a more detailed list
 
-Commands | | 
+Commands | | |
 --- | --- | ---
 [8ball](#8ball) | [avatar](#avatar) | [blackjack](#blackjack)
 [catfact](#catfact) | [command](#command) | [config](#config)
