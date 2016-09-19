@@ -45,10 +45,20 @@ public class ReadmeHelper {
 		ArrayList<String> sortedCommandList = new ArrayList<>();
 		Collections.addAll(sortedCommandList, commandHandler.getCommands());
 		Collections.sort(sortedCommandList);
+		s += "Commands | | " + Config.EOL;
+		s += "--- | --- | ---" + Config.EOL;
+		int columns = 3;
+		int currentColumn = 0;
 		for (String commandName : sortedCommandList) {
 			AbstractCommand command = commandHandler.getCommand(commandName);
 			if (command.isListed() && command.isEnabled()) {
-				s += "* [" + command.getCommand() + "](#" + command.getCommand() + ")" + Config.EOL;
+				s += "[" + command.getCommand() + "](#" + command.getCommand() + ")";
+				if (currentColumn % columns <= 1) {
+					s += " | ";
+				} else {
+					s += Config.EOL;
+				}
+				currentColumn++;
 			}
 		}
 		return s;

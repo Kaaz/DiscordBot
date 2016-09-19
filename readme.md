@@ -22,42 +22,20 @@ For more information about a command use **help \<commandname\>**
 
 Current list of all available commands. See below for a more detailed list
 
-* [8ball](#8ball)
-* [avatar](#avatar)
-* [blackjack](#blackjack)
-* [catfact](#catfact)
-* [command](#command)
-* [config](#config)
-* [current](#current)
-* [exit](#exit)
-* [help](#help)
-* [info](#info)
-* [invite](#invite)
-* [join](#join)
-* [joke](#joke)
-* [leave](#leave)
-* [play](#play)
-* [playlist](#playlist)
-* [pm](#pm)
-* [poec](#poec)
-* [poeitem](#poeitem)
-* [poelab](#poelab)
-* [poll](#poll)
-* [purge](#purge)
-* [r](#r)
-* [reload](#reload)
-* [role](#role)
-* [rotate](#rotate)
-* [say](#say)
-* [skip](#skip)
-* [slot](#slot)
-* [stop](#stop)
-* [subscribe](#subscribe)
-* [system](#system)
-* [template](#template)
-* [user](#user)
-* [volume](#volume)
-
+Commands | | 
+--- | --- | ---
+[8ball](#8ball) | [avatar](#avatar) | [blackjack](#blackjack)
+[catfact](#catfact) | [command](#command) | [config](#config)
+[current](#current) | [exit](#exit) | [help](#help)
+[info](#info) | [invite](#invite) | [join](#join)
+[joke](#joke) | [leave](#leave) | [play](#play)
+[playlist](#playlist) | [pm](#pm) | [poec](#poec)
+[poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll)
+[purge](#purge) | [r](#r) | [reload](#reload)
+[role](#role) | [rotate](#rotate) | [say](#say)
+[skip](#skip) | [slot](#slot) | [stop](#stop)
+[subscribe](#subscribe) | [system](#system) | [template](#template)
+[user](#user) | [volume](#volume) | 
 
 ## Warning
 

@@ -63,7 +63,7 @@ public class Template extends AbstractCommand {
 								return "Keyphrases are being translated";
 							}
 						}
-						return TextHandler.get("not_yet_implemented");
+						return TextHandler.get("no_permission");
 					case "add":
 						if (args.length >= 3) {
 							String text = "";
@@ -81,8 +81,8 @@ public class Template extends AbstractCommand {
 						return TextHandler.get("command_template_invalid_option");
 				}
 			}
-			return TextHandler.get("not_yet_implemented");
+			return TextHandler.get("no_permission");
 		}
-		return TextHandler.get("command_template_no_permission");
+		return TextHandler.get("no_permission");
 	}
 }
