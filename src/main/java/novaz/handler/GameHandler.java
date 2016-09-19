@@ -199,8 +199,8 @@ public class GameHandler {
 		return newGame.toString();
 	}
 
-	private String showHelp() {
-		return "Type list for a list of games, TODO FOR NOW";
+	private String showHelp(IChannel channel) {
+		return showList(channel);
 	}
 
 	private String showList(IChannel channel) {
@@ -218,7 +218,7 @@ public class GameHandler {
 			} else if (args[0].equalsIgnoreCase("cancel")) {
 				return cancelGame(player);
 			} else if (args[0].equalsIgnoreCase("help")) {
-				return showHelp();
+				return showHelp(channel);
 			} else if (args[0].equalsIgnoreCase("list")) {
 				return showList(channel);
 			} else if (DisUtil.isUserMention(args[0])) {
