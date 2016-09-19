@@ -7,16 +7,9 @@ import novaz.modules.reddit.RedditScraper;
 import novaz.modules.reddit.pojo.Comment;
 import novaz.modules.reddit.pojo.Post;
 import novaz.util.Misc;
-import org.apache.commons.lang3.StringEscapeUtils;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -83,12 +76,6 @@ public class PoeLabsCommand extends AbstractCommand {
 					Matcher m = imagePattern.matcher(searchText);
 					while (m.find()) {
 						if (m.group(1).equals(args[0].toLowerCase())) {
-							try (InputStream in = new URL(StringEscapeUtils.unescapeHtml4(m.group(2))).openStream()) {
-								channel.sendFile(in, post.data.id + ".jpg", post.data.title);
-								return "";
-							} catch (IOException | MissingPermissionsException | DiscordException | RateLimitException e) {
-								e.printStackTrace();
-							}
 							return "Path of Exile - Labyrinth" + Config.EOL + Config.EOL +
 									post.data.title + " - **" + args[0].toLowerCase() + "**" + Config.EOL + m.group(2);
 

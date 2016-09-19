@@ -32,6 +32,8 @@ public class AnalyzeRequirements implements IPoEAnalyzePart {
 				case "Level":
 					item.requirementLevel = Integer.parseInt(matcher.group(2));
 					break;
+				default:
+					break;
 			}
 		}
 		return item;

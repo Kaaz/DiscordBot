@@ -2,10 +2,10 @@ package novaz.command.fun;
 
 import novaz.core.AbstractCommand;
 import novaz.games.Blackjack;
-import novaz.handler.CommandHandler;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
+import novaz.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -57,7 +57,7 @@ public class BlackJackCommand extends AbstractCommand {
 				return "You are still in a game. To finish type **blackjack stand**" + Config.EOL +
 						playerGames.get(author.getID()).toString();
 			}
-			return "You are not playing a game, to start use **" + CommandHandler.getCommandPrefix(channel) + "blackjack hit**";
+			return "You are not playing a game, to start use **" + DisUtil.getCommandPrefix(channel) + "blackjack hit**";
 		}
 		if (args[0].equalsIgnoreCase("hit")) {
 			if (!playerGames.containsKey(author.getID()) || !playerGames.get(author.getID()).isInProgress()) {
@@ -97,7 +97,7 @@ public class BlackJackCommand extends AbstractCommand {
 				}
 				return "";
 			}
-			return "You are not playing a game, to start use **" + CommandHandler.getCommandPrefix(channel) + "blackjack hit**";
+			return "You are not playing a game, to start use **" + DisUtil.getCommandPrefix(channel) + "blackjack hit**";
 		}
 
 		return TextHandler.get("command_invalid_use");

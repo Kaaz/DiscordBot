@@ -39,6 +39,7 @@ public class Playlist extends AbstractCommand {
 	public String[] getUsage() {
 		return new String[]{
 				"playlist          //playlist queue",
+				"playlist clear    //playlist queue",
 				"playlist history  //list of recently played songs"
 		};
 	}
@@ -70,7 +71,7 @@ public class Playlist extends AbstractCommand {
 				}
 			}
 			return ret;
-		} else if (args.length >= 1 && args[0].equals("history")) {
+		} else if (args[0].equals("history")) {
 			List<OMusic> recentlyPlayed = TMusic.getRecentlyPlayed(10);
 			if (recentlyPlayed.size() > 0) {
 				String ret = "List of recently played music " + Config.EOL;
@@ -83,6 +84,10 @@ public class Playlist extends AbstractCommand {
 			} else {
 				return TextHandler.get("music_not_played_anything_yet");
 			}
+		} else if (args[0].equals("clear")) {
+			MusicPlayerHandler player = MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot);
+			player.clearPlayList();
+			return TextHandler.get("music_playlist_cleared");
 		}
 		return TextHandler.get("command_invalid_use");
 	}

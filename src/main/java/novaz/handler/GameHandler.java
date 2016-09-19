@@ -44,7 +44,7 @@ public class GameHandler {
 
 	public boolean isGameInput(IChannel channel, IUser player, String message) {
 		if (GuildSettings.getFor(channel, SettingGameModule.class).equals("true")) {
-			if (isInPlayMode(player, channel) || message.startsWith(CommandHandler.getCommandPrefix(channel) + COMMAND_NAME)) {
+			if (isInPlayMode(player, channel) || message.startsWith(DisUtil.getCommandPrefix(channel) + COMMAND_NAME)) {
 				return true;
 			}
 		}
@@ -63,7 +63,7 @@ public class GameHandler {
 	public final void execute(IUser player, IChannel channel, String rawMessage) {
 		String message = rawMessage.toLowerCase().trim();
 		if (!isInPlayMode(player, channel)) {
-			message = message.replace(CommandHandler.getCommandPrefix(channel) + COMMAND_NAME, "").trim();
+			message = message.replace(DisUtil.getCommandPrefix(channel) + COMMAND_NAME, "").trim();
 		}
 		switch (message) {
 			case "playmode":
@@ -78,12 +78,14 @@ public class GameHandler {
 				leavePlayMode(player);
 				bot.out.sendMessage(channel, TextHandler.get("playmode_leaving_mode"));
 				return;
+			default:
+				break;
 		}
 		String[] args = message.split(" ");
 		String gameMessage = executeGameMove(args, player, channel);
 		if (isInPlayMode(player, channel)) {
 			gameMessage = "*note: " + TextHandler.get("playmode_in_mode_warning") + "*" + Config.EOL + gameMessage;
-		} else if ("".equals(message) || message.equals("help")) {
+		} else if ("".equals(message) || "help".equals(message)) {
 			gameMessage = showList(channel);
 		}
 		if (!gameMessage.isEmpty()) {
@@ -204,9 +206,9 @@ public class GameHandler {
 	private String showList(IChannel channel) {
 		return "A list of all available games" + Config.EOL +
 				getFormattedGameList() +
-				"to start one type `" + CommandHandler.getCommandPrefix(channel) + COMMAND_NAME + " <@user> <gamecode>`" + Config.EOL +
-				"You can enter *gamemode* by typing `" + CommandHandler.getCommandPrefix(channel) + COMMAND_NAME + " enter` " + Config.EOL +
-				"This makes it so that you don't have to prefix your messages with `" + CommandHandler.getCommandPrefix(channel) + COMMAND_NAME + "`";
+				"to start one type `" + DisUtil.getCommandPrefix(channel) + COMMAND_NAME + " <@user> <gamecode>`" + Config.EOL +
+				"You can enter *gamemode* by typing `" + DisUtil.getCommandPrefix(channel) + COMMAND_NAME + " enter` " + Config.EOL +
+				"This makes it so that you don't have to prefix your messages with `" + DisUtil.getCommandPrefix(channel) + COMMAND_NAME + "`";
 	}
 
 	public String executeGameMove(String[] args, IUser player, IChannel channel) {

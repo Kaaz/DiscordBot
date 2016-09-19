@@ -51,7 +51,9 @@ public class MusicPlayerHandler {
 			return new MusicPlayerHandler(guild, bot);
 		}
 	}
-
+	public void clearPlayList(){
+		AudioPlayer.getAudioPlayerForGuild(guild).getPlaylist().clear();
+	}
 	public OMusic getCurrentlyPlaying() {
 		return currentlyPlaying;
 	}

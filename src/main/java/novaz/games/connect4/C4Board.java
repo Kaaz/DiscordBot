@@ -4,7 +4,6 @@ import novaz.main.Config;
 
 public class C4Board {
 
-	private int spaceAvailable;
 	private C4Column[] cols;
 	private int columnSize;
 
@@ -43,14 +42,14 @@ public class C4Board {
 				return ":red_circle:";
 			case 1:
 				return ":large_blue_circle:";
+			default:
+				return ":white_circle:";
 		}
-		return ":white_circle:";
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		int totalRows = cols.length;
 		for (int height = 0; height < columnSize; height++) {
 			for (C4Column col : cols) {
 				sb.append(intToPlayer(col.getCol(height)));

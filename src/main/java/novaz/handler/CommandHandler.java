@@ -11,10 +11,10 @@ import novaz.db.table.TCommandCooldown;
 import novaz.db.table.TCommandLog;
 import novaz.db.table.TServers;
 import novaz.db.table.TUser;
-import novaz.guildsettings.DefaultGuildSettings;
 import novaz.guildsettings.defaults.*;
 import novaz.main.Config;
 import novaz.main.NovaBot;
+import novaz.util.DisUtil;
 import novaz.util.TimeUtil;
 import org.reflections.Reflections;
 import sx.blah.discord.handle.obj.IChannel;
@@ -49,27 +49,6 @@ public class CommandHandler {
 		bot = b;
 	}
 
-	public static String filterPrefix(String command, IChannel channel) {
-		String prefix = getCommandPrefix(channel);
-		if (command.startsWith(prefix)) {
-			command = command.substring(prefix.length());
-		}
-		return command;
-	}
-
-	/**
-	 * gets the command prefix for specified channel
-	 *
-	 * @param channel channel to check the prefix for
-	 * @return the command prefix
-	 */
-	public static String getCommandPrefix(IChannel channel) {
-		if (channel == null || channel.isPrivate()) {
-			return DefaultGuildSettings.getDefault(SettingCommandPrefix.class);
-		}
-		return GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);
-	}
-
 	/**
 	 * checks if the the message in channel is a command
 	 *
@@ -78,7 +57,7 @@ public class CommandHandler {
 	 * @return whether or not the message is a command
 	 */
 	public boolean isCommand(IChannel channel, String msg) {
-		return msg.startsWith(getCommandPrefix(channel)) || msg.startsWith(bot.mentionMe);
+		return msg.startsWith(DisUtil.getCommandPrefix(channel)) || msg.startsWith(bot.mentionMe);
 	}
 
 	/**
@@ -98,15 +77,10 @@ public class CommandHandler {
 		}
 		String[] input = inputMessage.split(" ");
 		String args[] = new String[input.length - 1];
-		input[0] = filterPrefix(input[0], channel).toLowerCase();
+		input[0] = DisUtil.filterPrefix(input[0], channel).toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
 		if (commands.containsKey(input[0]) || commandsAlias.containsKey(input[0])) {
-			AbstractCommand command;
-			if (commands.containsKey(input[0])) {
-				command = commands.get(input[0]);
-			} else {
-				command = commandsAlias.get(input[0]);
-			}
+			AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
 			long cooldown = getCommandCooldown(command, author, channel);
 			if (hasRightVisibility(channel, command.getVisibility()) && cooldown <= 0) {
 				String commandOutput = command.execute(args, channel, author);
@@ -191,6 +165,7 @@ public class CommandHandler {
 					break;
 				default:
 					targetId = "";
+					break;
 			}
 			OCommandCooldown cooldown = TCommandCooldown.findBy(command.getCommand(), targetId, cd.getCooldownScale().getId());
 			if (cooldown.lastTime + cd.getCooldownDuration() <= now) {
@@ -210,9 +185,9 @@ public class CommandHandler {
 	private boolean shouldCleanUpMessages(IChannel channel) {
 		String cleanupMethod = GuildSettings.getFor(channel, SettingCleanupMessages.class);
 		String mychannel = GuildSettings.getFor(channel, SettingBotChannel.class);
-		if (cleanupMethod.equals("yes")) {
+		if ("yes".equals(cleanupMethod)) {
 			return true;
-		} else if (cleanupMethod.equals("nonstandard") && !channel.getName().equalsIgnoreCase(mychannel)) {
+		} else if ("nonstandard".equals(cleanupMethod) && !channel.getName().equalsIgnoreCase(mychannel)) {
 			return true;
 		}
 		return false;
@@ -305,22 +280,36 @@ public class CommandHandler {
 				if (!c.isEnabled()) {
 					continue;
 				}
-				if (c.getCommandCategory().equals(CommandCategory.MUSIC) && !Config.MODULE_MUSIC_ENABLED) {
+				if (!isCommandCategoryEnabled(c.getCommandCategory())) {
 					continue;
 				}
-				if (c.getCommandCategory().equals(CommandCategory.ECONOMY) && !Config.MODULE_ECONOMY_ENABLED) {
-					continue;
-				}
-				if (c.getCommandCategory().equals(CommandCategory.POE) && !Config.MODULE_POE_ENABLED) {
-					continue;
-				}
-
 				if (!commands.containsKey(c.getCommand())) {
 					commands.put(c.getCommand(), c);
 				}
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	/**
+	 * Checks if the command category is enabled or not
+	 *
+	 * @param category the category to check
+	 * @return enabled?
+	 */
+	private boolean isCommandCategoryEnabled(CommandCategory category) {
+		switch (category) {
+			case MUSIC:
+				return Config.MODULE_ECONOMY_ENABLED;
+			case ECONOMY:
+				return Config.MODULE_ECONOMY_ENABLED;
+			case POE:
+				return Config.MODULE_POE_ENABLED;
+			case HEARTHSTONE:
+				return Config.MODULE_HEARTHSTONE_ENABLED;
+			default:
+				return true;
 		}
 	}
 

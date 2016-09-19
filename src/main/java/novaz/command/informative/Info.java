@@ -3,9 +3,9 @@ package novaz.command.informative;
 import novaz.command.CooldownScale;
 import novaz.command.ICommandCooldown;
 import novaz.core.AbstractCommand;
-import novaz.handler.CommandHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
+import novaz.util.DisUtil;
 import novaz.util.TimeUtil;
 import org.trello4j.Trello;
 import org.trello4j.TrelloImpl;
@@ -76,6 +76,8 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 					return "The following bugs are known:" + Config.EOL + getListFor(Config.TRELLO_LIST_BUGS, ":exclamation:");
 				case "progress":
 					return "The following items are being worked on:" + Config.EOL + getListFor(Config.TRELLO_LIST_IN_PROGRESS, ":construction:");
+				default:
+					break;
 			}
 		}
 		String onlineFor = TimeUtil.getRelativeTime(bot.startupTimeStamp, false);
@@ -86,7 +88,7 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 		}
 		return "What am I? *" + response + "* " + Config.EOL +
 				"Currently active on " + bot.instance.getGuilds().size() + " guilds and the last time I restarted was  " + onlineFor + "." + Config.EOL +
-				"There are " + bot.commands.getCommands().length + " commands I can perform type **" + CommandHandler.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
+				"There are " + bot.commands.getCommands().length + " commands I can perform type **" + DisUtil.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
 				"If I can't help you out, you can always try to poke __" + user.getName() + "#" + user.getDiscriminator() + "__";
 	}
 
