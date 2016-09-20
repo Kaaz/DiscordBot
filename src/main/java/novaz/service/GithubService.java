@@ -21,8 +21,7 @@ import java.util.List;
  */
 public class GithubService extends AbstractService {
 
-	private final SimpleDateFormat exportDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private final static int MAX_COMMITS_PER_POST = 25;
+	private final static int MAX_COMMITS_PER_POST = 10;
 
 	public GithubService(NovaBot b) {
 		super(b);
