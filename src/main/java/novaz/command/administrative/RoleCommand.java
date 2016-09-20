@@ -5,9 +5,13 @@ import novaz.core.AbstractCommand;
 import novaz.handler.TextHandler;
 import novaz.main.Config;
 import novaz.main.NovaBot;
+import novaz.role.RoleRankings;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 import java.util.List;
 
@@ -35,6 +39,8 @@ public class RoleCommand extends AbstractCommand {
 		return new String[]{
 				"role                     //lists roles",
 				"role list                //lists roles",
+				"role cleanup             //cleans up the roles from the time-based rankings",
+				"role setup               //creates the roles for the time-based rankings",
 				"role add @user <role>    //adds role to user",
 				"role remove @user <role> //remove role from user",
 		};
@@ -55,7 +61,6 @@ public class RoleCommand extends AbstractCommand {
 		if (!bot.isOwner(channel, author)) {
 			return TextHandler.get("command_no_permission");
 		}
-
 		if (args.length == 0 || args[0].equals("list")) {
 			String out = "I found the following roles" + Config.EOL;
 			List<IRole> roles = channel.getGuild().getRoles();
@@ -67,6 +72,22 @@ public class RoleCommand extends AbstractCommand {
 			}
 			return out;
 		}
-		return ":face_palm: I expected you to know how to use it";
+		switch (args[0]) {
+			case "cleanup":
+				try {
+					RoleRankings.cleanUpRoles(channel.getGuild(), bot.instance.getOurUser());
+				} catch (RateLimitException | DiscordException | MissingPermissionsException e) {
+					return "Tried cleaning up but this happened: " + e.getMessage();
+				}
+				return "Removed all the time-based roles";
+			case "setup":
+				if (RoleRankings.canModifyRoles(channel.getGuild(), bot.instance.getOurUser())) {
+					RoleRankings.fixForServer(channel.getGuild());
+					return "Set up all the required roles :smile:";
+				}
+				return "No permissions to manage roles";
+			default:
+				return ":face_palm: I expected you to know how to use it";
+		}
 	}
 }

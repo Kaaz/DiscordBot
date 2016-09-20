@@ -269,6 +269,8 @@ Role
 ```php
 role                     //lists roles
 role list                //lists roles
+role cleanup             //cleans up the roles from the time-based rankings
+role setup               //creates the roles for the time-based rankings
 role add @user <role>    //adds role to user
 role remove @user <role> //remove role from user
 ```

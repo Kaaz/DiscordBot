@@ -1,5 +1,10 @@
 package novaz.role;
 
+import novaz.guildsettings.defaults.SettingRoleTimeRanks;
+import novaz.guildsettings.defaults.SettingRoleTimeRanksPrefix;
+import novaz.handler.GuildSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
@@ -11,7 +16,9 @@ import sx.blah.discord.util.RateLimitException;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,6 +27,8 @@ import java.util.concurrent.TimeUnit;
 public class RoleRankings {
 
 	private static final ArrayList<MemberShipRole> roles = new ArrayList<>();
+	private static final Set<String> roleNames = new HashSet<>();
+	private static final Logger LOGGER = LoggerFactory.getLogger(RoleRankings.class);
 
 	public static void init() {
 		roles.add(new MemberShipRole("Spectator", new Color(0xFF6DE1), 0));
@@ -33,6 +42,9 @@ public class RoleRankings {
 		roles.add(new MemberShipRole("Revered", new Color(0xDCFF2C), TimeUnit.DAYS.toMillis(60L)));
 		roles.add(new MemberShipRole("Herald", new Color(0xFFD000), TimeUnit.DAYS.toMillis(90L)));
 		roles.add(new MemberShipRole("Exalted", new Color(0xFF9A00), TimeUnit.DAYS.toMillis(180L)));
+		for (MemberShipRole role : roles) {
+			roleNames.add(role.getName().toLowerCase());
+		}
 	}
 
 	private static MemberShipRole getHighestRole(Long memberLengthInMilis) {
@@ -49,7 +61,7 @@ public class RoleRankings {
 
 	}
 
-	private static void fixForServer(IGuild guild) {
+	public static void fixForServer(IGuild guild) {
 		for (int i = roles.size() - 1; i >= 0; i--) {
 			try {
 				fixRole(guild, roles.get(i));
@@ -60,16 +72,20 @@ public class RoleRankings {
 		}
 	}
 
+	public static String getPrefix(IGuild guild) {
+		return GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanksPrefix.class);
+	}
+
 	private static void fixRole(IGuild guild, MemberShipRole rank) throws RateLimitException, DiscordException, MissingPermissionsException {
-		List<IRole> rolesByName = guild.getRolesByName(rank.getName());
+		List<IRole> rolesByName = guild.getRolesByName(getPrefix(guild) + " " + rank.getName());
 		IRole role;
 		if (rolesByName.size() > 0) {
 			role = rolesByName.get(0);
 		} else {
 			role = guild.createRole();
 		}
-		if (!role.getName().equals(rank.getName())) {
-			role.changeName(rank.getName());
+		if (!role.getName().equals(getPrefix(guild) + " " + rank.getName())) {
+			role.changeName(getPrefix(guild) + " " + rank.getName());
 		}
 		if (!role.getColor().equals(rank.getColor())) {
 			role.changeColor(rank.getColor());
@@ -79,16 +95,39 @@ public class RoleRankings {
 		}
 	}
 
-	public static void fixRoles(List<IGuild> guilds, IDiscordClient instance) {
-		for (IGuild guild : guilds) {
-			boolean canModifyRoles = false;
-			for (IRole ourRoles : guild.getRolesForUser(instance.getOurUser())) {
-				if (ourRoles.getPermissions().contains(Permissions.MANAGE_ROLES)) {
-					canModifyRoles = true;
-					break;
+	public static boolean canModifyRoles(IGuild guild, IUser ourUser) {
+
+		for (IRole ourRoles : guild.getRolesForUser(ourUser)) {
+			if (ourRoles.getPermissions().contains(Permissions.MANAGE_ROLES)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static void cleanUpRoles(IGuild guild, IUser ourUser) throws RateLimitException, DiscordException, MissingPermissionsException {
+		if (!canModifyRoles(guild, ourUser)) {
+			return;
+		}
+		for (IRole role : guild.getRoles()) {
+			if (role.getName().contains(getPrefix(guild))) {
+				role.delete();
+			} else if (roleNames.contains(role.getName().toLowerCase())) {
+				try {
+					role.delete();
+				} catch (MissingPermissionsException ignored) {
+					LOGGER.info("Can't delete role %s! In the guild %s", role.getName(), guild.getName());
 				}
 			}
-			if (canModifyRoles) {
+		}
+	}
+
+	public static void fixRoles(List<IGuild> guilds, IDiscordClient instance) {
+		for (IGuild guild : guilds) {
+			if (!GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanks.class).equals("true")) {
+				continue;
+			}
+			if (canModifyRoles(guild, instance.getOurUser())) {
 				fixForServer(guild);
 			}
 		}
