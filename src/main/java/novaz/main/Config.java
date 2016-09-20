@@ -12,6 +12,10 @@ public class Config {
 	@ConfigurationOption
 	public static String BOT_NAME = "NovaBot";
 
+	//Bot's own channel on its own server
+	@ConfigurationOption
+	public static String BOT_CHANNEL_ID = "225170823898464256";
+
 	//token used to login to discord
 	@ConfigurationOption
 	public static String BOT_TOKEN = "mybottokenhere";

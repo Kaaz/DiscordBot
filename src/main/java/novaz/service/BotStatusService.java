@@ -17,7 +17,6 @@ import java.util.Random;
  * pseudo randmoly sets the now playing tag of the bot
  */
 public class BotStatusService extends AbstractService {
-	private static String MY_CHANNEL = "225170823898464256";
 	private final static Status[] statusList = {
 			Status.game("with human pets"),
 			Status.game("Teaching Minions"),
@@ -30,6 +29,12 @@ public class BotStatusService extends AbstractService {
 			Status.game("Reading wikipedia"),
 			Status.game("Talking to Martians"),
 			Status.game("Homework"),
+			Status.game("Hearthstone"),
+			Status.game("Path of exile"),
+			Status.game("Blackjack"),
+			Status.game("Looking for new jokes"),
+			Status.game("Organizing music"),
+			Status.game("Trying to remember preferences"),
 			Status.game("Analyzing fellow humans"),
 			Status.game("Yesterday you said tomorrow"),
 			Status.game("Let dreams be dreams"),
@@ -61,7 +66,7 @@ public class BotStatusService extends AbstractService {
 
 	@Override
 	public void run() {
-		IChannel channel = bot.instance.getChannelByID(MY_CHANNEL);
+		IChannel channel = bot.instance.getChannelByID(Config.BOT_CHANNEL_ID);
 		try {
 			List<IInvite> invites = channel.getInvites();
 			if (invites.size() > 0) {
@@ -73,7 +78,7 @@ public class BotStatusService extends AbstractService {
 				bot.out.sendPrivateMessage(bot.instance.getUserByID(Config.CREATOR_ID), ":exclamation: I am out of invites for `" + channel.getName() + "` Click here to make more :D " + channel.mention());
 			}
 		} catch (DiscordException | RateLimitException | MissingPermissionsException e) {
-			bot.out.sendErrorToMe(e, "mychannel", MY_CHANNEL, "invite_error", ":sob:");
+			bot.out.sendErrorToMe(e, "mychannel", Config.BOT_CHANNEL_ID, "invite_error", ":sob:");
 			e.printStackTrace();
 		}
 		bot.instance.changeStatus(statusList[new Random().nextInt(statusList.length)]);
