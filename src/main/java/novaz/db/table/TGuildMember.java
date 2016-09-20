@@ -24,6 +24,9 @@ public class TGuildMember {
 						"WHERE guild_id = ? AND user_id = ? ", guildId, userId)) {
 			if (rs.next()) {
 				record = fillRecord(rs);
+			} else {
+				record.guildId = guildId;
+				record.userId = userId;
 			}
 		} catch (Exception e) {
 			Logger.fatal(e);
