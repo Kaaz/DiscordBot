@@ -32,12 +32,12 @@ public class RoleRankings {
 
 	public static void init() {
 		roles.add(new MemberShipRole("Spectator", new Color(0xFF6DE1), 0));
-		roles.add(new MemberShipRole("Outsider", new Color(0xB7FCFF), TimeUnit.DAYS.toMillis(1L)));
-		roles.add(new MemberShipRole("Lurker", new Color(0x6DDAFF), TimeUnit.DAYS.toMillis(2L)));
-		roles.add(new MemberShipRole("Prospect", new Color(0x80FFBA), TimeUnit.DAYS.toMillis(4L)));
-		roles.add(new MemberShipRole("Friendly", new Color(0x4AFF51), TimeUnit.DAYS.toMillis(7L)));
-		roles.add(new MemberShipRole("Regular", new Color(0x3CFF39), TimeUnit.DAYS.toMillis(14L)));
-		roles.add(new MemberShipRole("Honored", new Color(0xA5FF48), TimeUnit.DAYS.toMillis(21L)));
+		roles.add(new MemberShipRole("Outsider", new Color(0xB7FCFF), TimeUnit.HOURS.toMillis(1L)));
+		roles.add(new MemberShipRole("Lurker", new Color(0x6DDAFF), TimeUnit.HOURS.toMillis(4L)));
+		roles.add(new MemberShipRole("Prospect", new Color(0x80FFBA), TimeUnit.DAYS.toMillis(1L)));
+		roles.add(new MemberShipRole("Friendly", new Color(0x4AFF51), TimeUnit.DAYS.toMillis(3L)));
+		roles.add(new MemberShipRole("Regular", new Color(0x3CFF39), TimeUnit.DAYS.toMillis(7L)));
+		roles.add(new MemberShipRole("Honored", new Color(0xA5FF48), TimeUnit.DAYS.toMillis(14L)));
 		roles.add(new MemberShipRole("Veteran", new Color(0xB5FF22), TimeUnit.DAYS.toMillis(30L)));
 		roles.add(new MemberShipRole("Revered", new Color(0xDCFF2C), TimeUnit.DAYS.toMillis(60L)));
 		roles.add(new MemberShipRole("Herald", new Color(0xFFD000), TimeUnit.DAYS.toMillis(90L)));

@@ -11,7 +11,6 @@ import novaz.util.TimeUtil;
 import sx.blah.discord.handle.obj.IChannel;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
