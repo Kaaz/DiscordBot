@@ -83,9 +83,9 @@ public class GithubService extends AbstractService {
 		}
 		if (commitCount > 0) {
 			if (commitCount == 1) {
-				totalMessage = "There has been a commit to **" + Config.BOT_NAME + "**" + Config.EOL;
+				totalMessage = "There has been a commit to my code" + Config.EOL;
 			} else {
-				totalMessage = "There have been **" + commitCount + "** commits to **" + Config.BOT_NAME + "**" + Config.EOL;
+				totalMessage = "There have been **" + commitCount + "** commits to my code " + Config.EOL;
 			}
 			if (commitCount <= 3) {
 				totalMessage += commitsMessage;
