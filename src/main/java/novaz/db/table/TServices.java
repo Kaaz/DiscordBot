@@ -21,9 +21,8 @@ public class TServices {
 		if (!serviceCache.containsKey(serviceName)) {
 			OService service = findBy(serviceName);
 			if (service.id == 0) {
-				OService newService = new OService();
-				newService.name = serviceName;
-				insert(newService);
+				service.name = serviceName;
+				insert(service);
 			}
 			serviceCache.put(serviceName, service.id);
 		}

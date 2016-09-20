@@ -20,6 +20,7 @@ public class TUser {
 		if (!userCache.containsKey(discordId)) {
 			OUser user = findBy(discordId);
 			if (user.id == 0) {
+				user.discord_id = discordId;
 				insert(user);
 			}
 			userCache.put(discordId, user.id);
