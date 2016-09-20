@@ -47,7 +47,11 @@ public class RoleRankings {
 		}
 	}
 
-	private static MemberShipRole getHighestRole(Long memberLengthInMilis) {
+	public static String getFullName(IGuild guild, MemberShipRole role) {
+		return getPrefix(guild) + " " + role.getName();
+	}
+
+	public static MemberShipRole getHighestRole(Long memberLengthInMilis) {
 		for (int i = roles.size() - 1; i >= 0; i--) {
 			if (roles.get(i).getMembershipTime() <= memberLengthInMilis) {
 				return roles.get(i);
@@ -58,7 +62,6 @@ public class RoleRankings {
 
 	public static void fixMember(IGuild guild, IUser member) {
 		List<IRole> roles = guild.getRolesForUser(member);
-
 	}
 
 	public static void fixForServer(IGuild guild) {
@@ -77,15 +80,15 @@ public class RoleRankings {
 	}
 
 	private static void fixRole(IGuild guild, MemberShipRole rank) throws RateLimitException, DiscordException, MissingPermissionsException {
-		List<IRole> rolesByName = guild.getRolesByName(getPrefix(guild) + " " + rank.getName());
+		List<IRole> rolesByName = guild.getRolesByName(getFullName(guild, rank));
 		IRole role;
 		if (rolesByName.size() > 0) {
 			role = rolesByName.get(0);
 		} else {
 			role = guild.createRole();
 		}
-		if (!role.getName().equals(getPrefix(guild) + " " + rank.getName())) {
-			role.changeName(getPrefix(guild) + " " + rank.getName());
+		if (!role.getName().equals(getFullName(guild, rank))) {
+			role.changeName(getFullName(guild, rank));
 		}
 		if (!role.getColor().equals(rank.getColor())) {
 			role.changeColor(rank.getColor());
