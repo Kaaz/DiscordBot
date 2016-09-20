@@ -4,5 +4,5 @@ target
 application.cfg
 log/
 #so I can uglyfy this file without worries
-src/main/java/novaz/command/fun/MyTestCommand.java
+src/main/java/discordbot/command/fun/MyTestCommand.java
 src/main/resources/logback.xml

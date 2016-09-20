@@ -29,7 +29,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>novaz.main.Launcher</mainClass>
+							<mainClass>discordbot.main.Launcher</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
