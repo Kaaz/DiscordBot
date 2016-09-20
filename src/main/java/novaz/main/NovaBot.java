@@ -107,7 +107,6 @@ public class NovaBot {
 	 * @param ready ready to get started
 	 */
 	public void markReady(boolean ready) {
-		setUserName(Config.BOT_NAME);
 		loadConfiguration();
 		mentionMe = "<@" + this.instance.getOurUser().getID() + ">";
 		timer = new Timer();
@@ -115,7 +114,7 @@ public class NovaBot {
 		gameHandler = new GameHandler(this);
 		out = new OutgoingContentHandler(this);
 		RoleRankings.init();
-		RoleRankings.fixRoles(this.instance.getGuilds(),instance);
+		RoleRankings.fixRoles(this.instance.getGuilds(), instance);
 		this.isReady = ready;
 	}
 
