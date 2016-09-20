@@ -7,11 +7,11 @@ public class UnimplementedParameterException extends SQLException {
 	private String s;
 
 	public UnimplementedParameterException(Object parameter) {
-		s = "Probleem parameter niet geimplmenteerd bij preparedstatement.set[Paramtype](i,p). parameter:" + parameter;
+		s = "Parameter not implemented at for: " + parameter;
 	}
 
 	public UnimplementedParameterException(Object parameter, int pos) {
-		s = "Probleem parameter niet geimplmenteerd bij preparedstatement.set[Paramtype](i,p). parameter:" + parameter + " - pos:" + pos;
+		s = "Parameter not implemented! parameter:" + parameter + " - position:" + pos;
 	}
 
 	@Override
