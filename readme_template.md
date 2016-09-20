@@ -13,6 +13,10 @@ To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/yo
 * Add custom commands
 * play/download music
 * customizable globally and per guild/server
+* play games against other users
+* subscription system
+* various optional modules
+* auto ranking system
 
 ### Commands
 

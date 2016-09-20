@@ -71,7 +71,6 @@ public class GuildSettings {
 		}
 		Map<String, AbstractGuildSetting> defaults = DefaultGuildSettings.getDefaults();
 		for (String key : defaults.keySet()) {
-			System.out.println(key);
 			settings.put(key, defaults.get(key).getDefault());
 		}
 		try (ResultSet rs = WebDb.get().select(
