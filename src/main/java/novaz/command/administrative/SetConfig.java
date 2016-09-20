@@ -59,6 +59,7 @@ public class SetConfig extends AbstractCommand {
 		if (bot.isOwner(channel, author)) {
 			if (count == 0) {
 				Map<String, String> settings = GuildSettings.get(channel.getGuild()).getSettings();
+				Collections.sort(new ArrayList<>(settings.keySet()));
 				String ret = "Current Settings for " + channel.getGuild().getName() + Config.EOL;
 				List<List<String>> data = new ArrayList<>();
 				for (Map.Entry<String, String> entry : settings.entrySet()) {

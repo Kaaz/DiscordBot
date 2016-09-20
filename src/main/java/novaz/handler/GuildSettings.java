@@ -69,25 +69,22 @@ public class GuildSettings {
 		if (initialized || id <= 0) {
 			return;
 		}
+		Map<String, AbstractGuildSetting> defaults = DefaultGuildSettings.getDefaults();
+		for (String key : defaults.keySet()) {
+			System.out.println(key);
+			settings.put(key, defaults.get(key).getDefault());
+		}
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT name, config " +
 						"FROM guild_settings s " +
 						"WHERE guild = ? ", id)) {
-			Map<String, AbstractGuildSetting> defaults = DefaultGuildSettings.getDefaults();
 			while (rs.next()) {
 				String key = rs.getString("name");
 				String value = rs.getString("config");
 				if (defaults.containsKey(key)) {
 					if (null != value && !value.isEmpty()) {
 						settings.put(key, value);
-					} else {
-						settings.put(key, defaults.get(key).getDefault());
 					}
-				}
-			}
-			for (String key : defaults.keySet()) {
-				if (!settings.containsKey(key)) {
-					settings.put(key, defaults.get(key).getDefault());
 				}
 			}
 			initialized = true;
