@@ -4,7 +4,7 @@ A Java bot for [Discord](https://discordapp.com/) using the [Discord4J interface
 It uses mysql to store data, a create script can be found in the sql folder  
 To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [avconv](https://libav.org/avconv.html)
 
-You can play/test it on its own 
+You can play/test it on discord 
 [![Discord](https://discordapp.com/api/guilds/225168913808228352/widget.png)](https://discord.gg/eaywDDt)
 ## What can it do?
 
@@ -36,6 +36,84 @@ Commands | | | | |
 [role](#role) | [rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot)
 [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [template](#template) | [user](#user)
 [volume](#volume) | 
+
+## Games
+
+Games can be accessed though the **!game** command
+
+A list of games:
+
+
+
+
+## Per guild configuration
+
+The configuration can be accessed though the **!config** command
+ 
+The following settings can be changed per guild:
+
+Key | Default | Description |
+--- | --- | ---| ---
+bot_channel | general | ```python
+Channel where the bots default output goes to
+```
+bot_listen | all | ```python
+What channels to listen to? (all;mine)
+all -> responds to all channels
+mine -> only responds to messages in configured channel
+```
+chat_bot_enabled | false | ```python
+Chat with people
+```
+cleanup_messages | no | ```python
+Delete messages after a while? (yes;no;nonstandard)
+yes -> Always delete messages
+no -> Never delete messages
+nonstandard -> delete messages outside of bot's default channel
+```
+command_prefix | $ | ```python
+Prefix for commands (between 1 and 3 characters)
+```
+module_games | true | ```python
+Let people play games against each other
+```
+pm_user_events | false | ```python
+Send a private message to owner when something happens to a user?
+true  -> sends a private message to guild-owner
+false -> does absolutely nothing
+```
+show_unknown_commands | false | ```python
+Show message on nonexistent commands
+true -> returns a help message
+false -> stays silent
+```
+use_economy | false | ```python
+Use the economy feature?
+false -> nope!
+true -> yep!
+```
+user_time_ranks | false | ```python
+This setting will require me to have the manage role permission!
+Users are given a role based on their time spend in the discord server
+If you'd like to use the time based ranks, be sure to check out the other settings first!
+Setting:  Use time based ranks?
+true  -> yes
+false -> no
+```
+user_time_ranks_prefix | [rank] | ```python
+The prefix of the role name for the time based role ranking
+Using this prefix to manage roles so make sure its somewhat unique! Or you'll have to cleanup yourself :)
+If you'd like to use the time based ranks make sure to set this first!
+
+The prefix can be between 3 and 8 in length
+```
+welcome_new_users | false | ```python
+Show a welcome message to new users?
+true  -> shows a welcome message to new users
+false -> stays silent
+```
+
+
 
 ## Warning
 
