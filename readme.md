@@ -33,9 +33,9 @@ Commands | | | | |
 [help](#help) | [info](#info) | [invite](#invite) | [join](#join) | [joke](#joke)
 [leave](#leave) | [play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec)
 [poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll) | [purge](#purge) | [r](#r)
-[reload](#reload) | [role](#role) | [rotate](#rotate) | [say](#say) | [skip](#skip)
-[slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [template](#template)
-[user](#user) | [volume](#volume) | 
+[reload](#reload) | [role](#role) | [roll](#roll) | [rotate](#rotate) | [say](#say)
+[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
+[template](#template) | [user](#user) | [volume](#volume) | 
 
 ## Games
 
@@ -358,6 +358,18 @@ role cleanup             //cleans up the roles from the time-based rankings
 role setup               //creates the roles for the time-based rankings
 role add @user <role>    //adds role to user
 role remove @user <role> //remove role from user
+```
+### roll
+
+if you ever need a random number
+
+
+#### Usage
+
+```php
+roll   //random number 1-6
+roll <max>   //random number 1-<max>
+roll <min> <max>   //random number <min>-<max>
 ```
 ### rotate
 
