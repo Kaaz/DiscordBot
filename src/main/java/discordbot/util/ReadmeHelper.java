@@ -1,9 +1,14 @@
 package discordbot.util;
 
+import com.google.common.base.Joiner;
 import com.wezinkhof.configuration.ConfigurationBuilder;
 import discordbot.core.AbstractCommand;
 import discordbot.db.WebDb;
+import discordbot.games.AbstractGame;
+import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.handler.CommandHandler;
+import discordbot.handler.GameHandler;
 import discordbot.main.Config;
 
 import java.io.File;
@@ -14,6 +19,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Collection of methods to help me out in maintaining the readme file
@@ -26,6 +33,8 @@ public class ReadmeHelper {
 
 		String template = readFile("readme_template.md", StandardCharsets.UTF_8);
 		template = template.replace("%_COMMANDS_LIST_SIMPLE_%", readmeCommandSimpleList());
+		template = template.replace("%_LIST_OF_GAMES_%", readmeListOfgames());
+		template = template.replace("%_CONFIG_PER_GUILD_%", readmeGuildConfiguration());
 		template = template.replace("%_COMMANDS_LIST_DETAILS_%", readmeCommandDetailsList());
 		Files.write(Paths.get("./readme.md"), template.getBytes(StandardCharsets.UTF_8));
 	}
@@ -33,6 +42,40 @@ public class ReadmeHelper {
 	private static String readFile(String path, Charset encoding) throws IOException {
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded, encoding);
+	}
+
+	private static String readmeListOfgames() {
+		GameHandler gameHandler = new GameHandler(null);
+		List<AbstractGame> gameList = gameHandler.getGameList();
+		String s = "";
+		s += "Key | Name | Players |" + Config.EOL;
+		s += "--- | --- | --- |" + Config.EOL;
+		for (AbstractGame game : gameList) {
+			s += game.getCodeName() + " | ";
+			s += game.getFullname() + " | ";
+			s += game.getTotalPlayers();
+			s += Config.EOL;
+		}
+
+		return s;
+	}
+
+	private static String readmeGuildConfiguration() {
+		String s = "";
+		Map<String, AbstractGuildSetting> defaults = DefaultGuildSettings.getDefaults();
+		ArrayList<String> skeys = new ArrayList<>(defaults.keySet());
+		Collections.sort(skeys);
+		s += "Key | Default | Description |" + Config.EOL;
+		s += "--- | --- | ---|" + Config.EOL;
+		for (String skey : skeys) {
+
+			s += defaults.get(skey).getKey() + " | ";
+			s += defaults.get(skey).getDefault() + " | ";
+			s += Joiner.on("<br/>").join(defaults.get(skey).getDescription());
+			s += Config.EOL;
+		}
+
+		return s;
 	}
 
 	/**

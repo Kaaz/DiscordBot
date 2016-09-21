@@ -4,7 +4,7 @@ A Java bot for [Discord](https://discordapp.com/) using the [Discord4J interface
 It uses mysql to store data, a create script can be found in the sql folder  
 To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [avconv](https://libav.org/avconv.html)
 
-You can play/test it on its own 
+You can play/test it on discord 
 [![Discord](https://discordapp.com/api/guilds/225168913808228352/widget.png)](https://discord.gg/eaywDDt)
 ## What can it do?
 
@@ -27,6 +27,24 @@ For more information about a command use **help \<commandname\>**
 Current list of all available commands. See below for a more detailed list
 
 %_COMMANDS_LIST_SIMPLE_%
+
+## Games
+
+Games can be accessed though the **!game** command
+
+A list of games:
+
+%_LIST_OF_GAMES_%
+
+
+## Per guild configuration
+
+The configuration can be accessed though the **!config** command
+ 
+The following settings can be changed per guild:
+
+%_CONFIG_PER_GUILD_%
+
 
 ## Warning
 
