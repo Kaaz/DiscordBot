@@ -43,6 +43,11 @@ Games can be accessed though the **!game** command
 
 A list of games:
 
+Key | Name | Players |
+--- | --- | --- |
+cf | Connect Four | 2
+gos | Game of sticks | 2
+tic | Tic tac toe | 2
 
 
 
@@ -53,7 +58,7 @@ The configuration can be accessed though the **!config** command
 The following settings can be changed per guild:
 
 Key | Default | Description |
---- | --- | ---| ---
+--- | --- | ---|
 bot_channel | general | Channel where the bots default output goes to
 bot_listen | all | What channels to listen to? (all;mine)<br/>all -> responds to all channels<br/>mine -> only responds to messages in configured channel
 chat_bot_enabled | false | Chat with people
