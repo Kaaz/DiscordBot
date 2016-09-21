@@ -69,7 +69,6 @@ public class GithubService extends AbstractService {
 			}
 			if (timestamp > lastKnownCommitTimestamp) {
 				commitsMessage += commitOutputFormat(timestamp, message, committer, commit.getSha());
-
 				newLastKnownCommitTimestamp = timestamp;
 				commitCount++;
 				if (commitCount >= MAX_COMMITS_PER_POST) {

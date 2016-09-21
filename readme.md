@@ -4,8 +4,8 @@ A Java bot for [Discord](https://discordapp.com/) using the [Discord4J interface
 It uses mysql to store data, a create script can be found in the sql folder  
 To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [avconv](https://libav.org/avconv.html)
 
-
-
+You can play/test it on its own 
+[![Discord](https://discordapp.com/api/guilds/225168913808228352/widget.png)](https://discord.gg/eaywDDt)
 ## What can it do?
 
 
@@ -13,6 +13,10 @@ To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/yo
 * Add custom commands
 * play/download music
 * customizable globally and per guild/server
+* play games against other users
+* subscription system
+* various optional modules
+* auto ranking system
 
 ### Commands
 
@@ -24,14 +28,14 @@ Current list of all available commands. See below for a more detailed list
 
 Commands | | | | |
 --- | --- | ---| ---| ---
-[8ball](#8ball) | [avatar](#avatar) | [blackjack](#blackjack) | [catfact](#catfact) | [command](#command)
-[config](#config) | [current](#current) | [exit](#exit) | [help](#help) | [info](#info)
-[invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave) | [play](#play)
-[playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab)
-[poll](#poll) | [purge](#purge) | [r](#r) | [reload](#reload) | [role](#role)
-[rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot) | [stop](#stop)
-[subscribe](#subscribe) | [system](#system) | [template](#template) | [user](#user) | [volume](#volume)
-
+[8ball](#8ball) | [avatar](#avatar) | [blackjack](#blackjack) | [catfact](#catfact) | [changename](#changename)
+[command](#command) | [config](#config) | [current](#current) | [exit](#exit) | [help](#help)
+[info](#info) | [invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave)
+[play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem)
+[poelab](#poelab) | [poll](#poll) | [purge](#purge) | [r](#r) | [reload](#reload)
+[role](#role) | [rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot)
+[stop](#stop) | [subscribe](#subscribe) | [system](#system) | [template](#template) | [user](#user)
+[volume](#volume) | 
 
 ## Warning
 
@@ -66,6 +70,10 @@ blackjack stand  //stands
 ### catfact
 
 Cat facts!
+
+### changename
+
+Changes my name
 
 ### command
 
