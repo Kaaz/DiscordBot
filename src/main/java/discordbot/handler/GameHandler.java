@@ -5,7 +5,7 @@ import discordbot.games.GameState;
 import discordbot.games.GameTurn;
 import discordbot.guildsettings.defaults.SettingGameModule;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
 import org.reflections.Reflections;
@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GameHandler {
 
-	private final NovaBot bot;
+	private final DiscordBot bot;
 	private Map<String, AbstractGame> playerGames = new ConcurrentHashMap<>();
 	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
 	private final Map<String, Class<? extends AbstractGame>> gameClassMap;
@@ -51,7 +51,7 @@ public class GameHandler {
 		return false;
 	}
 
-	public GameHandler(NovaBot bot) {
+	public GameHandler(DiscordBot bot) {
 		this.bot = bot;
 		gameClassMap = new HashMap<>();
 		gameInfoMap = new HashMap<>();

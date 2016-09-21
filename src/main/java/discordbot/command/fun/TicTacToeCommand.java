@@ -2,13 +2,13 @@ package discordbot.command.fun;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 public class TicTacToeCommand extends AbstractCommand {
-	public TicTacToeCommand(NovaBot b) {
+	public TicTacToeCommand(DiscordBot b) {
 		super(b);
 	}
 

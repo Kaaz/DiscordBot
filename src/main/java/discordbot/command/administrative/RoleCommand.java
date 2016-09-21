@@ -4,7 +4,7 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.role.RoleRankings;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IRole;
@@ -20,7 +20,7 @@ import java.util.List;
  * manages roles
  */
 public class RoleCommand extends AbstractCommand {
-	public RoleCommand(NovaBot b) {
+	public RoleCommand(DiscordBot b) {
 		super(b);
 	}
 

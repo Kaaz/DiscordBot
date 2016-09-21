@@ -3,7 +3,7 @@ package discordbot.command.music;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -12,7 +12,7 @@ import sx.blah.discord.handle.obj.IUser;
  * make the bot stop playing music
  */
 public class Stop extends AbstractCommand {
-	public Stop(NovaBot b) {
+	public Stop(DiscordBot b) {
 		super(b);
 	}
 

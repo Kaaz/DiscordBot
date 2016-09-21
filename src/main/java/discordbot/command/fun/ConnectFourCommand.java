@@ -2,14 +2,14 @@ package discordbot.command.fun;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 public class ConnectFourCommand extends AbstractCommand {
 
-	public ConnectFourCommand(NovaBot b) {
+	public ConnectFourCommand(DiscordBot b) {
 		super(b);
 	}
 

@@ -7,7 +7,7 @@ import discordbot.db.table.TMusic;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -29,7 +29,7 @@ public class CurrentTrack extends AbstractCommand {
 
 	private final int BLOCK_PARTS = 10;
 
-	public CurrentTrack(NovaBot b) {
+	public CurrentTrack(DiscordBot b) {
 		super(b);
 	}
 

@@ -2,7 +2,7 @@ package discordbot.service;
 
 import discordbot.core.AbstractService;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.modules.github.GitHub;
 import discordbot.modules.github.GithubConstants;
 import discordbot.modules.github.pojo.RepositoryCommit;
@@ -22,7 +22,7 @@ public class GithubService extends AbstractService {
 
 	private final static int MAX_COMMITS_PER_POST = 10;
 
-	public GithubService(NovaBot b) {
+	public GithubService(DiscordBot b) {
 		super(b);
 	}
 

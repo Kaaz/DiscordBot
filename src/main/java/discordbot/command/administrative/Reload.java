@@ -2,7 +2,7 @@ package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -11,7 +11,7 @@ import sx.blah.discord.handle.obj.IUser;
  * reloads config
  */
 public class Reload extends AbstractCommand {
-	public Reload(NovaBot b) {
+	public Reload(DiscordBot b) {
 		super(b);
 	}
 

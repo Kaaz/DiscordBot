@@ -4,7 +4,7 @@ import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -13,7 +13,7 @@ import sx.blah.discord.handle.obj.IUser;
  * manages the templates
  */
 public class Template extends AbstractCommand {
-	public Template(NovaBot b) {
+	public Template(DiscordBot b) {
 		super(b);
 	}
 

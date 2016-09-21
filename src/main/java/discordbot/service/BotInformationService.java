@@ -2,7 +2,7 @@ package discordbot.service;
 
 import discordbot.core.AbstractService;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class BotInformationService extends AbstractService {
 
-	public BotInformationService(NovaBot b) {
+	public BotInformationService(DiscordBot b) {
 		super(b);
 	}
 

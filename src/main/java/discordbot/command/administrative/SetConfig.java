@@ -6,7 +6,7 @@ import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -21,7 +21,7 @@ import java.util.Map;
  * gets/sets the configuration of the bot
  */
 public class SetConfig extends AbstractCommand {
-	public SetConfig(NovaBot b) {
+	public SetConfig(DiscordBot b) {
 		super(b);
 	}
 

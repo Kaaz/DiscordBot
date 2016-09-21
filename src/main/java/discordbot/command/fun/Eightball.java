@@ -1,7 +1,7 @@
 package discordbot.command.fun;
 
 import discordbot.core.AbstractCommand;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -33,7 +33,7 @@ public class Eightball extends AbstractCommand {
 			"You are doomed",
 			"You can't handle the truth"};
 
-	public Eightball(NovaBot bot) {
+	public Eightball(DiscordBot bot) {
 		super(bot);
 	}
 

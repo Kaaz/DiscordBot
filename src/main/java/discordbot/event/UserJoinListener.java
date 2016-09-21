@@ -7,7 +7,7 @@ import discordbot.guildsettings.defaults.SettingPMUserEvents;
 import discordbot.guildsettings.defaults.SettingWelcomeNewUsers;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.impl.events.UserJoinEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
@@ -18,8 +18,8 @@ import java.sql.Timestamp;
  * A user joins a guild
  */
 public class UserJoinListener extends AbstractEventListener<UserJoinEvent> {
-	public UserJoinListener(NovaBot novaBot) {
-		super(novaBot);
+	public UserJoinListener(DiscordBot discordBot) {
+		super(discordBot);
 	}
 
 	@Override
@@ -32,10 +32,10 @@ public class UserJoinListener extends AbstractEventListener<UserJoinEvent> {
 		IUser user = event.getUser();
 		IGuild guild = event.getGuild();
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingPMUserEvents.class))) {
-			novaBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s** joined the guild **%s**", user.mention(), guild.getName()));
+			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s** joined the guild **%s**", user.mention(), guild.getName()));
 		}
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingWelcomeNewUsers.class))) {
-			novaBot.out.sendMessage(guild.getChannels().get(0), String.format(TextHandler.get("welcome_new_user"), user.mention()));
+			discordBot.out.sendMessage(guild.getChannels().get(0), String.format(TextHandler.get("welcome_new_user"), user.mention()));
 		}
 		OGuildMember guildMember = TGuildMember.findBy(guild.getID(), user.getID());
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());

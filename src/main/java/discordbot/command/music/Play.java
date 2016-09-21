@@ -10,7 +10,7 @@ import discordbot.db.table.TMusic;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.SCUtil;
 import discordbot.util.YTUtil;
 import discordbot.util.obj.SCFile;
@@ -43,7 +43,7 @@ public class Play extends AbstractCommand {
 	private final Pattern soundCloudUrlPattern = Pattern.compile("^https?://soundcloud.com/([a-z0-9-]+)/(sets/)?([a-z0-9-]+)$");
 	private Map<String, ArrayList<Integer>> userFilteredSongs = new ConcurrentHashMap<>();
 
-	public Play(NovaBot b) {
+	public Play(DiscordBot b) {
 		super(b);
 	}
 

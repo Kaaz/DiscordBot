@@ -13,7 +13,7 @@ import discordbot.db.table.TServers;
 import discordbot.db.table.TUser;
 import discordbot.guildsettings.defaults.*;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
 import org.reflections.Reflections;
@@ -37,7 +37,7 @@ import java.util.TimerTask;
  */
 public class CommandHandler {
 
-	private NovaBot bot;
+	private DiscordBot bot;
 	private HashMap<String, AbstractCommand> commands;
 	private HashMap<String, AbstractCommand> commandsAlias;
 	private HashMap<String, String> customCommands;
@@ -45,7 +45,7 @@ public class CommandHandler {
 	public CommandHandler() {
 	}
 
-	public CommandHandler(NovaBot b) {
+	public CommandHandler(DiscordBot b) {
 		bot = b;
 	}
 
@@ -275,7 +275,7 @@ public class CommandHandler {
 		for (Class<? extends AbstractCommand> s : classes) {
 			try {
 				String packageName = s.getPackage().getName();
-				AbstractCommand c = s.getConstructor(NovaBot.class).newInstance(bot);
+				AbstractCommand c = s.getConstructor(DiscordBot.class).newInstance(bot);
 				c.setCommandCategory(CommandCategory.fromPackage(packageName.substring(packageName.lastIndexOf(".") + 1)));
 				if (!c.isEnabled()) {
 					continue;
@@ -323,7 +323,7 @@ public class CommandHandler {
 				if (!commandsAlias.containsKey(alias)) {
 					commandsAlias.put(alias, command);
 				} else {
-					NovaBot.LOGGER.warn("Duplicate alias found! The commands `%s` and `%s` use the alias `%s`",
+					DiscordBot.LOGGER.warn("Duplicate alias found! The commands `%s` and `%s` use the alias `%s`",
 							command.getCommand(), commandsAlias.get(alias).getCommand(), alias);
 				}
 			}

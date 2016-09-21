@@ -2,7 +2,7 @@ package discordbot.threads;
 
 import discordbot.core.AbstractService;
 import discordbot.main.Launcher;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import org.reflections.Reflections;
 
 import java.util.ArrayList;
@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Set;
 
 public class ServiceHandlerThread extends Thread {
-	private NovaBot bot;
+	private DiscordBot bot;
 	private List<Class<? extends AbstractService>> services;
 
-	public ServiceHandlerThread(NovaBot bot) {
+	public ServiceHandlerThread(DiscordBot bot) {
 		super("ServiceHandler");
 		services = new ArrayList<>();
 		this.bot = bot;
@@ -36,7 +36,7 @@ public class ServiceHandlerThread extends Thread {
 					try {
 						if (bot != null) {
 							for (Class<? extends AbstractService> serviceClass : services) {
-								AbstractService serviceInstance = serviceClass.getConstructor(NovaBot.class).newInstance(bot);
+								AbstractService serviceInstance = serviceClass.getConstructor(DiscordBot.class).newInstance(bot);
 								serviceInstance.start();
 							}
 						}

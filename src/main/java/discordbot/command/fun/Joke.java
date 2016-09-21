@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import org.apache.commons.lang3.StringEscapeUtils;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -24,7 +24,7 @@ import java.util.Random;
  * gives you a random chuck norris joke with chuck norris replaced by <@user>
  */
 public class Joke extends AbstractCommand {
-	public Joke(NovaBot b) {
+	public Joke(DiscordBot b) {
 		super(b);
 	}
 

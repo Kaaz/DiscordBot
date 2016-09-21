@@ -3,7 +3,7 @@ package discordbot.command.music;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -12,7 +12,7 @@ import sx.blah.discord.handle.obj.IUser;
  * skips current active track
  */
 public class SkipTrack extends AbstractCommand {
-	public SkipTrack(NovaBot b) {
+	public SkipTrack(DiscordBot b) {
 		super(b);
 	}
 

@@ -4,7 +4,7 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class CustomCommand extends AbstractCommand {
 	private String[] valid_actions = {"add", "delete"};
 
-	public CustomCommand(NovaBot b) {
+	public CustomCommand(DiscordBot b) {
 		super(b);
 	}
 

@@ -3,7 +3,7 @@ package discordbot.command.informative;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -15,7 +15,7 @@ import java.util.Optional;
  * shows some info about the user
  */
 public class User extends AbstractCommand {
-	public User(NovaBot b) {
+	public User(DiscordBot b) {
 		super(b);
 	}
 

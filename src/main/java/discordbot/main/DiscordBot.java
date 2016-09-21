@@ -25,7 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class NovaBot {
+public class DiscordBot {
 
 	public final long startupTimeStamp;
 	public IDiscordClient instance;
@@ -38,9 +38,9 @@ public class NovaBot {
 	private boolean isReady = false;
 	public boolean statusLocked = false;
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
-	public static final Logger LOGGER = LoggerFactory.getLogger(NovaBot.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 
-	public NovaBot() throws DiscordException {
+	public DiscordBot() throws DiscordException {
 		registerHandlers();
 		instance = new ClientBuilder().withToken(Config.BOT_TOKEN).login();
 		registerEvents();
@@ -130,7 +130,7 @@ public class NovaBot {
 		Set<Class<? extends AbstractEventListener>> classes = reflections.getSubTypesOf(AbstractEventListener.class);
 		for (Class<? extends AbstractEventListener> c : classes) {
 			try {
-				AbstractEventListener eventListener = c.getConstructor(NovaBot.class).newInstance(this);
+				AbstractEventListener eventListener = c.getConstructor(DiscordBot.class).newInstance(this);
 				if (eventListener.listenerIsActivated()) {
 					instance.getDispatcher().registerListener(eventListener);
 				}

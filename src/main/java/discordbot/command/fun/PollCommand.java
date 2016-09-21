@@ -3,14 +3,14 @@ package discordbot.command.fun;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 public class PollCommand extends AbstractCommand {
 	private static final int MAX_DURATION_IN_MINUTES = 10;
 
-	public PollCommand(NovaBot b) {
+	public PollCommand(DiscordBot b) {
 		super(b);
 	}
 

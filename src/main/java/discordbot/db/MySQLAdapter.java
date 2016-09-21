@@ -2,7 +2,7 @@ package discordbot.db;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import discordbot.exceptions.UnimplementedParameterException;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 
 import java.sql.*;
 import java.util.Calendar;
@@ -35,7 +35,7 @@ public class MySQLAdapter {
 			dataSource.setCharacterEncoding("utf-8");
 			return dataSource.getConnection();
 		} catch (SQLException e) {
-			NovaBot.LOGGER.error("Can't connect to the database! Make sure the database settings are corrent and the database server is running");
+			DiscordBot.LOGGER.error("Can't connect to the database! Make sure the database settings are corrent and the database server is running");
 			System.exit(-1);
 		}
 		return null;

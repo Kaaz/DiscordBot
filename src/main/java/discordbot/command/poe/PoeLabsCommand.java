@@ -2,7 +2,7 @@ package discordbot.command.poe;
 
 import discordbot.core.AbstractCommand;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.modules.reddit.RedditScraper;
 import discordbot.modules.reddit.pojo.Comment;
 import discordbot.modules.reddit.pojo.Post;
@@ -27,7 +27,7 @@ public class PoeLabsCommand extends AbstractCommand {
 	));
 	private Pattern imagePattern = Pattern.compile("(?m)(normal|uber|merciless|cruel) lab notes[\\s]*(https?:.*(png|jpg))", Pattern.MULTILINE);
 
-	public PoeLabsCommand(NovaBot b) {
+	public PoeLabsCommand(DiscordBot b) {
 		super(b);
 	}
 

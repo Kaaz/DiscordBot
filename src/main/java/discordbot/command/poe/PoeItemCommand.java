@@ -2,7 +2,7 @@ package discordbot.command.poe;
 
 import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.modules.pathofexile.ItemAnalyzer;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -12,7 +12,7 @@ import sx.blah.discord.handle.obj.IUser;
  * Analyzes an item from path of exile
  */
 public class PoeItemCommand extends AbstractCommand {
-	public PoeItemCommand(NovaBot b) {
+	public PoeItemCommand(DiscordBot b) {
 		super(b);
 	}
 

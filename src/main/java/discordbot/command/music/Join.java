@@ -3,7 +3,7 @@ package discordbot.command.music;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -16,7 +16,7 @@ import sx.blah.discord.util.MissingPermissionsException;
  * make the bot join the channel of the user
  */
 public class Join extends AbstractCommand {
-	public Join(NovaBot b) {
+	public Join(DiscordBot b) {
 		super(b);
 	}
 

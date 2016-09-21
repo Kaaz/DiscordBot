@@ -3,7 +3,7 @@ package discordbot.command.administrative;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -12,7 +12,7 @@ import sx.blah.discord.handle.obj.IUser;
  * shows status of the bot's system
  */
 public class SystemCommand extends AbstractCommand {
-	public SystemCommand(NovaBot b) {
+	public SystemCommand(DiscordBot b) {
 		super(b);
 	}
 

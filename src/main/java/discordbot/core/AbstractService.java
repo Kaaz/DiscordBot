@@ -8,7 +8,7 @@ import discordbot.db.table.TChannels;
 import discordbot.db.table.TServiceVariables;
 import discordbot.db.table.TServices;
 import discordbot.db.table.TSubscriptions;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 
 import java.util.ArrayList;
@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractService {
-	protected NovaBot bot;
+	protected DiscordBot bot;
 	private Map<String, OServiceVariable> cache;
 
-	public AbstractService(NovaBot b) {
+	public AbstractService(DiscordBot b) {
 		bot = b;
 		cache = new HashMap<>();
 	}

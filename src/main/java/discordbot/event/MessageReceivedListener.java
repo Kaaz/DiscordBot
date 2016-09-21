@@ -1,7 +1,7 @@
 package discordbot.event;
 
 import discordbot.core.AbstractEventListener;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IPrivateChannel;
@@ -10,8 +10,8 @@ import sx.blah.discord.handle.obj.IPrivateChannel;
  * The bot recieves a message
  */
 public class MessageReceivedListener extends AbstractEventListener<MessageReceivedEvent> {
-	public MessageReceivedListener(NovaBot novaBot) {
-		super(novaBot);
+	public MessageReceivedListener(DiscordBot discordBot) {
+		super(discordBot);
 	}
 
 	@Override
@@ -23,9 +23,9 @@ public class MessageReceivedListener extends AbstractEventListener<MessageReceiv
 	public void handle(MessageReceivedEvent event) {
 		IMessage message = event.getMessage();
 		if (event.getMessage().getChannel() instanceof IPrivateChannel) {
-			novaBot.handlePrivateMessage((IPrivateChannel) message.getChannel(), message.getAuthor(), message);
+			discordBot.handlePrivateMessage((IPrivateChannel) message.getChannel(), message.getAuthor(), message);
 		} else {
-			novaBot.handleMessage(message.getGuild(), message.getChannel(), message.getAuthor(), message);
+			discordBot.handleMessage(message.getGuild(), message.getChannel(), message.getAuthor(), message);
 		}
 	}
 }

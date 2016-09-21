@@ -3,7 +3,7 @@ package discordbot.command.fun;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.modules.reddit.RedditScraper;
 import discordbot.modules.reddit.pojo.Image;
 import discordbot.modules.reddit.pojo.ImagePreview;
@@ -36,7 +36,7 @@ public class RedditCommand extends AbstractCommand {
 			"i.reddituploads.com"
 	}));
 
-	public RedditCommand(NovaBot b) {
+	public RedditCommand(DiscordBot b) {
 		super(b);
 	}
 

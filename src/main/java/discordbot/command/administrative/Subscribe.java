@@ -11,7 +11,7 @@ import discordbot.db.table.TServices;
 import discordbot.db.table.TSubscriptions;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -25,7 +25,7 @@ import java.util.List;
  * subscripe to certain events
  */
 public class Subscribe extends AbstractCommand {
-	public Subscribe(NovaBot b) {
+	public Subscribe(DiscordBot b) {
 		super(b);
 	}
 

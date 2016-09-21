@@ -17,7 +17,7 @@ public class Launcher {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		WebDb.init();
 		if (Config.BOT_ENABLED) {
-			NovaBot nb = new NovaBot();
+			DiscordBot nb = new DiscordBot();
 			Thread serviceHandler = new ServiceHandlerThread(nb);
 			serviceHandler.setDaemon(true);
 			serviceHandler.start();

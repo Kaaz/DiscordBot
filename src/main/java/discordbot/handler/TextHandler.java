@@ -4,7 +4,7 @@ package discordbot.handler;
 import discordbot.db.WebDb;
 import discordbot.exceptions.TemplateNotSetException;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +19,7 @@ import java.util.Random;
 public class TextHandler {
 
 	private static final TextHandler instance = new TextHandler();
-	private NovaBot bot = null;
+	private DiscordBot bot = null;
 	private Random rnd;
 	private HashMap<String, ArrayList<String>> dictionary;
 
@@ -28,7 +28,7 @@ public class TextHandler {
 		load();
 	}
 
-	public static void setBot(NovaBot bot) {
+	public static void setBot(DiscordBot bot) {
 		instance.bot = bot;
 	}
 

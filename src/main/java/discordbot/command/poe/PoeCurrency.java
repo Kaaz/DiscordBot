@@ -5,7 +5,7 @@ import discordbot.db.model.OPoEToken;
 import discordbot.db.table.TPoEToken;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import org.libpoe.model.StashTab;
 import org.libpoe.model.item.Item;
@@ -27,7 +27,7 @@ import java.util.List;
  * Analyzes an item from path of exile
  */
 public class PoeCurrency extends AbstractCommand {
-	public PoeCurrency(NovaBot b) {
+	public PoeCurrency(DiscordBot b) {
 		super(b);
 	}
 

@@ -2,12 +2,12 @@ package discordbot.command.economy;
 
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 public class BankCommand extends AbstractCommand {
-	public BankCommand(NovaBot b) {
+	public BankCommand(DiscordBot b) {
 		super(b);
 	}
 

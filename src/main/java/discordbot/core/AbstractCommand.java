@@ -2,16 +2,16 @@ package discordbot.core;
 
 import discordbot.command.CommandCategory;
 import discordbot.command.CommandVisibility;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 public abstract class AbstractCommand {
 
-	protected NovaBot bot;
+	protected DiscordBot bot;
 	private CommandCategory commandCategory = CommandCategory.UNKNOWN;
 
-	public AbstractCommand(NovaBot bot) {
+	public AbstractCommand(DiscordBot bot) {
 		this.bot = bot;
 	}
 

@@ -4,7 +4,7 @@ import discordbot.core.AbstractCommand;
 import discordbot.games.Blackjack;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -22,7 +22,7 @@ public class BlackJackCommand extends AbstractCommand {
 	public final long DEALER_TURN_INTERVAL = 2000L;
 	private Map<String, Blackjack> playerGames = new ConcurrentHashMap<>();
 
-	public BlackJackCommand(NovaBot b) {
+	public BlackJackCommand(DiscordBot b) {
 		super(b);
 	}
 

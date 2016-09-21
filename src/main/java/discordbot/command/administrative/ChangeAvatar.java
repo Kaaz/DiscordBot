@@ -1,7 +1,7 @@
 package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
@@ -13,7 +13,7 @@ import sx.blah.discord.util.RateLimitException;
  * manage avatar
  */
 public class ChangeAvatar extends AbstractCommand {
-	public ChangeAvatar(NovaBot b) {
+	public ChangeAvatar(DiscordBot b) {
 		super(b);
 	}
 

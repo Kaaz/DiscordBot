@@ -7,7 +7,7 @@ import discordbot.db.table.TMusic;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import discordbot.util.TimeUtil;
 import sx.blah.discord.handle.obj.IChannel;
@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class Playlist extends AbstractCommand {
 
-	public Playlist(NovaBot b) {
+	public Playlist(DiscordBot b) {
 		super(b);
 	}
 

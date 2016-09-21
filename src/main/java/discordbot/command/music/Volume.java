@@ -3,7 +3,7 @@ package discordbot.command.music;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -13,7 +13,7 @@ import sx.blah.discord.handle.obj.IUser;
  * With no params returns the current volume
  */
 public class Volume extends AbstractCommand {
-	public Volume(NovaBot b) {
+	public Volume(DiscordBot b) {
 		super(b);
 	}
 

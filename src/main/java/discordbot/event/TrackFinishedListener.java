@@ -1,15 +1,15 @@
 package discordbot.event;
 
 import discordbot.core.AbstractEventListener;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.util.audio.events.TrackFinishEvent;
 
 /**
  * Track finished event
  */
 public class TrackFinishedListener extends AbstractEventListener<TrackFinishEvent> {
-	public TrackFinishedListener(NovaBot novaBot) {
-		super(novaBot);
+	public TrackFinishedListener(DiscordBot discordBot) {
+		super(discordBot);
 	}
 
 	@Override
@@ -19,6 +19,6 @@ public class TrackFinishedListener extends AbstractEventListener<TrackFinishEven
 
 	@Override
 	public void handle(TrackFinishEvent event) {
-		novaBot.trackEnded(event.getOldTrack(), event.getNewTrack(), event.getPlayer().getGuild());
+		discordBot.trackEnded(event.getOldTrack(), event.getNewTrack(), event.getPlayer().getGuild());
 	}
 }

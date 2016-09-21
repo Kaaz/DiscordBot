@@ -2,7 +2,7 @@ package discordbot.command.fun;
 
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -11,7 +11,7 @@ import sx.blah.discord.handle.obj.IUser;
  * make the bot say something
  */
 public class Say extends AbstractCommand {
-	public Say(NovaBot b) {
+	public Say(DiscordBot b) {
 		super(b);
 	}
 

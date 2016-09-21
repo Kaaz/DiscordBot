@@ -2,7 +2,7 @@ package discordbot.service;
 
 import discordbot.core.AbstractService;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IInvite;
 import sx.blah.discord.handle.obj.Status;
@@ -41,7 +41,7 @@ public class BotStatusService extends AbstractService {
 			Status.game("Rare pepe"),
 	};
 
-	public BotStatusService(NovaBot b) {
+	public BotStatusService(DiscordBot b) {
 		super(b);
 	}
 

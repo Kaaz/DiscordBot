@@ -5,7 +5,7 @@ import discordbot.db.model.OGuildMember;
 import discordbot.db.table.TGuildMember;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.handler.GuildSettings;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.role.MemberShipRole;
 import discordbot.role.RoleRankings;
 import sx.blah.discord.handle.obj.IGuild;
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class UserRankingSystemService extends AbstractService {
 
-	public UserRankingSystemService(NovaBot b) {
+	public UserRankingSystemService(DiscordBot b) {
 		super(b);
 	}
 

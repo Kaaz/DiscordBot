@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import org.apache.commons.lang3.StringEscapeUtils;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -19,7 +19,7 @@ import java.net.URLConnection;
  * gives you a random cat fact
  */
 public class Cats extends AbstractCommand {
-	public Cats(NovaBot b) {
+	public Cats(DiscordBot b) {
 		super(b);
 	}
 

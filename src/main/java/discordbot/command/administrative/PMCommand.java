@@ -2,7 +2,7 @@ package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -12,7 +12,7 @@ import sx.blah.discord.handle.obj.IUser;
  * make the bot pm someone
  */
 public class PMCommand extends AbstractCommand {
-	public PMCommand(NovaBot b) {
+	public PMCommand(DiscordBot b) {
 		super(b);
 	}
 

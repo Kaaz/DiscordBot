@@ -7,7 +7,7 @@ import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -32,19 +32,19 @@ import java.util.stream.Collectors;
 public class MusicPlayerHandler {
 	private final static Map<IGuild, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
 	private final IGuild guild;
-	private final NovaBot bot;
+	private final DiscordBot bot;
 	private OMusic currentlyPlaying = new OMusic();
 	private IMessage activeMsg;
 	private long currentSongLength = 0;
 	private long currentSongStartTimeInSeconds = 0;
 
-	private MusicPlayerHandler(IGuild guild, NovaBot bot) {
+	private MusicPlayerHandler(IGuild guild, DiscordBot bot) {
 		this.guild = guild;
 		this.bot = bot;
 		playerInstances.put(guild, this);
 	}
 
-	public static MusicPlayerHandler getAudioPlayerForGuild(IGuild guild, NovaBot bot) {
+	public static MusicPlayerHandler getAudioPlayerForGuild(IGuild guild, DiscordBot bot) {
 		if (playerInstances.containsKey(guild)) {
 			return playerInstances.get(guild);
 		} else {

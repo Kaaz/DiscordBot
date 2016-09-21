@@ -6,7 +6,7 @@ import discordbot.core.AbstractCommand;
 import discordbot.games.SlotMachine;
 import discordbot.games.slotmachine.Slot;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -20,7 +20,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 
 	public final long SPIN_INTERVAL = 2000L;
 
-	public SlotMachineCommand(NovaBot bot) {
+	public SlotMachineCommand(DiscordBot bot) {
 		super(bot);
 	}
 

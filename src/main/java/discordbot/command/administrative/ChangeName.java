@@ -2,7 +2,7 @@ package discordbot.command.administrative;
 
 import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -11,7 +11,7 @@ import sx.blah.discord.handle.obj.IUser;
  * changes the bots name
  */
 public class ChangeName extends AbstractCommand {
-	public ChangeName(NovaBot b) {
+	public ChangeName(DiscordBot b) {
 		super(b);
 	}
 

@@ -6,7 +6,7 @@ import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.TextHandler;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
@@ -22,7 +22,7 @@ import java.util.HashMap;
  * help function
  */
 public class Help extends AbstractCommand {
-	public Help(NovaBot b) {
+	public Help(DiscordBot b) {
 		super(b);
 	}
 

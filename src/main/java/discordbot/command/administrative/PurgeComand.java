@@ -3,7 +3,7 @@ package discordbot.command.administrative;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -14,7 +14,7 @@ import sx.blah.discord.handle.obj.Permissions;
  * Purges messages in channel
  */
 public class PurgeComand extends AbstractCommand {
-	public PurgeComand(NovaBot b) {
+	public PurgeComand(DiscordBot b) {
 		super(b);
 	}
 

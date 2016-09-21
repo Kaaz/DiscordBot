@@ -2,7 +2,7 @@ package discordbot.command.informative;
 
 import discordbot.core.AbstractCommand;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -11,7 +11,7 @@ import sx.blah.discord.handle.obj.IUser;
  * Instructions on how to invite the bot to a discord server
  */
 public class Invite extends AbstractCommand {
-	public Invite(NovaBot b) {
+	public Invite(DiscordBot b) {
 		super(b);
 	}
 

@@ -3,7 +3,7 @@ package discordbot.command.music;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IVoiceChannel;
@@ -15,7 +15,7 @@ import java.util.List;
  * make the bot leave
  */
 public class Leave extends AbstractCommand {
-	public Leave(NovaBot b) {
+	public Leave(DiscordBot b) {
 		super(b);
 	}
 

@@ -2,7 +2,7 @@ package discordbot.command.fun;
 
 import discordbot.core.AbstractCommand;
 import discordbot.handler.TextHandler;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -82,7 +82,7 @@ public class RotateCommand extends AbstractCommand {
 		charMap.put("\u2045", "\u2046");
 	}
 
-	public RotateCommand(NovaBot bot) {
+	public RotateCommand(DiscordBot bot) {
 		super(bot);
 	}
 

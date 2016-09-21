@@ -4,7 +4,7 @@ import discordbot.command.CooldownScale;
 import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
 import discordbot.main.Config;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
 import org.trello4j.Trello;
@@ -24,7 +24,7 @@ import java.util.List;
 public class Info extends AbstractCommand implements ICommandCooldown {
 	private Trello trello;
 
-	public Info(NovaBot b) {
+	public Info(DiscordBot b) {
 		super(b);
 		trello = new TrelloImpl(Config.TRELLO_API_KEY, Config.TRELLO_TOKEN);
 	}

@@ -3,7 +3,7 @@ package discordbot.handler;
 import discordbot.core.Logger;
 import discordbot.main.Config;
 import discordbot.main.Launcher;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -14,11 +14,11 @@ import sx.blah.discord.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class OutgoingContentHandler {
-	private final NovaBot bot;
+	private final DiscordBot bot;
 	private final static long DELETE_INTERVAL = 500L;
 	private final MessageDeleter deleteThread;
 
-	public OutgoingContentHandler(NovaBot b) {
+	public OutgoingContentHandler(DiscordBot b) {
 		bot = b;
 		deleteThread = new MessageDeleter();
 	}

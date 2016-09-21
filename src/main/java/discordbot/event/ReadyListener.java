@@ -1,15 +1,15 @@
 package discordbot.event;
 
 import discordbot.core.AbstractEventListener;
-import discordbot.main.NovaBot;
+import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 
 /**
  * Successfully logged in to discord
  */
 public class ReadyListener extends AbstractEventListener<ReadyEvent> {
-	public ReadyListener(NovaBot novaBot) {
-		super(novaBot);
+	public ReadyListener(DiscordBot discordBot) {
+		super(discordBot);
 	}
 
 	@Override
@@ -20,7 +20,7 @@ public class ReadyListener extends AbstractEventListener<ReadyEvent> {
 	@Override
 	public void handle(ReadyEvent event) {
 
-		novaBot.markReady(true);
+		discordBot.markReady(true);
 		System.out.println("[event] Bot is ready!");
 
 	}
