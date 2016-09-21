@@ -16,7 +16,7 @@ You can play/test it on discord
 * play games against other users
 * subscription system
 * various optional modules
-* auto ranking system
+* [auto ranking system](#Ranking system)
 
 ### Commands
 
@@ -44,6 +44,21 @@ The configuration can be accessed though the **!config** command
 The following settings can be changed per guild:
 
 %_CONFIG_PER_GUILD_%
+
+
+## Ranking system
+The auto ranking system is based on the join date of the user. After a set amount of time the user will be promoted to the next rank.
+The ranks will be created/maintained by the bot.
+
+The following settings will affect the ranking system
+[user_time_ranks](#Per guild configuration)
+[user_time_ranks_prefix](#Per guild configuration)
+
+*note: In order for this to work the bot needs the manage roles permission on discord.*
+
+The rankings go according to the table below:
+
+%_LIST_OF_AUTO_RANKS_%
 
 
 ## Warning

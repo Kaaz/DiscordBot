@@ -16,7 +16,7 @@ You can play/test it on discord
 * play games against other users
 * subscription system
 * various optional modules
-* auto ranking system
+* [auto ranking system](#Ranking system)
 
 ### Commands
 
@@ -71,6 +71,23 @@ use_economy | false | Use the economy feature?<br/>false -> nope!<br/>true -> ye
 user_time_ranks | false | This setting will require me to have the manage role permission!<br/>Users are given a role based on their time spend in the discord server<br/>If you'd like to use the time based ranks, be sure to check out the other settings first!<br/>Setting:  Use time based ranks?<br/>true  -> yes<br/>false -> no
 user_time_ranks_prefix | [rank] | The prefix of the role name for the time based role ranking<br/>Using this prefix to manage roles so make sure its somewhat unique! Or you'll have to cleanup yourself :)<br/>If you'd like to use the time based ranks make sure to set this first!<br/><br/>The prefix can be between 3 and 8 in length
 welcome_new_users | false | Show a welcome message to new users?<br/>true  -> shows a welcome message to new users<br/>false -> stays silent
+
+
+
+## Ranking system
+The auto ranking system is based on the join date of the user. After a set amount of time the user will be promoted to the next rank.
+The ranks will be created/maintained by the bot.
+
+The following settings will affect the ranking system
+[user_time_ranks](#Per guild configuration)
+[user_time_ranks_prefix](#Per guild configuration)
+
+*note: In order for this to work the bot needs the manage roles permission on discord.*
+
+The rankings go according to the table below:
+
+Name | Time spend |
+--- | --- | 
 
 
 

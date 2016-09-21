@@ -32,7 +32,17 @@ public class TimeUtil {
 	 * @return string of x min ago
 	 */
 	public static String getRelativeTime(long time, boolean shortText) {
-		long usedTime = time * 1000;
+		return getRelativeTime(time, shortText, true);
+	}
+
+	/**
+	 * @param time           timestamp in seconds
+	 * @param shortText      short or long texts
+	 * @param showChronology show when it was (ago or from now)
+	 * @return x m[inutes [from now]]
+	 */
+	public static String getRelativeTime(long time, boolean shortText, boolean showChronology) {
+		long usedTime = time * 1000L;
 		boolean future = false;
 		String chronology = "ago";
 		long now = System.currentTimeMillis();
@@ -46,6 +56,9 @@ public class TimeUtil {
 			future = true;
 		} else {
 			diff = now - usedTime;
+		}
+		if (!showChronology) {
+			chronology = "";
 		}
 		if (diff < MINUTE_MILLIS) {
 			return (diff / SECOND_MILLIS) + (shortText ? "s" : " seconds " + chronology);

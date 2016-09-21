@@ -10,6 +10,8 @@ import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.handler.CommandHandler;
 import discordbot.handler.GameHandler;
 import discordbot.main.Config;
+import discordbot.role.MemberShipRole;
+import discordbot.role.RoleRankings;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +36,7 @@ public class ReadmeHelper {
 		String template = readFile("readme_template.md", StandardCharsets.UTF_8);
 		template = template.replace("%_COMMANDS_LIST_SIMPLE_%", readmeCommandSimpleList());
 		template = template.replace("%_LIST_OF_GAMES_%", readmeListOfgames());
+		template = template.replace("%_LIST_OF_AUTO_RANKS_%", readmeListOfAutoRanks());
 		template = template.replace("%_CONFIG_PER_GUILD_%", readmeGuildConfiguration());
 		template = template.replace("%_COMMANDS_LIST_DETAILS_%", readmeCommandDetailsList());
 		Files.write(Paths.get("./readme.md"), template.getBytes(StandardCharsets.UTF_8));
@@ -42,6 +45,19 @@ public class ReadmeHelper {
 	private static String readFile(String path, Charset encoding) throws IOException {
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded, encoding);
+	}
+
+	private static String readmeListOfAutoRanks() {
+		String s = "";
+		List<MemberShipRole> allRoles = RoleRankings.getAllRoles();
+		s += "Name | Time spend |" + Config.EOL;
+		s += "--- | --- | " + Config.EOL;
+		for (MemberShipRole role : allRoles) {
+			s += role.getName() + " | ";
+			s += TimeUtil.getRelativeTime(System.currentTimeMillis() + role.getMembershipTime() / 1000L, false, false) + Config.EOL;
+		}
+
+		return s;
 	}
 
 	private static String readmeListOfgames() {

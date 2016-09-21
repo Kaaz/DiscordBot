@@ -47,6 +47,22 @@ public class RoleRankings {
 		}
 	}
 
+	/**
+	 * retrieves a list of all membership roles
+	 *
+	 * @return list
+	 */
+	public static List<MemberShipRole> getAllRoles() {
+		return roles;
+	}
+
+	/**
+	 * Prefixes the role name based on the guild's setting
+	 *
+	 * @param guild the guild
+	 * @param role  the role
+	 * @return full name
+	 */
 	public static String getFullName(IGuild guild, MemberShipRole role) {
 		return getPrefix(guild) + " " + role.getName();
 	}
@@ -60,10 +76,12 @@ public class RoleRankings {
 		return roles.get(0);
 	}
 
-	public static void fixMember(IGuild guild, IUser member) {
-		List<IRole> roles = guild.getRolesForUser(member);
-	}
 
+	/**
+	 * Attempts to fix create the membership roles for a guild
+	 *
+	 * @param guild the guild to create/modify the roles for
+	 */
 	public static void fixForServer(IGuild guild) {
 		for (int i = roles.size() - 1; i >= 0; i--) {
 			try {
@@ -79,6 +97,15 @@ public class RoleRankings {
 		return GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanksPrefix.class);
 	}
 
+	/**
+	 * Fixes adds/modifies a membership role to match the settings
+	 *
+	 * @param guild the guild to add/modify the role for
+	 * @param rank  the role to add/modify
+	 * @throws RateLimitException
+	 * @throws DiscordException
+	 * @throws MissingPermissionsException
+	 */
 	private static void fixRole(IGuild guild, MemberShipRole rank) throws RateLimitException, DiscordException, MissingPermissionsException {
 		List<IRole> rolesByName = guild.getRolesByName(getFullName(guild, rank));
 		IRole role;
@@ -98,6 +125,13 @@ public class RoleRankings {
 		}
 	}
 
+	/**
+	 * checks if a user has the manage roles permission
+	 *
+	 * @param guild   the guild to check
+	 * @param ourUser the user to check for
+	 * @return has the manage roles premission?
+	 */
 	public static boolean canModifyRoles(IGuild guild, IUser ourUser) {
 
 		for (IRole ourRoles : guild.getRolesForUser(ourUser)) {
@@ -108,6 +142,15 @@ public class RoleRankings {
 		return false;
 	}
 
+	/**
+	 * deletes the created roles
+	 *
+	 * @param guild   the guild to clean up
+	 * @param ourUser the bot user
+	 * @throws RateLimitException
+	 * @throws DiscordException
+	 * @throws MissingPermissionsException
+	 */
 	public static void cleanUpRoles(IGuild guild, IUser ourUser) throws RateLimitException, DiscordException, MissingPermissionsException {
 		if (!canModifyRoles(guild, ourUser)) {
 			return;
@@ -125,6 +168,12 @@ public class RoleRankings {
 		}
 	}
 
+	/**
+	 * Attempts to fix create the membership roles for all guilds
+	 *
+	 * @param guilds   the guilds to fix the roles for
+	 * @param instance the bot instance
+	 */
 	public static void fixRoles(List<IGuild> guilds, IDiscordClient instance) {
 		for (IGuild guild : guilds) {
 			if (!GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanks.class).equals("true")) {
