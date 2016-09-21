@@ -89,7 +89,7 @@ public class GithubService extends AbstractService {
 			if (commitCount <= 3) {
 				totalMessage += commitsMessage;
 			} else {
-				totalMessage += Misc.makeAsciiTable(Arrays.asList("hash", "by", "description"), tblContent);
+				totalMessage += Misc.makeAsciiTable(Arrays.asList("hash", "committer", "description"), tblContent);
 			}
 			for (IChannel iChannel : getSubscribedChannels()) {
 				bot.out.sendMessage(iChannel, totalMessage);
@@ -105,11 +105,9 @@ public class GithubService extends AbstractService {
 	private String commitOutputFormat(Long timestamp, String message, String committer, String sha) {
 		String timeString = "";
 		long localtimestamp = timestamp + 1000 * 60 * 60 * 2;//+2hours cheat
-		if (System.currentTimeMillis() - localtimestamp > 1000 * 60 * 60) {//only when its 1h+
-			timeString = " :clock3: " + TimeUtil.getRelativeTime(localtimestamp / 1000L, false);
+		if (System.currentTimeMillis() - localtimestamp > 1000 * 60 * 60 * 8) {//only when its 8h+
+			timeString = " :clock3: " + TimeUtil.getRelativeTime(localtimestamp / 1000L);
 		}
-		String sb = ":arrow_up: `" + sha.substring(0, 7) + "` " + " :bust_in_silhouette: " + committer + timeString + Config.EOL;
-		sb += ":pencil: `" + message + "`" + Config.EOL;
-		return sb;
+		return ":arrow_up: `" + sha.substring(0, 7) + "` " + timeString + ":pencil: `" + message + "`" + Config.EOL;
 	}
 }
