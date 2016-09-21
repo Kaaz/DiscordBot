@@ -55,7 +55,7 @@ public class ReadmeHelper {
 		s += "--- | --- | " + Config.EOL;
 		for (MemberShipRole role : allRoles) {
 			s += role.getName() + " | ";
-			s += TimeUtil.getRelativeTime(System.currentTimeMillis() + role.getMembershipTime() / 1000L, false, false) + Config.EOL;
+			s += TimeUtil.getRelativeTime((System.currentTimeMillis() + role.getMembershipTime()) / 1000L, false, false) + Config.EOL;
 		}
 
 		return s;

@@ -88,17 +88,17 @@ The rankings go according to the table below:
 
 Name | Time spend |
 --- | --- | 
-Spectator | 17048308 days 
-Outsider | 17048308 days 
-Lurker | 17048308 days 
-Prospect | 17048309 days 
-Friendly | 17048311 days 
-Regular | 17048315 days 
-Honored | 17048322 days 
-Veteran | 17048338 days 
-Revered | 17048368 days 
-Herald | 17048398 days 
-Exalted | 17048488 days 
+Spectator | 0 seconds 
+Outsider | about an hour 
+Lurker | 3 hours 
+Prospect | 23 hours 
+Friendly | 2 days 
+Regular | 6 days 
+Honored | 13 days 
+Veteran | 29 days 
+Revered | 59 days 
+Herald | 89 days 
+Exalted | 179 days 
 
 
 

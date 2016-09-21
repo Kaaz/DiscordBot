@@ -67,7 +67,7 @@ public class TimeUtil {
 		} else if (diff < 50 * MINUTE_MILLIS) {
 			return diff / MINUTE_MILLIS + (shortText ? "m" : " minutes " + chronology);
 		} else if (diff < 90 * MINUTE_MILLIS) {
-			return shortText ? "~1h" : "about an hour ago";
+			return shortText ? "~1h" : "about an hour " + chronology;
 		} else if (diff < 24 * HOUR_MILLIS) {
 			return diff / HOUR_MILLIS + (shortText ? "h" : " hours " + chronology);
 		} else if (diff < 48 * HOUR_MILLIS) {
