@@ -69,7 +69,7 @@ public class ConnectFourGame extends AbstractGame<Connect4Turn> {
 			ret += board.intToPlayer(0) + " = " + getPlayer(0).getName() + Config.EOL;
 			ret += board.intToPlayer(1) + " = " + getPlayer(1).getName() + Config.EOL;
 			ret += "It's the turn of " + getActivePlayer().mention() + Config.EOL;
-			ret += "to play type **cf <columnnumber>**";
+			ret += "to play type **game <columnnumber>**";
 		}
 		return ret;
 	}
