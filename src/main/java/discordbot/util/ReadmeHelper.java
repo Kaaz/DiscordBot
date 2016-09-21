@@ -138,6 +138,25 @@ public class ReadmeHelper {
 			}
 			text += "### " + command.getCommand() + Config.EOL + Config.EOL;
 			text += command.getDescription() + Config.EOL + Config.EOL;
+			if (command.getAliases().length > 0) {
+				text += "Aliases: " + Joiner.on(", ").join(command.getAliases()) + Config.EOL;
+			}
+			String visibility = "";
+			switch (command.getVisibility()) {
+				case PRIVATE:
+					visibility = "in ~~public and~~ private channels";
+					break;
+				case PUBLIC:
+					visibility = "in public ~~and private~~ channels";
+					break;
+				case BOTH:
+					visibility = "in public and private channels";
+					break;
+				default:
+					visibility = "Nowhere";
+					break;
+			}
+			text += "Usable " + visibility + Config.EOL;
 			if (command.getUsage().length > 0) {
 				text += Config.EOL;
 				text += "#### Usage" + Config.EOL + Config.EOL;

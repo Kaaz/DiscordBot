@@ -117,14 +117,17 @@ On the first run it will generate a config file and stop running. You'll need to
 
 See what the magic 8ball has to say
 
+Usable in public and private channels
 ### avatar
 
 Changes my avatar
 
+Usable in public and private channels
 ### blackjack
 
 play a game of blackjack!
 
+Usable in public and private channels
 
 #### Usage
 
@@ -137,14 +140,17 @@ blackjack stand  //stands
 
 Cat facts!
 
+Usable in public and private channels
 ### changename
 
 Changes my name
 
+Usable in public and private channels
 ### command
 
 Add and remove custom commands
 
+Usable in public and private channels
 
 #### Usage
 
@@ -157,6 +163,7 @@ command list                    //shows a list of existing custom commands
 
 Gets/sets the configuration of the bot
 
+Usable in public ~~and private~~ channels
 
 #### Usage
 
@@ -169,6 +176,7 @@ config <property> <value> //sets property
 
 retrieves information about the song currently playing
 
+Usable in public ~~and private~~ channels
 
 #### Usage
 
@@ -184,10 +192,12 @@ current reversed      //accept the systems suggestion in reverse [title=artist,a
 
 completely shuts the bot down
 
+Usable in public and private channels
 ### game
 
 play games against eachother!
 
+Usable in public ~~and private~~ channels
 
 #### Usage
 
@@ -199,6 +209,7 @@ game <@user> <gamecode>   //play a game against @user
 
 An attempt to help out
 
+Usable in public and private channels
 
 #### Usage
 
@@ -210,6 +221,7 @@ help <command>  //usage for that command
 
 Shows some general information about me and my future plans.
 
+Usable in public and private channels
 
 #### Usage
 
@@ -223,10 +235,12 @@ info progress //see whats currently being worked on
 
 Provides an invite link to add the bot to your server.
 
+Usable in public and private channels
 ### join
 
 joins a voicechannel
 
+Usable in public ~~and private~~ channels
 
 #### Usage
 
@@ -238,14 +252,17 @@ join <channelname>  //attempts to join channelname
 
 An attempt to be funny
 
+Usable in public and private channels
 ### leave
 
 Leaves the voicechannel
 
+Usable in public ~~and private~~ channels
 ### play
 
 Plays a song from youtube
 
+Usable in public ~~and private~~ channels
 
 #### Usage
 
@@ -260,6 +277,7 @@ play <resultnumber>      //add result # to the queue
 
 information about the playlist/history
 
+Usable in public ~~and private~~ channels
 
 #### Usage
 
@@ -272,6 +290,7 @@ playlist history  //list of recently played songs
 
 Send a message to user
 
+Usable in public and private channels
 
 #### Usage
 
@@ -282,6 +301,7 @@ pm <@user> <message..>
 
 Returns a list of currency on your account
 
+Usable in public and private channels
 
 #### Usage
 
@@ -294,10 +314,12 @@ poec league <league>   //currency for league
 
 Analyzes an item from path of exile.
 
+Usable in public and private channels
 ### poelab
 
 Attempts to find a description from reddit for the Labyrinth instance.
 
+Usable in public and private channels
 
 #### Usage
 
@@ -309,6 +331,7 @@ poelab <difficulty> //only for that difficulty
 
 Strawpoll: propose a question and choices for the chat to vote on
 
+Usable in public ~~and private~~ channels
 
 #### Usage
 
@@ -322,6 +345,8 @@ poll 1-9      //vote on the options
 
 purges messages
 
+Aliases: clear
+Usable in public ~~and private~~ channels
 
 #### Usage
 
@@ -334,6 +359,7 @@ purge nova  //deletes my messages :(
 
 Posts something from reddit
 
+Usable in public and private channels
 
 #### Usage
 
@@ -344,10 +370,12 @@ r <subreddit>
 
 reloads the configuration
 
+Usable in public and private channels
 ### role
 
 Role
 
+Usable in public ~~and private~~ channels
 
 #### Usage
 
@@ -363,6 +391,8 @@ role remove @user <role> //remove role from user
 
 if you ever need a random number
 
+Aliases: dice, rng
+Usable in public and private channels
 
 #### Usage
 
@@ -375,6 +405,7 @@ roll <min> <max>   //random number <min>-<max>
 
 Rotate text!
 
+Usable in public and private channels
 
 #### Usage
 
@@ -385,6 +416,7 @@ rotate <text..>
 
 repeats you
 
+Usable in public and private channels
 
 #### Usage
 
@@ -395,6 +427,7 @@ say <anything>
 
 skip current track
 
+Usable in public ~~and private~~ channels
 
 #### Usage
 
@@ -406,6 +439,7 @@ skip perm //skips permanently; never hear this song again
 
 Feeling lucky? try the slotmachine! You might just win a hand full of air!
 
+Usable in public and private channels
 
 #### Usage
 
@@ -417,10 +451,12 @@ slot play //plays the game
 
 stops playing music
 
+Usable in public ~~and private~~ channels
 ### subscribe
 
 subscribe the channel to certain events
 
+Usable in public ~~and private~~ channels
 
 #### Usage
 
@@ -435,10 +471,12 @@ subscribe list           //See what subscription options there are
 
 Shows memory usage
 
+Usable in public and private channels
 ### template
 
 adds/removes templates
 
+Usable in public and private channels
 
 #### Usage
 
@@ -453,6 +491,7 @@ template toggledebug                 //shows keyphrases instead of text
 
 Shows information about the user
 
+Usable in public and private channels
 
 #### Usage
 
@@ -464,6 +503,7 @@ user @user   //info about @user
 
 gets and sets the volume of the music
 
+Usable in public ~~and private~~ channels
 
 #### Usage
 
