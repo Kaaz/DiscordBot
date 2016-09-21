@@ -29,13 +29,13 @@ Current list of all available commands. See below for a more detailed list
 Commands | | | | |
 --- | --- | ---| ---| ---
 [8ball](#8ball) | [avatar](#avatar) | [blackjack](#blackjack) | [catfact](#catfact) | [changename](#changename)
-[command](#command) | [config](#config) | [current](#current) | [exit](#exit) | [help](#help)
-[info](#info) | [invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave)
-[play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem)
-[poelab](#poelab) | [poll](#poll) | [purge](#purge) | [r](#r) | [reload](#reload)
-[role](#role) | [rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot)
-[stop](#stop) | [subscribe](#subscribe) | [system](#system) | [template](#template) | [user](#user)
-[volume](#volume) | 
+[command](#command) | [config](#config) | [current](#current) | [exit](#exit) | [game](#game)
+[help](#help) | [info](#info) | [invite](#invite) | [join](#join) | [joke](#joke)
+[leave](#leave) | [play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec)
+[poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll) | [purge](#purge) | [r](#r)
+[reload](#reload) | [role](#role) | [rotate](#rotate) | [say](#say) | [skip](#skip)
+[slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [template](#template)
+[user](#user) | [volume](#volume) | 
 
 ## Games
 
@@ -183,6 +183,17 @@ current reversed      //accept the systems suggestion in reverse [title=artist,a
 
 completely shuts the bot down
 
+### game
+
+play games against eachother!
+
+
+#### Usage
+
+```php
+game list                 //to see a list games
+game <@user> <gamecode>   //play a game against @user
+```
 ### help
 
 An attempt to help out
