@@ -16,7 +16,7 @@ You can play/test it on discord
 * play games against other users
 * subscription system
 * various optional modules
-* [auto ranking system](#Ranking system)
+* [auto ranking system](#ranking-system)
 
 ### Commands
 
@@ -79,8 +79,8 @@ The auto ranking system is based on the join date of the user. After a set amoun
 The ranks will be created/maintained by the bot.
 
 The following settings will affect the ranking system
-[user_time_ranks](#Per guild configuration)
-[user_time_ranks_prefix](#Per guild configuration)
+[user_time_ranks](#per-guild-configuration)
+[user_time_ranks_prefix](#per-guild-configuration)
 
 *note: In order for this to work the bot needs the manage roles permission on discord.*
 
@@ -88,6 +88,17 @@ The rankings go according to the table below:
 
 Name | Time spend |
 --- | --- | 
+Spectator | 17048308 days 
+Outsider | 17048308 days 
+Lurker | 17048308 days 
+Prospect | 17048309 days 
+Friendly | 17048311 days 
+Regular | 17048315 days 
+Honored | 17048322 days 
+Veteran | 17048338 days 
+Revered | 17048368 days 
+Herald | 17048398 days 
+Exalted | 17048488 days 
 
 
 

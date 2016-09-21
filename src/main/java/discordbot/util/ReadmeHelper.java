@@ -32,6 +32,7 @@ public class ReadmeHelper {
 	public static void main(String[] args) throws Exception {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		WebDb.init();
+		RoleRankings.init();
 
 		String template = readFile("readme_template.md", StandardCharsets.UTF_8);
 		template = template.replace("%_COMMANDS_LIST_SIMPLE_%", readmeCommandSimpleList());
