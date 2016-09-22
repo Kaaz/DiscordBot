@@ -5,6 +5,7 @@ import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
 import org.trello4j.Trello;
@@ -88,7 +89,7 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 		}
 		return "What am I? *" + response + "* " + Config.EOL +
 				"Currently active on " + bot.instance.getGuilds().size() + " guilds and the last time I restarted was  " + onlineFor + "." + Config.EOL +
-				"There are " + bot.commands.getCommands().length + " commands I can perform type **" + DisUtil.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
+				"Running version `" + Launcher.getVersion().toString() + "` and there are " + bot.commands.getCommands().length + " commands I can perform type **" + DisUtil.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
 				"If I can't help you out, you can always try to poke __" + user.getName() + "#" + user.getDiscriminator() + "__";
 	}
 

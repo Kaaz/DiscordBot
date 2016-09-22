@@ -2,8 +2,8 @@ package discordbot.handler;
 
 import discordbot.core.Logger;
 import discordbot.main.Config;
-import discordbot.main.Launcher;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 import discordbot.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
