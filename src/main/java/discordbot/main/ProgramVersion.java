@@ -9,7 +9,7 @@ public class ProgramVersion {
 	private int patchVersion;
 
 	public static ProgramVersion fromString(String version) {
-		String[] parts = version.split(".");
+		String[] parts = version.split("\\.");
 		if (parts.length == 3) {
 			return new ProgramVersion(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
 		} else if (parts.length == 2) {
