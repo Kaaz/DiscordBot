@@ -9,13 +9,24 @@ import discordbot.threads.ServiceHandlerThread;
 import discordbot.util.YTUtil;
 
 import java.io.File;
+import java.util.Properties;
 
 public class Launcher {
 	public static boolean killAllThreads = false;
+	private static ProgramVersion version = new ProgramVersion(1);
+
+	public static ProgramVersion getVersion() {
+		return version;
+	}
 
 	public static void main(String[] args) throws Exception {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		WebDb.init();
+		Properties props = new Properties();
+		props.load(Launcher.class.getClassLoader().getResourceAsStream("version.properties"));
+		Launcher.version = ProgramVersion.fromString(String.valueOf(props.getOrDefault("version", "1")));
+
+		System.exit(0);
 		if (Config.BOT_ENABLED) {
 			DiscordBot nb = new DiscordBot();
 			Thread serviceHandler = new ServiceHandlerThread(nb);
