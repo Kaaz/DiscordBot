@@ -76,6 +76,10 @@ public class SetConfig extends AbstractCommand {
 						data);
 				return ret;
 			} else {
+				if (args[0].equalsIgnoreCase("autoupdate")) {
+					Config.BOT_AUTO_UPDATE = Boolean.parseBoolean(args[1]);
+					return "AutoUpdate set to " + Config.BOT_AUTO_UPDATE;
+				}
 				if (!DefaultGuildSettings.isValidKey(args[0])) {
 					return TextHandler.get("command_config_key_not_exists");
 				}

@@ -1,12 +1,14 @@
 package discordbot.main;
 
 import com.wezinkhof.configuration.ConfigurationBuilder;
+import discordbot.core.ExitCode;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
 import discordbot.threads.ServiceHandlerThread;
 import discordbot.util.YTUtil;
+import sx.blah.discord.util.DiscordException;
 
 import java.io.File;
 import java.util.Properties;
@@ -25,12 +27,21 @@ public class Launcher {
 		Properties props = new Properties();
 		props.load(Launcher.class.getClassLoader().getResourceAsStream("version.properties"));
 		Launcher.version = ProgramVersion.fromString(String.valueOf(props.getOrDefault("version", "1")));
+		DiscordBot.LOGGER.info("Started with version: " + Launcher.version);
 		if (Config.BOT_ENABLED) {
-			DiscordBot nb = new DiscordBot();
+			DiscordBot nb = null;
+			try {
+				nb = new DiscordBot();
+			} catch (DiscordException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+				System.exit(ExitCode.SHITTY_CONFIG.getCode());
+			}
 			Thread serviceHandler = new ServiceHandlerThread(nb);
 			serviceHandler.setDaemon(true);
 			serviceHandler.start();
 		} else {
+			System.exit(ExitCode.SHITTY_CONFIG.getCode());
 			Logger.fatal("Bot not enabled, enable it in the config. You can do this by setting bot_enabled=true");
 		}
 	}
