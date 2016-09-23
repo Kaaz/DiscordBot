@@ -5,7 +5,7 @@ import discordbot.core.AbstractCommand;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
 import discordbot.handler.MusicPlayerHandler;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
@@ -82,13 +82,13 @@ public class Playlist extends AbstractCommand {
 				}
 				return ret + Misc.makeTable(tableContent);
 			} else {
-				return TextHandler.get("music_not_played_anything_yet");
+				return Template.get("music_not_played_anything_yet");
 			}
 		} else if (args[0].equals("clear")) {
 			MusicPlayerHandler player = MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot);
 			player.clearPlayList();
-			return TextHandler.get("music_playlist_cleared");
+			return Template.get("music_playlist_cleared");
 		}
-		return TextHandler.get("command_invalid_use");
+		return Template.get("command_invalid_use");
 	}
 }

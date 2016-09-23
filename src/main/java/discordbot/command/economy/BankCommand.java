@@ -1,7 +1,7 @@
 package discordbot.command.economy;
 
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -43,6 +43,6 @@ public class BankCommand extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 
-		return TextHandler.get("command_not_implemented");
+		return Template.get("command_not_implemented");
 	}
 }

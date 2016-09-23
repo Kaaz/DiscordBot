@@ -2,7 +2,6 @@ package discordbot.command.administrative;
 
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
@@ -12,8 +11,8 @@ import sx.blah.discord.handle.obj.IUser;
  * !template
  * manages the templates
  */
-public class Template extends AbstractCommand {
-	public Template(DiscordBot b) {
+public class TemplateCommand extends AbstractCommand {
+	public TemplateCommand(DiscordBot b) {
 		super(b);
 	}
 
@@ -63,26 +62,26 @@ public class Template extends AbstractCommand {
 								return "Keyphrases are being translated";
 							}
 						}
-						return TextHandler.get("no_permission");
+						return discordbot.handler.Template.get("no_permission");
 					case "add":
 						if (args.length >= 3) {
-							String text = "";
-							for (int i = 2; i < args.length; i++) {
+							String text = args[2];
+							for (int i = 3; i < args.length; i++) {
 								text += " " + args[i];
 							}
-							TextHandler.getInstance().add(args[1], EmojiParser.parseToAliases(text));
-							return TextHandler.get("command_template_added");
+							discordbot.handler.Template.getInstance().add(args[1], EmojiParser.parseToAliases(text));
+							return discordbot.handler.Template.get("command_template_added");
 						}
-						return TextHandler.get("command_template_added_failed");
+						return discordbot.handler.Template.get("command_template_added_failed");
 					case "remove":
 					case "list":
-						return TextHandler.get("not_yet_implemented");
+						return discordbot.handler.Template.get("not_yet_implemented");
 					default:
-						return TextHandler.get("command_template_invalid_option");
+						return discordbot.handler.Template.get("command_template_invalid_option");
 				}
 			}
-			return TextHandler.get("no_permission");
+			return discordbot.handler.Template.get("no_permission");
 		}
-		return TextHandler.get("no_permission");
+		return discordbot.handler.Template.get("no_permission");
 	}
 }

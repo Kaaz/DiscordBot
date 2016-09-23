@@ -2,7 +2,7 @@ package discordbot.command.fun;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -61,17 +61,17 @@ public class PollCommand extends AbstractCommand {
 				return "Invalid usage! Need at least 2 options " + getUsage()[1];
 			}
 			if (split[0].trim().length() < 3) {
-				return TextHandler.get("command_poll_question_too_short");
+				return Template.get("command_poll_question_too_short");
 			}
 			if (!split[1].matches("^\\d$")) {
-				return TextHandler.get("command_poll_time_no_number");
+				return Template.get("command_poll_time_no_number");
 			}
 			int minutes = Integer.parseInt(split[1]);
 			if (minutes <= 0 || minutes > MAX_DURATION_IN_MINUTES) {
-				return TextHandler.get("command_poll_time_out_of_range");
+				return Template.get("command_poll_time_out_of_range");
 			}
 
 		}
-		return TextHandler.get("command_not_implemented");
+		return Template.get("command_not_implemented");
 	}
 }

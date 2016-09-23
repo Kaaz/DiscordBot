@@ -2,7 +2,7 @@ package discordbot.command.administrative;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.role.RoleRankings;
@@ -59,7 +59,7 @@ public class RoleCommand extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (!bot.isOwner(channel, author)) {
-			return TextHandler.get("command_no_permission");
+			return Template.get("command_no_permission");
 		}
 		if (args.length == 0 || args[0].equals("list")) {
 			String out = "I found the following roles" + Config.EOL;

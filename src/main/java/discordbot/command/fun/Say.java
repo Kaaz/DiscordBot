@@ -1,7 +1,7 @@
 package discordbot.command.fun;
 
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -50,7 +50,7 @@ public class Say extends AbstractCommand {
 			}
 			return ret;
 		} else {
-			return TextHandler.get("command_say_whatexactly");
+			return Template.get("command_say_whatexactly");
 		}
 	}
 }

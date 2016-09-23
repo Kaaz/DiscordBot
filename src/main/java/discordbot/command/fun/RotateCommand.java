@@ -1,7 +1,7 @@
 package discordbot.command.fun;
 
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -117,7 +117,7 @@ public class RotateCommand extends AbstractCommand {
 			Collections.addAll(inputArray, arg.split(""));
 		}
 		if (inputArray.size() <= 3) {
-			return TextHandler.get("command_rotate_too_short");
+			return Template.get("command_rotate_too_short");
 		}
 		for (int i = inputArray.size() - 1; i >= 0; i--) {
 			if (inputArray.get(i) == null) {

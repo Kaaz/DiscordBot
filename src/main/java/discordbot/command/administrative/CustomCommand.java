@@ -2,7 +2,7 @@ package discordbot.command.administrative;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
@@ -54,7 +54,7 @@ public class CustomCommand extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (!bot.isOwner(channel, author)) {
-			return TextHandler.get("permission_denied");
+			return Template.get("permission_denied");
 		}
 		if (args.length >= 2 && Arrays.asList(valid_actions).contains(args[0])) {
 			if (args[0].equals("add") && args.length > 2) {
@@ -76,6 +76,6 @@ public class CustomCommand extends AbstractCommand {
 		} else {
 			return getDescription();
 		}
-		return TextHandler.get("permission_denied");
+		return Template.get("permission_denied");
 	}
 }

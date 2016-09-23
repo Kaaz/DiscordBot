@@ -1,7 +1,7 @@
 package discordbot.service;
 
 import discordbot.core.AbstractService;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -42,7 +42,7 @@ public class BotInformationService extends AbstractService {
 		IUser me = bot.instance.getOurUser();
 		for (IChannel channel : subscribedChannels) {
 			bot.commands.getCommand("purge").execute(new String[]{}, channel, me);
-			bot.out.sendMessage(channel, TextHandler.get("bot_service_information_display_title"));
+			bot.out.sendMessage(channel, Template.get("bot_service_information_display_title"));
 			bot.out.sendMessage(channel, bot.commands.getCommand("info").execute(new String[]{}, channel, me));
 			bot.out.sendMessage(channel, bot.commands.getCommand("help").execute(new String[]{}, channel, me));
 		}

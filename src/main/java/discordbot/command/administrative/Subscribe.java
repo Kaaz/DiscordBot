@@ -9,7 +9,7 @@ import discordbot.db.table.TChannels;
 import discordbot.db.table.TServers;
 import discordbot.db.table.TServices;
 import discordbot.db.table.TSubscriptions;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
@@ -78,28 +78,28 @@ public class Subscribe extends AbstractCommand {
 						"This channel is currenty subscribed for: " +
 						Misc.makeAsciiTable(headers, tbl);
 			}
-			return TextHandler.get("command_subscribe_channel_has_no_subscriptions");
+			return Template.get("command_subscribe_channel_has_no_subscriptions");
 		}
 		if (args[0].equalsIgnoreCase("stop")) {
 			if (args.length > 1) {
 				OService service = TServices.findBy(args[1].trim());
 				if (service.id == 0) {
-					return TextHandler.get("command_subscribe_invalid_service");
+					return Template.get("command_subscribe_invalid_service");
 				}
 				OSubscription subscription = TSubscriptions.findBy(TServers.getCachedId(channel.getGuild().getID()), TChannels.getCachedId(channel.getID(), channel.getGuild().getID()), service.id);
 				if (subscription.subscribed == 1) {
 					subscription.subscribed = 0;
 					TSubscriptions.insertOrUpdate(subscription);
-					return String.format(TextHandler.get("command_subscribe_unsubscribed_success"), service.displayName);
+					return String.format(Template.get("command_subscribe_unsubscribed_success"), service.displayName);
 				}
-				return TextHandler.get("command_subscribe_not_subscribed");
+				return Template.get("command_subscribe_not_subscribed");
 			}
-			return TextHandler.get("command_subscribe_invalid_use");
+			return Template.get("command_subscribe_invalid_use");
 		} else if (args[0].equalsIgnoreCase("info")) {
 			if (args.length > 1) {
 				return "todo";
 			}
-			return TextHandler.get("command_subscribe_invalid_use");
+			return Template.get("command_subscribe_invalid_use");
 		} else if (args[0].equalsIgnoreCase("list")) {
 			Collections.addAll(headers, "code", "name");
 			List<OService> allActive = TServices.getAllActive();
@@ -115,7 +115,7 @@ public class Subscribe extends AbstractCommand {
 		}
 		OService service = TServices.findBy(args[0].trim());
 		if (service.id == 0) {
-			return TextHandler.get("command_subscribe_invalid_service");
+			return Template.get("command_subscribe_invalid_service");
 		}
 		OSubscription subscription = TSubscriptions.findBy(TServers.getCachedId(channel.getGuild().getID()), TChannels.getCachedId(channel.getID(), channel.getGuild().getID()), service.id);
 		if (subscription.subscribed == 0) {
@@ -124,8 +124,8 @@ public class Subscribe extends AbstractCommand {
 			subscription.serverId = TServers.getCachedId(channel.getGuild().getID());
 			subscription.serviceId = service.id;
 			TSubscriptions.insertOrUpdate(subscription);
-			return TextHandler.get("command_subscribe_success");
+			return Template.get("command_subscribe_success");
 		}
-		return TextHandler.get("command_subscribe_already_subscribed");
+		return Template.get("command_subscribe_already_subscribed");
 	}
 }

@@ -1,7 +1,7 @@
 package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -41,6 +41,6 @@ public class Exit extends AbstractCommand {
 			bot.out.sendMessage(channel, "I am being killed :sob: farewell world! :wave: ");
 			System.exit(0);
 		}
-		return TextHandler.get("command_no_permission");
+		return Template.get("command_no_permission");
 	}
 }

@@ -8,7 +8,7 @@ import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
 import discordbot.handler.MusicPlayerHandler;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.SCUtil;
@@ -81,10 +81,10 @@ public class Play extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.instance.getConnectedVoiceChannels().size() == 0) {
-			return TextHandler.get("music_not_in_voicechannel");
+			return Template.get("music_not_in_voicechannel");
 		}
 		if (MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot).getUsersInVoiceChannel().size() == 0) {
-			return TextHandler.get("music_no_users_in_channel");
+			return Template.get("music_no_users_in_channel");
 		}
 		if (args.length > 0) {
 			boolean justDownloaded = false;
@@ -102,12 +102,12 @@ public class Play extends AbstractCommand {
 							e.printStackTrace();
 						}
 						userFilteredSongs.remove(author.getID());
-						return TextHandler.get("music_added_to_queue");
+						return Template.get("music_added_to_queue");
 					} else {
-						return TextHandler.get("command_play_filter_match_no_such_index");
+						return Template.get("command_play_filter_match_no_such_index");
 					}
 				} else {
-					return TextHandler.get("command_play_no_results_saved");
+					return Template.get("command_play_no_results_saved");
 				}
 			}
 			if (userFilteredSongs.containsKey(author.getID())) {
@@ -140,14 +140,14 @@ public class Play extends AbstractCommand {
 					}
 					return text;
 				}
-				return TextHandler.get("music_download_soundcloud_failed");
+				return Template.get("music_download_soundcloud_failed");
 			}
 
 			String videocode = YTUtil.extractCodeFromUrl(args[0]);
 			if (YTUtil.isValidYoutubeCode(videocode)) {
 				File filecheck = new File(Config.MUSIC_DIRECTORY + videocode + ".mp3");
 				if (!filecheck.exists()) {
-					IMessage msg = bot.out.sendMessage(channel, TextHandler.get("music_downloading_hang_on"));
+					IMessage msg = bot.out.sendMessage(channel, Template.get("music_downloading_hang_on"));
 					YTUtil.downloadfromYoutubeAsMp3(videocode);
 					justDownloaded = true;
 					try {
@@ -167,7 +167,7 @@ public class Play extends AbstractCommand {
 						return ":notes: Found *" + rec.youtubeTitle + "* And added it to the queue";
 					}
 					bot.addSongToQueue(videocode + ".mp3", channel.getGuild());
-					return TextHandler.get("music_added_to_queue");
+					return Template.get("music_added_to_queue");
 				}
 			} else {
 				String concatArgs = "";
@@ -203,16 +203,16 @@ public class Play extends AbstractCommand {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				return TextHandler.get("command_play_no_results");
+				return Template.get("command_play_no_results");
 
 			}
 		} else {
 			if (bot.playRandomSong(channel.getGuild())) {
-				return TextHandler.get("music_started_playing_random");
+				return Template.get("music_started_playing_random");
 			} else {
-				return TextHandler.get("music_failed_to_start");
+				return Template.get("music_failed_to_start");
 			}
 		}
-		return TextHandler.get("music_not_added_to_queue");
+		return Template.get("music_not_added_to_queue");
 	}
 }

@@ -4,7 +4,7 @@ import discordbot.command.CommandCategory;
 import discordbot.core.AbstractCommand;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.handler.GuildSettings;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
@@ -77,7 +77,7 @@ public class Help extends AbstractCommand {
 				}
 				return ret;
 			}
-			return TextHandler.get("command_help_donno");
+			return Template.get("command_help_donno");
 		} else {
 			String ret = "I know the following commands: " + Config.EOL + Config.EOL;
 			HashMap<CommandCategory, ArrayList<String>> commandList = new HashMap<>();

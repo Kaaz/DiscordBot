@@ -2,7 +2,7 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -44,6 +44,6 @@ public class Stop extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		bot.stopMusic(channel.getGuild());
-		return TextHandler.get("command_stop_success");
+		return Template.get("command_stop_success");
 	}
 }

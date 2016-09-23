@@ -2,7 +2,7 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -52,11 +52,11 @@ public class Volume extends AbstractCommand {
 				volume = Float.parseFloat(args[0]);
 				if (volume > 0 && volume <= 100) {
 					bot.setVolume(channel.getGuild(), volume / 100F);
-					return TextHandler.get("command_volume_changed");
+					return Template.get("command_volume_changed");
 				}
 			} catch (NumberFormatException ignored) {
 			}
-			return TextHandler.get("command_volume_invalid_parameters");
+			return Template.get("command_volume_invalid_parameters");
 		}
 		return "Current volume: " + bot.getVolume(channel.getGuild()) * 100 + "%";
 	}

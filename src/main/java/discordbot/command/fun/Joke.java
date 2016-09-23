@@ -3,7 +3,7 @@ package discordbot.command.fun;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import org.apache.commons.lang3.StringEscapeUtils;
 import sx.blah.discord.handle.obj.IChannel;
@@ -50,7 +50,7 @@ public class Joke extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		IMessage msg = bot.out.sendMessage(channel, TextHandler.get("command_joke_wait"));
+		IMessage msg = bot.out.sendMessage(channel, Template.get("command_joke_wait"));
 		String joketxt = "";
 		if (new Random().nextInt(100) < 80) {
 			joketxt = bot.commands.getCommand("r").execute(new String[]{"jokes"}, channel, author);
@@ -65,7 +65,7 @@ public class Joke extends AbstractCommand {
 		if (joketxt != null) {
 			return StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getID() + ">"));
 		}
-		return TextHandler.get("command_joke_not_today");
+		return Template.get("command_joke_not_today");
 	}
 
 	private String getJokeFromWeb(String username) {

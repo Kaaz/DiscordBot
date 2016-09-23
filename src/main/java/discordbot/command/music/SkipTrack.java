@@ -2,7 +2,7 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -50,13 +50,13 @@ public class SkipTrack extends AbstractCommand {
 			switch (args[0]) {
 				case "perm":
 				case "permanent":
-					return TextHandler.get("command_skip_permanent_success");
+					return Template.get("command_skip_permanent_success");
 				default:
-					return TextHandler.get("command_invalid_usage");
+					return Template.get("command_invalid_usage");
 			}
 
 		}
 		bot.skipCurrentSong(channel.getGuild());
-		return TextHandler.get("command_skip_song_skipped");
+		return Template.get("command_skip_song_skipped");
 	}
 }

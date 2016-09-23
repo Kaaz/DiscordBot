@@ -1,7 +1,7 @@
 package discordbot.command.fun;
 
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.modules.reddit.RedditScraper;
@@ -68,7 +68,7 @@ public class RedditCommand extends AbstractCommand {
 		}
 		List<Post> dailyTop = RedditScraper.getDailyTop(subReddit);
 		if (dailyTop.isEmpty()) {
-			return TextHandler.get("command_reddit_sub_not_found");
+			return Template.get("command_reddit_sub_not_found");
 		}
 		Random rng = new Random();
 		Post post;
@@ -97,6 +97,6 @@ public class RedditCommand extends AbstractCommand {
 				}
 			}
 		}
-		return TextHandler.get("command_reddit_nothing");
+		return Template.get("command_reddit_nothing");
 	}
 }

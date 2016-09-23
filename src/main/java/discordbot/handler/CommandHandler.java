@@ -97,12 +97,12 @@ public class CommandHandler {
 					}
 				}
 			} else if (cooldown > 0) {
-				mymsg = bot.out.sendMessage(channel, String.format(TextHandler.get("command_on_cooldown"), TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false)));
+				mymsg = bot.out.sendMessage(channel, String.format(Template.get("command_on_cooldown"), TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false)));
 			} else if (!hasRightVisibility(channel, command.getVisibility())) {
 				if (channel instanceof IPrivateChannel) {
-					mymsg = bot.out.sendMessage(channel, TextHandler.get("command_not_for_private"));
+					mymsg = bot.out.sendMessage(channel, Template.get("command_not_for_private"));
 				} else {
-					mymsg = bot.out.sendMessage(channel, TextHandler.get("command_not_for_public"));
+					mymsg = bot.out.sendMessage(channel, Template.get("command_not_for_public"));
 				}
 			}
 		} else if (customCommands.containsKey(input[0])) {
@@ -111,7 +111,7 @@ public class CommandHandler {
 			mymsg = bot.out.sendMessage(channel, author.mention() + ", " + bot.chatBotHandler.chat(inputMessage));
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
-			mymsg = bot.out.sendMessage(channel, String.format(TextHandler.get("unknown_command"), GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help"));
+			mymsg = bot.out.sendMessage(channel, String.format(Template.get("unknown_command"), GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help"));
 		}
 		if (mymsg != null && shouldCleanUpMessages(channel)) {
 			final IMessage finalMymsg = mymsg;

@@ -2,7 +2,7 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
@@ -53,18 +53,18 @@ public class Join extends AbstractCommand {
 		if (args.length == 0) {
 			IVoiceChannel voiceChannel = author.getConnectedVoiceChannels().get(0);
 			if (voiceChannel == null) {
-				return TextHandler.get("command_join_cantfindyou");
+				return Template.get("command_join_cantfindyou");
 			}
 			if (voiceChannel.equals(getCurrentVoiceChannel(channel.getGuild()))) {
-				return TextHandler.get("command_join_already_there");
+				return Template.get("command_join_already_there");
 			}
 			try {
 				leaveCurrentChannel(channel.getGuild());
 				voiceChannel.join();
 			} catch (MissingPermissionsException e) {
-				return TextHandler.get("command_join_nopermssiontojoin");
+				return Template.get("command_join_nopermssiontojoin");
 			}
-			return TextHandler.get("command_join_joinedyou");
+			return Template.get("command_join_joinedyou");
 		} else {
 			String channelname = Misc.concat(args);
 			IVoiceChannel targetChannel = null;
@@ -76,17 +76,17 @@ public class Join extends AbstractCommand {
 			}
 			if (targetChannel != null) {
 				if (targetChannel.equals(getCurrentVoiceChannel(channel.getGuild()))) {
-					return TextHandler.get("command_join_already_there");
+					return Template.get("command_join_already_there");
 				}
 				try {
 					leaveCurrentChannel(channel.getGuild());
 					targetChannel.join();
 				} catch (MissingPermissionsException e) {
-					return TextHandler.get("command_join_nopermssiontojoin");
+					return Template.get("command_join_nopermssiontojoin");
 				}
-				return TextHandler.get("command_join_joined");
+				return Template.get("command_join_joined");
 			}
-			return TextHandler.get("command_join_cantfindchannel");
+			return Template.get("command_join_cantfindchannel");
 		}
 	}
 

@@ -3,7 +3,7 @@ package discordbot.command.fun;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import org.apache.commons.lang3.StringEscapeUtils;
 import sx.blah.discord.handle.obj.IChannel;
@@ -67,6 +67,6 @@ public class Cats extends AbstractCommand {
 		if (catFact != null) {
 			return StringEscapeUtils.unescapeHtml4(catFact);
 		}
-		return TextHandler.get("command_catfact_not_today");
+		return Template.get("command_catfact_not_today");
 	}
 }

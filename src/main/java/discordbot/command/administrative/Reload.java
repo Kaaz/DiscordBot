@@ -1,7 +1,7 @@
 package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -38,6 +38,6 @@ public class Reload extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		bot.loadConfiguration();
-		return TextHandler.get("command_reload_success");
+		return Template.get("command_reload_success");
 	}
 }

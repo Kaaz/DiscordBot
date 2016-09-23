@@ -4,7 +4,7 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.handler.GuildSettings;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
@@ -81,10 +81,10 @@ public class SetConfig extends AbstractCommand {
 					return "AutoUpdate set to " + Config.BOT_AUTO_UPDATE;
 				}
 				if (!DefaultGuildSettings.isValidKey(args[0])) {
-					return TextHandler.get("command_config_key_not_exists");
+					return Template.get("command_config_key_not_exists");
 				}
 				if (count >= 2 && GuildSettings.get(channel.getGuild()).set(args[0], args[1])) {
-					return TextHandler.get("command_config_key_modified");
+					return Template.get("command_config_key_modified");
 				}
 				String tblContent = "";
 				GuildSettings setting = GuildSettings.get(channel.getGuild());
@@ -98,6 +98,6 @@ public class SetConfig extends AbstractCommand {
 						Misc.makeTable(tblContent);
 			}
 		}
-		return TextHandler.get("command_config_no_permission");
+		return Template.get("command_config_no_permission");
 	}
 }

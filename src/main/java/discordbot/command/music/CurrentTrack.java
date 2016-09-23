@@ -5,7 +5,7 @@ import discordbot.core.AbstractCommand;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
 import discordbot.handler.MusicPlayerHandler;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
@@ -70,7 +70,7 @@ public class CurrentTrack extends AbstractCommand {
 		boolean helpedOut = false;
 		OMusic song = bot.getCurrentlyPlayingSong(channel.getGuild());
 		if (song.id == 0) {
-			return TextHandler.get("command_currentlyplaying_nosong");
+			return Template.get("command_currentlyplaying_nosong");
 		}
 		boolean titleIsEmpty = song.title == null || song.title.isEmpty();
 		boolean artistIsEmpty = song.artist == null || song.artist.isEmpty();
@@ -91,7 +91,7 @@ public class CurrentTrack extends AbstractCommand {
 			if (args[0].equalsIgnoreCase("ban") && bot.isOwner(channel, author)) {
 				song.banned = 1;
 				TMusic.update(song);
-				return TextHandler.get("command_current_banned_success");
+				return Template.get("command_current_banned_success");
 			}
 			if (args.length > 1 && args[0].equalsIgnoreCase("title")) {
 				song.title = value;
@@ -112,7 +112,7 @@ public class CurrentTrack extends AbstractCommand {
 				TMusic.update(song);
 				helpedOut = true;
 			} else {
-				return TextHandler.get("invalid_command_use");
+				return Template.get("invalid_command_use");
 			}
 			titleIsEmpty = song.title == null || song.title.isEmpty();
 			artistIsEmpty = song.artist == null || song.artist.isEmpty();

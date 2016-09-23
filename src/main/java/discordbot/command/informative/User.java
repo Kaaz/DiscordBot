@@ -1,7 +1,7 @@
 package discordbot.command.informative;
 
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
@@ -75,6 +75,6 @@ public class User extends AbstractCommand {
 		}
 
 
-		return TextHandler.get("command_user_not_found");
+		return Template.get("command_user_not_found");
 	}
 }

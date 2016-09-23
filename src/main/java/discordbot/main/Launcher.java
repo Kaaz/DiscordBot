@@ -7,6 +7,7 @@ import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
 import discordbot.threads.ServiceHandlerThread;
+import discordbot.util.UpdateUtil;
 import discordbot.util.YTUtil;
 import sx.blah.discord.util.DiscordException;
 

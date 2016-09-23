@@ -110,7 +110,7 @@ public class DiscordBot {
 		loadConfiguration();
 		mentionMe = "<@" + this.instance.getOurUser().getID() + ">";
 		timer = new Timer();
-		TextHandler.setBot(this);
+		Template.setBot(this);
 		gameHandler = new GameHandler(this);
 		out = new OutgoingContentHandler(this);
 		RoleRankings.init();
@@ -120,7 +120,7 @@ public class DiscordBot {
 
 	public void loadConfiguration() {
 		commands.load();
-		TextHandler.getInstance().load();
+		Template.getInstance().load();
 		defaultChannels = new ConcurrentHashMap<>();
 		chatBotHandler = new ChatBotHandler();
 	}

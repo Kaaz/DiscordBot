@@ -16,14 +16,14 @@ import java.util.Random;
  * Handles the text templates
  * templates are stored in the database,
  */
-public class TextHandler {
+public class Template {
 
-	private static final TextHandler instance = new TextHandler();
+	private static final Template instance = new Template();
 	private DiscordBot bot = null;
 	private Random rnd;
 	private HashMap<String, ArrayList<String>> dictionary;
 
-	private TextHandler() {
+	private Template() {
 		rnd = new Random();
 		load();
 	}
@@ -32,7 +32,7 @@ public class TextHandler {
 		instance.bot = bot;
 	}
 
-	public static TextHandler getInstance() {
+	public static Template getInstance() {
 		return instance;
 	}
 

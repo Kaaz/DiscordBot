@@ -2,7 +2,7 @@ package discordbot.command.administrative;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
@@ -58,7 +58,7 @@ public class PurgeComand extends AbstractCommand {
 			deleteAll = false;
 			if (DisUtil.isUserMention(args[0])) {
 				if (!hasManageMessages) {
-					return TextHandler.get("permission_missing_manage_messages");
+					return Template.get("permission_missing_manage_messages");
 				}
 				toDeleteFrom = bot.instance.getUserByID(DisUtil.mentionToId(args[0]));
 			} else if (args[0].toLowerCase().equals("nova")) {
@@ -66,7 +66,7 @@ public class PurgeComand extends AbstractCommand {
 			}
 		}
 		if (!bot.isOwner(channel, author) && !bot.instance.getOurUser().equals(author)) {
-			return TextHandler.get("command_invalid_use");
+			return Template.get("command_invalid_use");
 		}
 		boolean finalDeleteAll = deleteAll;
 		IUser finalToDeleteFrom = toDeleteFrom;
@@ -79,8 +79,8 @@ public class PurgeComand extends AbstractCommand {
 					}
 				});
 		if (hasManageMessages) {
-			return TextHandler.get("command_purge_success");
+			return Template.get("command_purge_success");
 		}
-		return TextHandler.get("permission_missing_manage_messages");
+		return Template.get("permission_missing_manage_messages");
 	}
 }

@@ -2,7 +2,7 @@ package discordbot.command.fun;
 
 import discordbot.core.AbstractCommand;
 import discordbot.games.Blackjack;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
@@ -100,6 +100,6 @@ public class BlackJackCommand extends AbstractCommand {
 			return "You are not playing a game, to start use **" + DisUtil.getCommandPrefix(channel) + "blackjack hit**";
 		}
 
-		return TextHandler.get("command_invalid_use");
+		return Template.get("command_invalid_use");
 	}
 }

@@ -1,7 +1,7 @@
 package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
@@ -50,7 +50,7 @@ public class SystemCommand extends AbstractCommand {
 			sb.append(" [ ").append(numberInMb(memoryAllocated)).append(" / ").append(numberInMb(memoryLimit)).append(" ]").append(Config.EOL);
 			return sb.toString();
 		}
-		return TextHandler.get("command_no_permission");
+		return Template.get("command_no_permission");
 	}
 
 	private String getProgressbar(long current, long max) {

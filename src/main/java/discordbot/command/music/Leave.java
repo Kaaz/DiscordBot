@@ -2,7 +2,7 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -56,8 +56,8 @@ public class Leave extends AbstractCommand {
 			}
 		}
 		if (leftSomething) {
-			return TextHandler.get("command_leave_success");
+			return Template.get("command_leave_success");
 		}
-		return TextHandler.get("command_leave_failed");
+		return Template.get("command_leave_failed");
 	}
 }

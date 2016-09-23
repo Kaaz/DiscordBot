@@ -3,7 +3,7 @@ package discordbot.command.poe;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OPoEToken;
 import discordbot.db.table.TPoEToken;
-import discordbot.handler.TextHandler;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
@@ -66,7 +66,7 @@ public class PoeCurrency extends AbstractCommand {
 			} else if (args[0].equalsIgnoreCase("league")) {
 				return "not implemented yet sorry boys!";
 			}
-			return TextHandler.get("command_invalid_usage");
+			return Template.get("command_invalid_usage");
 		}
 		OPoEToken token = TPoEToken.findBy(author.getID());
 		AuthInfo account = new AuthInfo(token.session_id);
