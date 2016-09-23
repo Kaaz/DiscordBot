@@ -6,7 +6,7 @@
 
 	<groupId>com.github.MaikWezinkhof</groupId>
 	<artifactId>DiscordBot</artifactId>
-	<version>1.0.3</version>
+	<version>1.1.0</version>
 	<packaging>jar</packaging>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -117,7 +117,7 @@
 		<dependency>
 			<groupId>com.github.MaikWezinkhof</groupId>
 			<artifactId>ConfigurationBuilder</artifactId>
-			<version>master-SNAPSHOT</version>
+			<version>0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.MaikWezinkhof</groupId>

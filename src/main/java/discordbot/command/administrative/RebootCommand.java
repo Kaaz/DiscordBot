@@ -1,6 +1,7 @@
 package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
+import discordbot.core.ExitCode;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
@@ -10,8 +11,8 @@ import sx.blah.discord.handle.obj.IUser;
  * !exit
  * completely stops the program
  */
-public class Exit extends AbstractCommand {
-	public Exit(DiscordBot b) {
+public class RebootCommand extends AbstractCommand {
+	public RebootCommand(DiscordBot b) {
 		super(b);
 	}
 
@@ -37,9 +38,9 @@ public class Exit extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (bot.isCreator(author)) {
-			bot.out.sendMessage(channel, "I am being killed :sob: farewell world! :wave: ");
-			System.exit(0);
+		if (bot.isOwner(channel, author)) {
+			bot.out.sendMessage(channel, "Rebooting in about a minute :smile:");
+			System.exit(ExitCode.REBOOT.getCode());
 		}
 		return Template.get("command_no_permission");
 	}
