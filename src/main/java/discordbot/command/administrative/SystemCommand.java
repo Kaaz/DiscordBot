@@ -4,6 +4,7 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -45,6 +46,7 @@ public class SystemCommand extends AbstractCommand {
 			long memoryAllocated = runtime.totalMemory();
 
 			sb.append("System information: ").append(Config.EOL);
+			sb.append(":information_source: Running version: ").append(Launcher.getVersion()).append(Config.EOL);
 			sb.append("Memory").append(Config.EOL);
 			sb.append(getProgressbar(memoryAllocated, memoryLimit));
 			sb.append(" [ ").append(numberInMb(memoryAllocated)).append(" / ").append(numberInMb(memoryLimit)).append(" ]").append(Config.EOL);
