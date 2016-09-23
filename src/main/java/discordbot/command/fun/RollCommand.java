@@ -55,7 +55,7 @@ public class RollCommand extends AbstractCommand {
 			} catch (Exception e) {
 				return "Thats not a valid number";
 			}
-			if (max > 2) {
+			if (max < 2) {
 				return "Needs to have at least 2 sides";
 			}
 		} else if (args.length == 2) {
@@ -64,6 +64,9 @@ public class RollCommand extends AbstractCommand {
 				max = Integer.parseInt(args[1]);
 			} catch (Exception e) {
 				return "Thats not a valid number";
+			}
+			if (min >= max) {
+				return "Max needs to be higher than min!";
 			}
 			if (max <= 2 || min <= 0) {
 				return "Min needs to be at least 0 and Max needs to be at least 2";
