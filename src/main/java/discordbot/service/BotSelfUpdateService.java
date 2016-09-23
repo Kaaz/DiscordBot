@@ -29,7 +29,7 @@ public class BotSelfUpdateService extends AbstractService {
 
 	@Override
 	public long getDelayBetweenRuns() {
-		return TimeUnit.MINUTES.toMillis(2);
+		return TimeUnit.HOURS.toMillis(1);
 	}
 
 	@Override
