@@ -42,7 +42,7 @@ public class DiscordBot {
 
 	public DiscordBot() throws DiscordException {
 		registerHandlers();
-		instance = new ClientBuilder().withToken(Config.BOT_TOKEN).login();
+		instance = new ClientBuilder().withToken(Config.BOT_TOKEN).setMaxReconnectAttempts(128).login();
 		registerEvents();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 	}

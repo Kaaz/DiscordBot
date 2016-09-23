@@ -8,8 +8,8 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
- * !exit
- * completely stops the program
+ * !reboot
+ * restarts the bot
  */
 public class RebootCommand extends AbstractCommand {
 	public RebootCommand(DiscordBot b) {
@@ -18,12 +18,12 @@ public class RebootCommand extends AbstractCommand {
 
 	@Override
 	public String getDescription() {
-		return "completely shuts the bot down";
+		return "restarts the bot";
 	}
 
 	@Override
 	public String getCommand() {
-		return "exit";
+		return "reboot";
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class RebootCommand extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{"restart"};
 	}
 
 	@Override

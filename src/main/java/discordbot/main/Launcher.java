@@ -9,6 +9,7 @@ import discordbot.db.table.TMusic;
 import discordbot.threads.ServiceHandlerThread;
 import discordbot.util.UpdateUtil;
 import discordbot.util.YTUtil;
+import sx.blah.discord.Discord4J;
 import sx.blah.discord.util.DiscordException;
 
 import java.io.File;
