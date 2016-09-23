@@ -7,9 +7,7 @@ import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
 import discordbot.threads.ServiceHandlerThread;
-import discordbot.util.UpdateUtil;
 import discordbot.util.YTUtil;
-import sx.blah.discord.Discord4J;
 import sx.blah.discord.util.DiscordException;
 
 import java.io.File;
@@ -34,14 +32,14 @@ public class Launcher {
 			DiscordBot nb = null;
 			try {
 				nb = new DiscordBot();
+				Thread serviceHandler = new ServiceHandlerThread(nb);
+				serviceHandler.setDaemon(true);
+				serviceHandler.start();
 			} catch (DiscordException e) {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 				System.exit(ExitCode.SHITTY_CONFIG.getCode());
 			}
-			Thread serviceHandler = new ServiceHandlerThread(nb);
-			serviceHandler.setDaemon(true);
-			serviceHandler.start();
 		} else {
 			System.exit(ExitCode.SHITTY_CONFIG.getCode());
 			Logger.fatal("Bot not enabled, enable it in the config. You can do this by setting bot_enabled=true");
