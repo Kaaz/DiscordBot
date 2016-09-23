@@ -46,6 +46,7 @@ public class BotStatusService extends AbstractService {
 			Status.game("Yesterday you said tomorrow"),
 			Status.game("Let dreams be dreams"),
 			Status.game("Rare pepe"),
+			Status.stream("Cool stuff", "https://twitch.tv/logout"),
 	};
 
 	public BotStatusService(DiscordBot b) {

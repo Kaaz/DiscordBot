@@ -4,6 +4,7 @@ import discordbot.core.AbstractCommand;
 import discordbot.core.ExitCode;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -40,7 +41,7 @@ public class ExitCommand extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.isCreator(author)) {
 			bot.out.sendMessage(channel, "I am being killed :sob: farewell world! :wave: ");
-			System.exit(ExitCode.STOP.getCode());
+			Launcher.stop(ExitCode.STOP);
 		}
 		return Template.get("command_no_permission");
 	}

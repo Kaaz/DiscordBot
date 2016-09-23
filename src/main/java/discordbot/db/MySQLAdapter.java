@@ -4,6 +4,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import discordbot.core.ExitCode;
 import discordbot.exceptions.UnimplementedParameterException;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 
 import java.sql.*;
 import java.util.Calendar;
@@ -37,7 +38,7 @@ public class MySQLAdapter {
 			return dataSource.getConnection();
 		} catch (SQLException e) {
 			DiscordBot.LOGGER.error("Can't connect to the database! Make sure the database settings are corrent and the database server is running");
-			System.exit(ExitCode.SHITTY_CONFIG.getCode());
+			Launcher.stop(ExitCode.SHITTY_CONFIG);
 		}
 		return null;
 	}

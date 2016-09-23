@@ -4,6 +4,7 @@ import discordbot.core.AbstractCommand;
 import discordbot.core.ExitCode;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -40,7 +41,7 @@ public class RebootCommand extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.isOwner(channel, author)) {
 			bot.out.sendMessage(channel, "Rebooting in about a minute :smile:");
-			System.exit(ExitCode.REBOOT.getCode());
+			Launcher.stop(ExitCode.REBOOT);
 		}
 		return Template.get("command_no_permission");
 	}

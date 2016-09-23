@@ -3,6 +3,7 @@ package discordbot.event;
 import discordbot.core.AbstractEventListener;
 import discordbot.core.ExitCode;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 import sx.blah.discord.handle.impl.events.DiscordDisconnectedEvent;
 
 /**
@@ -22,7 +23,7 @@ public class DisconnectedListener extends AbstractEventListener<DiscordDisconnec
 	public void handle(DiscordDisconnectedEvent event) {
 		DiscordBot.LOGGER.info("[event] DISCONNECTED! ");
 		if (event.getReason().equals(DiscordDisconnectedEvent.Reason.RECONNECTION_FAILED)) {
-			System.exit(ExitCode.DISCONNECTED.getCode());
+			Launcher.stop(ExitCode.DISCONNECTED);
 		}
 	}
 

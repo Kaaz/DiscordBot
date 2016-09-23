@@ -53,7 +53,7 @@ public class BotSelfUpdateService extends AbstractService {
 					new TimerTask() {
 						@Override
 						public void run() {
-							System.exit(ExitCode.UPDATE.getCode());
+							Launcher.stop(ExitCode.UPDATE);
 						}
 					}
 					, TimeUnit.MINUTES.toMillis(1));

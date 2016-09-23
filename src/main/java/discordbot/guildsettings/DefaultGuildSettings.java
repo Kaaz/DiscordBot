@@ -1,6 +1,8 @@
 package discordbot.guildsettings;
 
+import discordbot.core.ExitCode;
 import discordbot.exceptions.DefaultSettingAlreadyExistsException;
+import discordbot.main.Launcher;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,7 +21,7 @@ public class DefaultGuildSettings {
 		} catch (DefaultSettingAlreadyExistsException e) {
 			e.printStackTrace();
 			System.out.println(e.toString());
-			System.exit(-1);
+			Launcher.stop(ExitCode.GENERIC_ERROR);
 		}
 	}
 
