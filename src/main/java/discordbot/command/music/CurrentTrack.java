@@ -57,7 +57,7 @@ public class CurrentTrack extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[0];
+		return new String[]{"playing", "np", "nowplaying"};
 	}
 
 	@Override
