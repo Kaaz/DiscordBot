@@ -47,7 +47,7 @@ public class BotSelfUpdateService extends AbstractService {
 		ProgramVersion latestVersion = UpdateUtil.getLatestVersion();
 		if (latestVersion.isHigherThan(Launcher.getVersion())) {
 			for (IChannel channel : getSubscribedChannels()) {
-				bot.out.sendMessage(channel, String.format(Template.get("bot_self_update_restart"), latestVersion.toString()));
+				bot.out.sendMessage(channel, String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()));
 			}
 			bot.timer.schedule(
 					new TimerTask() {
