@@ -22,10 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -37,10 +34,12 @@ public class MusicPlayerHandler {
 	private IMessage activeMsg;
 	private long currentSongLength = 0;
 	private long currentSongStartTimeInSeconds = 0;
+	private Random rng;
 
 	private MusicPlayerHandler(IGuild guild, DiscordBot bot) {
 		this.guild = guild;
 		this.bot = bot;
+		rng = new Random();
 		playerInstances.put(guild, this);
 	}
 
@@ -51,9 +50,11 @@ public class MusicPlayerHandler {
 			return new MusicPlayerHandler(guild, bot);
 		}
 	}
-	public void clearPlayList(){
+
+	public void clearPlayList() {
 		AudioPlayer.getAudioPlayerForGuild(guild).getPlaylist().clear();
 	}
+
 	public OMusic getCurrentlyPlaying() {
 		return currentlyPlaying;
 	}
@@ -103,7 +104,7 @@ public class MusicPlayerHandler {
 						"FROM playlist " +
 						"WHERE banned = 0 " +
 						"ORDER BY lastplaydate ASC " +
-						"LIMIT 25")) {
+						"LIMIT 50")) {
 			while (rs.next()) {
 				potentialSongs.add(rs.getString("filename"));
 			}
@@ -111,7 +112,7 @@ public class MusicPlayerHandler {
 			e.printStackTrace();
 			bot.out.sendErrorToMe(e, bot);
 		}
-		return potentialSongs.get((int) (Math.random() * (double) potentialSongs.size()));
+		return potentialSongs.get(rng.nextInt(potentialSongs.size()));
 	}
 
 	/**
@@ -189,16 +190,10 @@ public class MusicPlayerHandler {
 	 * @return successfully started playing
 	 */
 	public boolean playRandomSong() {
-		String randomSong = getRandomSong();
-//		guild.getVoiceChannels();
-//		if (bot.instance.getConnectedVoiceChannels().isEmpty()) {
-//			return false;
-//		}
-//		List<IUser> usersInVoiceChannel = getUsersInVoiceChannel();
-//		if (usersInVoiceChannel.isEmpty()) {
-//			return false;
-//		}
-		return addToQueue(randomSong);
+		if (getUsersInVoiceChannel().isEmpty()) {
+			return false;
+		}
+		return addToQueue(getRandomSong());
 	}
 
 	private boolean addToQueue(String filename) {
@@ -229,7 +224,7 @@ public class MusicPlayerHandler {
 		}
 		if (currentChannel != null) {
 			List<IUser> connectedUsers = currentChannel.getConnectedUsers();
-			userList.addAll(connectedUsers.stream().filter(user -> !user.equals(bot.instance.getOurUser())).collect(Collectors.toList()));
+			userList.addAll(connectedUsers.stream().filter(user -> !user.equals(bot.instance.getOurUser()) && !user.isBot()).collect(Collectors.toList()));
 		}
 		return userList;
 	}
