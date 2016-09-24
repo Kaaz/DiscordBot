@@ -75,19 +75,21 @@ public class BotStatusService extends AbstractService {
 	@Override
 	public void run() {
 		IChannel channel = bot.instance.getChannelByID(Config.BOT_CHANNEL_ID);
-		try {
-			List<IInvite> invites = channel.getInvites();
-			if (invites.size() > 0) {
-				if (new Random().nextInt(100) < 20) {
-					bot.instance.changeStatus(Status.game("Feedback @ https://discord.gg/" + invites.get(0).getInviteCode()));
-					return;
+		if (channel != null) {
+			try {
+				List<IInvite> invites = channel.getInvites();
+				if (invites.size() > 0) {
+					if (new Random().nextInt(100) < 20) {
+						bot.instance.changeStatus(Status.game("Feedback @ https://discord.gg/" + invites.get(0).getInviteCode()));
+						return;
+					}
+				} else {
+					bot.out.sendPrivateMessage(bot.instance.getUserByID(Config.CREATOR_ID), ":exclamation: I am out of invites for `" + channel.getName() + "` Click here to make more :D " + channel.mention());
 				}
-			} else {
-				bot.out.sendPrivateMessage(bot.instance.getUserByID(Config.CREATOR_ID), ":exclamation: I am out of invites for `" + channel.getName() + "` Click here to make more :D " + channel.mention());
+			} catch (DiscordException | RateLimitException | MissingPermissionsException e) {
+				bot.out.sendErrorToMe(e, "mychannel", Config.BOT_CHANNEL_ID, "invite_error", ":sob:");
+				e.printStackTrace();
 			}
-		} catch (DiscordException | RateLimitException | MissingPermissionsException e) {
-			bot.out.sendErrorToMe(e, "mychannel", Config.BOT_CHANNEL_ID, "invite_error", ":sob:");
-			e.printStackTrace();
 		}
 		bot.instance.changeStatus(statusList[new Random().nextInt(statusList.length)]);
 	}
