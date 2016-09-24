@@ -148,14 +148,12 @@ public class MusicPlayerHandler {
 				currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000;
 				music.lastplaydate = currentSongStartTimeInSeconds;
 				TMusic.update(music);
-				if (music.youtubeTitle.isEmpty()) {
-					msg = "plz send help:: " + f.getName();
+				if (music.artist != null && music.title != null && !music.artist.trim().isEmpty() && !music.title.trim().isEmpty()) {
+					msg = "Now playing " + music.artist + " - " + music.title;
+				} else if (music.youtubeTitle != null && !music.youtubeTitle.isEmpty()) {
+					msg = "Now playing " + music.youtubeTitle + " ** need details about song! ** check out **current**";
 				} else {
-					if (music.artist != null && music.title != null && !music.artist.trim().isEmpty() && !music.title.trim().isEmpty()) {
-						msg = "Now playing " + music.artist + " - " + music.title;
-					} else {
-						msg = "Now playing " + music.youtubeTitle + " ** need details about song! ** check out **current**";
-					}
+					msg = "plz send help:: " + f.getName();
 				}
 			}
 		}
