@@ -3,7 +3,7 @@
 A Java bot for [Discord](https://discordapp.com/) using the [Discord4J interface](https://github.com/austinv11/Discord4J/).  
 It uses mysql to store data, a create script can be found in the sql folder  
 To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [avconv](https://libav.org/avconv.html)  
-If you'd like to run your own version of this project check the [installation part](run-the-bot-yourself)
+If you'd like to run your own version of this project check the [installation part](#run-the-bot-yourself)
 
 You can play/test it on discord 
 [![Discord](https://discordapp.com/api/guilds/225168913808228352/widget.png)](https://discord.gg/eaywDDt)
