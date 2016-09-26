@@ -7,11 +7,13 @@ import discordbot.core.Logger;
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
+import discordbot.modules.minecraft.ServerListPing17;
 import discordbot.threads.ServiceHandlerThread;
 import discordbot.util.YTUtil;
 import sx.blah.discord.util.DiscordException;
 
 import java.io.File;
+import java.net.InetSocketAddress;
 import java.util.Properties;
 import java.util.Random;
 
@@ -32,6 +34,7 @@ public class Launcher {
 		DiscordBot.LOGGER.info("Started with version: " + Launcher.version);
 		DbUpdate dbUpdate = new DbUpdate(WebDb.get());
 		dbUpdate.updateToCurrent();
+		stop(ExitCode.GENERIC_ERROR);
 		if (Config.BOT_ENABLED) {
 			DiscordBot nb = null;
 			try {
