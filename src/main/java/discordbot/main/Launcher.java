@@ -20,7 +20,9 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 public class Launcher {
@@ -86,6 +88,7 @@ public class Launcher {
 			TMusic.update(rec);
 		}
 	}
+
 	private static ReflectionFactory reflectionFactory = ReflectionFactory.getReflectionFactory();
 
 	private static void setFailsafeFieldValue(Field field, Object target, Object value) throws NoSuchFieldException,
@@ -113,7 +116,7 @@ public class Launcher {
 			IllegalAccessException {
 		for (Field field : Class.class.getDeclaredFields()) {
 			if (field.getName().contains(fieldName)) {
-				AccessibleObject.setAccessible(new Field[] { field }, true);
+				AccessibleObject.setAccessible(new Field[]{field}, true);
 				setFailsafeFieldValue(field, enumClass, null);
 				break;
 			}
@@ -146,7 +149,7 @@ public class Launcher {
 	/**
 	 * Add an enum instance to the enum class given as argument
 	 *
-	 * @param <T> the type of the enum (implicit)
+	 * @param <T>      the type of the enum (implicit)
 	 * @param enumType the class of the enum to be modified
 	 * @param enumName the name of the new enum instance to be added to the class.
 	 */
@@ -167,7 +170,7 @@ public class Launcher {
 				break;
 			}
 		}
-		AccessibleObject.setAccessible(new Field[] { valuesField }, true);
+		AccessibleObject.setAccessible(new Field[]{valuesField}, true);
 
 		try {
 
@@ -179,8 +182,8 @@ public class Launcher {
 			T newValue = (T) makeEnum(enumType, // The target enum class
 					enumName, // THE NEW ENUM INSTANCE TO BE DYNAMICALLY ADDED
 					values.size(),
-					new Class<?>[] {}, // could be used to pass values to the enum constuctor if needed
-					new Object[] {}); // could be used to pass values to the enum constuctor if needed
+					new Class<?>[]{}, // could be used to pass values to the enum constuctor if needed
+					new Object[]{}); // could be used to pass values to the enum constuctor if needed
 
 			// 4. add new value
 			values.add(newValue);
