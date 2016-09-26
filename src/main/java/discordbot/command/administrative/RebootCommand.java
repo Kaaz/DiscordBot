@@ -5,6 +5,7 @@ import discordbot.core.ExitCode;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
+import discordbot.util.UpdateUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -29,7 +30,10 @@ public class RebootCommand extends AbstractCommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[]{};
+		return new String[]{
+				"reboot         //reboots the system",
+				"reboot update  //reboots the system and updates"
+		};
 	}
 
 	@Override
@@ -41,6 +45,9 @@ public class RebootCommand extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.isOwner(channel, author)) {
 			bot.out.sendMessage(channel, "Rebooting in about a minute :smile:");
+			if (UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
+				Launcher.stop(ExitCode.UPDATE);
+			}
 			Launcher.stop(ExitCode.REBOOT);
 		}
 		return Template.get("command_no_permission");
