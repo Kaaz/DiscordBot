@@ -56,7 +56,7 @@ public class mcstatus extends AbstractCommand {
 		int port = defaultPort;
 		if (args.length == 0 && channel.getGuild().getID().equals("135024304835395585")) {
 			host = "176.64.207.213";
-			port = 53398;
+			port = 53389;
 		} else if (args.length == 1) {
 			host = args[0];
 			if (args[0].contains(":")) {
