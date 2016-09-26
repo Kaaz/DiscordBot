@@ -77,12 +77,12 @@ public class mcstatus extends AbstractCommand {
 		try {
 			rsp = mc.fetchData();
 			List<String> playerList = new ArrayList<>();
-			rsp.getPlayers().getSample().forEach(player -> {
-				playerList.add(player.getName());
-			});
-			String playertable = "";
+			String playertable = String.format("%s / %s online ", rsp.getPlayers().getOnline(), rsp.getPlayers().getMax());
+			if (rsp.getPlayers() != null && rsp.getPlayers().getSample() != null) {
+				rsp.getPlayers().getSample().forEach(player -> playerList.add(player.getName()));
+			}
 			if (playerList.size() > 0) {
-				playertable = Misc.makeTable(playerList);
+				playertable += Config.EOL + Misc.makeTable(playerList);
 			}
 			return "Found the minecraft server!" + Config.EOL +
 					"description: " + rsp.getDescription() + Config.EOL +
