@@ -1,8 +1,8 @@
 package discordbot.threads;
 
 import discordbot.core.AbstractService;
-import discordbot.main.Launcher;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 import org.reflections.Reflections;
 
 import java.util.ArrayList;

@@ -11,9 +11,6 @@ import discordbot.role.RoleRankings;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -83,23 +80,14 @@ public class UserRankingSystemService extends AbstractService {
 				if (role.getName().equals(RoleRankings.getFullName(guild, targetRole))) {
 					hasTargetRole = true;
 				} else {
-					try {
-						user.removeRole(role);
-					} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
-						e.printStackTrace();
-						bot.out.sendErrorToMe(e, "server", guild.getName(), "user", user.getName());
-					}
+					bot.out.removeRole(user, role);
 				}
 			}
 		}
 		if (!hasTargetRole) {
 			List<IRole> roleList = guild.getRolesByName(RoleRankings.getFullName(guild, targetRole));
 			if (roleList.size() > 0) {
-				try {
-					user.addRole(roleList.get(0));
-				} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
-					bot.out.sendErrorToMe(e, "server", guild.getName(), "user", user.getName());
-				}
+				bot.out.addRole(user, roleList.get(0));
 			} else {
 				bot.out.sendErrorToMe(new Exception("Role not found"), "guild", guild.getName(), "user", user.getName());
 			}

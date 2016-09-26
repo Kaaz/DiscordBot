@@ -1,14 +1,12 @@
 package discordbot.handler;
 
 import discordbot.core.Logger;
+import discordbot.handler.discord.RoleModifyTask;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.Misc;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IPrivateChannel;
-import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.*;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -17,10 +15,12 @@ public class OutgoingContentHandler {
 	private final DiscordBot bot;
 	private final static long DELETE_INTERVAL = 500L;
 	private final MessageDeleter deleteThread;
+	private final RoleModifier roleThread;
 
 	public OutgoingContentHandler(DiscordBot b) {
 		bot = b;
 		deleteThread = new MessageDeleter();
+		roleThread = new RoleModifier();
 	}
 
 	/**
@@ -31,6 +31,26 @@ public class OutgoingContentHandler {
 	public IMessage sendMessage(IChannel channel, String content) {
 		RequestBuffer.RequestFuture<IMessage> request = bot.out.sendMessage(new MessageBuilder(bot.instance).withChannel(channel).withContent(content));
 		return request.get();
+	}
+
+	/**
+	 * adds a role to a user
+	 *
+	 * @param user the user
+	 * @param role the role
+	 */
+	public void addRole(IUser user, IRole role) {
+		roleThread.offer(new RoleModifyTask(user, role, true));
+	}
+
+	/**
+	 * removes a role from a user
+	 *
+	 * @param user the user
+	 * @param role the role
+	 */
+	public void removeRole(IUser user, IRole role) {
+		roleThread.offer(new RoleModifyTask(user, role, false));
 	}
 
 	/**
@@ -184,6 +204,49 @@ public class OutgoingContentHandler {
 		}
 
 		public void offer(IMessage lm) {
+			if (processTerminated) return;
+			itemsToDelete.offer(lm);
+		}
+	}
+
+	private class RoleModifier extends Thread {
+		private LinkedBlockingQueue<RoleModifyTask> itemsToDelete = new LinkedBlockingQueue<>();
+		private volatile boolean processTerminated = false;
+
+		RoleModifier() {
+			start();
+		}
+
+		public void run() {
+			try {
+				while (!Launcher.killAllThreads) {
+					final RoleModifyTask roleToModify = itemsToDelete.take();
+					if (roleToModify != null) {
+						RequestBuffer.request(() -> {
+							try {
+								if (roleToModify.isAdd()) {
+									roleToModify.getUser().addRole(roleToModify.getRole());
+								} else {
+									roleToModify.getUser().removeRole(roleToModify.getRole());
+								}
+								return true;
+							} catch (MissingPermissionsException | DiscordException e) {
+								System.out.println(e.getMessage());
+								bot.out.sendErrorToMe(e, "server", roleToModify.getRole().getGuild().getName(), "user", roleToModify.getRole().getName(), "Modifier", roleToModify.isAdd() ? "Adding" : "Removing");
+								e.printStackTrace();
+							}
+							return false;
+						});
+					}
+					Thread.sleep(1000L);
+				}
+			} catch (InterruptedException ignored) {
+			} finally {
+				processTerminated = true;
+			}
+		}
+
+		public void offer(RoleModifyTask lm) {
 			if (processTerminated) return;
 			itemsToDelete.offer(lm);
 		}
