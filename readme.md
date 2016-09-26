@@ -121,14 +121,14 @@ execute the sql queries in the /sql/create.sql file
 
 clone the project with git  
 `git clone https://github.com/MaikWezinkhof/DiscordBot /path/to/project`  
-Go to the root of the project and install the depencencies using maven  
+Go to the root of the project and install the dependencies using maven  
 `mvn install`  
 Now build the project using maven  
 `mvn clean process-resources compile assembly:single`  
 In the target map there should be a file called Discordbot-VERSION_full.jar (where version is the latest version number)  
 Move this file over to a location wherever you want to start the bot from.  
 
-you can launch the bot with the following command:
+You can launch the bot with the following command:
 `java -jar <jarfilename>`  
 
 The first time It will generate an application.cfg file and exit.  
