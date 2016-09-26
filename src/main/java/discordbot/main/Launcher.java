@@ -1,6 +1,7 @@
 package discordbot.main;
 
 import com.wezinkhof.configuration.ConfigurationBuilder;
+import discordbot.core.DbUpdate;
 import discordbot.core.ExitCode;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -29,6 +30,8 @@ public class Launcher {
 		props.load(Launcher.class.getClassLoader().getResourceAsStream("version.properties"));
 		Launcher.version = ProgramVersion.fromString(String.valueOf(props.getOrDefault("version", "1")));
 		DiscordBot.LOGGER.info("Started with version: " + Launcher.version);
+		DbUpdate dbUpdate = new DbUpdate(WebDb.get());
+		dbUpdate.updateToCurrent();
 		if (Config.BOT_ENABLED) {
 			DiscordBot nb = null;
 			try {

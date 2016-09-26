@@ -43,7 +43,7 @@ public class MySQLAdapter {
 		return null;
 	}
 
-	private Connection getConnection() {
+	public Connection getConnection() {
 		if (c == null) {
 			c = createConnection();
 		}
