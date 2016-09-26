@@ -68,9 +68,7 @@ public class DbUpdate {
 		DatabaseMetaData metaData = adapter.getConnection().getMetaData();
 
 		try (ResultSet rs = metaData.getTables(null, null, "commands", null)) {
-			if (rs.next()) {
-				System.out.println(rs.getString("table_name"));
-			} else {
+			if (!rs.next()) {
 				return -1;
 			}
 		} catch (Exception e) {
@@ -78,9 +76,7 @@ public class DbUpdate {
 			e.printStackTrace();
 		}
 		try (ResultSet rs = metaData.getTables(null, null, "bot_meta", null)) {
-			if (rs.next()) {
-				System.out.println(rs.getString("table_name"));
-			} else {
+			if (!rs.next()) {
 				return 0;
 			}
 		} catch (Exception e) {
