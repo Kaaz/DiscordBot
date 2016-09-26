@@ -71,7 +71,7 @@ public class mcstatus extends AbstractCommand {
 			return Template.get("command_invalid_use");
 		}
 		ServerListPing17 mc = new ServerListPing17();
-		mc.setAddress(new InetSocketAddress("176.64.207.213", 53389));
+		mc.setAddress(new InetSocketAddress(host, port));
 		ServerListPing17.StatusResponse rsp = null;
 
 		try {
