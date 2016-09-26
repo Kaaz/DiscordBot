@@ -13,7 +13,6 @@ import sx.blah.discord.util.DiscordException;
 
 import java.io.File;
 import java.util.Properties;
-import java.util.Random;
 
 public class Launcher {
 	public static boolean killAllThreads = false;
@@ -48,8 +47,6 @@ public class Launcher {
 			Logger.fatal("Bot not enabled, enable it in the config. You can do this by setting bot_enabled=true");
 			Launcher.stop(ExitCode.SHITTY_CONFIG);
 		}
-		Random r = new Random();
-		r.nextInt(3);
 	}
 
 	/**
