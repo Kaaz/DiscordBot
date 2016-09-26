@@ -2,7 +2,8 @@
 
 A Java bot for [Discord](https://discordapp.com/) using the [Discord4J interface](https://github.com/austinv11/Discord4J/).  
 It uses mysql to store data, a create script can be found in the sql folder  
-To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [avconv](https://libav.org/avconv.html)
+To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [avconv](https://libav.org/avconv.html)  
+If you'd like to run your own version of this project check the [installation part](#run-the-bot-yourself)
 
 You can play/test it on discord 
 [![Discord](https://discordapp.com/api/guilds/225168913808228352/widget.png)](https://discord.gg/eaywDDt)
@@ -60,6 +61,39 @@ The following settings will affect the ranking system
 The rankings go according to the table below:
 
 %_LIST_OF_AUTO_RANKS_%
+
+## Run the bot yourself
+
+Before we get started I want to note that the development happens mainly on a windows machine, so there might be some unforeseen errors on other operating systems.  
+If you do encounter errors, please let me know so I can fix them.  
+
+Right, so lets get started. Before starting make sure you at least have the following installed:
+
+* java 8
+* git
+* maven
+* mysql
+
+Database:  
+execute the sql queries in the /sql/create.sql file
+
+clone the project with git  
+`git clone https://github.com/MaikWezinkhof/DiscordBot /path/to/project`  
+Go to the root of the project and install the dependencies using maven  
+`mvn install`  
+Now build the project using maven  
+`mvn clean process-resources compile assembly:single`  
+In the target map there should be a file called Discordbot-VERSION_full.jar (where version is the latest version number)  
+Move this file over to a location wherever you want to start the bot from.  
+
+You can launch the bot with the following command:
+`java -jar <jarfilename>`  
+
+The first time It will generate an application.cfg file and exit.  
+You'll have to edit the config file and add in your token, database configuration, etc.  
+
+
+
 
 
 ## Warning

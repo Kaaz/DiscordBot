@@ -1,6 +1,7 @@
 package discordbot.main;
 
 import com.wezinkhof.configuration.ConfigurationBuilder;
+import discordbot.core.DbUpdate;
 import discordbot.core.ExitCode;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -20,6 +21,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.Properties;
 
 public class Launcher {
 	public static boolean killAllThreads = false;
@@ -37,6 +39,8 @@ public class Launcher {
 		Launcher.version = ProgramVersion.fromString(String.valueOf(props.getOrDefault("version", "1")));
 		addEnum(Presences.class, "DND");
 		DiscordBot.LOGGER.info("Started with version: " + Launcher.version);
+		DbUpdate dbUpdate = new DbUpdate(WebDb.get());
+		dbUpdate.updateToCurrent();
 		if (Config.BOT_ENABLED) {
 			DiscordBot nb = null;
 			try {
@@ -53,8 +57,6 @@ public class Launcher {
 			Logger.fatal("Bot not enabled, enable it in the config. You can do this by setting bot_enabled=true");
 			Launcher.stop(ExitCode.SHITTY_CONFIG);
 		}
-		Random r = new Random();
-		r.nextInt(3);
 	}
 
 	/**
