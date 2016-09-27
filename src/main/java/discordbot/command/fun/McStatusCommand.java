@@ -15,10 +15,11 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
-public class mcstatus extends AbstractCommand {
+public class McStatusCommand extends AbstractCommand {
 	final private int defaultPort = 25565;
+	final private String gid = "135024304835395585";
 
-	public mcstatus(DiscordBot bot) {
+	public McStatusCommand(DiscordBot bot) {
 		super(bot);
 	}
 
@@ -54,7 +55,7 @@ public class mcstatus extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		String host = "localhost";
 		int port = defaultPort;
-		if (args.length == 0 && channel.getGuild().getID().equals("135024304835395585")) {
+		if (args.length == 0 && channel.getGuild().getID().equals(gid)) {
 			host = "176.64.207.213";
 			port = 53389;
 		} else if (args.length == 1) {
@@ -84,8 +85,12 @@ public class mcstatus extends AbstractCommand {
 			if (playerList.size() > 0) {
 				playertable += Config.EOL + Misc.makeTable(playerList);
 			}
+			String description = rsp.getDescription();
+			if (channel.getGuild().getID().equals(gid)) {
+				description = description.replace("PEEKA", "~~PEEKA~~ Kaaz");
+			}
 			return "Found the minecraft server!" + Config.EOL +
-					"description: " + rsp.getDescription() + Config.EOL +
+					"description: " + description + Config.EOL +
 					playertable;
 		} catch (IOException ignored) {
 		}
