@@ -44,16 +44,20 @@ public class ProfileCommand extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		try {
+			Font defaultFont = new Font("SansSerif", Font.BOLD, 36);
+			Font creditFont = new Font("comissans", Font.ITALIC, 20);
 			BufferedImage result = new BufferedImage(
-					600, 600,
+					645, 265,
 					BufferedImage.TYPE_INT_ARGB);
 			Graphics g = result.getGraphics();
 			URLConnection connection = new URL(author.getAvatarURL()).openConnection();
 			connection.setRequestProperty("User-Agent", "bot emily-bot");
 			BufferedImage profileImg = ImageIO.read(connection.getInputStream());
-			BufferedImage backgroundImage = ImageIO.read(Launcher.class.getClassLoader().getResource("profile_bg_test.png"));
-			g.drawImage(profileImg, 160, 80, 440, 380, 0, 0, profileImg.getWidth(), profileImg.getHeight(), null);
-			g.drawImage(backgroundImage, 0, 0, 600, 600, 0, 0, 600, 600, null);
+			BufferedImage backgroundImage = ImageIO.read(Launcher.class.getClassLoader().getResource("profile_bg_test_2.png"));
+			g.drawImage(profileImg, 68, 30, 195, 155, 0, 0, profileImg.getWidth(), profileImg.getHeight(), null);
+			g.drawImage(backgroundImage, 0, 0, 645, 265, 0, 0, 645, 265, null);
+			addText(author.getName(), defaultFont, 70, 180, g, Color.black);
+			addText("made by Emily", creditFont, 506, 260, g, new Color(0xFFE2F7));
 			File file = new File("profile_" + author.getID() + ".png");
 			ImageIO.write(result, "png", file);
 			channel.sendFile(file);
@@ -64,6 +68,12 @@ public class ProfileCommand extends AbstractCommand {
 			return "Error in creating image :(";
 		}
 		return "";
+	}
+
+	private void addText(String text, Font font, int x, int y, Graphics g, Color color) {
+		g.setFont(font);
+		g.setColor(color);
+		g.drawString(text, x, y);
 	}
 
 	@Override
