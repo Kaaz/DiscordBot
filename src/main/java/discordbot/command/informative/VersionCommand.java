@@ -18,7 +18,7 @@ public class VersionCommand extends AbstractCommand {
 	public VersionCommand(DiscordBot b) {
 		super(b);
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return "Shows what versions I'm using";
@@ -44,7 +44,7 @@ public class VersionCommand extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		return "Info about the versions:" + Config.EOL +
-				"Current version: `+" + Launcher.getVersion() + "+`" + Config.EOL +
-				"Latest  version: `+" + UpdateUtil.getLatestVersion() + "+`" + Config.EOL;
+				"Current version: `" + Launcher.getVersion() + "`" + Config.EOL +
+				"Latest  version: `" + UpdateUtil.getLatestVersion() + "`" + Config.EOL;
 	}
 }
