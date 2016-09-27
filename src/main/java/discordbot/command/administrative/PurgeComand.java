@@ -45,7 +45,8 @@ public class PurgeComand extends AbstractCommand {
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"clear"
+				"clear",
+				"delete"
 		};
 	}
 
