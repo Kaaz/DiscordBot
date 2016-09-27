@@ -52,7 +52,12 @@ public class ProfileCommand extends AbstractCommand {
 			Graphics g = result.getGraphics();
 			URLConnection connection = new URL(author.getAvatarURL()).openConnection();
 			connection.setRequestProperty("User-Agent", "bot emily-bot");
-			BufferedImage profileImg = ImageIO.read(connection.getInputStream());
+			BufferedImage profileImg;
+			try {
+				profileImg = ImageIO.read(connection.getInputStream());
+			} catch (Exception ignored) {
+				profileImg = ImageIO.read(Launcher.class.getClassLoader().getResource("default_profile.jpg"));
+			}
 			BufferedImage backgroundImage = ImageIO.read(Launcher.class.getClassLoader().getResource("profile_bg_test_2.png"));
 			g.drawImage(profileImg, 68, 30, 195, 155, 0, 0, profileImg.getWidth(), profileImg.getHeight(), null);
 			g.drawImage(backgroundImage, 0, 0, 645, 265, 0, 0, 645, 265, null);
