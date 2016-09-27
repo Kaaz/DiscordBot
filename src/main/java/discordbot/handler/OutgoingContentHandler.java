@@ -232,8 +232,10 @@ public class OutgoingContentHandler {
 								return true;
 							} catch (MissingPermissionsException | DiscordException e) {
 								System.out.println(e.getMessage());
-								bot.out.sendErrorToMe(e, "server", roleToModify.getRole().getGuild().getName(), "user", roleToModify.getRole().getName(), "Modifier", roleToModify.isAdd() ? "Adding" : "Removing");
-								e.printStackTrace();
+								if (!e.getMessage().startsWith("Edited roles hierarchy is too high")) {
+									bot.out.sendErrorToMe(e, "server", roleToModify.getRole().getGuild().getName(), "user", roleToModify.getRole().getName(), "Modifier", roleToModify.isAdd() ? "Adding" : "Removing");
+									e.printStackTrace();
+								}
 							}
 							return false;
 						});
