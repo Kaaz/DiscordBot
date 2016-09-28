@@ -29,7 +29,7 @@ public class ProfileImageV2 extends ProfileImage {
 		}
 		Font defaultFont = new Font("Tahoma", Font.BOLD + Font.ITALIC, fontsize);
 		Font score = new Font("Helvetica", Font.BOLD, 24);
-		Font creditFont = new Font("Comissans", Font.ITALIC, 20);
+		Font creditFont = new Font("Comissans", Font.ITALIC, 12);
 		BufferedImage result = new BufferedImage(
 				320, 265,
 				BufferedImage.TYPE_INT_ARGB);
