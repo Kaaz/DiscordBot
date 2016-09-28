@@ -27,7 +27,7 @@ public class ProfileImageV2 extends ProfileImage {
 		if (getUser().getName().length() > 8) {
 			fontsize = 22;
 		}
-		Font defaultFont = new Font("Tahoma", Font.BOLD + Font.ITALIC, 22);
+		Font defaultFont = new Font("Tahoma", Font.BOLD + Font.ITALIC, fontsize);
 		Font score = new Font("Helvetica", Font.BOLD, 24);
 		Font creditFont = new Font("Comissans", Font.ITALIC, 20);
 		BufferedImage result = new BufferedImage(
