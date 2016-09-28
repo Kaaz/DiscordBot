@@ -23,9 +23,13 @@ public class ProfileImageV2 extends ProfileImage {
 	}
 
 	public File getProfileImage() throws IOException {
-		Font defaultFont = new Font("Helvetica", Font.BOLD + Font.ITALIC, 28);
+		int fontsize = 28;
+		if (getUser().getName().length() > 8) {
+			fontsize = 22;
+		}
+		Font defaultFont = new Font("Tahoma", Font.BOLD + Font.ITALIC, 22);
 		Font score = new Font("Helvetica", Font.BOLD, 24);
-		Font creditFont = new Font("comissans", Font.ITALIC, 20);
+		Font creditFont = new Font("Comissans", Font.ITALIC, 20);
 		BufferedImage result = new BufferedImage(
 				320, 265,
 				BufferedImage.TYPE_INT_ARGB);
@@ -34,7 +38,7 @@ public class ProfileImageV2 extends ProfileImage {
 				RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		BufferedImage profileImg = getUserAvatar();
-		BufferedImage backgroundImage = ImageIO.read(Launcher.class.getClassLoader().getResource("profile_bg_3.png"));
+		BufferedImage backgroundImage = ImageIO.read(Launcher.class.getClassLoader().getResource("profile_bg_4.png"));
 
 		g.drawImage(profileImg, 18, 33, 141, 159, 0, 0, profileImg.getWidth(), profileImg.getHeight(), null);
 		g.drawImage(backgroundImage, 0, 0, 320, 265, 0, 0, 320, 265, null);
