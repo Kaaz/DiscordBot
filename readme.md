@@ -32,12 +32,13 @@ Commands | | | | |
 --- | --- | ---| ---| ---
 [8ball](#8ball) | [avatar](#avatar) | [blackjack](#blackjack) | [catfact](#catfact) | [changename](#changename)
 [command](#command) | [config](#config) | [current](#current) | [exit](#exit) | [game](#game)
-[help](#help) | [info](#info) | [invite](#invite) | [join](#join) | [joke](#joke)
-[leave](#leave) | [play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec)
-[poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll) | [purge](#purge) | [r](#r)
-[reboot](#reboot) | [reload](#reload) | [role](#role) | [roll](#roll) | [rotate](#rotate)
-[say](#say) | [skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe)
-[system](#system) | [template](#template) | [user](#user) | [volume](#volume) | 
+[help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite) | [join](#join)
+[joke](#joke) | [leave](#leave) | [mcstatus](#mcstatus) | [play](#play) | [playlist](#playlist)
+[pm](#pm) | [poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll)
+[purge](#purge) | [r](#r) | [reboot](#reboot) | [reload](#reload) | [role](#role)
+[roll](#roll) | [rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot)
+[stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template)
+[user](#user) | [version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -253,6 +254,17 @@ Usable in public and private channels
 help            //index of all commands
 help <command>  //usage for that command
 ```
+### importmusic
+
+Special command for special use case. Imports music files from a directory. Only imports files with a valid id3v[1-2] tag
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+importmusic <path/to/music>  //imports a folder
+```
 ### info
 
 Shows some general information about me and my future plans.
@@ -294,6 +306,18 @@ Usable in public and private channels
 Leaves the voicechannel
 
 Usable in public ~~and private~~ channels
+### mcstatus
+
+Shows some information about the server
+
+Usable in public ~~and private~~ channels
+
+#### Usage
+
+```php
+mcstatus <serverip>
+mcstatus <serverip> <serverport> 
+```
 ### play
 
 Plays a song from youtube
@@ -381,7 +405,7 @@ poll 1-9      //vote on the options
 
 purges messages
 
-Aliases: clear
+Aliases: clear, delete
 Usable in public ~~and private~~ channels
 
 #### Usage
@@ -408,6 +432,13 @@ restarts the bot
 
 Aliases: restart
 Usable in public and private channels
+
+#### Usage
+
+```php
+reboot         //reboots the system
+reboot update  //reboots the system and updates
+```
 ### reload
 
 reloads the configuration
@@ -514,6 +545,19 @@ subscribe list           //See what subscription options there are
 Shows memory usage
 
 Usable in public and private channels
+### tag
+
+Tags!
+
+Usable in public ~~and private~~ channels
+
+#### Usage
+
+```php
+tag                   //list of tags
+tag <name>            //shows the tag
+tag <name> <content>  //creates the tag
+```
 ### template
 
 adds/removes templates
@@ -540,6 +584,17 @@ Usable in public and private channels
 ```php
 user         //info about you
 user @user   //info about @user
+```
+### version
+
+Shows what versions I'm using
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+version  //version usage
 ```
 ### volume
 
