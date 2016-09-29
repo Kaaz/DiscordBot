@@ -12,10 +12,12 @@ import java.util.Set;
 public class ServiceHandlerThread extends Thread {
 	private DiscordBot bot;
 	private List<Class<? extends AbstractService>> services;
+	private List<AbstractService> instances;
 
 	public ServiceHandlerThread(DiscordBot bot) {
 		super("ServiceHandler");
 		services = new ArrayList<>();
+		instances = new ArrayList<>();
 		this.bot = bot;
 		collectServices();
 	}
@@ -30,14 +32,20 @@ public class ServiceHandlerThread extends Thread {
 
 	@Override
 	public void run() {
+		boolean initialized = false;
 		while (!Launcher.killAllThreads) {
 			try {
 				if (bot.isReady()) {
 					try {
 						if (bot != null) {
-							for (Class<? extends AbstractService> serviceClass : services) {
-								AbstractService serviceInstance = serviceClass.getConstructor(DiscordBot.class).newInstance(bot);
-								serviceInstance.start();
+							if (!initialized) {
+								for (Class<? extends AbstractService> serviceClass : services) {
+									instances.add(serviceClass.getConstructor(DiscordBot.class).newInstance(bot));
+								}
+								initialized = true;
+							}
+							for (AbstractService instance : instances) {
+								instance.start();
 							}
 						}
 					} catch (Exception e) {
