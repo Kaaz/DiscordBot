@@ -1,5 +1,6 @@
 package discordbot.command.fun;
 
+import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OTag;
@@ -74,7 +75,7 @@ public class TagCommand extends AbstractCommand {
 				tag.userId = TUser.getCachedId(author.getID());
 				tag.created = new Timestamp(System.currentTimeMillis());
 			}
-			tag.response = output;
+			tag.response = EmojiParser.parseToAliases(output);
 			if (tag.response.length() > 2000) {
 				tag.response = tag.response.substring(0, 1999);
 			}
