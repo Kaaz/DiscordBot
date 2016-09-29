@@ -16,7 +16,7 @@ public class TTag {
 		OTag t = new OTag();
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT *  " +
-						"FROM tag " +
+						"FROM tags " +
 						"WHERE guild_id = ? AND tag_name = ? ", serverId, tagName)) {
 			if (rs.next()) {
 				t.id = rs.getInt("id");
@@ -47,7 +47,21 @@ public class TTag {
 		}
 	}
 
+	public static void update(OTag record) {
+		try {
+			record.id = WebDb.get().query(
+					"UPDATE tags SET response = ? WHERE id = ?",
+					record.response, record.id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void insert(OTag record) {
+		if (record.id > 0) {
+			update(record);
+			return;
+		}
 		try {
 			record.id = WebDb.get().insert(
 					"INSERT INTO tags(tag_name, guild_id, response, user_id, creation_date) " +
