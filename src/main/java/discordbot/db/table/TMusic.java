@@ -74,6 +74,10 @@ public class TMusic {
 	}
 
 	public static void insert(OMusic record) {
+		if (record.id > 0) {
+			update(record);
+			return;
+		}
 		try {
 			record.id = WebDb.get().insert(
 					"INSERT INTO playlist(youtubecode, filename, youtube_title,title, artist, lastplaydate, banned) " +
