@@ -116,6 +116,7 @@ public class DiscordBot {
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.instance.getGuilds(), instance);
 		this.isReady = ready;
+		System.gc();
 	}
 
 	public void loadConfiguration() {

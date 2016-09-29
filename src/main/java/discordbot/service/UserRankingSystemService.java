@@ -52,7 +52,6 @@ public class UserRankingSystemService extends AbstractService {
 			if (settings.getOrDefault(SettingRoleTimeRanks.class).equals("true") && RoleRankings.canModifyRoles(guild, bot.instance.getOurUser())) {
 				handleGuild(guild);
 			}
-
 		}
 	}
 
@@ -96,5 +95,6 @@ public class UserRankingSystemService extends AbstractService {
 
 	@Override
 	public void afterRun() {
+		System.gc();
 	}
 }
