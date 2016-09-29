@@ -12,6 +12,7 @@ import discordbot.util.YTUtil;
 import sx.blah.discord.util.DiscordException;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 public class Launcher {
@@ -25,12 +26,7 @@ public class Launcher {
 	public static void main(String[] args) throws Exception {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		WebDb.init();
-		Properties props = new Properties();
-		props.load(Launcher.class.getClassLoader().getResourceAsStream("version.properties"));
-		Launcher.version = ProgramVersion.fromString(String.valueOf(props.getOrDefault("version", "1")));
-		DiscordBot.LOGGER.info("Started with version: " + Launcher.version);
-		DbUpdate dbUpdate = new DbUpdate(WebDb.get());
-		dbUpdate.updateToCurrent();
+		Launcher.init();
 		if (Config.BOT_ENABLED) {
 			DiscordBot nb = null;
 			try {
@@ -47,6 +43,15 @@ public class Launcher {
 			Logger.fatal("Bot not enabled, enable it in the config. You can do this by setting bot_enabled=true");
 			Launcher.stop(ExitCode.SHITTY_CONFIG);
 		}
+	}
+
+	private static void init() throws IOException {
+		Properties props = new Properties();
+		props.load(Launcher.class.getClassLoader().getResourceAsStream("version.properties"));
+		Launcher.version = ProgramVersion.fromString(String.valueOf(props.getOrDefault("version", "1")));
+		DiscordBot.LOGGER.info("Started with version: " + Launcher.version);
+		DbUpdate dbUpdate = new DbUpdate(WebDb.get());
+		dbUpdate.updateToCurrent();
 	}
 
 	/**
