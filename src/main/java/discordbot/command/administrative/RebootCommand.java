@@ -45,10 +45,10 @@ public class RebootCommand extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.isOwner(channel, author) || author.getID().equals("158310004187725824")) {
 			if (args.length > 0 && args[0].equalsIgnoreCase("update") && UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
-				bot.out.sendMessage(channel, "There is an update! Updating :arrows_counterclockwise:");
+				bot.out.sendMessage(channel, "command_reboot_update");
 				Launcher.stop(ExitCode.UPDATE);
 			}
-			bot.out.sendMessage(channel, "Rebooting in about a minute :smile:");
+			bot.out.sendMessage(channel, Template.get("command_reboot_success"));
 			Launcher.stop(ExitCode.REBOOT);
 		}
 		return Template.get("command_no_permission");
