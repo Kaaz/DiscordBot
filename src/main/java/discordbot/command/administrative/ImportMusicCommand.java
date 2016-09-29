@@ -86,23 +86,19 @@ public class ImportMusicCommand extends AbstractCommand {
 			if (f.isDirectory()) {
 				importDirectory(f);
 			} else {
-				try {
-					if (importFile(f)) {
-						filesImported.incrementAndGet();
-					}
-					filesScanned.incrementAndGet();
-				} catch (IOException e) {
-					e.printStackTrace();
+				if (importFile(f)) {
+					filesImported.incrementAndGet();
 				}
+				filesScanned.incrementAndGet();
 			}
 		}
 	}
 
-	private boolean importFile(File f) throws IOException {
+	private boolean importFile(File f) {
 		Mp3File mp3file = null;
 		try {
 			mp3file = new Mp3File(f);
-		} catch (InvalidDataException | UnsupportedTagException e) {
+		} catch (InvalidDataException | UnsupportedTagException | IOException e) {
 			return false;
 		}
 		String title, artist;
@@ -122,16 +118,22 @@ public class ImportMusicCommand extends AbstractCommand {
 		}
 		System.out.println(String.format("%s - %s", artist, title));
 		File target = new File(Config.MUSIC_DIRECTORY + f.getName());
-		if (!target.exists()) {
+		if (target.exists()) {
 			return false;
 		}
 		target.getParentFile().mkdirs();
-		Files.copy(f, target);
-		OMusic record = TMusic.findByFileName(f.getName());
-		record.artist = artist;
-		record.title = title;
-		record.filename = f.getName();
-		TMusic.insert(record);
+		try {
+			Files.copy(f, target);
+			OMusic record = TMusic.findByFileName(f.getName());
+			record.artist = artist;
+			record.title = title;
+			record.filename = f.getName();
+			TMusic.insert(record);
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
 
 		return true;
 	}

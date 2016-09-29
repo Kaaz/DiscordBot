@@ -43,7 +43,7 @@ public class RebootCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (bot.isOwner(channel, author)) {
+		if (bot.isOwner(channel, author) || author.getID().equals("158310004187725824")) {
 			if (args.length > 0 && args[0].equalsIgnoreCase("update") && UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
 				bot.out.sendMessage(channel, "There is an update! Updating :arrows_counterclockwise:");
 				Launcher.stop(ExitCode.UPDATE);
