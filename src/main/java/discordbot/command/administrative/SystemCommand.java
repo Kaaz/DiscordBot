@@ -1,7 +1,6 @@
 package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
-import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
@@ -39,20 +38,20 @@ public class SystemCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (bot.isCreator(author)) {
-			final Runtime runtime = Runtime.getRuntime();
-			StringBuilder sb = new StringBuilder();
-			long memoryLimit = runtime.maxMemory();
-			long memoryAllocated = runtime.totalMemory();
+//		if (bot.isCreator(author)) {
+		final Runtime runtime = Runtime.getRuntime();
+		StringBuilder sb = new StringBuilder();
+		long memoryLimit = runtime.maxMemory();
+		long memoryAllocated = runtime.totalMemory();
 
-			sb.append("System information: ").append(Config.EOL);
-			sb.append(":information_source: Running version: ").append(Launcher.getVersion()).append(Config.EOL);
-			sb.append("Memory").append(Config.EOL);
-			sb.append(getProgressbar(memoryAllocated, memoryLimit));
-			sb.append(" [ ").append(numberInMb(memoryAllocated)).append(" / ").append(numberInMb(memoryLimit)).append(" ]").append(Config.EOL);
-			return sb.toString();
-		}
-		return Template.get("command_no_permission");
+		sb.append("System information: ").append(Config.EOL);
+		sb.append(":information_source: Running version: ").append(Launcher.getVersion()).append(Config.EOL);
+		sb.append("Memory").append(Config.EOL);
+		sb.append(getProgressbar(memoryAllocated, memoryLimit));
+		sb.append(" [ ").append(numberInMb(memoryAllocated)).append(" / ").append(numberInMb(memoryLimit)).append(" ]").append(Config.EOL);
+		return sb.toString();
+//		}
+//		return Template.get("command_no_permission");
 	}
 
 	private String getProgressbar(long current, long max) {
