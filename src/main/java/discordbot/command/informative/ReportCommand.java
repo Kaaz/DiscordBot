@@ -66,7 +66,7 @@ public class ReportCommand extends AbstractCommand {
 		}
 		bot.out.sendPrivateMessage(bot.instance.getUserByID(Config.CREATOR_ID), "new :e_mail: Report coming in!" + Config.EOL + Config.EOL +
 				":bust_in_silhouette: user:  " + author.getName() + " ( " + author.mention() + " )" + Config.EOL +
-				"Title: " + Config.EOL + title +
+				"Title: " + Config.EOL + title + Config.EOL + Config.EOL +
 				"Message: " + Config.EOL + body
 		);
 		return Template.get("command_report_success");
