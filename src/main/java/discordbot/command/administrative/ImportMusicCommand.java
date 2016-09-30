@@ -94,6 +94,10 @@ public class ImportMusicCommand extends AbstractCommand {
 
 	private boolean importFile(File f) {
 		Mp3File mp3file = null;
+		OMusic record = TMusic.findByFileName(f.getAbsolutePath());
+		if (record.id > 0) {
+			return false;
+		}
 		try {
 			mp3file = new Mp3File(f);
 		} catch (InvalidDataException | UnsupportedTagException | IOException e) {
@@ -115,7 +119,7 @@ public class ImportMusicCommand extends AbstractCommand {
 			return false;
 		}
 		System.out.println(String.format("%s - %s", artist, title));
-		OMusic record = TMusic.findByFileName(f.getAbsolutePath());
+
 		record.artist = artist;
 		record.title = title;
 		record.filename = f.getAbsolutePath();

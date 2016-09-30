@@ -143,7 +143,14 @@ public class MusicPlayerHandler {
 			if (metadata.get("file") instanceof File) {
 				File f = (File) metadata.get("file");
 				getMp3Details(f);
-				OMusic music = TMusic.findByFileName(f.getName());
+				OMusic music = TMusic.findByFileName(f.getAbsolutePath());
+				if (music.id == 0) {
+					music = TMusic.findByFileName(f.getName());
+					if (music.id > 0) {
+						music.filename = f.getAbsolutePath();
+						TMusic.update(music);
+					}
+				}
 				currentlyPlaying = music;
 				currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000;
 				music.lastplaydate = currentSongStartTimeInSeconds;
