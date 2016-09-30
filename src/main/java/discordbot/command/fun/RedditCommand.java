@@ -47,7 +47,7 @@ public class RedditCommand extends AbstractCommand {
 
 	@Override
 	public String getCommand() {
-		return "r";
+		return "reddit";
 	}
 
 	@Override
@@ -57,7 +57,9 @@ public class RedditCommand extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+				"r"
+		};
 	}
 
 	@Override
