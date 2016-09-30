@@ -1,6 +1,5 @@
 package discordbot.command.administrative;
 
-import com.google.common.io.Files;
 import com.mpatric.mp3agic.*;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OMusic;
@@ -121,20 +120,11 @@ public class ImportMusicCommand extends AbstractCommand {
 		if (target.exists()) {
 			return false;
 		}
-		target.getParentFile().mkdirs();
-		try {
-			Files.copy(f, target);
-			OMusic record = TMusic.findByFileName(f.getName());
-			record.artist = artist;
-			record.title = title;
-			record.filename = f.getName();
-			TMusic.insert(record);
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			return false;
-		}
-
+		OMusic record = TMusic.findByFileName(f.getAbsolutePath());
+		record.artist = artist;
+		record.title = title;
+		record.filename = f.getAbsolutePath();
+		TMusic.insert(record);
 		return true;
 	}
 }

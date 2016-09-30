@@ -91,7 +91,6 @@ public class TagCommand extends AbstractCommand {
 		OTag tag = TTag.findBy(channel.getGuild().getID(), args[0]);
 		if (args.length > 1) {
 			if (tag.id > 0 && tag.userId != TUser.getCachedId(author.getID())) {
-
 				return Template.get("command_tag_only_creator_can_edit");
 			}
 			String output = "";
