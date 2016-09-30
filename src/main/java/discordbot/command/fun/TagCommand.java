@@ -77,8 +77,8 @@ public class TagCommand extends AbstractCommand {
 			return "You have made the following tags: " + Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
 		}
 		channel.getGuild().getRolesForUser(author);
-		OTag tag = TTag.findBy(channel.getGuild().getID(), args[0]);
 		if (args.length == 2 && args[0].equalsIgnoreCase("delete")) {
+			OTag tag = TTag.findBy(channel.getGuild().getID(), args[1]);
 			if (tag.id > 0) {
 				if (!bot.isAdmin(channel, author) && TUser.getCachedId(author.getID()) != tag.userId) {
 					return Template.get("command_tag_only_delete_own");
@@ -87,7 +87,9 @@ public class TagCommand extends AbstractCommand {
 				return Template.get("command_tag_delete_success");
 			}
 			return Template.get("command_tag_nothing_to_delete");
-		} else if (args.length > 1) {
+		}
+		OTag tag = TTag.findBy(channel.getGuild().getID(), args[0]);
+		if (args.length > 1) {
 			if (tag.id > 0 && tag.userId != TUser.getCachedId(author.getID())) {
 
 				return Template.get("command_tag_only_creator_can_edit");
