@@ -5,6 +5,9 @@ import discordbot.db.WebDb;
 import discordbot.db.model.OTag;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TTag {
 
@@ -19,16 +22,61 @@ public class TTag {
 						"FROM tags " +
 						"WHERE guild_id = ? AND tag_name = ? ", serverId, tagName)) {
 			if (rs.next()) {
-				t.id = rs.getInt("id");
-				t.tagname = rs.getString("tag_name");
-				t.guildId = rs.getInt("guild_id");
-				t.response = rs.getString("response");
-				t.userId = rs.getInt("user_id");
-				t.created = rs.getTimestamp("creation_date");
+				t = fillRecord(rs);
 			}
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}
+		return t;
+	}
+
+	public static List<OTag> getTagsFor(String guildDiscordId, String userDiscordId) {
+		return getTagsFor(TServers.getCachedId(guildDiscordId), TUser.getCachedId(userDiscordId));
+	}
+
+	public static List<OTag> getTagsFor(int guildId, int userId) {
+		List<OTag> result = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT *  " +
+						"FROM tags " +
+						"WHERE guild_id = ? AND user_id = ? ", guildId, userId)) {
+			while (rs.next()) {
+				result.add(fillRecord(rs));
+			}
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return result;
+
+	}
+
+	public static List<OTag> getTagsFor(String guildDiscordId) {
+		return getTagsFor(TServers.getCachedId(guildDiscordId));
+	}
+
+	public static List<OTag> getTagsFor(int guildId) {
+		List<OTag> result = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT *  " +
+						"FROM tags " +
+						"WHERE guild_id = ? ", guildId)) {
+			while (rs.next()) {
+				result.add(fillRecord(rs));
+			}
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return result;
+	}
+
+	private static OTag fillRecord(ResultSet rs) throws SQLException {
+		OTag t = new OTag();
+		t.id = rs.getInt("id");
+		t.tagname = rs.getString("tag_name");
+		t.guildId = rs.getInt("guild_id");
+		t.response = rs.getString("response");
+		t.userId = rs.getInt("user_id");
+		t.created = rs.getTimestamp("creation_date");
 		return t;
 	}
 

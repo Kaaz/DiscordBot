@@ -8,6 +8,7 @@ import discordbot.guildsettings.defaults.SettingBotChannel;
 import discordbot.guildsettings.defaults.SettingEnableChatBot;
 import discordbot.handler.*;
 import discordbot.role.RoleRankings;
+import discordbot.util.DisUtil;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,17 @@ public class DiscordBot {
 
 	public boolean isReady() {
 		return isReady;
+	}
+
+	/**
+	 * Shortcut to check if a user is an administrator
+	 *
+	 * @param channel channel to check for
+	 * @param user    the user to check
+	 * @return is the user an admin?
+	 */
+	public boolean isAdmin(IChannel channel, IUser user) {
+		return isCreator(user) || (!channel.isPrivate() && DisUtil.hasPermission(user, channel.getGuild(), Permissions.ADMINISTRATOR));
 	}
 
 	/**

@@ -3,10 +3,7 @@ package discordbot.util;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.handler.GuildSettings;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,5 +104,26 @@ public class DisUtil {
 	 */
 	public static List<IUser> getUsersByRole(IGuild guild, IRole role) {
 		return guild.getUsers().stream().filter((users) -> users.getRolesForGuild(guild).contains(role)).collect(Collectors.toList());
+	}
+
+	/**
+	 * Checks if a user has a guild within a guild
+	 *
+	 * @param user       the user to check
+	 * @param guild      the guild to check in
+	 * @param permission the permission to check for
+	 * @return permission found
+	 */
+	public static boolean hasPermission(IUser user, IGuild guild, Permissions permission) {
+		if (guild == null) {
+			return false;
+		}
+		List<IRole> roles = guild.getRolesForUser(user);
+		for (IRole role : roles) {
+			if (role.getPermissions().contains(permission)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
