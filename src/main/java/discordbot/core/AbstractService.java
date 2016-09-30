@@ -19,6 +19,7 @@ import java.util.Map;
 public abstract class AbstractService {
 	protected DiscordBot bot;
 	private Map<String, OServiceVariable> cache;
+	private long cachedLastRun = 0L;
 
 	public AbstractService(DiscordBot b) {
 		bot = b;
@@ -55,7 +56,10 @@ public abstract class AbstractService {
 	 * Start the service
 	 */
 	public final void start() {
-		long lastRun = Long.parseLong("0" + getData("abs_last_service_run"));
+		long lastRun = cachedLastRun;
+		if (lastRun == 0) {
+			lastRun = Long.parseLong("0" + getData("abs_last_service_run"));
+		}
 		long now = System.currentTimeMillis();
 		long next = lastRun + getDelayBetweenRuns();
 		if (next <= now) {
@@ -66,6 +70,7 @@ public abstract class AbstractService {
 			run();
 			afterRun();
 			saveData("abs_last_service_run", now);
+			cachedLastRun = now;
 		}
 	}
 

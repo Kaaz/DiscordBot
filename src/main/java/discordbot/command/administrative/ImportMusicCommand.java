@@ -5,7 +5,6 @@ import discordbot.core.AbstractCommand;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
 import discordbot.handler.Template;
-import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -116,10 +115,6 @@ public class ImportMusicCommand extends AbstractCommand {
 			return false;
 		}
 		System.out.println(String.format("%s - %s", artist, title));
-		File target = new File(Config.MUSIC_DIRECTORY + f.getName());
-		if (target.exists()) {
-			return false;
-		}
 		OMusic record = TMusic.findByFileName(f.getAbsolutePath());
 		record.artist = artist;
 		record.title = title;

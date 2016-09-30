@@ -52,7 +52,9 @@ public class Subscribe extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+				"sub"
+		};
 	}
 
 	@Override
