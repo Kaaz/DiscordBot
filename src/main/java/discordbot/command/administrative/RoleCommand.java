@@ -48,7 +48,9 @@ public class RoleCommand extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+				"roles"
+		};
 	}
 
 	@Override

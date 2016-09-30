@@ -39,7 +39,9 @@ public class User extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+				"whois"
+		};
 	}
 
 	@Override

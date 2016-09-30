@@ -35,10 +35,10 @@ Commands | | | | |
 [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite) | [join](#join)
 [joke](#joke) | [leave](#leave) | [mcstatus](#mcstatus) | [play](#play) | [playlist](#playlist)
 [pm](#pm) | [poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll)
-[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [role](#role)
-[roll](#roll) | [rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot)
-[stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template)
-[user](#user) | [version](#version) | [volume](#volume) | 
+[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
+[role](#role) | [roll](#roll) | [rotate](#rotate) | [say](#say) | [skip](#skip)
+[slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag)
+[template](#template) | [user](#user) | [version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -246,6 +246,7 @@ game <@user> <gamecode>   //play a game against @user
 
 An attempt to help out
 
+Aliases: ?, halp, helpme
 Usable in public and private channels
 
 #### Usage
@@ -269,6 +270,7 @@ importmusic <path/to/music>  //imports a folder
 
 Shows some general information about me and my future plans.
 
+Aliases: about
 Usable in public and private channels
 
 #### Usage
@@ -283,6 +285,7 @@ info progress //see whats currently being worked on
 
 Provides an invite link to add the bot to your server.
 
+Aliases: inv
 Usable in public and private channels
 ### join
 
@@ -445,10 +448,22 @@ r <subreddit>
 reloads the configuration
 
 Usable in public and private channels
+### report
+
+Report bugs/abuse/incidents
+
+Usable in ~~public and~~ private channels
+
+#### Usage
+
+```php
+report <subject> | <message..>
+```
 ### role
 
 Role
 
+Aliases: roles
 Usable in public ~~and private~~ channels
 
 #### Usage
@@ -501,6 +516,7 @@ say <anything>
 
 skip current track
 
+Aliases: next
 Usable in public ~~and private~~ channels
 
 #### Usage
@@ -546,6 +562,7 @@ subscribe list           //See what subscription options there are
 
 Shows memory usage
 
+Aliases: sysinfo
 Usable in public and private channels
 ### tag
 
@@ -568,6 +585,7 @@ tag <name> <content> //creates the tag
 
 adds/removes templates
 
+Aliases: t
 Usable in public and private channels
 
 #### Usage
@@ -583,6 +601,7 @@ template toggledebug                 //shows keyphrases instead of text
 
 Shows information about the user
 
+Aliases: whois
 Usable in public and private channels
 
 #### Usage
@@ -595,6 +614,7 @@ user @user   //info about @user
 
 Shows what versions I'm using
 
+Aliases: v
 Usable in public and private channels
 
 #### Usage
@@ -606,6 +626,7 @@ version  //version usage
 
 gets and sets the volume of the music
 
+Aliases: vol
 Usable in public ~~and private~~ channels
 
 #### Usage

@@ -62,7 +62,9 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+				"about"
+		};
 	}
 
 	@Override

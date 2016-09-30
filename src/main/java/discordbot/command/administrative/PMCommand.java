@@ -38,7 +38,7 @@ public class PMCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (!bot.isOwner(channel, author)) {
+		if (!bot.isOwner(channel, author) && !bot.isAdmin(channel, author)) {
 			return Template.get("command_no_permission");
 		}
 		if (args.length > 1) {

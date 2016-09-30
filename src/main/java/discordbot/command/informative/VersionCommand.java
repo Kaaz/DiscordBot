@@ -38,7 +38,9 @@ public class VersionCommand extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+				"v"
+		};
 	}
 
 	@Override

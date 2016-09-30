@@ -32,7 +32,9 @@ public class Invite extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+				"inv"
+		};
 	}
 
 	@Override

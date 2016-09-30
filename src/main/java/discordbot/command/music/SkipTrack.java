@@ -41,7 +41,9 @@ public class SkipTrack extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[0];
+		return new String[]{
+				"next"
+		};
 	}
 
 	@Override
@@ -57,6 +59,7 @@ public class SkipTrack extends AbstractCommand {
 
 		}
 		bot.skipCurrentSong(channel.getGuild());
-		return Template.get("command_skip_song_skipped");
+		return "";
+//		return Template.get("command_skip_song_skipped");
 	}
 }
