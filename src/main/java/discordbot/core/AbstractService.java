@@ -56,12 +56,11 @@ public abstract class AbstractService {
 	 * Start the service
 	 */
 	public final void start() {
-		long lastRun = cachedLastRun;
-		if (lastRun == 0) {
-			lastRun = Long.parseLong("0" + getData("abs_last_service_run"));
+		if (cachedLastRun == 0L) {
+			cachedLastRun = Long.parseLong("0" + getData("abs_last_service_run"));
 		}
 		long now = System.currentTimeMillis();
-		long next = lastRun + getDelayBetweenRuns();
+		long next = cachedLastRun + getDelayBetweenRuns();
 		if (next <= now) {
 			if (!shouldIRun()) {
 				return;

@@ -530,6 +530,7 @@ Usable in public ~~and private~~ channels
 
 subscribe the channel to certain events
 
+Aliases: sub
 Usable in public ~~and private~~ channels
 
 #### Usage
