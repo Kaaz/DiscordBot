@@ -20,6 +20,15 @@ public class Misc {
 			":ten:"
 	};
 
+	/**
+	 * searches a map by value and returns the key if found otherwise null
+	 *
+	 * @param map   the map to search in
+	 * @param value the value to search for
+	 * @param <T>   map key type
+	 * @param <E>   map value type
+	 * @return matched key of the map or null
+	 */
 	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
 		for (Map.Entry<T, E> entry : map.entrySet()) {
 			if (Objects.equals(value, entry.getValue())) {
@@ -29,6 +38,12 @@ public class Misc {
 		return null;
 	}
 
+	/**
+	 * Converts a numer to an emoji
+	 *
+	 * @param number number <= 10
+	 * @return emoji for that number or :x: if not found
+	 */
 	public static String numberToEmote(int number) {
 		if (number >= 0 && number < numberToEmote.length) {
 			return numberToEmote[number];
@@ -92,6 +107,12 @@ public class Misc {
 		return joiner.toString();
 	}
 
+	/**
+	 * returns a formatted string from a time in secnods
+	 *
+	 * @param seconds input in seconds
+	 * @return string hh:mm:ss
+	 */
 	public static String getDurationString(long seconds) {
 		long hours = seconds / 3600;
 		long minutes = (seconds % 3600) / 60;
@@ -102,6 +123,11 @@ public class Misc {
 		return twoDigitString(minutes) + ":" + twoDigitString(secs);
 	}
 
+	/**
+	 * @param headers array containing the headers
+	 * @param table   array[n size] of array's[header size], containing the rows of the table
+	 * @return a formatted table
+	 */
 	public static String makeAsciiTable(List<String> headers, List<List<String>> table) {
 		StringBuilder sb = new StringBuilder();
 		int padding = 1;
@@ -139,6 +165,16 @@ public class Misc {
 		return sb.toString();
 	}
 
+	/**
+	 * helper function for makeAsciiTable
+	 *
+	 * @param left    character on the left
+	 * @param middle  character in the middle
+	 * @param right   character on the right
+	 * @param padding table cell padding
+	 * @param sizes   width of each cell
+	 * @return a filler row for the table
+	 */
 	private static String appendSeparatorLine(String left, String middle, String right, int padding, int... sizes) {
 		boolean first = true;
 		StringBuilder ret = new StringBuilder();
@@ -153,6 +189,12 @@ public class Misc {
 		return ret.append(right).append(Config.EOL).toString();
 	}
 
+	/**
+	 * ensures that the string is at least 2 digits
+	 *
+	 * @param number the number to format
+	 * @return formatted string
+	 */
 	private static String twoDigitString(long number) {
 		if (number == 0) {
 			return "00";
