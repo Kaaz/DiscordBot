@@ -35,7 +35,7 @@ Commands | | | | |
 [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite) | [join](#join)
 [joke](#joke) | [leave](#leave) | [mcstatus](#mcstatus) | [play](#play) | [playlist](#playlist)
 [pm](#pm) | [poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll)
-[purge](#purge) | [r](#r) | [reboot](#reboot) | [reload](#reload) | [role](#role)
+[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [role](#role)
 [roll](#roll) | [rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot)
 [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template)
 [user](#user) | [version](#version) | [volume](#volume) | 
@@ -415,17 +415,6 @@ purge       //deletes non-pinned messages
 purge @user //deletes messages from user
 purge nova  //deletes my messages :(
 ```
-### r
-
-Posts something from reddit
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-r <subreddit>
-```
 ### reboot
 
 restarts the bot
@@ -438,6 +427,18 @@ Usable in public and private channels
 ```php
 reboot         //reboots the system
 reboot update  //reboots the system and updates
+```
+### reddit
+
+Posts something from reddit
+
+Aliases: r
+Usable in public and private channels
+
+#### Usage
+
+```php
+r <subreddit>
 ```
 ### reload
 
@@ -549,14 +550,18 @@ Usable in public and private channels
 
 Tags!
 
+Aliases: t
 Usable in public ~~and private~~ channels
 
 #### Usage
 
 ```php
-tag                   //list of tags
-tag <name>            //shows the tag
-tag <name> <content>  //creates the tag
+tag                  //list of tags
+tag <name>           //shows the tag
+tag mine             //shows your tags
+tag list             //shows all tags 
+tag delete <name>    //deletes tag
+tag <name> <content> //creates the tag
 ```
 ### template
 
