@@ -50,7 +50,7 @@ public class Help extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		String commandPrefix = GuildSettings.getFor(channel, SettingCommandPrefix.class);
-		if (args.length > 0) {
+		if (args.length > 0 && !args[0].equals("style2") && !args[0].equals("style3")) {
 			AbstractCommand c = bot.commands.getCommand(DisUtil.filterPrefix(args[0], channel));
 			if (c != null) {
 				String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + Config.EOL;
@@ -87,9 +87,13 @@ public class Help extends AbstractCommand {
 				commandList.get(command.getCommandCategory()).add(command.getCommand());
 			}
 			commandList.forEach((k, v) -> Collections.sort(v));
-			ret += styleTablePerCategory(commandList);
-//			ret += styleIndentedTable(commandList);
-//			ret += styleOneTable(commandList);
+			if (args.length == 1 && args[0].equals("style2")) {
+				ret += styleIndentedTable(commandList);
+			} else if (args.length == 1 && args[0].equals("style3")) {
+				ret += styleOneTable(commandList);
+			} else {
+				ret += styleTablePerCategory(commandList);
+			}
 			return ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL;
 		}
 	}
