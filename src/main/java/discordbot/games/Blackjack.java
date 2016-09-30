@@ -61,7 +61,6 @@ public class Blackjack {
 		playerHand.add(drawCard());
 		if (dealerHand.getValue() == 0) {
 			dealerHand.add(drawCard());
-			dealerHand.add(drawCard());
 		}
 		if (getPlayerValue() > 21) {
 			gameInProgress = false;
