@@ -34,7 +34,8 @@ public class SystemCommand extends AbstractCommand {
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"sysinfo"
+				"sysinfo",
+				"sys"
 		};
 	}
 
