@@ -6,13 +6,13 @@ import discordbot.main.Launcher;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultGuildSettings {
-	private final static Map<String, AbstractGuildSetting> defaultSettings = new ConcurrentHashMap<>();
-	private final static Map<Class<? extends AbstractGuildSetting>, String> classNameToKey = new ConcurrentHashMap<>();
+	private final static Map<String, AbstractGuildSetting> defaultSettings = new HashMap<>();
+	private final static Map<Class<? extends AbstractGuildSetting>, String> classNameToKey = new HashMap<>();
 	private static boolean initialized = false;
 
 	static {
@@ -37,8 +37,8 @@ public class DefaultGuildSettings {
 		return defaultSettings.get(key);
 	}
 
-	public static String getDefault(Class<? extends AbstractGuildSetting> clazz) {
-		return defaultSettings.get(getKey(clazz)).getDefault();
+	public static String getDefault(Class<? extends AbstractGuildSetting> guildSettingClass) {
+		return defaultSettings.get(getKey(guildSettingClass)).getDefault();
 	}
 
 	public static boolean isValidKey(String key) {
@@ -55,14 +55,14 @@ public class DefaultGuildSettings {
 		}
 		Reflections reflections = new Reflections("discordbot.guildsettings");
 		Set<Class<? extends AbstractGuildSetting>> classes = reflections.getSubTypesOf(AbstractGuildSetting.class);
-		for (Class<? extends AbstractGuildSetting> clazz : classes) {
+		for (Class<? extends AbstractGuildSetting> settingClass : classes) {
 			try {
-				AbstractGuildSetting obj = clazz.getConstructor().newInstance();
-				if (!defaultSettings.containsKey(obj.getKey())) {
-					defaultSettings.put(obj.getKey(), obj);
-					classNameToKey.put(clazz, obj.getKey());
+				AbstractGuildSetting settingObject = settingClass.getConstructor().newInstance();
+				if (!defaultSettings.containsKey(settingObject.getKey())) {
+					defaultSettings.put(settingObject.getKey(), settingObject);
+					classNameToKey.put(settingClass, settingObject.getKey());
 				} else {
-					throw new DefaultSettingAlreadyExistsException(obj.getKey());
+					throw new DefaultSettingAlreadyExistsException(settingObject.getKey());
 				}
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				e.printStackTrace();

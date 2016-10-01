@@ -28,9 +28,8 @@ public class Launcher {
 		WebDb.init();
 		Launcher.init();
 		if (Config.BOT_ENABLED) {
-			DiscordBot nb = null;
 			try {
-				nb = new DiscordBot();
+				DiscordBot nb = new DiscordBot();
 				Thread serviceHandler = new ServiceHandlerThread(nb);
 				serviceHandler.setDaemon(true);
 				serviceHandler.start();

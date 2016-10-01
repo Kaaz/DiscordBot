@@ -121,10 +121,6 @@ public class DiscordBot {
 	public void markReady(boolean ready) {
 		loadConfiguration();
 		mentionMe = "<@" + this.instance.getOurUser().getID() + ">";
-		timer = new Timer();
-		Template.setBot(this);
-		gameHandler = new GameHandler(this);
-		out = new OutgoingContentHandler(this);
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.instance.getGuilds(), instance);
 		this.isReady = ready;
@@ -141,9 +137,9 @@ public class DiscordBot {
 	private void registerEvents() {
 		Reflections reflections = new Reflections("discordbot.event");
 		Set<Class<? extends AbstractEventListener>> classes = reflections.getSubTypesOf(AbstractEventListener.class);
-		for (Class<? extends AbstractEventListener> c : classes) {
+		for (Class<? extends AbstractEventListener> eventClass : classes) {
 			try {
-				AbstractEventListener eventListener = c.getConstructor(DiscordBot.class).newInstance(this);
+				AbstractEventListener eventListener = eventClass.getConstructor(DiscordBot.class).newInstance(this);
 				if (eventListener.listenerIsActivated()) {
 					instance.getDispatcher().registerListener(eventListener);
 				}
@@ -155,6 +151,10 @@ public class DiscordBot {
 
 	private void registerHandlers() {
 		commands = new CommandHandler(this);
+		gameHandler = new GameHandler(this);
+		Template.setBot(this);
+		out = new OutgoingContentHandler(this);
+		timer = new Timer();
 	}
 
 	public String getUserName() {

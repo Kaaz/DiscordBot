@@ -204,6 +204,9 @@ public class CommandHandler {
 		if (commands.containsKey(key)) {
 			return commands.get(key);
 		}
+		if (commandsAlias.containsKey(key)) {
+			return commandsAlias.get(key);
+		}
 		return null;
 	}
 

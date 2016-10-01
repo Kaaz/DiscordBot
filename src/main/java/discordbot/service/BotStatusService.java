@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * pseudo randmoly sets the now playing tag of the bot
+ * pseudo randomly sets the now playing tag of the bot
  */
 public class BotStatusService extends AbstractService {
 	private final static Status[] statusList = {

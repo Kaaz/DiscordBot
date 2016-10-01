@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -21,7 +22,7 @@ public class Template {
 	private static final Template instance = new Template();
 	private DiscordBot bot = null;
 	private Random rnd;
-	private HashMap<String, ArrayList<String>> dictionary;
+	private HashMap<String, List<String>> dictionary;
 
 	private Template() {
 		rnd = new Random();
@@ -44,7 +45,7 @@ public class Template {
 	 */
 	public static String get(String keyPhrase) {
 		if (!Config.SHOW_KEYPHRASE && instance.dictionary.containsKey(keyPhrase)) {
-			ArrayList<String> list = instance.dictionary.get(keyPhrase);
+			List<String> list = instance.dictionary.get(keyPhrase);
 			return list.get(instance.rnd.nextInt(list.size()));
 		}
 		if (instance.bot != null) {
@@ -59,7 +60,7 @@ public class Template {
 
 	public int countTemplates() {
 		int count = 0;
-		for (ArrayList<String> list : instance.dictionary.values()) {
+		for (List<String> list : instance.dictionary.values()) {
 			count += list.size();
 		}
 		return count;
@@ -91,12 +92,12 @@ public class Template {
 	 * @param text      the text
 	 */
 	public void add(String keyPhrase, String text) {
-		if (!instance.dictionary.containsKey(keyPhrase)) {
-			instance.dictionary.put(keyPhrase, new ArrayList<>());
-		}
-		instance.dictionary.get(keyPhrase).add(text);
 		try {
 			WebDb.get().query("INSERT INTO template_texts(keyphrase,text) VALUES(?, ?)", keyPhrase, text);
+			if (!instance.dictionary.containsKey(keyPhrase)) {
+				instance.dictionary.put(keyPhrase, new ArrayList<>());
+			}
+			instance.dictionary.get(keyPhrase).add(text);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
