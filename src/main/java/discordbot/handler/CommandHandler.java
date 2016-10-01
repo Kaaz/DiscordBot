@@ -323,8 +323,8 @@ public class CommandHandler {
 				if (!commandsAlias.containsKey(alias)) {
 					commandsAlias.put(alias, command);
 				} else {
-					DiscordBot.LOGGER.warn("Duplicate alias found! The commands `%s` and `%s` use the alias `%s`",
-							command.getCommand(), commandsAlias.get(alias).getCommand(), alias);
+					DiscordBot.LOGGER.warn(String.format("Duplicate alias found! The commands `%s` and `%s` use the alias `%s`",
+							command.getCommand(), commandsAlias.get(alias).getCommand(), alias));
 				}
 			}
 		}
