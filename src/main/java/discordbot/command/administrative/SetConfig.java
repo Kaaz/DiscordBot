@@ -56,7 +56,7 @@ public class SetConfig extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		int count = args.length;
-		if (bot.isOwner(channel, author)) {
+		if (bot.isAdmin(channel, author)) {
 			if (count == 0) {
 				Map<String, String> settings = GuildSettings.get(channel.getGuild()).getSettings();
 				ArrayList<String> keys = new ArrayList<>(settings.keySet());
