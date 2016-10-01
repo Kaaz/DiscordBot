@@ -66,7 +66,7 @@ public class DbUpdate {
 
 	private int getCurrentVersion() throws SQLException {
 		DatabaseMetaData metaData = adapter.getConnection().getMetaData();
-
+		int dbVersion = 0;
 		try (ResultSet rs = metaData.getTables(null, null, "commands", null)) {
 			if (!rs.next()) {
 				return -1;
@@ -77,7 +77,7 @@ public class DbUpdate {
 		}
 		try (ResultSet rs = metaData.getTables(null, null, "bot_meta", null)) {
 			if (!rs.next()) {
-				return 0;
+				return dbVersion;
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -85,15 +85,14 @@ public class DbUpdate {
 		}
 		try (ResultSet rs = adapter.select("SELECT * FROM bot_meta WHERE meta_name = ?", "db_version")) {
 			if (rs.next()) {
-				rs.getStatement().close();
-				return Integer.parseInt(rs.getString("meta_value"));
+				dbVersion = Integer.parseInt(rs.getString("meta_value"));
 			}
 			rs.getStatement().close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
-		return 0;
+		return dbVersion;
 	}
 
 	private void saveDbVersion(int version) throws SQLException {
