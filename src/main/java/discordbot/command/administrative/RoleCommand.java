@@ -26,7 +26,7 @@ public class RoleCommand extends AbstractCommand {
 
 	@Override
 	public String getDescription() {
-		return "Role";
+		return "Management of roles";
 	}
 
 	@Override
@@ -37,12 +37,13 @@ public class RoleCommand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"role                     //lists roles",
-				"role list                //lists roles",
-				"role cleanup             //cleans up the roles from the time-based rankings",
-				"role setup               //creates the roles for the time-based rankings",
-				"role add @user <role>    //adds role to user",
-				"role remove @user <role> //remove role from user",
+				"role                             //lists roles",
+				"role list                        //lists roles",
+				"role cleanup                     //cleans up the roles from the time-based rankings",
+				"role setup                       //creates the roles for the time-based rankings",
+				"role bind BOT_ROLE <discordrole> //binds a discordrole to a botrole",
+				"role add @user <role>            //adds role to user",
+				"role remove @user <role>         //remove role from user",
 		};
 	}
 

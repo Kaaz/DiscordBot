@@ -5,28 +5,30 @@ import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import org.reflections.Reflections;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class ServiceHandlerThread extends Thread {
 	private DiscordBot bot;
-	private List<Class<? extends AbstractService>> services;
 	private List<AbstractService> instances;
 
 	public ServiceHandlerThread(DiscordBot bot) {
 		super("ServiceHandler");
-		services = new ArrayList<>();
 		instances = new ArrayList<>();
 		this.bot = bot;
-		collectServices();
 	}
 
-	private void collectServices() {
+	private void initServices() {
 		Reflections reflections = new Reflections("discordbot.service");
 		Set<Class<? extends AbstractService>> classes = reflections.getSubTypesOf(AbstractService.class);
-		for (Class<? extends AbstractService> s : classes) {
-			services.add(s);
+		for (Class<? extends AbstractService> serviceClass : classes) {
+			try {
+				instances.add(serviceClass.getConstructor(DiscordBot.class).newInstance(bot));
+			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -36,20 +38,14 @@ public class ServiceHandlerThread extends Thread {
 		while (!Launcher.killAllThreads) {
 			try {
 				if (bot.isReady()) {
-					try {
-						if (bot != null) {
-							if (!initialized) {
-								for (Class<? extends AbstractService> serviceClass : services) {
-									instances.add(serviceClass.getConstructor(DiscordBot.class).newInstance(bot));
-								}
-								initialized = true;
-							}
-							for (AbstractService instance : instances) {
-								instance.start();
-							}
+					if (bot != null) {
+						if (!initialized) {
+							initServices();
 						}
-					} catch (Exception e) {
-						e.printStackTrace();
+						initialized = true;
+					}
+					for (AbstractService instance : instances) {
+						instance.start();
 					}
 				}
 				sleep(10_000L);
