@@ -341,6 +341,9 @@ public class CommandHandler {
 					customCommands.put(r.getString("input"), r.getString("output"));
 				}
 			}
+			if (r != null) {
+				r.getStatement().close();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

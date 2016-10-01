@@ -85,8 +85,10 @@ public class DbUpdate {
 		}
 		try (ResultSet rs = adapter.select("SELECT * FROM bot_meta WHERE meta_name = ?", "db_version")) {
 			if (rs.next()) {
+				rs.getStatement().close();
 				return Integer.parseInt(rs.getString("meta_value"));
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();

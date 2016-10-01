@@ -25,6 +25,7 @@ public class TServiceVariables {
 			if (rs.next()) {
 				record = fillRecord(rs);
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}

@@ -22,6 +22,7 @@ public class TMusic {
 			if (rs.next()) {
 				music = fillRecord(rs);
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}
@@ -37,6 +38,7 @@ public class TMusic {
 			if (rs.next()) {
 				music = fillRecord(rs);
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}
@@ -94,7 +96,7 @@ public class TMusic {
 			while (rs.next()) {
 				history.add(fillRecord(rs));
 			}
-
+			rs.getStatement().close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

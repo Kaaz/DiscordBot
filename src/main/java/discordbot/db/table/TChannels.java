@@ -44,6 +44,7 @@ public class TChannels {
 				s.discord_id = rs.getString("discord_id");
 				s.name = rs.getString("name");
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}
@@ -62,6 +63,7 @@ public class TChannels {
 				s.discord_id = rs.getString("discord_id");
 				s.name = rs.getString("name");
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}

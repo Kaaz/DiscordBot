@@ -22,6 +22,7 @@ public class TPoEToken {
 			if (rs.next()) {
 				token = fillRecord(rs);
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}

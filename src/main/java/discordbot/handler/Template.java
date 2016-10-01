@@ -114,6 +114,7 @@ public class Template {
 		instance.dictionary.get(keyPhrase).clear();
 		try (ResultSet rs = WebDb.get().select("SELECT text FROM template_texts WHERE keyphrase = ?", keyPhrase)) {
 			instance.dictionary.get(keyPhrase).add(rs.getString("text"));
+			rs.getStatement().close();
 		} catch (SQLException e) {
 			System.out.println(e);
 		}
@@ -131,6 +132,7 @@ public class Template {
 				}
 				dictionary.get(rs.getString("keyphrase")).add(rs.getString("text"));
 			}
+			rs.getStatement().close();
 		} catch (SQLException e) {
 			System.out.println(e);
 		}

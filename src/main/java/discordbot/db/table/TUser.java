@@ -39,6 +39,7 @@ public class TUser {
 				s.discord_id = rs.getString("discord_id");
 				s.name = rs.getString("name");
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}

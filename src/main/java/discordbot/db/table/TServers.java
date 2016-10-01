@@ -39,6 +39,7 @@ public class TServers {
 				s.name = rs.getString("name");
 				s.owner = rs.getInt("owner");
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}

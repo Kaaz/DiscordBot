@@ -35,6 +35,7 @@ public class TServices {
 			while (rs.next()) {
 				list.add(fillRecord(rs));
 			}
+			rs.getStatement().close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -50,6 +51,7 @@ public class TServices {
 			if (rs.next()) {
 				token = fillRecord(rs);
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}

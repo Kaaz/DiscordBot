@@ -24,6 +24,7 @@ public class TTag {
 			if (rs.next()) {
 				t = fillRecord(rs);
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}
@@ -43,6 +44,7 @@ public class TTag {
 			while (rs.next()) {
 				result.add(fillRecord(rs));
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}
@@ -63,6 +65,7 @@ public class TTag {
 			while (rs.next()) {
 				result.add(fillRecord(rs));
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}

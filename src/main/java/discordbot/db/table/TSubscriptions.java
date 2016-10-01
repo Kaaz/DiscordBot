@@ -23,6 +23,7 @@ public class TSubscriptions {
 			if (rs.next()) {
 				token = fillRecord(rs);
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}
@@ -43,6 +44,7 @@ public class TSubscriptions {
 				row.displayName = rs.getString("display_name");
 				list.add(row);
 			}
+			rs.getStatement().close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -64,6 +66,7 @@ public class TSubscriptions {
 				row.displayName = rs.getString("display_name");
 				list.add(row);
 			}
+			rs.getStatement().close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

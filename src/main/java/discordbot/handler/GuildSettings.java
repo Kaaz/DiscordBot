@@ -86,6 +86,7 @@ public class GuildSettings {
 					}
 				}
 			}
+			rs.getStatement().close();
 			initialized = true;
 		} catch (SQLException e) {
 			e.printStackTrace();

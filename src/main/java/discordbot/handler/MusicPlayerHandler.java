@@ -108,6 +108,7 @@ public class MusicPlayerHandler {
 			while (rs.next()) {
 				potentialSongs.add(rs.getString("filename"));
 			}
+			rs.getStatement().close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			bot.out.sendErrorToMe(e, bot);

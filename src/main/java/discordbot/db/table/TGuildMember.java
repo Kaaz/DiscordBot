@@ -28,6 +28,7 @@ public class TGuildMember {
 				record.guildId = guildId;
 				record.userId = userId;
 			}
+			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}

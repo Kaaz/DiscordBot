@@ -98,6 +98,7 @@ public class Play extends AbstractCommand {
 							if (rs.next()) {
 								bot.addSongToQueue(rs.getString("filename"), channel.getGuild());
 							}
+							rs.getStatement().close();
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -191,6 +192,7 @@ public class Play extends AbstractCommand {
 						userFilteredSongs.get(author.getID());
 						results += String.format("%2s %7s %s - %s", i, rs.getInt("matchrating"), rs.getString("artist"), rs.getString("title")) + Config.EOL;
 					}
+					rs.getStatement().close();
 					if (!results.isEmpty()) {
 						userFilteredSongs.put(author.getID(), songIdArray);
 
