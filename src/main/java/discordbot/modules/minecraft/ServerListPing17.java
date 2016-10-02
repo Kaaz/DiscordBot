@@ -18,20 +18,20 @@ public class ServerListPing17 {
 	private int timeout = 7000;
 	private Gson gson = new Gson();
 
-	public void setAddress(InetSocketAddress host) {
-		this.host = host;
-	}
-
 	public InetSocketAddress getAddress() {
 		return this.host;
 	}
 
-	void setTimeout(int timeout) {
-		this.timeout = timeout;
+	public void setAddress(InetSocketAddress host) {
+		this.host = host;
 	}
 
 	int getTimeout() {
 		return this.timeout;
+	}
+
+	void setTimeout(int timeout) {
+		this.timeout = timeout;
 	}
 
 	public int readVarInt(DataInputStream in) throws IOException {

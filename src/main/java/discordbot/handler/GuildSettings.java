@@ -21,6 +21,13 @@ public class GuildSettings {
 	private int id = 0;
 	private boolean initialized = false;
 
+	private GuildSettings(IGuild guild) {
+		this.settings = new ConcurrentHashMap<>();
+		settingInstance.put(guild, this);
+		this.id = TServers.findBy(guild.getID()).id;
+		loadSettings();
+	}
+
 	/**
 	 * Simplified method to get the setting for a channel instead of guild
 	 *
@@ -33,13 +40,6 @@ public class GuildSettings {
 			return DefaultGuildSettings.getDefault(clazz);
 		}
 		return GuildSettings.get(channel.getGuild()).getOrDefault(clazz);
-	}
-
-	private GuildSettings(IGuild guild) {
-		this.settings = new ConcurrentHashMap<>();
-		settingInstance.put(guild, this);
-		this.id = TServers.findBy(guild.getID()).id;
-		loadSettings();
 	}
 
 	public static GuildSettings get(IGuild guild) {

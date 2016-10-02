@@ -28,18 +28,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DiscordBot {
 
+	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 	public final long startupTimeStamp;
 	public IDiscordClient instance;
 	public CommandHandler commands;
 	public Timer timer = new Timer();
 	public String mentionMe;
 	public ChatBotHandler chatBotHandler = null;
-	private GameHandler gameHandler = null;
 	public OutgoingContentHandler out = null;
-	private boolean isReady = false;
 	public boolean statusLocked = false;
+	private GameHandler gameHandler = null;
+	private boolean isReady = false;
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
-	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 
 	public DiscordBot() throws DiscordException {
 		registerHandlers();

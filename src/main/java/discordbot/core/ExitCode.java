@@ -19,7 +19,7 @@ public enum ExitCode {
 
 		this.code = code;
 	}
-	
+
 	public static ExitCode fromCode(int exitCode) {
 		for (ExitCode code : ExitCode.values()) {
 			if (code.getCode() == exitCode) {

@@ -9,7 +9,7 @@ public class RoleModifyTask {
 	private final IRole role;
 	private final boolean add;
 
-	public RoleModifyTask(IUser user, IRole role, boolean add){
+	public RoleModifyTask(IUser user, IRole role, boolean add) {
 
 		this.user = user;
 		this.role = role;

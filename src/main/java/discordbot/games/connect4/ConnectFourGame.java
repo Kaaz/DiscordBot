@@ -11,8 +11,8 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public class ConnectFourGame extends AbstractGame<Connect4Turn> {
 
-	private C4Board board;
 	public static final int ROWS = 6, COLS = 7;
+	private C4Board board;
 
 	public ConnectFourGame() {
 		reset();

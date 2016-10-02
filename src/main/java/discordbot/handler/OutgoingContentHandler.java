@@ -12,8 +12,8 @@ import sx.blah.discord.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class OutgoingContentHandler {
-	private final DiscordBot bot;
 	private final static long DELETE_INTERVAL = 500L;
+	private final DiscordBot bot;
 	private final MessageDeleter deleteThread;
 	private final RoleModifier roleThread;
 

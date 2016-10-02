@@ -19,14 +19,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GameHandler {
 
+	private static final String COMMAND_NAME = "game";
 	private final DiscordBot bot;
-	private Map<String, AbstractGame> playerGames = new ConcurrentHashMap<>();
-	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
 	private final Map<String, Class<? extends AbstractGame>> gameClassMap;
 	private final Map<String, AbstractGame> gameInfoMap;
 	private final Map<String, IMessage> lastMessage;
+	private Map<String, AbstractGame> playerGames = new ConcurrentHashMap<>();
+	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
 	private Map<String, String> usersInPlayMode;
-	private static final String COMMAND_NAME = "game";
+
+	public GameHandler(DiscordBot bot) {
+		this.bot = bot;
+		gameClassMap = new HashMap<>();
+		gameInfoMap = new HashMap<>();
+		lastMessage = new ConcurrentHashMap<>();
+		usersInPlayMode = new ConcurrentHashMap<>();
+		collectGameClasses();
+	}
 
 	private boolean isInPlayMode(IUser user, IChannel channel) {
 		return usersInPlayMode.containsKey(user.getID()) && usersInPlayMode.get(user.getID()).equals(channel.getID());
@@ -49,15 +58,6 @@ public class GameHandler {
 			}
 		}
 		return false;
-	}
-
-	public GameHandler(DiscordBot bot) {
-		this.bot = bot;
-		gameClassMap = new HashMap<>();
-		gameInfoMap = new HashMap<>();
-		lastMessage = new ConcurrentHashMap<>();
-		usersInPlayMode = new ConcurrentHashMap<>();
-		collectGameClasses();
 	}
 
 	public final void execute(IUser player, IChannel channel, String rawMessage) {
