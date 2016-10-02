@@ -52,7 +52,7 @@ public class Join extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (args.length == 0) {
 			IVoiceChannel voiceChannel = author.getConnectedVoiceChannels().get(0);
-			if (voiceChannel == null) {
+			if (voiceChannel == null || !voiceChannel.getGuild().equals(channel.getGuild())) {
 				return Template.get("command_join_cantfindyou");
 			}
 			if (voiceChannel.equals(getCurrentVoiceChannel(channel.getGuild()))) {

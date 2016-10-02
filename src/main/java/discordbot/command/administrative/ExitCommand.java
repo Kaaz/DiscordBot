@@ -34,7 +34,9 @@ public class ExitCommand extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+				"brexit"
+		};
 	}
 
 	@Override
