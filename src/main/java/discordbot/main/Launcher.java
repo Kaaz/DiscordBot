@@ -31,7 +31,7 @@ public class Launcher {
 			try {
 				DiscordBot nb = new DiscordBot();
 				Thread serviceHandler = new ServiceHandlerThread(nb);
-				serviceHandler.setDaemon(true);
+//				serviceHandler.setDaemon(true);
 				serviceHandler.start();
 			} catch (DiscordException e) {
 				System.out.println(e.getMessage());
