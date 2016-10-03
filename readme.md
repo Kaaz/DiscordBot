@@ -53,10 +53,50 @@ gos | Game of sticks | 2
 tic | Tic tac toe | 2
 
 
+## Global configuration
+
+The global configuration is stored in the application.cfg file, which is generated the first time you run the application
+
+The following settings can be set globally:
+
+Setting name | default | description
+---|---|---
+BOT_ENABLED | false | Enables the bot<br/> This must be set to true in order to run the bot
+BOT_AUTO_UPDATE | false | Enable automatic updates. <br/>For this to work you'll have to launch the bot though my other project<br/>https://github.com/MaikWezinkhof/ConfigurationBuilder
+BOT_NAME | "NovaBot" | the default name of the bot,
+BOT_CHANNEL_ID | "225170823898464256" | Discord channel is of the bot's own channel
+BOT_TOKEN | "mybottokenhere" | token used to login to discord
+BOT_CHATTING_ENABLED | true | Enable cleverbot
+BOT_COMMAND_PREFIX | "!" |  prefix for all commands !help etc. This can be overriden per guild
+BOT_COMMAND_LOGGING | true | save the usage of commands
+BOT_COMMAND_SHOW_UNKNOWN | false | Reply to non existing commands? <br/> eg. hey that command doesn't exist
+MUSIC_DOWNLOAD_SOUNDCLOUD_EXE | "H:/" | location of the soundcloud jar
+MUSIC_DOWNLOAD_SOUNDCLOUD_API_TOKEN | "some-token" | token used to connect to soundcloud
+YOUTUBEDL_EXE | "H:/youtube-dl.exe" | location of youtubedl.exe
+YOUTUBEDL_BIN | "H:/music/bin/" | folder with the binary files required for ffmpeg
+MUSIC_DIRECTORY | "H:/music/" | directory where all the music is stored
+DB_HOST | "localhost" | mysql hostname
+DB_USER | "root" | mysql user
+DB_PASS | "" | mysql password
+DB_NAME | "discord" | mysql database name
+MODULE_ECONOMY_ENABLED | true | enable economy globally
+MODULE_POE_ENABLED | true | enable poe globally
+MODULE_HEARTHSTONE_ENABLED | true | enable hearthstone globally
+MODULE_MUSIC_ENABLED | true | enable music globally
+ECONOMY_CURRENCY_NAME | "" | name of the currency
+ECONOMY_CURRENCY_ICON | "" | emoticon of the currency
+TRELLO_ACTIVE | false | Use trello integration
+TRELLO_API_KEY | "api-key-here" | Use trello integration
+TRELLO_BOARD_ID | "57beb462bac8baf93c4bba47" | trello board id
+TRELLO_LIST_BUGS | "57beb482265f090f6a425e01" | trello list id 
+TRELLO_LIST_IN_PROGRESS | "57beb4850d0e12837dca475d" |  trello list id for in progress items
+TRELLO_LIST_PLANNED | "57beb4b9146625cc9f255073" | trello list id for planned items
+TRELLO_TOKEN | "token-here" | the trello token
+
 
 ## Per guild configuration
 
-The configuration can be accessed though the **!config** command
+The per-guild configuration can be accessed though the **!config** command, to use it you must be the server owner, or have the discord-administrator permission
  
 The following settings can be changed per guild:
 
@@ -229,6 +269,7 @@ current reversed      //accept the systems suggestion in reverse [title=artist,a
 
 completely shuts the bot down
 
+Aliases: brexit
 Usable in public and private channels
 ### game
 
@@ -461,7 +502,7 @@ report <subject> | <message..>
 ```
 ### role
 
-Role
+Management of roles
 
 Aliases: roles
 Usable in public ~~and private~~ channels
@@ -469,12 +510,13 @@ Usable in public ~~and private~~ channels
 #### Usage
 
 ```php
-role                     //lists roles
-role list                //lists roles
-role cleanup             //cleans up the roles from the time-based rankings
-role setup               //creates the roles for the time-based rankings
-role add @user <role>    //adds role to user
-role remove @user <role> //remove role from user
+role                             //lists roles
+role list                        //lists roles
+role cleanup                     //cleans up the roles from the time-based rankings
+role setup                       //creates the roles for the time-based rankings
+role bind BOT_ROLE <discordrole> //binds a discordrole to a botrole
+role add @user <role>            //adds role to user
+role remove @user <role>         //remove role from user
 ```
 ### roll
 
@@ -562,7 +604,7 @@ subscribe list           //See what subscription options there are
 
 Shows memory usage
 
-Aliases: sysinfo
+Aliases: sysinfo, sys
 Usable in public and private channels
 ### tag
 
