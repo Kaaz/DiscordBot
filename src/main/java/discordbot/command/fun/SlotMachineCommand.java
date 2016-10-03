@@ -59,7 +59,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (args.length >= 1 && args[0].equals("play")) {
+		if (args.length == 0 || args.length >= 1 && args[0].equals("play")) {
 			final SlotMachine slotMachine = new SlotMachine();
 			final IMessage msg = bot.out.sendMessage(channel, slotMachine.toString());
 			bot.timer.scheduleAtFixedRate(new TimerTask() {

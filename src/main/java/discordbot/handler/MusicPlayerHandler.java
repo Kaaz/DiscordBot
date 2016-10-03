@@ -17,6 +17,7 @@ import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 import sx.blah.discord.util.audio.AudioPlayer;
 
+import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
@@ -212,7 +213,7 @@ public class MusicPlayerHandler {
 			}
 		}
 		try {
-			AudioPlayer.getAudioPlayerForGuild(guild).queue(f);
+			AudioPlayer.getAudioPlayerForGuild(guild).queue(AudioSystem.getAudioInputStream(f));
 			return true;
 		} catch (IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
