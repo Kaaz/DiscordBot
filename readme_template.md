@@ -13,7 +13,7 @@ You can play/test it on discord
 * Respond to commands
 * Add custom commands
 * play/download music
-* customizable globally and [per guild](#per-guild-configuration)
+* [customizable globally](#global-configuration) and [per guild](#per-guild-configuration)
 * play games against other users
 * subscription system
 * various optional modules
