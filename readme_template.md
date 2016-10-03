@@ -72,10 +72,10 @@ ECONOMY_CURRENCY_NAME | "" | name of the currency
 ECONOMY_CURRENCY_ICON | "" | emoticon of the currency
 TRELLO_ACTIVE | false | Use trello integration
 TRELLO_API_KEY | "api-key-here" | Use trello integration
-TRELLO_BOARD_ID | "57beb462bac8baf93c4bba47" | trello board id
-TRELLO_LIST_BUGS | "57beb482265f090f6a425e01" | trello list id 
-TRELLO_LIST_IN_PROGRESS | "57beb4850d0e12837dca475d" |  trello list id for in progress items
-TRELLO_LIST_PLANNED | "57beb4b9146625cc9f255073" | trello list id for planned items
+TRELLO_BOARD_ID | "1234" | trello board id
+TRELLO_LIST_BUGS | "1234" | trello list id 
+TRELLO_LIST_IN_PROGRESS | "1234" |  trello list id for in progress items
+TRELLO_LIST_PLANNED | "1234" | trello list id for planned items
 TRELLO_TOKEN | "token-here" | the trello token
 
 
