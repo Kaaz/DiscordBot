@@ -37,7 +37,7 @@ public class Reload extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (!bot.isCreator(author)) {
+		if (!bot.isAdmin(channel, author)) {
 			return Template.get("no_permission");
 		}
 		bot.loadConfiguration();
