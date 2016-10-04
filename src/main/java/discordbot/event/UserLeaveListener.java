@@ -8,7 +8,7 @@ import discordbot.guildsettings.defaults.SettingWelcomeNewUsers;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
-import sx.blah.discord.handle.impl.events.UserJoinEvent;
+import sx.blah.discord.handle.impl.events.UserLeaveEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 /**
  * A user joins a guild
  */
-public class UserLeaveListener extends AbstractEventListener<UserJoinEvent> {
+public class UserLeaveListener extends AbstractEventListener<UserLeaveEvent> {
 	public UserLeaveListener(DiscordBot discordBot) {
 		super(discordBot);
 	}
@@ -28,7 +28,7 @@ public class UserLeaveListener extends AbstractEventListener<UserJoinEvent> {
 	}
 
 	@Override
-	public void handle(UserJoinEvent event) {
+	public void handle(UserLeaveEvent event) {
 		IUser user = event.getUser();
 		IGuild guild = event.getGuild();
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingPMUserEvents.class))) {
