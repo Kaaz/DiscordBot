@@ -39,7 +39,7 @@ public class TemplateCommand extends AbstractCommand {
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"t"
+				"tpl"
 		};
 	}
 
