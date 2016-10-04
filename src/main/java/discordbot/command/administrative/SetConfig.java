@@ -9,12 +9,10 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * !config
@@ -58,12 +56,22 @@ public class SetConfig extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		int count = args.length;
+		IGuild guild;
+		if (bot.isCreator(author) && count == 1 && args[0].matches("^\\d{10,}$")) {
+			guild = bot.instance.getGuildByID(args[0]);
+			if (guild == null) {
+				return Template.get("confg_cant_find_guild");
+			}
+			args = Arrays.copyOfRange(args, 1, args.length);
+		} else {
+			guild = channel.getGuild();
+		}
 		if (bot.isAdmin(channel, author)) {
 			if (count == 0) {
-				Map<String, String> settings = GuildSettings.get(channel.getGuild()).getSettings();
+				Map<String, String> settings = GuildSettings.get(guild).getSettings();
 				ArrayList<String> keys = new ArrayList<>(settings.keySet());
 				Collections.sort(keys);
-				String ret = "Current Settings for " + channel.getGuild().getName() + Config.EOL;
+				String ret = "Current Settings for " + guild.getName() + Config.EOL;
 				List<List<String>> data = new ArrayList<>();
 				for (String key : keys) {
 					List<String> row = new ArrayList<>();
@@ -85,16 +93,16 @@ public class SetConfig extends AbstractCommand {
 				if (!DefaultGuildSettings.isValidKey(args[0])) {
 					return Template.get("command_config_key_not_exists");
 				}
-				if (count >= 2 && GuildSettings.get(channel.getGuild()).set(args[0], args[1])) {
+				if (count >= 2 && GuildSettings.get(guild).set(args[0], args[1])) {
 					return Template.get("command_config_key_modified");
 				}
 				String tblContent = "";
-				GuildSettings setting = GuildSettings.get(channel.getGuild());
+				GuildSettings setting = GuildSettings.get(guild);
 				for (String s : setting.getDescription(args[0])) {
 					tblContent += s + Config.EOL;
 				}
 				return "Config help for **" + args[0] + "**" + Config.EOL + Config.EOL +
-						"Current value: \"**" + GuildSettings.get(channel.getGuild()).getOrDefault(args[0]) + "**\"" + Config.EOL +
+						"Current value: \"**" + GuildSettings.get(guild).getOrDefault(args[0]) + "**\"" + Config.EOL +
 						"Default value: \"**" + setting.getDefaultValue(args[0]) + "**\"" + Config.EOL + Config.EOL +
 						"Description: " + Config.EOL +
 						Misc.makeTable(tblContent);

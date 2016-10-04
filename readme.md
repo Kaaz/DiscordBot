@@ -107,7 +107,9 @@ bot_listen | all | What channels to listen to? (all;mine)<br/>all -> responds to
 chat_bot_enabled | false | Chat with people
 cleanup_messages | no | Delete messages after a while? (yes;no;nonstandard)<br/>yes -> Always delete messages<br/>no -> Never delete messages<br/>nonstandard -> delete messages outside of bot's default channel
 command_prefix | $ | Prefix for commands (between 1 and 3 characters)
+help_in_pm | false | show help in a private message?<br/>true  -> send a message to the user requesting help<br/>false -> output help to the channel where requested
 module_games | true | Let people play games against each other
+music_show_listeners | true | Show who's listening in the *current* commandtrue  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
 pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
 show_unknown_commands | false | Show message on nonexistent commands<br/>true -> returns a help message<br/>false -> stays silent
 use_economy | false | Use the economy feature?<br/>false -> nope!<br/>true -> yep!
@@ -239,6 +241,7 @@ command list                    //shows a list of existing custom commands
 
 Gets/sets the configuration of the bot
 
+Aliases: setting
 Usable in public ~~and private~~ channels
 
 #### Usage
@@ -627,14 +630,14 @@ tag <name> <content> //creates the tag
 
 adds/removes templates
 
-Aliases: t
+Aliases: tpl
 Usable in public and private channels
 
 #### Usage
 
 ```php
 template list                        //lists all keyphrases
-template list <keyphrase>            //lists all options for keyphrase
+template list <keyphrase> <page>     //lists all options for keyphrase
 template remove <keyphrase> <index>  //removes selected template for keyphrase
 template add <keyphrase> <text...>   //adds a template for keyphrase
 template toggledebug                 //shows keyphrases instead of text
