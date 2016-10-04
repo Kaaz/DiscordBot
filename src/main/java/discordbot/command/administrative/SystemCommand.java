@@ -41,20 +41,17 @@ public class SystemCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-//		if (bot.isCreator(author)) {
 		final Runtime runtime = Runtime.getRuntime();
 		StringBuilder sb = new StringBuilder();
 		long memoryLimit = runtime.maxMemory();
-		long memoryAllocated = runtime.totalMemory();
+		long memoryInUse = runtime.totalMemory() - runtime.freeMemory();
 
 		sb.append("System information: ").append(Config.EOL);
-		sb.append(":information_source: Running version: ").append(Launcher.getVersion()).append(Config.EOL);
+		sb.append("Running version: ").append(Config.EOL).append(Launcher.getVersion()).append(Config.EOL);
 		sb.append("Memory").append(Config.EOL);
-		sb.append(getProgressbar(memoryAllocated, memoryLimit));
-		sb.append(" [ ").append(numberInMb(memoryAllocated)).append(" / ").append(numberInMb(memoryLimit)).append(" ]").append(Config.EOL);
+		sb.append(getProgressbar(memoryInUse, memoryLimit));
+		sb.append(" [ ").append(numberInMb(memoryInUse)).append(" / ").append(numberInMb(memoryLimit)).append(" ]").append(Config.EOL);
 		return sb.toString();
-//		}
-//		return Template.get("command_no_permission");
 	}
 
 	private String getProgressbar(long current, long max) {
