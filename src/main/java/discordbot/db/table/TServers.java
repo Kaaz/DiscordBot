@@ -30,7 +30,7 @@ public class TServers {
 	public static OServer findBy(String discordId) {
 		OServer s = new OServer();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, discord_id, name, owner  " +
+				"SELECT id, discord_id, name, owner,active  " +
 						"FROM servers " +
 						"WHERE discord_id = ? ", discordId)) {
 			if (rs.next()) {
@@ -53,9 +53,9 @@ public class TServers {
 		}
 		try {
 			WebDb.get().query(
-					"UPDATE servers SET discord_id = ?, name = ?, owner = ? " +
+					"UPDATE servers SET discord_id = ?, name = ?, owner = ?, active = ? " +
 							"WHERE id = ? ",
-					record.discord_id, record.name, record.owner, record.id
+					record.discord_id, record.name, record.owner, record.active, record.id
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -65,9 +65,9 @@ public class TServers {
 	public static void insert(OServer record) {
 		try {
 			record.id = WebDb.get().insert(
-					"INSERT INTO servers(discord_id, name, owner) " +
-							"VALUES (?,?,?)",
-					record.discord_id, record.name, record.owner);
+					"INSERT INTO servers(discord_id, name, owner,active) " +
+							"VALUES (?,?,?,?)",
+					record.discord_id, record.name, record.owner, record.active);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

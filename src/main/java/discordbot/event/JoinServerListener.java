@@ -28,7 +28,6 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 
 		IGuild guild = event.getGuild();
 		IUser owner = guild.getOwner();
-
 		discordBot.setVolume(guild, 0.05F);
 		OUser user = TUser.findBy(owner.getID());
 		user.discord_id = owner.getID();
@@ -38,6 +37,10 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 		server.discord_id = guild.getID();
 		server.name = guild.getName();
 		server.owner = user.id;
+		if (server.active == 0) {
+			discordBot.out.sendMessageToCreator(String.format("[**event**] [**guild**] I have just **joined** **%s** (discord-id = %s)", guild.getName(), guild.getID()));
+			server.active = 1;
+		}
 		TServers.update(server);
 		DiscordBot.LOGGER.info("[event] JOINED SERVER! " + guild.getName());
 	}

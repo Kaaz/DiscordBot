@@ -10,4 +10,5 @@ public class OServer extends AbstractModel {
 	public String discord_id = "";
 	public String name = "";
 	public int owner = 0;
+	public int active = 0;
 }
