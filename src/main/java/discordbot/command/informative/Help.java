@@ -3,6 +3,7 @@ package discordbot.command.informative;
 import discordbot.command.CommandCategory;
 import discordbot.core.AbstractCommand;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
+import discordbot.guildsettings.defaults.SettingHelpInPM;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.Config;
@@ -52,6 +53,7 @@ public class Help extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		String commandPrefix = GuildSettings.getFor(channel, SettingCommandPrefix.class);
+		boolean showHelpInPM = GuildSettings.getFor(channel, SettingHelpInPM.class).equals("true");
 		if (args.length > 0 && !args[0].equals("style2") && !args[0].equals("style3")) {
 			AbstractCommand c = bot.commands.getCommand(DisUtil.filterPrefix(args[0], channel));
 			if (c != null) {
@@ -96,7 +98,12 @@ public class Help extends AbstractCommand {
 			} else {
 				ret += styleTablePerCategory(commandList);
 			}
-			return ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL;
+			if (showHelpInPM) {
+				bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL);
+				return Template.get("command_help_send_private");
+			} else {
+				return ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL;
+			}
 		}
 	}
 

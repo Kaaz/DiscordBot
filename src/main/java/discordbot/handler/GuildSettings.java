@@ -32,14 +32,14 @@ public class GuildSettings {
 	 * Simplified method to get the setting for a channel instead of guild
 	 *
 	 * @param channel the channel to check
-	 * @param clazz   the Setting
+	 * @param settingClass   the Setting
 	 * @return the setting
 	 */
-	public static String getFor(IChannel channel, Class<? extends AbstractGuildSetting> clazz) {
+	public static String getFor(IChannel channel, Class<? extends AbstractGuildSetting> settingClass) {
 		if (channel == null || channel.isPrivate()) {
-			return DefaultGuildSettings.getDefault(clazz);
+			return DefaultGuildSettings.getDefault(settingClass);
 		}
-		return GuildSettings.get(channel.getGuild()).getOrDefault(clazz);
+		return GuildSettings.get(channel.getGuild()).getOrDefault(settingClass);
 	}
 
 	public static GuildSettings get(IGuild guild) {
