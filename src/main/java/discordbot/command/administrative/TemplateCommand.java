@@ -85,7 +85,7 @@ public class TemplateCommand extends AbstractCommand {
 						currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage - 1);
 					}
 					return String.format("All keyphrases: [page %s/%s]", currentPage + 1, maxPage) + Config.EOL +
-							Misc.makeTable(Template.getAllKeyphrases(itemsPerPage, currentPage * itemsPerPage), 35, 2);
+							Misc.makeTable(Template.getAllKeyphrases(itemsPerPage, currentPage * itemsPerPage), 45, 2);
 				default:
 					return discordbot.handler.Template.get("command_template_invalid_option");
 			}

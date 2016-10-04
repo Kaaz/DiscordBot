@@ -1,4 +1,4 @@
-package discordbot.command.informative;
+package discordbot.command.adventure;
 
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;

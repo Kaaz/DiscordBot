@@ -38,7 +38,8 @@ public class SetConfig extends AbstractCommand {
 		return new String[]{
 				"config                    //overview",
 				"config <property>         //check details of property",
-				"config <property> <value> //sets property"};
+				"config <property> <value> //sets property"
+		};
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class SetConfig extends AbstractCommand {
 		if (bot.isCreator(author) && args.length == 1 && args[0].matches("^\\d{10,}$")) {
 			guild = bot.instance.getGuildByID(args[0]);
 			if (guild == null) {
-				return Template.get("confg_cant_find_guild");
+				return Template.get("command_confg_cant_find_guild");
 			}
 			args = Arrays.copyOfRange(args, 1, args.length);
 		} else {

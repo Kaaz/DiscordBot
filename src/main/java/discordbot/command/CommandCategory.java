@@ -8,6 +8,7 @@ public enum CommandCategory {
 	FUN("fun", ":game_die:", "Fun"),
 	POE("poe", ":currency_exchange:", "Path of exile"),
 	HEARTHSTONE("hearthstone", ":slot_machine:", "Hearthstone"),
+	ADVENTURE("adventure", ":feet:", "Adventure"),
 	UNKNOWN("nopackage", ":question:", "Misc");
 	private final String packageName;
 	private final String emoticon;
