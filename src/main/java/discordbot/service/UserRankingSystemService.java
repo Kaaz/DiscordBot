@@ -57,11 +57,7 @@ public class UserRankingSystemService extends AbstractService {
 
 	private void handleGuild(IGuild guild) {
 		RoleRankings.fixForServer(guild);
-		for (IUser user : guild.getUsers()) {
-			if (!user.isBot()) {
-				handleUser(guild, user);
-			}
-		}
+		guild.getUsers().stream().filter(user -> !user.isBot()).forEach(user -> handleUser(guild, user));
 	}
 
 	private void handleUser(IGuild guild, IUser user) {

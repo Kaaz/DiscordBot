@@ -54,6 +54,19 @@ public class Template {
 		return "**'" + keyPhrase + "'**";
 	}
 
+	public static List<String> getAllKeyphrases() {
+		List<String> ret = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select("SELECT DISTINCT keyphrase FROM template_texts ORDER BY keyphrase ASC ")) {
+			while (rs.next()) {
+				ret.add(rs.getString("keyphrase"));
+			}
+			rs.getStatement().close();
+		} catch (SQLException e) {
+			System.out.println(e);
+		}
+		return ret;
+	}
+
 	public String[] getPhrases() {
 		return dictionary.keySet().toArray(new String[dictionary.keySet().size()]);
 	}
