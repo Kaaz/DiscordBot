@@ -32,7 +32,7 @@ public class TemplateCommand extends AbstractCommand {
 	public String[] getUsage() {
 		return new String[]{
 				"template list                        //lists all keyphrases",
-				"template list <keyphrase>            //lists all options for keyphrase",
+				"template list <keyphrase> <page>     //lists all options for keyphrase",
 				"template remove <keyphrase> <index>  //removes selected template for keyphrase",
 				"template add <keyphrase> <text...>   //adds a template for keyphrase",
 				"template toggledebug                 //shows keyphrases instead of text"};
@@ -79,12 +79,12 @@ public class TemplateCommand extends AbstractCommand {
 				case "remove":
 				case "list":
 					int currentPage = 0;
-					int itemsPerPage = 50;
-					int maxPage = Template.uniquePhraseCount() / itemsPerPage;
+					int itemsPerPage = 25;
+					int maxPage = 1 + Template.uniquePhraseCount() / itemsPerPage;
 					if (args.length >= 2) {
 						currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage);
 					}
-					return String.format("All keyphrases: [page %s/%s]", currentPage, maxPage) + Config.EOL +
+					return String.format("All keyphrases: [page %s/%s]", currentPage + 1, maxPage) + Config.EOL +
 							Misc.makeTable(Template.getAllKeyphrases(itemsPerPage, currentPage * itemsPerPage), 35, 2);
 				default:
 					return discordbot.handler.Template.get("command_template_invalid_option");

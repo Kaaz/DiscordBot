@@ -81,7 +81,7 @@ public class Template {
 	 */
 	public static List<String> getAllKeyphrases(int maxListSize, int offset) {
 		List<String> ret = new ArrayList<>();
-		try (ResultSet rs = WebDb.get().select("SELECT DISTINCT keyphrase FROM template_texts ORDER BY keyphrase ASC LIMIT ?, ?", maxListSize, offset)) {
+		try (ResultSet rs = WebDb.get().select("SELECT DISTINCT keyphrase FROM template_texts ORDER BY keyphrase ASC LIMIT ?, ?", offset, maxListSize)) {
 			while (rs.next()) {
 				ret.add(rs.getString("keyphrase"));
 			}
