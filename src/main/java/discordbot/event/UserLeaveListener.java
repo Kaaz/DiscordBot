@@ -17,8 +17,8 @@ import java.sql.Timestamp;
 /**
  * A user joins a guild
  */
-public class UserJoinListener extends AbstractEventListener<UserJoinEvent> {
-	public UserJoinListener(DiscordBot discordBot) {
+public class UserLeaveListener extends AbstractEventListener<UserJoinEvent> {
+	public UserLeaveListener(DiscordBot discordBot) {
 		super(discordBot);
 	}
 
@@ -32,10 +32,10 @@ public class UserJoinListener extends AbstractEventListener<UserJoinEvent> {
 		IUser user = event.getUser();
 		IGuild guild = event.getGuild();
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingPMUserEvents.class))) {
-			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()));
+			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** left the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()));
 		}
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingWelcomeNewUsers.class))) {
-			discordBot.out.sendMessage(guild.getChannels().get(0), String.format(Template.get("welcome_new_user"), user.mention()));
+			discordBot.out.sendMessage(guild.getChannels().get(0), String.format(Template.get("message_user_leaves"), user.mention()));
 		}
 		OGuildMember guildMember = TGuildMember.findBy(guild.getID(), user.getID());
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());
