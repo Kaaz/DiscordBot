@@ -38,6 +38,7 @@ public class TServers {
 				s.discord_id = rs.getString("discord_id");
 				s.name = rs.getString("name");
 				s.owner = rs.getInt("owner");
+				s.active = rs.getInt("active");
 			}
 			rs.getStatement().close();
 		} catch (Exception e) {
