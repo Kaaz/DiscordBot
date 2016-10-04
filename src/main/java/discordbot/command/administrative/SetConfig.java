@@ -45,7 +45,9 @@ public class SetConfig extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+				"setting"
+		};
 	}
 
 	@Override
