@@ -99,7 +99,8 @@ public class Help extends AbstractCommand {
 				ret += styleTablePerCategory(commandList);
 			}
 			if (showHelpInPM) {
-				bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL);
+				bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL +
+						":exclamation: In private messages the prefix for commands is **" + Config.BOT_COMMAND_PREFIX + "**");
 				return Template.get("command_help_send_private");
 			} else {
 				return ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL;

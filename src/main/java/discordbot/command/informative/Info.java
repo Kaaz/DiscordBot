@@ -92,7 +92,7 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 		return "What am I? *" + response + "* " + Config.EOL +
 				"Currently active on " + bot.instance.getGuilds().size() + " guilds and the last time I restarted was  " + onlineFor + "." + Config.EOL +
 				"Running version `" + Launcher.getVersion().toString() + "` and there are " + bot.commands.getCommands().length + " commands I can perform type **" + DisUtil.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
-				"If I can't help you out, you can always try to poke __" + user.getName() + "#" + user.getDiscriminator() + "__";
+				"If I can't help you out, you can always try to poke __" + user.getName() + "#" + user.getDiscriminator() + "__ or join my *"+DisUtil.getCommandPrefix(channel)+"discord*";
 	}
 
 	private String getListFor(String listId, String itemPrefix) {
