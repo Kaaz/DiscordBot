@@ -82,7 +82,7 @@ public class TemplateCommand extends AbstractCommand {
 					int itemsPerPage = 25;
 					int maxPage = 1 + Template.uniquePhraseCount() / itemsPerPage;
 					if (args.length >= 2) {
-						currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage);
+						currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage - 1);
 					}
 					return String.format("All keyphrases: [page %s/%s]", currentPage + 1, maxPage) + Config.EOL +
 							Misc.makeTable(Template.getAllKeyphrases(itemsPerPage, currentPage * itemsPerPage), 35, 2);
