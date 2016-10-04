@@ -54,6 +54,11 @@ public class Template {
 		return "**'" + keyPhrase + "'**";
 	}
 
+	/**
+	 * Retrieves all unique keyphrases from the database
+	 *
+	 * @return list of keyphrases
+	 */
 	public static List<String> getAllKeyphrases() {
 		List<String> ret = new ArrayList<>();
 		try (ResultSet rs = WebDb.get().select("SELECT DISTINCT keyphrase FROM template_texts ORDER BY keyphrase ASC ")) {
@@ -65,6 +70,44 @@ public class Template {
 			System.out.println(e);
 		}
 		return ret;
+	}
+
+	/**
+	 * Retrieves a list of all unique keyphrases (used for pagination)
+	 *
+	 * @param maxListSize maximum amount to retrieve
+	 * @param offset      how many keyphrases to skip
+	 * @return list of keyphrases
+	 */
+	public static List<String> getAllKeyphrases(int maxListSize, int offset) {
+		List<String> ret = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select("SELECT DISTINCT keyphrase FROM template_texts ORDER BY keyphrase ASC LIMIT ?, ?", maxListSize, offset)) {
+			while (rs.next()) {
+				ret.add(rs.getString("keyphrase"));
+			}
+			rs.getStatement().close();
+		} catch (SQLException e) {
+			System.out.println(e);
+		}
+		return ret;
+	}
+
+	/**
+	 * Retrieves the number of unique phrases
+	 *
+	 * @return number
+	 */
+	public static int uniquePhraseCount() {
+		int amount = 0;
+		try (ResultSet rs = WebDb.get().select("SELECT count(DISTINCT keyphrase) AS sum FROM template_texts ORDER BY keyphrase ASC ")) {
+			if (rs.next()) {
+				amount = rs.getInt("sum");
+			}
+			rs.getStatement().close();
+		} catch (SQLException e) {
+			System.out.println(e);
+		}
+		return amount;
 	}
 
 	public String[] getPhrases() {
