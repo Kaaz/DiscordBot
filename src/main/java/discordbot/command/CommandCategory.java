@@ -21,10 +21,10 @@ public enum CommandCategory {
 		this.displayName = displayName;
 	}
 
-	public static CommandCategory fromPackage(String rarityName) {
-		if (rarityName != null) {
+	public static CommandCategory fromPackage(String packageName) {
+		if (packageName != null) {
 			for (CommandCategory cc : values()) {
-				if (rarityName.equalsIgnoreCase(cc.packageName)) {
+				if (packageName.equalsIgnoreCase(cc.packageName)) {
 					return cc;
 				}
 			}
