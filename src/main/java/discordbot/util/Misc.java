@@ -88,7 +88,7 @@ public class Misc {
 	 * @return formatted table
 	 */
 	public static String makeTable(String tableText) {
-		return "```php" + Config.EOL
+		return "```xl" + Config.EOL
 				+ tableText + Config.EOL +
 				"```" + Config.EOL;
 	}

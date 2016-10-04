@@ -16,7 +16,7 @@ public class SettingHelpInPM extends AbstractGuildSetting {
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"show help in a private message?" +
+		return new String[]{"show help in a private message?",
 				"true  -> send a message to the user requesting help",
 				"false -> output help to the channel where requested"};
 	}
