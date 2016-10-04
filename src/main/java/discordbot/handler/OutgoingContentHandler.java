@@ -29,7 +29,7 @@ public class OutgoingContentHandler {
 	 * @return IMessage or null
 	 */
 	public IMessage sendMessage(IChannel channel, String content) {
-		RequestBuffer.RequestFuture<IMessage> request = bot.out.sendMessage(new MessageBuilder(bot.instance).withChannel(channel).withContent(content));
+		RequestBuffer.RequestFuture<IMessage> request = bot.out.sendMessage(new MessageBuilder(bot.instance).withChannel(channel).withContent(content.substring(0, Math.min(content.length(), 1999))));
 		return request.get();
 	}
 
