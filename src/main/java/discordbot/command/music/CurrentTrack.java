@@ -4,6 +4,8 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
+import discordbot.guildsettings.defaults.SettingMusicShowListeners;
+import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.Config;
@@ -126,11 +128,14 @@ public class CurrentTrack extends AbstractCommand {
 		ret += Config.EOL + Config.EOL;
 		MusicPlayerHandler musicHandler = MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot);
 		ret += getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL;
-		List<IUser> userlist = bot.getCurrentlyListening(channel.getGuild());
-		if (userlist.size() > 0) {
-			ret += ":headphones:  Listeners" + Config.EOL;
-			ArrayList<String> displayList = userlist.stream().map(IUser::getName).collect(Collectors.toCollection(ArrayList::new));
-			ret += Misc.makeTable(displayList);
+
+		if (GuildSettings.get(channel.getGuild()).getOrDefault(SettingMusicShowListeners.class).equals("true")) {
+			List<IUser> userlist = bot.getCurrentlyListening(channel.getGuild());
+			if (userlist.size() > 0) {
+				ret += ":headphones:  Listeners" + Config.EOL;
+				ArrayList<String> displayList = userlist.stream().map(IUser::getName).collect(Collectors.toCollection(ArrayList::new));
+				ret += Misc.makeTable(displayList);
+			}
 		}
 		if (titleIsEmpty || artistIsEmpty) {
 			ret += "I am missing some information about this song. Could you help me out:question:" + Config.EOL;
