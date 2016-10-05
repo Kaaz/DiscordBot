@@ -41,13 +41,14 @@ public class HttpHelper {
 		}
 		try {
 			HttpResponse response = client.execute(request);
-			BufferedReader rd = new BufferedReader(
-					new InputStreamReader(response.getEntity().getContent()));
+			InputStreamReader inputstream = new InputStreamReader(response.getEntity().getContent());
+			BufferedReader rd = new BufferedReader(inputstream);
 			StringBuilder result = new StringBuilder();
-			String line = "";
+			String line;
 			while ((line = rd.readLine()) != null) {
 				result.append(line);
 			}
+			rd.close();
 			return result.toString();
 		} catch (IOException e) {
 			e.printStackTrace();

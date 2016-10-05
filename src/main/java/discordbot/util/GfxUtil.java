@@ -10,8 +10,7 @@ public class GfxUtil {
 	public static void addCenterText(String text, Font font, int x, int y, Graphics g, Color color) {
 		g.setFont(font);
 		g.setColor(color);
-		int realX = Math.max(0, x - ((int) g.getFontMetrics().getStringBounds(text, g).getWidth() / 2));
-		g.drawString(text, realX, y);
+		g.drawString(text, Math.max(0, x - ((int) g.getFontMetrics().getStringBounds(text, g).getWidth() / 2)), y);
 	}
 
 	public static void addRightText(String text, Font font, int x, int y, Graphics g, Color color) {
