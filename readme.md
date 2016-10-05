@@ -35,11 +35,11 @@ Commands | | | | |
 [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite) | [join](#join)
 [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild) | [mcstatus](#mcstatus) | [play](#play)
 [playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab)
-[poll](#poll) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload)
-[report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate) | [say](#say)
-[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
-[tag](#tag) | [template](#template) | [user](#user) | [version](#version) | [volume](#volume)
-
+[poll](#poll) | [profile](#profile) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit)
+[reload](#reload) | [report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate)
+[say](#say) | [skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe)
+[system](#system) | [tag](#tag) | [template](#template) | [user](#user) | [version](#version)
+[volume](#volume) | 
 
 ## Games
 
@@ -110,7 +110,9 @@ cleanup_messages | no | Delete messages after a while? (yes;no;nonstandard)<br/>
 command_prefix | $ | Prefix for commands (between 1 and 3 characters)
 help_in_pm | false | show help in a private message?<br/>true  -> send a message to the user requesting help<br/>false -> output help to the channel where requested
 module_games | true | Let people play games against each other
-music_show_listeners | true | Show who's listening in the *current* commandtrue  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
+music_channel | music | Channel where the bots music-related output goes to
+music_playing_message | clear | Clear the now playing message?<br/>clear  -> sends a message and deletes it when the song is over or skipped<br/>normal -> send the message and just leave it be<br/>off    -> don't send now playing messages
+music_show_listeners | true | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
 pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
 show_unknown_commands | false | Show message on nonexistent commands<br/>true -> returns a help message<br/>false -> stays silent
 use_economy | false | Use the economy feature?<br/>false -> nope!<br/>true -> yep!
@@ -460,6 +462,18 @@ poll create <question> ;<duration in minutes>;<option1>;<option2>;<etc.>
               //creates a poll for the duration
 poll 1-9      //vote on the options
 ```
+### profile
+
+Shows your profile in a fancy way
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+profile
+profile <@user>  //shows the profile of @user
+```
 ### purge
 
 purges messages
@@ -543,9 +557,11 @@ Usable in public and private channels
 #### Usage
 
 ```php
-roll   //random number 1-6
-roll <max>   //random number 1-<max>
+roll               //random number 1-6
+roll <max>         //random number 1-<max>
 roll <min> <max>   //random number <min>-<max>
+roll XdY           //eg. 2d5 rolls 2 dice of 1-5 and returns the sum
+roll XdY+z         //eg. 2d5+2 rolls 2 dice of 1-5 and returns the sum plus 2
 ```
 ### rotate
 
