@@ -123,7 +123,7 @@ public class DiscordBot {
 	 */
 	public IChannel getMusicChannel(IGuild guild) {
 		if (!musicChannels.containsKey(guild)) {
-			String channelName = GuildSettings.get(guild).getOrDefault(SettingBotChannel.class);
+			String channelName = GuildSettings.get(guild).getOrDefault(SettingMusicChannel.class);
 			List<IChannel> channelList = guild.getChannels();
 			boolean foundChannel = false;
 			for (IChannel channel : channelList) {
