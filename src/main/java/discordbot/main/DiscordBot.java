@@ -97,8 +97,8 @@ public class DiscordBot {
 	 * @return default chat channel
 	 */
 	public IChannel getDefaultChannel(IGuild guild) {
-		if (!musicChannels.containsKey(guild)) {
-			String channelName = GuildSettings.get(guild).getOrDefault(SettingMusicChannel.class);
+		if (!defaultChannels.containsKey(guild)) {
+			String channelName = GuildSettings.get(guild).getOrDefault(SettingBotChannel.class);
 			List<IChannel> channelList = guild.getChannels();
 			boolean foundChannel = false;
 			for (IChannel channel : channelList) {
