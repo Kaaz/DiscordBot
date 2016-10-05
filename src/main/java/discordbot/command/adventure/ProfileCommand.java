@@ -77,7 +77,7 @@ public class ProfileCommand extends AbstractCommand {
 
 	@Override
 	public boolean isListed() {
-		return false;
+		return true;
 	}
 
 	private String mark(String s, String mark) {

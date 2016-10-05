@@ -1,11 +1,14 @@
 package discordbot.command.fun;
 
 import discordbot.core.AbstractCommand;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * !roll
@@ -13,6 +16,7 @@ import java.util.Random;
  */
 public class RollCommand extends AbstractCommand {
 	Random rng;
+	Pattern dice = Pattern.compile("(\\d+)d(\\d+)\\+?(\\d+)?");
 
 	public RollCommand(DiscordBot b) {
 		super(b);
@@ -32,9 +36,11 @@ public class RollCommand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"roll   //random number 1-6",
-				"roll <max>   //random number 1-<max>",
-				"roll <min> <max>   //random number <min>-<max>"
+				"roll               //random number 1-6",
+				"roll <max>         //random number 1-<max>",
+				"roll <min> <max>   //random number <min>-<max>",
+				"roll XdY           //eg. 2d5 rolls 2 dice of 1-5 and returns the sum",
+				"roll XdY+z         //eg. 2d5+2 rolls 2 dice of 1-5 and returns the sum plus 2",
 		};
 	}
 
@@ -46,10 +52,45 @@ public class RollCommand extends AbstractCommand {
 		};
 	}
 
+	public String multiDice(int dices, int sides, int bonus) {
+		String text = String.format("Rolling %s %s-sided dice: ", dices, sides);
+		int total = 0;
+		for (int i = 0; i < dices; i++) {
+			int roll = rng.nextInt(sides) + 1;
+			text += " " + roll;
+			total += roll;
+		}
+		if (bonus != 0) {
+			text += " and " + bonus + " extra ";
+			total += bonus;
+		}
+		return text + " Total: **" + total + "**";
+	}
+
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		int min = 1, max = 6;
+		int min = 1, max = 6, max_dice = 40, min_sides = 2;
 		if (args.length == 1) {
+			Matcher match = dice.matcher(args[0]);
+			if (match.find()) {
+				System.out.println(match);
+				int dice = Integer.parseInt(match.group(1));
+				int sides = Integer.parseInt(match.group(2));
+				int bonus = 0;
+				if (dice > max_dice) {
+					return Template.get("command_roll_dice_count", max_dice);
+				}
+				if (dice < 1) {
+					return Template.get("command_roll_no_dice");
+				}
+				if (sides < min_sides) {
+					return Template.get("command_roll_side_count", min_sides);
+				}
+				if (match.group(3) != null && !"null".equals(match.group(3))) {
+					bonus = Integer.parseInt("" + match.group(3));
+				}
+				return multiDice(dice, sides, bonus);
+			}
 			try {
 				max = Integer.parseInt(args[0]);
 			} catch (Exception e) {
