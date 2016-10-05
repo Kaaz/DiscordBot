@@ -95,6 +95,7 @@ public class SetConfig extends AbstractCommand {
 					return Template.get("command_config_key_not_exists");
 				}
 				if (count >= 2 && GuildSettings.get(guild).set(args[0], args[1])) {
+					bot.reloadGuild(guild);
 					return Template.get("command_config_key_modified");
 				}
 				String tblContent = "";

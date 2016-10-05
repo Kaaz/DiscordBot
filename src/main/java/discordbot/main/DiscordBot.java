@@ -122,22 +122,22 @@ public class DiscordBot {
 	 * @return default music channel
 	 */
 	public IChannel getMusicChannel(IGuild guild) {
-		if (!defaultChannels.containsKey(guild)) {
+		if (!musicChannels.containsKey(guild)) {
 			String channelName = GuildSettings.get(guild).getOrDefault(SettingBotChannel.class);
 			List<IChannel> channelList = guild.getChannels();
 			boolean foundChannel = false;
 			for (IChannel channel : channelList) {
 				if (channel.getName().equalsIgnoreCase(channelName)) {
 					foundChannel = true;
-					defaultChannels.put(guild, channel);
+					musicChannels.put(guild, channel);
 					break;
 				}
 			}
 			if (!foundChannel) {
-				defaultChannels.put(guild, getDefaultChannel(guild));
+				musicChannels.put(guild, getDefaultChannel(guild));
 			}
 		}
-		return defaultChannels.get(guild);
+		return musicChannels.get(guild);
 	}
 
 	/**
@@ -158,7 +158,13 @@ public class DiscordBot {
 		commands.load();
 		Template.getInstance().load();
 		defaultChannels = new ConcurrentHashMap<>();
+		musicChannels = new ConcurrentHashMap<>();
 		chatBotHandler = new ChatBotHandler();
+	}
+
+	public void reloadGuild(IGuild guild) {
+		defaultChannels.remove(guild);
+		musicChannels.remove(guild);
 	}
 
 	private void registerEvents() {
