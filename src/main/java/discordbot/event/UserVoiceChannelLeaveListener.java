@@ -42,7 +42,7 @@ public class UserVoiceChannelLeaveListener extends AbstractEventListener<UserVoi
 			if (shouldLeave) {
 				MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), discordBot).stopMusic();
 				connectedVoice.leave();
-				discordBot.out.sendMessage(discordBot.getDefaultChannel(channel.getGuild()), Template.get("music_no_one_listens_i_leave"));
+				discordBot.out.sendMessage(discordBot.getMusicChannel(channel.getGuild()), Template.get("music_no_one_listens_i_leave"));
 			}
 		}
 	}

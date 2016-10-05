@@ -17,6 +17,7 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 import sx.blah.discord.util.audio.AudioPlayer;
+import sx.blah.discord.util.audio.providers.FileProvider;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
@@ -175,6 +176,7 @@ public class MusicPlayerHandler {
 		try {
 			Mp3File mp3file = new Mp3File(f);
 			currentSongLength = mp3file.getLengthInSeconds();
+			mp3file = null;
 		} catch (IOException | InvalidDataException | UnsupportedTagException e) {
 			e.printStackTrace();
 		}
@@ -202,6 +204,13 @@ public class MusicPlayerHandler {
 		return addToQueue(getRandomSong());
 	}
 
+	private AudioPlayer.Track makeTrack(File file) throws IOException, UnsupportedAudioFileException {
+		FileProvider fileProvider = new FileProvider(file);
+		AudioPlayer.Track track = new AudioPlayer.Track(fileProvider);
+		track.getMetadata().put("file", file);
+		return track;
+	}
+
 	private boolean addToQueue(String filename) {
 		File f = new File(filename);
 		if (!f.exists() || !f.getName().endsWith(".mp3")) {//check in config directory
@@ -212,7 +221,7 @@ public class MusicPlayerHandler {
 			}
 		}
 		try {
-			AudioPlayer.getAudioPlayerForGuild(guild).queue(f);
+			AudioPlayer.getAudioPlayerForGuild(guild).queue(makeTrack(f));
 			return true;
 		} catch (IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
