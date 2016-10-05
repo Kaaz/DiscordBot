@@ -46,13 +46,16 @@ public class ProfileImageV2 extends ProfileImage {
 		g.drawImage(profileImg, 18, 33, 141, 159, 0, 0, profileImg.getWidth(), profileImg.getHeight(), null);
 		g.drawImage(backgroundImage, 0, 0, 320, 265, 0, 0, 320, 265, null);
 
-		GfxUtil.addShadow(getUser().getName(), defaultFont, 148, 89 + (fontsize / 2), g, Color.black);
-		GfxUtil.addText(getUser().getName(), defaultFont, 148, 89 + (fontsize / 2), g, Color.white);
+		GfxUtil.addCenterShadow(getUser().getName(), defaultFont, 222, 71 + (fontsize / 2), g, Color.black);
+		GfxUtil.addCenterText(getUser().getName(), defaultFont, 222, 71 + (fontsize / 2), g, Color.white);
 		GfxUtil.addRightText("made by Emily", creditFont, 318, 199, g, new Color(0x3A3A38));
 
-		GfxUtil.addCenterText("" + rng.nextInt(100), score, 31, 246, g, new Color(0x5c7e32));
-		GfxUtil.addCenterText("" + rng.nextInt(100), score, 134, 246, g, new Color(0x5c7e32));
-		GfxUtil.addCenterText("" + rng.nextInt(100), score, 237, 246, g, new Color(0x5c7e32));
+		GfxUtil.addText("" + rng.nextInt(1000), score, 173, 118, g, new Color(0xffff00));//rewards
+		GfxUtil.addRightText("" + rng.nextInt(1000), score, 290, 118, g, new Color(0x36cbe9));//currency
+
+		GfxUtil.addCenterText("" + rng.nextInt(100), score, 31, 246, g, new Color(0x5c7e32));//health
+		GfxUtil.addCenterText("" + rng.nextInt(100), score, 134, 246, g, new Color(0x5c7e32));//attack
+		GfxUtil.addCenterText("" + rng.nextInt(100), score, 237, 246, g, new Color(0x5c7e32));//defense
 		File file = new File("profile_v2_" + getUser().getID() + ".png");
 		ImageIO.write(result, "png", file);
 		return file;

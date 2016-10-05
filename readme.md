@@ -33,12 +33,13 @@ Commands | | | | |
 [8ball](#8ball) | [avatar](#avatar) | [blackjack](#blackjack) | [catfact](#catfact) | [changename](#changename)
 [command](#command) | [config](#config) | [current](#current) | [exit](#exit) | [game](#game)
 [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite) | [join](#join)
-[joke](#joke) | [leave](#leave) | [mcstatus](#mcstatus) | [play](#play) | [playlist](#playlist)
-[pm](#pm) | [poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll)
-[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
-[role](#role) | [roll](#roll) | [rotate](#rotate) | [say](#say) | [skip](#skip)
-[slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag)
-[template](#template) | [user](#user) | [version](#version) | [volume](#volume) | 
+[joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild) | [mcstatus](#mcstatus) | [play](#play)
+[playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab)
+[poll](#poll) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload)
+[report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate) | [say](#say)
+[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
+[tag](#tag) | [template](#template) | [user](#user) | [version](#version) | [volume](#volume)
+
 
 ## Games
 
@@ -353,6 +354,17 @@ Usable in public and private channels
 Leaves the voicechannel
 
 Usable in public ~~and private~~ channels
+### leaveguild
+
+leaves guild :(
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+leaveguild     //leaves the guild
+```
 ### mcstatus
 
 Shows some information about the server

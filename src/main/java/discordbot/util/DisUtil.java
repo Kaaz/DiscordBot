@@ -7,6 +7,7 @@ import sx.blah.discord.handle.obj.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -27,6 +28,44 @@ public class DisUtil {
 	 */
 	public static boolean isUserMention(String input) {
 		return mentionUserPattern.matcher(input).matches();
+	}
+
+	/**
+	 * Attempts to find a user in a channel, first look for account name then for nickname
+	 *
+	 * @param channel    the channel to look in
+	 * @param searchText the name to look for
+	 * @return IUser | null
+	 */
+	public static IUser findUserIn(IChannel channel, String searchText) {
+		List<IUser> users = channel.getUsersHere();
+		List<IUser> potential = new ArrayList<>();
+		int smallestDiffIndex = 0, smallestDiff = 999;
+		for (IUser u : users) {
+			if (u.getName().equalsIgnoreCase(searchText)) {
+				return u;
+			}
+			Optional<String> nickNameOptional = u.getNicknameForGuild(channel.getGuild());
+			String nick;
+			if (nickNameOptional.isPresent()) {
+				nick = nickNameOptional.get().toLowerCase();
+			} else {
+				nick = u.getName().toLowerCase();
+			}
+			if (nick.contains(searchText)) {
+				potential.add(u);
+				int d = Math.abs(nick.length() - searchText.length());
+				if (d < smallestDiff) {
+					smallestDiff = d;
+					smallestDiffIndex = potential.size() - 1;
+				}
+			}
+
+		}
+		if (!potential.isEmpty()) {
+			return potential.get(smallestDiffIndex);
+		}
+		return null;
 	}
 
 	/**

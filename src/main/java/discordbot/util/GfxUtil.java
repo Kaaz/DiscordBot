@@ -28,6 +28,13 @@ public class GfxUtil {
 		addText(text, font, x - 1, y - 1, g, color);
 	}
 
+	public static void addCenterShadow(String text, Font font, int x, int y, Graphics g, Color color) {
+		addCenterText(text, font, x + 1, y + 1, g, color);
+		addCenterText(text, font, x + 1, y - 1, g, color);
+		addCenterText(text, font, x - 1, y + 1, g, color);
+		addCenterText(text, font, x - 1, y - 1, g, color);
+	}
+
 	public static void addText(String text, Font font, int x, int y, Graphics g, Color color) {
 		g.setFont(font);
 		g.setColor(color);
