@@ -53,7 +53,7 @@ public class RollCommand extends AbstractCommand {
 	}
 
 	public String multiDice(int dices, int sides, int bonus) {
-		String text = String.format("Rolling %s %s-sided dice: ", dices, sides);
+		String text = String.format("Rolling %s x %s-sided dice: ", dices, sides);
 		int total = 0;
 		for (int i = 0; i < dices; i++) {
 			int roll = rng.nextInt(sides) + 1;
@@ -61,7 +61,7 @@ public class RollCommand extends AbstractCommand {
 			total += roll;
 		}
 		if (bonus != 0) {
-			text += " and " + bonus + " extra ";
+			text += " adding " + bonus;
 			total += bonus;
 		}
 		return text + " Total: **" + total + "**";
