@@ -6,6 +6,7 @@ import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.SettingActiveChannels;
 import discordbot.guildsettings.defaults.SettingBotChannel;
 import discordbot.guildsettings.defaults.SettingEnableChatBot;
+import discordbot.guildsettings.defaults.SettingMusicChannel;
 import discordbot.handler.*;
 import discordbot.role.RoleRankings;
 import discordbot.util.DisUtil;
@@ -40,6 +41,7 @@ public class DiscordBot {
 	private GameHandler gameHandler = null;
 	private boolean isReady = false;
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
+	private Map<IGuild, IChannel> musicChannels = new ConcurrentHashMap<>();
 
 	public DiscordBot() throws DiscordException {
 		registerHandlers();
@@ -95,6 +97,31 @@ public class DiscordBot {
 	 * @return default chat channel
 	 */
 	public IChannel getDefaultChannel(IGuild guild) {
+		if (!musicChannels.containsKey(guild)) {
+			String channelName = GuildSettings.get(guild).getOrDefault(SettingMusicChannel.class);
+			List<IChannel> channelList = guild.getChannels();
+			boolean foundChannel = false;
+			for (IChannel channel : channelList) {
+				if (channel.getName().equalsIgnoreCase(channelName)) {
+					foundChannel = true;
+					defaultChannels.put(guild, channel);
+					break;
+				}
+			}
+			if (!foundChannel) {
+				defaultChannels.put(guild, channelList.get(0));
+			}
+		}
+		return defaultChannels.get(guild);
+	}
+
+	/**
+	 * gets the default channel to output music to
+	 *
+	 * @param guild guild
+	 * @return default music channel
+	 */
+	public IChannel getMusicChannel(IGuild guild) {
 		if (!defaultChannels.containsKey(guild)) {
 			String channelName = GuildSettings.get(guild).getOrDefault(SettingBotChannel.class);
 			List<IChannel> channelList = guild.getChannels();
@@ -107,7 +134,7 @@ public class DiscordBot {
 				}
 			}
 			if (!foundChannel) {
-				defaultChannels.put(guild, channelList.get(0));
+				defaultChannels.put(guild, getDefaultChannel(guild));
 			}
 		}
 		return defaultChannels.get(guild);

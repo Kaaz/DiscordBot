@@ -6,6 +6,7 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
+import discordbot.guildsettings.defaults.SettingMusicPlayingMessage;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IGuild;
@@ -31,7 +32,7 @@ public class MusicPlayerHandler {
 	private final IGuild guild;
 	private final DiscordBot bot;
 	private OMusic currentlyPlaying = new OMusic();
-	private IMessage activeMsg;
+	private IMessage activeMsg = null;
 	private long currentSongLength = 0;
 	private long currentSongStartTimeInSeconds = 0;
 	private Random rng;
@@ -165,7 +166,9 @@ public class MusicPlayerHandler {
 				}
 			}
 		}
-		activeMsg = bot.out.sendMessage(bot.getDefaultChannel(guild), msg);
+		if (!GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class).equals("off")) {
+			activeMsg = bot.out.sendMessage(bot.getMusicChannel(guild), msg);
+		}
 	}
 
 	private void getMp3Details(File f) {
@@ -181,7 +184,7 @@ public class MusicPlayerHandler {
 	 * Deletes 'now playing' message if it exists
 	 */
 	private void clearMessage() {
-		if (activeMsg != null) {
+		if (activeMsg != null && GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class).equals("clear")) {
 			try {
 				activeMsg.delete();
 				activeMsg = null;
