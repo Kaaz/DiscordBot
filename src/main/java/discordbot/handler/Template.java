@@ -55,6 +55,17 @@ public class Template {
 	}
 
 	/**
+	 * Formatted version of Template#get(String), but surrounded by String.format
+	 *
+	 * @param keyPhrase  keyphrase
+	 * @param parameters the parameters to put in the keyphrase
+	 * @return formatted keyphrase
+	 */
+	public static String get(String keyPhrase, Object... parameters) {
+		return String.format(get(keyPhrase), parameters);
+	}
+
+	/**
 	 * Retrieves all unique keyphrases from the database
 	 *
 	 * @return list of keyphrases
