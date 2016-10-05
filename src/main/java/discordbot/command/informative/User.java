@@ -50,7 +50,7 @@ public class User extends AbstractCommand {
 		if (args.length == 0) {
 			infoUser = author;
 		} else if (DisUtil.isUserMention(args[0])) {
-			infoUser = bot.instance.getUserByID(DisUtil.mentionToId(args[0]));
+			infoUser = bot.client.getUserByID(DisUtil.mentionToId(args[0]));
 		}
 
 		if (infoUser != null) {

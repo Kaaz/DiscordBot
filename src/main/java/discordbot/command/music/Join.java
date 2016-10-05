@@ -91,7 +91,7 @@ public class Join extends AbstractCommand {
 	}
 
 	private IVoiceChannel getCurrentVoiceChannel(IGuild guild) {
-		for (IVoiceChannel channel : bot.instance.getConnectedVoiceChannels()) {
+		for (IVoiceChannel channel : bot.client.getConnectedVoiceChannels()) {
 			if (channel.getGuild().equals(guild)) {
 				return channel;
 			}

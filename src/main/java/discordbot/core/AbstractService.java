@@ -36,7 +36,7 @@ public abstract class AbstractService {
 		List<QActiveSubscriptions> subscriptionsForService = TSubscriptions.getSubscriptionsForService(TServices.getCachedId(getIdentifier()));
 		for (QActiveSubscriptions activeSubscriptions : subscriptionsForService) {
 			OChannel databaseChannel = TChannels.findById(activeSubscriptions.channelId);
-			IChannel botChannel = bot.instance.getChannelByID(databaseChannel.discord_id);
+			IChannel botChannel = bot.client.getChannelByID(databaseChannel.discord_id);
 			if (botChannel != null) {
 				channels.add(botChannel);
 			} else {

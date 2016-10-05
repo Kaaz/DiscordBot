@@ -78,13 +78,13 @@ public class RoleCommand extends AbstractCommand {
 		switch (args[0]) {
 			case "cleanup":
 				try {
-					RoleRankings.cleanUpRoles(channel.getGuild(), bot.instance.getOurUser());
+					RoleRankings.cleanUpRoles(channel.getGuild(), bot.client.getOurUser());
 				} catch (RateLimitException | DiscordException | MissingPermissionsException e) {
 					return "Tried cleaning up but this happened: " + e.getMessage();
 				}
 				return "Removed all the time-based roles";
 			case "setup":
-				if (RoleRankings.canModifyRoles(channel.getGuild(), bot.instance.getOurUser())) {
+				if (RoleRankings.canModifyRoles(channel.getGuild(), bot.client.getOurUser())) {
 					RoleRankings.fixForServer(channel.getGuild());
 					return "Set up all the required roles :smile:";
 				}

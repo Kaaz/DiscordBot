@@ -29,7 +29,7 @@ public class OutgoingContentHandler {
 	 * @return IMessage or null
 	 */
 	public IMessage sendMessage(IChannel channel, String content) {
-		RequestBuffer.RequestFuture<IMessage> request = bot.out.sendMessage(new MessageBuilder(bot.instance).withChannel(channel).withContent(content.substring(0, Math.min(content.length(), 1999))));
+		RequestBuffer.RequestFuture<IMessage> request = bot.out.sendMessage(new MessageBuilder(bot.client).withChannel(channel).withContent(content.substring(0, Math.min(content.length(), 1999))));
 		return request.get();
 	}
 
@@ -84,11 +84,11 @@ public class OutgoingContentHandler {
 				}
 			}
 		}
-		sendPrivateMessage(bot.instance.getUserByID(Config.CREATOR_ID), errorMessage);
+		sendPrivateMessage(bot.client.getUserByID(Config.CREATOR_ID), errorMessage);
 	}
 
 	public void sendMessageToCreator(String message) {
-		sendPrivateMessage(bot.instance.getUserByID(Config.CREATOR_ID), message);
+		sendPrivateMessage(bot.client.getUserByID(Config.CREATOR_ID), message);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class OutgoingContentHandler {
 	public void sendPrivateMessage(IUser target, String message) {
 		RequestBuffer.request(() -> {
 			try {
-				IPrivateChannel pmChannel = bot.instance.getOrCreatePMChannel(target);
+				IPrivateChannel pmChannel = bot.client.getOrCreatePMChannel(target);
 				return pmChannel.sendMessage(message);
 			} catch (DiscordException e) {
 				if (e.getErrorMessage().contains("502")) {

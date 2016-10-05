@@ -43,7 +43,7 @@ public class PMCommand extends AbstractCommand {
 		}
 		if (args.length > 1) {
 			if (DisUtil.isUserMention(args[0])) {
-				IUser targetUser = bot.instance.getUserByID(DisUtil.mentionToId(args[0]));
+				IUser targetUser = bot.client.getUserByID(DisUtil.mentionToId(args[0]));
 				if (targetUser != null) {
 					String message = "";
 					for (int i = 1; i < args.length; i++) {

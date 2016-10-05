@@ -44,7 +44,7 @@ public class ChangeAvatar extends AbstractCommand {
 		}
 		if (args.length == 2) {
 			try {
-				bot.instance.changeAvatar(Image.forUrl(args[0], args[1]));
+				bot.client.changeAvatar(Image.forUrl(args[0], args[1]));
 				return "How do you like my new look? :blush:";
 			} catch (DiscordException | RateLimitException e) {
 				e.printStackTrace();

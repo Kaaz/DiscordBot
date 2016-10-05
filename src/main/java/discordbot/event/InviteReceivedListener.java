@@ -28,7 +28,7 @@ public class InviteReceivedListener extends AbstractEventListener<InviteReceived
 				Invite.InviteResponse response = invite.details();
 				event.getMessage().reply(String.format("Thank you for inviting me to join the guild guild **%s**!", response.getGuildName()));
 				invite.accept();
-				discordBot.out.sendMessage(discordBot.instance.getChannelByID(response.getChannelID()), String.format(
+				discordBot.out.sendMessage(discordBot.client.getChannelByID(response.getChannelID()), String.format(
 						"Hello all! %s invited me to join the **%s** guild. type %shelp to see what I can do.",
 						event.getMessage().getAuthor().mention(),
 						response.getGuildName(),

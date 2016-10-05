@@ -84,13 +84,13 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 			}
 		}
 		String onlineFor = TimeUtil.getRelativeTime(bot.startupTimeStamp, false);
-		IUser user = bot.instance.getUserByID(Config.CREATOR_ID);
+		IUser user = bot.client.getUserByID(Config.CREATOR_ID);
 		String response = bot.chatBotHandler.chat("What are you?");
 		if (response.isEmpty()) {
 			response = "I'm batman";
 		}
 		return "What am I? *" + response + "* " + Config.EOL +
-				"Currently active on " + bot.instance.getGuilds().size() + " guilds and the last time I restarted was  " + onlineFor + "." + Config.EOL +
+				"Currently active on " + bot.client.getGuilds().size() + " guilds and the last time I restarted was  " + onlineFor + "." + Config.EOL +
 				"Running version `" + Launcher.getVersion().toString() + "` and there are " + bot.commands.getCommands().length + " commands I can perform type **" + DisUtil.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
 				"If I can't help you out, you can always try to poke __" + user.getName() + "#" + user.getDiscriminator() + "__ or join my *"+DisUtil.getCommandPrefix(channel)+"discord*";
 	}

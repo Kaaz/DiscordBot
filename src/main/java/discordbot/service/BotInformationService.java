@@ -39,7 +39,7 @@ public class BotInformationService extends AbstractService {
 	@Override
 	public void run() {
 		List<IChannel> subscribedChannels = getSubscribedChannels();
-		IUser me = bot.instance.getOurUser();
+		IUser me = bot.client.getOurUser();
 		for (IChannel channel : subscribedChannels) {
 			bot.commands.getCommand("purge").execute(new String[]{}, channel, me);
 			bot.out.sendMessage(channel, Template.get("bot_service_information_display_title"));

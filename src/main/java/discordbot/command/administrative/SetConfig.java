@@ -58,7 +58,7 @@ public class SetConfig extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		IGuild guild;
 		if (bot.isCreator(author) && args.length >= 1 && args[0].matches("^\\d{10,}$")) {
-			guild = bot.instance.getGuildByID(args[0]);
+			guild = bot.client.getGuildByID(args[0]);
 			if (guild == null) {
 				return Template.get("command_confg_cant_find_guild");
 			}

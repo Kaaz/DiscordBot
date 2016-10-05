@@ -31,7 +31,7 @@ public class DiscordBot {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 	public final long startupTimeStamp;
-	public IDiscordClient instance;
+	public IDiscordClient client;
 	public CommandHandler commands;
 	public Timer timer = new Timer();
 	public String mentionMe;
@@ -45,7 +45,7 @@ public class DiscordBot {
 
 	public DiscordBot() throws DiscordException {
 		registerHandlers();
-		instance = new ClientBuilder().withToken(Config.BOT_TOKEN).setMaxReconnectAttempts(128).login();
+		client = new ClientBuilder().withToken(Config.BOT_TOKEN).setMaxReconnectAttempts(128).login();
 		registerEvents();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 	}
@@ -147,9 +147,9 @@ public class DiscordBot {
 	 */
 	public void markReady(boolean ready) {
 		loadConfiguration();
-		mentionMe = "<@" + this.instance.getOurUser().getID() + ">";
+		mentionMe = "<@" + this.client.getOurUser().getID() + ">";
 		RoleRankings.init();
-		RoleRankings.fixRoles(this.instance.getGuilds(), instance);
+		RoleRankings.fixRoles(this.client.getGuilds(), client);
 		this.isReady = ready;
 		System.gc();
 	}
@@ -174,7 +174,7 @@ public class DiscordBot {
 			try {
 				AbstractEventListener eventListener = eventClass.getConstructor(DiscordBot.class).newInstance(this);
 				if (eventListener.listenerIsActivated()) {
-					instance.getDispatcher().registerListener(eventListener);
+					client.getDispatcher().registerListener(eventListener);
 				}
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				e.printStackTrace();
@@ -191,13 +191,13 @@ public class DiscordBot {
 	}
 
 	public String getUserName() {
-		return instance.getOurUser().getName();
+		return client.getOurUser().getName();
 	}
 
 	public boolean setUserName(String newName) {
 		if (isReady && !getUserName().equals(newName)) {
 			try {
-				instance.changeUsername(newName);
+				client.changeUsername(newName);
 				return true;
 			} catch (DiscordException | RateLimitException e) {
 				e.printStackTrace();

@@ -223,7 +223,7 @@ public class MusicPlayerHandler {
 
 	public List<IUser> getUsersInVoiceChannel() {
 		ArrayList<IUser> userList = new ArrayList<>();
-		List<IVoiceChannel> connectedVoiceChannels = bot.instance.getOurUser().getConnectedVoiceChannels();
+		List<IVoiceChannel> connectedVoiceChannels = bot.client.getOurUser().getConnectedVoiceChannels();
 		IVoiceChannel currentChannel = null;
 		for (IVoiceChannel channel : connectedVoiceChannels) {
 			if (channel.getGuild().equals(guild)) {
@@ -233,7 +233,7 @@ public class MusicPlayerHandler {
 		}
 		if (currentChannel != null) {
 			List<IUser> connectedUsers = currentChannel.getConnectedUsers();
-			userList.addAll(connectedUsers.stream().filter(user -> !user.equals(bot.instance.getOurUser()) && !user.isBot()).collect(Collectors.toList()));
+			userList.addAll(connectedUsers.stream().filter(user -> !user.equals(bot.client.getOurUser()) && !user.isBot()).collect(Collectors.toList()));
 		}
 		return userList;
 	}

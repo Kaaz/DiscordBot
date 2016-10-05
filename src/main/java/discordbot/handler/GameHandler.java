@@ -174,7 +174,7 @@ public class GameHandler {
 			return Template.get("playmode_already_in_game");
 		}
 		String userId = DisUtil.mentionToId(theMention);
-		IUser targetUser = bot.instance.getUserByID(userId);
+		IUser targetUser = bot.client.getUserByID(userId);
 		if (isInAGame(targetUser.getID())) {
 			AbstractGame otherGame = getGame(targetUser.getID());
 			if (otherGame != null && otherGame.waitingForPlayer()) {

@@ -47,7 +47,7 @@ public class Leave extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		boolean leftSomething = false;
-		List<IVoiceChannel> connectedVoiceChannels = bot.instance.getConnectedVoiceChannels();
+		List<IVoiceChannel> connectedVoiceChannels = bot.client.getConnectedVoiceChannels();
 		for (IVoiceChannel voicechan : connectedVoiceChannels) {
 			if (voicechan.getGuild().equals(channel.getGuild())) {
 				voicechan.leave();

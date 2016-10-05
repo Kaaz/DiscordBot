@@ -46,10 +46,10 @@ public class UserRankingSystemService extends AbstractService {
 
 	@Override
 	public void run() {
-		List<IGuild> guilds = bot.instance.getGuilds();
+		List<IGuild> guilds = bot.client.getGuilds();
 		for (IGuild guild : guilds) {
 			GuildSettings settings = GuildSettings.get(guild);
-			if (settings.getOrDefault(SettingRoleTimeRanks.class).equals("true") && RoleRankings.canModifyRoles(guild, bot.instance.getOurUser())) {
+			if (settings.getOrDefault(SettingRoleTimeRanks.class).equals("true") && RoleRankings.canModifyRoles(guild, bot.client.getOurUser())) {
 				handleGuild(guild);
 			}
 		}

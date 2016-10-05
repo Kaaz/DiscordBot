@@ -80,7 +80,7 @@ public class Play extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (bot.instance.getConnectedVoiceChannels().size() == 0) {
+		if (bot.client.getConnectedVoiceChannels().size() == 0) {
 			return Template.get("music_not_in_voicechannel");
 		}
 		if (MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot).getUsersInVoiceChannel().size() == 0) {

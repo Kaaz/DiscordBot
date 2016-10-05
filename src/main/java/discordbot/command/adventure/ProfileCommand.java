@@ -47,7 +47,7 @@ public class ProfileCommand extends AbstractCommand {
 		IUser user = author;
 		if (args.length > 0) {
 			if (DisUtil.isUserMention(args[0])) {
-				user = bot.instance.getUserByID(DisUtil.mentionToId(args[0]));
+				user = bot.client.getUserByID(DisUtil.mentionToId(args[0]));
 			} else {
 				user = DisUtil.findUserIn(channel, args[0].toLowerCase());
 			}

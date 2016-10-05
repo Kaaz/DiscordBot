@@ -48,7 +48,7 @@ public class LeaveGuildCommand extends AbstractCommand {
 			return Template.get("no_permission");
 		}
 		if (bot.isCreator(author) && args.length >= 1 && args[0].matches("^\\d{10,}$")) {
-			guild = bot.instance.getGuildByID(args[1]);
+			guild = bot.client.getGuildByID(args[1]);
 			if (guild == null) {
 				return Template.get("cant_find_guild");
 			}

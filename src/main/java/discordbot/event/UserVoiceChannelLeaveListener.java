@@ -25,7 +25,7 @@ public class UserVoiceChannelLeaveListener extends AbstractEventListener<UserVoi
 	public void handle(UserVoiceChannelLeaveEvent event) {
 		IVoiceChannel channel = event.getChannel();
 		IVoiceChannel connectedVoice = null;
-		for (IVoiceChannel voiceChannel : discordBot.instance.getConnectedVoiceChannels()) {
+		for (IVoiceChannel voiceChannel : discordBot.client.getConnectedVoiceChannels()) {
 			if (voiceChannel.getID().equals(channel.getID())) {
 				connectedVoice = voiceChannel;
 				break;
