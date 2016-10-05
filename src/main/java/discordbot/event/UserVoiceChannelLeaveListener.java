@@ -2,6 +2,7 @@ package discordbot.event;
 
 import discordbot.core.AbstractEventListener;
 import discordbot.handler.MusicPlayerHandler;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.impl.events.UserVoiceChannelLeaveEvent;
 import sx.blah.discord.handle.obj.IUser;
@@ -41,6 +42,7 @@ public class UserVoiceChannelLeaveListener extends AbstractEventListener<UserVoi
 			if (shouldLeave) {
 				MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), discordBot).stopMusic();
 				connectedVoice.leave();
+				discordBot.out.sendMessage(discordBot.getDefaultChannel(channel.getGuild()), Template.get("music_no_one_listens_i_leave"));
 			}
 		}
 	}

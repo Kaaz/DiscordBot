@@ -196,9 +196,6 @@ public class MusicPlayerHandler {
 	 * @return successfully started playing
 	 */
 	public boolean playRandomSong() {
-		if (getUsersInVoiceChannel().isEmpty()) {
-			return false;
-		}
 		return addToQueue(getRandomSong());
 	}
 
