@@ -73,7 +73,6 @@ public class RollCommand extends AbstractCommand {
 		if (args.length == 1) {
 			Matcher match = dice.matcher(args[0]);
 			if (match.find()) {
-				System.out.println(match);
 				int dice = Integer.parseInt(match.group(1));
 				int sides = Integer.parseInt(match.group(2));
 				int bonus = 0;
