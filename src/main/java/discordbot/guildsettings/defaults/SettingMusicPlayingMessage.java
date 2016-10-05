@@ -11,7 +11,7 @@ public class SettingMusicPlayingMessage extends AbstractGuildSetting {
 
 	@Override
 	public String getDefault() {
-		return "true";
+		return "clear";
 	}
 
 	@Override
