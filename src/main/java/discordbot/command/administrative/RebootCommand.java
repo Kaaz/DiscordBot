@@ -47,6 +47,9 @@ public class RebootCommand extends AbstractCommand {
 			if (args.length > 0 && args[0].equalsIgnoreCase("update") && UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
 				bot.out.sendMessage(channel, Template.get("command_reboot_update"));
 				Launcher.stop(ExitCode.UPDATE);
+			} else if (args.length > 0 && args[0].equals("forceupdate")) {
+				bot.out.sendMessage(channel, Template.get("command_reboot_forceupdate"));
+				Launcher.stop(ExitCode.UPDATE);
 			}
 			bot.out.sendMessage(channel, Template.get("command_reboot_success"));
 			Launcher.stop(ExitCode.REBOOT);
