@@ -259,7 +259,7 @@ public class MusicPlayerHandler {
 		for (AudioPlayer.Track track : trackList) {
 			Map<String, Object> metadata = track.getMetadata();
 			if (metadata.containsKey("file") && metadata.get("file") instanceof File) {
-				list.add(TMusic.findByFileName(((File) metadata.get("file")).getName()));
+				list.add(TMusic.findByFileName(((File) metadata.get("file")).getAbsolutePath()));
 			} else {
 				list.add(new OMusic());
 			}
