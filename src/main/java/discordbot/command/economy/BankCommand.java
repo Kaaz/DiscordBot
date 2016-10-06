@@ -1,7 +1,9 @@
 package discordbot.command.economy;
 
 import discordbot.core.AbstractCommand;
-import discordbot.handler.Template;
+import discordbot.db.model.OBank;
+import discordbot.db.table.TBanks;
+import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
@@ -32,17 +34,20 @@ public class BankCommand extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+				"currency",
+				"money",
+		};
 	}
 
 	@Override
 	public boolean isListed() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-
-		return Template.get("command_not_implemented");
+		OBank bank = TBanks.findBy(author.getID());
+		return String.format("Your current balance is `%s` %s ", bank.currentBalance, Config.ECONOMY_CURRENCY_ICON);
 	}
 }

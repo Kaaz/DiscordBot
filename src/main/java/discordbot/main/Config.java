@@ -4,6 +4,7 @@ package discordbot.main;
 import com.wezinkhof.configuration.ConfigurationOption;
 
 public class Config {
+
 	//bot enabled? must be set to true in order to run
 	@ConfigurationOption
 	public static boolean BOT_ENABLED = false;
@@ -99,6 +100,9 @@ public class Config {
 	@ConfigurationOption
 	public static String ECONOMY_CURRENCY_ICON = "";
 
+	//a new user starts with this balance
+	@ConfigurationOption
+	public static int ECONOMY_START_BALANCE = 50;
 	//Use trello integration
 	@ConfigurationOption
 	public static boolean TRELLO_ACTIVE = false;
