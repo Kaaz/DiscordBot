@@ -30,16 +30,16 @@ Current list of all available commands. See below for a more detailed list
 
 Commands | | | | |
 --- | --- | ---| ---| ---
-[8ball](#8ball) | [avatar](#avatar) | [blackjack](#blackjack) | [catfact](#catfact) | [changename](#changename)
-[command](#command) | [config](#config) | [current](#current) | [exit](#exit) | [game](#game)
-[help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite) | [join](#join)
-[joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild) | [mcstatus](#mcstatus) | [play](#play)
-[playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab)
-[poll](#poll) | [profile](#profile) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit)
-[reload](#reload) | [report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate)
-[say](#say) | [skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe)
-[system](#system) | [tag](#tag) | [template](#template) | [user](#user) | [version](#version)
-[volume](#volume) | 
+[8ball](#8ball) | [avatar](#avatar) | [bank](#bank) | [blackjack](#blackjack) | [catfact](#catfact)
+[changename](#changename) | [command](#command) | [config](#config) | [current](#current) | [exit](#exit)
+[game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite)
+[join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild) | [mcstatus](#mcstatus)
+[play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem)
+[poelab](#poelab) | [poll](#poll) | [profile](#profile) | [purge](#purge) | [reboot](#reboot)
+[reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role) | [roll](#roll)
+[rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot) | [stop](#stop)
+[subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template) | [user](#user)
+[version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -204,6 +204,20 @@ Usable in public and private channels
 Changes my avatar
 
 Usable in public and private channels
+### bank
+
+For all your banking needs
+
+Accessible though: currency, money
+Usable in public and private channels
+
+#### Usage
+
+```php
+bank                       //shows current balance
+bank history               //shows last transactions
+bank donate @user <amount> //donates <amount> to @user 
+```
 ### blackjack
 
 play a game of blackjack!
@@ -244,8 +258,8 @@ command list                    //shows a list of existing custom commands
 
 Gets/sets the configuration of the bot
 
-Aliases: setting
-Usable in public ~~and private~~ channels
+Accessible though: setting
+Usable in public  channels
 
 #### Usage
 
@@ -258,8 +272,8 @@ config <property> <value> //sets property
 
 retrieves information about the song currently playing
 
-Aliases: playing, np, nowplaying
-Usable in public ~~and private~~ channels
+Accessible though: playing, np, nowplaying
+Usable in public  channels
 
 #### Usage
 
@@ -275,13 +289,13 @@ current reversed      //accept the systems suggestion in reverse [title=artist,a
 
 completely shuts the bot down
 
-Aliases: brexit
+Accessible though: brexit
 Usable in public and private channels
 ### game
 
 play games against eachother!
 
-Usable in public ~~and private~~ channels
+Usable in public  channels
 
 #### Usage
 
@@ -293,7 +307,7 @@ game <@user> <gamecode>   //play a game against @user
 
 An attempt to help out
 
-Aliases: ?, halp, helpme
+Accessible though: ?, halp, helpme
 Usable in public and private channels
 
 #### Usage
@@ -317,7 +331,7 @@ importmusic <path/to/music>  //imports a folder
 
 Shows some general information about me and my future plans.
 
-Aliases: about
+Accessible though: about
 Usable in public and private channels
 
 #### Usage
@@ -332,13 +346,13 @@ info progress //see whats currently being worked on
 
 Provides an invite link to add the bot to your server.
 
-Aliases: inv
+Accessible though: inv
 Usable in public and private channels
 ### join
 
 joins a voicechannel
 
-Usable in public ~~and private~~ channels
+Usable in public  channels
 
 #### Usage
 
@@ -355,7 +369,7 @@ Usable in public and private channels
 
 Leaves the voicechannel
 
-Usable in public ~~and private~~ channels
+Usable in public  channels
 ### leaveguild
 
 leaves guild :(
@@ -371,7 +385,7 @@ leaveguild     //leaves the guild
 
 Shows some information about the server
 
-Usable in public ~~and private~~ channels
+Usable in public  channels
 
 #### Usage
 
@@ -383,7 +397,7 @@ mcstatus <serverip> <serverport>
 
 Plays a song from youtube
 
-Usable in public ~~and private~~ channels
+Usable in public  channels
 
 #### Usage
 
@@ -398,7 +412,7 @@ play <resultnumber>      //add result # to the queue
 
 information about the playlist/history
 
-Usable in public ~~and private~~ channels
+Usable in public  channels
 
 #### Usage
 
@@ -452,7 +466,7 @@ poelab <difficulty> //only for that difficulty
 
 Strawpoll: propose a question and choices for the chat to vote on
 
-Usable in public ~~and private~~ channels
+Usable in public  channels
 
 #### Usage
 
@@ -478,8 +492,8 @@ profile <@user>  //shows the profile of @user
 
 purges messages
 
-Aliases: clear, delete
-Usable in public ~~and private~~ channels
+Accessible though: clear, delete
+Usable in public  channels
 
 #### Usage
 
@@ -492,7 +506,7 @@ purge nova  //deletes my messages :(
 
 restarts the bot
 
-Aliases: restart
+Accessible though: restart
 Usable in public and private channels
 
 #### Usage
@@ -505,7 +519,7 @@ reboot update  //reboots the system and updates
 
 Posts something from reddit
 
-Aliases: r
+Accessible though: r
 Usable in public and private channels
 
 #### Usage
@@ -522,7 +536,7 @@ Usable in public and private channels
 
 Report bugs/abuse/incidents
 
-Usable in ~~public and~~ private channels
+Usable in private channels
 
 #### Usage
 
@@ -533,8 +547,8 @@ report <subject> | <message..>
 
 Management of roles
 
-Aliases: roles
-Usable in public ~~and private~~ channels
+Accessible though: roles
+Usable in public  channels
 
 #### Usage
 
@@ -551,7 +565,7 @@ role remove @user <role>         //remove role from user
 
 if you ever need a random number
 
-Aliases: dice, rng
+Accessible though: dice, rng
 Usable in public and private channels
 
 #### Usage
@@ -589,8 +603,8 @@ say <anything>
 
 skip current track
 
-Aliases: next
-Usable in public ~~and private~~ channels
+Accessible though: next
+Usable in public  channels
 
 #### Usage
 
@@ -614,13 +628,13 @@ slot play //plays the game
 
 stops playing music
 
-Usable in public ~~and private~~ channels
+Usable in public  channels
 ### subscribe
 
 subscribe the channel to certain events
 
-Aliases: sub
-Usable in public ~~and private~~ channels
+Accessible though: sub
+Usable in public  channels
 
 #### Usage
 
@@ -635,14 +649,14 @@ subscribe list           //See what subscription options there are
 
 Shows memory usage
 
-Aliases: sysinfo, sys
+Accessible though: sysinfo, sys
 Usable in public and private channels
 ### tag
 
 Tags!
 
-Aliases: t
-Usable in public ~~and private~~ channels
+Accessible though: t
+Usable in public  channels
 
 #### Usage
 
@@ -658,7 +672,7 @@ tag <name> <content> //creates the tag
 
 adds/removes templates
 
-Aliases: tpl
+Accessible though: tpl
 Usable in public and private channels
 
 #### Usage
@@ -674,7 +688,7 @@ template toggledebug                 //shows keyphrases instead of text
 
 Shows information about the user
 
-Aliases: whois
+Accessible though: whois
 Usable in public and private channels
 
 #### Usage
@@ -687,7 +701,7 @@ user @user   //info about @user
 
 Shows what versions I'm using
 
-Aliases: v
+Accessible though: v
 Usable in public and private channels
 
 #### Usage
@@ -699,8 +713,8 @@ version  //version usage
 
 gets and sets the volume of the music
 
-Aliases: vol
-Usable in public ~~and private~~ channels
+Accessible though: vol
+Usable in public  channels
 
 #### Usage
 
