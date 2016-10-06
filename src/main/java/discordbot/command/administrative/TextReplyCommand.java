@@ -47,11 +47,11 @@ public class TextReplyCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (bot.isCreator(author)) {
+		if (!bot.isCreator(author)) {
 			return Template.get("no_permission");
 		}
 		if (args.length == 0) {
-			return Template.get("invalid_use");
+			return Template.get("command_invalid_use");
 		}
 		if (args.length >= 2) {
 			String tag = args[1];//change to reply_pattern table

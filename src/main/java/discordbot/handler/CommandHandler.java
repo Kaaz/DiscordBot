@@ -107,7 +107,7 @@ public class CommandHandler {
 			}
 		} else if (customCommands.containsKey(input[0])) {
 			mymsg = bot.out.sendMessage(channel, customCommands.get(input[0]));
-		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED && GuildSettings.getFor(channel, SettingEnableChatBot.class).equals("true")) {
+		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
 			mymsg = bot.out.sendMessage(channel, author.mention() + ", " + bot.chatBotHandler.chat(inputMessage));
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
