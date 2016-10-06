@@ -51,4 +51,15 @@ public class TReplyPattern {
 			e.printStackTrace();
 		}
 	}
+
+	public static void update(OReplyPattern r) {
+		try {
+			r.id = WebDb.get().insert(
+					"UPDATE reply_pattern SET tag = ?, pattern = ?, reply = ?, cooldown = ? " +
+							"WHERE id = ? ",
+					r.tag, r.pattern, r.reply, r.cooldown);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
