@@ -139,15 +139,15 @@ public class ReadmeHelper {
 			text += "### " + command.getCommand() + Config.EOL + Config.EOL;
 			text += command.getDescription() + Config.EOL + Config.EOL;
 			if (command.getAliases().length > 0) {
-				text += "Aliases: " + Joiner.on(", ").join(command.getAliases()) + Config.EOL;
+				text += "Accessible though: " + Joiner.on(", ").join(command.getAliases()) + Config.EOL;
 			}
-			String visibility = "";
+			String visibility;
 			switch (command.getVisibility()) {
 				case PRIVATE:
-					visibility = "in ~~public and~~ private channels";
+					visibility = "in private channels";
 					break;
 				case PUBLIC:
-					visibility = "in public ~~and private~~ channels";
+					visibility = "in public  channels";
 					break;
 				case BOTH:
 					visibility = "in public and private channels";
