@@ -73,9 +73,9 @@ public class AutoReplyCommand extends AbstractCommand {
 				List<String> row = new ArrayList<>();
 
 				row.add(replyPattern.tag);
-				row.add("" + replyPattern.pattern);
-				row.add("" + TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 500L) / 1000L, false, false));
-				row.add(replyPattern.reply.substring(Math.min(40, replyPattern.reply.length())));
+				row.add(replyPattern.pattern);
+				row.add(TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 500L) / 1000L, false, false));
+				row.add(replyPattern.reply.substring(0, Math.min(40, replyPattern.reply.length())));
 				tbl.add(row);
 			}
 			return "All Auto replies information. For details about a specific one use **ar <tag>**`" + Config.EOL +
