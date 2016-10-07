@@ -138,9 +138,11 @@ public class ReadmeHelper {
 			}
 			text += "### " + command.getCommand() + Config.EOL + Config.EOL;
 			text += command.getDescription() + Config.EOL + Config.EOL;
-			if (command.getAliases().length > 0) {
-				text += "Accessible though: " + Joiner.on(", ").join(command.getAliases()) + Config.EOL;
+			text += "Accessible though: " + command.getCommand();
+			for (String alias : command.getAliases()) {
+				text += ", " + alias;
 			}
+			text += Config.EOL + Config.EOL;
 			String visibility;
 			switch (command.getVisibility()) {
 				case PRIVATE:

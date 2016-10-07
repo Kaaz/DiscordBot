@@ -30,16 +30,16 @@ Current list of all available commands. See below for a more detailed list
 
 Commands | | | | |
 --- | --- | ---| ---| ---
-[8ball](#8ball) | [avatar](#avatar) | [bank](#bank) | [blackjack](#blackjack) | [catfact](#catfact)
-[changename](#changename) | [command](#command) | [config](#config) | [current](#current) | [exit](#exit)
-[game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite)
-[join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild) | [mcstatus](#mcstatus)
-[play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem)
-[poelab](#poelab) | [poll](#poll) | [profile](#profile) | [purge](#purge) | [reboot](#reboot)
-[reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role) | [roll](#roll)
-[rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot) | [stop](#stop)
-[subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template) | [user](#user)
-[version](#version) | [volume](#volume) | 
+[8ball](#8ball) | [autoreply](#autoreply) | [avatar](#avatar) | [bank](#bank) | [blackjack](#blackjack)
+[catfact](#catfact) | [changename](#changename) | [command](#command) | [config](#config) | [current](#current)
+[exit](#exit) | [game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info)
+[invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild)
+[mcstatus](#mcstatus) | [play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec)
+[poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll) | [profile](#profile) | [purge](#purge)
+[reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role)
+[roll](#roll) | [rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot)
+[stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template)
+[user](#user) | [version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -103,9 +103,11 @@ The following settings can be changed per guild:
 
 Key | Default | Description |
 --- | --- | ---|
+auto_reply | false | use the auto reply feature?<br/>Looks for patterns in messages and replies to them (with a cooldown)<br/>true -> enable auto replying to matched messages<br/>true -> disable auto replying
 bot_channel | general | Channel where the bots default output goes to
 bot_listen | all | What channels to listen to? (all;mine)<br/>all -> responds to all channels<br/>mine -> only responds to messages in configured channel
 chat_bot_enabled | false | Chat with people
+chat_text_reply | false | Reply to predefined regex messages
 cleanup_messages | no | Delete messages after a while? (yes;no;nonstandard)<br/>yes -> Always delete messages<br/>no -> Never delete messages<br/>nonstandard -> delete messages outside of bot's default channel
 command_prefix | $ | Prefix for commands (between 1 and 3 characters)
 help_in_pm | false | show help in a private message?<br/>true  -> send a message to the user requesting help<br/>false -> output help to the channel where requested
@@ -198,17 +200,41 @@ On the first run it will generate a config file and stop running. You'll need to
 
 See what the magic 8ball has to say
 
+Accessible though: 8ball
+
 Usable in public and private channels
+### autoreply
+
+Patterns where the bot auto-replies to. 
+
+Accessible though: autoreply, ar
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+ar <create> <tagname>      //creates tag
+ar regex <tag> <value>     //edit the regex of a tag
+ar response <tag> <value>  //change the response of a reply
+ar tag <tag> <value>       //change the tag of a reply
+ar cd <tag> <value>        //change the cooldown (millis) of a reply
+ar guild <tag> <guildid>   //guild of a tag, 0 for global
+ar test <tag> <text>       //test for a match
+```
 ### avatar
 
 Changes my avatar
+
+Accessible though: avatar
 
 Usable in public and private channels
 ### bank
 
 For all your banking needs
 
-Accessible though: currency, money
+Accessible though: bank, currency, money
+
 Usable in public and private channels
 
 #### Usage
@@ -221,6 +247,8 @@ bank donate @user <amount> //donates <amount> to @user
 ### blackjack
 
 play a game of blackjack!
+
+Accessible though: blackjack
 
 Usable in public and private channels
 
@@ -235,15 +263,21 @@ blackjack stand  //stands
 
 Cat facts!
 
+Accessible though: catfact
+
 Usable in public and private channels
 ### changename
 
 Changes my name
 
+Accessible though: changename
+
 Usable in public and private channels
 ### command
 
 Add and remove custom commands
+
+Accessible though: command
 
 Usable in public and private channels
 
@@ -258,7 +292,8 @@ command list                    //shows a list of existing custom commands
 
 Gets/sets the configuration of the bot
 
-Accessible though: setting
+Accessible though: config, setting
+
 Usable in public  channels
 
 #### Usage
@@ -272,7 +307,8 @@ config <property> <value> //sets property
 
 retrieves information about the song currently playing
 
-Accessible though: playing, np, nowplaying
+Accessible though: current, playing, np, nowplaying
+
 Usable in public  channels
 
 #### Usage
@@ -289,11 +325,14 @@ current reversed      //accept the systems suggestion in reverse [title=artist,a
 
 completely shuts the bot down
 
-Accessible though: brexit
+Accessible though: exit, brexit
+
 Usable in public and private channels
 ### game
 
 play games against eachother!
+
+Accessible though: game
 
 Usable in public  channels
 
@@ -307,7 +346,8 @@ game <@user> <gamecode>   //play a game against @user
 
 An attempt to help out
 
-Accessible though: ?, halp, helpme
+Accessible though: help, ?, halp, helpme, h
+
 Usable in public and private channels
 
 #### Usage
@@ -320,6 +360,8 @@ help <command>  //usage for that command
 
 Special command for special use case. Imports music files from a directory. Only imports files with a valid id3v[1-2] tag
 
+Accessible though: importmusic
+
 Usable in public and private channels
 
 #### Usage
@@ -331,7 +373,8 @@ importmusic <path/to/music>  //imports a folder
 
 Shows some general information about me and my future plans.
 
-Accessible though: about
+Accessible though: info, about
+
 Usable in public and private channels
 
 #### Usage
@@ -346,11 +389,14 @@ info progress //see whats currently being worked on
 
 Provides an invite link to add the bot to your server.
 
-Accessible though: inv
+Accessible though: invite, inv
+
 Usable in public and private channels
 ### join
 
 joins a voicechannel
+
+Accessible though: join
 
 Usable in public  channels
 
@@ -364,15 +410,21 @@ join <channelname>  //attempts to join channelname
 
 An attempt to be funny
 
+Accessible though: joke
+
 Usable in public and private channels
 ### leave
 
 Leaves the voicechannel
 
+Accessible though: leave
+
 Usable in public  channels
 ### leaveguild
 
 leaves guild :(
+
+Accessible though: leaveguild
 
 Usable in public and private channels
 
@@ -385,6 +437,8 @@ leaveguild     //leaves the guild
 
 Shows some information about the server
 
+Accessible though: mcstatus
+
 Usable in public  channels
 
 #### Usage
@@ -396,6 +450,8 @@ mcstatus <serverip> <serverport>
 ### play
 
 Plays a song from youtube
+
+Accessible though: play
 
 Usable in public  channels
 
@@ -412,6 +468,8 @@ play <resultnumber>      //add result # to the queue
 
 information about the playlist/history
 
+Accessible though: playlist
+
 Usable in public  channels
 
 #### Usage
@@ -425,6 +483,8 @@ playlist history  //list of recently played songs
 
 Send a message to user
 
+Accessible though: pm
+
 Usable in public and private channels
 
 #### Usage
@@ -435,6 +495,8 @@ pm <@user> <message..>
 ### poec
 
 Returns a list of currency on your account
+
+Accessible though: poec
 
 Usable in public and private channels
 
@@ -449,10 +511,14 @@ poec league <league>   //currency for league
 
 Analyzes an item from path of exile.
 
+Accessible though: poeitem
+
 Usable in public and private channels
 ### poelab
 
 Attempts to find a description from reddit for the Labyrinth instance.
+
+Accessible though: poelab
 
 Usable in public and private channels
 
@@ -465,6 +531,8 @@ poelab <difficulty> //only for that difficulty
 ### poll
 
 Strawpoll: propose a question and choices for the chat to vote on
+
+Accessible though: poll
 
 Usable in public  channels
 
@@ -480,6 +548,8 @@ poll 1-9      //vote on the options
 
 Shows your profile in a fancy way
 
+Accessible though: profile
+
 Usable in public and private channels
 
 #### Usage
@@ -492,7 +562,8 @@ profile <@user>  //shows the profile of @user
 
 purges messages
 
-Accessible though: clear, delete
+Accessible though: purge, clear, delete
+
 Usable in public  channels
 
 #### Usage
@@ -506,7 +577,8 @@ purge nova  //deletes my messages :(
 
 restarts the bot
 
-Accessible though: restart
+Accessible though: reboot, restart
+
 Usable in public and private channels
 
 #### Usage
@@ -519,7 +591,8 @@ reboot update  //reboots the system and updates
 
 Posts something from reddit
 
-Accessible though: r
+Accessible though: reddit, r
+
 Usable in public and private channels
 
 #### Usage
@@ -531,10 +604,14 @@ r <subreddit>
 
 reloads the configuration
 
+Accessible though: reload
+
 Usable in public and private channels
 ### report
 
 Report bugs/abuse/incidents
+
+Accessible though: report
 
 Usable in private channels
 
@@ -547,7 +624,8 @@ report <subject> | <message..>
 
 Management of roles
 
-Accessible though: roles
+Accessible though: role, roles
+
 Usable in public  channels
 
 #### Usage
@@ -565,7 +643,8 @@ role remove @user <role>         //remove role from user
 
 if you ever need a random number
 
-Accessible though: dice, rng
+Accessible though: roll, dice, rng
+
 Usable in public and private channels
 
 #### Usage
@@ -581,6 +660,8 @@ roll XdY+z         //eg. 2d5+2 rolls 2 dice of 1-5 and returns the sum plus 2
 
 Rotate text!
 
+Accessible though: rotate
+
 Usable in public and private channels
 
 #### Usage
@@ -591,6 +672,8 @@ rotate <text..>
 ### say
 
 repeats you
+
+Accessible though: say
 
 Usable in public and private channels
 
@@ -603,7 +686,8 @@ say <anything>
 
 skip current track
 
-Accessible though: next
+Accessible though: skip, next
+
 Usable in public  channels
 
 #### Usage
@@ -615,6 +699,8 @@ skip perm //skips permanently; never hear this song again
 ### slot
 
 Feeling lucky? try the slotmachine! You might just win a hand full of air!
+
+Accessible though: slot
 
 Usable in public and private channels
 
@@ -628,12 +714,15 @@ slot play //plays the game
 
 stops playing music
 
+Accessible though: stop
+
 Usable in public  channels
 ### subscribe
 
 subscribe the channel to certain events
 
-Accessible though: sub
+Accessible though: subscribe, sub
+
 Usable in public  channels
 
 #### Usage
@@ -649,13 +738,15 @@ subscribe list           //See what subscription options there are
 
 Shows memory usage
 
-Accessible though: sysinfo, sys
+Accessible though: system, sysinfo, sys
+
 Usable in public and private channels
 ### tag
 
 Tags!
 
-Accessible though: t
+Accessible though: tag, t
+
 Usable in public  channels
 
 #### Usage
@@ -672,7 +763,8 @@ tag <name> <content> //creates the tag
 
 adds/removes templates
 
-Accessible though: tpl
+Accessible though: template, tpl
+
 Usable in public and private channels
 
 #### Usage
@@ -688,7 +780,8 @@ template toggledebug                 //shows keyphrases instead of text
 
 Shows information about the user
 
-Accessible though: whois
+Accessible though: user, whois
+
 Usable in public and private channels
 
 #### Usage
@@ -701,7 +794,8 @@ user @user   //info about @user
 
 Shows what versions I'm using
 
-Accessible though: v
+Accessible though: version, v
+
 Usable in public and private channels
 
 #### Usage
@@ -713,7 +807,8 @@ version  //version usage
 
 gets and sets the volume of the music
 
-Accessible though: vol
+Accessible though: volume, vol
+
 Usable in public  channels
 
 #### Usage
