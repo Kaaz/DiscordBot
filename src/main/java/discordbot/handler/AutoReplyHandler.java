@@ -2,6 +2,7 @@ package discordbot.handler;
 
 import discordbot.db.model.OReplyPattern;
 import discordbot.db.table.TReplyPattern;
+import discordbot.db.table.TServers;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IMessage;
 
@@ -29,15 +30,18 @@ public class AutoReplyHandler {
 			return false;
 		}
 		String guildId = message.getGuild().getID();
+		int internalGuildId = TServers.getCachedId(guildId);
 		Long now = System.currentTimeMillis();
 		for (int index = 0; index < replies.length; index++) {
-			Long lastUse = getCooldown(guildId, index);
-			if (lastUse + replies[index].cooldown < now) {
-				Matcher matcher = replies[index].pattern.matcher(message.getContent());
-				if (matcher.matches()) {
-					saveCooldown(guildId, index, now);
-					bot.out.sendMessage(message.getChannel(), message.getAuthor().mention() + ", " + replies[index].reply);
-					return true;
+			if (replies[index].guildId == 0 || replies[index].guildId == internalGuildId) {
+				Long lastUse = getCooldown(guildId, index);
+				if (lastUse + replies[index].cooldown < now) {
+					Matcher matcher = replies[index].pattern.matcher(message.getContent());
+					if (matcher.matches()) {
+						saveCooldown(guildId, index, now);
+						bot.out.sendMessage(message.getChannel(), message.getAuthor().mention() + ", " + replies[index].reply);
+						return true;
+					}
 				}
 			}
 		}

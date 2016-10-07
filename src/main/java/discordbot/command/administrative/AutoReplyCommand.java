@@ -3,7 +3,9 @@ package discordbot.command.administrative;
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OReplyPattern;
+import discordbot.db.model.OServer;
 import discordbot.db.table.TReplyPattern;
+import discordbot.db.table.TServers;
 import discordbot.db.table.TUser;
 import discordbot.handler.Template;
 import discordbot.main.Config;
@@ -117,7 +119,20 @@ public class AutoReplyCommand extends AbstractCommand {
 								exception.getDescription() + Config.EOL +
 								Misc.makeTable(exception.getMessage());
 					}
-					return Template.get("command_autoreply_regex_saved");//"Your regex is :+1:";
+					return Template.get("command_autoreply_regex_saved");
+				case "guild":
+				case "gid":
+					if (!args[2].equals("0")) {
+						OServer server = TServers.findBy(args[2]);
+						if (server.id == 0) {
+							return Template.get("command_autoreply_guild_invalid", args[2]);
+						}
+						replyPattern.guildId = server.id;
+					} else {
+						replyPattern.guildId = 0;
+					}
+					TReplyPattern.update(replyPattern);
+					return Template.get("command_autoreply_guild_saved", args[2]);
 				case "response":
 				case "reply":
 					replyPattern.reply = EmojiParser.parseToAliases(restOfArgs);

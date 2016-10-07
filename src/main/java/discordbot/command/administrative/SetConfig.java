@@ -60,7 +60,7 @@ public class SetConfig extends AbstractCommand {
 		if (bot.isCreator(author) && args.length >= 1 && args[0].matches("^\\d{10,}$")) {
 			guild = bot.client.getGuildByID(args[0]);
 			if (guild == null) {
-				return Template.get("command_confg_cant_find_guild");
+				return Template.get("command_config_cant_find_guild");
 			}
 			args = Arrays.copyOfRange(args, 1, args.length);
 		} else {
@@ -73,20 +73,21 @@ public class SetConfig extends AbstractCommand {
 				ArrayList<String> keys = new ArrayList<>(settings.keySet());
 				Collections.sort(keys);
 				String ret = "Current Settings for " + guild.getName() + Config.EOL;
+				ret += Config.EOL + "\\* means different from default";
 				List<List<String>> data = new ArrayList<>();
 				for (String key : keys) {
 					List<String> row = new ArrayList<>();
 					String different = settings.get(key).equals(DefaultGuildSettings.getDefault(key)) ? "" : "*";
-					row.add(key);
+					row.add(different + key);
 					row.add(settings.get(key));
-					row.add(different + DefaultGuildSettings.getDefault(key));
+					row.add(DefaultGuildSettings.getDefault(key));
 					data.add(row);
 				}
 				List<String> headers = new ArrayList<>();
 				Collections.addAll(headers, "Setting name", "Current", "Default");
 				ret += Misc.makeAsciiTable(headers,
 						data);
-				return ret + Config.EOL + "\\* - means different from default";
+				return ret;
 			} else {
 				if (args[0].equalsIgnoreCase("autoupdate")) {
 					Config.BOT_AUTO_UPDATE = Boolean.parseBoolean(args[1]);
