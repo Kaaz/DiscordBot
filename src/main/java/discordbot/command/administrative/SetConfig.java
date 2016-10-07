@@ -76,16 +76,17 @@ public class SetConfig extends AbstractCommand {
 				List<List<String>> data = new ArrayList<>();
 				for (String key : keys) {
 					List<String> row = new ArrayList<>();
+					String different = settings.get(key).equals(DefaultGuildSettings.getDefault(key)) ? "" : "*";
 					row.add(key);
 					row.add(settings.get(key));
-					row.add(DefaultGuildSettings.getDefault(key));
+					row.add(different + DefaultGuildSettings.getDefault(key));
 					data.add(row);
 				}
 				List<String> headers = new ArrayList<>();
 				Collections.addAll(headers, "Setting name", "Current", "Default");
 				ret += Misc.makeAsciiTable(headers,
 						data);
-				return ret;
+				return ret + Config.EOL + "\\* - means different from default";
 			} else {
 				if (args[0].equalsIgnoreCase("autoupdate")) {
 					Config.BOT_AUTO_UPDATE = Boolean.parseBoolean(args[1]);
