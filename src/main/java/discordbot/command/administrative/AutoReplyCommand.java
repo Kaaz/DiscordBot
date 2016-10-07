@@ -66,7 +66,20 @@ public class AutoReplyCommand extends AbstractCommand {
 			return Template.get("no_permission");
 		}
 		if (args.length == 0) {
-			return Template.get("command_invalid_use");
+
+			List<OReplyPattern> all = TReplyPattern.getAll();
+			List<List<String>> tbl = new ArrayList<>();
+			for (OReplyPattern replyPattern : all) {
+				List<String> row = new ArrayList<>();
+
+				row.add(replyPattern.tag);
+				row.add("" + replyPattern.pattern);
+				row.add("" + TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 500L) / 1000L, false, false));
+				row.add(replyPattern.reply.substring(Math.min(40, replyPattern.reply.length())));
+				tbl.add(row);
+			}
+			return "All Auto replies information. For details about a specific one use **ar <tag>**`" + Config.EOL +
+					Misc.makeAsciiTable(Arrays.asList("tag", "trigger", "cooldown", "response"), tbl);
 		}
 		if (args.length >= 2) {
 			if (args[1].length() < MIN_TAG_LENGTH) {
@@ -99,8 +112,6 @@ public class AutoReplyCommand extends AbstractCommand {
 						Pattern pattern = Pattern.compile(restOfArgs);
 						replyPattern.pattern = restOfArgs;
 						TReplyPattern.update(replyPattern);
-						System.out.println(restOfArgs);
-						System.out.println(pattern.pattern());
 					} catch (PatternSyntaxException exception) {
 						return Template.get("command_autoreply_regex_invalid") + Config.EOL +
 								exception.getDescription() + Config.EOL +
