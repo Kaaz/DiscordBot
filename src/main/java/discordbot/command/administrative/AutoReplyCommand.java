@@ -8,6 +8,7 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
+import discordbot.util.TimeUtil;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -19,12 +20,12 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * managing text replies for the bot
+ * managing auto replies for the bot
  */
-public class TextReplyCommand extends AbstractCommand {
+public class AutoReplyCommand extends AbstractCommand {
 	public final static int MIN_TAG_LENGTH = 2;
 
-	public TextReplyCommand(DiscordBot b) {
+	public AutoReplyCommand(DiscordBot b) {
 		super(b);
 	}
 
@@ -35,26 +36,26 @@ public class TextReplyCommand extends AbstractCommand {
 
 	@Override
 	public String getCommand() {
-		return "textreply";
+		return "autoreply";
 	}
 
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"tr <create> <tagname>      //creates tag",
-				"tr regex <tag> <value>     //edit the regex of a tag",
-				"tr response <tag> <value>  //change the response of a reply",
-				"tr tag <tag> <value>       //change the tag of a reply",
-				"tr cd <tag> <value>        //change the cooldown (millis) of a reply",
-				"tr guild <tag> <guildid>   //guild of a tag, 0 for global",
-				"tr test <tag> <text>       //test for a match",
+				"ar <create> <tagname>      //creates tag",
+				"ar regex <tag> <value>     //edit the regex of a tag",
+				"ar response <tag> <value>  //change the response of a reply",
+				"ar tag <tag> <value>       //change the tag of a reply",
+				"ar cd <tag> <value>        //change the cooldown (millis) of a reply",
+				"ar guild <tag> <guildid>   //guild of a tag, 0 for global",
+				"ar test <tag> <text>       //test for a match",
 		};
 	}
 
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"tr"
+				"ar"
 		};
 	}
 
@@ -68,7 +69,7 @@ public class TextReplyCommand extends AbstractCommand {
 		}
 		if (args.length >= 2) {
 			if (args[1].length() < MIN_TAG_LENGTH) {
-				return Template.get("command_textreply_tag_length", MIN_TAG_LENGTH);
+				return Template.get("command_autoreply_tag_length", MIN_TAG_LENGTH);
 			}
 			OReplyPattern replyPattern = TReplyPattern.findBy(args[1]);
 			if (args[0].equals("create")) {
@@ -76,12 +77,12 @@ public class TextReplyCommand extends AbstractCommand {
 					replyPattern.tag = args[1];
 					replyPattern.userId = TUser.getCachedId(author.getID());
 					TReplyPattern.insert(replyPattern);
-					return Template.get("command_textreply_created", args[1]);
+					return Template.get("command_autoreply_created", args[1]);
 				}
-				return Template.get("command_textreply_already_exists", args[1]);
+				return Template.get("command_autoreply_already_exists", args[1]);
 			}
 			if (replyPattern.id == 0) {
-				return Template.get("command_textreply_not_exists", args[1]);
+				return Template.get("command_autoreply_not_exists", args[1]);
 			}
 			String restOfArgs = "";
 			for (int i = 2; i < args.length; i++) {
@@ -100,25 +101,25 @@ public class TextReplyCommand extends AbstractCommand {
 						System.out.println(restOfArgs);
 						System.out.println(pattern.pattern());
 					} catch (PatternSyntaxException exception) {
-						return Template.get("command_textreply_regex_invalid") + Config.EOL +
+						return Template.get("command_autoreply_regex_invalid") + Config.EOL +
 								exception.getDescription() + Config.EOL +
 								Misc.makeTable(exception.getMessage());
 					}
-					return Template.get("command_textreply_regex_saved");//"Your regex is :+1:";
+					return Template.get("command_autoreply_regex_saved");//"Your regex is :+1:";
 				case "response":
 				case "reply":
 					replyPattern.reply = restOfArgs;
 					TReplyPattern.update(replyPattern);
-					return Template.get("command_textreply_response_saved");
+					return Template.get("command_autoreply_response_saved");
 				case "tag":
 					replyPattern.tag = args[2];
 					TReplyPattern.update(replyPattern);
-					return Template.get("command_textreply_tag_saved");
+					return Template.get("command_autoreply_tag_saved");
 				case "cd":
 				case "cooldown":
 					replyPattern.cooldown = Long.parseLong(args[2]);
 					TReplyPattern.update(replyPattern);
-					return Template.get("command_textreply_cooldown_saved");
+					return Template.get("command_autoreply_cooldown_saved");
 				case "test":
 					Pattern pattern = Pattern.compile(replyPattern.pattern);
 					Matcher matcher = pattern.matcher(restOfArgs);
@@ -126,7 +127,7 @@ public class TextReplyCommand extends AbstractCommand {
 //						return String.format("`%s` matches `%s`", restOfArgs, replyPattern.pattern);
 						return replyPattern.reply;
 					}
-					return Template.get("command_textreply_no_match");
+					return Template.get("command_autoreply_no_match");
 				default:
 					return Template.get("invalid_use");
 			}
@@ -134,7 +135,7 @@ public class TextReplyCommand extends AbstractCommand {
 		if (args.length == 1) {
 			OReplyPattern replyPattern = TReplyPattern.findBy(args[0]);
 			if (replyPattern.id == 0) {
-				return Template.get("command_textreply_not_exists", args[0]);
+				return Template.get("command_autoreply_not_exists", args[0]);
 			}
 			List<List<String>> tbl = new ArrayList<>();
 			tbl.add(Arrays.asList("created on ", "" + replyPattern.createdOn));
@@ -143,7 +144,7 @@ public class TextReplyCommand extends AbstractCommand {
 			tbl.add(Arrays.asList("guild", "" + replyPattern.guildId));
 			tbl.add(Arrays.asList("pattern", "" + replyPattern.pattern));
 			tbl.add(Arrays.asList("reply", "" + replyPattern.reply));
-			tbl.add(Arrays.asList("cooldown (milli)", "" + replyPattern.cooldown));
+			tbl.add(Arrays.asList("cooldown", "" + TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 500L) / 1000L, false, false)));
 			System.out.println(replyPattern.pattern);
 
 			return Misc.makeAsciiTable(Arrays.asList("Property", "Value"), tbl);
