@@ -68,7 +68,7 @@ public class GuildStatsCommand extends AbstractCommand {
 		totals += String.format("%s voice channels" + Config.EOL, voice);
 		totals += String.format("%s text channels" + Config.EOL, channels);
 		totals += String.format("%s users" + Config.EOL, users);
-		return "Active guilds: " + Misc.makeAsciiTable(header, table) + Config.EOL +
+		return "Statistics! " + (bot.isCreator(author) ? Misc.makeAsciiTable(header, table) : "") + Config.EOL +
 				totals;
 	}
 }
