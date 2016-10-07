@@ -7,6 +7,8 @@ import discordbot.db.model.OReplyPattern;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * data communication with the table `reply_pattern`
@@ -41,6 +43,21 @@ public class TReplyPattern {
 		return record;
 	}
 
+	public static List<OReplyPattern> getAll() {
+		List<OReplyPattern> list = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT id, guild_id, user_id, tag, pattern, reply, created_on, cooldown  " +
+						"FROM reply_pattern")) {
+			if (rs.next()) {
+				list.add(fillRecord(rs));
+			}
+			rs.getStatement().close();
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return list;
+	}
+
 	public static void insert(OReplyPattern r) {
 		try {
 			r.id = WebDb.get().insert(
@@ -57,7 +74,7 @@ public class TReplyPattern {
 			r.id = WebDb.get().insert(
 					"UPDATE reply_pattern SET tag = ?, pattern = ?, reply = ?, cooldown = ? " +
 							"WHERE id = ? ",
-					r.tag, r.pattern, r.reply, r.cooldown);
+					r.tag, r.pattern, r.reply, r.cooldown, r.id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

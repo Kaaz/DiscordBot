@@ -3,10 +3,7 @@ package discordbot.main;
 import discordbot.core.AbstractEventListener;
 import discordbot.db.model.OMusic;
 import discordbot.guildsettings.DefaultGuildSettings;
-import discordbot.guildsettings.defaults.SettingActiveChannels;
-import discordbot.guildsettings.defaults.SettingBotChannel;
-import discordbot.guildsettings.defaults.SettingEnableChatBot;
-import discordbot.guildsettings.defaults.SettingMusicChannel;
+import discordbot.guildsettings.defaults.*;
 import discordbot.handler.*;
 import discordbot.role.RoleRankings;
 import discordbot.util.DisUtil;
@@ -38,6 +35,7 @@ public class DiscordBot {
 	public ChatBotHandler chatBotHandler = null;
 	public OutgoingContentHandler out = null;
 	public boolean statusLocked = false;
+	private AutoReplyHandler autoReplyhandler;
 	private GameHandler gameHandler = null;
 	private boolean isReady = false;
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
@@ -160,6 +158,7 @@ public class DiscordBot {
 		defaultChannels = new ConcurrentHashMap<>();
 		musicChannels = new ConcurrentHashMap<>();
 		chatBotHandler = new ChatBotHandler();
+		autoReplyhandler.reload();
 	}
 
 	public void reloadGuild(IGuild guild) {
@@ -188,6 +187,7 @@ public class DiscordBot {
 		Template.setBot(this);
 		out = new OutgoingContentHandler(this);
 		timer = new Timer();
+		autoReplyhandler = new AutoReplyHandler(this);
 	}
 
 	public String getUserName() {
@@ -246,9 +246,18 @@ public class DiscordBot {
 		}
 		if (gameHandler.isGameInput(channel, author, message.getContent().toLowerCase())) {
 			gameHandler.execute(author, channel, message.getContent());
-		} else if (commands.isCommand(channel, message.getContent())) {
+			return;
+		}
+		if (commands.isCommand(channel, message.getContent())) {
 			commands.process(channel, author, message.getContent());
-		} else if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
+			return;
+		}
+		if (GuildSettings.getFor(channel, SettingAutoReplyModule.class).equals("true")) {
+			if (autoReplyhandler.autoReplied(message)) {
+				return;
+			}
+		}
+		if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
 				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class)) &&
 				channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			this.out.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
