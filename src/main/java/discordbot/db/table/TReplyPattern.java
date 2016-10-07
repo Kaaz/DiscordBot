@@ -48,7 +48,7 @@ public class TReplyPattern {
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT id, guild_id, user_id, tag, pattern, reply, created_on, cooldown  " +
 						"FROM reply_pattern")) {
-			if (rs.next()) {
+			while (rs.next()) {
 				list.add(fillRecord(rs));
 			}
 			rs.getStatement().close();

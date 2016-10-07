@@ -1,5 +1,6 @@
 package discordbot.command.administrative;
 
+import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OReplyPattern;
 import discordbot.db.table.TReplyPattern;
@@ -61,7 +62,7 @@ public class AutoReplyCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (!bot.isCreator(author)) {
+		if (!bot.isAdmin(channel, author)) {
 			return Template.get("no_permission");
 		}
 		if (args.length == 0) {
@@ -108,7 +109,7 @@ public class AutoReplyCommand extends AbstractCommand {
 					return Template.get("command_autoreply_regex_saved");//"Your regex is :+1:";
 				case "response":
 				case "reply":
-					replyPattern.reply = restOfArgs;
+					replyPattern.reply = EmojiParser.parseToAliases(restOfArgs);
 					TReplyPattern.update(replyPattern);
 					return Template.get("command_autoreply_response_saved");
 				case "tag":
@@ -145,9 +146,7 @@ public class AutoReplyCommand extends AbstractCommand {
 			tbl.add(Arrays.asList("pattern", "" + replyPattern.pattern));
 			tbl.add(Arrays.asList("reply", "" + replyPattern.reply));
 			tbl.add(Arrays.asList("cooldown", "" + TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 500L) / 1000L, false, false)));
-			System.out.println(replyPattern.pattern);
-
-			return Misc.makeAsciiTable(Arrays.asList("Property", "Value"), tbl);
+			return "Auto reply information for `" + args[0] + "`:" + Misc.makeAsciiTable(Arrays.asList("Property", "Value"), tbl);
 		}
 		return Template.get("invalid_use");
 	}
