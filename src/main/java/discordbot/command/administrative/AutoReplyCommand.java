@@ -52,6 +52,7 @@ public class AutoReplyCommand extends AbstractCommand {
 				"ar cd <tag> <value>        //change the cooldown (millis) of a reply",
 				"ar guild <tag> <guildid>   //guild of a tag, 0 for global",
 				"ar test <tag> <text>       //test for a match",
+				"ar delete <tag>            //deletes a tag",
 		};
 	}
 
@@ -76,11 +77,11 @@ public class AutoReplyCommand extends AbstractCommand {
 
 				row.add(replyPattern.tag);
 				row.add(replyPattern.pattern);
-				row.add(TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 500L) / 1000L, false, false));
+				row.add(TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 1000L) / 1000L, false, false));
 				row.add(replyPattern.reply.substring(0, Math.min(40, replyPattern.reply.length())));
 				tbl.add(row);
 			}
-			return "All Auto replies information. For details about a specific one use **ar <tag>**`" + Config.EOL +
+			return "The following All Auto replies information. For details about a specific one use **`ar <tag>`**" + Config.EOL +
 					Misc.makeAsciiTable(Arrays.asList("tag", "trigger", "cooldown", "response"), tbl);
 		}
 		if (args.length >= 2) {
@@ -108,10 +109,17 @@ public class AutoReplyCommand extends AbstractCommand {
 				}
 			}
 			switch (args[0].toLowerCase()) {
+				case "delete":
+				case "remove":
+				case "del":
+					if (bot.isCreator(author) || (bot.isAdmin(channel, author) && TServers.getCachedId(channel.getGuild().getID()) == replyPattern.id))
+						TReplyPattern.delete(replyPattern);
+					bot.loadConfiguration();
+					return Template.get("command_autoreply_deleted", args[1]);
 				case "regex":
 				case "pattern":
 					try {
-						Pattern pattern = Pattern.compile(restOfArgs);
+						Pattern pattern = Pattern.compile(restOfArgs);//used to see if a patterns is valid, invalid = exception ;)
 						replyPattern.pattern = restOfArgs;
 						TReplyPattern.update(replyPattern);
 					} catch (PatternSyntaxException exception) {

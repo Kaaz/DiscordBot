@@ -79,4 +79,13 @@ public class TReplyPattern {
 			e.printStackTrace();
 		}
 	}
+
+	public static void delete(OReplyPattern r) {
+		try {
+			WebDb.get().query(
+					"DELETE FROM reply_pattern WHERE id = ? ", r.id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

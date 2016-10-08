@@ -22,6 +22,7 @@ public class AutoReplyHandler {
 
 	public AutoReplyHandler(DiscordBot bot) {
 		this.bot = bot;
+		cooldowns = new ConcurrentHashMap<>();
 		reload();
 	}
 
@@ -69,7 +70,6 @@ public class AutoReplyHandler {
 	public void reload() {
 		List<OReplyPattern> all = TReplyPattern.getAll();
 		replies = new AutoReply[all.size()];
-		cooldowns = new ConcurrentHashMap<>();
 		int index = 0;
 		for (OReplyPattern reply : all) {
 			AutoReply ar = new AutoReply();
