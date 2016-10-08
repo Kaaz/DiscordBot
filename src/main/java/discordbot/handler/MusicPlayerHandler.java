@@ -160,11 +160,11 @@ public class MusicPlayerHandler {
 				music.lastplaydate = currentSongStartTimeInSeconds;
 				TMusic.update(music);
 				if (music.artist != null && music.title != null && !music.artist.trim().isEmpty() && !music.title.trim().isEmpty()) {
-					msg = "Now playing " + music.artist + " - " + music.title;
+					msg = ":notes: " + music.artist + " - " + music.title;
 				} else if (music.youtubeTitle != null && !music.youtubeTitle.isEmpty()) {
-					msg = "Now playing " + music.youtubeTitle + " ** need details about song! ** check out **current**";
+					msg = ":notes: " + music.youtubeTitle + " ** need details about song! ** check out **current**";
 				} else {
-					msg = "plz send help:: " + f.getName();
+					msg = ":floppy_disk: :thinking: Something is wrong with this file `" + f.getName() + "`";
 				}
 			}
 		}

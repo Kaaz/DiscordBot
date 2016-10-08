@@ -71,7 +71,7 @@ public class GuildStatsCommand extends AbstractCommand {
 		if (activeVoice > 0) {
 			totals += String.format("And I'm playing music on %s guilds" + Config.EOL, activeVoice);
 		}
-		return "Statistics! " + (bot.isCreator(author) ? Misc.makeAsciiTable(header, table) : "") + Config.EOL +
+		return "Statistics! " + (bot.isCreator(author) && args.length == 1 ? Misc.makeAsciiTable(header, table) : "") + Config.EOL +
 				totals;
 	}
 }
