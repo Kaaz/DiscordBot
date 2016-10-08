@@ -50,7 +50,7 @@ public class GuildStatsCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		int channels = 0, voice = 0, users = 0;
+		int channels = 0, voice = 0, users = 0, activeVoice = 0;
 		String totals = "";
 		List<IGuild> guilds = bot.client.getGuilds();
 		List<String> header = Arrays.asList("discord-id", "name");
@@ -68,6 +68,7 @@ public class GuildStatsCommand extends AbstractCommand {
 		totals += String.format("%s voice channels" + Config.EOL, voice);
 		totals += String.format("%s text channels" + Config.EOL, channels);
 		totals += String.format("%s users" + Config.EOL, users);
+		totals += String.format("And I'm playing music on  %s guilds" + Config.EOL, bot.client.getConnectedVoiceChannels().size());
 		return "Statistics! " + (bot.isCreator(author) ? Misc.makeAsciiTable(header, table) : "") + Config.EOL +
 				totals;
 	}
