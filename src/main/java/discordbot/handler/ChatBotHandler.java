@@ -5,6 +5,8 @@ import com.google.code.chatterbotapi.ChatterBotFactory;
 import com.google.code.chatterbotapi.ChatterBotSession;
 import com.google.code.chatterbotapi.ChatterBotType;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 public class ChatBotHandler {
@@ -27,7 +29,8 @@ public class ChatBotHandler {
 				if (botsession == null) {
 					botsession = getSession();
 				}
-				return botsession.think(input);
+
+				return new String(botsession.think(input).getBytes("UTF-8"),"UTF-8");
 			} catch (Exception e) {
 				failedAttempts++;
 			}
