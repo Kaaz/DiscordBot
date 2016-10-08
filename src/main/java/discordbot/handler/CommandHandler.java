@@ -9,7 +9,7 @@ import discordbot.db.WebDb;
 import discordbot.db.model.OCommandCooldown;
 import discordbot.db.table.TCommandCooldown;
 import discordbot.db.table.TCommandLog;
-import discordbot.db.table.TServers;
+import discordbot.db.table.TGuild;
 import discordbot.db.table.TUser;
 import discordbot.guildsettings.defaults.*;
 import discordbot.main.Config;
@@ -93,7 +93,7 @@ public class CommandHandler {
 						usedArguments.append(arg).append(" ");
 					}
 					if (!channel.isPrivate()) {
-						TCommandLog.saveLog(TUser.getCachedId(author.getID()), TServers.getCachedId(channel.getGuild().getID()), input[0], EmojiParser.parseToAliases(usedArguments.toString()).trim());
+						TCommandLog.saveLog(TUser.getCachedId(author.getID()), TGuild.getCachedId(channel.getGuild().getID()), input[0], EmojiParser.parseToAliases(usedArguments.toString()).trim());
 					}
 				}
 			} else if (cooldown > 0) {

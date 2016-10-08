@@ -2,7 +2,7 @@ package discordbot.db.table;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
-import discordbot.db.model.OServer;
+import discordbot.db.model.OGuild;
 
 import java.sql.ResultSet;
 import java.util.Map;
@@ -12,23 +12,23 @@ import java.util.concurrent.ConcurrentHashMap;
  * data communication with the table `servers`
  * Created on 10-8-2016
  */
-public class TServers {
-	private static Map<String, Integer> servercache = new ConcurrentHashMap<>();
+public class TGuild {
+	private static Map<String, Integer> guildIdCache = new ConcurrentHashMap<>();
 
 	public static int getCachedId(String discordId) {
-		if (!servercache.containsKey(discordId)) {
-			OServer server = findBy(discordId);
+		if (!guildIdCache.containsKey(discordId)) {
+			OGuild server = findBy(discordId);
 			if (server.id == 0) {
 				server.discord_id = discordId;
 				insert(server);
 			}
-			servercache.put(discordId, server.id);
+			guildIdCache.put(discordId, server.id);
 		}
-		return servercache.get(discordId);
+		return guildIdCache.get(discordId);
 	}
 
-	public static OServer findBy(String discordId) {
-		OServer s = new OServer();
+	public static OGuild findBy(String discordId) {
+		OGuild s = new OGuild();
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT id, discord_id, name, owner,active  " +
 						"FROM servers " +
@@ -47,7 +47,7 @@ public class TServers {
 		return s;
 	}
 
-	public static void update(OServer record) {
+	public static void update(OGuild record) {
 		if (record.id == 0) {
 			insert(record);
 			return;
@@ -63,7 +63,7 @@ public class TServers {
 		}
 	}
 
-	public static void insert(OServer record) {
+	public static void insert(OGuild record) {
 		try {
 			record.id = WebDb.get().insert(
 					"INSERT INTO servers(discord_id, name, owner,active) " +

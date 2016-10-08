@@ -4,7 +4,7 @@ import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OTag;
-import discordbot.db.table.TServers;
+import discordbot.db.table.TGuild;
 import discordbot.db.table.TTag;
 import discordbot.db.table.TUser;
 import discordbot.handler.Template;
@@ -100,7 +100,7 @@ public class TagCommand extends AbstractCommand {
 			output = output.trim();
 			if (tag.id == 0) {
 				tag.tagname = args[0];
-				tag.guildId = TServers.getCachedId(channel.getGuild().getID());
+				tag.guildId = TGuild.getCachedId(channel.getGuild().getID());
 				tag.userId = TUser.getCachedId(author.getID());
 				tag.created = new Timestamp(System.currentTimeMillis());
 			}

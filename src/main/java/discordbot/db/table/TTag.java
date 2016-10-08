@@ -12,7 +12,7 @@ import java.util.List;
 public class TTag {
 
 	public static OTag findBy(String discordGuildId, String tagname) {
-		return findBy(TServers.getCachedId(discordGuildId), tagname);
+		return findBy(TGuild.getCachedId(discordGuildId), tagname);
 	}
 
 	public static OTag findBy(int serverId, String tagName) {
@@ -32,7 +32,7 @@ public class TTag {
 	}
 
 	public static List<OTag> getTagsFor(String guildDiscordId, String userDiscordId) {
-		return getTagsFor(TServers.getCachedId(guildDiscordId), TUser.getCachedId(userDiscordId));
+		return getTagsFor(TGuild.getCachedId(guildDiscordId), TUser.getCachedId(userDiscordId));
 	}
 
 	public static List<OTag> getTagsFor(int guildId, int userId) {
@@ -53,7 +53,7 @@ public class TTag {
 	}
 
 	public static List<OTag> getTagsFor(String guildDiscordId) {
-		return getTagsFor(TServers.getCachedId(guildDiscordId));
+		return getTagsFor(TGuild.getCachedId(guildDiscordId));
 	}
 
 	public static List<OTag> getTagsFor(int guildId) {

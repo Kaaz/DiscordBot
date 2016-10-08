@@ -1,7 +1,7 @@
 package discordbot.handler;
 
 import discordbot.db.WebDb;
-import discordbot.db.table.TServers;
+import discordbot.db.table.TGuild;
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.DefaultGuildSettings;
 import sx.blah.discord.handle.obj.IChannel;
@@ -24,7 +24,7 @@ public class GuildSettings {
 	private GuildSettings(IGuild guild) {
 		this.settings = new ConcurrentHashMap<>();
 		settingInstance.put(guild, this);
-		this.id = TServers.findBy(guild.getID()).id;
+		this.id = TGuild.findBy(guild.getID()).id;
 		loadSettings();
 	}
 

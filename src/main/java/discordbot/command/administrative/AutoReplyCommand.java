@@ -3,9 +3,9 @@ package discordbot.command.administrative;
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OReplyPattern;
-import discordbot.db.model.OServer;
+import discordbot.db.model.OGuild;
 import discordbot.db.table.TReplyPattern;
-import discordbot.db.table.TServers;
+import discordbot.db.table.TGuild;
 import discordbot.db.table.TUser;
 import discordbot.handler.Template;
 import discordbot.main.Config;
@@ -93,7 +93,7 @@ public class AutoReplyCommand extends AbstractCommand {
 				if (replyPattern.id == 0) {
 					replyPattern.tag = args[1];
 					replyPattern.userId = TUser.getCachedId(author.getID());
-					replyPattern.guildId = bot.isCreator(author) ? 0 : TServers.getCachedId(channel.getGuild().getID());
+					replyPattern.guildId = bot.isCreator(author) ? 0 : TGuild.getCachedId(channel.getGuild().getID());
 					TReplyPattern.insert(replyPattern);
 					return Template.get("command_autoreply_created", args[1]);
 				}
@@ -113,7 +113,7 @@ public class AutoReplyCommand extends AbstractCommand {
 				case "delete":
 				case "remove":
 				case "del":
-					if (bot.isCreator(author) || (bot.isAdmin(channel, author) && TServers.getCachedId(channel.getGuild().getID()) == replyPattern.id))
+					if (bot.isCreator(author) || (bot.isAdmin(channel, author) && TGuild.getCachedId(channel.getGuild().getID()) == replyPattern.id))
 						TReplyPattern.delete(replyPattern);
 					bot.loadConfiguration();
 					return Template.get("command_autoreply_deleted", args[1]);
@@ -135,7 +135,7 @@ public class AutoReplyCommand extends AbstractCommand {
 						return Template.get("no_permission");
 					}
 					if (!args[2].equals("0")) {
-						OServer server = TServers.findBy(args[2]);
+						OGuild server = TGuild.findBy(args[2]);
 						if (server.id == 0) {
 							return Template.get("command_autoreply_guild_invalid", args[2]);
 						}

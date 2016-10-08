@@ -2,7 +2,7 @@ package discordbot.handler;
 
 import discordbot.db.model.OReplyPattern;
 import discordbot.db.table.TReplyPattern;
-import discordbot.db.table.TServers;
+import discordbot.db.table.TGuild;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IMessage;
 
@@ -31,7 +31,7 @@ public class AutoReplyHandler {
 			return false;
 		}
 		String guildId = message.getGuild().getID();
-		int internalGuildId = TServers.getCachedId(guildId);
+		int internalGuildId = TGuild.getCachedId(guildId);
 		Long now = System.currentTimeMillis();
 		for (int index = 0; index < replies.length; index++) {
 			if (replies[index].guildId == 0 || replies[index].guildId == internalGuildId) {

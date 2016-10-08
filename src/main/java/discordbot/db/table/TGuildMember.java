@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class TGuildMember {
 
 	public static OGuildMember findBy(String guildDiscordId, String userDiscordId) {
-		return findBy(TServers.getCachedId(guildDiscordId), TUser.getCachedId(userDiscordId));
+		return findBy(TGuild.getCachedId(guildDiscordId), TUser.getCachedId(userDiscordId));
 	}
 
 	public static OGuildMember findBy(int guildId, int userId) {

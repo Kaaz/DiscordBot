@@ -6,7 +6,7 @@ import discordbot.db.model.OService;
 import discordbot.db.model.OSubscription;
 import discordbot.db.model.QActiveSubscriptions;
 import discordbot.db.table.TChannels;
-import discordbot.db.table.TServers;
+import discordbot.db.table.TGuild;
 import discordbot.db.table.TServices;
 import discordbot.db.table.TSubscriptions;
 import discordbot.handler.Template;
@@ -88,7 +88,7 @@ public class Subscribe extends AbstractCommand {
 				if (service.id == 0) {
 					return Template.get("command_subscribe_invalid_service");
 				}
-				OSubscription subscription = TSubscriptions.findBy(TServers.getCachedId(channel.getGuild().getID()), TChannels.getCachedId(channel.getID(), channel.getGuild().getID()), service.id);
+				OSubscription subscription = TSubscriptions.findBy(TGuild.getCachedId(channel.getGuild().getID()), TChannels.getCachedId(channel.getID(), channel.getGuild().getID()), service.id);
 				if (subscription.subscribed == 1) {
 					subscription.subscribed = 0;
 					TSubscriptions.insertOrUpdate(subscription);
@@ -119,11 +119,11 @@ public class Subscribe extends AbstractCommand {
 		if (service.id == 0) {
 			return Template.get("command_subscribe_invalid_service");
 		}
-		OSubscription subscription = TSubscriptions.findBy(TServers.getCachedId(channel.getGuild().getID()), TChannels.getCachedId(channel.getID(), channel.getGuild().getID()), service.id);
+		OSubscription subscription = TSubscriptions.findBy(TGuild.getCachedId(channel.getGuild().getID()), TChannels.getCachedId(channel.getID(), channel.getGuild().getID()), service.id);
 		if (subscription.subscribed == 0) {
 			subscription.subscribed = 1;
 			subscription.channelId = TChannels.getCachedId(channel.getID(), channel.getGuild().getID());
-			subscription.serverId = TServers.getCachedId(channel.getGuild().getID());
+			subscription.serverId = TGuild.getCachedId(channel.getGuild().getID());
 			subscription.serviceId = service.id;
 			TSubscriptions.insertOrUpdate(subscription);
 			return Template.get("command_subscribe_success");

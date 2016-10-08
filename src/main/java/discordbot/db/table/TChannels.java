@@ -5,6 +5,7 @@ import discordbot.db.WebDb;
 import discordbot.db.model.OChannel;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,7 +17,7 @@ public class TChannels {
 	private static Map<String, Integer> channelCache = new ConcurrentHashMap<>();
 
 	public static int getCachedId(String discordId, String serverId) {
-		return getCachedId(discordId, TServers.getCachedId(serverId));
+		return getCachedId(discordId, TGuild.getCachedId(serverId));
 	}
 
 	public static int getCachedId(String discordId, int serverId) {
@@ -58,15 +59,21 @@ public class TChannels {
 						"FROM channels " +
 						"WHERE id = ? ", id)) {
 			if (rs.next()) {
-				s.id = rs.getInt("id");
-				s.server_id = rs.getInt("server_id");
-				s.discord_id = rs.getString("discord_id");
-				s.name = rs.getString("name");
+				s = fillRecord(rs);
 			}
 			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}
+		return s;
+	}
+
+	private static OChannel fillRecord(ResultSet rs) throws SQLException {
+		OChannel s = new OChannel();
+		s.id = rs.getInt("id");
+		s.server_id = rs.getInt("server_id");
+		s.discord_id = rs.getString("discord_id");
+		s.name = rs.getString("name");
 		return s;
 	}
 
