@@ -6,6 +6,7 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
+import discordbot.guildsettings.defaults.SettingMusicChannelTitle;
 import discordbot.guildsettings.defaults.SettingMusicPlayingMessage;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -165,6 +166,18 @@ public class MusicPlayerHandler {
 				} else {
 					msg = "plz send help:: " + f.getName();
 				}
+			}
+		}
+		if (GuildSettings.get(guild).getOrDefault(SettingMusicChannelTitle.class).equals("true")) {
+			try {
+				bot.getMusicChannel(guild).changeTopic(msg);
+			} catch (RateLimitException | DiscordException e) {
+				e.printStackTrace();
+				bot.out.sendErrorToMe(e);
+			} catch (MissingPermissionsException e) {
+				bot.out.sendMessage(bot.getMusicChannel(guild), "I don't have permission to change the topic of this channel :(" + Config.EOL +
+						" I'm disabling `music_channel_title` option for now. " + Config.EOL + e.getMessage());
+				GuildSettings.get(guild).set("music_channel_title", "false");
 			}
 		}
 		if (!GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class).equals("off")) {
