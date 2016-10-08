@@ -50,7 +50,7 @@ public class GuildStatsCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		int channels = 0, voice = 0, users = 0, activeVoice = 0;
+		int channels = 0, voice = 0, users = 0;
 		String totals = "";
 		List<IGuild> guilds = bot.client.getGuilds();
 		List<String> header = Arrays.asList("discord-id", "name");

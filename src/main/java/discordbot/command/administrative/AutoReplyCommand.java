@@ -93,6 +93,7 @@ public class AutoReplyCommand extends AbstractCommand {
 				if (replyPattern.id == 0) {
 					replyPattern.tag = args[1];
 					replyPattern.userId = TUser.getCachedId(author.getID());
+					replyPattern.guildId = bot.isCreator(author) ? 0 : TServers.getCachedId(channel.getGuild().getID());
 					TReplyPattern.insert(replyPattern);
 					return Template.get("command_autoreply_created", args[1]);
 				}
@@ -130,6 +131,9 @@ public class AutoReplyCommand extends AbstractCommand {
 					return Template.get("command_autoreply_regex_saved");
 				case "guild":
 				case "gid":
+					if (!bot.isCreator(author)) {
+						return Template.get("no_permission");
+					}
 					if (!args[2].equals("0")) {
 						OServer server = TServers.findBy(args[2]);
 						if (server.id == 0) {
