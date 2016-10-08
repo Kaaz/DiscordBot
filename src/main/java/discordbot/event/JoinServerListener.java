@@ -5,10 +5,15 @@ import discordbot.db.model.OServer;
 import discordbot.db.model.OUser;
 import discordbot.db.table.TServers;
 import discordbot.db.table.TUser;
+import discordbot.guildsettings.DefaultGuildSettings;
+import discordbot.guildsettings.defaults.SettingCommandPrefix;
+import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.impl.events.GuildCreateEvent;
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Whenever the bot joins a discord server
@@ -37,9 +42,21 @@ public class JoinServerListener extends AbstractEventListener<GuildCreateEvent> 
 		server.discord_id = guild.getID();
 		server.name = guild.getName();
 		server.owner = user.id;
+		String cmdPre = DefaultGuildSettings.getDefault(SettingCommandPrefix.class);
 		if (server.active == 0) {
 			discordBot.out.sendMessageToCreator(String.format("[**event**] [**guild**] I have just **joined** **%s** (discord-id = %s)", guild.getName(), guild.getID()));
 			server.active = 1;
+
+			String message = "Thanks for adding me to your guild!" + Config.EOL +
+					"To see what I can do you can type the command `" + cmdPre + "`." + Config.EOL +
+					"Most of my features are opt-in, which means that you'll have to enable them first. Admins can use `" + cmdPre + "config` to change my settings." + Config.EOL +
+					"If you need help or would like to give feedback, feel free to let me know on either !discord or !github";
+			IChannel channel = guild.getChannels().get(0);
+			if (channel != null && channel.getModifiedPermissions(discordBot.client.getOurUser()).contains(Permissions.SEND_MESSAGES)) {
+				discordBot.out.sendMessage(channel, message);
+			} else {
+				discordBot.out.sendPrivateMessage(owner, message);
+			}
 		}
 		TServers.update(server);
 		DiscordBot.LOGGER.info("[event] JOINED SERVER! " + guild.getName());
