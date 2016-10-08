@@ -48,12 +48,12 @@ public class LeaveGuildCommand extends AbstractCommand {
 			return Template.get("no_permission");
 		}
 		if (bot.isCreator(author) && args.length >= 1 && args[0].matches("^\\d{10,}$")) {
-			guild = bot.client.getGuildByID(args[1]);
+			guild = bot.client.getGuildByID(args[0]);
 			if (guild == null) {
 				return Template.get("cant_find_guild");
 			}
 			if (args.length == 1) {
-				return "are you sure? :sob: type **" + DisUtil.getCommandPrefix(channel) + "leaveguild confirm** to leave";
+				return "are you sure? :sob: type **`" + DisUtil.getCommandPrefix(channel) + "leaveguild " + args[0] + " confirm`** to leave _" + guild.getName() + "_";
 			}
 			if (args[1].equals("confirm")) {
 				shouldLeave = true;
@@ -67,8 +67,9 @@ public class LeaveGuildCommand extends AbstractCommand {
 		}
 		if (shouldLeave) {
 			try {
-				bot.out.sendMessage(channel, "This is goodbye :wave:");
-				channel.getGuild().leaveGuild();
+				bot.out.sendMessage(bot.getDefaultChannel(guild), "This is goodbye :wave:");
+				guild.leaveGuild();
+				return ":+1:";
 			} catch (DiscordException | RateLimitException e) {
 				e.printStackTrace();
 			}

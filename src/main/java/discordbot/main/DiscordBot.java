@@ -107,7 +107,14 @@ public class DiscordBot {
 				}
 			}
 			if (!foundChannel) {
-				defaultChannels.put(guild, channelList.get(0));
+				IChannel target = null;
+				for (IChannel channel : guild.getChannels()) {
+					if (channel.getModifiedPermissions(client.getOurUser()).contains(Permissions.SEND_MESSAGES)) {
+						target = channel;
+						break;
+					}
+				}
+				defaultChannels.put(guild, target);
 			}
 		}
 		return defaultChannels.get(guild);
