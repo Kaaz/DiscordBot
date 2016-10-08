@@ -42,10 +42,10 @@ public class GuildJoinListener extends AbstractEventListener<GuildCreateEvent> {
 		server.discord_id = guild.getID();
 		server.name = guild.getName();
 		server.owner = user.id;
-		String cmdPre = GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
 		if (server.id == 0) {
 			TGuild.insert(server);
 		}
+		String cmdPre = GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
 		if (server.active != 1) {
 			discordBot.out.sendMessageToCreator(String.format("[**event**] [**guild**] I have just **joined** **%s** (discord-id = %s)", guild.getName(), guild.getID()));
 
