@@ -56,6 +56,10 @@ public class Config {
 	@ConfigurationOption
 	public static String YOUTUBEDL_BIN = "H:/music/bin/";
 
+	//folder with the binary files required for youtubedl
+	@ConfigurationOption
+	public static String SOX_LOCATION = "/bin/sox";
+
 	//directory where all the music is stored
 	@ConfigurationOption
 	public static String MUSIC_DIRECTORY = "H:/music/";
@@ -106,6 +110,9 @@ public class Config {
 	//Use trello integration
 	@ConfigurationOption
 	public static boolean TRELLO_ACTIVE = false;
+
+	@ConfigurationOption
+	public static String GOOGLE_API_KEY = "google-api-key-here";
 
 	//Use trello integration
 	@ConfigurationOption

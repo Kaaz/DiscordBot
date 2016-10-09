@@ -3,10 +3,7 @@ package discordbot.util;
 import discordbot.main.Config;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
@@ -90,7 +87,7 @@ public class YTUtil {
 		infoArgs.add("--audio-format");
 		infoArgs.add("mp3");
 		infoArgs.add("--output");
-		infoArgs.add(Config.MUSIC_DIRECTORY + videocode + ".%(ext)s");
+		infoArgs.add(Config.MUSIC_DIRECTORY + "/tmp/" + videocode + ".%(ext)s");
 		infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
 		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
 		builder.redirectErrorStream(true);
@@ -110,6 +107,46 @@ public class YTUtil {
 			return false;
 		}
 		return true;
+	}
+
+	public static String getOutputPath(String videoCode) {
+		return Config.MUSIC_DIRECTORY + videoCode + ".wav";
+	}
+
+	public static boolean resampleToWav(String videoCode) {
+		File f = new File(Config.MUSIC_DIRECTORY + "/tmp/" + videoCode + ".mp3");
+		String outputPath = getOutputPath(videoCode);
+		if (!f.exists()) {
+			return false;
+		}
+		List<String> infoArgs = new LinkedList<>();
+		infoArgs.add("sox");
+		infoArgs.add(f.getAbsolutePath());
+		infoArgs.add("-b");
+		infoArgs.add("16");
+		infoArgs.add(outputPath);
+		infoArgs.add("rate");
+		infoArgs.add("48000");
+		infoArgs.add("channels");
+		infoArgs.add("2");
+		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
+		builder.redirectErrorStream(true);
+		Process process = null;
+		try {
+			process = builder.start();
+			InputStream stdout = process.getInputStream();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
+			String line = "";
+			while ((line = reader.readLine()) != null) {
+				System.out.println("SAMPLER: " + line);
+			}
+			process.waitFor();
+			process.destroy();
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return false;
 	}
 
 	public static boolean downloadPlayList(String playlist) {

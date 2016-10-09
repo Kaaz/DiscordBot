@@ -1,8 +1,5 @@
 package discordbot.handler;
 
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.Mp3File;
-import com.mpatric.mp3agic.UnsupportedTagException;
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
@@ -46,7 +43,7 @@ public class MusicPlayerHandler {
 		playerInstances.put(guild, this);
 	}
 
-	public static MusicPlayerHandler getAudioPlayerForGuild(IGuild guild, DiscordBot bot) {
+	public static MusicPlayerHandler getFor(IGuild guild, DiscordBot bot) {
 		if (playerInstances.containsKey(guild)) {
 			return playerInstances.get(guild);
 		} else {
@@ -186,13 +183,9 @@ public class MusicPlayerHandler {
 	}
 
 	private void getMp3Details(File f) {
-		try {
-			Mp3File mp3file = new Mp3File(f);
-			currentSongLength = mp3file.getLengthInSeconds();
-			mp3file = null;
-		} catch (IOException | InvalidDataException | UnsupportedTagException e) {
-			e.printStackTrace();
-		}
+//			Mp3File mp3file = new Mp3File(f);
+		currentSongLength = 60;//mp3file.getLengthInSeconds();
+//			mp3file = null;
 	}
 
 	/**
@@ -224,7 +217,7 @@ public class MusicPlayerHandler {
 		return track;
 	}
 
-	private boolean addToQueue(String filename) {
+	public boolean addToQueue(String filename) {
 		File f = new File(filename);
 		if (!f.exists() || !f.getName().endsWith(".mp3")) {//check in config directory
 			f = new File(Config.MUSIC_DIRECTORY + filename);

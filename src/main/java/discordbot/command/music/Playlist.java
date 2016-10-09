@@ -57,7 +57,7 @@ public class Playlist extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (args.length == 0) {
-			MusicPlayerHandler player = MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot);
+			MusicPlayerHandler player = MusicPlayerHandler.getFor(channel.getGuild(), bot);
 			List<OMusic> queue = player.getQueue();
 			String ret = "Music Queue" + Config.EOL;
 			if (queue.size() == 0) {
@@ -85,7 +85,7 @@ public class Playlist extends AbstractCommand {
 				return Template.get("music_not_played_anything_yet");
 			}
 		} else if (args[0].equals("clear")) {
-			MusicPlayerHandler player = MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot);
+			MusicPlayerHandler player = MusicPlayerHandler.getFor(channel.getGuild(), bot);
 			player.clearPlayList();
 			return Template.get("music_playlist_cleared");
 		}

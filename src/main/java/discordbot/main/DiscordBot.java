@@ -17,9 +17,6 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
 import sx.blah.discord.util.audio.AudioPlayer;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -214,17 +211,11 @@ public class DiscordBot {
 	}
 
 	public void addSongToQueue(String filename, IGuild guild) {
-		File file = new File(Config.MUSIC_DIRECTORY + filename); // Get file
-		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild);
-		try {
-			player.queue(file);
-		} catch (IOException | UnsupportedAudioFileException e) {
-			e.printStackTrace();
-		}
+		MusicPlayerHandler.getFor(guild, this).addToQueue(filename);
 	}
 
 	public void skipCurrentSong(IGuild guild) {
-		MusicPlayerHandler.getAudioPlayerForGuild(guild, this).skipSong();
+		MusicPlayerHandler.getFor(guild, this).skipSong();
 	}
 
 	public void setVolume(IGuild guild, float vol) {
@@ -277,26 +268,26 @@ public class DiscordBot {
 	}
 
 	public void trackEnded(AudioPlayer.Track oldTrack, Optional<AudioPlayer.Track> nextTrack, IGuild guild) {
-		MusicPlayerHandler.getAudioPlayerForGuild(guild, this).onTrackEnded(oldTrack, nextTrack);
+		MusicPlayerHandler.getFor(guild, this).onTrackEnded(oldTrack, nextTrack);
 	}
 
 	public void trackStarted(AudioPlayer.Track track, IGuild guild) {
-		MusicPlayerHandler.getAudioPlayerForGuild(guild, this).onTrackStarted(track);
+		MusicPlayerHandler.getFor(guild, this).onTrackStarted(track);
 	}
 
 	public void stopMusic(IGuild guild) {
-		MusicPlayerHandler.getAudioPlayerForGuild(guild, this).stopMusic();
+		MusicPlayerHandler.getFor(guild, this).stopMusic();
 	}
 
 	public OMusic getCurrentlyPlayingSong(IGuild guild) {
-		return MusicPlayerHandler.getAudioPlayerForGuild(guild, this).getCurrentlyPlaying();
+		return MusicPlayerHandler.getFor(guild, this).getCurrentlyPlaying();
 	}
 
 	public List<IUser> getCurrentlyListening(IGuild guild) {
-		return MusicPlayerHandler.getAudioPlayerForGuild(guild, this).getUsersInVoiceChannel();
+		return MusicPlayerHandler.getFor(guild, this).getUsersInVoiceChannel();
 	}
 
 	public boolean playRandomSong(IGuild guild) {
-		return MusicPlayerHandler.getAudioPlayerForGuild(guild, this).playRandomSong();
+		return MusicPlayerHandler.getFor(guild, this).playRandomSong();
 	}
 }

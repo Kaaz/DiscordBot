@@ -1,19 +1,16 @@
 package discordbot.command.music;
 
-import com.google.common.io.Files;
-import com.google.common.primitives.Ints;
+import com.google.common.base.Joiner;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import discordbot.util.SCUtil;
+import discordbot.util.YTSearch;
 import discordbot.util.YTUtil;
-import discordbot.util.obj.SCFile;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
@@ -22,15 +19,6 @@ import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * !play
@@ -38,13 +26,11 @@ import java.util.regex.Pattern;
  * yea.. play is probably not a good name at the moment
  */
 public class Play extends AbstractCommand {
-
-	private final Pattern musicResultFilterPattern = Pattern.compile("^#?([0-9]{1,2})$");
-	private final Pattern soundCloudUrlPattern = Pattern.compile("^https?://soundcloud.com/([a-z0-9-]+)/(sets/)?([a-z0-9-]+)$");
-	private Map<String, ArrayList<Integer>> userFilteredSongs = new ConcurrentHashMap<>();
+	YTSearch ytSearch;
 
 	public Play(DiscordBot b) {
 		super(b);
+		ytSearch = new YTSearch(Config.GOOGLE_API_KEY);
 	}
 
 	@Override
@@ -65,11 +51,9 @@ public class Play extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"play <youtubelink>       //download and plays song",
-				"play <soundcloudlink>    //download and plays song",
-				"play <youtubevideocode>  //download and plays song",
-				"play <part of title>     //shows search results",
-				"play <resultnumber>      //add result # to the queue"
+				"play <youtubelink>    //download and plays song",
+				"play <part of title>  //shows search results",
+				"play                  //just start playing something"
 		};
 	}
 
@@ -83,74 +67,26 @@ public class Play extends AbstractCommand {
 		if (bot.client.getConnectedVoiceChannels().size() == 0) {
 			return Template.get("music_not_in_voicechannel");
 		}
-		if (MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot).getUsersInVoiceChannel().size() == 0) {
+		if (MusicPlayerHandler.getFor(channel.getGuild(), bot).getUsersInVoiceChannel().size() == 0) {
 			return Template.get("music_no_users_in_channel");
 		}
 		if (args.length > 0) {
 			boolean justDownloaded = false;
-			Matcher filterMatch = musicResultFilterPattern.matcher(args[0]);
-			if (filterMatch.matches() && userFilteredSongs.containsKey(author.getID())) {
-				if (userFilteredSongs.containsKey(author.getID()) && userFilteredSongs.get(author.getID()) != null) {
-					int selectedIndex = Ints.tryParse(args[0].replace("#", ""));
-					if (userFilteredSongs.get(author.getID()).size() + 1 >= selectedIndex && selectedIndex > 0) {
-						int songId = userFilteredSongs.get(author.getID()).get(selectedIndex - 1);
-						try (ResultSet rs = WebDb.get().select("SELECT filename, youtube_title, artist FROM playlist WHERE id = ?", songId)) {
-							if (rs.next()) {
-								bot.addSongToQueue(rs.getString("filename"), channel.getGuild());
-							}
-							rs.getStatement().close();
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-						userFilteredSongs.remove(author.getID());
-						return Template.get("music_added_to_queue");
-					} else {
-						return Template.get("command_play_filter_match_no_such_index");
-					}
-				} else {
-					return Template.get("command_play_no_results_saved");
-				}
-			}
-			if (userFilteredSongs.containsKey(author.getID())) {
-				userFilteredSongs.remove(author.getID());
-			}
-			Matcher scMatcher = soundCloudUrlPattern.matcher(args[0]);
-			if (SCUtil.isEnabled() && scMatcher.matches()) {
-				if (SCUtil.download(args[0])) {
-					List<SCFile> downloadedList = SCUtil.getDownloadedList();
-					String text = "Found **" + downloadedList.size() + "** song(s) and added to the queue. " + Config.EOL;
-					for (SCFile scFile : downloadedList) {
-						OMusic oMusic = TMusic.findByYoutubeId(scFile.id);
-						if (oMusic.id == 0) {
-							oMusic.youtubecode = scFile.id;
-							oMusic.artist = scFile.artist;
-							oMusic.title = scFile.title;
-							oMusic.filename = scFile.id + ".mp3";
-							oMusic.youtubeTitle = scFile.artist + " - " + scFile.title;
-							TMusic.insert(oMusic);
-							try {
-								Files.move(new File(Config.MUSIC_DIRECTORY + "soundcloud/" + scFile.filename), new File(Config.MUSIC_DIRECTORY + oMusic.filename));
-							} catch (IOException e) {
-								e.printStackTrace();
-								bot.out.sendErrorToMe(e, "moving file", Config.MUSIC_DIRECTORY + "soundcloud/" + scFile.filename, "target", Config.MUSIC_DIRECTORY + oMusic.filename, bot);
-								continue;
-							}
-						}
-						text += String.format("%s - %s", oMusic.artist, oMusic.title) + Config.EOL;
-						bot.addSongToQueue(oMusic.filename, channel.getGuild());
-					}
-					return text;
-				}
-				return Template.get("music_download_soundcloud_failed");
-			}
 
 			String videocode = YTUtil.extractCodeFromUrl(args[0]);
+			if (!YTUtil.isValidYoutubeCode(videocode)) {
+				videocode = ytSearch.getResults(Joiner.on(" ").join(args));
+			}
 			if (YTUtil.isValidYoutubeCode(videocode)) {
-				File filecheck = new File(Config.MUSIC_DIRECTORY + videocode + ".mp3");
+
+				File filecheck = new File(YTUtil.getOutputPath(videocode));
 				if (!filecheck.exists()) {
 					IMessage msg = bot.out.sendMessage(channel, Template.get("music_downloading_hang_on"));
-					YTUtil.downloadfromYoutubeAsMp3(videocode);
-					justDownloaded = true;
+					if (YTUtil.downloadfromYoutubeAsMp3(videocode)) {
+						bot.out.editMessage(msg, "resampling.. hang on");
+						YTUtil.resampleToWav(videocode);
+						justDownloaded = true;
+					}
 					try {
 						msg.delete();
 					} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
@@ -162,49 +98,16 @@ public class Play extends AbstractCommand {
 						OMusic rec = TMusic.findByYoutubeId(videocode);
 						rec.youtubeTitle = YTUtil.getTitleFromPage(videocode);
 						rec.youtubecode = videocode;
-						rec.filename = videocode + ".mp3";
+						rec.filename = YTUtil.getOutputPath(videocode);
 						TMusic.update(rec);
-						bot.addSongToQueue(videocode + ".mp3", channel.getGuild());
+						bot.addSongToQueue(YTUtil.getOutputPath(videocode), channel.getGuild());
 						return ":notes: Found *" + rec.youtubeTitle + "* And added it to the queue";
 					}
 					bot.addSongToQueue(videocode + ".mp3", channel.getGuild());
 					return Template.get("music_added_to_queue");
 				}
 			} else {
-				String concatArgs = "";
-				for (String s : args) {
-					concatArgs += s.toLowerCase();
-				}
-				try (ResultSet rs = WebDb.get().select("SELECT id, GREATEST(levenshtein_ratio(LOWER(title),?),levenshtein_ratio(LOWER(artist),?)) AS matchrating, youtube_title,title,artist, filename " +
-						"FROM playlist " +
-						"WHERE artist IS NOT NULL AND title IS NOT NULL " +
-						"ORDER BY matchrating DESC " +
-						"LIMIT 10", concatArgs, concatArgs)) {
-					String results = "";
-					int i = 0;
-					ArrayList<Integer> songIdArray = new ArrayList<>();
-					while (rs.next()) {
-						if (rs.getInt("matchrating") < 10) {
-							continue;
-						}
-						i++;
-						songIdArray.add(rs.getInt("id"));
-						userFilteredSongs.get(author.getID());
-						results += String.format("%2s %7s %s - %s", i, rs.getInt("matchrating"), rs.getString("artist"), rs.getString("title")) + Config.EOL;
-					}
-					rs.getStatement().close();
-					if (!results.isEmpty()) {
-						userFilteredSongs.put(author.getID(), songIdArray);
 
-						return "Results ```" + Config.EOL +
-								String.format("%2s %7s %s - %s", "#", "match %", "artist", "title") + Config.EOL +
-								results + Config.EOL +
-								"```" + Config.EOL +
-								"Use the command  **play #<resultnumber>** to add it to the music queue. Eg: **play #1** to play the first result." + Config.EOL;
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
 				return Template.get("command_play_no_results");
 
 			}

@@ -126,7 +126,7 @@ public class CurrentTrack extends AbstractCommand {
 			ret += song.artist + " - " + song.title;
 		}
 		ret += Config.EOL + Config.EOL;
-		MusicPlayerHandler musicHandler = MusicPlayerHandler.getAudioPlayerForGuild(channel.getGuild(), bot);
+		MusicPlayerHandler musicHandler = MusicPlayerHandler.getFor(channel.getGuild(), bot);
 		ret += getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL;
 
 		if (GuildSettings.get(channel.getGuild()).getOrDefault(SettingMusicShowListeners.class).equals("true")) {
