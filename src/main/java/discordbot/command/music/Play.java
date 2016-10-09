@@ -98,12 +98,12 @@ public class Play extends AbstractCommand {
 						OMusic rec = TMusic.findByYoutubeId(videocode);
 						rec.youtubeTitle = YTUtil.getTitleFromPage(videocode);
 						rec.youtubecode = videocode;
-						rec.filename = YTUtil.getOutputPath(videocode);
+						rec.filename = filecheck.getAbsolutePath();
 						TMusic.update(rec);
-						bot.addSongToQueue(YTUtil.getOutputPath(videocode), channel.getGuild());
+						bot.addSongToQueue(filecheck.getAbsolutePath(), channel.getGuild());
 						return ":notes: Found *" + rec.youtubeTitle + "* And added it to the queue";
 					}
-					bot.addSongToQueue(YTUtil.getOutputPath(videocode), channel.getGuild());
+					bot.addSongToQueue(filecheck.getAbsolutePath(), channel.getGuild());
 					return Template.get("music_added_to_queue");
 				}
 			} else {
