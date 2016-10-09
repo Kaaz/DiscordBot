@@ -219,7 +219,7 @@ public class MusicPlayerHandler {
 
 	public boolean addToQueue(String filename) {
 		File f = new File(filename);
-		if (!f.exists() || !f.getName().endsWith(".mp3")) {//check in config directory
+		if (!f.exists()) {//check in config directory
 			f = new File(Config.MUSIC_DIRECTORY + filename);
 			if (!f.exists()) {//check for absolute path
 				bot.out.sendErrorToMe(new Exception("nosongexception :("), "filename: ", f.getName(), "plz fix", "I want music", bot);

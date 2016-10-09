@@ -103,7 +103,7 @@ public class Play extends AbstractCommand {
 						bot.addSongToQueue(YTUtil.getOutputPath(videocode), channel.getGuild());
 						return ":notes: Found *" + rec.youtubeTitle + "* And added it to the queue";
 					}
-					bot.addSongToQueue(videocode + ".mp3", channel.getGuild());
+					bot.addSongToQueue(YTUtil.getOutputPath(videocode), channel.getGuild());
 					return Template.get("music_added_to_queue");
 				}
 			} else {

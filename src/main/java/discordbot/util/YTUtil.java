@@ -120,7 +120,7 @@ public class YTUtil {
 			return false;
 		}
 		List<String> infoArgs = new LinkedList<>();
-		infoArgs.add("sox");
+		infoArgs.add(Config.SOX_LOCATION);
 		infoArgs.add(f.getAbsolutePath());
 		infoArgs.add("-b");
 		infoArgs.add("16");
@@ -142,6 +142,7 @@ public class YTUtil {
 			}
 			process.waitFor();
 			process.destroy();
+			f.delete();
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 			return false;
