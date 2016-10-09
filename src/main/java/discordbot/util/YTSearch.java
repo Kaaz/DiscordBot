@@ -26,6 +26,8 @@ public class YTSearch {
 		YouTube.Search.List tmp = null;
 		try {
 			tmp = youtube.search().list("id,snippet");
+			tmp.setOrder("relevance");
+			tmp.setVideoCategoryId("10");
 		} catch (IOException ex) {
 			DiscordBot.LOGGER.error("Failed to initialize search: " + ex.toString());
 		}
