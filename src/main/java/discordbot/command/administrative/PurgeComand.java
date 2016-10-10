@@ -57,7 +57,7 @@ public class PurgeComand extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		boolean hasManageMessages = channel.getModifiedPermissions(bot.client.getOurUser()).contains(Permissions.MANAGE_MESSAGES);
 		IUser toDeleteFrom = null;
-		int deleteLimit = 500;
+		int deleteLimit = 100;
 		boolean deleteAll = true;
 		if (args.length >= 1) {
 			deleteAll = false;
@@ -77,7 +77,7 @@ public class PurgeComand extends AbstractCommand {
 			return Template.get("command_invalid_use");
 		}
 		int deletedCount = 0;
-		for (IMessage msg : new MessageList(bot.client, channel, 500)) {
+		for (IMessage msg : new MessageList(bot.client, channel, 100)) {
 			if (deletedCount == deleteLimit) {
 				break;
 			}
