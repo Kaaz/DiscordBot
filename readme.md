@@ -113,6 +113,7 @@ command_prefix | $ | Prefix for commands (between 1 and 3 characters)
 help_in_pm | false | show help in a private message?<br/>true  -> send a message to the user requesting help<br/>false -> output help to the channel where requested
 module_games | true | Let people play games against each other
 music_channel | music | Channel where the bots music-related output goes to
+music_channel_title | false | Updates the music channel's topic with the currently playing song<br/>true  -> yes change the topic at the beginning of every song<br/>false -> leave the channel topic title alone!
 music_playing_message | clear | Clear the now playing message?<br/>clear  -> sends a message and deletes it when the song is over or skipped<br/>normal -> send the message and just leave it be<br/>off    -> don't send now playing messages
 music_show_listeners | true | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
 pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
@@ -221,6 +222,7 @@ ar tag <tag> <value>       //change the tag of a reply
 ar cd <tag> <value>        //change the cooldown (millis) of a reply
 ar guild <tag> <guildid>   //guild of a tag, 0 for global
 ar test <tag> <text>       //test for a match
+ar delete <tag>            //deletes a tag
 ```
 ### avatar
 
@@ -458,11 +460,9 @@ Usable in public  channels
 #### Usage
 
 ```php
-play <youtubelink>       //download and plays song
-play <soundcloudlink>    //download and plays song
-play <youtubevideocode>  //download and plays song
-play <part of title>     //shows search results
-play <resultnumber>      //add result # to the queue
+play <youtubelink>    //download and plays song
+play <part of title>  //shows search results
+play                  //just start playing something
 ```
 ### playlist
 
