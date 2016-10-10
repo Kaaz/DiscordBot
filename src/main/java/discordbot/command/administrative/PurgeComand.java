@@ -6,8 +6,10 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
+import sx.blah.discord.util.MessageList;
 
 /**
  * !purge
@@ -36,9 +38,10 @@ public class PurgeComand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"purge       //deletes non-pinned messages",
-				"purge @user //deletes messages from user",
-				"purge nova  //deletes my messages :("
+				"purge               //deletes non-pinned messages",
+				"purge @user         //deletes messages from user",
+				"purge @user <limit> //deletes up to <limit> messages from user",
+				"purge nova          //deletes my messages :("
 		};
 	}
 
@@ -54,6 +57,7 @@ public class PurgeComand extends AbstractCommand {
 	public String execute(String[] args, IChannel channel, IUser author) {
 		boolean hasManageMessages = channel.getModifiedPermissions(bot.client.getOurUser()).contains(Permissions.MANAGE_MESSAGES);
 		IUser toDeleteFrom = null;
+		int deleteLimit = 500;
 		boolean deleteAll = true;
 		if (args.length >= 1) {
 			deleteAll = false;
@@ -65,20 +69,29 @@ public class PurgeComand extends AbstractCommand {
 			} else if (args[0].toLowerCase().equals("nova")) {
 				toDeleteFrom = bot.client.getOurUser();
 			}
+			if (args.length >= 2 && args[1].matches("^\\d+$")) {
+				deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
+			}
 		}
 		if (!bot.isOwner(channel, author) && !bot.client.getOurUser().equals(author)) {
 			return Template.get("command_invalid_use");
 		}
-		boolean finalDeleteAll = deleteAll;
-		IUser finalToDeleteFrom = toDeleteFrom;
-		channel.getMessages().stream().filter(msg -> !msg.isPinned()).forEach(
-				msg -> {
-					if (finalDeleteAll && (hasManageMessages || msg.getAuthor().equals(bot.client.getOurUser()))) {
-						bot.out.deleteMessage(msg);
-					} else if (!finalDeleteAll && finalToDeleteFrom != null && msg.getAuthor().equals(finalToDeleteFrom)) {
-						bot.out.deleteMessage(msg);
-					}
-				});
+		int deletedCount = 0;
+		for (IMessage msg : new MessageList(bot.client, channel, 500)) {
+			if (deletedCount == deleteLimit) {
+				break;
+			}
+			if (msg.isPinned()) {
+				continue;
+			}
+			if (deleteAll && (hasManageMessages || msg.getAuthor().equals(bot.client.getOurUser()))) {
+				deletedCount++;
+				bot.out.deleteMessage(msg);
+			} else if (!deleteAll && toDeleteFrom != null && msg.getAuthor().equals(toDeleteFrom)) {
+				deletedCount++;
+				bot.out.deleteMessage(msg);
+			}
+		}
 		if (hasManageMessages) {
 			return Template.get("command_purge_success");
 		}
