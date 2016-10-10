@@ -52,7 +52,7 @@ public class YTSearch {
 		try {
 			searchResponse = search.execute();
 			List<SearchResult> searchResultList = searchResponse.getItems();
-			searchResultList.stream().forEach((sr) -> urls.add(sr.getId().getVideoId()));
+			searchResultList.forEach((sr) -> urls.add(sr.getId().getVideoId()));
 		} catch (IOException ex) {
 			DiscordBot.LOGGER.error("YTSearch failure: " + ex.toString());
 			return null;
