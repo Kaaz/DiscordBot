@@ -121,7 +121,7 @@
 		<dependency>
 			<groupId>com.github.MaikWezinkhof</groupId>
 			<artifactId>ConfigurationBuilder</artifactId>
-			<version>master-SNAPSHOT</version>
+			<version>0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.MaikWezinkhof</groupId>
