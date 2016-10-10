@@ -17,6 +17,7 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -80,7 +81,9 @@ public class Subscribe extends AbstractCommand {
 						"This channel is currenty subscribed for: " +
 						Misc.makeAsciiTable(headers, tbl);
 			}
-			return Template.get("command_subscribe_channel_has_no_subscriptions");
+			return Template.get("command_subscribe_channel_has_no_subscriptions") + Config.EOL +
+					"Possible options to subscribe to: " +
+					getServicesTable();
 		}
 		if (args[0].equalsIgnoreCase("stop")) {
 			if (args.length > 1) {
@@ -103,17 +106,9 @@ public class Subscribe extends AbstractCommand {
 			}
 			return Template.get("command_subscribe_invalid_use");
 		} else if (args[0].equalsIgnoreCase("list")) {
-			Collections.addAll(headers, "code", "name");
-			List<OService> allActive = TServices.getAllActive();
-			for (OService service : allActive) {
-				ArrayList<String> row = new ArrayList<>();
-				row.add(service.name);
-				row.add(service.displayName);
-				tbl.add(row);
-			}
 			return "Subscriptions" + Config.EOL +
 					"Possible options to subscribe to: " +
-					Misc.makeAsciiTable(headers, tbl);
+					getServicesTable();
 		}
 		OService service = TServices.findBy(args[0].trim());
 		if (service.id == 0) {
@@ -129,5 +124,17 @@ public class Subscribe extends AbstractCommand {
 			return Template.get("command_subscribe_success");
 		}
 		return Template.get("command_subscribe_already_subscribed");
+	}
+
+	private String getServicesTable() {
+		List<List<String>> table = new ArrayList<>();
+		List<OService> allActive = TServices.getAllActive();
+		for (OService service : allActive) {
+			ArrayList<String> row = new ArrayList<>();
+			row.add(service.name);
+			row.add(service.displayName);
+			table.add(row);
+		}
+		return Misc.makeAsciiTable(Arrays.asList("code", "name"), table);
 	}
 }
