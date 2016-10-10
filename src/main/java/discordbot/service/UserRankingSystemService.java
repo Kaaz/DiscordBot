@@ -1,18 +1,12 @@
 package discordbot.service;
 
 import discordbot.core.AbstractService;
-import discordbot.db.model.OGuildMember;
-import discordbot.db.table.TGuildMember;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.handler.GuildSettings;
 import discordbot.main.DiscordBot;
-import discordbot.role.MemberShipRole;
 import discordbot.role.RoleRankings;
 import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.handle.obj.IUser;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +26,7 @@ public class UserRankingSystemService extends AbstractService {
 
 	@Override
 	public long getDelayBetweenRuns() {
-		return TimeUnit.HOURS.toMillis(1);
+		return TimeUnit.MINUTES.toMillis(15);
 	}
 
 	@Override
@@ -57,36 +51,7 @@ public class UserRankingSystemService extends AbstractService {
 
 	private void handleGuild(IGuild guild) {
 		RoleRankings.fixForServer(guild);
-		guild.getUsers().stream().filter(user -> !user.isBot()).forEach(user -> handleUser(guild, user));
-	}
-
-	private void handleUser(IGuild guild, IUser user) {
-		List<IRole> roles = user.getRolesForGuild(guild);
-		OGuildMember membership = TGuildMember.findBy(guild.getID(), user.getID());
-		boolean hasTargetRole = false;
-		String prefix = RoleRankings.getPrefix(guild);
-		if (membership.joinDate == null) {
-			membership.joinDate = new Timestamp(System.currentTimeMillis());
-			TGuildMember.insertOrUpdate(membership);
-		}
-		MemberShipRole targetRole = RoleRankings.getHighestRole(System.currentTimeMillis() - membership.joinDate.getTime());
-		for (IRole role : roles) {
-			if (role.getName().startsWith(prefix)) {
-				if (role.getName().equals(RoleRankings.getFullName(guild, targetRole))) {
-					hasTargetRole = true;
-				} else {
-					bot.out.removeRole(user, role);
-				}
-			}
-		}
-		if (!hasTargetRole) {
-			List<IRole> roleList = guild.getRolesByName(RoleRankings.getFullName(guild, targetRole));
-			if (roleList.size() > 0) {
-				bot.out.addRole(user, roleList.get(0));
-			} else {
-				bot.out.sendErrorToMe(new Exception("Role not found"), "guild", guild.getName(), "user", user.getName());
-			}
-		}
+		guild.getUsers().stream().filter(user -> !user.isBot()).forEach(user -> RoleRankings.assignUserRole(bot, guild, user));
 	}
 
 	@Override

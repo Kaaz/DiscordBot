@@ -1,8 +1,11 @@
 package discordbot.role;
 
+import discordbot.db.model.OGuildMember;
+import discordbot.db.table.TGuildMember;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanksPrefix;
 import discordbot.handler.GuildSettings;
+import discordbot.main.DiscordBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.IDiscordClient;
@@ -15,6 +18,7 @@ import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
 import java.awt.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -181,6 +185,41 @@ public class RoleRankings {
 			}
 			if (canModifyRoles(guild, instance.getOurUser())) {
 				fixForServer(guild);
+			}
+		}
+	}
+
+	/**
+	 * Asigns the right role to a user based on the Roleranking
+	 *
+	 * @param guild the guild
+	 * @param user  the user
+	 */
+	public static void assignUserRole(DiscordBot bot, IGuild guild, IUser user) {
+		List<IRole> roles = user.getRolesForGuild(guild);
+		OGuildMember membership = TGuildMember.findBy(guild.getID(), user.getID());
+		boolean hasTargetRole = false;
+		String prefix = RoleRankings.getPrefix(guild);
+		if (membership.joinDate == null) {
+			membership.joinDate = new Timestamp(System.currentTimeMillis());
+			TGuildMember.insertOrUpdate(membership);
+		}
+		MemberShipRole targetRole = RoleRankings.getHighestRole(System.currentTimeMillis() - membership.joinDate.getTime());
+		for (IRole role : roles) {
+			if (role.getName().startsWith(prefix)) {
+				if (role.getName().equals(RoleRankings.getFullName(guild, targetRole))) {
+					hasTargetRole = true;
+				} else {
+					bot.out.removeRole(user, role);
+				}
+			}
+		}
+		if (!hasTargetRole) {
+			List<IRole> roleList = guild.getRolesByName(RoleRankings.getFullName(guild, targetRole));
+			if (roleList.size() > 0) {
+				bot.out.addRole(user, roleList.get(0));
+			} else {
+				bot.out.sendErrorToMe(new Exception("Role not found"), "guild", guild.getName(), "user", user.getName());
 			}
 		}
 	}
