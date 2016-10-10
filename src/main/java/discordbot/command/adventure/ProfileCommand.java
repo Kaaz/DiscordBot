@@ -39,7 +39,9 @@ public class ProfileCommand extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+				"avatar"
+		};
 	}
 
 	@Override
