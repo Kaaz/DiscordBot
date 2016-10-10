@@ -121,6 +121,7 @@ public class YTUtil {
 		}
 		List<String> infoArgs = new LinkedList<>();
 		infoArgs.add(Config.SOX_LOCATION);
+		infoArgs.add("-G");
 		infoArgs.add(f.getAbsolutePath());
 		infoArgs.add("-b");
 		infoArgs.add("16");
