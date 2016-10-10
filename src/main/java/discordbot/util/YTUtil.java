@@ -121,15 +121,19 @@ public class YTUtil {
 		}
 		List<String> infoArgs = new LinkedList<>();
 		infoArgs.add(Config.SOX_LOCATION);
-		infoArgs.add("-G");
 		infoArgs.add(f.getAbsolutePath());
 		infoArgs.add("-b");
 		infoArgs.add("16");
+		infoArgs.add("-G");
 		infoArgs.add(outputPath);
 		infoArgs.add("rate");
 		infoArgs.add("48000");
 		infoArgs.add("channels");
 		infoArgs.add("2");
+		infoArgs.add("-e");
+		infoArgs.add("signed-integer");
+
+
 		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
 		builder.redirectErrorStream(true);
 		Process process = null;
