@@ -48,9 +48,11 @@ public class BotStatusService extends AbstractService {
 			Status.game("Rare pepe"),
 			Status.stream("Cool stuff", "https://twitch.tv/logout"),
 	};
+	Random rng;
 
 	public BotStatusService(DiscordBot b) {
 		super(b);
+		rng = new Random();
 	}
 
 	@Override
@@ -74,12 +76,13 @@ public class BotStatusService extends AbstractService {
 
 	@Override
 	public void run() {
+		int roll = rng.nextInt(100);
 		IChannel channel = bot.client.getChannelByID(Config.BOT_CHANNEL_ID);
 		if (channel != null) {
 			try {
 				List<IInvite> invites = channel.getInvites();
 				if (invites.size() > 0) {
-					if (new Random().nextInt(100) < 20) {
+					if (roll < 10) {
 						bot.client.changeStatus(Status.game("Feedback @ https://discord.gg/" + invites.get(0).getInviteCode()));
 						return;
 					}

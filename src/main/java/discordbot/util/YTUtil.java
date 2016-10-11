@@ -123,13 +123,13 @@ public class YTUtil {
 		infoArgs.add(Config.SOX_LOCATION);
 		infoArgs.add("-G");
 		infoArgs.add(f.getAbsolutePath());
-		infoArgs.add("-b");
 		infoArgs.add("16");
 		infoArgs.add("-e");
 		infoArgs.add("signed-integer");
 		infoArgs.add("channels");
-		infoArgs.add("2");
 		infoArgs.add(outputPath);
+		infoArgs.add("-b");
+		infoArgs.add("2");
 		infoArgs.add("rate");
 		infoArgs.add("48000");
 		infoArgs.add("dither");
