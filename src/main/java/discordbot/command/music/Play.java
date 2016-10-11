@@ -83,7 +83,7 @@ public class Play extends AbstractCommand {
 				if (!filecheck.exists()) {
 					IMessage msg = bot.out.sendMessage(channel, Template.get("music_downloading_hang_on"));
 					if (YTUtil.downloadfromYoutubeAsMp3(videocode)) {
-						bot.out.editMessage(msg, "resampling.. hang on");
+						bot.out.editMessage(msg, Template.get("music_resampling"));
 						YTUtil.resampleToWav(videocode);
 						justDownloaded = true;
 					}
