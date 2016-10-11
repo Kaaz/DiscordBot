@@ -55,7 +55,11 @@ public class ExecCommand extends AbstractCommand {
 		}
 		try {
 			Process process;
-			process = Runtime.getRuntime().exec("cmd /c " + Joiner.on(" ").join(args));
+			if (System.getProperty("os.name").startsWith("Windows")) {
+				process = Runtime.getRuntime().exec("cmd /c " + Joiner.on(" ").join(args));
+			} else {
+				process = Runtime.getRuntime().exec(Joiner.on(" ").join(args));
+			}
 			process.waitFor(2, TimeUnit.MINUTES);
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
