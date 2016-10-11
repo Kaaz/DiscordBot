@@ -96,7 +96,7 @@ public class YTUtil {
 			process = builder.start();
 			InputStream stdout = process.getInputStream();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
-			String line = "";
+			String line;
 			while ((line = reader.readLine()) != null) {
 				System.out.println("YT: " + line);
 			}
@@ -127,11 +127,13 @@ public class YTUtil {
 		infoArgs.add("16");
 		infoArgs.add("-e");
 		infoArgs.add("signed-integer");
+		infoArgs.add("channels");
+		infoArgs.add("2");
 		infoArgs.add(outputPath);
 		infoArgs.add("rate");
 		infoArgs.add("48000");
-		infoArgs.add("channels");
-		infoArgs.add("2");
+		infoArgs.add("dither");
+		infoArgs.add("-s");
 
 
 		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);

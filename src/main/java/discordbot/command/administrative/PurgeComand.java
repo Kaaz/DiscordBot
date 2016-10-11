@@ -62,10 +62,10 @@ public class PurgeComand extends AbstractCommand {
 		if (args.length >= 1) {
 			deleteAll = false;
 			if (DisUtil.isUserMention(args[0])) {
-				if (!hasManageMessages) {
+				toDeleteFrom = bot.client.getUserByID(DisUtil.mentionToId(args[0]));
+				if (!hasManageMessages && !bot.client.getOurUser().equals(toDeleteFrom)) {
 					return Template.get("permission_missing_manage_messages");
 				}
-				toDeleteFrom = bot.client.getUserByID(DisUtil.mentionToId(args[0]));
 			} else if (args[0].toLowerCase().equals("nova")) {
 				toDeleteFrom = bot.client.getOurUser();
 			}
