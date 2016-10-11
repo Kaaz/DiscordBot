@@ -128,12 +128,12 @@ public class YTUtil {
 		infoArgs.add("-b");
 		infoArgs.add("16");
 		infoArgs.add("-e");
-		infoArgs.add("signed-integer");
+		infoArgs.add("floating-point");
 		infoArgs.add(outputPath);
 		infoArgs.add("channels");
 		infoArgs.add("2");
 		infoArgs.add("rate");
-		infoArgs.add("8000");
+		infoArgs.add("48000");
 
 
 		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
