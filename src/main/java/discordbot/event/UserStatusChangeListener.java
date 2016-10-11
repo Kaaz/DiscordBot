@@ -29,7 +29,7 @@ public class UserStatusChangeListener extends AbstractEventListener<StatusChange
 			return;
 		}
 		Status status = event.getNewStatus();
-		if (status.getStatusMessage().equals(discordBot.client.getOurUser().getStatus().getStatusMessage())) {
+		if (status.getStatusMessage() != null && 	status.getStatusMessage().equals(discordBot.client.getOurUser().getStatus().getStatusMessage())) {
 			for (String specialGuild : specialGuilds) {
 				IGuild guild = discordBot.client.getGuildByID(specialGuild);
 				if (guild == null) {

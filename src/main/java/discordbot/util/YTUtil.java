@@ -119,16 +119,17 @@ public class YTUtil {
 		if (!f.exists()) {
 			return false;
 		}
+		//sox -G 3AtDnEC4zak.wav -b 16 -e signed-integer out.wav channels 2 rate 48000 dither -s
 		List<String> infoArgs = new LinkedList<>();
 		infoArgs.add(Config.SOX_LOCATION);
 		infoArgs.add("-G");
 		infoArgs.add(f.getAbsolutePath());
+		infoArgs.add("-b");
 		infoArgs.add("16");
 		infoArgs.add("-e");
 		infoArgs.add("signed-integer");
-		infoArgs.add("channels");
 		infoArgs.add(outputPath);
-		infoArgs.add("-b");
+		infoArgs.add("channels");
 		infoArgs.add("2");
 		infoArgs.add("rate");
 		infoArgs.add("48000");
