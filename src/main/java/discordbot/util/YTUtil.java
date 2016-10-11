@@ -133,7 +133,7 @@ public class YTUtil {
 		infoArgs.add("channels");
 		infoArgs.add("2");
 		infoArgs.add("rate");
-		infoArgs.add("48000");
+		infoArgs.add("8000");
 
 
 		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
