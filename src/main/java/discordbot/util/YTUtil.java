@@ -128,7 +128,8 @@ public class YTUtil {
 		infoArgs.add("-b");
 		infoArgs.add("16");
 		infoArgs.add("-e");
-		infoArgs.add("floating-point");
+		infoArgs.add("signed-integer");
+		infoArgs.add("-L");
 		infoArgs.add(outputPath);
 		infoArgs.add("channels");
 		infoArgs.add("2");
