@@ -110,7 +110,7 @@ public class YTUtil {
 	}
 
 	public static String getOutputPath(String videoCode) {
-		return Config.MUSIC_DIRECTORY + videoCode + ".wav";
+		return Config.MUSIC_DIRECTORY + videoCode + ".mp3";
 	}
 
 	public static boolean resampleToWav(String videoCode) {
@@ -125,10 +125,10 @@ public class YTUtil {
 		infoArgs.add("-v");
 		infoArgs.add("0.90");
 		infoArgs.add(f.getAbsolutePath());
-		infoArgs.add("-b");
-		infoArgs.add("16");
-		infoArgs.add("-e");
-		infoArgs.add("signed-integer");
+//		infoArgs.add("-b");
+//		infoArgs.add("16");
+//		infoArgs.add("-e");
+//		infoArgs.add("signed-integer");
 		infoArgs.add("-L");
 		infoArgs.add(outputPath);
 		infoArgs.add("channels");
