@@ -134,8 +134,6 @@ public class YTUtil {
 		infoArgs.add("2");
 		infoArgs.add("rate");
 		infoArgs.add("48000");
-		infoArgs.add("dither");
-		infoArgs.add("-s");
 
 
 		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
