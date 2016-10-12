@@ -6,10 +6,14 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.Misc;
+import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.*;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
 
 public class OutgoingContentHandler {
 	private final static long DELETE_INTERVAL = 500L;
@@ -24,12 +28,13 @@ public class OutgoingContentHandler {
 	}
 
 	/**
-	 * @param channel channel to send to
-	 * @param content the message
+	 * @param channel  channel to send to
+	 * @param content  the message
+	 * @param callback
 	 * @return IMessage or null
 	 */
-	public IMessage sendMessage(IChannel channel, String content) {
-		RequestBuffer.RequestFuture<IMessage> request = bot.out.sendMessage(new MessageBuilder(bot.client).withChannel(channel).withContent(content.substring(0, Math.min(content.length(), 1999))));
+	public void sendAsyncMessage(TextChannel channel, String content, Consumer<Message> callback) {
+		channel.sendMessageAsync(content, null);
 		return request.get();
 	}
 
@@ -97,21 +102,8 @@ public class OutgoingContentHandler {
 	 * @param target  the user to send it to
 	 * @param message the message
 	 */
-	public void sendPrivateMessage(IUser target, String message) {
-		RequestBuffer.request(() -> {
-			try {
-				IPrivateChannel pmChannel = bot.client.getOrCreatePMChannel(target);
-				return pmChannel.sendMessage(message);
-			} catch (DiscordException e) {
-				if (e.getErrorMessage().contains("502")) {
-					throw new RateLimitException("Workaround because of 502", 1500, "editMessage", false);
-				}
-			} catch (MissingPermissionsException e) {
-				Logger.fatal(e, "no permission");
-				e.printStackTrace();
-			}
-			return null;
-		});
+	public void sendPrivateMessage(User target, String message) {
+		target.getPrivateChannel().sendMessageAsync(message, null);
 	}
 
 	/**
@@ -146,13 +138,13 @@ public class OutgoingContentHandler {
 		deleteThread.offer(message);
 	}
 
-	public RequestBuffer.RequestFuture<IMessage> sendMessage(MessageBuilder builder) {
+	public RequestBuffer.RequestFuture<IMessage> sendAsyncMessage(MessageBuilder builder) {
 		return RequestBuffer.request(() -> {
 			try {
 				return builder.send();
 			} catch (DiscordException e) {
 				if (e.getErrorMessage().contains("502")) {
-					throw new RateLimitException("Workaround because of 502", 1000, "sendMessage", false);
+					throw new RateLimitException("Workaround because of 502", 1000, "sendAsyncMessage", false);
 				}
 			} catch (MissingPermissionsException e) {
 				Logger.fatal(e, "no permission");

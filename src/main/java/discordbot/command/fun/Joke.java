@@ -7,11 +7,7 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import org.apache.commons.lang3.StringEscapeUtils;
 import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -50,22 +46,20 @@ public class Joke extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		IMessage msg = bot.out.sendMessage(channel, Template.get("command_joke_wait"));
-		String joketxt = "";
-		if (new Random().nextInt(100) < 80) {
-			joketxt = bot.commands.getCommand("reddit").execute(new String[]{"jokes"}, channel, author);
-		} else {
-			joketxt = getJokeFromWeb(author.getName());
-		}
-		try {
-			msg.delete();
-		} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
-			e.printStackTrace();
-		}
-		if (joketxt != null) {
-			return StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getID() + ">"));
-		}
-		return Template.get("command_joke_not_today");
+		bot.out.sendAsyncMessage(channel, Template.get("command_joke_wait"), message -> {
+			String joketxt = "";
+			if (new Random().nextInt(100) < 80) {
+				joketxt = bot.commands.getCommand("reddit").execute(new String[]{"jokes"}, channel, author);
+			} else {
+				joketxt = getJokeFromWeb(author.getName());
+			}
+			message.deleteMessage();
+			if (joketxt != null) {
+				return StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getID() + ">"));
+			}
+			return Template.get("command_joke_not_today");
+		});
+		return "";
 	}
 
 	private String getJokeFromWeb(String username) {

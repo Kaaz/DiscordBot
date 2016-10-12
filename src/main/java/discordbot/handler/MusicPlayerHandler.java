@@ -172,13 +172,13 @@ public class MusicPlayerHandler {
 				e.printStackTrace();
 				bot.out.sendErrorToMe(e);
 			} catch (MissingPermissionsException e) {
-				bot.out.sendMessage(bot.getMusicChannel(guild), "I don't have permission to change the topic of this channel :(" + Config.EOL +
-						" I'm disabling `music_channel_title` option for now. " + Config.EOL + e.getMessage());
+				bot.out.sendAsyncMessage(bot.getMusicChannel(guild), "I don't have permission to change the topic of this channel :(" + Config.EOL +
+						" I'm disabling `music_channel_title` option for now. " + Config.EOL + e.getMessage(), null);
 				GuildSettings.get(guild).set("music_channel_title", "false");
 			}
 		}
 		if (!GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class).equals("off")) {
-			activeMsg = bot.out.sendMessage(bot.getMusicChannel(guild), msg);
+			activeMsg = bot.out.sendAsyncMessage(bot.getMusicChannel(guild), msg, null);
 		}
 	}
 

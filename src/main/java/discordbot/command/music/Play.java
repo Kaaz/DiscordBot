@@ -12,9 +12,6 @@ import discordbot.main.DiscordBot;
 import discordbot.util.YTSearch;
 import discordbot.util.YTUtil;
 import sx.blah.discord.handle.obj.*;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
 
 import java.io.File;
 
@@ -99,30 +96,27 @@ public class Play extends AbstractCommand {
 			}
 			if (YTUtil.isValidYoutubeCode(videocode)) {
 
-				File filecheck = new File(YTUtil.getOutputPath(videocode));
+				final File filecheck = new File(YTUtil.getOutputPath(videocode));
 				if (!filecheck.exists()) {
-					IMessage msg = bot.out.sendMessage(channel, Template.get("music_downloading_hang_on"));
-					if (YTUtil.downloadfromYoutubeAsMp3(videocode)) {
-						bot.out.editMessage(msg, Template.get("music_resampling"));
-						YTUtil.resampleToWav(videocode);
-						justDownloaded = true;
-					}
-					try {
-						msg.delete();
-					} catch (MissingPermissionsException | RateLimitException | DiscordException e) {
-						e.printStackTrace();
-					}
-				}
-				if (filecheck.exists()) {
-					if (justDownloaded) {
-						OMusic rec = TMusic.findByYoutubeId(videocode);
-						rec.youtubeTitle = YTUtil.getTitleFromPage(videocode);
-						rec.youtubecode = videocode;
-						rec.filename = filecheck.getAbsolutePath();
-						TMusic.update(rec);
-						bot.addSongToQueue(filecheck.getAbsolutePath(), channel.getGuild());
-						return ":notes: Found *" + rec.youtubeTitle + "* And added it to the queue";
-					}
+					String finalVideocode = videocode;
+					bot.out.sendAsyncMessage(channel, Template.get("music_downloading_hang_on"), message -> {
+						if (YTUtil.downloadfromYoutubeAsMp3(finalVideocode)) {
+							message.updateMessageAsync(Template.get("music_resampling"), null);
+							YTUtil.resampleToWav(finalVideocode);
+						}
+						if (filecheck.exists()) {
+							OMusic rec = TMusic.findByYoutubeId(finalVideocode);
+							rec.youtubeTitle = YTUtil.getTitleFromPage(finalVideocode);
+							rec.youtubecode = finalVideocode;
+							rec.filename = filecheck.getAbsolutePath();
+							TMusic.update(rec);
+							bot.addSongToQueue(filecheck.getAbsolutePath(), channel.getGuild());
+							message.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
+						} else {
+							message.deleteMessage();
+						}
+					});
+				} else if (filecheck.exists()) {
 					bot.addSongToQueue(filecheck.getAbsolutePath(), channel.getGuild());
 					return Template.get("music_added_to_queue");
 				}

@@ -7,15 +7,12 @@ import discordbot.guildsettings.defaults.*;
 import discordbot.handler.*;
 import discordbot.role.RoleRankings;
 import discordbot.util.DisUtil;
+import net.dv8tion.jda.JDA;
+import net.dv8tion.jda.JDABuilder;
+import net.dv8tion.jda.entities.*;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sx.blah.discord.api.ClientBuilder;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.obj.*;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.RateLimitException;
-import sx.blah.discord.util.audio.AudioPlayer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -25,7 +22,7 @@ public class DiscordBot {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 	public final long startupTimeStamp;
-	public IDiscordClient client;
+	public JDA client;
 	public CommandHandler commands;
 	public Timer timer = new Timer();
 	public String mentionMe;
@@ -38,8 +35,10 @@ public class DiscordBot {
 	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
 	private Map<IGuild, IChannel> musicChannels = new ConcurrentHashMap<>();
 
-	public DiscordBot() throws DiscordException {
+	public DiscordBot() {
 		registerHandlers();
+		JDABuilder builder = new JDABuilder().setBotToken(Config.BOT_TOKEN);
+		builder.addListener()
 		client = new ClientBuilder().withToken(Config.BOT_TOKEN).setMaxReconnectAttempts(16).login();
 		registerEvents();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
@@ -224,15 +223,15 @@ public class DiscordBot {
 	}
 
 
-	public void handlePrivateMessage(IPrivateChannel channel, IUser author, IMessage message) {
+	public void handlePrivateMessage(PrivateChannel channel, User author, Message message) {
 		if (commands.isCommand(channel, message.getContent())) {
 			commands.process(channel, author, message.getContent());
 		} else {
-			this.out.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
+			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getContent()), null);
 		}
 	}
 
-	public void handleMessage(IGuild guild, IChannel channel, IUser author, IMessage message) {
+	public void handleMessage(Guild guild, TextChannel channel, User author, Message message) {
 		if (!isReady || author.isBot()) {
 			return;
 		}
@@ -258,7 +257,7 @@ public class DiscordBot {
 		if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
 				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class)) &&
 				channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
-			this.out.sendMessage(channel, this.chatBotHandler.chat(message.getContent()));
+			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getContent()), null);
 		}
 	}
 

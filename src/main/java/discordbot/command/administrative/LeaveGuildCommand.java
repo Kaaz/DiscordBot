@@ -67,7 +67,7 @@ public class LeaveGuildCommand extends AbstractCommand {
 		}
 		if (shouldLeave) {
 			try {
-				bot.out.sendMessage(bot.getDefaultChannel(guild), "This is goodbye :wave:");
+				bot.out.sendAsyncMessage(bot.getDefaultChannel(guild), "This is goodbye :wave:", null);
 				guild.leaveGuild();
 				return ":+1:";
 			} catch (DiscordException | RateLimitException e) {

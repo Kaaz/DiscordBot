@@ -74,7 +74,7 @@ public class PoeCurrency extends AbstractCommand {
 		if (!reader.authenticate()) {
 			return "Your token is not valid :(";
 		}
-		bot.out.sendMessage(channel, "Fetching data this might take a minute!");
+		bot.out.sendAsyncMessage(channel, "Fetching data this might take a minute!", null);
 		HashMap<String, Integer> currency = new HashMap<>();
 		int max = 1;
 		for (int i = 0; i < max; i++) {

@@ -42,7 +42,7 @@ public class UserJoinListener extends AbstractEventListener<UserJoinEvent> {
 			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()));
 		}
 		if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
-			discordBot.out.sendMessage(discordBot.getDefaultChannel(guild), String.format(Template.get("welcome_new_user"), user.mention()));
+			discordBot.out.sendAsyncMessage(discordBot.getDefaultChannel(guild), String.format(Template.get("welcome_new_user"), user.mention()), null);
 		}
 		if ("true".equals(settings.getOrDefault(SettingRoleTimeRanks.class))) {
 			RoleRankings.assignUserRole(discordBot, guild, user);

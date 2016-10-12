@@ -85,7 +85,7 @@ public class CommandHandler {
 			if (hasRightVisibility(channel, command.getVisibility()) && cooldown <= 0) {
 				String commandOutput = command.execute(args, channel, author);
 				if (!commandOutput.isEmpty()) {
-					mymsg = bot.out.sendMessage(channel, commandOutput);
+					mymsg = bot.out.sendAsyncMessage(channel, commandOutput, null);
 				}
 				if (Config.BOT_COMMAND_LOGGING) {
 					StringBuilder usedArguments = new StringBuilder();
@@ -97,21 +97,21 @@ public class CommandHandler {
 					}
 				}
 			} else if (cooldown > 0) {
-				mymsg = bot.out.sendMessage(channel, String.format(Template.get("command_on_cooldown"), TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false)));
+				mymsg = bot.out.sendAsyncMessage(channel, String.format(Template.get("command_on_cooldown"), TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false)), null);
 			} else if (!hasRightVisibility(channel, command.getVisibility())) {
 				if (channel instanceof IPrivateChannel) {
-					mymsg = bot.out.sendMessage(channel, Template.get("command_not_for_private"));
+					mymsg = bot.out.sendAsyncMessage(channel, Template.get("command_not_for_private"), null);
 				} else {
-					mymsg = bot.out.sendMessage(channel, Template.get("command_not_for_public"));
+					mymsg = bot.out.sendAsyncMessage(channel, Template.get("command_not_for_public"), null);
 				}
 			}
 		} else if (customCommands.containsKey(input[0])) {
-			mymsg = bot.out.sendMessage(channel, customCommands.get(input[0]));
+			mymsg = bot.out.sendAsyncMessage(channel, customCommands.get(input[0]), null);
 		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
-			mymsg = bot.out.sendMessage(channel, author.mention() + ", " + bot.chatBotHandler.chat(inputMessage));
+			mymsg = bot.out.sendAsyncMessage(channel, author.mention() + ", " + bot.chatBotHandler.chat(inputMessage), null);
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
-			mymsg = bot.out.sendMessage(channel, String.format(Template.get("unknown_command"), GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help"));
+			mymsg = bot.out.sendAsyncMessage(channel, String.format(Template.get("unknown_command"), GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help"), null);
 		}
 		if (mymsg != null && shouldCleanUpMessages(channel)) {
 			final IMessage finalMymsg = mymsg;

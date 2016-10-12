@@ -43,7 +43,7 @@ public class UserStatusChangeListener extends AbstractEventListener<StatusChange
 							return;
 						}
 					}
-					discordBot.out.sendMessage(defaultChannel, "Oh hey look " + user.mention() + " we have the same status :joy:");
+					discordBot.out.sendAsyncMessage(defaultChannel, "Oh hey look " + user.mention() + " we have the same status :joy:", null);
 				}
 
 			}

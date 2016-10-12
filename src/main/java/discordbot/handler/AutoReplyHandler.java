@@ -40,7 +40,7 @@ public class AutoReplyHandler {
 					Matcher matcher = replies[index].pattern.matcher(message.getContent());
 					if (matcher.matches()) {
 						saveCooldown(guildId, index, now);
-						bot.out.sendMessage(message.getChannel(), message.getAuthor().mention() + ", " + replies[index].reply);
+						bot.out.sendAsyncMessage(message.getChannel(), message.getAuthor().mention() + ", " + replies[index].reply, null);
 						return true;
 					}
 				}

@@ -4,8 +4,10 @@ import discordbot.db.WebDb;
 import discordbot.db.table.TGuild;
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.DefaultGuildSettings;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.PrivateChannel;
+import net.dv8tion.jda.entities.TextChannel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,15 +18,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * Guild specific configurations, such as which channel is for music
  */
 public class GuildSettings {
-	private final static Map<IGuild, GuildSettings> settingInstance = new ConcurrentHashMap<>();
+	private final static Map<Guild, GuildSettings> settingInstance = new ConcurrentHashMap<>();
 	private final Map<String, String> settings;
 	private int id = 0;
 	private boolean initialized = false;
 
-	private GuildSettings(IGuild guild) {
+	private GuildSettings(Guild guild) {
 		this.settings = new ConcurrentHashMap<>();
 		settingInstance.put(guild, this);
-		this.id = TGuild.findBy(guild.getID()).id;
+		this.id = TGuild.findBy(guild.getId()).id;
 		loadSettings();
 	}
 
@@ -35,14 +37,14 @@ public class GuildSettings {
 	 * @param settingClass the Setting
 	 * @return the setting
 	 */
-	public static String getFor(IChannel channel, Class<? extends AbstractGuildSetting> settingClass) {
-		if (channel == null || channel.isPrivate()) {
+	public static String getFor(TextChannel channel, Class<? extends AbstractGuildSetting> settingClass) {
+		if (channel == null || channel instanceof PrivateChannel) {
 			return DefaultGuildSettings.getDefault(settingClass);
 		}
 		return GuildSettings.get(channel.getGuild()).getOrDefault(settingClass);
 	}
 
-	public static GuildSettings get(IGuild guild) {
+	public static GuildSettings get(Guild guild) {
 		if (settingInstance.containsKey(guild)) {
 			return settingInstance.get(guild);
 		} else {

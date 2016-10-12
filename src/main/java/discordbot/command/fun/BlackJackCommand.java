@@ -7,7 +7,6 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.util.Map;
@@ -47,7 +46,9 @@ public class BlackJackCommand extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+				"bj"
+		};
 	}
 
 	@Override
@@ -71,29 +72,30 @@ public class BlackJackCommand extends AbstractCommand {
 		} else if (args[0].equalsIgnoreCase("stand")) {
 			if (playerGames.containsKey(author.getID())) {
 				if (!playerGames.get(author.getID()).playerIsStanding()) {
-					IMessage msg = bot.out.sendMessage(channel, playerGames.get(author.getID()).toString());
-					playerGames.get(author.getID()).stand();
-					bot.timer.scheduleAtFixedRate(new TimerTask() {
-						@Override
-						public void run() {
-							try {
-								boolean didHit = playerGames.get(author.getID()).dealerHit();
-								if (msg != null) {
-									bot.out.editMessage(msg, playerGames.get(author.getID()).toString());
-								} else {
-									bot.out.sendMessage(channel, playerGames.get(author.getID()).toString());
-								}
-								if (!didHit) {
-									playerGames.remove(author.getID());
+					bot.out.sendAsyncMessage(channel, playerGames.get(author.getID()).toString(), message -> {
+						playerGames.get(author.getID()).stand();
+						bot.timer.scheduleAtFixedRate(new TimerTask() {
+							@Override
+							public void run() {
+								try {
+									boolean didHit = playerGames.get(author.getID()).dealerHit();
+									if (msg != null) {
+										bot.out.editMessage(msg, playerGames.get(author.getID()).toString());
+									} else {
+										bot.out.sendAsyncMessage(channel, playerGames.get(author.getID()).toString(), null);
+									}
+									if (!didHit) {
+										playerGames.remove(author.getID());
+										this.cancel();
+									}
+								} catch (Exception e) {
+									bot.out.sendErrorToMe(e, "blackjackgame", author.getID(), bot);
 									this.cancel();
+									playerGames.remove(author.getID());
 								}
-							} catch (Exception e) {
-								bot.out.sendErrorToMe(e, "blackjackgame", author.getID(), bot);
-								this.cancel();
-								playerGames.remove(author.getID());
 							}
-						}
-					}, 1000L, DEALER_TURN_INTERVAL);
+						}, 1000L, DEALER_TURN_INTERVAL);
+					});
 				}
 				return "";
 			}

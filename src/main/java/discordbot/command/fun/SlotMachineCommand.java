@@ -8,7 +8,6 @@ import discordbot.games.slotmachine.Slot;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.util.TimerTask;
@@ -61,41 +60,34 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (args.length == 0 || args.length >= 1 && args[0].equals("play")) {
 			final SlotMachine slotMachine = new SlotMachine();
-			final IMessage msg = bot.out.sendMessage(channel, slotMachine.toString());
-			bot.timer.scheduleAtFixedRate(new TimerTask() {
-				@Override
-				public void run() {
-					try {
-						if (slotMachine.gameInProgress()) {
-							slotMachine.spin();
-						}
-						String gameresult = "";
-						if (!slotMachine.gameInProgress()) {
-							Slot slot = slotMachine.winSlot();
-							if (slot != null) {
-								gameresult = "You rolled 3 **" + slot.getName() + "** and won **" + slot.getTriplePayout() + "**";
-							} else {
-								gameresult = "Aw you lose, better luck next time!";
+			bot.out.sendAsyncMessage(channel, slotMachine.toString(), message -> {
+				bot.timer.scheduleAtFixedRate(new TimerTask() {
+					@Override
+					public void run() {
+						try {
+							if (slotMachine.gameInProgress()) {
+								slotMachine.spin();
 							}
-							if (msg != null) {
-								bot.out.editMessage(msg, slotMachine.toString() + Config.EOL + gameresult);
+							String gameresult;
+							if (!slotMachine.gameInProgress()) {
+								Slot slot = slotMachine.winSlot();
+								if (slot != null) {
+									gameresult = "You rolled 3 **" + slot.getName() + "** and won **" + slot.getTriplePayout() + "**";
+								} else {
+									gameresult = "Aw you lose, better luck next time!";
+								}
+								message.updateMessageAsync(slotMachine.toString() + Config.EOL + gameresult, null);
+								this.cancel();
 							} else {
-								bot.out.sendMessage(channel, slotMachine.toString() + Config.EOL + gameresult);
+								message.updateMessageAsync(slotMachine.toString(), null);
 							}
+						} catch (Exception e) {
+							bot.out.sendErrorToMe(e, "slotmachine", author.getID(), "channel", channel.mention(), bot);
 							this.cancel();
-						} else {
-							if (msg != null) {
-								bot.out.editMessage(msg, slotMachine.toString());
-							} else {
-								bot.out.sendMessage(channel, slotMachine.toString());
-							}
 						}
-					} catch (Exception e) {
-						bot.out.sendErrorToMe(e, "slotmachine", author.getID(), "channel", channel.mention(), bot);
-						this.cancel();
 					}
-				}
-			}, 1000L, SPIN_INTERVAL);
+				}, 1000L, SPIN_INTERVAL);
+			});
 		} else {
 			String ret = "The slotmachine!" + Config.EOL;
 			ret += "payout is as follows: " + Config.EOL;

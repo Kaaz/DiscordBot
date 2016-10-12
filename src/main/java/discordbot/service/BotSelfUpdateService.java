@@ -50,7 +50,7 @@ public class BotSelfUpdateService extends AbstractService {
 		ProgramVersion latestVersion = UpdateUtil.getLatestVersion();
 		if (latestVersion.isHigherThan(Launcher.getVersion())) {
 			for (IChannel channel : getSubscribedChannels()) {
-				bot.out.sendMessage(channel, String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()));
+				bot.out.sendAsyncMessage(channel, String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
 			}
 			for (IGuild guild : bot.client.getGuilds()) {
 				String announce = GuildSettings.get(guild).getOrDefault(SettingBotUpdateWarning.class);
@@ -58,12 +58,12 @@ public class BotSelfUpdateService extends AbstractService {
 					case "off":
 						continue;
 					case "always":
-						bot.out.sendMessage(bot.getDefaultChannel(guild), String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()));
+						bot.out.sendAsyncMessage(bot.getDefaultChannel(guild), String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
 						break;
 					case "playing":
 						for (IVoiceChannel voiceChannel : bot.client.getConnectedVoiceChannels()) {
 							if (voiceChannel.getGuild().getID().equals(guild.getID())) {
-								bot.out.sendMessage(bot.getMusicChannel(guild), String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()));
+								bot.out.sendAsyncMessage(bot.getMusicChannel(guild), String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
 								break;
 							}
 						}

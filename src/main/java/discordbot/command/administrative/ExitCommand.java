@@ -42,7 +42,7 @@ public class ExitCommand extends AbstractCommand {
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
 		if (bot.isCreator(author)) {
-			bot.out.sendMessage(channel, "I am being killed :sob: farewell world! :wave: ");
+			bot.out.sendAsyncMessage(channel, "I am being killed :sob: farewell world! :wave: ", null);
 			Launcher.stop(ExitCode.STOP);
 		}
 		return Template.get("command_no_permission");

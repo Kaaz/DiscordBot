@@ -70,13 +70,13 @@ public class GameHandler {
 			case "enter":
 			case "play":
 				enterPlayMode(channel, player);
-				bot.out.sendMessage(channel, Template.get("playmode_entering_mode"));
+				bot.out.sendAsyncMessage(channel, Template.get("playmode_entering_mode"), null);
 				return;
 			case "exit":
 			case "leave":
 			case "stop":
 				leavePlayMode(player);
-				bot.out.sendMessage(channel, Template.get("playmode_leaving_mode"));
+				bot.out.sendAsyncMessage(channel, Template.get("playmode_leaving_mode"), null);
 				return;
 			default:
 				break;
@@ -89,7 +89,7 @@ public class GameHandler {
 			gameMessage = showList(channel);
 		}
 		if (!gameMessage.isEmpty()) {
-			IMessage msg = bot.out.sendMessage(channel, gameMessage);
+			IMessage msg = bot.out.sendAsyncMessage(channel, gameMessage, null);
 			if (lastMessage.containsKey(channel.getID())) {
 				IMessage msgToDelete = lastMessage.remove(channel.getID());
 				bot.out.deleteMessage(msgToDelete);

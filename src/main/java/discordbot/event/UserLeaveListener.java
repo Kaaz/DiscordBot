@@ -35,7 +35,7 @@ public class UserLeaveListener extends AbstractEventListener<UserLeaveEvent> {
 			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** left the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()));
 		}
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingWelcomeNewUsers.class))) {
-			discordBot.out.sendMessage(guild.getChannels().get(0), String.format(Template.get("message_user_leaves"), user.mention()));
+			discordBot.out.sendAsyncMessage(guild.getChannels().get(0), String.format(Template.get("message_user_leaves"), user.mention()), null);
 		}
 		OGuildMember guildMember = TGuildMember.findBy(guild.getID(), user.getID());
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());
