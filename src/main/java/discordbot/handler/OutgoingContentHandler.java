@@ -6,8 +6,8 @@ import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.Role;
-import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -31,11 +31,11 @@ public class OutgoingContentHandler {
 	 * @param callback
 	 * @return IMessage or null
 	 */
-	public void sendAsyncMessage(TextChannel channel, String content, Consumer<Message> callback) {
+	public void sendAsyncMessage(MessageChannel channel, String content, Consumer<Message> callback) {
 		channel.sendMessageAsync(content, null);
 	}
 
-	public Message sendMessage(TextChannel channel, String content, Consumer<Message> callback) {
+	public Message sendMessage(MessageChannel channel, String content, Consumer<Message> callback) {
 		return channel.sendMessage(content);
 	}
 

@@ -1,7 +1,6 @@
 package discordbot.games;
 
 import net.dv8tion.jda.entities.User;
-import sx.blah.discord.handle.obj.IUser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -9,7 +8,7 @@ import java.util.Random;
 
 public abstract class AbstractGame<turnType extends GameTurn> {
 	private GameState gameState;
-	private IUser[] players;
+	private User[] players;
 	private int activePlayerIndex = 0;
 	private int winnerIndex = -1;
 
@@ -44,7 +43,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 		return null;
 	}
 
-	protected IUser getPlayer(int index) {
+	protected User getPlayer(int index) {
 		return players[index];
 	}
 
@@ -52,7 +51,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 		return activePlayerIndex;
 	}
 
-	protected IUser getActivePlayer() {
+	protected User getActivePlayer() {
 		return players[activePlayerIndex];
 	}
 
@@ -76,7 +75,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	 */
 	public void reset() {
 		winnerIndex = getTotalPlayers();
-		players = new IUser[getTotalPlayers()];
+		players = new User[getTotalPlayers()];
 		for (int i = 0; i < getTotalPlayers(); i++) {
 			players[i] = null;
 		}
@@ -95,7 +94,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	 * @param turnInfo the details about the move
 	 * @return turn successfully played?
 	 */
-	public final boolean playTurn(User player, GameTurn turnInfo) {
+	public final boolean playTurn(User player, turnType turnInfo) {
 		if (!(gameState.equals(GameState.IN_PROGRESS) || gameState.equals(GameState.READY))) {
 			return false;
 		}
@@ -162,7 +161,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	 * @param turnInfo the details about the move
 	 * @return is a valid move?
 	 */
-	public abstract boolean isValidMove(User player, GameTurn turnInfo);
+	public abstract boolean isValidMove(User player, turnType turnInfo);
 
 	/**
 	 * play the turn
@@ -170,7 +169,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	 * @param player   the player
 	 * @param turnInfo the details about the move
 	 */
-	protected abstract void doPlayerMove(IUser player, turnType turnInfo);
+	protected abstract void doPlayerMove(User player, turnType turnInfo);
 
 
 	/**

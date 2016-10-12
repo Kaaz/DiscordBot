@@ -6,7 +6,7 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 import java.util.Map;
@@ -52,46 +52,43 @@ public class BlackJackCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		if (args.length == 0) {
-			if (playerGames.containsKey(author.getID()) && playerGames.get(author.getID()).isInProgress()) {
+			if (playerGames.containsKey(author.getId()) && playerGames.get(author.getId()).isInProgress()) {
 				return "You are still in a game. To finish type **blackjack stand**" + Config.EOL +
-						playerGames.get(author.getID()).toString();
+						playerGames.get(author.getId()).toString();
 			}
 			return "You are not playing a game, to start use **" + DisUtil.getCommandPrefix(channel) + "blackjack hit**";
 		}
 		if (args[0].equalsIgnoreCase("hit")) {
-			if (!playerGames.containsKey(author.getID()) || !playerGames.get(author.getID()).isInProgress()) {
-				playerGames.put(author.getID(), new Blackjack(author.mention()));
+			if (!playerGames.containsKey(author.getId()) || !playerGames.get(author.getId()).isInProgress()) {
+				playerGames.put(author.getId(), new Blackjack(author.getAsMention()));
 			}
-			if (playerGames.get(author.getID()).isInProgress() && !playerGames.get(author.getID()).playerIsStanding()) {
-				playerGames.get(author.getID()).hit();
-				return playerGames.get(author.getID()).toString();
+			if (playerGames.get(author.getId()).isInProgress() && !playerGames.get(author.getId()).playerIsStanding()) {
+				playerGames.get(author.getId()).hit();
+				return playerGames.get(author.getId()).toString();
 			}
 			return "";
 		} else if (args[0].equalsIgnoreCase("stand")) {
-			if (playerGames.containsKey(author.getID())) {
-				if (!playerGames.get(author.getID()).playerIsStanding()) {
-					bot.out.sendAsyncMessage(channel, playerGames.get(author.getID()).toString(), message -> {
-						playerGames.get(author.getID()).stand();
+			if (playerGames.containsKey(author.getId())) {
+				if (!playerGames.get(author.getId()).playerIsStanding()) {
+					bot.out.sendAsyncMessage(channel, playerGames.get(author.getId()).toString(), message -> {
+						playerGames.get(author.getId()).stand();
 						bot.timer.scheduleAtFixedRate(new TimerTask() {
 							@Override
 							public void run() {
 								try {
-									boolean didHit = playerGames.get(author.getID()).dealerHit();
-									if (msg != null) {
-										bot.out.editMessage(msg, playerGames.get(author.getID()).toString());
-									} else {
-										bot.out.sendAsyncMessage(channel, playerGames.get(author.getID()).toString(), null);
-									}
+									boolean didHit = playerGames.get(author.getId()).dealerHit();
+									message.updateMessageAsync(playerGames.get(author.getId()).toString(), null);
+
 									if (!didHit) {
-										playerGames.remove(author.getID());
+										playerGames.remove(author.getId());
 										this.cancel();
 									}
 								} catch (Exception e) {
-									bot.out.sendErrorToMe(e, "blackjackgame", author.getID(), bot);
+									bot.out.sendErrorToMe(e, "blackjackgame", author.getId(), bot);
 									this.cancel();
-									playerGames.remove(author.getID());
+									playerGames.remove(author.getId());
 								}
 							}
 						}, 1000L, DEALER_TURN_INTERVAL);

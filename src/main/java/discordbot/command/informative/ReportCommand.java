@@ -5,7 +5,8 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.User;
 
 public class ReportCommand extends AbstractCommand {
 	public ReportCommand(DiscordBot b) {
@@ -39,7 +40,7 @@ public class ReportCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, net.dv8tion.jda.entities.User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		if (args.length <= 3) {
 			return "Usage: " + getUsage()[0];
 		}
@@ -63,8 +64,8 @@ public class ReportCommand extends AbstractCommand {
 		if (body.length() < 20 || title.length() < 3) {
 			return Template.get("command_report_message_too_short");
 		}
-		bot.out.sendPrivateMessage(bot.client.getUserByID(Config.CREATOR_ID), "new :e_mail: Report coming in!" + Config.EOL + Config.EOL +
-				":bust_in_silhouette: user:  " + author.getName() + " ( " + author.mention() + " )" + Config.EOL +
+		bot.out.sendPrivateMessage(bot.client.getUserById(Config.CREATOR_ID), "new :e_mail: Report coming in!" + Config.EOL + Config.EOL +
+				":bust_in_silhouette: user:  " + author.getUsername() + " ( " + author.getAsMention() + " )" + Config.EOL +
 				"Title: " + Config.EOL + title + Config.EOL + Config.EOL +
 				"Message: " + Config.EOL + body
 		);

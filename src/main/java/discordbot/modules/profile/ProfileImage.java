@@ -1,7 +1,7 @@
 package discordbot.modules.profile;
 
 import discordbot.main.Launcher;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.User;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,14 +14,14 @@ import java.net.URLConnection;
  */
 public abstract class ProfileImage {
 
-	private final IUser user;
+	private final User user;
 
-	public ProfileImage(IUser user) {
+	public ProfileImage(User user) {
 		this.user = user;
 	}
 
 	public BufferedImage getUserAvatar() throws IOException {
-		URLConnection connection = new URL(getUser().getAvatarURL()).openConnection();
+		URLConnection connection = new URL(getUser().getAvatarUrl()).openConnection();
 		connection.setRequestProperty("User-Agent", "bot emily-bot");
 		BufferedImage profileImg;
 		try {
@@ -32,7 +32,7 @@ public abstract class ProfileImage {
 		return profileImg;
 	}
 
-	public IUser getUser() {
+	public User getUser() {
 		return user;
 	}
 }

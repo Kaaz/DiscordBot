@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.login.LoginException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -56,11 +55,11 @@ public class DiscordBot {
 	 * @param user    the user to check
 	 * @return is the user an admin?
 	 */
-	public boolean isAdmin(Channel channel, User user) {
+	public boolean isAdmin(MessageChannel channel, User user) {
 		if (channel == null || channel instanceof PrivateChannel) {
 			return false;
 		}
-		return isCreator(user) || channel.checkPermission(user, Permission.ADMINISTRATOR);
+		return isCreator(user) || ((TextChannel) channel).checkPermission(user, Permission.ADMINISTRATOR);
 	}
 
 	/**
@@ -70,11 +69,15 @@ public class DiscordBot {
 	 * @param user    the user to check
 	 * @return user is owner
 	 */
-	public boolean isOwner(Channel channel, User user) {
+	public boolean isOwner(MessageChannel channel, User user) {
 		if (channel instanceof PrivateChannel) {
 			return isCreator(user);
 		}
-		return isCreator(user) || channel.getGuild().getOwner().equals(user);
+		if (channel instanceof TextChannel) {
+			return ((TextChannel) channel).getGuild().getOwner().equals(user);
+
+		}
+		return isCreator(user);
 	}
 
 	/**
@@ -195,22 +198,17 @@ public class DiscordBot {
 		return false;
 	}
 
-	public void addSongToQueue(String filename, IGuild guild) {
+	public void addSongToQueue(String filename, Guild guild) {
 		MusicPlayerHandler.getFor(guild, this).addToQueue(filename);
 	}
 
-	public void skipCurrentSong(IGuild guild) {
+	public void skipCurrentSong(Guild guild) {
 		MusicPlayerHandler.getFor(guild, this).skipSong();
-	}
-
-	public void setVolume(IGuild guild, float vol) {
-		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild);
-		player.setVolume(vol);
 	}
 
 
 	public void handlePrivateMessage(PrivateChannel channel, User author, Message message) {
-		if (commands.isCommand(channel, message.getContent())) {
+		if (commands.isCommand(null, message.getContent())) {
 			commands.process(channel, author, message.getContent());
 		} else {
 			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getContent()), null);
@@ -247,32 +245,35 @@ public class DiscordBot {
 		}
 	}
 
-	public float getVolume(IGuild guild) {
-		AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild);
-		return player.getVolume();
+	public float getVolume(Guild guild) {
+		return MusicPlayerHandler.getFor(guild, this).getVolume();
 	}
 
-	public void trackEnded(AudioPlayer.Track oldTrack, Optional<AudioPlayer.Track> nextTrack, IGuild guild) {
-		MusicPlayerHandler.getFor(guild, this).onTrackEnded(oldTrack, nextTrack);
-	}
-
-	public void trackStarted(AudioPlayer.Track track, IGuild guild) {
-		MusicPlayerHandler.getFor(guild, this).onTrackStarted(track);
-	}
-
-	public void stopMusic(IGuild guild) {
+	public void stopMusic(Guild guild) {
 		MusicPlayerHandler.getFor(guild, this).stopMusic();
 	}
 
-	public OMusic getCurrentlyPlayingSong(IGuild guild) {
+	public OMusic getCurrentlyPlayingSong(Guild guild) {
 		return MusicPlayerHandler.getFor(guild, this).getCurrentlyPlaying();
 	}
 
-	public List<IUser> getCurrentlyListening(IGuild guild) {
-		return MusicPlayerHandler.getFor(guild, this).getUsersInVoiceChannel();
+	public void connectTo(VoiceChannel channel) {
+		MusicPlayerHandler.getFor(channel.getGuild(), this).connectTo(channel);
 	}
 
-	public boolean playRandomSong(IGuild guild) {
+	public boolean isConnectedTo(VoiceChannel channel) {
+		return MusicPlayerHandler.getFor(channel.getGuild(), this).isConnectedTo(channel);
+	}
+
+	public boolean isConnected(Guild guild) {
+		return MusicPlayerHandler.getFor(guild, this).leave();
+	}
+
+	public boolean leaveVoice(Guild guild) {
+		return MusicPlayerHandler.getFor(guild, this).leave();
+	}
+
+	public boolean playRandomSong(Guild guild) {
 		return MusicPlayerHandler.getFor(guild, this).playRandomSong();
 	}
 }

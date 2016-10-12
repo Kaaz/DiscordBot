@@ -5,6 +5,7 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -39,9 +40,9 @@ public class LeaveGuildCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		boolean shouldLeave = false;
-		Guild guild = channel.getGuild();
+		Guild guild = ((TextChannel) channel).getGuild();
 		if (!bot.isAdmin(channel, author)) {
 			return Template.get("no_permission");
 		}

@@ -9,7 +9,6 @@ import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
 import discordbot.threads.ServiceHandlerThread;
 import discordbot.util.YTUtil;
-import sx.blah.discord.util.DiscordException;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class Launcher {
 				Thread serviceHandler = new ServiceHandlerThread(nb);
 //				serviceHandler.setDaemon(true);
 				serviceHandler.start();
-			} catch (DiscordException e) {
+			} catch (Exception e) {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 				Launcher.stop(ExitCode.SHITTY_CONFIG);

@@ -3,6 +3,7 @@ package discordbot.util;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.handler.GuildSettings;
+import discordbot.main.Config;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.*;
 import net.dv8tion.jda.utils.PermissionUtil;
@@ -111,7 +112,7 @@ public class DisUtil {
 	 * @param channel the channel where the text came from
 	 * @return text with the prefix filtered
 	 */
-	public static String filterPrefix(String command, Channel channel) {
+	public static String filterPrefix(String command, MessageChannel channel) {
 		String prefix = getCommandPrefix(channel);
 		if (command.startsWith(prefix)) {
 			return command.substring(prefix.length());
@@ -125,11 +126,14 @@ public class DisUtil {
 	 * @param channel channel to check the prefix for
 	 * @return the command prefix
 	 */
-	public static String getCommandPrefix(Channel channel) {
+	public static String getCommandPrefix(MessageChannel channel) {
 		if (channel == null || channel instanceof PrivateChannel) {
 			return DefaultGuildSettings.getDefault(SettingCommandPrefix.class);
 		}
-		return GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);
+		if (channel instanceof TextChannel) {
+			return GuildSettings.get(((TextChannel) channel).getGuild()).getOrDefault(SettingCommandPrefix.class);
+		}
+		return Config.BOT_COMMAND_PREFIX;
 	}
 
 	/**

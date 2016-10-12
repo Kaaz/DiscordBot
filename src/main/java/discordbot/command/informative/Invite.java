@@ -3,7 +3,8 @@ package discordbot.command.informative;
 import discordbot.core.AbstractCommand;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.User;
 
 /**
  * !invite
@@ -37,9 +38,9 @@ public class Invite extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, net.dv8tion.jda.entities.User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		return "I am honored you'd want to invite me! :hugging: " + Config.EOL +
 				"You can add me to your guild/server with the following link : " + Config.EOL +
-				"https://discordapp.com/oauth2/authorize?client_id=" + bot.client.getOurUser().getID() + "&scope=bot";
+				"https://discordapp.com/oauth2/authorize?client_id=" + bot.client.getSelfInfo().getId() + "&scope=bot";
 	}
 }

@@ -5,7 +5,7 @@ import discordbot.db.table.TGuild;
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.DefaultGuildSettings;
 import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.PrivateChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 
 import java.sql.ResultSet;
@@ -36,11 +36,11 @@ public class GuildSettings {
 	 * @param settingClass the Setting
 	 * @return the setting
 	 */
-	public static String getFor(TextChannel channel, Class<? extends AbstractGuildSetting> settingClass) {
-		if (channel == null || channel instanceof PrivateChannel) {
-			return DefaultGuildSettings.getDefault(settingClass);
+	public static String getFor(MessageChannel channel, Class<? extends AbstractGuildSetting> settingClass) {
+		if (channel != null && channel instanceof TextChannel) {
+			return GuildSettings.get(((TextChannel) channel).getGuild()).getOrDefault(settingClass);
 		}
-		return GuildSettings.get(channel.getGuild()).getOrDefault(settingClass);
+		return DefaultGuildSettings.getDefault(settingClass);
 	}
 
 	public static GuildSettings get(Guild guild) {

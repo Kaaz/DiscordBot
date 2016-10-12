@@ -8,7 +8,7 @@ import discordbot.modules.github.GithubConstants;
 import discordbot.modules.github.pojo.RepositoryCommit;
 import discordbot.util.Misc;
 import discordbot.util.TimeUtil;
-import sx.blah.discord.handle.obj.IChannel;
+import net.dv8tion.jda.entities.TextChannel;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -91,8 +91,8 @@ public class GithubService extends AbstractService {
 			} else {
 				totalMessage += Misc.makeAsciiTable(Arrays.asList("hash", "committer", "description"), tblContent);
 			}
-			for (IChannel iChannel : getSubscribedChannels()) {
-				bot.out.sendAsyncMessage(iChannel, totalMessage, null);
+			for (TextChannel chan : getSubscribedChannels()) {
+				bot.out.sendAsyncMessage(chan, totalMessage, null);
 			}
 		}
 		saveData("last_date", newLastKnownCommitTimestamp);

@@ -2,28 +2,23 @@ package discordbot.handler;
 
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
-import discordbot.db.table.TMusic;
-import discordbot.guildsettings.defaults.SettingMusicChannelTitle;
-import discordbot.guildsettings.defaults.SettingMusicPlayingMessage;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import net.dv8tion.jda.audio.player.FilePlayer;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.IVoiceChannel;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
-import sx.blah.discord.util.audio.AudioPlayer;
-import sx.blah.discord.util.audio.providers.FileProvider;
+import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.entities.VoiceChannel;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -52,8 +47,28 @@ public class MusicPlayerHandler {
 		}
 	}
 
+	public boolean isConnectedTo(VoiceChannel channel) {
+		return channel.equals(guild.getAudioManager().getConnectedChannel());
+	}
+
+	public void connectTo(VoiceChannel channel) {
+		guild.getAudioManager().openAudioConnection(channel);
+	}
+
+	public boolean isConnected() {
+		return guild.getAudioManager().getConnectedChannel() == null;
+	}
+
+	public boolean leave() {
+		if (isConnected()) {
+			return false;
+		}
+		guild.getAudioManager().closeAudioConnection();
+		return true;
+	}
+
 	public void clearPlayList() {
-		AudioPlayer.getAudioPlayerForGuild(guild).getPlaylist().clear();
+//		AudioPlayer.getAudioPlayerForGuild(guild).getPlaylist().clear();
 	}
 
 	public OMusic getCurrentlyPlaying() {
@@ -82,15 +97,15 @@ public class MusicPlayerHandler {
 	 * Skips currently playing song
 	 */
 	public void skipSong() {
-		clearMessage();
-		AudioPlayer ap = AudioPlayer.getAudioPlayerForGuild(guild);
-		ap.skip();
+//		clearMessage();
+//		AudioPlayer ap = AudioPlayer.getAudioPlayerForGuild(guild);
+//		ap.skip();
 		currentlyPlaying = new OMusic();
 		currentSongLength = 0;
 		currentSongStartTimeInSeconds = 0;
-		if (ap.getPlaylistSize() == 0) {
-			playRandomSong();
-		}
+//		if (ap.getPlaylistSize() == 0) {
+//			playRandomSong();
+//		}
 	}
 
 	/**
@@ -117,90 +132,73 @@ public class MusicPlayerHandler {
 		return potentialSongs.get(rng.nextInt(potentialSongs.size()));
 	}
 
-	/**
-	 * A track has ended
-	 *
-	 * @param oldTrack  track which just stopped
-	 * @param nextTrack next track
-	 */
-	public void onTrackEnded(AudioPlayer.Track oldTrack, Optional<AudioPlayer.Track> nextTrack) {
-		clearMessage();
-		currentSongLength = 0;
-		currentlyPlaying = new OMusic();
-		if (!nextTrack.isPresent()) {
-			playRandomSong();
-		}
-	}
+//	public void onTrackEnded(AudioPlayer.Track oldTrack, Optional<AudioPlayer.Track> nextTrack) {
+//		clearMessage();
+//		currentSongLength = 0;
+//		currentlyPlaying = new OMusic();
+//		if (!nextTrack.isPresent()) {
+//			playRandomSong();
+//		}
+//	}
 
-	/**
-	 * a track has started
-	 *
-	 * @param track the track which has started
-	 */
-	public void onTrackStarted(AudioPlayer.Track track) {
-		clearMessage();
-		Map<String, Object> metadata = track.getMetadata();
-		String msg = "Now playing unknown file :(";
-		if (metadata.containsKey("file")) {
-			if (metadata.get("file") instanceof File) {
-				File f = (File) metadata.get("file");
-				getMp3Details(f);
-				OMusic music = TMusic.findByFileName(f.getAbsolutePath());
-				if (music.id == 0) {
-					music = TMusic.findByFileName(f.getName());
-					if (music.id > 0) {
-						music.filename = f.getAbsolutePath();
-						TMusic.update(music);
-					}
-				}
-				currentlyPlaying = music;
-				currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000;
-				music.lastplaydate = currentSongStartTimeInSeconds;
-				TMusic.update(music);
-				if (music.artist != null && music.title != null && !music.artist.trim().isEmpty() && !music.title.trim().isEmpty()) {
-					msg = ":notes: " + music.artist + " - " + music.title;
-				} else if (music.youtubeTitle != null && !music.youtubeTitle.isEmpty()) {
-					msg = ":notes: " + music.youtubeTitle + " ** need details about song! ** check out **current**";
-				} else {
-					msg = ":floppy_disk: :thinking: Something is wrong with this file `" + f.getName() + "`";
-				}
-			}
-		}
-		if (GuildSettings.get(guild).getOrDefault(SettingMusicChannelTitle.class).equals("true")) {
-			try {
-				bot.getMusicChannel(guild).changeTopic(msg);
-			} catch (RateLimitException | DiscordException e) {
-				e.printStackTrace();
-				bot.out.sendErrorToMe(e);
-			} catch (MissingPermissionsException e) {
-				bot.out.sendAsyncMessage(bot.getMusicChannel(guild), "I don't have permission to change the topic of this channel :(" + Config.EOL +
-						" I'm disabling `music_channel_title` option for now. " + Config.EOL + e.getMessage(), null);
-				GuildSettings.get(guild).set("music_channel_title", "false");
-			}
-		}
-		if (!GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class).equals("off")) {
-			activeMsg = bot.out.sendAsyncMessage(bot.getMusicChannel(guild), msg, null);
-		}
-	}
-
-	private void getMp3Details(File f) {
-//			Mp3File mp3file = new Mp3File(f);
-		currentSongLength = 60;//mp3file.getLengthInSeconds();
-//			mp3file = null;
-	}
+//	public void onTrackStarted(AudioPlayer.Track track) {
+//		clearMessage();
+//		Map<String, Object> metadata = track.getMetadata();
+//		String msg = "Now playing unknown file :(";
+//		if (metadata.containsKey("file")) {
+//			if (metadata.get("file") instanceof File) {
+//				File f = (File) metadata.get("file");
+//				getMp3Details(f);
+//				OMusic music = TMusic.findByFileName(f.getAbsolutePath());
+//				if (music.id == 0) {
+//					music = TMusic.findByFileName(f.getName());
+//					if (music.id > 0) {
+//						music.filename = f.getAbsolutePath();
+//						TMusic.update(music);
+//					}
+//				}
+//				currentlyPlaying = music;
+//				currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000;
+//				music.lastplaydate = currentSongStartTimeInSeconds;
+//				TMusic.update(music);
+//				if (music.artist != null && music.title != null && !music.artist.trim().isEmpty() && !music.title.trim().isEmpty()) {
+//					msg = ":notes: " + music.artist + " - " + music.title;
+//				} else if (music.youtubeTitle != null && !music.youtubeTitle.isEmpty()) {
+//					msg = ":notes: " + music.youtubeTitle + " ** need details about song! ** check out **current**";
+//				} else {
+//					msg = ":floppy_disk: :thinking: Something is wrong with this file `" + f.getName() + "`";
+//				}
+//			}
+//		}
+//		if (GuildSettings.get(guild).getOrDefault(SettingMusicChannelTitle.class).equals("true")) {
+//			try {
+//				bot.getMusicChannel(guild).changeTopic(msg);
+//			} catch (RateLimitException | DiscordException e) {
+//				e.printStackTrace();
+//				bot.out.sendErrorToMe(e);
+//			} catch (MissingPermissionsException e) {
+//				bot.out.sendAsyncMessage(bot.getMusicChannel(guild), "I don't have permission to change the topic of this channel :(" + Config.EOL +
+//						" I'm disabling `music_channel_title` option for now. " + Config.EOL + e.getMessage(), null);
+//				GuildSettings.get(guild).set("music_channel_title", "false");
+//			}
+//		}
+//		if (!GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class).equals("off")) {
+//			activeMsg = bot.out.sendAsyncMessage(bot.getMusicChannel(guild), msg, null);
+//		}
+//	}
 
 	/**
 	 * Deletes 'now playing' message if it exists
 	 */
-	private void clearMessage() {
-		if (activeMsg != null && GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class).equals("clear")) {
-			try {
-				activeMsg.delete();
-				activeMsg = null;
-			} catch (MissingPermissionsException | RateLimitException | DiscordException ignored) {
-			}
-		}
-	}
+//	private void clearMessage() {
+//		if (activeMsg != null && GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class).equals("clear")) {
+//			try {
+//				activeMsg.delete();
+//				activeMsg = null;
+//			} catch (MissingPermissionsException | RateLimitException | DiscordException ignored) {
+//			}
+//		}
+//	}
 
 	/**
 	 * Adds a random song from the music directory to the queue
@@ -211,45 +209,34 @@ public class MusicPlayerHandler {
 		return addToQueue(getRandomSong());
 	}
 
-	private AudioPlayer.Track makeTrack(File file) throws IOException, UnsupportedAudioFileException {
-		FileProvider fileProvider = new FileProvider(file);
-		AudioPlayer.Track track = new AudioPlayer.Track(fileProvider);
-		track.getMetadata().put("file", file);
-		return track;
-	}
-
 	public boolean addToQueue(String filename) {
 		File f = new File(filename);
 		if (!f.exists()) {//check in config directory
 			f = new File(Config.MUSIC_DIRECTORY + filename);
-			if (!f.exists()) {//check for absolute path
-				bot.out.sendErrorToMe(new Exception("nosongexception :("), "filename: ", f.getName(), "plz fix", "I want music", bot);
-				return false;
-			}
+			bot.out.sendErrorToMe(new Exception("nosongexception :("), "filename: ", f.getAbsolutePath(), "plz fix", "I want music", bot);
+			return false;
 		}
 		try {
-			AudioPlayer.getAudioPlayerForGuild(guild).queue(makeTrack(f));
-			return true;
+			guild.getAudioManager().setSendingHandler(new FilePlayer(f));
 		} catch (IOException | UnsupportedAudioFileException e) {
-			e.printStackTrace();
-
+			return false;
 		}
+//		try {
+//			AudioPlayer.getAudioPlayerForGuild(guild).queue(makeTrack(f));
+//			return true;
+//		} catch (IOException | UnsupportedAudioFileException e) {
+//			e.printStackTrace();
+//
+//		}
 		return false;
 	}
 
-	public List<IUser> getUsersInVoiceChannel() {
-		ArrayList<IUser> userList = new ArrayList<>();
-		List<IVoiceChannel> connectedVoiceChannels = bot.client.getOurUser().getConnectedVoiceChannels();
-		IVoiceChannel currentChannel = null;
-		for (IVoiceChannel channel : connectedVoiceChannels) {
-			if (channel.getGuild().equals(guild)) {
-				currentChannel = channel;
-				break;
-			}
-		}
+	public List<User> getUsersInVoiceChannel() {
+		ArrayList<User> userList = new ArrayList<>();
+		VoiceChannel currentChannel = guild.getAudioManager().getConnectedChannel();
 		if (currentChannel != null) {
-			List<IUser> connectedUsers = currentChannel.getConnectedUsers();
-			userList.addAll(connectedUsers.stream().filter(user -> !user.equals(bot.client.getOurUser()) && !user.isBot()).collect(Collectors.toList()));
+			List<User> connectedUsers = currentChannel.getUsers();
+			userList.addAll(connectedUsers.stream().filter(user -> !user.isBot()).collect(Collectors.toList()));
 		}
 		return userList;
 	}
@@ -259,27 +246,18 @@ public class MusicPlayerHandler {
 	 */
 
 	public void stopMusic() {
-		clearMessage();
-		currentSongLength = 0;
-		currentlyPlaying = new OMusic();
-		AudioPlayer.getAudioPlayerForGuild(guild).clear();
+//		clearMessage();
+//		currentSongLength = 0;
+//		currentlyPlaying = new OMusic();
 	}
 
 	public float getVolume() {
-		return AudioPlayer.getAudioPlayerForGuild(guild).getVolume();
+		return 1;
+//		return AudioPlayer.getAudioPlayerForGuild(guild).getVolume();
 	}
 
 	public List<OMusic> getQueue() {
 		ArrayList<OMusic> list = new ArrayList<>();
-		List<AudioPlayer.Track> trackList = AudioPlayer.getAudioPlayerForGuild(guild).getPlaylist();
-		for (AudioPlayer.Track track : trackList) {
-			Map<String, Object> metadata = track.getMetadata();
-			if (metadata.containsKey("file") && metadata.get("file") instanceof File) {
-				list.add(TMusic.findByFileName(((File) metadata.get("file")).getAbsolutePath()));
-			} else {
-				list.add(new OMusic());
-			}
-		}
 		return list;
 	}
 

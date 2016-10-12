@@ -11,9 +11,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.YTSearch;
 import discordbot.util.YTUtil;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
-import sx.blah.discord.handle.obj.*;
+import net.dv8tion.jda.entities.*;
 
 import java.io.File;
 
@@ -59,34 +57,32 @@ public class Play extends AbstractCommand {
 		return new String[0];
 	}
 
-	private boolean isInVoiceWith(IGuild guild, IUser author) {
-		for (IVoiceChannel voice : bot.client.getConnectedVoiceChannels()) {
-			if (voice.getGuild().equals(guild)) {
-				for (IUser user : voice.getConnectedUsers()) {
-					if (user.equals(author)) {
-						return true;
-					}
-				}
-				return false;
+	private boolean isInVoiceWith(Guild guild, User author) {
+		VoiceChannel channel = guild.getVoiceStatusOfUser(author).getChannel();
+		for (User user : channel.getUsers()) {
+			if (user.getId().equals(bot.client.getSelfInfo().getId())) {
+				return true;
 			}
 		}
 		return false;
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
-		if (!isInVoiceWith(channel.getGuild(), author)) {
+	public String execute(String[] args, MessageChannel channel, User author) {
+		TextChannel txt = (TextChannel) channel;
+		Guild guild = txt.getGuild();
+		if (!isInVoiceWith(guild, author)) {
 			String joinOutput = bot.commands.getCommand("join").execute(new String[]{}, channel, author);
 			try {
 				Thread.sleep(500L);// ¯\_(ツ)_/¯
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if (!isInVoiceWith(channel.getGuild(), author)) {
+			if (!isInVoiceWith(guild, author)) {
 				return joinOutput;
 			}
 		}
-		if (MusicPlayerHandler.getFor(channel.getGuild(), bot).getUsersInVoiceChannel().size() == 0) {
+		if (MusicPlayerHandler.getFor(guild, bot).getUsersInVoiceChannel().size() == 0) {
 			return Template.get("music_no_users_in_channel");
 		}
 		if (args.length > 0) {
@@ -112,14 +108,14 @@ public class Play extends AbstractCommand {
 							rec.youtubecode = finalVideocode;
 							rec.filename = filecheck.getAbsolutePath();
 							TMusic.update(rec);
-							bot.addSongToQueue(filecheck.getAbsolutePath(), channel.getGuild());
+							bot.addSongToQueue(filecheck.getAbsolutePath(), guild);
 							message.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
 						} else {
 							message.deleteMessage();
 						}
 					});
 				} else if (filecheck.exists()) {
-					bot.addSongToQueue(filecheck.getAbsolutePath(), channel.getGuild());
+					bot.addSongToQueue(filecheck.getAbsolutePath(), guild);
 					return Template.get("music_added_to_queue");
 				}
 			} else {
@@ -128,7 +124,7 @@ public class Play extends AbstractCommand {
 
 			}
 		} else {
-			if (bot.playRandomSong(channel.getGuild())) {
+			if (bot.playRandomSong(guild)) {
 				return Template.get("music_started_playing_random");
 			} else {
 				return Template.get("music_failed_to_start");

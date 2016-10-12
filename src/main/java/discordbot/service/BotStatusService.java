@@ -3,12 +3,8 @@ package discordbot.service;
 import discordbot.core.AbstractService;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IInvite;
-import sx.blah.discord.handle.obj.Status;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.utils.InviteUtil;
 
 import java.util.List;
 import java.util.Random;
@@ -17,35 +13,35 @@ import java.util.Random;
  * pseudo randomly sets the now playing tag of the bot
  */
 public class BotStatusService extends AbstractService {
-	private final static Status[] statusList = {
-			Status.game("with human pets"),
-			Status.game("Teaching Minions"),
-			Status.game("Planking"),
-			Status.game("Bot simulator 2015"),
-			Status.game("Pokemon Go"),
-			Status.game("Cow tipping"),
-			Status.game("Sorting commands"),
-			Status.game("Planning for wold domination"),
-			Status.game("Reading wikipedia"),
-			Status.game("Talking to Martians"),
-			Status.game("Homework"),
-			Status.game("Hearthstone"),
-			Status.game("Path of exile"),
-			Status.game("Blackjack"),
-			Status.game("Half Life 3"),
-			Status.game("russian roulette"),
-			Status.game("hide and seek"),
-			Status.game("peekaboo"),
-			Status.game("\";DROP TABLE"),
-			Status.game("rating your waifu"),
-			Status.game("Talking to idiots"),
-			Status.game("Looking for new jokes"),
-			Status.game("Organizing music"),
-			Status.game("Trying to remember preferences"),
-			Status.game("Analyzing fellow humans"),
-			Status.game("Yesterday you said tomorrow"),
-			Status.game("Let dreams be dreams"),
-			Status.game("Rare pepe")
+	private final static String[] statusList = {
+			"with human pets",
+			"Teaching Minions",
+			"Planking",
+			"Bot simulator 2015",
+			"Pokemon Go",
+			"Cow tipping",
+			"Sorting commands",
+			"Planning for wold domination",
+			"Reading wikipedia",
+			"Talking to Martians",
+			"Homework",
+			"Hearthstone",
+			"Path of exile",
+			"Blackjack",
+			"Half Life 3",
+			"russian roulette",
+			"hide and seek",
+			"peekaboo",
+			"\";DROP TABLE",
+			"rating your waifu",
+			"Talking to idiots",
+			"Looking for new jokes",
+			"Organizing music",
+			"Trying to remember preferences",
+			"Analyzing fellow humans",
+			"Yesterday you said tomorrow",
+			"Let dreams be dreams",
+			"Rare pepe"
 	};
 	Random rng;
 
@@ -76,24 +72,20 @@ public class BotStatusService extends AbstractService {
 	@Override
 	public void run() {
 		int roll = rng.nextInt(100);
-		IChannel channel = bot.client.getChannelByID(Config.BOT_CHANNEL_ID);
+		TextChannel channel = bot.client.getTextChannelById(Config.BOT_CHANNEL_ID);
 		if (channel != null) {
-			try {
-				List<IInvite> invites = channel.getInvites();
-				if (invites.size() > 0) {
-					if (roll < 10) {
-						bot.client.changeStatus(Status.game("Feedback @ https://discord.gg/" + invites.get(0).getInviteCode()));
-						return;
-					}
-				} else {
-					bot.out.sendPrivateMessage(bot.client.getUserByID(Config.CREATOR_ID), ":exclamation: I am out of invites for `" + channel.getName() + "` Click here to make more :D " + channel.mention());
+			List<InviteUtil.AdvancedInvite> invites = channel.getInvites();
+			if (invites.size() > 0) {
+				if (roll < 10) {
+					bot.client.getAccountManager().setGame("Feedback @ https://discord.gg/" + invites.get(0).getCode());
+					return;
 				}
-			} catch (DiscordException | RateLimitException | MissingPermissionsException e) {
-				bot.out.sendErrorToMe(e, "mychannel", Config.BOT_CHANNEL_ID, "invite_error", ":sob:");
-				e.printStackTrace();
+			} else {
+				bot.out.sendPrivateMessage(bot.client.getUserById(Config.CREATOR_ID), ":exclamation: I am out of invites for `" + channel.getName() + "` Click here to make more :D " + channel.getAsMention());
 			}
+
 		}
-		bot.client.changeStatus(statusList[new Random().nextInt(statusList.length)]);
+		bot.client.getAccountManager().setGame(statusList[new Random().nextInt(statusList.length)]);
 	}
 
 	@Override

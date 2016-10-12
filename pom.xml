@@ -128,5 +128,10 @@
 			<artifactId>lib-poe</artifactId>
 			<version>1.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.1</version>
+		</dependency>
 	</dependencies>
 </project>

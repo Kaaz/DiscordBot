@@ -7,6 +7,7 @@ import discordbot.games.SlotMachine;
 import discordbot.games.slotmachine.Slot;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -57,7 +58,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		if (args.length == 0 || args.length >= 1 && args[0].equals("play")) {
 			final SlotMachine slotMachine = new SlotMachine();
 			bot.out.sendAsyncMessage(channel, slotMachine.toString(), message -> {
@@ -82,7 +83,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 								message.updateMessageAsync(slotMachine.toString(), null);
 							}
 						} catch (Exception e) {
-							bot.out.sendErrorToMe(e, "slotmachine", author.getID(), "channel", channel.mention(), bot);
+							bot.out.sendErrorToMe(e, "slotmachine", author.getId(), "channel", ((TextChannel) channel).getAsMention(), bot);
 							this.cancel();
 						}
 					}

@@ -8,9 +8,10 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
-import sx.blah.discord.handle.obj.IGuild;
 
 import java.util.*;
 
@@ -55,19 +56,19 @@ public class SetConfig extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
-		IGuild guild;
+	public String execute(String[] args, MessageChannel channel, User author) {
+		Guild guild;
 		if (bot.isCreator(author) && args.length >= 1 && args[0].matches("^\\d{10,}$")) {
-			guild = bot.client.getGuildByID(args[0]);
+			guild = bot.client.getGuildById(args[0]);
 			if (guild == null) {
 				return Template.get("command_config_cant_find_guild");
 			}
 			args = Arrays.copyOfRange(args, 1, args.length);
 		} else {
-			guild = channel.getGuild();
+			guild = ((TextChannel) channel).getGuild();
 		}
 		int count = args.length;
-		if (bot.isAdmin(channel, author)) {
+		if (bot.isAdmin((TextChannel) channel, author)) {
 			if (count == 0) {
 				Map<String, String> settings = GuildSettings.get(guild).getSettings();
 				ArrayList<String> keys = new ArrayList<>(settings.keySet());

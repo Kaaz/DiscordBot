@@ -10,9 +10,8 @@ import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.main.ProgramVersion;
 import discordbot.util.UpdateUtil;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IVoiceChannel;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.TextChannel;
 
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -49,10 +48,10 @@ public class BotSelfUpdateService extends AbstractService {
 	public void run() {
 		ProgramVersion latestVersion = UpdateUtil.getLatestVersion();
 		if (latestVersion.isHigherThan(Launcher.getVersion())) {
-			for (IChannel channel : getSubscribedChannels()) {
+			for (TextChannel channel : getSubscribedChannels()) {
 				bot.out.sendAsyncMessage(channel, String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
 			}
-			for (IGuild guild : bot.client.getGuilds()) {
+			for (Guild guild : bot.client.getGuilds()) {
 				String announce = GuildSettings.get(guild).getOrDefault(SettingBotUpdateWarning.class);
 				switch (announce.toLowerCase()) {
 					case "off":
@@ -61,12 +60,12 @@ public class BotSelfUpdateService extends AbstractService {
 						bot.out.sendAsyncMessage(bot.getDefaultChannel(guild), String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
 						break;
 					case "playing":
-						for (IVoiceChannel voiceChannel : bot.client.getConnectedVoiceChannels()) {
-							if (voiceChannel.getGuild().getID().equals(guild.getID())) {
-								bot.out.sendAsyncMessage(bot.getMusicChannel(guild), String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
-								break;
-							}
-						}
+//						for (VoiceChannel voiceChannel : bot.client.getConnectedVoiceChannels()) {
+//							if (voiceChannel.getGuild().getID().equals(guild.getID())) {
+//								bot.out.sendAsyncMessage(bot.getMusicChannel(guild), String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
+//								break;
+//							}
+//						}
 						break;
 					default:
 						break;

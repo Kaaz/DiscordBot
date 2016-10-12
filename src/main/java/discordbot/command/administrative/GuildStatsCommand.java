@@ -5,7 +5,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class GuildStatsCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		int channels = 0, voice = 0, users = 0, activeVoice = bot.client.getVoiceChannels().size();
 		String totals = "";
 		List<Guild> guilds = bot.client.getGuilds();

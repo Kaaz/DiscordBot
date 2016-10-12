@@ -6,9 +6,9 @@ import discordbot.main.DiscordBot;
 import discordbot.modules.profile.ProfileImageV1;
 import discordbot.modules.profile.ProfileImageV2;
 import discordbot.util.DisUtil;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
-import sx.blah.discord.handle.obj.IUser;
 
 import java.io.File;
 
@@ -46,13 +46,13 @@ public class ProfileCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
-		IUser user = author;
+	public String execute(String[] args, MessageChannel channel, User author) {
+		User user = author;
 		if (args.length > 0) {
 			if (DisUtil.isUserMention(args[0])) {
-				user = bot.client.getUserByID(DisUtil.mentionToId(args[0]));
+				user = bot.client.getUserById(DisUtil.mentionToId(args[0]));
 			} else {
-				user = DisUtil.findUserIn(channel, args[0].toLowerCase());
+				user = DisUtil.findUserIn((TextChannel) channel, args[0].toLowerCase());
 			}
 			if (user == null) {
 				return String.format(Template.get("cant_find_user"), args[0]);
@@ -67,9 +67,7 @@ public class ProfileCommand extends AbstractCommand {
 				ProfileImageV2 version2 = new ProfileImageV2(user);
 				file = version2.getProfileImage();
 			}
-			channel.sendFile(file);
-			file.delete();
-
+			channel.sendFileAsync(file, null, message -> file.delete());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.getStackTrace();
@@ -81,9 +79,5 @@ public class ProfileCommand extends AbstractCommand {
 	@Override
 	public boolean isListed() {
 		return true;
-	}
-
-	private String mark(String s, String mark) {
-		return mark + s + mark;
 	}
 }

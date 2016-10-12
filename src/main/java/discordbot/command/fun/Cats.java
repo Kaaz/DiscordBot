@@ -5,7 +5,7 @@ import com.google.gson.JsonParser;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -62,7 +62,7 @@ public class Cats extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		String catFact = getCatFact();
 		if (catFact != null) {
 			return StringEscapeUtils.unescapeHtml4(catFact);

@@ -7,7 +7,7 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 import org.libpoe.model.StashTab;
 import org.libpoe.model.item.Item;
@@ -56,10 +56,10 @@ public class PoeCurrency extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		if (args.length > 1) {
 			if (args[0].equalsIgnoreCase("token")) {
-				OPoEToken token = TPoEToken.findBy(author.getID());
+				OPoEToken token = TPoEToken.findBy(author.getId());
 				token.session_id = args[1];
 				TPoEToken.insertOrUpdate(token);
 				return "Updated your token!";
@@ -68,7 +68,7 @@ public class PoeCurrency extends AbstractCommand {
 			}
 			return Template.get("command_invalid_usage");
 		}
-		OPoEToken token = TPoEToken.findBy(author.getID());
+		OPoEToken token = TPoEToken.findBy(author.getId());
 		AuthInfo account = new AuthInfo(token.session_id);
 		DataReader reader = new DataReader(account);
 		if (!reader.authenticate()) {

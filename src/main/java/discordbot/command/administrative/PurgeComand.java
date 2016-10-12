@@ -7,6 +7,7 @@ import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.utils.PermissionUtil;
@@ -54,8 +55,8 @@ public class PurgeComand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
-		boolean hasManageMessages = PermissionUtil.checkPermission(channel, bot.client.getSelfInfo(), Permission.MESSAGE_MANAGE);
+	public String execute(String[] args, MessageChannel channel, User author) {
+		boolean hasManageMessages = PermissionUtil.checkPermission((TextChannel) channel, bot.client.getSelfInfo(), Permission.MESSAGE_MANAGE);
 		User toDeleteFrom = null;
 		int deleteLimit = 100;
 		boolean deleteAll = true;

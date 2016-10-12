@@ -3,8 +3,8 @@ package discordbot.service;
 import discordbot.core.AbstractService;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 import java.util.List;
 
@@ -38,9 +38,9 @@ public class BotInformationService extends AbstractService {
 
 	@Override
 	public void run() {
-		List<IChannel> subscribedChannels = getSubscribedChannels();
-		IUser me = bot.client.getOurUser();
-		for (IChannel channel : subscribedChannels) {
+		List<TextChannel> subscribedChannels = getSubscribedChannels();
+		User me = bot.client.getSelfInfo();
+		for (TextChannel channel : subscribedChannels) {
 			bot.commands.getCommand("purge").execute(new String[]{}, channel, me);
 			bot.out.sendAsyncMessage(channel, Template.get("bot_service_information_display_title"), null);
 			bot.out.sendAsyncMessage(channel, bot.commands.getCommand("info").execute(new String[]{}, channel, me), null);

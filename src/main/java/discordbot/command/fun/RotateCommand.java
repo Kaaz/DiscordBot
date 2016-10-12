@@ -3,7 +3,7 @@ package discordbot.command.fun;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 import java.util.*;
@@ -109,7 +109,7 @@ public class RotateCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		List<String> inputArray = new ArrayList<>();
 		String output = "";
 		for (String arg : args) {

@@ -6,7 +6,7 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 /**
@@ -46,7 +46,7 @@ public class TemplateCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		if (bot.isOwner(channel, author)) {
 			if (args.length == 0) {
 				String usage = ":gear: **Options**:```php" + Config.EOL;

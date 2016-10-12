@@ -4,7 +4,7 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 public class ConnectFourCommand extends AbstractCommand {
@@ -45,7 +45,7 @@ public class ConnectFourCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		return "The games have been moved to the `" + DisUtil.getCommandPrefix(channel) + "game` command";
 	}
 }

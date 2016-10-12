@@ -3,14 +3,10 @@ package discordbot.command.administrative;
 import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  */
@@ -45,7 +41,7 @@ public class SendFileCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		if (!bot.isCreator(author)) {
 			return ":upside_down: There's only one person who I trust enough to do that";
 		}
@@ -54,11 +50,7 @@ public class SendFileCommand extends AbstractCommand {
 		}
 		File f = new File(Joiner.on("").join(args));
 		if (f.exists()) {
-			try {
-				channel.sendFile(f);
-			} catch (IOException | MissingPermissionsException | RateLimitException | DiscordException e) {
-				return e.toString();
-			}
+			channel.sendFileAsync(f, null, null);
 			return "";
 		}
 		return "File doesn't exist";

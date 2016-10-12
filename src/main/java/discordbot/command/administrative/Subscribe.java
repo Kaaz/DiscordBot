@@ -13,6 +13,7 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -64,12 +65,13 @@ public class Subscribe extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
+		TextChannel txt = (TextChannel) channel;
 		List<String> headers = new ArrayList<>();
 		List<List<String>> tbl = new ArrayList<>();
 		if (args.length == 0) {
 			Collections.addAll(headers, "code", "name");
-			List<QActiveSubscriptions> subscriptionsForChannel = TSubscriptions.getSubscriptionsForChannel(TChannels.getCachedId(channel.getID(), channel.getGuild().getID()));
+			List<QActiveSubscriptions> subscriptionsForChannel = TSubscriptions.getSubscriptionsForChannel(TChannels.getCachedId(txt.getId(), txt.getGuild().getId()));
 			for (QActiveSubscriptions subscriptions : subscriptionsForChannel) {
 				ArrayList<String> row = new ArrayList<>();
 				row.add(subscriptions.code);
@@ -91,7 +93,7 @@ public class Subscribe extends AbstractCommand {
 				if (service.id == 0) {
 					return Template.get("command_subscribe_invalid_service");
 				}
-				OSubscription subscription = TSubscriptions.findBy(TGuild.getCachedId(channel.getGuild().getID()), TChannels.getCachedId(channel.getID(), channel.getGuild().getID()), service.id);
+				OSubscription subscription = TSubscriptions.findBy(TGuild.getCachedId(txt.getGuild().getId()), TChannels.getCachedId(channel.getId(), txt.getGuild().getId()), service.id);
 				if (subscription.subscribed == 1) {
 					subscription.subscribed = 0;
 					TSubscriptions.insertOrUpdate(subscription);
@@ -114,11 +116,11 @@ public class Subscribe extends AbstractCommand {
 		if (service.id == 0) {
 			return Template.get("command_subscribe_invalid_service");
 		}
-		OSubscription subscription = TSubscriptions.findBy(TGuild.getCachedId(channel.getGuild().getID()), TChannels.getCachedId(channel.getID(), channel.getGuild().getID()), service.id);
+		OSubscription subscription = TSubscriptions.findBy(TGuild.getCachedId(txt.getGuild().getId()), TChannels.getCachedId(channel.getId(), ((TextChannel) channel).getGuild().getId()), service.id);
 		if (subscription.subscribed == 0) {
 			subscription.subscribed = 1;
-			subscription.channelId = TChannels.getCachedId(channel.getID(), channel.getGuild().getID());
-			subscription.serverId = TGuild.getCachedId(channel.getGuild().getID());
+			subscription.channelId = TChannels.getCachedId(channel.getId(), txt.getGuild().getId());
+			subscription.serverId = TGuild.getCachedId(txt.getGuild().getId());
 			subscription.serviceId = service.id;
 			TSubscriptions.insertOrUpdate(subscription);
 			return Template.get("command_subscribe_success");

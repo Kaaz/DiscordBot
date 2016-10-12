@@ -19,7 +19,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
-import net.dv8tion.jda.entities.Channel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.PrivateChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
@@ -56,7 +56,7 @@ public class CommandHandler {
 	 * @param msg     the message
 	 * @return whether or not the message is a command
 	 */
-	public boolean isCommand(Channel channel, String msg) {
+	public boolean isCommand(TextChannel channel, String msg) {
 		return msg.startsWith(DisUtil.getCommandPrefix(channel)) || msg.startsWith(bot.mentionMe);
 	}
 
@@ -67,7 +67,7 @@ public class CommandHandler {
 	 * @param author           author
 	 * @param incommingMessage message
 	 */
-	public void process(TextChannel channel, User author, String incommingMessage) {
+	public void process(MessageChannel channel, User author, String incommingMessage) {
 		String outMsg = "";
 		boolean startedWithMention = false;
 		String inputMessage = incommingMessage;
@@ -93,7 +93,10 @@ public class CommandHandler {
 						usedArguments.append(arg).append(" ");
 					}
 					if (!(channel instanceof PrivateChannel)) {
-						TCommandLog.saveLog(TUser.getCachedId(author.getId()), TGuild.getCachedId(channel.getGuild().getId()), input[0], EmojiParser.parseToAliases(usedArguments.toString()).trim());
+						TCommandLog.saveLog(TUser.getCachedId(author.getId()),
+								TGuild.getCachedId(((TextChannel) channel).getGuild().getId()),
+								input[0],
+								EmojiParser.parseToAliases(usedArguments.toString()).trim());
 					}
 				}
 			} else if (cooldown > 0) {
@@ -127,7 +130,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean hasRightVisibility(TextChannel channel, CommandVisibility visibility) {
+	private boolean hasRightVisibility(MessageChannel channel, CommandVisibility visibility) {
 		if (channel instanceof PrivateChannel) {
 			return visibility.isForPrivate();
 		}
@@ -142,7 +145,7 @@ public class CommandHandler {
 	 * @param channel the channel
 	 * @return seconds till next use
 	 */
-	private long getCommandCooldown(AbstractCommand command, User author, TextChannel channel) {
+	private long getCommandCooldown(AbstractCommand command, User author, MessageChannel channel) {
 		if (command instanceof ICommandCooldown) {
 			long now = System.currentTimeMillis() / 1000L;
 			ICommandCooldown cd = (ICommandCooldown) command;
@@ -158,7 +161,7 @@ public class CommandHandler {
 					if (channel instanceof PrivateChannel) {
 						bot.out.sendErrorToMe(new Exception("Command with guild-scale cooldown in private!"), "command", command.getCommand(), "user", author.getUsername(), bot);
 					}
-					targetId = channel.getGuild().getId();
+					targetId = ((TextChannel) channel).getGuild().getId();
 					break;
 				case GLOBAL:
 					targetId = "GLOBAL";
@@ -182,12 +185,12 @@ public class CommandHandler {
 		return 0;
 	}
 
-	private boolean shouldCleanUpMessages(TextChannel channel) {
+	private boolean shouldCleanUpMessages(MessageChannel channel) {
 		String cleanupMethod = GuildSettings.getFor(channel, SettingCleanupMessages.class);
 		String mychannel = GuildSettings.getFor(channel, SettingBotChannel.class);
 		if ("yes".equals(cleanupMethod)) {
 			return true;
-		} else if ("nonstandard".equals(cleanupMethod) && !channel.getName().equalsIgnoreCase(mychannel)) {
+		} else if ("nonstandard".equals(cleanupMethod) && !((TextChannel) channel).getName().equalsIgnoreCase(mychannel)) {
 			return true;
 		}
 		return false;

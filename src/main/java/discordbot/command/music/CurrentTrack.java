@@ -11,9 +11,10 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
-import sx.blah.discord.handle.obj.IUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,9 +70,10 @@ public class CurrentTrack extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		boolean helpedOut = false;
-		OMusic song = bot.getCurrentlyPlayingSong(channel.getGuild());
+		Guild guild = ((TextChannel) channel).getGuild();
+		OMusic song = bot.getCurrentlyPlayingSong(guild);
 		if (song.id == 0) {
 			return Template.get("command_currentlyplaying_nosong");
 		}
@@ -127,14 +129,14 @@ public class CurrentTrack extends AbstractCommand {
 			ret += song.artist + " - " + song.title;
 		}
 		ret += Config.EOL + Config.EOL;
-		MusicPlayerHandler musicHandler = MusicPlayerHandler.getFor(channel.getGuild(), bot);
+		MusicPlayerHandler musicHandler = MusicPlayerHandler.getFor(guild, bot);
 		ret += getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL;
 
-		if (GuildSettings.get(channel.getGuild()).getOrDefault(SettingMusicShowListeners.class).equals("true")) {
-			List<IUser> userlist = bot.getCurrentlyListening(channel.getGuild());
+		if (GuildSettings.get(guild).getOrDefault(SettingMusicShowListeners.class).equals("true")) {
+			List<User> userlist = new ArrayList<>();//bot.getCurrentlyListening(channel.getGuild());
 			if (userlist.size() > 0) {
 				ret += ":headphones:  Listeners" + Config.EOL;
-				ArrayList<String> displayList = userlist.stream().map(IUser::getName).collect(Collectors.toCollection(ArrayList::new));
+				ArrayList<String> displayList = userlist.stream().map(User::getUsername).collect(Collectors.toCollection(ArrayList::new));
 				ret += Misc.makeTable(displayList);
 			}
 		}
@@ -156,7 +158,7 @@ public class CurrentTrack extends AbstractCommand {
 			}
 		}
 		if (helpedOut) {
-			ret += "Thanks for helping out " + author.mention() + "! Have a :cookie:!";
+			ret += "Thanks for helping out " + author.getAsMention() + "! Have a :cookie:!";
 		}
 		return ret;
 	}

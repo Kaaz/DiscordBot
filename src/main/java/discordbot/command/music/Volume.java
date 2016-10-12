@@ -2,11 +2,9 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.guildsettings.defaults.SettingMusicVolume;
-import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 /**
@@ -49,20 +47,20 @@ public class Volume extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		if (args.length > 0) {
 			float volume;
 			try {
 				volume = Float.parseFloat(args[0]);
 				if (volume > 0 && volume <= 100) {
-					bot.setVolume(channel.getGuild(), volume / 100F);
-					GuildSettings.get(channel.getGuild()).set(SettingMusicVolume.class, String.valueOf((int) (bot.getVolume(channel.getGuild()) * 100F)));
-					return Template.get("command_volume_changed") + " (now " + ((int) (bot.getVolume(channel.getGuild()) * 100F)) + "%)";
+//					bot.setVolume(channel.getGuild(), volume / 100F);
+//					GuildSettings.get(channel.getGuild()).set(SettingMusicVolume.class, String.valueOf((int) (bot.getVolume(channel.getGuild()) * 100F)));
+//					return Template.get("command_volume_changed") + " (now " + ((int) (bot.getVolume(channel.getGuild()) * 100F)) + "%)";
 				}
 			} catch (NumberFormatException ignored) {
 			}
 			return Template.get("command_volume_invalid_parameters");
 		}
-		return "Current volume: " + bot.getVolume(channel.getGuild()) * 100 + "%";
+		return "Current volume: ";// + bot.getVolume(channel.getGuild()) * 100 + "%";
 	}
 }

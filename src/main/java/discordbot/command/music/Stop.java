@@ -4,6 +4,7 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -42,8 +43,8 @@ public class Stop extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
-		bot.stopMusic(channel.getGuild());
+	public String execute(String[] args, MessageChannel channel, User author) {
+		bot.leaveVoice(((TextChannel) channel).getGuild());
 		return Template.get("command_stop_success");
 	}
 }

@@ -12,6 +12,8 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import discordbot.util.TimeUtil;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -64,7 +66,8 @@ public class AutoReplyCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
+		Guild guild = ((TextChannel)channel).getGuild();
 		if (!bot.isAdmin(channel, author)) {
 			return Template.get("no_permission");
 		}
@@ -93,7 +96,7 @@ public class AutoReplyCommand extends AbstractCommand {
 				if (replyPattern.id == 0) {
 					replyPattern.tag = args[1];
 					replyPattern.userId = TUser.getCachedId(author.getId());
-					replyPattern.guildId = bot.isCreator(author) ? 0 : TGuild.getCachedId(channel.getGuild().getId());
+					replyPattern.guildId = bot.isCreator(author) ? 0 : TGuild.getCachedId(guild.getId());
 					TReplyPattern.insert(replyPattern);
 					return Template.get("command_autoreply_created", args[1]);
 				}
@@ -113,7 +116,7 @@ public class AutoReplyCommand extends AbstractCommand {
 				case "delete":
 				case "remove":
 				case "del":
-					if (bot.isCreator(author) || (bot.isAdmin(channel, author) && TGuild.getCachedId(channel.getGuild().getId()) == replyPattern.id))
+					if (bot.isCreator(author) || (bot.isAdmin(channel, author) && TGuild.getCachedId(guild.getId()) == replyPattern.id))
 						TReplyPattern.delete(replyPattern);
 					bot.loadConfiguration();
 					return Template.get("command_autoreply_deleted", args[1]);

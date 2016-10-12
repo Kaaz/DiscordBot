@@ -8,12 +8,9 @@ import discordbot.modules.reddit.RedditScraper;
 import discordbot.modules.reddit.pojo.Image;
 import discordbot.modules.reddit.pojo.ImagePreview;
 import discordbot.modules.reddit.pojo.Post;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 import org.apache.commons.lang3.StringEscapeUtils;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,7 +60,7 @@ public class RedditCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		String subReddit = "funny";
 		if (args.length > 0) {
 			subReddit = args[0];
@@ -92,9 +89,10 @@ public class RedditCommand extends AbstractCommand {
 		if (preview.images.size() > 0) {
 			for (Image image : preview.images) {
 				try (InputStream in = new URL(StringEscapeUtils.unescapeHtml4(image.source.url)).openStream()) {
-					channel.sendFile(in, post.data.id + ".jpg", post.data.title);
+//					PermissionUtil
+//					channel.sendFileAsync(ImageIO.read(in), post.data.id + ".jpg" + post.data.title, null);
 					return "";
-				} catch (IOException | MissingPermissionsException | DiscordException | RateLimitException e) {
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}

@@ -5,7 +5,7 @@ import com.google.gson.JsonParser;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -45,19 +45,19 @@ public class Joke extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		bot.out.sendAsyncMessage(channel, Template.get("command_joke_wait"), message -> {
 			String joketxt = "";
 			if (new Random().nextInt(100) < 80) {
 				joketxt = bot.commands.getCommand("reddit").execute(new String[]{"jokes"}, channel, author);
 			} else {
-				joketxt = getJokeFromWeb(author.getName());
+				joketxt = getJokeFromWeb(author.getUsername());
 			}
 			message.deleteMessage();
 			if (joketxt != null) {
-				return StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getID() + ">"));
+				message.updateMessageAsync(StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getUsername(), "<@" + author.getId() + ">")), null);
 			}
-			return Template.get("command_joke_not_today");
+			message.updateMessageAsync(Template.get("command_joke_not_today"), null);
 		});
 		return "";
 	}

@@ -10,6 +10,8 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import discordbot.util.TimeUtil;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -55,9 +57,10 @@ public class Playlist extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
+		Guild guild = ((TextChannel) channel).getGuild();
 		if (args.length == 0) {
-			MusicPlayerHandler player = MusicPlayerHandler.getFor(channel.getGuild(), bot);
+			MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 			List<OMusic> queue = player.getQueue();
 			String ret = "Music Queue" + Config.EOL;
 			if (queue.size() == 0) {
@@ -85,7 +88,7 @@ public class Playlist extends AbstractCommand {
 				return Template.get("music_not_played_anything_yet");
 			}
 		} else if (args[0].equals("clear")) {
-			MusicPlayerHandler player = MusicPlayerHandler.getFor(channel.getGuild(), bot);
+			MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 			player.clearPlayList();
 			return Template.get("music_playlist_cleared");
 		}

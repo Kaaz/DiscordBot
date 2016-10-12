@@ -6,7 +6,7 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.UpdateUtil;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 /**
@@ -42,8 +42,8 @@ public class RebootCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
-		if (bot.isOwner(channel, author) || author.getID().equals("158310004187725824")) {
+	public String execute(String[] args, MessageChannel channel, User author) {
+		if (bot.isOwner(channel, author) || author.getId().equals("158310004187725824")) {
 			if (args.length > 0 && args[0].equalsIgnoreCase("update") && UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
 				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_update"), null);
 				Launcher.stop(ExitCode.UPDATE);

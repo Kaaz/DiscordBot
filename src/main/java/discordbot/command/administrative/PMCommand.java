@@ -4,7 +4,7 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 /**
@@ -37,7 +37,7 @@ public class PMCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		if (!bot.isOwner(channel, author) && !bot.isAdmin(channel, author)) {
 			return Template.get("command_no_permission");
 		}

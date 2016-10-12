@@ -7,7 +7,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.modules.minecraft.ServerListPing17;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 import java.io.IOException;
@@ -52,13 +52,10 @@ public class McStatusCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		String host = "localhost";
 		int port = defaultPort;
-		if (args.length == 0 && channel.getGuild().getID().equals(gid)) {
-			host = "176.64.207.213";
-			port = 53389;
-		} else if (args.length == 1) {
+		if (args.length == 1) {
 			host = args[0];
 			if (args[0].contains(":")) {
 				String[] split = args[0].split(":");
@@ -86,9 +83,7 @@ public class McStatusCommand extends AbstractCommand {
 				playertable += Config.EOL + Misc.makeTable(playerList);
 			}
 			String description = rsp.getDescription();
-			if (channel.getGuild().getID().equals(gid)) {
-				description = description.replace("PEEKA", "~~PEEKA~~ Kaaz");
-			}
+			description = description.replace("PEEKA", "~~PEEKA~~ Kaaz");
 			return "Found the minecraft server!" + Config.EOL +
 					"description: " + description + Config.EOL +
 					playertable;

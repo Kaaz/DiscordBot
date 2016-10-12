@@ -5,7 +5,7 @@ import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.handler.GuildSettings;
 import discordbot.main.DiscordBot;
 import discordbot.role.RoleRankings;
-import sx.blah.discord.handle.obj.IGuild;
+import net.dv8tion.jda.entities.Guild;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -40,16 +40,16 @@ public class UserRankingSystemService extends AbstractService {
 
 	@Override
 	public void run() {
-		List<IGuild> guilds = bot.client.getGuilds();
-		for (IGuild guild : guilds) {
+		List<Guild> guilds = bot.client.getGuilds();
+		for (Guild guild : guilds) {
 			GuildSettings settings = GuildSettings.get(guild);
-			if (settings.getOrDefault(SettingRoleTimeRanks.class).equals("true") && RoleRankings.canModifyRoles(guild, bot.client.getOurUser())) {
+			if (settings.getOrDefault(SettingRoleTimeRanks.class).equals("true") && RoleRankings.canModifyRoles(guild, bot.client.getSelfInfo())) {
 				handleGuild(guild);
 			}
 		}
 	}
 
-	private void handleGuild(IGuild guild) {
+	private void handleGuild(Guild guild) {
 		RoleRankings.fixForServer(guild);
 		guild.getUsers().stream().filter(user -> !user.isBot()).forEach(user -> RoleRankings.assignUserRole(bot, guild, user));
 	}

@@ -6,12 +6,7 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.role.RoleRankings;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
-import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
+import net.dv8tion.jda.entities.*;
 
 import java.util.List;
 
@@ -60,32 +55,29 @@ public class RoleCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
+		Guild guild = ((TextChannel) channel).getGuild();
 		if (!bot.isOwner(channel, author)) {
 			return Template.get("command_no_permission");
 		}
 		if (args.length == 0 || args[0].equals("list")) {
 			String out = "I found the following roles" + Config.EOL;
-			List<IRole> roles = channel.getGuild().getRoles();
-			for (IRole role : roles) {
-				if (role.isEveryoneRole()) {
+			List<Role> roles = guild.getRoles();
+			for (Role role : roles) {
+				if (role.getPosition() == -1) {
 					continue;
 				}
-				out += String.format("%s (%s)" + Config.EOL, role.getName(), role.getID());
+				out += String.format("%s (%s)" + Config.EOL, role.getName(), role.getId());
 			}
 			return out;
 		}
 		switch (args[0]) {
 			case "cleanup":
-				try {
-					RoleRankings.cleanUpRoles(channel.getGuild(), bot.client.getOurUser());
-				} catch (RateLimitException | DiscordException | MissingPermissionsException e) {
-					return "Tried cleaning up but this happened: " + e.getMessage();
-				}
+				RoleRankings.cleanUpRoles(guild, bot.client.getSelfInfo());
 				return "Removed all the time-based roles";
 			case "setup":
-				if (RoleRankings.canModifyRoles(channel.getGuild(), bot.client.getOurUser())) {
-					RoleRankings.fixForServer(channel.getGuild());
+				if (RoleRankings.canModifyRoles(guild, bot.client.getSelfInfo())) {
+					RoleRankings.fixForServer(guild);
 					return "Set up all the required roles :smile:";
 				}
 				return "No permissions to manage roles";

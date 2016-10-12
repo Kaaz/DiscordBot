@@ -4,11 +4,9 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
-import sx.blah.discord.handle.obj.IVoiceChannel;
-
-import java.util.List;
 
 /**
  * !leave
@@ -45,17 +43,8 @@ public class Leave extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
-		boolean leftSomething = false;
-		List<IVoiceChannel> connectedVoiceChannels = bot.client.getConnectedVoiceChannels();
-		for (IVoiceChannel voicechan : connectedVoiceChannels) {
-			if (voicechan.getGuild().equals(channel.getGuild())) {
-				voicechan.leave();
-				bot.stopMusic(channel.getGuild());
-				leftSomething = true;
-			}
-		}
-		if (leftSomething) {
+	public String execute(String[] args, MessageChannel channel, User author) {
+		if (bot.leaveVoice(((TextChannel) channel).getGuild())) {
 			return Template.get("command_leave_success");
 		}
 		return Template.get("command_leave_failed");

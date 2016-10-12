@@ -9,7 +9,7 @@ import discordbot.db.table.TServiceVariables;
 import discordbot.db.table.TServices;
 import discordbot.db.table.TSubscriptions;
 import discordbot.main.DiscordBot;
-import sx.blah.discord.handle.obj.IChannel;
+import net.dv8tion.jda.entities.TextChannel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,12 +31,12 @@ public abstract class AbstractService {
 	 *
 	 * @return list of IChannels
 	 */
-	protected List<IChannel> getSubscribedChannels() {
-		List<IChannel> channels = new ArrayList<>();
+	protected List<TextChannel> getSubscribedChannels() {
+		List<TextChannel> channels = new ArrayList<>();
 		List<QActiveSubscriptions> subscriptionsForService = TSubscriptions.getSubscriptionsForService(TServices.getCachedId(getIdentifier()));
 		for (QActiveSubscriptions activeSubscriptions : subscriptionsForService) {
 			OChannel databaseChannel = TChannels.findById(activeSubscriptions.channelId);
-			IChannel botChannel = bot.client.getChannelByID(databaseChannel.discord_id);
+			TextChannel botChannel = bot.client.getTextChannelById(databaseChannel.discord_id);
 			if (botChannel != null) {
 				channels.add(botChannel);
 			} else {

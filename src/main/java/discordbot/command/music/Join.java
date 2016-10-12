@@ -5,11 +5,10 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IVoiceChannel;
-import sx.blah.discord.util.MissingPermissionsException;
+import net.dv8tion.jda.entities.VoiceChannel;
 
 /**
  * !joinme
@@ -49,60 +48,36 @@ public class Join extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
+		TextChannel chan = (TextChannel) channel;
 		if (args.length == 0) {
-			IVoiceChannel voiceChannel = author.getConnectedVoiceChannels().get(0);
-			if (voiceChannel == null || !voiceChannel.getGuild().equals(channel.getGuild())) {
+			VoiceChannel voiceChannel = chan.getGuild().getVoiceStatusOfUser(author).getChannel();
+			if (voiceChannel == null) {
 				return Template.get("command_join_cantfindyou");
 			}
-			if (voiceChannel.equals(getCurrentVoiceChannel(channel.getGuild()))) {
+			if (bot.isConnectedTo(voiceChannel)) {
 				return Template.get("command_join_already_there");
-			}
-			try {
-				leaveCurrentChannel(channel.getGuild());
-				voiceChannel.join();
-			} catch (MissingPermissionsException e) {
-				return Template.get("command_join_nopermssiontojoin");
 			}
 			return Template.get("command_join_joinedyou");
 		} else {
 			String channelname = Misc.concat(args);
-			IVoiceChannel targetChannel = null;
-			for (IVoiceChannel vc : channel.getGuild().getVoiceChannels()) {
+			VoiceChannel targetChannel = null;
+			for (VoiceChannel vc : chan.getGuild().getVoiceChannels()) {
 				if (vc.getName().equalsIgnoreCase(channelname)) {
 					targetChannel = vc;
 					break;
 				}
 			}
 			if (targetChannel != null) {
-				if (targetChannel.equals(getCurrentVoiceChannel(channel.getGuild()))) {
+				if (bot.isConnectedTo(targetChannel)) {
 					return Template.get("command_join_already_there");
 				}
-				try {
-					leaveCurrentChannel(channel.getGuild());
-					targetChannel.join();
-				} catch (MissingPermissionsException e) {
-					return Template.get("command_join_nopermssiontojoin");
-				}
+				bot.leaveVoice(chan.getGuild());
+				bot.connectTo(targetChannel);
+//					return Template.get("command_join_nopermssiontojoin");
 				return Template.get("command_join_joined");
 			}
 			return Template.get("command_join_cantfindchannel");
-		}
-	}
-
-	private IVoiceChannel getCurrentVoiceChannel(IGuild guild) {
-		for (IVoiceChannel channel : bot.client.getConnectedVoiceChannels()) {
-			if (channel.getGuild().equals(guild)) {
-				return channel;
-			}
-		}
-		return null;
-	}
-
-	private void leaveCurrentChannel(IGuild guild) {
-		IVoiceChannel currentVoiceChannel = getCurrentVoiceChannel(guild);
-		if (currentVoiceChannel != null) {
-			currentVoiceChannel.leave();
 		}
 	}
 }

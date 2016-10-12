@@ -6,7 +6,7 @@ import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 import java.io.File;
@@ -54,7 +54,7 @@ public class ImportMusicCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, TextChannel channel, User author) {
+	public String execute(String[] args, MessageChannel channel, User author) {
 		if (author.getId().equals("97284813643329536") || bot.isCreator(author)) {
 			if (isInProgress.get()) {
 				return "currently in progress :D";
