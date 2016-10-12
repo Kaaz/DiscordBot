@@ -1,6 +1,7 @@
 package discordbot.handler;
 
 
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import discordbot.db.WebDb;
 import discordbot.exceptions.TemplateNotSetException;
 import discordbot.main.Config;
@@ -48,10 +49,10 @@ public class Template {
 			List<String> list = instance.dictionary.get(keyPhrase);
 			return list.get(instance.rnd.nextInt(list.size()));
 		}
-		if (instance.bot != null) {
+		if (instance.bot != null && !Config.SHOW_KEYPHRASE) {
 			instance.bot.out.sendErrorToMe(new TemplateNotSetException(keyPhrase), "key", keyPhrase, "copy this", "**!template add " + keyPhrase + "** ", instance.bot);
 		}
-		return "**'" + keyPhrase + "'**";
+		return "**`" + keyPhrase + "`**";
 	}
 
 	/**
@@ -62,7 +63,10 @@ public class Template {
 	 * @return formatted keyphrase
 	 */
 	public static String get(String keyPhrase, Object... parameters) {
-		return String.format(get(keyPhrase), parameters);
+		if (!Config.SHOW_KEYPHRASE) {
+			return String.format(get(keyPhrase), parameters);
+		}
+		return "`" + keyPhrase + "` params: `" + Joiner.on("`, `").join(parameters) + "`";
 	}
 
 	/**
