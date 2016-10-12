@@ -2,6 +2,8 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
+import discordbot.guildsettings.defaults.SettingMusicVolume;
+import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import sx.blah.discord.handle.obj.IChannel;
@@ -54,7 +56,8 @@ public class Volume extends AbstractCommand {
 				volume = Float.parseFloat(args[0]);
 				if (volume > 0 && volume <= 100) {
 					bot.setVolume(channel.getGuild(), volume / 100F);
-					return Template.get("command_volume_changed") + " (now " + (bot.getVolume(channel.getGuild()) * 100) + "%)";
+					GuildSettings.get(channel.getGuild()).set(SettingMusicVolume.class, String.valueOf((int) (bot.getVolume(channel.getGuild()) * 100F)));
+					return Template.get("command_volume_changed") + " (now " + ((int) (bot.getVolume(channel.getGuild()) * 100F)) + "%)";
 				}
 			} catch (NumberFormatException ignored) {
 			}

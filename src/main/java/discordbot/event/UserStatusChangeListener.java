@@ -25,11 +25,11 @@ public class UserStatusChangeListener extends AbstractEventListener<StatusChange
 	@Override
 	public void handle(StatusChangeEvent event) {
 		IUser user = event.getUser();
-		if (!user.isBot() || user.equals(discordBot.client.getOurUser())) {
+			if (!user.isBot() || user.equals(discordBot.client.getOurUser())) {
 			return;
 		}
 		Status status = event.getNewStatus();
-		if (status.getStatusMessage() != null && 	status.getStatusMessage().equals(discordBot.client.getOurUser().getStatus().getStatusMessage())) {
+		if (status.getStatusMessage() != null && status.getStatusMessage().equals(discordBot.client.getOurUser().getStatus().getStatusMessage())) {
 			for (String specialGuild : specialGuilds) {
 				IGuild guild = discordBot.client.getGuildByID(specialGuild);
 				if (guild == null) {

@@ -31,8 +31,8 @@ public class GuildSettings {
 	/**
 	 * Simplified method to get the setting for a channel instead of guild
 	 *
-	 * @param channel the channel to check
-	 * @param settingClass   the Setting
+	 * @param channel      the channel to check
+	 * @param settingClass the Setting
 	 * @return the setting
 	 */
 	public static String getFor(IChannel channel, Class<? extends AbstractGuildSetting> settingClass) {
@@ -98,6 +98,10 @@ public class GuildSettings {
 			return DefaultGuildSettings.get(key).getDescription();
 		}
 		return new String[]{};
+	}
+
+	public boolean set(Class<? extends AbstractGuildSetting> settingClass, String value) {
+		return set(DefaultGuildSettings.getKey(settingClass), value);
 	}
 
 	public boolean set(String key, String value) {

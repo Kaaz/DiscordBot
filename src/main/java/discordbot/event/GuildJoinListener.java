@@ -6,6 +6,7 @@ import discordbot.db.model.OUser;
 import discordbot.db.table.TGuild;
 import discordbot.db.table.TUser;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
+import discordbot.guildsettings.defaults.SettingMusicVolume;
 import discordbot.handler.GuildSettings;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -33,7 +34,6 @@ public class GuildJoinListener extends AbstractEventListener<GuildCreateEvent> {
 
 		IGuild guild = event.getGuild();
 		IUser owner = guild.getOwner();
-		discordBot.setVolume(guild, 0.05F);
 		OUser user = TUser.findBy(owner.getID());
 		user.discord_id = owner.getID();
 		user.name = owner.getName();
@@ -45,6 +45,7 @@ public class GuildJoinListener extends AbstractEventListener<GuildCreateEvent> {
 		if (server.id == 0) {
 			TGuild.insert(server);
 		}
+		discordBot.setVolume(guild, Float.parseFloat(GuildSettings.get(guild).getOrDefault(SettingMusicVolume.class)) / 100F);
 		String cmdPre = GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
 		if (server.active != 1) {
 			discordBot.out.sendMessageToCreator(String.format("[**event**] [**guild**] I have just **joined** **%s** (discord-id = %s)", guild.getName(), guild.getID()));
