@@ -4,11 +4,9 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.RateLimitException;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 /**
  * leaves the guild
@@ -41,14 +39,14 @@ public class LeaveGuildCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		boolean shouldLeave = false;
-		IGuild guild = channel.getGuild();
+		Guild guild = channel.getGuild();
 		if (!bot.isAdmin(channel, author)) {
 			return Template.get("no_permission");
 		}
 		if (bot.isCreator(author) && args.length >= 1 && args[0].matches("^\\d{10,}$")) {
-			guild = bot.client.getGuildByID(args[0]);
+			guild = bot.client.getGuildById(args[0]);
 			if (guild == null) {
 				return Template.get("cant_find_guild");
 			}
@@ -66,13 +64,9 @@ public class LeaveGuildCommand extends AbstractCommand {
 			shouldLeave = true;
 		}
 		if (shouldLeave) {
-			try {
-				bot.out.sendAsyncMessage(bot.getDefaultChannel(guild), "This is goodbye :wave:", null);
-				guild.leaveGuild();
-				return ":+1:";
-			} catch (DiscordException | RateLimitException e) {
-				e.printStackTrace();
-			}
+			bot.out.sendAsyncMessage(bot.getDefaultChannel(guild), "This is goodbye :wave:", null);
+			guild.getManager().leave();
+			return ":+1:";
 		}
 		return ":face_palm: I expected you to know how to use it";
 	}

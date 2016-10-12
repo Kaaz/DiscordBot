@@ -8,9 +8,9 @@ import discordbot.modules.reddit.RedditScraper;
 import discordbot.modules.reddit.pojo.Image;
 import discordbot.modules.reddit.pojo.ImagePreview;
 import discordbot.modules.reddit.pojo.Post;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import org.apache.commons.lang3.StringEscapeUtils;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
@@ -63,7 +63,7 @@ public class RedditCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		String subReddit = "funny";
 		if (args.length > 0) {
 			subReddit = args[0];

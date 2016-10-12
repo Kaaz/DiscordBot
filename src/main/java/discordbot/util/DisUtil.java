@@ -3,11 +3,12 @@ package discordbot.util;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.handler.GuildSettings;
-import sx.blah.discord.handle.obj.*;
+import net.dv8tion.jda.Permission;
+import net.dv8tion.jda.entities.*;
+import net.dv8tion.jda.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -37,22 +38,20 @@ public class DisUtil {
 	 * @param searchText the name to look for
 	 * @return IUser | null
 	 */
-	public static IUser findUserIn(IChannel channel, String searchText) {
-		List<IUser> users = channel.getUsersHere();
-		List<IUser> potential = new ArrayList<>();
+	public static User findUserIn(Channel channel, String searchText) {
+		List<User> users = channel.getUsers();
+		List<User> potential = new ArrayList<>();
 		int smallestDiffIndex = 0, smallestDiff = 999;
-		for (IUser u : users) {
-			if (u.getName().equalsIgnoreCase(searchText)) {
+		for (User u : users) {
+			if (u.getUsername().equalsIgnoreCase(searchText)) {
 				return u;
 			}
-			Optional<String> nickNameOptional = u.getNicknameForGuild(channel.getGuild());
-			String nick;
-			if (nickNameOptional.isPresent()) {
-				nick = nickNameOptional.get().toLowerCase();
-			} else {
-				nick = u.getName().toLowerCase();
+
+			String nick = channel.getGuild().getNicknameForUser(u);
+			if (nick == null) {
+				nick = u.getUsername();
 			}
-			if (nick.contains(searchText)) {
+			if (nick.toLowerCase().contains(searchText)) {
 				potential.add(u);
 				int d = Math.abs(nick.length() - searchText.length());
 				if (d < smallestDiff) {
@@ -60,7 +59,6 @@ public class DisUtil {
 					smallestDiffIndex = potential.size() - 1;
 				}
 			}
-
 		}
 		if (!potential.isEmpty()) {
 			return potential.get(smallestDiffIndex);
@@ -113,7 +111,7 @@ public class DisUtil {
 	 * @param channel the channel where the text came from
 	 * @return text with the prefix filtered
 	 */
-	public static String filterPrefix(String command, IChannel channel) {
+	public static String filterPrefix(String command, Channel channel) {
 		String prefix = getCommandPrefix(channel);
 		if (command.startsWith(prefix)) {
 			return command.substring(prefix.length());
@@ -127,8 +125,8 @@ public class DisUtil {
 	 * @param channel channel to check the prefix for
 	 * @return the command prefix
 	 */
-	public static String getCommandPrefix(IChannel channel) {
-		if (channel == null || channel.isPrivate()) {
+	public static String getCommandPrefix(Channel channel) {
+		if (channel == null || channel instanceof PrivateChannel) {
 			return DefaultGuildSettings.getDefault(SettingCommandPrefix.class);
 		}
 		return GuildSettings.get(channel.getGuild()).getOrDefault(SettingCommandPrefix.class);
@@ -141,8 +139,8 @@ public class DisUtil {
 	 * @param role  the role to search for
 	 * @return list of user with specified role
 	 */
-	public static List<IUser> getUsersByRole(IGuild guild, IRole role) {
-		return guild.getUsers().stream().filter((users) -> users.getRolesForGuild(guild).contains(role)).collect(Collectors.toList());
+	public static List<User> getUsersByRole(Guild guild, Role role) {
+		return guild.getUsers().stream().filter((user) -> guild.getRolesForUser(user).contains(role)).collect(Collectors.toList());
 	}
 
 	/**
@@ -153,16 +151,7 @@ public class DisUtil {
 	 * @param permission the permission to check for
 	 * @return permission found
 	 */
-	public static boolean hasPermission(IUser user, IGuild guild, Permissions permission) {
-		if (guild == null) {
-			return false;
-		}
-		List<IRole> roles = guild.getRolesForUser(user);
-		for (IRole role : roles) {
-			if (role.getPermissions().contains(permission)) {
-				return true;
-			}
-		}
-		return false;
+	public static boolean hasPermission(User user, Guild guild, Permission permission) {
+		return PermissionUtil.checkPermission(guild, user, permission);
 	}
 }

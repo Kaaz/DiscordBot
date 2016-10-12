@@ -6,8 +6,8 @@ import discordbot.guildsettings.defaults.SettingMusicVolume;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 /**
  * !volume [vol]
@@ -49,7 +49,7 @@ public class Volume extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		if (args.length > 0) {
 			float volume;
 			try {

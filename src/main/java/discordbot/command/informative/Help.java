@@ -10,8 +10,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +50,7 @@ public class Help extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, net.dv8tion.jda.entities.User author) {
 		String commandPrefix = GuildSettings.getFor(channel, SettingCommandPrefix.class);
 		boolean showHelpInPM = GuildSettings.getFor(channel, SettingHelpInPM.class).equals("true");
 		if (args.length > 0 && !args[0].equals("style2") && !args[0].equals("style3")) {

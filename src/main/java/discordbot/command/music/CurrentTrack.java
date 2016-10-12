@@ -11,7 +11,8 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
-import sx.blah.discord.handle.obj.IChannel;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class CurrentTrack extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		boolean helpedOut = false;
 		OMusic song = bot.getCurrentlyPlayingSong(channel.getGuild());
 		if (song.id == 0) {

@@ -5,11 +5,11 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageList;
+import net.dv8tion.jda.Permission;
+import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.utils.PermissionUtil;
 
 /**
  * !purge
@@ -54,37 +54,37 @@ public class PurgeComand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
-		boolean hasManageMessages = channel.getModifiedPermissions(bot.client.getOurUser()).contains(Permissions.MANAGE_MESSAGES);
-		IUser toDeleteFrom = null;
+	public String execute(String[] args, TextChannel channel, User author) {
+		boolean hasManageMessages = PermissionUtil.checkPermission(channel, bot.client.getSelfInfo(), Permission.MESSAGE_MANAGE);
+		User toDeleteFrom = null;
 		int deleteLimit = 100;
 		boolean deleteAll = true;
 		if (args.length >= 1) {
 			deleteAll = false;
 			if (DisUtil.isUserMention(args[0])) {
-				toDeleteFrom = bot.client.getUserByID(DisUtil.mentionToId(args[0]));
-				if (!hasManageMessages && !bot.client.getOurUser().equals(toDeleteFrom)) {
+				toDeleteFrom = bot.client.getUserById(DisUtil.mentionToId(args[0]));
+				if (!hasManageMessages && !bot.client.getSelfInfo().equals(toDeleteFrom)) {
 					return Template.get("permission_missing_manage_messages");
 				}
 			} else if (args[0].toLowerCase().equals("nova")) {
-				toDeleteFrom = bot.client.getOurUser();
+				toDeleteFrom = bot.client.getSelfInfo();
 			}
 			if (args.length >= 2 && args[1].matches("^\\d+$")) {
 				deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
 			}
 		}
-		if (!bot.isOwner(channel, author) && !bot.client.getOurUser().equals(author)) {
+		if (!bot.isOwner(channel, author) && !bot.client.getSelfInfo().equals(author)) {
 			return Template.get("command_invalid_use");
 		}
 		int deletedCount = 0;
-		for (IMessage msg : new MessageList(bot.client, channel, 100)) {
+		for (Message msg : channel.getHistory().retrieve(100)) {
 			if (deletedCount == deleteLimit) {
 				break;
 			}
 			if (msg.isPinned()) {
 				continue;
 			}
-			if (deleteAll && (hasManageMessages || msg.getAuthor().equals(bot.client.getOurUser()))) {
+			if (deleteAll && (hasManageMessages || msg.getAuthor().equals(bot.client.getSelfInfo()))) {
 				deletedCount++;
 				bot.out.deleteMessage(msg);
 			} else if (!deleteAll && toDeleteFrom != null && msg.getAuthor().equals(toDeleteFrom)) {

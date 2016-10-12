@@ -7,8 +7,9 @@ import discordbot.guildsettings.defaults.SettingMusicChannelTitle;
 import discordbot.guildsettings.defaults.SettingMusicPlayingMessage;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.Message;
 import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.DiscordException;
@@ -27,23 +28,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class MusicPlayerHandler {
-	private final static Map<IGuild, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
-	private final IGuild guild;
+	private final static Map<Guild, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
+	private final Guild guild;
 	private final DiscordBot bot;
 	private OMusic currentlyPlaying = new OMusic();
-	private IMessage activeMsg = null;
+	private Message activeMsg = null;
 	private long currentSongLength = 0;
 	private long currentSongStartTimeInSeconds = 0;
 	private Random rng;
 
-	private MusicPlayerHandler(IGuild guild, DiscordBot bot) {
+	private MusicPlayerHandler(Guild guild, DiscordBot bot) {
 		this.guild = guild;
 		this.bot = bot;
 		rng = new Random();
 		playerInstances.put(guild, this);
 	}
 
-	public static MusicPlayerHandler getFor(IGuild guild, DiscordBot bot) {
+	public static MusicPlayerHandler getFor(Guild guild, DiscordBot bot) {
 		if (playerInstances.containsKey(guild)) {
 			return playerInstances.get(guild);
 		} else {

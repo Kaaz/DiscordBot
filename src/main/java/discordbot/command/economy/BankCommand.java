@@ -5,8 +5,8 @@ import discordbot.db.model.OBank;
 import discordbot.db.table.TBanks;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 public class BankCommand extends AbstractCommand {
 	public BankCommand(DiscordBot b) {
@@ -46,7 +46,7 @@ public class BankCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		OBank bank = TBanks.findBy(author.getID());
 		return String.format("Your current balance is `%s` %s ", bank.currentBalance, Config.ECONOMY_CURRENCY_ICON);
 	}

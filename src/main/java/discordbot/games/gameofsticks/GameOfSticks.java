@@ -2,7 +2,9 @@ package discordbot.games.gameofsticks;
 
 import discordbot.games.AbstractGame;
 import discordbot.games.GameState;
+import discordbot.games.GameTurn;
 import discordbot.main.Config;
+import net.dv8tion.jda.entities.User;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
@@ -47,7 +49,7 @@ public class GameOfSticks extends AbstractGame<GoSTurn> {
 	}
 
 	@Override
-	public boolean isValidMove(IUser player, GoSTurn turnInfo) {
+	public boolean isValidMove(User player, GameTurn turnInfo) {
 		return turnInfo.getSubstract() <= 3 && (sticksleft - turnInfo.getSubstract()) >= 0;
 	}
 

@@ -3,8 +3,8 @@ package discordbot.command.fun;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -68,7 +68,7 @@ public class RollCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		int min = 1, max = 6, max_dice = 40, min_sides = 2;
 		if (args.length == 1) {
 			Matcher match = dice.matcher(args[0]);

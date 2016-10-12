@@ -5,8 +5,7 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
 
 public class ReportCommand extends AbstractCommand {
 	public ReportCommand(DiscordBot b) {
@@ -40,7 +39,7 @@ public class ReportCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, net.dv8tion.jda.entities.User author) {
 		if (args.length <= 3) {
 			return "Usage: " + getUsage()[0];
 		}

@@ -4,8 +4,8 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 public class TicTacToeCommand extends AbstractCommand {
 	public TicTacToeCommand(DiscordBot b) {
@@ -44,7 +44,7 @@ public class TicTacToeCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		return "The games have been moved to the `" + DisUtil.getCommandPrefix(channel) + "game` command";
 	}
 }

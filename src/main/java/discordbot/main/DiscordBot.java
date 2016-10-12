@@ -1,21 +1,23 @@
 package discordbot.main;
 
-import discordbot.core.AbstractEventListener;
 import discordbot.db.model.OMusic;
+import discordbot.event.JDAEvents;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.*;
 import discordbot.handler.*;
 import discordbot.role.RoleRankings;
-import discordbot.util.DisUtil;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
+import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.*;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import javax.security.auth.login.LoginException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DiscordBot {
@@ -32,15 +34,14 @@ public class DiscordBot {
 	private AutoReplyHandler autoReplyhandler;
 	private GameHandler gameHandler = null;
 	private boolean isReady = false;
-	private Map<IGuild, IChannel> defaultChannels = new ConcurrentHashMap<>();
-	private Map<IGuild, IChannel> musicChannels = new ConcurrentHashMap<>();
+	private Map<Guild, TextChannel> defaultChannels = new ConcurrentHashMap<>();
+	private Map<Guild, TextChannel> musicChannels = new ConcurrentHashMap<>();
 
-	public DiscordBot() {
+	public DiscordBot() throws LoginException, InterruptedException {
 		registerHandlers();
 		JDABuilder builder = new JDABuilder().setBotToken(Config.BOT_TOKEN);
-		builder.addListener()
-		client = new ClientBuilder().withToken(Config.BOT_TOKEN).setMaxReconnectAttempts(16).login();
-		registerEvents();
+		builder.addListener(new JDAEvents(this));
+		client = builder.buildBlocking();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 	}
 
@@ -55,8 +56,11 @@ public class DiscordBot {
 	 * @param user    the user to check
 	 * @return is the user an admin?
 	 */
-	public boolean isAdmin(IChannel channel, IUser user) {
-		return isCreator(user) || (!channel.isPrivate() && DisUtil.hasPermission(user, channel.getGuild(), Permissions.ADMINISTRATOR));
+	public boolean isAdmin(Channel channel, User user) {
+		if (channel == null || channel instanceof PrivateChannel) {
+			return false;
+		}
+		return isCreator(user) || channel.checkPermission(user, Permission.ADMINISTRATOR);
 	}
 
 	/**
@@ -66,8 +70,8 @@ public class DiscordBot {
 	 * @param user    the user to check
 	 * @return user is owner
 	 */
-	public boolean isOwner(IChannel channel, IUser user) {
-		if (channel.isPrivate()) {
+	public boolean isOwner(Channel channel, User user) {
+		if (channel instanceof PrivateChannel) {
 			return isCreator(user);
 		}
 		return isCreator(user) || channel.getGuild().getOwner().equals(user);
@@ -79,8 +83,8 @@ public class DiscordBot {
 	 * @param user user to check
 	 * @return is creator?
 	 */
-	public boolean isCreator(IUser user) {
-		return user.getID().equals(Config.CREATOR_ID);
+	public boolean isCreator(User user) {
+		return user.getId().equals(Config.CREATOR_ID);
 	}
 
 	/**
@@ -90,22 +94,23 @@ public class DiscordBot {
 	 * @param guild the guild to check
 	 * @return default chat channel
 	 */
-	public IChannel getDefaultChannel(IGuild guild) {
+	public TextChannel getDefaultChannel(Guild guild) {
 		if (!defaultChannels.containsKey(guild)) {
 			String channelName = GuildSettings.get(guild).getOrDefault(SettingBotChannel.class);
-			List<IChannel> channelList = guild.getChannels();
+			List<TextChannel> channelList = guild.getTextChannels();
 			boolean foundChannel = false;
-			for (IChannel channel : channelList) {
+			for (TextChannel channel : channelList) {
 				if (channel.getName().equalsIgnoreCase(channelName)) {
 					foundChannel = true;
 					defaultChannels.put(guild, channel);
 					break;
 				}
 			}
+
 			if (!foundChannel) {
-				IChannel target = null;
-				for (IChannel channel : guild.getChannels()) {
-					if (channel.getModifiedPermissions(client.getOurUser()).contains(Permissions.SEND_MESSAGES)) {
+				TextChannel target = null;
+				for (TextChannel channel : guild.getTextChannels()) {
+					if (channel.checkPermission(client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
 						target = channel;
 						break;
 					}
@@ -122,12 +127,12 @@ public class DiscordBot {
 	 * @param guild guild
 	 * @return default music channel
 	 */
-	public IChannel getMusicChannel(IGuild guild) {
+	public TextChannel getMusicChannel(Guild guild) {
 		if (!musicChannels.containsKey(guild)) {
 			String channelName = GuildSettings.get(guild).getOrDefault(SettingMusicChannel.class);
-			List<IChannel> channelList = guild.getChannels();
+			List<TextChannel> channelList = guild.getTextChannels();
 			boolean foundChannel = false;
-			for (IChannel channel : channelList) {
+			for (TextChannel channel : channelList) {
 				if (channel.getName().equalsIgnoreCase(channelName)) {
 					foundChannel = true;
 					musicChannels.put(guild, channel);
@@ -148,7 +153,7 @@ public class DiscordBot {
 	 */
 	public void markReady(boolean ready) {
 		loadConfiguration();
-		mentionMe = "<@" + this.client.getOurUser().getID() + ">";
+		mentionMe = "<@" + this.client.getSelfInfo().getId() + ">";
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds(), client);
 		this.isReady = ready;
@@ -164,24 +169,9 @@ public class DiscordBot {
 		autoReplyhandler.reload();
 	}
 
-	public void reloadGuild(IGuild guild) {
+	public void reloadGuild(Guild guild) {
 		defaultChannels.remove(guild);
 		musicChannels.remove(guild);
-	}
-
-	private void registerEvents() {
-		Reflections reflections = new Reflections("discordbot.event");
-		Set<Class<? extends AbstractEventListener>> classes = reflections.getSubTypesOf(AbstractEventListener.class);
-		for (Class<? extends AbstractEventListener> eventClass : classes) {
-			try {
-				AbstractEventListener eventListener = eventClass.getConstructor(DiscordBot.class).newInstance(this);
-				if (eventListener.listenerIsActivated()) {
-					client.getDispatcher().registerListener(eventListener);
-				}
-			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	private void registerHandlers() {
@@ -194,17 +184,13 @@ public class DiscordBot {
 	}
 
 	public String getUserName() {
-		return client.getOurUser().getName();
+		return client.getSelfInfo().getUsername();
 	}
 
 	public boolean setUserName(String newName) {
 		if (isReady && !getUserName().equals(newName)) {
-			try {
-				client.changeUsername(newName);
-				return true;
-			} catch (DiscordException | RateLimitException e) {
-				e.printStackTrace();
-			}
+			client.getAccountManager().setUsername(newName);
+			return true;
 		}
 		return false;
 	}

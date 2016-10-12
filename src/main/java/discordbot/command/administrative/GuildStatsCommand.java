@@ -4,9 +4,9 @@ import discordbot.core.AbstractCommand;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,18 +49,18 @@ public class GuildStatsCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
-		int channels = 0, voice = 0, users = 0, activeVoice = bot.client.getConnectedVoiceChannels().size();
+	public String execute(String[] args, TextChannel channel, User author) {
+		int channels = 0, voice = 0, users = 0, activeVoice = bot.client.getVoiceChannels().size();
 		String totals = "";
-		List<IGuild> guilds = bot.client.getGuilds();
+		List<Guild> guilds = bot.client.getGuilds();
 		List<String> header = Arrays.asList("discord-id", "name");
 		List<List<String>> table = new ArrayList<>();
-		for (IGuild guild : guilds) {
+		for (Guild guild : guilds) {
 			List<String> row = new ArrayList<>();
-			row.add(guild.getID());
+			row.add(guild.getId());
 			row.add(guild.getName());
 			table.add(row);
-			channels += guild.getChannels().size();
+			channels += guild.getTextChannels().size();
 			voice += guild.getVoiceChannels().size();
 			users += guild.getUsers().size();
 		}

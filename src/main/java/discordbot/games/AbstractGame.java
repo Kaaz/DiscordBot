@@ -1,5 +1,6 @@
 package discordbot.games;
 
+import net.dv8tion.jda.entities.User;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.lang.reflect.InvocationTargetException;
@@ -94,7 +95,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	 * @param turnInfo the details about the move
 	 * @return turn successfully played?
 	 */
-	public final boolean playTurn(IUser player, turnType turnInfo) {
+	public final boolean playTurn(User player, GameTurn turnInfo) {
 		if (!(gameState.equals(GameState.IN_PROGRESS) || gameState.equals(GameState.READY))) {
 			return false;
 		}
@@ -115,7 +116,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	 * @param player the player
 	 * @return if it added the player to the game or not
 	 */
-	public final boolean addPlayer(IUser player) {
+	public final boolean addPlayer(User player) {
 		if (!gameState.equals(GameState.INITIALIZING)) {
 			return false;
 		}
@@ -150,7 +151,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	 * @param player to check
 	 * @return is it players turn?
 	 */
-	public boolean isTurnOf(IUser player) {
+	public boolean isTurnOf(User player) {
 		return players[activePlayerIndex].equals(player);
 	}
 
@@ -161,7 +162,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	 * @param turnInfo the details about the move
 	 * @return is a valid move?
 	 */
-	public abstract boolean isValidMove(IUser player, turnType turnInfo);
+	public abstract boolean isValidMove(User player, GameTurn turnInfo);
 
 	/**
 	 * play the turn

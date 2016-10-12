@@ -8,11 +8,11 @@ import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
+import net.dv8tion.jda.entities.TextChannel;
 import org.trello4j.Trello;
 import org.trello4j.TrelloImpl;
 import org.trello4j.model.Card;
 import org.trello4j.model.Checklist;
-import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.util.List;
@@ -68,7 +68,7 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, net.dv8tion.jda.entities.User author) {
 		if (args.length > 0 && Config.TRELLO_ACTIVE) {
 			switch (args[0].toLowerCase()) {
 				case "planned":
@@ -92,7 +92,7 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 		return "What am I? *" + response + "* " + Config.EOL +
 				"Currently active on " + bot.client.getGuilds().size() + " guilds and the last time I restarted was  " + onlineFor + "." + Config.EOL +
 				"Running version `" + Launcher.getVersion().toString() + "` and there are " + bot.commands.getCommands().length + " commands I can perform type **" + DisUtil.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
-				"If I can't help you out, you can always try to poke __" + user.getName() + "#" + user.getDiscriminator() + "__ or join my *"+DisUtil.getCommandPrefix(channel)+"discord*";
+				"If I can't help you out, you can always try to poke __" + user.getName() + "#" + user.getDiscriminator() + "__ or join my *" + DisUtil.getCommandPrefix(channel) + "discord*";
 	}
 
 	private String getListFor(String listId, String itemPrefix) {

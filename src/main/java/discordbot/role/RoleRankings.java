@@ -6,16 +6,14 @@ import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanksPrefix;
 import discordbot.handler.GuildSettings;
 import discordbot.main.DiscordBot;
+import net.dv8tion.jda.JDA;
+import net.dv8tion.jda.Permission;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.Role;
+import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.utils.PermissionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
 
 import java.awt.*;
 import java.sql.Timestamp;
@@ -67,7 +65,7 @@ public class RoleRankings {
 	 * @param role  the role
 	 * @return full name
 	 */
-	public static String getFullName(IGuild guild, MemberShipRole role) {
+	public static String getFullName(Guild guild, MemberShipRole role) {
 		return getPrefix(guild) + " " + role.getName();
 	}
 
@@ -86,18 +84,13 @@ public class RoleRankings {
 	 *
 	 * @param guild the guild to create/modify the roles for
 	 */
-	public static void fixForServer(IGuild guild) {
+	public static void fixForServer(Guild guild) {
 		for (int i = roles.size() - 1; i >= 0; i--) {
-			try {
-				fixRole(guild, roles.get(i));
-			} catch (RateLimitException | DiscordException | MissingPermissionsException e) {
-				e.printStackTrace();
-				break;
-			}
+			fixRole(guild, roles.get(i));
 		}
 	}
 
-	public static String getPrefix(IGuild guild) {
+	public static String getPrefix(Guild guild) {
 		return GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanksPrefix.class);
 	}
 
@@ -106,26 +99,23 @@ public class RoleRankings {
 	 *
 	 * @param guild the guild to add/modify the role for
 	 * @param rank  the role to add/modify
-	 * @throws RateLimitException
-	 * @throws DiscordException
-	 * @throws MissingPermissionsException
 	 */
-	private static void fixRole(IGuild guild, MemberShipRole rank) throws RateLimitException, DiscordException, MissingPermissionsException {
-		List<IRole> rolesByName = guild.getRolesByName(getFullName(guild, rank));
-		IRole role;
+	private static void fixRole(Guild guild, MemberShipRole rank) {
+		List<Role> rolesByName = guild.getRolesByName(getFullName(guild, rank));
+		Role role;
 		if (rolesByName.size() > 0) {
 			role = rolesByName.get(0);
 		} else {
-			role = guild.createRole();
+			role = guild.createRole().getRole();
 		}
 		if (!role.getName().equals(getFullName(guild, rank))) {
-			role.changeName(getFullName(guild, rank));
+			role.getManager().setName(getFullName(guild, rank));
 		}
-		if (!role.getColor().equals(rank.getColor())) {
-			role.changeColor(rank.getColor());
+		if (role.getColor() != rank.getColor().getRGB()) {
+			role.getManager().setColor(rank.getColor());
 		}
-		if (!role.isHoisted()) {
-			role.changeHoist(true);
+		if (!role.isGrouped()) {
+			role.getManager().setGrouped(true);
 		}
 	}
 
@@ -136,14 +126,8 @@ public class RoleRankings {
 	 * @param ourUser the user to check for
 	 * @return has the manage roles premission?
 	 */
-	public static boolean canModifyRoles(IGuild guild, IUser ourUser) {
-
-		for (IRole ourRoles : guild.getRolesForUser(ourUser)) {
-			if (ourRoles.getPermissions().contains(Permissions.MANAGE_ROLES)) {
-				return true;
-			}
-		}
-		return false;
+	public static boolean canModifyRoles(Guild guild, User ourUser) {
+		return PermissionUtil.checkPermission(guild, ourUser, Permission.MANAGE_ROLES);
 	}
 
 	/**
@@ -151,23 +135,16 @@ public class RoleRankings {
 	 *
 	 * @param guild   the guild to clean up
 	 * @param ourUser the bot user
-	 * @throws RateLimitException
-	 * @throws DiscordException
-	 * @throws MissingPermissionsException
 	 */
-	public static void cleanUpRoles(IGuild guild, IUser ourUser) throws RateLimitException, DiscordException, MissingPermissionsException {
+	public static void cleanUpRoles(Guild guild, User ourUser) {
 		if (!canModifyRoles(guild, ourUser)) {
 			return;
 		}
-		for (IRole role : guild.getRoles()) {
+		for (Role role : guild.getRoles()) {
 			if (role.getName().contains(getPrefix(guild))) {
-				role.delete();
+				role.getManager().delete();
 			} else if (roleNames.contains(role.getName().toLowerCase())) {
-				try {
-					role.delete();
-				} catch (MissingPermissionsException ignored) {
-					LOGGER.info("Can't delete role %s! In the guild %s", role.getName(), guild.getName());
-				}
+				role.getManager().delete();
 			}
 		}
 	}
@@ -178,12 +155,12 @@ public class RoleRankings {
 	 * @param guilds   the guilds to fix the roles for
 	 * @param instance the bot instance
 	 */
-	public static void fixRoles(List<IGuild> guilds, IDiscordClient instance) {
-		for (IGuild guild : guilds) {
+	public static void fixRoles(List<Guild> guilds, JDA instance) {
+		for (Guild guild : guilds) {
 			if (!GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanks.class).equals("true")) {
 				continue;
 			}
-			if (canModifyRoles(guild, instance.getOurUser())) {
+			if (canModifyRoles(guild, instance.getSelfInfo())) {
 				fixForServer(guild);
 			}
 		}
@@ -195,9 +172,9 @@ public class RoleRankings {
 	 * @param guild the guild
 	 * @param user  the user
 	 */
-	public static void assignUserRole(DiscordBot bot, IGuild guild, IUser user) {
-		List<IRole> roles = user.getRolesForGuild(guild);
-		OGuildMember membership = TGuildMember.findBy(guild.getID(), user.getID());
+	public static void assignUserRole(DiscordBot bot, Guild guild, User user) {
+		List<Role> roles = guild.getRolesForUser(user);
+		OGuildMember membership = TGuildMember.findBy(guild.getId(), user.getId());
 		boolean hasTargetRole = false;
 		String prefix = RoleRankings.getPrefix(guild);
 		if (membership.joinDate == null) {
@@ -205,7 +182,7 @@ public class RoleRankings {
 			TGuildMember.insertOrUpdate(membership);
 		}
 		MemberShipRole targetRole = RoleRankings.getHighestRole(System.currentTimeMillis() - membership.joinDate.getTime());
-		for (IRole role : roles) {
+		for (Role role : roles) {
 			if (role.getName().startsWith(prefix)) {
 				if (role.getName().equals(RoleRankings.getFullName(guild, targetRole))) {
 					hasTargetRole = true;
@@ -215,11 +192,11 @@ public class RoleRankings {
 			}
 		}
 		if (!hasTargetRole) {
-			List<IRole> roleList = guild.getRolesByName(RoleRankings.getFullName(guild, targetRole));
+			List<Role> roleList = guild.getRolesByName(RoleRankings.getFullName(guild, targetRole));
 			if (roleList.size() > 0) {
 				bot.out.addRole(user, roleList.get(0));
 			} else {
-				bot.out.sendErrorToMe(new Exception("Role not found"), "guild", guild.getName(), "user", user.getName());
+				bot.out.sendErrorToMe(new Exception("Role not found"), "guild", guild.getName(), "user", user.getUsername());
 			}
 		}
 	}

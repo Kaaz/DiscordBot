@@ -7,8 +7,8 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.modules.minecraft.ServerListPing17;
 import discordbot.util.Misc;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -52,7 +52,7 @@ public class McStatusCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		String host = "localhost";
 		int port = defaultPort;
 		if (args.length == 0 && channel.getGuild().getID().equals(gid)) {

@@ -1,15 +1,15 @@
 package discordbot.handler.discord;
 
-import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.Role;
+import net.dv8tion.jda.entities.User;
 
 public class RoleModifyTask {
 
-	private final IUser user;
-	private final IRole role;
+	private final User user;
+	private final Role role;
 	private final boolean add;
 
-	public RoleModifyTask(IUser user, IRole role, boolean add) {
+	public RoleModifyTask(User user, Role role, boolean add) {
 
 		this.user = user;
 		this.role = role;
@@ -20,11 +20,11 @@ public class RoleModifyTask {
 		return add;
 	}
 
-	public IRole getRole() {
+	public Role getRole() {
 		return role;
 	}
 
-	public IUser getUser() {
+	public User getUser() {
 		return user;
 	}
 }

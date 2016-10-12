@@ -4,8 +4,8 @@ import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;
 import discordbot.modules.pathofexile.ItemAnalyzer;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 /**
  * !poeitem
@@ -37,7 +37,7 @@ public class PoeItemCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		String input = Joiner.on(" ").join(args);
 		ItemAnalyzer itemAnalyzer = new ItemAnalyzer();
 		return itemAnalyzer.attemptToANALyze(input).toString();

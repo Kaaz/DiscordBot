@@ -6,8 +6,8 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 import java.util.Map;
 import java.util.TimerTask;
@@ -52,7 +52,7 @@ public class BlackJackCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		if (args.length == 0) {
 			if (playerGames.containsKey(author.getID()) && playerGames.get(author.getID()).isInProgress()) {
 				return "You are still in a game. To finish type **blackjack stand**" + Config.EOL +

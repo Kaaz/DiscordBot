@@ -6,7 +6,8 @@ import discordbot.main.DiscordBot;
 import discordbot.modules.profile.ProfileImageV1;
 import discordbot.modules.profile.ProfileImageV2;
 import discordbot.util.DisUtil;
-import sx.blah.discord.handle.obj.IChannel;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.io.File;
@@ -45,7 +46,7 @@ public class ProfileCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		IUser user = author;
 		if (args.length > 0) {
 			if (DisUtil.isUserMention(args[0])) {

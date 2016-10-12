@@ -10,8 +10,8 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import discordbot.util.TimeUtil;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class Playlist extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		if (args.length == 0) {
 			MusicPlayerHandler player = MusicPlayerHandler.getFor(channel.getGuild(), bot);
 			List<OMusic> queue = player.getQueue();

@@ -5,9 +5,9 @@ import com.google.gson.JsonParser;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import org.apache.commons.lang3.StringEscapeUtils;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -45,7 +45,7 @@ public class Joke extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		bot.out.sendAsyncMessage(channel, Template.get("command_joke_wait"), message -> {
 			String joketxt = "";
 			if (new Random().nextInt(100) < 80) {

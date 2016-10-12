@@ -11,6 +11,8 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.YTSearch;
 import discordbot.util.YTUtil;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import sx.blah.discord.handle.obj.*;
 
 import java.io.File;
@@ -72,7 +74,7 @@ public class Play extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		if (!isInVoiceWith(channel.getGuild(), author)) {
 			String joinOutput = bot.commands.getCommand("join").execute(new String[]{}, channel, author);
 			try {

@@ -5,7 +5,7 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
-import sx.blah.discord.handle.obj.IChannel;
+import net.dv8tion.jda.entities.TextChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.util.Optional;
@@ -45,7 +45,7 @@ public class User extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, net.dv8tion.jda.entities.User author) {
 		IUser infoUser = null;
 		if (args.length == 0) {
 			infoUser = author;

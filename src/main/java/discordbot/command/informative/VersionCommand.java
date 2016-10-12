@@ -5,8 +5,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.UpdateUtil;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
 
 
 /**
@@ -44,7 +43,7 @@ public class VersionCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, net.dv8tion.jda.entities.User author) {
 		return "Info about the versions:" + Config.EOL +
 				"Current version: `" + Launcher.getVersion() + "`" + Config.EOL +
 				"Latest  version: `" + UpdateUtil.getLatestVersion() + "`" + Config.EOL;

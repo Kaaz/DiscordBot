@@ -1,10 +1,12 @@
 package discordbot.handler;
 
 import discordbot.db.model.OReplyPattern;
-import discordbot.db.table.TReplyPattern;
 import discordbot.db.table.TGuild;
+import discordbot.db.table.TReplyPattern;
 import discordbot.main.DiscordBot;
-import sx.blah.discord.handle.obj.IMessage;
+import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.entities.PrivateChannel;
+import net.dv8tion.jda.entities.TextChannel;
 
 import java.util.List;
 import java.util.Map;
@@ -26,11 +28,15 @@ public class AutoReplyHandler {
 		reload();
 	}
 
-	public boolean autoReplied(IMessage message) {
-		if (message.getChannel().isPrivate()) {
+	public boolean autoReplied(Message message) {
+		if (message.getChannel() instanceof PrivateChannel) {
 			return false;
 		}
-		String guildId = message.getGuild().getID();
+		if (!(message instanceof TextChannel)) {
+			return false;
+		}
+		TextChannel channel = (TextChannel) message.getChannel();
+		String guildId = channel.getGuild().getId();
 		int internalGuildId = TGuild.getCachedId(guildId);
 		Long now = System.currentTimeMillis();
 		for (int index = 0; index < replies.length; index++) {
@@ -40,7 +46,7 @@ public class AutoReplyHandler {
 					Matcher matcher = replies[index].pattern.matcher(message.getContent());
 					if (matcher.matches()) {
 						saveCooldown(guildId, index, now);
-						bot.out.sendAsyncMessage(message.getChannel(), message.getAuthor().mention() + ", " + replies[index].reply, null);
+						bot.out.sendAsyncMessage(channel, message.getAuthor().getAsMention() + ", " + replies[index].reply, null);
 						return true;
 					}
 				}

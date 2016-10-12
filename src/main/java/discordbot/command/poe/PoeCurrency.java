@@ -7,6 +7,8 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import org.libpoe.model.StashTab;
 import org.libpoe.model.item.Item;
 import org.libpoe.model.property.MinMaxProperty;
@@ -14,8 +16,6 @@ import org.libpoe.model.property.Property;
 import org.libpoe.net.AuthInfo;
 import org.libpoe.net.DataReader;
 import org.libpoe.util.League;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +56,7 @@ public class PoeCurrency extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		if (args.length > 1) {
 			if (args[0].equalsIgnoreCase("token")) {
 				OPoEToken token = TPoEToken.findBy(author.getID());

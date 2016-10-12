@@ -2,18 +2,18 @@ package discordbot.command.administrative;
 
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.OReplyPattern;
 import discordbot.db.model.OGuild;
-import discordbot.db.table.TReplyPattern;
+import discordbot.db.model.OReplyPattern;
 import discordbot.db.table.TGuild;
+import discordbot.db.table.TReplyPattern;
 import discordbot.db.table.TUser;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import discordbot.util.TimeUtil;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,7 +64,7 @@ public class AutoReplyCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		if (!bot.isAdmin(channel, author)) {
 			return Template.get("no_permission");
 		}
@@ -92,8 +92,8 @@ public class AutoReplyCommand extends AbstractCommand {
 			if (args[0].equals("create")) {
 				if (replyPattern.id == 0) {
 					replyPattern.tag = args[1];
-					replyPattern.userId = TUser.getCachedId(author.getID());
-					replyPattern.guildId = bot.isCreator(author) ? 0 : TGuild.getCachedId(channel.getGuild().getID());
+					replyPattern.userId = TUser.getCachedId(author.getId());
+					replyPattern.guildId = bot.isCreator(author) ? 0 : TGuild.getCachedId(channel.getGuild().getId());
 					TReplyPattern.insert(replyPattern);
 					return Template.get("command_autoreply_created", args[1]);
 				}
@@ -113,7 +113,7 @@ public class AutoReplyCommand extends AbstractCommand {
 				case "delete":
 				case "remove":
 				case "del":
-					if (bot.isCreator(author) || (bot.isAdmin(channel, author) && TGuild.getCachedId(channel.getGuild().getID()) == replyPattern.id))
+					if (bot.isCreator(author) || (bot.isAdmin(channel, author) && TGuild.getCachedId(channel.getGuild().getId()) == replyPattern.id))
 						TReplyPattern.delete(replyPattern);
 					bot.loadConfiguration();
 					return Template.get("command_autoreply_deleted", args[1]);

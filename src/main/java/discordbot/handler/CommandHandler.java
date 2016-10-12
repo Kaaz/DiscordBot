@@ -11,19 +11,19 @@ import discordbot.db.table.TCommandCooldown;
 import discordbot.db.table.TCommandLog;
 import discordbot.db.table.TGuild;
 import discordbot.db.table.TUser;
-import discordbot.guildsettings.defaults.*;
+import discordbot.guildsettings.defaults.SettingBotChannel;
+import discordbot.guildsettings.defaults.SettingCleanupMessages;
+import discordbot.guildsettings.defaults.SettingCommandPrefix;
+import discordbot.guildsettings.defaults.SettingShowUnknownCommands;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
+import net.dv8tion.jda.entities.Channel;
+import net.dv8tion.jda.entities.PrivateChannel;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import org.reflections.Reflections;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IPrivateChannel;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
@@ -56,7 +56,7 @@ public class CommandHandler {
 	 * @param msg     the message
 	 * @return whether or not the message is a command
 	 */
-	public boolean isCommand(IChannel channel, String msg) {
+	public boolean isCommand(Channel channel, String msg) {
 		return msg.startsWith(DisUtil.getCommandPrefix(channel)) || msg.startsWith(bot.mentionMe);
 	}
 
@@ -67,8 +67,8 @@ public class CommandHandler {
 	 * @param author           author
 	 * @param incommingMessage message
 	 */
-	public void process(IChannel channel, IUser author, String incommingMessage) {
-		IMessage mymsg = null;
+	public void process(TextChannel channel, User author, String incommingMessage) {
+		String outMsg = "";
 		boolean startedWithMention = false;
 		String inputMessage = incommingMessage;
 		if (inputMessage.startsWith(bot.mentionMe)) {
@@ -85,50 +85,50 @@ public class CommandHandler {
 			if (hasRightVisibility(channel, command.getVisibility()) && cooldown <= 0) {
 				String commandOutput = command.execute(args, channel, author);
 				if (!commandOutput.isEmpty()) {
-					mymsg = bot.out.sendAsyncMessage(channel, commandOutput, null);
+					outMsg = commandOutput;
 				}
 				if (Config.BOT_COMMAND_LOGGING) {
 					StringBuilder usedArguments = new StringBuilder();
 					for (String arg : args) {
 						usedArguments.append(arg).append(" ");
 					}
-					if (!channel.isPrivate()) {
-						TCommandLog.saveLog(TUser.getCachedId(author.getID()), TGuild.getCachedId(channel.getGuild().getID()), input[0], EmojiParser.parseToAliases(usedArguments.toString()).trim());
+					if (!(channel instanceof PrivateChannel)) {
+						TCommandLog.saveLog(TUser.getCachedId(author.getId()), TGuild.getCachedId(channel.getGuild().getId()), input[0], EmojiParser.parseToAliases(usedArguments.toString()).trim());
 					}
 				}
 			} else if (cooldown > 0) {
-				mymsg = bot.out.sendAsyncMessage(channel, String.format(Template.get("command_on_cooldown"), TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false)), null);
+				outMsg = String.format(Template.get("command_on_cooldown"), TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false));
 			} else if (!hasRightVisibility(channel, command.getVisibility())) {
-				if (channel instanceof IPrivateChannel) {
-					mymsg = bot.out.sendAsyncMessage(channel, Template.get("command_not_for_private"), null);
+				if (channel instanceof PrivateChannel) {
+					outMsg = Template.get("command_not_for_private");
 				} else {
-					mymsg = bot.out.sendAsyncMessage(channel, Template.get("command_not_for_public"), null);
+					outMsg = Template.get("command_not_for_public");
 				}
 			}
 		} else if (customCommands.containsKey(input[0])) {
-			mymsg = bot.out.sendAsyncMessage(channel, customCommands.get(input[0]), null);
+			outMsg = customCommands.get(input[0]);
 		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
-			mymsg = bot.out.sendAsyncMessage(channel, author.mention() + ", " + bot.chatBotHandler.chat(inputMessage), null);
+			outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat(inputMessage);
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
-			mymsg = bot.out.sendAsyncMessage(channel, String.format(Template.get("unknown_command"), GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help"), null);
+			outMsg = String.format(Template.get("unknown_command"), GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help");
 		}
-		if (mymsg != null && shouldCleanUpMessages(channel)) {
-			final IMessage finalMymsg = mymsg;
-			bot.timer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					try {
-						finalMymsg.delete();
-					} catch (MissingPermissionsException | RateLimitException | DiscordException ignored) {
-					}
+		if (!outMsg.isEmpty()) {
+			bot.out.sendAsyncMessage(channel, outMsg, (message) -> {
+				if (shouldCleanUpMessages(channel)) {
+					bot.timer.schedule(new TimerTask() {
+						@Override
+						public void run() {
+							message.deleteMessage();
+						}
+					}, Config.DELETE_MESSAGES_AFTER);
 				}
-			}, Config.DELETE_MESSAGES_AFTER);
+			});
 		}
 	}
 
-	private boolean hasRightVisibility(IChannel channel, CommandVisibility visibility) {
-		if (channel instanceof IPrivateChannel) {
+	private boolean hasRightVisibility(TextChannel channel, CommandVisibility visibility) {
+		if (channel instanceof PrivateChannel) {
 			return visibility.isForPrivate();
 		}
 		return visibility.isForPublic();
@@ -142,23 +142,23 @@ public class CommandHandler {
 	 * @param channel the channel
 	 * @return seconds till next use
 	 */
-	private long getCommandCooldown(AbstractCommand command, IUser author, IChannel channel) {
+	private long getCommandCooldown(AbstractCommand command, User author, TextChannel channel) {
 		if (command instanceof ICommandCooldown) {
 			long now = System.currentTimeMillis() / 1000L;
 			ICommandCooldown cd = (ICommandCooldown) command;
 			String targetId;
 			switch (cd.getCooldownScale()) {
 				case USER:
-					targetId = author.getID();
+					targetId = author.getId();
 					break;
 				case CHANNEL:
-					targetId = channel.getID();
+					targetId = channel.getId();
 					break;
 				case GUILD:
-					if (channel.isPrivate()) {
-						bot.out.sendErrorToMe(new Exception("Command with guild-scale cooldown in private!"), "command", command.getCommand(), "user", author.getName(), bot);
+					if (channel instanceof PrivateChannel) {
+						bot.out.sendErrorToMe(new Exception("Command with guild-scale cooldown in private!"), "command", command.getCommand(), "user", author.getUsername(), bot);
 					}
-					targetId = channel.getGuild().getID();
+					targetId = channel.getGuild().getId();
 					break;
 				case GLOBAL:
 					targetId = "GLOBAL";
@@ -182,7 +182,7 @@ public class CommandHandler {
 		return 0;
 	}
 
-	private boolean shouldCleanUpMessages(IChannel channel) {
+	private boolean shouldCleanUpMessages(TextChannel channel) {
 		String cleanupMethod = GuildSettings.getFor(channel, SettingCleanupMessages.class);
 		String mychannel = GuildSettings.getFor(channel, SettingBotChannel.class);
 		if ("yes".equals(cleanupMethod)) {

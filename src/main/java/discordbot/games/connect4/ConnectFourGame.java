@@ -2,8 +2,10 @@ package discordbot.games.connect4;
 
 import discordbot.games.AbstractGame;
 import discordbot.games.GameState;
+import discordbot.games.GameTurn;
 import discordbot.main.Config;
 import discordbot.util.Misc;
+import net.dv8tion.jda.entities.User;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
@@ -44,7 +46,7 @@ public class ConnectFourGame extends AbstractGame<Connect4Turn> {
 	}
 
 	@Override
-	public boolean isValidMove(IUser player, Connect4Turn turnInfo) {
+	public boolean isValidMove(User player, GameTurn turnInfo) {
 		return board.canPlaceInColumn(turnInfo.getColumnIndex());
 	}
 

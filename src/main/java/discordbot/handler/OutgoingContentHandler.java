@@ -1,16 +1,14 @@
 package discordbot.handler;
 
-import discordbot.core.Logger;
 import discordbot.handler.discord.RoleModifyTask;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
-import sx.blah.discord.handle.obj.*;
-import sx.blah.discord.util.*;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
@@ -35,7 +33,10 @@ public class OutgoingContentHandler {
 	 */
 	public void sendAsyncMessage(TextChannel channel, String content, Consumer<Message> callback) {
 		channel.sendMessageAsync(content, null);
-		return request.get();
+	}
+
+	public Message sendMessage(TextChannel channel, String content, Consumer<Message> callback) {
+		return channel.sendMessage(content);
 	}
 
 	/**
@@ -44,7 +45,7 @@ public class OutgoingContentHandler {
 	 * @param user the user
 	 * @param role the role
 	 */
-	public void addRole(IUser user, IRole role) {
+	public void addRole(User user, Role role) {
 		roleThread.offer(new RoleModifyTask(user, role, true));
 	}
 
@@ -54,7 +55,7 @@ public class OutgoingContentHandler {
 	 * @param user the user
 	 * @param role the role
 	 */
-	public void removeRole(IUser user, IRole role) {
+	public void removeRole(User user, Role role) {
 		roleThread.offer(new RoleModifyTask(user, role, false));
 	}
 
@@ -89,11 +90,11 @@ public class OutgoingContentHandler {
 				}
 			}
 		}
-		sendPrivateMessage(bot.client.getUserByID(Config.CREATOR_ID), errorMessage);
+		sendPrivateMessage(bot.client.getUserById(Config.CREATOR_ID), errorMessage);
 	}
 
 	public void sendMessageToCreator(String message) {
-		sendPrivateMessage(bot.client.getUserByID(Config.CREATOR_ID), message);
+		sendPrivateMessage(bot.client.getUserById(Config.CREATOR_ID), message);
 	}
 
 	/**
@@ -107,62 +108,19 @@ public class OutgoingContentHandler {
 	}
 
 	/**
-	 * Edits an existing message
-	 *
-	 * @param msg     the message to edit
-	 * @param newText new content of the message
-	 * @return the message or null
-	 */
-	public RequestBuffer.RequestFuture<IMessage> editMessage(IMessage msg, String newText) {
-		return RequestBuffer.request(() -> {
-			try {
-				return msg.edit(newText);
-			} catch (DiscordException e) {
-				if (e.getErrorMessage().contains("502")) {
-					throw new RateLimitException("Workaround because of 502", 1500, "editMessage", false);
-				}
-			} catch (MissingPermissionsException e) {
-				Logger.fatal(e, "no permission");
-				e.printStackTrace();
-			}
-			return null;
-		});
-	}
-
-	/**
 	 * Puts a message in the delete queue
 	 *
 	 * @param message the message to delete
 	 */
-	public void deleteMessage(IMessage message) {
+	public void deleteMessage(Message message) {
 		deleteThread.offer(message);
-	}
-
-	public RequestBuffer.RequestFuture<IMessage> sendAsyncMessage(MessageBuilder builder) {
-		return RequestBuffer.request(() -> {
-			try {
-				return builder.send();
-			} catch (DiscordException e) {
-				if (e.getErrorMessage().contains("502")) {
-					throw new RateLimitException("Workaround because of 502", 1000, "sendAsyncMessage", false);
-				}
-			} catch (MissingPermissionsException e) {
-				Logger.fatal(e, "no permission");
-				e.printStackTrace();
-			} catch (RateLimitException e) {
-				System.out.println(e.getRetryDelay());
-				System.out.println(e.getMethod());
-				throw e;
-			}
-			return null;
-		});
 	}
 
 	/**
 	 * simple thread to delete messages, since it bugs out otherwise
 	 */
 	private class MessageDeleter extends Thread {
-		private LinkedBlockingQueue<IMessage> itemsToDelete = new LinkedBlockingQueue<>();
+		private LinkedBlockingQueue<Message> itemsToDelete = new LinkedBlockingQueue<>();
 		private volatile boolean processTerminated = false;
 
 		MessageDeleter() {
@@ -172,20 +130,9 @@ public class OutgoingContentHandler {
 		public void run() {
 			try {
 				while (!Launcher.killAllThreads) {
-					final IMessage msgToDelete = itemsToDelete.take();
+					final Message msgToDelete = itemsToDelete.take();
 					if (msgToDelete != null) {
-						RequestBuffer.request(() -> {
-							try {
-								msgToDelete.delete();
-								return true;
-							} catch (MissingPermissionsException | DiscordException e) {
-								System.out.println(e.getMessage());
-								e.printStackTrace();
-							}
-							return false;
-						});
-					} else {
-						System.out.println("MSG IS NULL");
+						msgToDelete.deleteMessage();
 					}
 					Thread.sleep(DELETE_INTERVAL);
 				}
@@ -195,7 +142,7 @@ public class OutgoingContentHandler {
 			}
 		}
 
-		public void offer(IMessage lm) {
+		public void offer(Message lm) {
 			if (processTerminated) return;
 			itemsToDelete.offer(lm);
 		}
@@ -214,23 +161,11 @@ public class OutgoingContentHandler {
 				while (!Launcher.killAllThreads) {
 					final RoleModifyTask roleToModify = itemsToDelete.take();
 					if (roleToModify != null) {
-						RequestBuffer.request(() -> {
-							try {
-								if (roleToModify.isAdd()) {
-									roleToModify.getUser().addRole(roleToModify.getRole());
-								} else {
-									roleToModify.getUser().removeRole(roleToModify.getRole());
-								}
-								return true;
-							} catch (MissingPermissionsException | DiscordException e) {
-								if (!e.getMessage().startsWith("Edited roles hierarchy is too high")) {
-									System.out.println(e.getMessage());
-									bot.out.sendErrorToMe(e, "server", roleToModify.getRole().getGuild().getName(), "user", roleToModify.getRole().getName(), "Modifier", roleToModify.isAdd() ? "Adding" : "Removing");
-									e.printStackTrace();
-								}
-							}
-							return false;
-						});
+						if (roleToModify.isAdd()) {
+							roleToModify.getRole().getGuild().getManager().addRoleToUser(roleToModify.getUser(), roleToModify.getRole());
+						} else {
+							roleToModify.getRole().getGuild().getManager().removeRoleFromUser(roleToModify.getUser(), roleToModify.getRole());
+						}
 					}
 					Thread.sleep(1000L);
 				}

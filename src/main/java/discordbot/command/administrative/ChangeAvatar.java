@@ -2,11 +2,8 @@ package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.Image;
-import sx.blah.discord.util.RateLimitException;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 /**
  * !avatar
@@ -24,7 +21,12 @@ public class ChangeAvatar extends AbstractCommand {
 
 	@Override
 	public String getCommand() {
-		return "avatar";
+		return "updateavatar";
+	}
+
+	@Override
+	public boolean isListed() {
+		return false;
 	}
 
 	@Override
@@ -38,18 +40,12 @@ public class ChangeAvatar extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		if (!bot.isCreator(author)) {
 			return ":upside_down: There's only one person who I trust enough to do that";
 		}
-		if (args.length == 2) {
-			try {
-				bot.client.changeAvatar(Image.forUrl(args[0], args[1]));
-				return "How do you like my new look? :blush:";
-			} catch (DiscordException | RateLimitException e) {
-				e.printStackTrace();
-				return "Couldn't do it because: " + e.getMessage();
-			}
+		if (args.length <= 1) {
+			return "Disabled for now :(";
 		}
 		return ":face_palm: I expected you to know how to use it";
 	}

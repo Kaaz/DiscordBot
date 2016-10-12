@@ -7,8 +7,8 @@ import discordbot.modules.reddit.RedditScraper;
 import discordbot.modules.reddit.pojo.Comment;
 import discordbot.modules.reddit.pojo.Post;
 import discordbot.util.Misc;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -55,7 +55,7 @@ public class PoeLabsCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		List<Post> search = RedditScraper.search("pathofexile", "title%3ADaily+Labyrinth+author%3AAutoModerator&sort=new&restrict_sr=on&t=day");
 
 		if (!search.isEmpty()) {

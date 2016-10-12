@@ -8,10 +8,10 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
+import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import org.reflections.Reflections;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -23,7 +23,7 @@ public class GameHandler {
 	private final DiscordBot bot;
 	private final Map<String, Class<? extends AbstractGame>> gameClassMap;
 	private final Map<String, AbstractGame> gameInfoMap;
-	private final Map<String, IMessage> lastMessage;
+	private final Map<String, Message> lastMessage;
 	private Map<String, AbstractGame> playerGames = new ConcurrentHashMap<>();
 	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
 	private Map<String, String> usersInPlayMode;
@@ -37,21 +37,21 @@ public class GameHandler {
 		collectGameClasses();
 	}
 
-	private boolean isInPlayMode(IUser user, IChannel channel) {
-		return usersInPlayMode.containsKey(user.getID()) && usersInPlayMode.get(user.getID()).equals(channel.getID());
+	private boolean isInPlayMode(User user, TextChannel channel) {
+		return usersInPlayMode.containsKey(user.getId()) && usersInPlayMode.get(user.getId()).equals(channel.getId());
 	}
 
-	private void enterPlayMode(IChannel channel, IUser player) {
-		usersInPlayMode.put(player.getID(), channel.getID());
+	private void enterPlayMode(TextChannel channel, User player) {
+		usersInPlayMode.put(player.getId(), channel.getId());
 	}
 
-	private void leavePlayMode(IUser player) {
-		if (usersInPlayMode.containsKey(player.getID())) {
-			usersInPlayMode.remove(player.getID());
+	private void leavePlayMode(User player) {
+		if (usersInPlayMode.containsKey(player.getId())) {
+			usersInPlayMode.remove(player.getId());
 		}
 	}
 
-	public boolean isGameInput(IChannel channel, IUser player, String message) {
+	public boolean isGameInput(TextChannel channel, User player, String message) {
 		if (GuildSettings.getFor(channel, SettingGameModule.class).equals("true")) {
 			if (isInPlayMode(player, channel) || message.startsWith(DisUtil.getCommandPrefix(channel) + COMMAND_NAME)) {
 				return true;
@@ -60,7 +60,7 @@ public class GameHandler {
 		return false;
 	}
 
-	public final void execute(IUser player, IChannel channel, String rawMessage) {
+	public final void execute(User player, TextChannel channel, String rawMessage) {
 		String message = rawMessage.toLowerCase().trim();
 		if (!isInPlayMode(player, channel)) {
 			message = message.replace(DisUtil.getCommandPrefix(channel) + COMMAND_NAME, "").trim();
@@ -89,12 +89,12 @@ public class GameHandler {
 			gameMessage = showList(channel);
 		}
 		if (!gameMessage.isEmpty()) {
-			IMessage msg = bot.out.sendAsyncMessage(channel, gameMessage, null);
-			if (lastMessage.containsKey(channel.getID())) {
-				IMessage msgToDelete = lastMessage.remove(channel.getID());
+			Message msg = bot.out.sendMessage(channel, gameMessage, null);
+			if (lastMessage.containsKey(channel.getId())) {
+				Message msgToDelete = lastMessage.remove(channel.getId());
 				bot.out.deleteMessage(msgToDelete);
 			}
-			lastMessage.put(channel.getID(), msg);
+			lastMessage.put(channel.getId(), msg);
 		}
 	}
 
@@ -140,14 +140,14 @@ public class GameHandler {
 		return null;
 	}
 
-	private String createGame(IUser player, String gameCode) {
-		if (!isInAGame(player.getID())) {
+	private String createGame(User player, String gameCode) {
+		if (!isInAGame(player.getId())) {
 			if (gameClassMap.containsKey(gameCode)) {
 				AbstractGame gameInstance = createGameInstance(gameCode);
 				if (gameInstance == null) {
 					return Template.get("playmode_cant_create_instance");
 				}
-				if (createGame(player.getID(), gameInstance)) {
+				if (createGame(player.getId(), gameInstance)) {
 					return Template.get("playmode_cant_register_instance");
 				}
 				gameInstance.addPlayer(player);
@@ -158,28 +158,28 @@ public class GameHandler {
 			}
 			return Template.get("playmode_invalid_gamecode");
 		}
-		return Template.get("playmode_already_in_game") + Config.EOL + getGame(player.getID());
+		return Template.get("playmode_already_in_game") + Config.EOL + getGame(player.getId());
 	}
 
-	private String cancelGame(IUser player) {
-		if (isInAGame(player.getID())) {
-			removeGame(player.getID());
+	private String cancelGame(User player) {
+		if (isInAGame(player.getId())) {
+			removeGame(player.getId());
 			return Template.get("playmode_canceled_game");
 		}
 		return Template.get("playmode_not_in_game");
 	}
 
-	private String createGamefromUserMention(IUser player, String theMention, String gamecode) {
-		if (isInAGame(player.getID())) {
+	private String createGamefromUserMention(User player, String theMention, String gamecode) {
+		if (isInAGame(player.getId())) {
 			return Template.get("playmode_already_in_game");
 		}
 		String userId = DisUtil.mentionToId(theMention);
-		IUser targetUser = bot.client.getUserByID(userId);
-		if (isInAGame(targetUser.getID())) {
-			AbstractGame otherGame = getGame(targetUser.getID());
+		User targetUser = bot.client.getUserById(userId);
+		if (isInAGame(targetUser.getId())) {
+			AbstractGame otherGame = getGame(targetUser.getId());
 			if (otherGame != null && otherGame.waitingForPlayer()) {
 				otherGame.addPlayer(player);
-				joinGame(player.getID(), targetUser.getID());
+				joinGame(player.getId(), targetUser.getId());
 				return Template.get("playmode_joined_target") + Config.EOL + otherGame.toString();
 			}
 			return Template.get("playmode_target_already_in_a_game");
@@ -192,18 +192,18 @@ public class GameHandler {
 		if (newGame == null) {
 			return Template.get("playmode_cant_create_instance");
 		}
-		createGame(player.getID(), newGame);
+		createGame(player.getId(), newGame);
 		newGame.addPlayer(player);
 		newGame.addPlayer(targetUser);
-		joinGame(targetUser.getID(), player.getID());
+		joinGame(targetUser.getId(), player.getId());
 		return newGame.toString();
 	}
 
-	private String showHelp(IChannel channel) {
+	private String showHelp(TextChannel channel) {
 		return showList(channel);
 	}
 
-	private String showList(IChannel channel) {
+	private String showList(TextChannel channel) {
 		return "A list of all available games" + Config.EOL +
 				getFormattedGameList() +
 				"to start one type `" + DisUtil.getCommandPrefix(channel) + COMMAND_NAME + " <@user> <gamecode>`" + Config.EOL +
@@ -211,7 +211,7 @@ public class GameHandler {
 				"This makes it so that you don't have to prefix your messages with `" + DisUtil.getCommandPrefix(channel) + COMMAND_NAME + "`";
 	}
 
-	public String executeGameMove(String[] args, IUser player, IChannel channel) {
+	public String executeGameMove(String[] args, User player, TextChannel channel) {
 		if (args.length > 0) {
 			if (args[0].equalsIgnoreCase("cancel")) {
 				return cancelGame(player);
@@ -227,15 +227,15 @@ public class GameHandler {
 			}
 			return playTurn(player, args[0]);
 		}
-		if (isInAGame(player.getID())) {
-			return String.valueOf(getGame(player.getID()));
+		if (isInAGame(player.getId())) {
+			return String.valueOf(getGame(player.getId()));
 		}
 		return Template.get("playmode_not_in_game");
 	}
 
-	private String playTurn(IUser player, String input) {
-		if (isInAGame(player.getID())) {
-			AbstractGame game = getGame(player.getID());
+	private String playTurn(User player, String input) {
+		if (isInAGame(player.getId())) {
+			AbstractGame game = getGame(player.getId());
 			if (game == null) {
 				return Template.get("playmode_game_corrupt");
 			}
@@ -258,7 +258,7 @@ public class GameHandler {
 			game.playTurn(player, gameTurnInstance);
 			String gamestr = game.toString();
 			if (game.getGameState().equals(GameState.OVER)) {
-				removeGame(player.getID());
+				removeGame(player.getId());
 			}
 			return gamestr;
 		}

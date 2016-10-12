@@ -2,8 +2,10 @@ package discordbot.games.tictactoe;
 
 import discordbot.games.AbstractGame;
 import discordbot.games.GameState;
+import discordbot.games.GameTurn;
 import discordbot.main.Config;
 import discordbot.util.Misc;
+import net.dv8tion.jda.entities.User;
 import sx.blah.discord.handle.obj.IUser;
 
 public class TicTacToeGame extends AbstractGame<TicGameTurn> {
@@ -50,7 +52,7 @@ public class TicTacToeGame extends AbstractGame<TicGameTurn> {
 	}
 
 	@Override
-	public boolean isValidMove(IUser player, TicGameTurn turnInfo) {
+	public boolean isValidMove(User player, GameTurn turnInfo) {
 		return turnInfo.getBoardIndex() < TILES_ON_BOARD && board[turnInfo.getBoardIndex()].isFree();
 	}
 

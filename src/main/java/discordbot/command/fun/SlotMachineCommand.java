@@ -7,8 +7,8 @@ import discordbot.games.SlotMachine;
 import discordbot.games.slotmachine.Slot;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 import java.util.TimerTask;
 
@@ -57,7 +57,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		if (args.length == 0 || args.length >= 1 && args[0].equals("play")) {
 			final SlotMachine slotMachine = new SlotMachine();
 			bot.out.sendAsyncMessage(channel, slotMachine.toString(), message -> {

@@ -4,8 +4,8 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 
 /**
  * !pm
@@ -37,19 +37,19 @@ public class PMCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, IChannel channel, IUser author) {
+	public String execute(String[] args, TextChannel channel, User author) {
 		if (!bot.isOwner(channel, author) && !bot.isAdmin(channel, author)) {
 			return Template.get("command_no_permission");
 		}
 		if (args.length > 1) {
 			if (DisUtil.isUserMention(args[0])) {
-				IUser targetUser = bot.client.getUserByID(DisUtil.mentionToId(args[0]));
+				User targetUser = bot.client.getUserById(DisUtil.mentionToId(args[0]));
 				if (targetUser != null) {
 					String message = "";
 					for (int i = 1; i < args.length; i++) {
 						message += " " + args[i];
 					}
-					bot.out.sendPrivateMessage(targetUser, "You got a message from " + author.mention() + ": " + message);
+					bot.out.sendPrivateMessage(targetUser, "You got a message from " + author.getAsMention() + ": " + message);
 					return Template.get("command_pm_success");
 				} else {
 					return Template.get("command_pm_cant_find_user");

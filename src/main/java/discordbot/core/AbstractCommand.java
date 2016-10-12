@@ -3,6 +3,8 @@ package discordbot.core;
 import discordbot.command.CommandCategory;
 import discordbot.command.CommandVisibility;
 import discordbot.main.DiscordBot;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -83,5 +85,5 @@ public abstract class AbstractCommand {
 		return true;
 	}
 
-	public abstract String execute(String[] args, IChannel channel, IUser author);
+	public abstract String execute(String[] args, TextChannel channel, User author);
 }
