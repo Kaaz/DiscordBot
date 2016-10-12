@@ -45,8 +45,7 @@ public class BotStatusService extends AbstractService {
 			Status.game("Analyzing fellow humans"),
 			Status.game("Yesterday you said tomorrow"),
 			Status.game("Let dreams be dreams"),
-			Status.game("Rare pepe"),
-			Status.stream("Cool stuff", "https://twitch.tv/logout"),
+			Status.game("Rare pepe")
 	};
 	Random rng;
 
