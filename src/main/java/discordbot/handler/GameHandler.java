@@ -89,7 +89,7 @@ public class GameHandler {
 			gameMessage = showList(channel);
 		}
 		if (!gameMessage.isEmpty()) {
-			Message msg = bot.out.sendMessage(channel, gameMessage, null);
+			Message msg = bot.out.sendMessage(channel, gameMessage);
 			if (lastMessage.containsKey(channel.getId())) {
 				Message msgToDelete = lastMessage.remove(channel.getId());
 				bot.out.deleteMessage(msgToDelete);

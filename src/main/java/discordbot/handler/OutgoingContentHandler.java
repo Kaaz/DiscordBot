@@ -35,7 +35,7 @@ public class OutgoingContentHandler {
 		channel.sendMessageAsync(content, callback);
 	}
 
-	public Message sendMessage(MessageChannel channel, String content, Consumer<Message> callback) {
+	public Message sendMessage(MessageChannel channel, String content) {
 		return channel.sendMessage(content);
 	}
 
