@@ -43,8 +43,10 @@ public class MusicPlayerHandler {
 		if (manager.getSendingHandler() == null) {
 			manager = guild.getAudioManager();
 			player = new MusicPlayer();
+			manager.setSendingHandler(player);
 		} else {
 			player = (MusicPlayer) manager.getSendingHandler();
+
 		}
 		player.setVolume(Float.parseFloat(GuildSettings.get(guild).getOrDefault(SettingMusicVolume.class)) / 100F);
 		playerInstances.put(guild, this);
@@ -152,7 +154,7 @@ public class MusicPlayerHandler {
 		System.out.println("ADDING TO QUEUE");
 		System.out.println(mp3file.getAbsolutePath());
 		if (!mp3file.exists()) {//check in config directory
-			bot.out.sendErrorToMe(new Exception("nosongexception :("), "filename: ", mp3file.getAbsolutePath(), "plz fix", "I want music", bot);
+			bot.out.sendErrorToMe(new Exception("NoMusicFile"), "filename: ", mp3file.getAbsolutePath(), "plz fix", "I want music", bot);
 			return false;
 		}
 		LocalSource ls = new LocalSource(mp3file);
