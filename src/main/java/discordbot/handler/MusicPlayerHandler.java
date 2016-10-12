@@ -199,7 +199,6 @@ public class MusicPlayerHandler {
 		ArrayList<OMusic> list = new ArrayList<>();
 		for (AudioSource audioSource : player.getAudioQueue()) {
 			AudioInfo info = audioSource.getInfo();
-			System.out.println(audioSource.getSource());
 		}
 		return list;
 	}

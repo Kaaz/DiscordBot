@@ -107,12 +107,13 @@ public class Play extends AbstractCommand {
 							rec.youtubecode = finalVideocode;
 							rec.filename = filecheck.getAbsolutePath();
 							TMusic.update(rec);
-							bot.addSongToQueue(filecheck.getAbsolutePath(), guild);
 							message.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
+							bot.addSongToQueue(filecheck.getAbsolutePath(), guild);
 						} else {
 							message.deleteMessage();
 						}
 					});
+					return "";
 				} else if (filecheck.exists()) {
 					bot.addSongToQueue(filecheck.getAbsolutePath(), guild);
 					return Template.get("music_added_to_queue");

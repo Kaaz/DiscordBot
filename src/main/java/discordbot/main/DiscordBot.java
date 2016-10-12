@@ -74,8 +74,7 @@ public class DiscordBot {
 			return isCreator(user);
 		}
 		if (channel instanceof TextChannel) {
-			return ((TextChannel) channel).getGuild().getOwner().equals(user);
-
+			return ((TextChannel) channel).getGuild().getOwner().equals(user) || isCreator(user);
 		}
 		return isCreator(user);
 	}
@@ -278,6 +277,6 @@ public class DiscordBot {
 	}
 
 	public void setVolume(Guild guild, float volume) {
-		MusicPlayerHandler.getFor(guild,this).setVolume(volume);
+		MusicPlayerHandler.getFor(guild, this).setVolume(volume);
 	}
 }

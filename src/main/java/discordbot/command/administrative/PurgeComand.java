@@ -60,6 +60,9 @@ public class PurgeComand extends AbstractCommand {
 		User toDeleteFrom = null;
 		int deleteLimit = 100;
 		boolean deleteAll = true;
+		if (!bot.isOwner(channel, author) && !bot.client.getSelfInfo().equals(author)) {
+			return Template.get("command_invalid_use");
+		}
 		if (args.length >= 1) {
 			deleteAll = false;
 			if (DisUtil.isUserMention(args[0])) {
@@ -73,9 +76,6 @@ public class PurgeComand extends AbstractCommand {
 			if (args.length >= 2 && args[1].matches("^\\d+$")) {
 				deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
 			}
-		}
-		if (!bot.isOwner(channel, author) && !bot.client.getSelfInfo().equals(author)) {
-			return Template.get("command_invalid_use");
 		}
 		int deletedCount = 0;
 		for (Message msg : channel.getHistory().retrieve(100)) {
