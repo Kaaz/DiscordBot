@@ -10,6 +10,9 @@ import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.managers.AudioManager;
 import net.dv8tion.jda.player.MusicPlayer;
+import net.dv8tion.jda.player.hooks.events.FinishEvent;
+import net.dv8tion.jda.player.hooks.events.SkipEvent;
+import net.dv8tion.jda.player.source.AudioInfo;
 import net.dv8tion.jda.player.source.AudioSource;
 import net.dv8tion.jda.player.source.LocalSource;
 
@@ -44,9 +47,15 @@ public class MusicPlayerHandler {
 			manager = guild.getAudioManager();
 			player = new MusicPlayer();
 			manager.setSendingHandler(player);
+			player.addEventListener(event -> {
+				if (event instanceof SkipEvent || event instanceof FinishEvent) {
+					if (player.getAudioQueue().isEmpty()) {
+						playRandomSong();
+					}
+				}
+			});
 		} else {
 			player = (MusicPlayer) manager.getSendingHandler();
-
 		}
 		player.setVolume(Float.parseFloat(GuildSettings.get(guild).getOrDefault(SettingMusicVolume.class)) / 100F);
 		playerInstances.put(guild, this);
@@ -151,15 +160,15 @@ public class MusicPlayerHandler {
 
 	public boolean addToQueue(String filename) {
 		File mp3file = new File(filename);
-		System.out.println("ADDING TO QUEUE");
-		System.out.println(mp3file.getAbsolutePath());
 		if (!mp3file.exists()) {//check in config directory
 			bot.out.sendErrorToMe(new Exception("NoMusicFile"), "filename: ", mp3file.getAbsolutePath(), "plz fix", "I want music", bot);
 			return false;
 		}
 		LocalSource ls = new LocalSource(mp3file);
 		player.getAudioQueue().add(ls);
-		player.play();
+		if (!player.isPlaying()) {
+			player.play();
+		}
 		return true;
 	}
 
@@ -183,17 +192,15 @@ public class MusicPlayerHandler {
 	}
 
 	public void stopMusic() {
-//		clearMessage();
-//		currentSongLength = 0;
-//		currentlyPlaying = new OMusic();
+		player.stop();
 	}
 
 	public List<OMusic> getQueue() {
 		ArrayList<OMusic> list = new ArrayList<>();
 		for (AudioSource audioSource : player.getAudioQueue()) {
+			AudioInfo info = audioSource.getInfo();
 			System.out.println(audioSource.getSource());
 		}
 		return list;
 	}
-
 }

@@ -87,7 +87,7 @@ public class YTUtil {
 		infoArgs.add("--audio-format");
 		infoArgs.add("mp3");
 		infoArgs.add("--output");
-		infoArgs.add(Config.MUSIC_DIRECTORY + "/tmp/" + videocode + ".%(ext)s");
+		infoArgs.add(Config.MUSIC_DIRECTORY + "/" + videocode + ".%(ext)s");
 		infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
 		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
 		builder.redirectErrorStream(true);
@@ -110,52 +110,52 @@ public class YTUtil {
 	}
 
 	public static String getOutputPath(String videoCode) {
-		return Config.MUSIC_DIRECTORY + videoCode + ".wav";
+		return Config.MUSIC_DIRECTORY + videoCode + ".mp3";
 	}
 
 	public static boolean resampleToWav(String videoCode) {
-		File f = new File(Config.MUSIC_DIRECTORY + "/tmp/" + videoCode + ".mp3");
-		String outputPath = getOutputPath(videoCode);
-		if (!f.exists()) {
-			return false;
-		}
-		//sox -v .90 3AtDnEC4zak.wav -b 16 -e signed-integer out.wav channels 2 rate 48000 dither -s
-		List<String> infoArgs = new LinkedList<>();
-		infoArgs.add(Config.SOX_LOCATION);
-		infoArgs.add("-v");
-		infoArgs.add("0.90");
-		infoArgs.add(f.getAbsolutePath());
-		infoArgs.add("-b");
-		infoArgs.add("16");
-		infoArgs.add("-e");
-		infoArgs.add("signed-integer");
-		infoArgs.add("-L");
-		infoArgs.add(outputPath);
-		infoArgs.add("channels");
-		infoArgs.add("2");
-		infoArgs.add("rate");
-		infoArgs.add("48000");
-
-
-		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
-		builder.redirectErrorStream(true);
-		Process process = null;
-		try {
-			process = builder.start();
-			InputStream stdout = process.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
-			String line = "";
-			while ((line = reader.readLine()) != null) {
-				System.out.println("SAMPLER: " + line);
-			}
-			process.waitFor();
-			process.destroy();
-			f.delete();
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return false;
+//		File f = new File(Config.MUSIC_DIRECTORY + "/tmp/" + videoCode + ".mp3");
+//		String outputPath = getOutputPath(videoCode);
+//		if (!f.exists()) {
+//			return false;
+//		}
+//		//sox -v .90 3AtDnEC4zak.wav -b 16 -e signed-integer out.wav channels 2 rate 48000 dither -s
+//		List<String> infoArgs = new LinkedList<>();
+//		infoArgs.add(Config.SOX_LOCATION);
+//		infoArgs.add("-v");
+//		infoArgs.add("0.90");
+//		infoArgs.add(f.getAbsolutePath());
+//		infoArgs.add("-b");
+//		infoArgs.add("16");
+//		infoArgs.add("-e");
+//		infoArgs.add("signed-integer");
+//		infoArgs.add("-L");
+//		infoArgs.add(outputPath);
+//		infoArgs.add("channels");
+//		infoArgs.add("2");
+//		infoArgs.add("rate");
+//		infoArgs.add("48000");
+//
+//
+//		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
+//		builder.redirectErrorStream(true);
+//		Process process = null;
+//		try {
+//			process = builder.start();
+//			InputStream stdout = process.getInputStream();
+//			BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
+//			String line = "";
+//			while ((line = reader.readLine()) != null) {
+//				System.out.println("SAMPLER: " + line);
+//			}
+//			process.waitFor();
+//			process.destroy();
+//			f.delete();
+//		} catch (IOException | InterruptedException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+		return true;
 	}
 
 	public static boolean downloadPlayList(String playlist) {

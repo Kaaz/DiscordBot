@@ -72,21 +72,19 @@ public class Play extends AbstractCommand {
 		TextChannel txt = (TextChannel) channel;
 		Guild guild = txt.getGuild();
 		if (!isInVoiceWith(guild, author)) {
-			String joinOutput = bot.commands.getCommand("join").execute(new String[]{}, channel, author);
+			bot.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
 			try {
-				Thread.sleep(1000L);// ¯\_(ツ)_/¯
+				Thread.sleep(2000L);// ¯\_(ツ)_/¯
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if (!isInVoiceWith(guild, author)) {
-				return joinOutput;
+			if (bot.isConnectedTo(guild.getVoiceStatusOfUser(author).getChannel())) {
+				return "can't connect to you";
 			}
-		}
-		if (MusicPlayerHandler.getFor(guild, bot).getUsersInVoiceChannel().size() == 0) {
+		} else if (MusicPlayerHandler.getFor(guild, bot).getUsersInVoiceChannel().size() == 0) {
 			return Template.get("music_no_users_in_channel");
 		}
 		if (args.length > 0) {
-			boolean justDownloaded = false;
 
 			String videocode = YTUtil.extractCodeFromUrl(args[0]);
 			if (!YTUtil.isValidYoutubeCode(videocode)) {
@@ -99,8 +97,8 @@ public class Play extends AbstractCommand {
 					String finalVideocode = videocode;
 					bot.out.sendAsyncMessage(channel, Template.get("music_downloading_hang_on"), message -> {
 						if (YTUtil.downloadfromYoutubeAsMp3(finalVideocode)) {
-							message.updateMessageAsync(Template.get("music_resampling"), null);
-							YTUtil.resampleToWav(finalVideocode);
+//							message.updateMessageAsync(Template.get("music_resampling"), null);
+//							YTUtil.resampleToWav(finalVideocode);
 						}
 						if (filecheck.exists()) {
 							OMusic rec = TMusic.findByYoutubeId(finalVideocode);
