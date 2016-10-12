@@ -3,7 +3,6 @@ package discordbot.handler;
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.guildsettings.defaults.SettingMusicVolume;
-import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
@@ -149,19 +148,16 @@ public class MusicPlayerHandler {
 	}
 
 	public boolean addToQueue(String filename) {
-		File f = new File(filename);
+		File mp3file = new File(filename);
 		System.out.println("ADDING TO QUEUE");
-		System.out.println(f.getAbsolutePath());
-		if (!f.exists()) {//check in config directory
-			f = new File(Config.MUSIC_DIRECTORY + filename);
-			bot.out.sendErrorToMe(new Exception("nosongexception :("), "filename: ", f.getAbsolutePath(), "plz fix", "I want music", bot);
+		System.out.println(mp3file.getAbsolutePath());
+		if (!mp3file.exists()) {//check in config directory
+			bot.out.sendErrorToMe(new Exception("nosongexception :("), "filename: ", mp3file.getAbsolutePath(), "plz fix", "I want music", bot);
 			return false;
 		}
-		LocalSource ls = new LocalSource(f);
+		LocalSource ls = new LocalSource(mp3file);
 		player.getAudioQueue().add(ls);
-		if (!player.isPlaying()) {
-			player.play();
-		}
+		player.play();
 		return true;
 	}
 
