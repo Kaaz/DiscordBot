@@ -11,9 +11,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.YTSearch;
 import discordbot.util.YTUtil;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
@@ -62,10 +60,32 @@ public class Play extends AbstractCommand {
 		return new String[0];
 	}
 
+	private boolean isInVoiceWith(IGuild guild, IUser author) {
+		for (IVoiceChannel voice : bot.client.getConnectedVoiceChannels()) {
+			if (voice.getGuild().equals(guild)) {
+				for (IUser user : voice.getConnectedUsers()) {
+					if (user.equals(author)) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public String execute(String[] args, IChannel channel, IUser author) {
-		if (bot.client.getConnectedVoiceChannels().size() == 0) {
-			return Template.get("music_not_in_voicechannel");
+		if (!isInVoiceWith(channel.getGuild(), author)) {
+			String joinOutput = bot.commands.getCommand("join").execute(new String[]{}, channel, author);
+			try {
+				Thread.sleep(500L);// ¯\_(ツ)_/¯
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if (!isInVoiceWith(channel.getGuild(), author)) {
+				return joinOutput;
+			}
 		}
 		if (MusicPlayerHandler.getFor(channel.getGuild(), bot).getUsersInVoiceChannel().size() == 0) {
 			return Template.get("music_no_users_in_channel");
