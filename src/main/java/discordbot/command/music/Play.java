@@ -96,6 +96,7 @@ public class Play extends AbstractCommand {
 				if (!filecheck.exists()) {
 					String finalVideocode = videocode;
 					bot.out.sendAsyncMessage(channel, Template.get("music_downloading_hang_on"), message -> {
+						System.out.println("starting download with code:::::" + finalVideocode);
 						if (YTUtil.downloadfromYoutubeAsMp3(finalVideocode)) {
 //							message.updateMessageAsync(Template.get("music_resampling"), null);
 //							YTUtil.resampleToWav(finalVideocode);
