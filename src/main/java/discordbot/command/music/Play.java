@@ -74,7 +74,7 @@ public class Play extends AbstractCommand {
 		if (!isInVoiceWith(guild, author)) {
 			String joinOutput = bot.commands.getCommand("join").execute(new String[]{}, channel, author);
 			try {
-				Thread.sleep(500L);// ¯\_(ツ)_/¯
+				Thread.sleep(1000L);// ¯\_(ツ)_/¯
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

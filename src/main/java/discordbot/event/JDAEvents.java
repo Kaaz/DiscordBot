@@ -166,7 +166,7 @@ public class JDAEvents extends ListenerAdapter {
 			return;
 		}
 		Game status = user.getCurrentGame();
-		if (status == null || status.getName() == null) {
+		if (status == null || status.getName() == null || event.getJDA().getSelfInfo().getCurrentGame() == null) {
 			return;
 		}
 		if (status.getName().equals(event.getJDA().getSelfInfo().getCurrentGame().getName())) {
@@ -206,7 +206,7 @@ public class JDAEvents extends ListenerAdapter {
 		VoiceChannel channel = event.getOldChannel();
 		AudioManager audioManager = channel.getGuild().getAudioManager();
 		VoiceChannel connectedVoice = audioManager.getConnectedChannel();
-		if (connectedVoice != null || !channel.getId().equals(connectedVoice.getId())) {
+		if (connectedVoice == null || !channel.getId().equals(connectedVoice.getId())) {
 			return;
 		}
 		boolean shouldLeave = true;

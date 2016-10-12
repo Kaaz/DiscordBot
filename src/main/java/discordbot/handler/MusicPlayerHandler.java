@@ -2,17 +2,19 @@ package discordbot.handler;
 
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
+import discordbot.guildsettings.defaults.SettingMusicVolume;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.audio.player.FilePlayer;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
+import net.dv8tion.jda.managers.AudioManager;
+import net.dv8tion.jda.player.MusicPlayer;
+import net.dv8tion.jda.player.source.AudioSource;
+import net.dv8tion.jda.player.source.LocalSource;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,11 +33,21 @@ public class MusicPlayerHandler {
 	private long currentSongLength = 0;
 	private long currentSongStartTimeInSeconds = 0;
 	private Random rng;
+	private AudioManager manager;
+	private MusicPlayer player;
 
 	private MusicPlayerHandler(Guild guild, DiscordBot bot) {
 		this.guild = guild;
 		this.bot = bot;
 		rng = new Random();
+		manager = guild.getAudioManager();
+		if (manager.getSendingHandler() == null) {
+			manager = guild.getAudioManager();
+			player = new MusicPlayer();
+		} else {
+			player = (MusicPlayer) manager.getSendingHandler();
+		}
+		player.setVolume(Float.parseFloat(GuildSettings.get(guild).getOrDefault(SettingMusicVolume.class)) / 100F);
 		playerInstances.put(guild, this);
 	}
 
@@ -97,15 +109,10 @@ public class MusicPlayerHandler {
 	 * Skips currently playing song
 	 */
 	public void skipSong() {
-//		clearMessage();
-//		AudioPlayer ap = AudioPlayer.getAudioPlayerForGuild(guild);
-//		ap.skip();
+		player.skipToNext();
 		currentlyPlaying = new OMusic();
 		currentSongLength = 0;
 		currentSongStartTimeInSeconds = 0;
-//		if (ap.getPlaylistSize() == 0) {
-//			playRandomSong();
-//		}
 	}
 
 	/**
@@ -132,74 +139,6 @@ public class MusicPlayerHandler {
 		return potentialSongs.get(rng.nextInt(potentialSongs.size()));
 	}
 
-//	public void onTrackEnded(AudioPlayer.Track oldTrack, Optional<AudioPlayer.Track> nextTrack) {
-//		clearMessage();
-//		currentSongLength = 0;
-//		currentlyPlaying = new OMusic();
-//		if (!nextTrack.isPresent()) {
-//			playRandomSong();
-//		}
-//	}
-
-//	public void onTrackStarted(AudioPlayer.Track track) {
-//		clearMessage();
-//		Map<String, Object> metadata = track.getMetadata();
-//		String msg = "Now playing unknown file :(";
-//		if (metadata.containsKey("file")) {
-//			if (metadata.get("file") instanceof File) {
-//				File f = (File) metadata.get("file");
-//				getMp3Details(f);
-//				OMusic music = TMusic.findByFileName(f.getAbsolutePath());
-//				if (music.id == 0) {
-//					music = TMusic.findByFileName(f.getName());
-//					if (music.id > 0) {
-//						music.filename = f.getAbsolutePath();
-//						TMusic.update(music);
-//					}
-//				}
-//				currentlyPlaying = music;
-//				currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000;
-//				music.lastplaydate = currentSongStartTimeInSeconds;
-//				TMusic.update(music);
-//				if (music.artist != null && music.title != null && !music.artist.trim().isEmpty() && !music.title.trim().isEmpty()) {
-//					msg = ":notes: " + music.artist + " - " + music.title;
-//				} else if (music.youtubeTitle != null && !music.youtubeTitle.isEmpty()) {
-//					msg = ":notes: " + music.youtubeTitle + " ** need details about song! ** check out **current**";
-//				} else {
-//					msg = ":floppy_disk: :thinking: Something is wrong with this file `" + f.getName() + "`";
-//				}
-//			}
-//		}
-//		if (GuildSettings.get(guild).getOrDefault(SettingMusicChannelTitle.class).equals("true")) {
-//			try {
-//				bot.getMusicChannel(guild).changeTopic(msg);
-//			} catch (RateLimitException | DiscordException e) {
-//				e.printStackTrace();
-//				bot.out.sendErrorToMe(e);
-//			} catch (MissingPermissionsException e) {
-//				bot.out.sendAsyncMessage(bot.getMusicChannel(guild), "I don't have permission to change the topic of this channel :(" + Config.EOL +
-//						" I'm disabling `music_channel_title` option for now. " + Config.EOL + e.getMessage(), null);
-//				GuildSettings.get(guild).set("music_channel_title", "false");
-//			}
-//		}
-//		if (!GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class).equals("off")) {
-//			activeMsg = bot.out.sendAsyncMessage(bot.getMusicChannel(guild), msg, null);
-//		}
-//	}
-
-	/**
-	 * Deletes 'now playing' message if it exists
-	 */
-//	private void clearMessage() {
-//		if (activeMsg != null && GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class).equals("clear")) {
-//			try {
-//				activeMsg.delete();
-//				activeMsg = null;
-//			} catch (MissingPermissionsException | RateLimitException | DiscordException ignored) {
-//			}
-//		}
-//	}
-
 	/**
 	 * Adds a random song from the music directory to the queue
 	 *
@@ -211,24 +150,28 @@ public class MusicPlayerHandler {
 
 	public boolean addToQueue(String filename) {
 		File f = new File(filename);
+		System.out.println("ADDING TO QUEUE");
+		System.out.println(f.getAbsolutePath());
 		if (!f.exists()) {//check in config directory
 			f = new File(Config.MUSIC_DIRECTORY + filename);
 			bot.out.sendErrorToMe(new Exception("nosongexception :("), "filename: ", f.getAbsolutePath(), "plz fix", "I want music", bot);
 			return false;
 		}
-		try {
-			guild.getAudioManager().setSendingHandler(new FilePlayer(f));
-		} catch (IOException | UnsupportedAudioFileException e) {
-			return false;
+		LocalSource ls = new LocalSource(f);
+		player.getAudioQueue().add(ls);
+		if (!player.isPlaying()) {
+			player.play();
 		}
-//		try {
-//			AudioPlayer.getAudioPlayerForGuild(guild).queue(makeTrack(f));
-//			return true;
-//		} catch (IOException | UnsupportedAudioFileException e) {
-//			e.printStackTrace();
-//
-//		}
-		return false;
+		return true;
+	}
+
+	public void setVolume(float volume) {
+		volume = Math.min(1F, Math.max(0F, volume));
+		player.setVolume(volume);
+	}
+
+	public float getVolume() {
+		return player.getVolume();
 	}
 
 	public List<User> getUsersInVoiceChannel() {
@@ -241,23 +184,17 @@ public class MusicPlayerHandler {
 		return userList;
 	}
 
-	/**
-	 * Clears existing message and stops playing music for guild
-	 */
-
 	public void stopMusic() {
 //		clearMessage();
 //		currentSongLength = 0;
 //		currentlyPlaying = new OMusic();
 	}
 
-	public float getVolume() {
-		return 1;
-//		return AudioPlayer.getAudioPlayerForGuild(guild).getVolume();
-	}
-
 	public List<OMusic> getQueue() {
 		ArrayList<OMusic> list = new ArrayList<>();
+		for (AudioSource audioSource : player.getAudioQueue()) {
+			System.out.println(audioSource.getSource());
+		}
 		return list;
 	}
 

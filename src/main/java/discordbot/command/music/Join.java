@@ -58,6 +58,7 @@ public class Join extends AbstractCommand {
 			if (bot.isConnectedTo(voiceChannel)) {
 				return Template.get("command_join_already_there");
 			}
+			bot.connectTo(voiceChannel);
 			return Template.get("command_join_joinedyou");
 		} else {
 			String channelname = Misc.concat(args);

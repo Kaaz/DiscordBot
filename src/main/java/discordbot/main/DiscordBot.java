@@ -40,7 +40,7 @@ public class DiscordBot {
 		registerHandlers();
 		JDABuilder builder = new JDABuilder().setBotToken(Config.BOT_TOKEN);
 		builder.addListener(new JDAEvents(this));
-		client = builder.buildBlocking();
+		client = builder.buildAsync();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 	}
 
@@ -275,5 +275,9 @@ public class DiscordBot {
 
 	public boolean playRandomSong(Guild guild) {
 		return MusicPlayerHandler.getFor(guild, this).playRandomSong();
+	}
+
+	public void setVolume(Guild guild, float volume) {
+		MusicPlayerHandler.getFor(guild,this).setVolume(volume);
 	}
 }
