@@ -115,7 +115,7 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
-		if(event.getAuthor().isBot()){
+		if (event.getAuthor().isBot()) {
 			return;
 		}
 		discordBot.handlePrivateMessage(event.getChannel(), event.getAuthor(), event.getMessage());
@@ -164,6 +164,9 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onUserGameUpdate(UserGameUpdateEvent event) {
+		if (!Config.BOT_ON_BOT_ACTION) {
+			return;
+		}
 		User user = event.getUser();
 		if (!user.isBot() || user.getId().equals(event.getJDA().getSelfInfo().getId())) {
 			return;

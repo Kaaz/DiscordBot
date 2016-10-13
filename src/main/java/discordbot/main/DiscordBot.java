@@ -1,8 +1,6 @@
 package discordbot.main;
 
-import discordbot.db.model.OGuild;
 import discordbot.db.model.OMusic;
-import discordbot.db.table.TGuild;
 import discordbot.event.JDAEvents;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.*;
@@ -16,9 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class DiscordBot {
 
@@ -182,7 +182,7 @@ public class DiscordBot {
 
 	private void registerHandlers() {
 		commands = new CommandHandler(this);
-		security= new SecurityHandler(this);
+		security = new SecurityHandler(this);
 		gameHandler = new GameHandler(this);
 		Template.setBot(this);
 		out = new OutgoingContentHandler(this);

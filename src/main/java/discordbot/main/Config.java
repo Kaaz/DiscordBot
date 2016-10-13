@@ -12,6 +12,8 @@ public class Config {
 	@ConfigurationOption
 	public static boolean BOT_AUTO_UPDATE = false;
 
+	@ConfigurationOption
+	public static boolean BOT_ON_BOT_ACTION = false;
 	//display name of the bot
 	@ConfigurationOption
 	public static String BOT_NAME = "NovaBot";
