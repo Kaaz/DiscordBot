@@ -1,32 +1,28 @@
-package discordbot.command.administrative;
+package discordbot.command.bot_administration;
 
 import discordbot.core.AbstractCommand;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 /**
- * !avatar
- * manage avatar
+ * !reload
+ * reloads config
  */
-public class ChangeAvatar extends AbstractCommand {
-	public ChangeAvatar(DiscordBot b) {
+public class Reload extends AbstractCommand {
+	public Reload(DiscordBot b) {
 		super(b);
 	}
 
 	@Override
 	public String getDescription() {
-		return "Changes my avatar";
+		return "reloads the configuration";
 	}
 
 	@Override
 	public String getCommand() {
-		return "updateavatar";
-	}
-
-	@Override
-	public boolean isListed() {
-		return false;
+		return "reload";
 	}
 
 	@Override
@@ -41,12 +37,10 @@ public class ChangeAvatar extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, MessageChannel channel, User author) {
-		if (!bot.isCreator(author)) {
-			return ":upside_down: There's only one person who I trust enough to do that";
+		if (!bot.isAdmin(channel, author)) {
+			return Template.get("no_permission");
 		}
-		if (args.length <= 1) {
-			return "Disabled for now :(";
-		}
-		return ":face_palm: I expected you to know how to use it";
+		bot.loadConfiguration();
+		return Template.get("command_reload_success");
 	}
 }

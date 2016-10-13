@@ -88,6 +88,9 @@ public class Help extends AbstractCommand {
 				if (!commandList.containsKey(command.getCommandCategory())) {
 					commandList.put(command.getCommandCategory(), new ArrayList<>());
 				}
+				if (command.getCommandCategory().equals(CommandCategory.BOT_ADMINISTRATION) && !bot.isCreator(author)) {
+					continue;
+				}
 				commandList.get(command.getCommandCategory()).add(command.getCommand());
 			}
 			commandList.forEach((k, v) -> Collections.sort(v));

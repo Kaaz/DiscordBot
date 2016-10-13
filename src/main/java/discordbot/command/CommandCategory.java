@@ -1,6 +1,7 @@
 package discordbot.command;
 
 public enum CommandCategory {
+	BOT_ADMINISTRATION("bot_administration", ":monkey:", "Bot administration"),
 	INFORMATIVE("informative", ":information_source:", "Information"),
 	ADMINISTRATIVE("administrative", ":oncoming_police_car:", "Administration"),
 	MUSIC("music", ":musical_note:", "Music"),

@@ -1,4 +1,4 @@
-package discordbot.command.administrative;
+package discordbot.command.bot_administration;
 
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;

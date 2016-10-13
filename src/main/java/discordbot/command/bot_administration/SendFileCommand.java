@@ -1,4 +1,4 @@
-package discordbot.command.administrative;
+package discordbot.command.bot_administration;
 
 import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
@@ -6,23 +6,28 @@ import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
+import java.io.File;
+
 /**
- * !changename
- * changes the bots name
  */
-public class ChangeName extends AbstractCommand {
-	public ChangeName(DiscordBot b) {
+public class SendFileCommand extends AbstractCommand {
+	public SendFileCommand(DiscordBot b) {
 		super(b);
 	}
 
 	@Override
 	public String getDescription() {
-		return "Changes my name";
+		return "executes commandline stuff";
 	}
 
 	@Override
 	public String getCommand() {
-		return "changename";
+		return "sendfile";
+	}
+
+	@Override
+	public boolean isListed() {
+		return false;
 	}
 
 	@Override
@@ -40,10 +45,14 @@ public class ChangeName extends AbstractCommand {
 		if (!bot.isCreator(author)) {
 			return ":upside_down: There's only one person who I trust enough to do that";
 		}
-		if (args.length > 0) {
-			bot.setUserName(Joiner.on(" ").join(args));
-			return "You can call me **" + Joiner.on(" ").join(args) + "** from now :smile:";
+		if (args.length == 0) {
+			return ":face_palm: I expected you to know how to use it";
 		}
-		return ":face_palm: I expected you to know how to use it";
+		File f = new File(Joiner.on("").join(args));
+		if (f.exists()) {
+			channel.sendFileAsync(f, null, null);
+			return "";
+		}
+		return "File doesn't exist";
 	}
 }

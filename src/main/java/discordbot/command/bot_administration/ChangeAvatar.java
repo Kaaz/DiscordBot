@@ -1,28 +1,27 @@
-package discordbot.command.administrative;
+package discordbot.command.bot_administration;
 
-import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
-import java.io.File;
-
 /**
+ * !avatar
+ * manage avatar
  */
-public class SendFileCommand extends AbstractCommand {
-	public SendFileCommand(DiscordBot b) {
+public class ChangeAvatar extends AbstractCommand {
+	public ChangeAvatar(DiscordBot b) {
 		super(b);
 	}
 
 	@Override
 	public String getDescription() {
-		return "executes commandline stuff";
+		return "Changes my avatar";
 	}
 
 	@Override
 	public String getCommand() {
-		return "sendfile";
+		return "updateavatar";
 	}
 
 	@Override
@@ -45,14 +44,9 @@ public class SendFileCommand extends AbstractCommand {
 		if (!bot.isCreator(author)) {
 			return ":upside_down: There's only one person who I trust enough to do that";
 		}
-		if (args.length == 0) {
-			return ":face_palm: I expected you to know how to use it";
+		if (args.length <= 1) {
+			return "Disabled for now :(";
 		}
-		File f = new File(Joiner.on("").join(args));
-		if (f.exists()) {
-			channel.sendFileAsync(f, null, null);
-			return "";
-		}
-		return "File doesn't exist";
+		return ":face_palm: I expected you to know how to use it";
 	}
 }

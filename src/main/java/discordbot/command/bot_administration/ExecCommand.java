@@ -1,4 +1,4 @@
-package discordbot.command.administrative;
+package discordbot.command.bot_administration;
 
 import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
