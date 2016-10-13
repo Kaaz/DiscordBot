@@ -180,7 +180,6 @@ public class RoleRankings {
 	 * @param user  the user
 	 */
 	public static void assignUserRole(DiscordBot bot, Guild guild, User user) {
-		System.out.println("HANDLING USER");
 		List<Role> roles = guild.getRolesForUser(user);
 		OGuildMember membership = TGuildMember.findBy(guild.getId(), user.getId());
 		boolean hasTargetRole = false;
@@ -190,7 +189,6 @@ public class RoleRankings {
 			TGuildMember.insertOrUpdate(membership);
 		}
 		MemberShipRole targetRole = RoleRankings.getHighestRole(System.currentTimeMillis() - membership.joinDate.getTime());
-		System.out.println(user.getUsername()+" - Should have: "+targetRole.getName());
 		for (Role role : roles) {
 			if (role.getName().startsWith(prefix)) {
 				if (role.getName().equals(RoleRankings.getFullName(guild, targetRole))) {

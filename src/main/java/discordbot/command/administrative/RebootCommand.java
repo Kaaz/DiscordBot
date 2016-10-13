@@ -43,16 +43,19 @@ public class RebootCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, MessageChannel channel, User author) {
-		if (bot.isOwner(channel, author) || author.getId().equals("158310004187725824")) {
+		if (bot.isOwner(channel, author)) {
 			if (args.length > 0 && args[0].equalsIgnoreCase("update") && UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
-				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_update"), null);
-				Launcher.stop(ExitCode.UPDATE);
+				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_update"), message -> {
+					Launcher.stop(ExitCode.UPDATE);
+				});
 			} else if (args.length > 0 && args[0].equals("forceupdate")) {
-				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_forceupdate"), null);
-				Launcher.stop(ExitCode.UPDATE);
+				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_forceupdate"), message -> {
+					Launcher.stop(ExitCode.UPDATE);
+				});
 			}
-			bot.out.sendAsyncMessage(channel, Template.get("command_reboot_success"), null);
-			Launcher.stop(ExitCode.REBOOT);
+			bot.out.sendAsyncMessage(channel, Template.get("command_reboot_success"), message -> {
+				Launcher.stop(ExitCode.REBOOT);
+			});
 		}
 		return Template.get("command_no_permission");
 	}
