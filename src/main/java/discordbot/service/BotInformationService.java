@@ -29,7 +29,7 @@ public class BotInformationService extends AbstractService {
 
 	@Override
 	public boolean shouldIRun() {
-		return true;
+		return false;
 	}
 
 	@Override
