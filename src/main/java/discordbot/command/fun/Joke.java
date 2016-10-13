@@ -53,7 +53,6 @@ public class Joke extends AbstractCommand {
 			} else {
 				joketxt = getJokeFromWeb(author.getUsername());
 			}
-			message.deleteMessage();
 			if (joketxt != null) {
 				message.updateMessageAsync(StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getUsername(), "<@" + author.getId() + ">")), null);
 			}
