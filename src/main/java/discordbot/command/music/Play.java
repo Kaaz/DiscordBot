@@ -59,6 +59,9 @@ public class Play extends AbstractCommand {
 
 	private boolean isInVoiceWith(Guild guild, User author) {
 		VoiceChannel channel = guild.getVoiceStatusOfUser(author).getChannel();
+		if (channel == null) {
+			return false;
+		}
 		for (User user : channel.getUsers()) {
 			if (user.getId().equals(bot.client.getSelfInfo().getId())) {
 				return true;

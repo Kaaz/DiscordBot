@@ -1,16 +1,12 @@
 package discordbot.command.administrative;
 
-import com.mpatric.mp3agic.*;
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.OMusic;
-import discordbot.db.table.TMusic;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -93,37 +89,37 @@ public class ImportMusicCommand extends AbstractCommand {
 	}
 
 	private boolean importFile(File f) {
-		Mp3File mp3file = null;
-		OMusic record = TMusic.findByFileName(f.getAbsolutePath());
-		if (record.id > 0) {
-			return false;
-		}
-		try {
-			mp3file = new Mp3File(f);
-		} catch (InvalidDataException | UnsupportedTagException | IOException e) {
-			return false;
-		}
-		String title, artist;
-		if (mp3file.hasId3v2Tag()) {
-			ID3v2 tags = mp3file.getId3v2Tag();
-			title = tags.getTitle();
-			artist = tags.getArtist();
-		} else if (mp3file.hasId3v1Tag()) {
-			ID3v1 tags = mp3file.getId3v1Tag();
-			title = tags.getTitle();
-			artist = tags.getArtist();
-		} else {
-			return false;
-		}
-		if (artist == null || title == null || artist.isEmpty() || title.isEmpty()) {
-			return false;
-		}
-		System.out.println(String.format("%s - %s", artist, title));
-
-		record.artist = artist;
-		record.title = title;
-		record.filename = f.getAbsolutePath();
-		TMusic.insert(record);
+//		Mp3File mp3file = null;
+//		OMusic record = TMusic.findByFileName(f.getAbsolutePath());
+//		if (record.id > 0) {
+//			return false;
+//		}
+//		try {
+//			mp3file = new Mp3File(f);
+//		} catch (InvalidDataException | UnsupportedTagException | IOException e) {
+//			return false;
+//		}
+//		String title, artist;
+//		if (mp3file.hasId3v2Tag()) {
+//			ID3v2 tags = mp3file.getId3v2Tag();
+//			title = tags.getTitle();
+//			artist = tags.getArtist();
+//		} else if (mp3file.hasId3v1Tag()) {
+//			ID3v1 tags = mp3file.getId3v1Tag();
+//			title = tags.getTitle();
+//			artist = tags.getArtist();
+//		} else {
+//			return false;
+//		}
+//		if (artist == null || title == null || artist.isEmpty() || title.isEmpty()) {
+//			return false;
+//		}
+//		System.out.println(String.format("%s - %s", artist, title));
+//
+//		record.artist = artist;
+//		record.title = title;
+//		record.filename = f.getAbsolutePath();
+//		TMusic.insert(record);
 		return true;
 	}
 }

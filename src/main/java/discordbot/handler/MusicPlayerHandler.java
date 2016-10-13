@@ -2,6 +2,7 @@ package discordbot.handler;
 
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
+import discordbot.db.table.TMusic;
 import discordbot.guildsettings.defaults.SettingMusicVolume;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.Guild;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.managers.AudioManager;
 import net.dv8tion.jda.player.MusicPlayer;
 import net.dv8tion.jda.player.hooks.events.FinishEvent;
+import net.dv8tion.jda.player.hooks.events.PlayEvent;
 import net.dv8tion.jda.player.hooks.events.SkipEvent;
 import net.dv8tion.jda.player.source.AudioInfo;
 import net.dv8tion.jda.player.source.AudioSource;
@@ -49,9 +51,14 @@ public class MusicPlayerHandler {
 			manager.setSendingHandler(player);
 			player.addEventListener(event -> {
 				if (event instanceof SkipEvent || event instanceof FinishEvent) {
+					System.out.println("SKIP OR FINISH");
 					if (player.getAudioQueue().isEmpty()) {
 						playRandomSong();
 					}
+				}
+				if (event instanceof PlayEvent) {
+					System.out.println("play event triggered");
+					setPlayStartTimeStamp();
 				}
 			});
 		} else {
@@ -67,6 +74,18 @@ public class MusicPlayerHandler {
 		} else {
 			return new MusicPlayerHandler(guild, bot);
 		}
+	}
+
+	public long getStartTimeStamp() {
+		return currentSongStartTimeInSeconds;
+	}
+
+	private void setPlayStartTimeStamp() {
+		currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000L;
+		AudioInfo info = player.getCurrentAudioSource().getInfo();
+		currentSongLength = info.getDuration().getTotalSeconds();
+		File f = new File(info.getOrigin());
+		currentlyPlaying = TMusic.findByFileName(f.getAbsolutePath());
 	}
 
 	public boolean isConnectedTo(VoiceChannel channel) {
@@ -94,7 +113,7 @@ public class MusicPlayerHandler {
 	}
 
 	public OMusic getCurrentlyPlaying() {
-		return currentlyPlaying;
+		return this.currentlyPlaying;
 	}
 
 	/**
@@ -172,13 +191,13 @@ public class MusicPlayerHandler {
 		return true;
 	}
 
+	public float getVolume() {
+		return player.getVolume();
+	}
+
 	public void setVolume(float volume) {
 		volume = Math.min(1F, Math.max(0F, volume));
 		player.setVolume(volume);
-	}
-
-	public float getVolume() {
-		return player.getVolume();
 	}
 
 	public List<User> getUsersInVoiceChannel() {

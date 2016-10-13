@@ -1,9 +1,5 @@
 package discordbot.util;
 
-import com.mpatric.mp3agic.ID3v2;
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.Mp3File;
-import com.mpatric.mp3agic.UnsupportedTagException;
 import discordbot.main.Config;
 import discordbot.util.obj.SCFile;
 
@@ -73,23 +69,8 @@ public class SCUtil {
 			return ret;
 		}
 		for (File f : files) {
-			ret.add(getMp3Details(f));
+//			ret.add(getMp3Details(f));
 		}
 		return ret;
-	}
-
-	private static SCFile getMp3Details(File f) {
-		SCFile sc = new SCFile();
-		try {
-			Mp3File mp3file = new Mp3File(f);
-			ID3v2 tag3 = mp3file.getId3v2Tag();
-			sc.artist = tag3.getArtist();
-			sc.title = tag3.getTitle();
-			sc.id = "sc_" + f.getName().replace(".mp3", "");
-			sc.filename = f.getName();
-		} catch (IOException | InvalidDataException | UnsupportedTagException e) {
-			e.printStackTrace();
-		}
-		return sc;
 	}
 }

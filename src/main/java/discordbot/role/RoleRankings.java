@@ -103,6 +103,7 @@ public class RoleRankings {
 	private static void fixRole(Guild guild, MemberShipRole rank) {
 		List<Role> rolesByName = guild.getRolesByName(getFullName(guild, rank));
 		Role role;
+		boolean needsUpdate = false;
 		if (rolesByName.size() > 0) {
 			role = rolesByName.get(0);
 		} else {
@@ -110,12 +111,18 @@ public class RoleRankings {
 		}
 		if (!role.getName().equals(getFullName(guild, rank))) {
 			role.getManager().setName(getFullName(guild, rank));
+			needsUpdate = true;
 		}
 		if (role.getColor() != rank.getColor().getRGB()) {
 			role.getManager().setColor(rank.getColor());
+			needsUpdate = true;
 		}
 		if (!role.isGrouped()) {
+			needsUpdate = true;
 			role.getManager().setGrouped(true);
+		}
+		if (needsUpdate) {
+			role.getManager().update();
 		}
 	}
 
@@ -141,7 +148,7 @@ public class RoleRankings {
 			return;
 		}
 		for (Role role : guild.getRoles()) {
-			if (role.getName().contains(getPrefix(guild))) {
+			if (role.getName().equals("new role") || role.getName().contains(getPrefix(guild))) {
 				role.getManager().delete();
 			} else if (roleNames.contains(role.getName().toLowerCase())) {
 				role.getManager().delete();
@@ -173,6 +180,7 @@ public class RoleRankings {
 	 * @param user  the user
 	 */
 	public static void assignUserRole(DiscordBot bot, Guild guild, User user) {
+		System.out.println("HANDLING USER");
 		List<Role> roles = guild.getRolesForUser(user);
 		OGuildMember membership = TGuildMember.findBy(guild.getId(), user.getId());
 		boolean hasTargetRole = false;
@@ -182,6 +190,7 @@ public class RoleRankings {
 			TGuildMember.insertOrUpdate(membership);
 		}
 		MemberShipRole targetRole = RoleRankings.getHighestRole(System.currentTimeMillis() - membership.joinDate.getTime());
+		System.out.println(user.getUsername()+" - Should have: "+targetRole.getName());
 		for (Role role : roles) {
 			if (role.getName().startsWith(prefix)) {
 				if (role.getName().equals(RoleRankings.getFullName(guild, targetRole))) {
@@ -191,6 +200,7 @@ public class RoleRankings {
 				}
 			}
 		}
+
 		if (!hasTargetRole) {
 			List<Role> roleList = guild.getRolesByName(RoleRankings.getFullName(guild, targetRole));
 			if (roleList.size() > 0) {

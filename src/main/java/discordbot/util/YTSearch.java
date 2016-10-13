@@ -40,7 +40,11 @@ public class YTSearch {
 	}
 
 	public String getResults(String query) {
-		return getResults(query, 1).get(0);
+		List<String> results = getResults(query, 1);
+		if(!results.isEmpty()){
+			return results.get(0);
+		}
+		return "";
 	}
 
 	public List<String> getResults(String query, int numresults) {

@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.MaikWezinkhof</groupId>
 	<artifactId>DiscordBot</artifactId>
-	<version>1.7.0</version>
+	<version>1.7.1</version>
 	<packaging>jar</packaging>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -82,11 +82,6 @@
 			<groupId>com.vdurmont</groupId>
 			<artifactId>emoji-java</artifactId>
 			<version>LATEST</version>
-		</dependency>
-		<dependency>
-			<groupId>com.mpatric</groupId>
-			<artifactId>mp3agic</artifactId>
-			<version>0.8.3</version>
 		</dependency>
 		<dependency>
 			<groupId>ca.pjer</groupId>

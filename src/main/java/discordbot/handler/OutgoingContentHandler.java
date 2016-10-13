@@ -166,6 +166,7 @@ public class OutgoingContentHandler {
 						} else {
 							roleToModify.getRole().getGuild().getManager().removeRoleFromUser(roleToModify.getUser(), roleToModify.getRole());
 						}
+						roleToModify.getRole().getGuild().getManager().update();
 					}
 					Thread.sleep(1000L);
 				}

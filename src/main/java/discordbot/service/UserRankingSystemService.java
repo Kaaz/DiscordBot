@@ -44,6 +44,7 @@ public class UserRankingSystemService extends AbstractService {
 		for (Guild guild : guilds) {
 			GuildSettings settings = GuildSettings.get(guild);
 			if (settings.getOrDefault(SettingRoleTimeRanks.class).equals("true") && RoleRankings.canModifyRoles(guild, bot.client.getSelfInfo())) {
+				System.out.println("HANDLING GUILD " + guild.getName() + "!!");
 				handleGuild(guild);
 			}
 		}

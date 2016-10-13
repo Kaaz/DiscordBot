@@ -10,6 +10,7 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.util.DisUtil;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
@@ -153,7 +154,7 @@ public class CurrentTrack extends AbstractCommand {
 				ret += Config.EOL + "If I can make a guess:" + Config.EOL;
 				ret += "artist: **" + guessArtist + "**" + Config.EOL;
 				ret += "title: **" + guessTitle + "**" + Config.EOL;
-				ret += "If thats correct type **current correct** or if its reversed **current reversed**";
+				ret += "If thats correct type **" + DisUtil.getCommandPrefix(channel) + "np correct** or if its reversed **" + DisUtil.getCommandPrefix(channel) + "np reversed**";
 
 			}
 		}
