@@ -11,7 +11,9 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.YTSearch;
 import discordbot.util.YTUtil;
+import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.*;
+import net.dv8tion.jda.utils.PermissionUtil;
 
 import java.io.File;
 
@@ -74,6 +76,9 @@ public class Play extends AbstractCommand {
 	public String execute(String[] args, MessageChannel channel, User author) {
 		TextChannel txt = (TextChannel) channel;
 		Guild guild = txt.getGuild();
+		if (!PermissionUtil.checkPermission(txt, bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+			return "";
+		}
 		if (!isInVoiceWith(guild, author)) {
 			bot.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
 			try {
