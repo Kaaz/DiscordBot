@@ -60,12 +60,9 @@ public class BotSelfUpdateService extends AbstractService {
 						bot.out.sendAsyncMessage(bot.getDefaultChannel(guild), String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
 						break;
 					case "playing":
-//						for (VoiceChannel voiceChannel : bot.client.getConnectedVoiceChannels()) {
-//							if (voiceChannel.getGuild().getID().equals(guild.getID())) {
-//								bot.out.sendAsyncMessage(bot.getMusicChannel(guild), String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
-//								break;
-//							}
-//						}
+						if (guild.getAudioManager().isConnected()) {
+							bot.out.sendAsyncMessage(bot.getMusicChannel(guild), String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
+						}
 						break;
 					default:
 						break;
