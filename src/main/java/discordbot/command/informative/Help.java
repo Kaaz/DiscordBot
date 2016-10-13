@@ -88,6 +88,10 @@ public class Help extends AbstractCommand {
 				if (command.getCommandCategory().equals(CommandCategory.BOT_ADMINISTRATION) && !bot.isCreator(author)) {
 					continue;
 				}
+				if (command.getCommandCategory().equals(CommandCategory.ADMINISTRATIVE) && !bot.isAdmin(channel, author)) {
+					continue;
+				}
+
 				if (!commandList.containsKey(command.getCommandCategory())) {
 					commandList.put(command.getCommandCategory(), new ArrayList<>());
 				}
