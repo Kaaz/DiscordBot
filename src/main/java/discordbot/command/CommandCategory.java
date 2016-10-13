@@ -1,9 +1,11 @@
 package discordbot.command;
 
+import discordbot.permission.SimpleRank;
+
 public enum CommandCategory {
-	BOT_ADMINISTRATION("bot_administration", ":monkey:", "Bot administration"),
+	BOT_ADMINISTRATION("bot_administration", ":monkey:", "Bot administration", SimpleRank.BOT_ADMIN),
+	ADMINISTRATIVE("administrative", ":oncoming_police_car:", "Administration", SimpleRank.GUILD_ADMIN),
 	INFORMATIVE("informative", ":information_source:", "Information"),
-	ADMINISTRATIVE("administrative", ":oncoming_police_car:", "Administration"),
 	MUSIC("music", ":musical_note:", "Music"),
 	ECONOMY("economy", ":moneybag:", "Money"),
 	FUN("fun", ":game_die:", "Fun"),
@@ -14,12 +16,22 @@ public enum CommandCategory {
 	private final String packageName;
 	private final String emoticon;
 	private final String displayName;
+	private final SimpleRank rankRequired;
 
 	CommandCategory(String packageName, String emoticon, String displayName) {
 
 		this.packageName = packageName;
 		this.emoticon = emoticon;
 		this.displayName = displayName;
+		this.rankRequired = SimpleRank.USER;
+	}
+
+	CommandCategory(String packageName, String emoticon, String displayName, SimpleRank rankRequired) {
+
+		this.packageName = packageName;
+		this.emoticon = emoticon;
+		this.displayName = displayName;
+		this.rankRequired = rankRequired;
 	}
 
 	public static CommandCategory fromPackage(String packageName) {
@@ -43,5 +55,9 @@ public enum CommandCategory {
 
 	public String getEmoticon() {
 		return emoticon;
+	}
+
+	public SimpleRank getRankRequired() {
+		return rankRequired;
 	}
 }

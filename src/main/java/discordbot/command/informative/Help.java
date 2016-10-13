@@ -8,6 +8,7 @@ import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.MessageChannel;
@@ -78,17 +79,12 @@ public class Help extends AbstractCommand {
 			}
 			return Template.get("command_help_donno");
 		} else {
+			SimpleRank userRank = bot.security.getSimpleRank(author, channel);
 			String ret = "I know the following commands: " + Config.EOL + Config.EOL;
 			HashMap<CommandCategory, ArrayList<String>> commandList = new HashMap<>();
 			AbstractCommand[] commandObjects = bot.commands.getCommandObjects();
 			for (AbstractCommand command : commandObjects) {
-				if (!command.isListed() || !command.isEnabled()) {
-					continue;
-				}
-				if (command.getCommandCategory().equals(CommandCategory.BOT_ADMINISTRATION) && !bot.isCreator(author)) {
-					continue;
-				}
-				if (command.getCommandCategory().equals(CommandCategory.ADMINISTRATIVE) && !bot.isAdmin(channel, author)) {
+				if (!command.isListed() || !command.isEnabled() || !userRank.isAtLeast(getCommandCategory().getRankRequired())) {
 					continue;
 				}
 
