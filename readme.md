@@ -30,16 +30,16 @@ Current list of all available commands. See below for a more detailed list
 
 Commands | | | | |
 --- | --- | ---| ---| ---
-[8ball](#8ball) | [autoreply](#autoreply) | [avatar](#avatar) | [bank](#bank) | [blackjack](#blackjack)
-[catfact](#catfact) | [changename](#changename) | [command](#command) | [config](#config) | [current](#current)
-[exit](#exit) | [game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info)
-[invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild)
-[mcstatus](#mcstatus) | [play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec)
-[poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll) | [profile](#profile) | [purge](#purge)
-[reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role)
-[roll](#roll) | [rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot)
-[stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template)
-[user](#user) | [version](#version) | [volume](#volume) | 
+[8ball](#8ball) | [autoreply](#autoreply) | [bank](#bank) | [blackjack](#blackjack) | [catfact](#catfact)
+[changename](#changename) | [command](#command) | [config](#config) | [current](#current) | [exit](#exit)
+[game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite)
+[join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild) | [mcstatus](#mcstatus)
+[play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem)
+[poelab](#poelab) | [poll](#poll) | [profile](#profile) | [purge](#purge) | [reboot](#reboot)
+[reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role) | [roll](#roll)
+[rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot) | [stop](#stop)
+[subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template) | [user](#user)
+[version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -106,8 +106,8 @@ Key | Default | Description |
 auto_reply | false | use the auto reply feature?<br/>Looks for patterns in messages and replies to them (with a cooldown)<br/>true -> enable auto replying to matched messages<br/>true -> disable auto replying
 bot_channel | general | Channel where the bots default output goes to
 bot_listen | all | What channels to listen to? (all;mine)<br/>all -> responds to all channels<br/>mine -> only responds to messages in configured channel
+bot_update_warning | playing | Show a warning that there is an update and that the bot will be updating soon.<br/>always  -> always show the message in the bot's configured default channel<br/>playing -> only announce when the bot is playing music and in the bot's configured music channel<br/>off     -> don't announce when the bot is going down for an update
 chat_bot_enabled | false | Chat with people
-chat_text_reply | false | Reply to predefined regex messages
 cleanup_messages | no | Delete messages after a while? (yes;no;nonstandard)<br/>yes -> Always delete messages<br/>no -> Never delete messages<br/>nonstandard -> delete messages outside of bot's default channel
 command_prefix | $ | Prefix for commands (between 1 and 3 characters)
 help_in_pm | false | show help in a private message?<br/>true  -> send a message to the user requesting help<br/>false -> output help to the channel where requested
@@ -116,6 +116,7 @@ music_channel | music | Channel where the bots music-related output goes to
 music_channel_title | false | Updates the music channel's topic with the currently playing song<br/>true  -> yes change the topic at the beginning of every song<br/>false -> leave the channel topic title alone!
 music_playing_message | clear | Clear the now playing message?<br/>clear  -> sends a message and deletes it when the song is over or skipped<br/>normal -> send the message and just leave it be<br/>off    -> don't send now playing messages
 music_show_listeners | true | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
+music_volume | 10 | sets the default volume of the music player<br/>So the next time the bot connects it starts with this volume<br/><br/>Accepts a value between 0 and 100
 pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
 show_unknown_commands | false | Show message on nonexistent commands<br/>true -> returns a help message<br/>false -> stays silent
 use_economy | false | Use the economy feature?<br/>false -> nope!<br/>true -> yep!
@@ -224,13 +225,6 @@ ar guild <tag> <guildid>   //guild of a tag, 0 for global
 ar test <tag> <text>       //test for a match
 ar delete <tag>            //deletes a tag
 ```
-### avatar
-
-Changes my avatar
-
-Accessible though: avatar
-
-Usable in public and private channels
 ### bank
 
 For all your banking needs
@@ -250,7 +244,7 @@ bank donate @user <amount> //donates <amount> to @user
 
 play a game of blackjack!
 
-Accessible though: blackjack
+Accessible though: blackjack, bj
 
 Usable in public and private channels
 
@@ -548,7 +542,7 @@ poll 1-9      //vote on the options
 
 Shows your profile in a fancy way
 
-Accessible though: profile
+Accessible though: profile, avatar
 
 Usable in public and private channels
 
@@ -569,9 +563,10 @@ Usable in public  channels
 #### Usage
 
 ```php
-purge       //deletes non-pinned messages
-purge @user //deletes messages from user
-purge nova  //deletes my messages :(
+purge               //deletes non-pinned messages
+purge @user         //deletes messages from user
+purge @user <limit> //deletes up to <limit> messages from user
+purge nova          //deletes my messages :(
 ```
 ### reboot
 
