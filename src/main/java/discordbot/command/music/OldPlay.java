@@ -80,7 +80,7 @@ public class OldPlay extends AbstractCommand {
 					int selectedIndex = Ints.tryParse(args[0].replace("#", ""));
 					if (userFilteredSongs.get(author.getId()).size() + 1 >= selectedIndex && selectedIndex > 0) {
 						int songId = userFilteredSongs.get(author.getId()).get(selectedIndex - 1);
-						try (ResultSet rs = WebDb.get().select("SELECT filename, youtube_title, artist FROM playlist WHERE id = ?", songId)) {
+						try (ResultSet rs = WebDb.get().select("SELECT filename, youtube_title, artist FROM music WHERE id = ?", songId)) {
 							if (rs.next()) {
 								bot.addSongToQueue(rs.getString("filename"), tc.getGuild());
 							}
@@ -114,7 +114,7 @@ public class OldPlay extends AbstractCommand {
 					concatArgs += s.toLowerCase();
 				}
 				try (ResultSet rs = WebDb.get().select("SELECT id, GREATEST(levenshtein_ratio(LOWER(title),?),levenshtein_ratio(LOWER(artist),?)) AS matchrating, youtube_title,title,artist, filename " +
-						"FROM playlist " +
+						"FROM music " +
 						"WHERE artist IS NOT NULL AND title IS NOT NULL " +
 						"ORDER BY matchrating DESC " +
 						"LIMIT 10", concatArgs, concatArgs)) {

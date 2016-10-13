@@ -17,7 +17,7 @@ public class TMusic {
 		OMusic music = new OMusic();
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT id, youtubecode, filename, youtube_title,title, artist, lastplaydate, banned  " +
-						"FROM playlist " +
+						"FROM music " +
 						"WHERE youtubecode = ? ", youtubeCode)) {
 			if (rs.next()) {
 				music = fillRecord(rs);
@@ -33,7 +33,7 @@ public class TMusic {
 		OMusic music = new OMusic();
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT id, youtubecode, filename, youtube_title,title, artist, lastplaydate, banned  " +
-						"FROM playlist " +
+						"FROM music " +
 						"WHERE filename = ? ", filename)) {
 			if (rs.next()) {
 				music = fillRecord(rs);
@@ -66,7 +66,7 @@ public class TMusic {
 		}
 		try {
 			WebDb.get().query(
-					"UPDATE playlist SET  youtubecode = ?, filename = ?, youtube_title = ?, title = ?,artist = ?, lastplaydate = ?, banned = ? " +
+					"UPDATE music SET  youtubecode = ?, filename = ?, youtube_title = ?, title = ?,artist = ?, lastplaydate = ?, banned = ? " +
 							"WHERE id = ? ",
 					record.youtubecode, record.filename, record.youtubeTitle, record.title, record.artist, record.lastplaydate, record.banned, record.id
 			);
@@ -82,7 +82,7 @@ public class TMusic {
 		}
 		try {
 			record.id = WebDb.get().insert(
-					"INSERT INTO playlist(youtubecode, filename, youtube_title,title, artist, lastplaydate, banned) " +
+					"INSERT INTO music(youtubecode, filename, youtube_title,title, artist, lastplaydate, banned) " +
 							"VALUES (?,?,?,?,?,?,?)",
 					record.youtubecode, record.filename, record.youtubeTitle, record.title, record.artist, record.lastplaydate, record.banned);
 		} catch (Exception e) {
@@ -92,7 +92,7 @@ public class TMusic {
 
 	public static List<OMusic> getRecentlyPlayed(int limit) {
 		List<OMusic> history = new ArrayList<>();
-		try (ResultSet rs = WebDb.get().select("SELECT * FROM playlist ORDER BY lastplaydate DESC LIMIT ?", limit)) {
+		try (ResultSet rs = WebDb.get().select("SELECT * FROM music ORDER BY lastplaydate DESC LIMIT ?", limit)) {
 			while (rs.next()) {
 				history.add(fillRecord(rs));
 			}

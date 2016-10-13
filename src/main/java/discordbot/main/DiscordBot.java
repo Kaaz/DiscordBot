@@ -1,6 +1,8 @@
 package discordbot.main;
 
+import discordbot.db.model.OGuild;
 import discordbot.db.model.OMusic;
+import discordbot.db.table.TGuild;
 import discordbot.event.JDAEvents;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.*;
@@ -14,10 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class DiscordBot {
 
@@ -28,8 +29,10 @@ public class DiscordBot {
 	public Timer timer = new Timer();
 	public String mentionMe;
 	public ChatBotHandler chatBotHandler = null;
+	public SecurityHandler security = null;
 	public OutgoingContentHandler out = null;
 	public boolean statusLocked = false;
+	private Set<String> bannedGuilds;
 	private AutoReplyHandler autoReplyhandler;
 	private GameHandler gameHandler = null;
 	private boolean isReady = false;
@@ -43,6 +46,7 @@ public class DiscordBot {
 		client = builder.buildAsync();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 	}
+
 
 	public boolean isReady() {
 		return isReady;
@@ -178,6 +182,7 @@ public class DiscordBot {
 
 	private void registerHandlers() {
 		commands = new CommandHandler(this);
+		security= new SecurityHandler(this);
 		gameHandler = new GameHandler(this);
 		Template.setBot(this);
 		out = new OutgoingContentHandler(this);

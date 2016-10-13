@@ -242,7 +242,7 @@ CREATE TABLE IF NOT EXISTS `guild_settings` (
 -- Table structure for table `playlist`
 --
 
-DROP TABLE IF EXISTS `playlist`;
+DROP TABLE IF EXISTS music;
 CREATE TABLE IF NOT EXISTS `playlist` (
   `id`            INT(11)     NOT NULL AUTO_INCREMENT,
   `youtubecode`   VARCHAR(32) NOT NULL,
@@ -279,7 +279,7 @@ CREATE TABLE IF NOT EXISTS `poe_token` (
 -- Table structure for table `servers`
 --
 
-DROP TABLE IF EXISTS `servers`;
+DROP TABLE IF EXISTS guilds;
 CREATE TABLE IF NOT EXISTS `servers` (
   `id`         INT(11)      NOT NULL AUTO_INCREMENT,
   `discord_id` VARCHAR(255) NOT NULL,

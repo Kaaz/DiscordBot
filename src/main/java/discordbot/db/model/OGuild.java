@@ -11,4 +11,5 @@ public class OGuild extends AbstractModel {
 	public String name = "";
 	public int owner = 0;
 	public int active = 0;
+	public int banned = 0;
 }

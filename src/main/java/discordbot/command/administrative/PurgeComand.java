@@ -12,6 +12,8 @@ import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.utils.PermissionUtil;
 
+import java.util.List;
+
 /**
  * !purge
  * Purges messages in channel
@@ -66,6 +68,7 @@ public class PurgeComand extends AbstractCommand {
 		if (args.length >= 1) {
 			deleteAll = false;
 			if (DisUtil.isUserMention(args[0])) {
+				System.out.println(DisUtil.mentionToId(args[0]));
 				toDeleteFrom = bot.client.getUserById(DisUtil.mentionToId(args[0]));
 				if (!hasManageMessages && !bot.client.getSelfInfo().equals(toDeleteFrom)) {
 					return Template.get("permission_missing_manage_messages");
@@ -78,18 +81,22 @@ public class PurgeComand extends AbstractCommand {
 			}
 		}
 		int deletedCount = 0;
-		for (Message msg : channel.getHistory().retrieve(100)) {
+		List<Message> retrieve = channel.getHistory().retrieve(100);
+		System.out.println("DELETING FROM::::::" + toDeleteFrom.getId() + "::" + toDeleteFrom.getUsername());
+		for (Message msg : retrieve) {
+			System.out.println(msg.getAuthor().getUsername() + ":" + msg.getContent());
 			if (deletedCount == deleteLimit) {
 				break;
 			}
 			if (msg.isPinned()) {
 				continue;
 			}
-			if (deleteAll && (hasManageMessages || msg.getAuthor().equals(bot.client.getSelfInfo()))) {
+			if (deleteAll && (hasManageMessages || msg.getAuthor().getId().equals(bot.client.getSelfInfo().getId()))) {
 				deletedCount++;
 				bot.out.deleteMessage(msg);
-			} else if (!deleteAll && toDeleteFrom != null && msg.getAuthor().equals(toDeleteFrom)) {
+			} else if (!deleteAll && toDeleteFrom != null && msg.getAuthor().getId().equals(toDeleteFrom.getId())) {
 				deletedCount++;
+				System.out.println("DELETED");
 				bot.out.deleteMessage(msg);
 			}
 		}

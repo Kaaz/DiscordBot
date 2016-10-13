@@ -153,7 +153,7 @@ public class MusicPlayerHandler {
 		ArrayList<String> potentialSongs = new ArrayList<>();
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT filename, youtube_title, lastplaydate " +
-						"FROM playlist " +
+						"FROM music " +
 						"WHERE banned = 0 " +
 						"ORDER BY lastplaydate ASC " +
 						"LIMIT 50")) {
