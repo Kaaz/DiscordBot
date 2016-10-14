@@ -55,8 +55,9 @@ public class Joke extends AbstractCommand {
 			}
 			if (joketxt != null) {
 				message.updateMessageAsync(StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getUsername(), "<@" + author.getId() + ">")), null);
+			} else {
+				message.updateMessageAsync(Template.get("command_joke_not_today"), null);
 			}
-			message.updateMessageAsync(Template.get("command_joke_not_today"), null);
 		});
 		return "";
 	}
