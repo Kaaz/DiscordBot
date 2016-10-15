@@ -3,10 +3,11 @@ package discordbot.handler;
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
+import discordbot.guildsettings.defaults.SettingMusicPlayingMessage;
 import discordbot.guildsettings.defaults.SettingMusicVolume;
 import discordbot.main.DiscordBot;
+import discordbot.util.DisUtil;
 import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.managers.AudioManager;
@@ -21,10 +22,7 @@ import net.dv8tion.jda.player.source.LocalSource;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -32,13 +30,12 @@ public class MusicPlayerHandler {
 	private final static Map<Guild, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
 	private final Guild guild;
 	private final DiscordBot bot;
-	private OMusic currentlyPlaying = new OMusic();
-	private Message activeMsg = null;
-	private long currentSongLength = 0;
-	private long currentSongStartTimeInSeconds = 0;
+	private volatile int currentlyPlaying = 0;
+	private volatile long currentSongLength = 0;
+	private volatile long currentSongStartTimeInSeconds = 0;
 	private Random rng;
 	private AudioManager manager;
-	private MusicPlayer player;
+	private final MusicPlayer player;
 
 	private MusicPlayerHandler(Guild guild, DiscordBot bot) {
 		this.guild = guild;
@@ -51,14 +48,13 @@ public class MusicPlayerHandler {
 			manager.setSendingHandler(player);
 			player.addEventListener(event -> {
 				if (event instanceof SkipEvent || event instanceof FinishEvent) {
-					System.out.println("SKIP OR FINISH");
 					if (player.getAudioQueue().isEmpty()) {
+						trackEnded();
 						playRandomSong();
 					}
 				}
 				if (event instanceof PlayEvent) {
-					System.out.println("play event triggered");
-					setPlayStartTimeStamp();
+					trackStarted();
 				}
 			});
 		} else {
@@ -80,12 +76,47 @@ public class MusicPlayerHandler {
 		return currentSongStartTimeInSeconds;
 	}
 
-	private void setPlayStartTimeStamp() {
+	private void trackEnded() {
+		currentSongLength = 0;
+	}
+
+	private void trackStarted() {
 		currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000L;
 		AudioInfo info = player.getCurrentAudioSource().getInfo();
 		currentSongLength = info.getDuration().getTotalSeconds();
 		File f = new File(info.getOrigin());
-		currentlyPlaying = TMusic.findByFileName(f.getAbsolutePath());
+		final String messageType = GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class);
+		OMusic record = TMusic.findByFileName(f.getAbsolutePath());
+		if (record.id > 0) {
+			record.lastplaydate = System.currentTimeMillis() / 1000L;
+			TMusic.update(record);
+		}
+		currentlyPlaying = record.id;
+		if (!messageType.equals("off")) {
+			String msg;
+			if (record.youtubeTitle.isEmpty()) {
+				msg = "plz send help:: " + f.getName();
+			} else {
+				if (record.artist != null && record.title != null && !record.artist.trim().isEmpty() && !record.title.trim().isEmpty()) {
+					msg = "Now playing " + record.artist + " - " + record.title;
+				} else {
+					msg = "Now playing " + record.youtubeTitle + " ** *need details about song!* see **" + DisUtil.getCommandPrefix(guild) + "np**";
+				}
+			}
+			final long deleteAfter = currentSongLength * 1000L;
+			bot.getMusicChannel(guild).sendMessageAsync(msg, message -> {
+				if (messageType.equals("clear")) {
+					bot.timer.schedule(
+							new TimerTask() {
+								@Override
+								public void run() {
+									message.deleteMessage();
+								}
+							}, deleteAfter
+					);
+				}
+			});
+		}
 	}
 
 	public boolean isConnectedTo(VoiceChannel channel) {
@@ -112,7 +143,7 @@ public class MusicPlayerHandler {
 //		AudioPlayer.getAudioPlayerForGuild(guild).getPlaylist().clear();
 	}
 
-	public OMusic getCurrentlyPlaying() {
+	public int getCurrentlyPlaying() {
 		return this.currentlyPlaying;
 	}
 
@@ -139,9 +170,6 @@ public class MusicPlayerHandler {
 	 */
 	public void skipSong() {
 		player.skipToNext();
-		currentlyPlaying = new OMusic();
-		currentSongLength = 0;
-		currentSongStartTimeInSeconds = 0;
 	}
 
 	/**
@@ -183,6 +211,7 @@ public class MusicPlayerHandler {
 			bot.out.sendErrorToMe(new Exception("NoMusicFile"), "filename: ", mp3file.getAbsolutePath(), "plz fix", "I want music", bot);
 			return false;
 		}
+
 		LocalSource ls = new LocalSource(mp3file);
 		player.getAudioQueue().add(ls);
 		if (!player.isPlaying()) {
@@ -211,7 +240,9 @@ public class MusicPlayerHandler {
 	}
 
 	public void stopMusic() {
+		currentlyPlaying = 0;
 		player.stop();
+		player.reload(false);
 	}
 
 	public List<OMusic> getQueue() {

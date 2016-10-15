@@ -1,6 +1,5 @@
 package discordbot.main;
 
-import discordbot.db.model.OMusic;
 import discordbot.event.JDAEvents;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.*;
@@ -257,7 +256,7 @@ public class DiscordBot {
 		MusicPlayerHandler.getFor(guild, this).stopMusic();
 	}
 
-	public OMusic getCurrentlyPlayingSong(Guild guild) {
+	public int getCurrentlyPlayingSong(Guild guild) {
 		return MusicPlayerHandler.getFor(guild, this).getCurrentlyPlaying();
 	}
 

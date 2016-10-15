@@ -127,11 +127,15 @@ public class DisUtil {
 	 * @return the command prefix
 	 */
 	public static String getCommandPrefix(MessageChannel channel) {
-		if (channel == null || channel instanceof PrivateChannel) {
-			return DefaultGuildSettings.getDefault(SettingCommandPrefix.class);
-		}
 		if (channel instanceof TextChannel) {
-			return GuildSettings.get(((TextChannel) channel).getGuild()).getOrDefault(SettingCommandPrefix.class);
+			return getCommandPrefix(((TextChannel) channel).getGuild());
+		}
+		return DefaultGuildSettings.getDefault(SettingCommandPrefix.class);
+	}
+
+	public static String getCommandPrefix(Guild guild) {
+		if (guild != null) {
+			return GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
 		}
 		return Config.BOT_COMMAND_PREFIX;
 	}

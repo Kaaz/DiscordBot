@@ -74,7 +74,7 @@ public class CurrentTrack extends AbstractCommand {
 	public String execute(String[] args, MessageChannel channel, User author) {
 		boolean helpedOut = false;
 		Guild guild = ((TextChannel) channel).getGuild();
-		OMusic song = bot.getCurrentlyPlayingSong(guild);
+		OMusic song = TMusic.findById(bot.getCurrentlyPlayingSong(guild));
 		if (song.id == 0) {
 			return Template.get("command_currentlyplaying_nosong");
 		}

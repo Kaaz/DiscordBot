@@ -78,7 +78,7 @@ public class SetConfig extends AbstractCommand {
 				List<List<String>> data = new ArrayList<>();
 				for (String key : keys) {
 					List<String> row = new ArrayList<>();
-					String different = settings.get(key).equals(DefaultGuildSettings.getDefault(key)) ? "" : "*";
+					String different = settings.get(key).equals(DefaultGuildSettings.getDefault(key)) ? " " : "*";
 					row.add(different + key);
 					row.add(settings.get(key));
 					row.add(DefaultGuildSettings.getDefault(key));

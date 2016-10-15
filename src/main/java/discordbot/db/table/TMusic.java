@@ -29,6 +29,22 @@ public class TMusic {
 		return music;
 	}
 
+	public static OMusic findById(int id) {
+		OMusic music = new OMusic();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT id, youtubecode, filename, youtube_title,title, artist, lastplaydate, banned  " +
+						"FROM music " +
+						"WHERE id = ? ", id)) {
+			if (rs.next()) {
+				music = fillRecord(rs);
+			}
+			rs.getStatement().close();
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return music;
+	}
+
 	public static OMusic findByFileName(String filename) {
 		OMusic music = new OMusic();
 		try (ResultSet rs = WebDb.get().select(
