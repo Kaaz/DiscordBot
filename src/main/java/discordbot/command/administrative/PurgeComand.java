@@ -75,14 +75,13 @@ public class PurgeComand extends AbstractCommand {
 				}
 			} else if (args[0].toLowerCase().equals("nova")) {
 				toDeleteFrom = bot.client.getSelfInfo();
-			}
-			if (args.length >= 2 && args[1].matches("^\\d+$")) {
-				deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
+			} else if (args[0].matches("^\\d+$")) {
+				deleteAll = true;
+				deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[0]));
 			}
 		}
 		int deletedCount = 0;
 		List<Message> retrieve = channel.getHistory().retrieve(100);
-		System.out.println("DELETING FROM::::::" + toDeleteFrom.getId() + "::" + toDeleteFrom.getUsername());
 		for (Message msg : retrieve) {
 			System.out.println(msg.getAuthor().getUsername() + ":" + msg.getContent());
 			if (deletedCount == deleteLimit) {
@@ -101,7 +100,10 @@ public class PurgeComand extends AbstractCommand {
 			}
 		}
 		if (hasManageMessages) {
-			return Template.get("command_purge_success");
+			bot.out.sendAsyncMessage(channel, Template.get("command_purge_success"), message -> {
+				bot.out.deleteMessage(message);
+			});
+			return "";
 		}
 		return Template.get("permission_missing_manage_messages");
 	}
