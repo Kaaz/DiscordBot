@@ -211,10 +211,10 @@ public class DiscordBot {
 
 
 	public void handlePrivateMessage(PrivateChannel channel, User author, Message message) {
-		if (commands.isCommand(null, message.getContent())) {
-			commands.process(channel, author, message.getContent());
+		if (commands.isCommand(null, message.getRawContent())) {
+			commands.process(channel, author, message.getRawContent());
 		} else {
-			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getContent()), null);
+			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getRawContent()), null);
 		}
 	}
 
@@ -228,12 +228,12 @@ public class DiscordBot {
 				!channel.getName().equalsIgnoreCase(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			return;
 		}
-		if (gameHandler.isGameInput(channel, author, message.getContent().toLowerCase())) {
-			gameHandler.execute(author, channel, message.getContent());
+		if (gameHandler.isGameInput(channel, author, message.getRawContent().toLowerCase())) {
+			gameHandler.execute(author, channel, message.getRawContent());
 			return;
 		}
-		if (commands.isCommand(channel, message.getContent())) {
-			commands.process(channel, author, message.getContent());
+		if (commands.isCommand(channel, message.getRawContent())) {
+			commands.process(channel, author, message.getRawContent());
 			return;
 		}
 		if (GuildSettings.getFor(channel, SettingAutoReplyModule.class).equals("true")) {
@@ -244,7 +244,7 @@ public class DiscordBot {
 		if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
 				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class)) &&
 				channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
-			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getContent()), null);
+			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getRawContent()), null);
 		}
 	}
 

@@ -224,6 +224,8 @@ public class GameHandler {
 					return createGamefromUserMention(player, args[0], args[1]);
 				}
 				return Template.get("playmode_invalid_usage");
+			} else if (args.length > 1 && DisUtil.isUserMention(args[0])) {
+				return createGamefromUserMention(player, args[1], args[0]);
 			}
 			return playTurn(player, args[0]);
 		}
