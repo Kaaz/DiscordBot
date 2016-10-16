@@ -45,10 +45,12 @@ public class GameHandler {
 		usersInPlayMode.put(player.getId(), channel.getId());
 	}
 
-	private void leavePlayMode(User player) {
+	private boolean leavePlayMode(User player) {
 		if (usersInPlayMode.containsKey(player.getId())) {
 			usersInPlayMode.remove(player.getId());
+			return true;
 		}
+		return false;
 	}
 
 	public boolean isGameInput(TextChannel channel, User player, String message) {
@@ -75,8 +77,9 @@ public class GameHandler {
 			case "exit":
 			case "leave":
 			case "stop":
-				leavePlayMode(player);
-				bot.out.sendAsyncMessage(channel, Template.get("playmode_leaving_mode"), null);
+				if (leavePlayMode(player)) {
+					bot.out.sendAsyncMessage(channel, Template.get("playmode_leaving_mode"), null);
+				}
 				return;
 			default:
 				break;
@@ -213,7 +216,7 @@ public class GameHandler {
 
 	public String executeGameMove(String[] args, User player, TextChannel channel) {
 		if (args.length > 0) {
-			if (args[0].equalsIgnoreCase("cancel")) {
+			if (args[0].equalsIgnoreCase("cancel") || args[0].equalsIgnoreCase("stop")) {
 				return cancelGame(player);
 			} else if (args[0].equalsIgnoreCase("help")) {
 				return showHelp(channel);
@@ -224,7 +227,7 @@ public class GameHandler {
 					return createGamefromUserMention(player, args[0], args[1]);
 				}
 				return Template.get("playmode_invalid_usage");
-			} else if (args.length > 1 && DisUtil.isUserMention(args[0])) {
+			} else if (args.length > 1 && DisUtil.isUserMention(args[1])) {
 				return createGamefromUserMention(player, args[1], args[0]);
 			}
 			return playTurn(player, args[0]);
