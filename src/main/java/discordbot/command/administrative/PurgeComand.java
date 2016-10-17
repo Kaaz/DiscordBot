@@ -73,6 +73,9 @@ public class PurgeComand extends AbstractCommand {
 				if (!hasManageMessages && !bot.client.getSelfInfo().equals(toDeleteFrom)) {
 					return Template.get("permission_missing_manage_messages");
 				}
+				if (args.length >= 2 && args[1].matches("^\\d+$")) {
+					deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
+				}
 			} else if (args[0].toLowerCase().equals("nova")) {
 				toDeleteFrom = bot.client.getSelfInfo();
 			} else if (args[0].matches("^\\d+$")) {
