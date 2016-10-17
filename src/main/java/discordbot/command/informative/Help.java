@@ -84,7 +84,7 @@ public class Help extends AbstractCommand {
 			HashMap<CommandCategory, ArrayList<String>> commandList = new HashMap<>();
 			AbstractCommand[] commandObjects = bot.commands.getCommandObjects();
 			for (AbstractCommand command : commandObjects) {
-				if (!command.isListed() || !command.isEnabled() || !userRank.isAtLeast(getCommandCategory().getRankRequired())) {
+				if (!command.isListed() || !command.isEnabled() || !userRank.isAtLeast(command.getCommandCategory().getRankRequired())) {
 					continue;
 				}
 
