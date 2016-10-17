@@ -1,14 +1,17 @@
 package discordbot.command.informative;
 
 import discordbot.core.AbstractCommand;
+import discordbot.db.model.OGuildMember;
 import discordbot.db.model.OUser;
+import discordbot.db.table.TGuild;
+import discordbot.db.table.TGuildMember;
 import discordbot.db.table.TUser;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
+import discordbot.util.TimeUtil;
 import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.PrivateChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -56,12 +59,16 @@ public class UserCommand extends AbstractCommand {
 		} else if (args[0].matches("i\\d+")) {
 			OUser dbUser = TUser.findById(Integer.parseInt(args[0].substring(1)));
 			infoUser = bot.client.getUserById(dbUser.discord_id);
+		} else if (channel instanceof TextChannel) {
+			infoUser = DisUtil.findUserIn((TextChannel) channel, args[0]);
 		}
-
 		if (infoUser != null) {
+			int userId = TUser.getCachedId(infoUser.getId());
+			int guildId = 0;
 			StringBuilder sb = new StringBuilder();
 			String nickname = infoUser.getUsername();
-			if (!(channel instanceof PrivateChannel)) {
+			if (channel instanceof TextChannel) {
+				guildId = TGuild.getCachedId(((TextChannel) channel).getGuild().getId());
 				nickname = ((TextChannel) channel).getGuild().getNicknameForUser(infoUser);
 				if (nickname == null) {
 					nickname = infoUser.getUsername();
@@ -70,12 +77,18 @@ public class UserCommand extends AbstractCommand {
 			sb.append("Querying for ").append(nickname).append(Config.EOL);
 			sb.append(":bust_in_silhouette: User: ").append(infoUser.getUsername()).append("#").append(infoUser.getDiscriminator()).append(Config.EOL);
 //			sb.append(":date: Account registered at ").append(infoUser.()).append(Config.EOL);
-			sb.append(":id: : ").append(infoUser.getId()).append(Config.EOL);
+			sb.append(":id: discord id:").append(infoUser.getId()).append(Config.EOL);
+			if (guildId > 0) {
+				OGuildMember member = TGuildMember.findBy(guildId, userId);
+				if (member.joinDate != null) {
+					sb.append(":date: joined: ").append(TimeUtil.getRelativeTime(member.joinDate.getTime() / 1000L, false, true)).append(Config.EOL);
+				}
+			}
 			if (!infoUser.getAvatarUrl().endsWith("null.jpg")) {
-				sb.append(":frame_photo: Avatar: ").append(infoUser.getAvatarUrl());
+				sb.append(":frame_photo: Avatar: ").append("`").append(infoUser.getAvatarUrl()).append("`").append(Config.EOL);
 			}
 			if (infoUser.isBot()) {
-				sb.append(Config.EOL).append(":robot: This user is a bot (or pretends to be)");
+				sb.append(":robot: This user is a bot (or pretends to be)");
 			}
 			return sb.toString();
 		}

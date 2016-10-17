@@ -39,7 +39,7 @@ public class DisUtil {
 	 * @param searchText the name to look for
 	 * @return IUser | null
 	 */
-	public static User findUserIn(Channel channel, String searchText) {
+	public static User findUserIn(TextChannel channel, String searchText) {
 		List<User> users = channel.getUsers();
 		List<User> potential = new ArrayList<>();
 		int smallestDiffIndex = 0, smallestDiff = 999;
