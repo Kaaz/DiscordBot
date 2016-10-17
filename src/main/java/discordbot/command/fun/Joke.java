@@ -43,7 +43,6 @@ public class Joke extends AbstractCommand {
 	public String[] getAliases() {
 		return new String[]{};
 	}
-
 	@Override
 	public String execute(String[] args, MessageChannel channel, User author) {
 		bot.out.sendAsyncMessage(channel, Template.get("command_joke_wait"), message -> {

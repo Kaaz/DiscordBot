@@ -6,7 +6,6 @@ import discordbot.db.table.TMusic;
 import discordbot.guildsettings.defaults.SettingMusicPlayingMessage;
 import discordbot.guildsettings.defaults.SettingMusicVolume;
 import discordbot.main.DiscordBot;
-import discordbot.util.DisUtil;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
@@ -104,7 +103,7 @@ public class MusicPlayerHandler {
 				if (record.artist != null && record.title != null && !record.artist.trim().isEmpty() && !record.title.trim().isEmpty()) {
 					msg = "Now playing " + record.artist + " - " + record.title;
 				} else {
-					msg = "Now playing " + record.youtubeTitle + "  *need details about song!* see **" + DisUtil.getCommandPrefix(guild) + "np**";
+					msg = "Now playing " + record.youtubeTitle;//+ "  *need details about song!* see **" + DisUtil.getCommandPrefix(guild) + "np**";
 				}
 			}
 			final long deleteAfter = currentSongLength * 1000L;

@@ -118,7 +118,7 @@ public class Play extends AbstractCommand {
 							message.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
 							bot.addSongToQueue(filecheck.getAbsolutePath(), guild);
 						} else {
-							message.deleteMessage();
+							message.updateMessageAsync("Download failed, the song is most likely too long!", null);
 						}
 					});
 					return "";
