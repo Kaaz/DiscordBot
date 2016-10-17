@@ -201,6 +201,12 @@ public class DiscordBot {
 		return false;
 	}
 
+	public void addStreamToQueue(String url, Guild guild) {
+		MusicPlayerHandler.getFor(guild, this).addStream(url);
+		MusicPlayerHandler.getFor(guild, this).startPlaying();
+
+	}
+
 	public void addSongToQueue(String filename, Guild guild) {
 		MusicPlayerHandler.getFor(guild, this).addToQueue(filename);
 	}

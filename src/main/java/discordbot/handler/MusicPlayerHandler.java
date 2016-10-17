@@ -16,11 +16,11 @@ import net.dv8tion.jda.player.hooks.events.FinishEvent;
 import net.dv8tion.jda.player.hooks.events.PlayEvent;
 import net.dv8tion.jda.player.hooks.events.PlayerEvent;
 import net.dv8tion.jda.player.hooks.events.SkipEvent;
-import net.dv8tion.jda.player.source.AudioInfo;
-import net.dv8tion.jda.player.source.AudioSource;
-import net.dv8tion.jda.player.source.LocalSource;
+import net.dv8tion.jda.player.source.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.FileAlreadyExistsException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -86,16 +86,22 @@ public class MusicPlayerHandler {
 	private synchronized void trackStarted() {
 		currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000L;
 		AudioInfo info = player.getCurrentAudioSource().getInfo();
-		currentSongLength = info.getDuration().getTotalSeconds();
-		File f = new File(info.getOrigin());
+		OMusic record;
+		File f = null;
 		final String messageType = GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class);
-		OMusic record = TMusic.findByFileName(f.getAbsolutePath());
-		if (record.id > 0) {
-			record.lastplaydate = System.currentTimeMillis() / 1000L;
-			TMusic.update(record);
+		if (info != null) {
+			f = new File(info.getOrigin());
+			record = TMusic.findByFileName(f.getAbsolutePath());
+			if (record.id > 0) {
+				record.lastplaydate = System.currentTimeMillis() / 1000L;
+				TMusic.update(record);
+				currentlyPlaying = record.id;
+				currentSongLength = info.getDuration().getTotalSeconds();
+			}
+		} else {
+			record = new OMusic();
 		}
-		currentlyPlaying = record.id;
-		if (!messageType.equals("off")) {
+		if (!messageType.equals("off") && record.id > 0) {
 			String msg;
 			if (record.youtubeTitle.isEmpty()) {
 				msg = "plz send help:: " + f.getName();
@@ -266,6 +272,41 @@ public class MusicPlayerHandler {
 
 	public List<OMusic> getQueue() {
 		return queue.stream().collect(Collectors.toList());
+	}
+
+	public synchronized void addStream(String url) {
+		LinkedList<AudioSource> audioQueue = player.getAudioQueue();
+		player.getCurrentAudioSource();
+		audioQueue.add(new AudioSource() {
+			@Override
+			public String getSource() {
+				return null;
+			}
+
+			@Override
+			public AudioInfo getInfo() {
+				return null;
+			}
+
+			@Override
+			public AudioStream asStream() {
+				return new LocalStream(
+						Arrays.asList(
+								"ffmpeg",       //Program launch
+								"-i", url,      //Input file, specifies to read from STDin (pipe)
+								"-f", "s16be",  //Format.  PCM, signed, 16bit, Big Endian
+								"-ac", "2",     //Channels. Specify 2 for stereo audio.
+								"-ar", "48000", //Rate. Opus requires an audio rate of 48000hz
+								"-map", "a",    //Makes sure to only output audio, even if the specified format supports other streams
+								"-"             //Used to specify STDout as the output location (pipe)
+						));
+			}
+
+			@Override
+			public File asFile(String path, boolean deleteOnExists) throws FileAlreadyExistsException, FileNotFoundException {
+				return null;
+			}
+		});
 	}
 
 	/**

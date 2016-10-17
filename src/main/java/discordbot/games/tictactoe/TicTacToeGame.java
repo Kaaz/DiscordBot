@@ -2,7 +2,6 @@ package discordbot.games.tictactoe;
 
 import discordbot.games.AbstractGame;
 import discordbot.games.GameState;
-import discordbot.games.GameTurn;
 import discordbot.main.Config;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.User;

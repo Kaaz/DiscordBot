@@ -73,7 +73,7 @@ public class SetConfig extends AbstractCommand {
 			guild = ((TextChannel) channel).getGuild();
 		}
 		int count = args.length;
-		if (bot.isAdmin((TextChannel) channel, author)) {
+		if (bot.isAdmin(channel, author)) {
 			if (count == 0) {
 				Map<String, String> settings = GuildSettings.get(guild).getSettings();
 				ArrayList<String> keys = new ArrayList<>(settings.keySet());

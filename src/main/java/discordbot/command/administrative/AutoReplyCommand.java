@@ -67,7 +67,7 @@ public class AutoReplyCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, MessageChannel channel, User author) {
-		Guild guild = ((TextChannel)channel).getGuild();
+		Guild guild = ((TextChannel) channel).getGuild();
 		if (!bot.isAdmin(channel, author)) {
 			return Template.get("no_permission");
 		}
