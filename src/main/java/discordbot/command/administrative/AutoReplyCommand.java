@@ -1,4 +1,4 @@
-package discordbot.command.bot_administration;
+package discordbot.command.administrative;
 
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;
@@ -47,7 +47,7 @@ public class AutoReplyCommand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"ar <create> <tagname>      //creates tag",
+				"ar create <tagname>      //creates tag",
 				"ar regex <tag> <value>     //edit the regex of a tag",
 				"ar response <tag> <value>  //change the response of a reply",
 				"ar tag <tag> <value>       //change the tag of a reply",
@@ -186,7 +186,7 @@ public class AutoReplyCommand extends AbstractCommand {
 			tbl.add(Arrays.asList("guild", "" + replyPattern.guildId));
 			tbl.add(Arrays.asList("pattern", "" + replyPattern.pattern));
 			tbl.add(Arrays.asList("reply", "" + replyPattern.reply));
-			tbl.add(Arrays.asList("cooldown", "" + TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 500L) / 1000L, false, false)));
+			tbl.add(Arrays.asList("cooldown", "" + TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 1000L) / 1000L, false, false)));
 			return "Auto reply information for `" + args[0] + "`:" + Misc.makeAsciiTable(Arrays.asList("Property", "Value"), tbl);
 		}
 		return Template.get("invalid_use");

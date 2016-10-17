@@ -18,9 +18,9 @@ import java.util.regex.Pattern;
  * Handles the automatic responses to messages
  */
 public class AutoReplyHandler {
-	DiscordBot bot;
-	AutoReply[] replies;
-	Map<String, Long[]> cooldowns;
+	private DiscordBot bot;
+	private AutoReply[] replies;
+	private volatile Map<String, Long[]> cooldowns;
 
 	public AutoReplyHandler(DiscordBot bot) {
 		this.bot = bot;
@@ -32,7 +32,7 @@ public class AutoReplyHandler {
 		if (message.getChannel() instanceof PrivateChannel) {
 			return false;
 		}
-		if (!(message instanceof TextChannel)) {
+		if (!(message.getChannel() instanceof TextChannel)) {
 			return false;
 		}
 		TextChannel channel = (TextChannel) message.getChannel();
