@@ -2,6 +2,7 @@ package discordbot.util;
 
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
+import discordbot.guildsettings.defaults.SettingUseEconomy;
 import discordbot.handler.GuildSettings;
 import discordbot.main.Config;
 import net.dv8tion.jda.Permission;
@@ -30,6 +31,19 @@ public class DisUtil {
 	 */
 	public static boolean isUserMention(String input) {
 		return mentionUserPattern.matcher(input).matches();
+	}
+
+	/**
+	 * helper method to see if a guild uses the economy module
+	 *
+	 * @param channel channel to check
+	 * @return use economy?
+	 */
+	public static boolean useEconomy(Channel channel) {
+		if (channel != null && channel instanceof TextChannel) {
+			return GuildSettings.getFor(((TextChannel) channel), SettingUseEconomy.class).equals("true");
+		}
+		return false;
 	}
 
 	/**
