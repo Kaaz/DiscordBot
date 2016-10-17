@@ -29,27 +29,31 @@ public abstract class AbstractService {
 	/**
 	 * retrieves a list of subscribed channels for service
 	 *
-	 * @return list of IChannels
+	 * @return list of {@link TextChannel} channels
 	 */
-	protected List<TextChannel> getSubscribedChannels() {
+	public static List<TextChannel> getSubscribedChannels(DiscordBot bot, int serviceId) {
 		List<TextChannel> channels = new ArrayList<>();
-		List<QActiveSubscriptions> subscriptionsForService = TSubscriptions.getSubscriptionsForService(TServices.getCachedId(getIdentifier()));
+		List<QActiveSubscriptions> subscriptionsForService = TSubscriptions.getSubscriptionsForService(serviceId);
 		for (QActiveSubscriptions activeSubscriptions : subscriptionsForService) {
 			OChannel databaseChannel = TChannels.findById(activeSubscriptions.channelId);
 			TextChannel botChannel = bot.client.getTextChannelById(databaseChannel.discord_id);
 			if (botChannel != null) {
 				channels.add(botChannel);
 			} else {
-				OSubscription subscription = TSubscriptions.findBy(databaseChannel.server_id, databaseChannel.id, TServices.getCachedId(getIdentifier()));
+				OSubscription subscription = TSubscriptions.findBy(databaseChannel.server_id, databaseChannel.id, serviceId);
 				subscription.subscribed = 0;
 				TSubscriptions.insertOrUpdate(subscription);
 				bot.out.sendErrorToMe(new Exception("Subscription channel not found"),
 						"result", "Now unsubscribed!",
 						"channelID", databaseChannel.discord_id,
-						"subscription", getIdentifier(), bot);
+						"subscription", serviceId);
 			}
 		}
 		return channels;
+	}
+
+	public List<TextChannel> getSubscribedChannels() {
+		return getSubscribedChannels(bot, TServices.getCachedId(getIdentifier()));
 	}
 
 	/**

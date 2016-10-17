@@ -1,11 +1,13 @@
 package discordbot.event;
 
+import discordbot.core.AbstractService;
 import discordbot.core.ExitCode;
 import discordbot.db.model.OGuild;
 import discordbot.db.model.OGuildMember;
 import discordbot.db.model.OUser;
 import discordbot.db.table.TGuild;
 import discordbot.db.table.TGuildMember;
+import discordbot.db.table.TServices;
 import discordbot.db.table.TUser;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingPMUserEvents;
@@ -74,8 +76,6 @@ public class JDAEvents extends ListenerAdapter {
 //		discordBot.setVolume(guild, Float.parseFloat(GuildSettings.get(guild).getOrDefault(SettingMusicVolume.class)) / 100F);
 		String cmdPre = GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
 		if (server.active != 1) {
-			discordBot.out.sendMessageToCreator(String.format("[**event**] [**guild**] I have just **joined** **%s** (discord-id = %s)", guild.getName(), guild.getId()));
-
 			String message = "Thanks for adding me to your guild!" + Config.EOL +
 					"To see what I can do you can type the command `" + cmdPre + "help`." + Config.EOL +
 					"Most of my features are opt-in, which means that you'll have to enable them first. Admins can use `" + cmdPre + "config` to change my settings." + Config.EOL +
@@ -87,6 +87,11 @@ public class JDAEvents extends ListenerAdapter {
 					break;
 				}
 			}
+			for (TextChannel textChannel : AbstractService.getSubscribedChannels(discordBot, TServices.getCachedId("bot_meta_events"))) {
+				discordBot.out.sendAsyncMessage(textChannel, String.format("[**event**] [**guild**] I have just **joined** **%s** (discord-id = %s)", guild.getName(), guild.getId()), null);
+			}
+			discordBot.out.sendMessageToCreator(String.format("[**event**] [**guild**] I have just **joined** **%s** (discord-id = %s)", guild.getName(), guild.getId()));
+
 			if (outChannel != null) {
 				discordBot.out.sendAsyncMessage(outChannel, message, null);
 			} else {
@@ -104,6 +109,9 @@ public class JDAEvents extends ListenerAdapter {
 		OGuild server = TGuild.findBy(guild.getId());
 		server.active = 0;
 		TGuild.update(server);
+		for (TextChannel textChannel : AbstractService.getSubscribedChannels(discordBot, TServices.getCachedId("bot_meta_events"))) {
+			discordBot.out.sendAsyncMessage(textChannel, String.format("[**event**] [**guild**] I have been **kicked** from **%s** (discord-id = %s)", guild.getName(), guild.getId()), null);
+		}
 		discordBot.out.sendMessageToCreator(String.format("[**event**] [**guild**] I have been **kicked** from **%s** (discord-id = %s)", guild.getName(), guild.getId()));
 	}
 

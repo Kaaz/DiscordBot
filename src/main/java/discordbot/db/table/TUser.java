@@ -92,7 +92,7 @@ public class TUser {
 		}
 		try {
 			WebDb.get().query(
-					"UPDATE users SET discord_id = ?, name = ?, banned = ?" +
+					"UPDATE users SET discord_id = ?, name = ?, banned = ? " +
 							"WHERE id = ? ",
 					record.discord_id, record.name, record.banned, record.id
 			);
