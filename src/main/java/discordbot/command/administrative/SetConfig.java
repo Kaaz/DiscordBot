@@ -2,6 +2,7 @@ package discordbot.command.administrative;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
+import discordbot.db.table.TGuild;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
@@ -58,8 +59,12 @@ public class SetConfig extends AbstractCommand {
 	@Override
 	public String execute(String[] args, MessageChannel channel, User author) {
 		Guild guild;
-		if (bot.isCreator(author) && args.length >= 1 && args[0].matches("^\\d{10,}$")) {
-			guild = bot.client.getGuildById(args[0]);
+		if (bot.isCreator(author) && args.length >= 1 && (args[0].matches("^\\d{10,}$") || args[0].matches("i\\d+"))) {
+			if (args[0].matches("i\\d+")) {
+				guild = bot.client.getGuildById(TGuild.findById(Integer.parseInt(args[0].substring(1))).discord_id);
+			} else {
+				guild = bot.client.getGuildById(args[0]);
+			}
 			if (guild == null) {
 				return Template.get("command_config_cant_find_guild");
 			}

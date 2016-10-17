@@ -46,6 +46,22 @@ public class TGuild {
 		return s;
 	}
 
+	public static OGuild findById(int id) {
+		OGuild s = new OGuild();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT id, discord_id, name, owner,active,banned  " +
+						"FROM guilds " +
+						"WHERE id = ? ", id)) {
+			if (rs.next()) {
+				s = loadRecord(rs);
+			}
+			rs.getStatement().close();
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return s;
+	}
+
 	public static void update(OGuild record) {
 		if (record.id == 0) {
 			insert(record);
