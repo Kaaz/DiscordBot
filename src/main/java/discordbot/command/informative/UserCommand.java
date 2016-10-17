@@ -1,6 +1,8 @@
 package discordbot.command.informative;
 
 import discordbot.core.AbstractCommand;
+import discordbot.db.model.OUser;
+import discordbot.db.table.TUser;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -51,6 +53,9 @@ public class UserCommand extends AbstractCommand {
 			infoUser = author;
 		} else if (DisUtil.isUserMention(args[0])) {
 			infoUser = bot.client.getUserById(DisUtil.mentionToId(args[0]));
+		} else if (args[0].matches("i\\d+")) {
+			OUser dbUser = TUser.findById(Integer.parseInt(args[0].substring(1)));
+			infoUser = bot.client.getUserById(dbUser.discord_id);
 		}
 
 		if (infoUser != null) {
@@ -66,7 +71,6 @@ public class UserCommand extends AbstractCommand {
 			sb.append(":bust_in_silhouette: User: ").append(infoUser.getUsername()).append("#").append(infoUser.getDiscriminator()).append(Config.EOL);
 //			sb.append(":date: Account registered at ").append(infoUser.()).append(Config.EOL);
 			sb.append(":id: : ").append(infoUser.getId()).append(Config.EOL);
-			System.out.println(infoUser.getAvatarUrl());
 			if (!infoUser.getAvatarUrl().endsWith("null.jpg")) {
 				sb.append(":frame_photo: Avatar: ").append(infoUser.getAvatarUrl());
 			}

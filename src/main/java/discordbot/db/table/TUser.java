@@ -47,6 +47,22 @@ public class TUser {
 		return s;
 	}
 
+	public static OUser findById(int internalId) {
+		OUser s = new OUser();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT *  " +
+						"FROM users " +
+						"WHERE id = ? ", internalId)) {
+			if (rs.next()) {
+				s = fillRecord(rs);
+			}
+			rs.getStatement().close();
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return s;
+	}
+
 	private static OUser fillRecord(ResultSet rs) throws SQLException {
 		OUser s = new OUser();
 		s.id = rs.getInt("id");
