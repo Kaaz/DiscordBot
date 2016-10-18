@@ -1,4 +1,4 @@
-package discordbot.command.bot_administration;
+package discordbot.command.creator;
 
 import discordbot.core.AbstractCommand;
 import discordbot.core.ExitCode;

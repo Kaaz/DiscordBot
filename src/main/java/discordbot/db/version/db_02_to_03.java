@@ -2,7 +2,7 @@ package discordbot.db.version;
 
 import discordbot.db.IDbVersion;
 
-public class db_2_to_3 implements IDbVersion {
+public class db_02_to_03 implements IDbVersion {
 	@Override
 	public int getFromVersion() {
 		return 2;

@@ -2,21 +2,21 @@ package discordbot.db.version;
 
 import discordbot.db.IDbVersion;
 
-public class db_3_to_4 implements IDbVersion {
+public class db_00_to_01 implements IDbVersion {
 	@Override
 	public int getFromVersion() {
-		return 3;
+		return 0;
 	}
 
 	@Override
 	public int getToVersion() {
-		return 4;
+		return 1;
 	}
 
 	@Override
 	public String[] getExecutes() {
 		return new String[]{
-				"ALTER TABLE servers ADD active INT NULL"
+				"CREATE TABLE bot_meta (meta_name VARCHAR(32) PRIMARY KEY NOT NULL,  meta_value VARCHAR(32));"
 		};
 	}
 }

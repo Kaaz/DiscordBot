@@ -18,7 +18,7 @@ import java.util.TimerTask;
  */
 public class SlotMachineCommand extends AbstractCommand implements ICommandCooldown {
 
-	public final long SPIN_INTERVAL = 2000L;
+	private final long SPIN_INTERVAL = 2000L;
 
 	public SlotMachineCommand(DiscordBot bot) {
 		super(bot);
@@ -47,8 +47,9 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"slot      //displays info and payout table",
-				"slot play //plays the game"
+				"slot      //play",
+				"slot play //play the game",
+				"slot info //info about payout"
 		};
 	}
 

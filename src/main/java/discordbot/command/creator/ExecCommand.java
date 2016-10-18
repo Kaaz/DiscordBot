@@ -1,4 +1,4 @@
-package discordbot.command.bot_administration;
+package discordbot.command.creator;
 
 import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
@@ -32,7 +32,7 @@ public class ExecCommand extends AbstractCommand {
 
 	@Override
 	public boolean isListed() {
-		return false;
+		return true;
 	}
 
 	@Override

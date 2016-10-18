@@ -3,6 +3,7 @@ package discordbot.command;
 import discordbot.permission.SimpleRank;
 
 public enum CommandCategory {
+	CREATOR("creator", ":man_in_tuxedo:", "Bot administration administration", SimpleRank.CREATOR),
 	BOT_ADMINISTRATION("bot_administration", ":monkey:", "Bot administration", SimpleRank.BOT_ADMIN),
 	ADMINISTRATIVE("administrative", ":oncoming_police_car:", "Administration", SimpleRank.GUILD_ADMIN),
 	INFORMATIVE("informative", ":information_source:", "Information"),
