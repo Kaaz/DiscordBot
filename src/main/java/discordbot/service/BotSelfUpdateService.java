@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class BotSelfUpdateService extends AbstractService {
 
+	private boolean usersHaveBeenWarned = false;
+
 	public BotSelfUpdateService(DiscordBot b) {
 		super(b);
 	}
@@ -37,7 +39,7 @@ public class BotSelfUpdateService extends AbstractService {
 
 	@Override
 	public boolean shouldIRun() {
-		return Config.BOT_AUTO_UPDATE;
+		return Config.BOT_AUTO_UPDATE && !usersHaveBeenWarned;
 	}
 
 	@Override
@@ -48,6 +50,7 @@ public class BotSelfUpdateService extends AbstractService {
 	public void run() {
 		ProgramVersion latestVersion = UpdateUtil.getLatestVersion();
 		if (latestVersion.isHigherThan(Launcher.getVersion())) {
+			usersHaveBeenWarned = true;
 			for (TextChannel channel : getSubscribedChannels()) {
 				bot.out.sendAsyncMessage(channel, String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
 			}

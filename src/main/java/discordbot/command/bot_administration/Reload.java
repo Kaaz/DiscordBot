@@ -3,6 +3,7 @@ package discordbot.command.bot_administration;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -37,7 +38,7 @@ public class Reload extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, MessageChannel channel, User author) {
-		if (!bot.isAdmin(channel, author)) {
+		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
 			return Template.get("no_permission");
 		}
 		bot.loadConfiguration();
