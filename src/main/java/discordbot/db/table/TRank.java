@@ -19,7 +19,7 @@ public class TRank {
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT id, code_name, full_name  " +
 						"FROM ranks " +
-						"WHERE discord_id = ? ", codeName)) {
+						"WHERE code_name = ? ", codeName)) {
 			if (rs.next()) {
 				s = fillRecord(rs);
 			}
