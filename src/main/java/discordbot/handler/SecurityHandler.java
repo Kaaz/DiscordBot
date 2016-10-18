@@ -1,7 +1,11 @@
 package discordbot.handler;
 
 import discordbot.db.model.OGuild;
+import discordbot.db.model.OUserRank;
 import discordbot.db.table.TGuild;
+import discordbot.db.table.TRank;
+import discordbot.db.table.TUser;
+import discordbot.db.table.TUserRank;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import net.dv8tion.jda.Permission;
@@ -47,6 +51,11 @@ public class SecurityHandler {
 
 		List<OGuild> bannedList = TGuild.getBannedGuilds();
 		bannedGuilds.addAll(bannedList.stream().map(guild -> guild.discord_id).collect(Collectors.toList()));
+
+		List<OUserRank> contributor = TUserRank.getUsersWith(TRank.findBy("CONTRIBUTOR").id);
+		List<OUserRank> bot_admin = TUserRank.getUsersWith(TRank.findBy("BOT_ADMIN").id);
+		contributers.addAll(contributor.stream().map(oUserRank -> TUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
+		contributers.addAll(bot_admin.stream().map(oUserRank -> TUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
 	}
 
 	public SimpleRank getSimpleRank(User user) {

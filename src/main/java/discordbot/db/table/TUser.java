@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TUser {
 
 	private static Map<String, Integer> userCache = new ConcurrentHashMap<>();
+	private static Map<Integer, String> discordCache = new ConcurrentHashMap<>();
 
 	public static int getCachedId(String discordId) {
 		if (!userCache.containsKey(discordId)) {
@@ -30,6 +31,18 @@ public class TUser {
 		}
 		return userCache.get(discordId);
 	}
+
+	public static String getCachedDiscordId(int userId) {
+		if (!discordCache.containsKey(userId)) {
+			OUser user = findById(userId);
+			if (user.id == 0) {
+				return "";
+			}
+			discordCache.put(userId, user.discord_id);
+		}
+		return discordCache.get(userId);
+	}
+
 
 	public static OUser findBy(String discordId) {
 		OUser s = new OUser();
