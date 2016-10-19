@@ -2,6 +2,9 @@ package discordbot.db.version;
 
 import discordbot.db.IDbVersion;
 
+/**
+ * for music; Allow for a longer filename (up to 255)
+ */
 public class db_02_to_03 implements IDbVersion {
 	@Override
 	public int getFromVersion() {

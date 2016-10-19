@@ -2,6 +2,11 @@ package discordbot.db.version;
 
 import discordbot.db.IDbVersion;
 
+/**
+ * Renamed a couple of tables to match the discord names
+ * added the option to ban users, guilds
+ * added a few indices to make searching a bit better
+ */
 public class db_05_to_06 implements IDbVersion {
 	@Override
 	public int getFromVersion() {

@@ -2,6 +2,9 @@ package discordbot.db.version;
 
 import discordbot.db.IDbVersion;
 
+/**
+ * Track if a server is still active, mostly so it can send a different message the first time it connects to a guild
+ */
 public class db_03_to_04 implements IDbVersion {
 	@Override
 	public int getFromVersion() {

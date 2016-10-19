@@ -2,6 +2,9 @@ package discordbot.db.version;
 
 import discordbot.db.IDbVersion;
 
+/**
+ * Table for auto replies to matching patterns in text
+ */
 public class db_04_to_05 implements IDbVersion {
 	@Override
 	public int getFromVersion() {

@@ -30,7 +30,7 @@ public class PurgeComand extends AbstractCommand {
 
 	@Override
 	public String getDescription() {
-		return "purges messages";
+		return "deletes non-pinned messages";
 	}
 
 	@Override
@@ -41,7 +41,8 @@ public class PurgeComand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"purge <limit>       //deletes non-pinned messages, optional limit",
+				"purge               //deletes up to 100 messages",
+				"purge <limit>       //deletes non-pinned messages",
 				"purge @user         //deletes messages from user",
 				"purge @user <limit> //deletes up to <limit> messages from user",
 				"purge emily         //deletes my messages :("
@@ -68,7 +69,6 @@ public class PurgeComand extends AbstractCommand {
 		if (args.length >= 1) {
 			deleteAll = false;
 			if (DisUtil.isUserMention(args[0])) {
-				System.out.println(DisUtil.mentionToId(args[0]));
 				toDeleteFrom = bot.client.getUserById(DisUtil.mentionToId(args[0]));
 				if (args.length >= 2 && args[1].matches("^\\d+$")) {
 					deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
@@ -99,7 +99,6 @@ public class PurgeComand extends AbstractCommand {
 				bot.out.deleteMessage(msg);
 			} else if (!deleteAll && toDeleteFrom != null && msg.getAuthor().getId().equals(toDeleteFrom.getId())) {
 				deletedCount++;
-				System.out.println("DELETED");
 				bot.out.deleteMessage(msg);
 			}
 		}
