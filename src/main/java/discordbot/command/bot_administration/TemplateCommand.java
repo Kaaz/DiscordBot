@@ -36,11 +36,10 @@ public class TemplateCommand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"template list                        //lists all keyphrases",
-				"template list <keyphrase> <page>     //lists all options for keyphrase",
+				"template list <page>                 //lists all keyphrases",
+				"template list <contains>     		  //lists all options for keyphrase",
 				"template remove <keyphrase> <index>  //removes selected template for keyphrase",
-				"template add <keyphrase> <text...>   //adds a template for keyphrase",
-				"template toggledebug                 //shows keyphrases instead of text"};
+				"template add <keyphrase> <text...>   //adds a template for keyphrase"};
 	}
 
 	@Override
@@ -83,7 +82,19 @@ public class TemplateCommand extends AbstractCommand {
 					return Template.get("command_template_added");
 				}
 				return Template.get("command_template_added_failed");
+			case "delete":
+			case "del":
 			case "remove":
+				if (args.length < 3 || !args[2].matches("^\\d+$")) {
+					Template.get("command_template_invalid_option");
+				}
+				int deleteIndex = Integer.parseInt(args[2]);
+				List<String> templateList = Template.getInstance().getAllFor(args[1]);
+				if (templateList.size() > deleteIndex) {
+					Template.getInstance().remove(args[1], templateList.get(deleteIndex));
+					return Template.get("command_template_delete_success");
+				}
+				return Template.get("command_template_delete_failed");
 			case "list":
 				int currentPage = 0;
 				int itemsPerPage = 30;
@@ -106,19 +117,18 @@ public class TemplateCommand extends AbstractCommand {
 				args[0] = args[0].toLowerCase();
 				List<String> templates = Template.getInstance().getAllFor(args[0]);
 				if (args.length == 1) {
+					if (templates.isEmpty()) {
+						return Template.get("command_template_not_found", args[0]);
+					}
 					List<List<String>> body = new ArrayList<>();
 					int index = 0;
 					for (String template : templates) {
 						body.add(Arrays.asList(String.valueOf(index++), template));
 					}
-					if (templates.isEmpty()) {
-						Template.get("command_template_not_found", args[0]);
-					}
 					return "Template overview for `" + args[0] + "`" + Config.EOL +
 							Misc.makeAsciiTable(Arrays.asList("#", "value"), body);
 				}
 				return Template.get("command_template_invalid_option");
-
 		}
 	}
 }

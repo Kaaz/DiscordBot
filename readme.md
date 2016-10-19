@@ -31,15 +31,15 @@ Current list of all available commands. See below for a more detailed list
 Commands | | | | |
 --- | --- | ---| ---| ---
 [8ball](#8ball) | [autoreply](#autoreply) | [bank](#bank) | [blackjack](#blackjack) | [catfact](#catfact)
-[changename](#changename) | [command](#command) | [config](#config) | [current](#current) | [exit](#exit)
-[game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite)
-[join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild) | [mcstatus](#mcstatus)
-[play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem)
-[poelab](#poelab) | [poll](#poll) | [profile](#profile) | [purge](#purge) | [reboot](#reboot)
-[reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role) | [roll](#roll)
-[rotate](#rotate) | [say](#say) | [skip](#skip) | [slot](#slot) | [stop](#stop)
+[changename](#changename) | [command](#command) | [config](#config) | [current](#current) | [exec](#exec)
+[exit](#exit) | [game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info)
+[invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild)
+[mcstatus](#mcstatus) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
+[poll](#poll) | [profile](#profile) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit)
+[reload](#reload) | [report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate)
+[say](#say) | [sendfile](#sendfile) | [skip](#skip) | [slot](#slot) | [stop](#stop)
 [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template) | [user](#user)
-[version](#version) | [volume](#volume) | 
+[userrank](#userrank) | [version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -216,7 +216,7 @@ Usable in public and private channels
 #### Usage
 
 ```php
-ar <create> <tagname>      //creates tag
+ar create <tagname>      //creates tag
 ar regex <tag> <value>     //edit the regex of a tag
 ar response <tag> <value>  //change the response of a reply
 ar tag <tag> <value>       //change the tag of a reply
@@ -317,6 +317,13 @@ current artist        //sets the artist of current song
 current correct       //accept the systems suggestion of title/artist
 current reversed      //accept the systems suggestion in reverse [title=artist,artist=title]
 ```
+### exec
+
+executes commandline stuff
+
+Accessible though: exec
+
+Usable in public and private channels
 ### exit
 
 completely shuts the bot down
@@ -443,6 +450,13 @@ Usable in public  channels
 mcstatus <serverip>
 mcstatus <serverip> <serverport> 
 ```
+### ping
+
+checks the latency of the bot
+
+Accessible though: ping
+
+Usable in public and private channels
 ### play
 
 Plays a song from youtube
@@ -485,42 +499,6 @@ Usable in public and private channels
 
 ```php
 pm <@user> <message..>
-```
-### poec
-
-Returns a list of currency on your account
-
-Accessible though: poec
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-poec                   //returns list of currency for default league
-poec token <token>     //sets the session token
-poec league <league>   //currency for league
-```
-### poeitem
-
-Analyzes an item from path of exile.
-
-Accessible though: poeitem
-
-Usable in public and private channels
-### poelab
-
-Attempts to find a description from reddit for the Labyrinth instance.
-
-Accessible though: poelab
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-poelab              //lists for all difficulties
-poelab <difficulty> //only for that difficulty
 ```
 ### poll
 
@@ -677,6 +655,13 @@ Usable in public and private channels
 ```php
 say <anything>
 ```
+### sendfile
+
+executes commandline stuff
+
+Accessible though: sendfile
+
+Usable in public and private channels
 ### skip
 
 skip current track
@@ -702,8 +687,9 @@ Usable in public and private channels
 #### Usage
 
 ```php
-slot      //displays info and payout table
-slot play //plays the game
+slot      //play
+slot play //play the game
+slot info //info about payout
 ```
 ### stop
 
@@ -765,11 +751,10 @@ Usable in public and private channels
 #### Usage
 
 ```php
-template list                        //lists all keyphrases
-template list <keyphrase> <page>     //lists all options for keyphrase
+template list <page>                 //lists all keyphrases
+template list <contains>     		  //lists all options for keyphrase
 template remove <keyphrase> <index>  //removes selected template for keyphrase
 template add <keyphrase> <text...>   //adds a template for keyphrase
-template toggledebug                 //shows keyphrases instead of text
 ```
 ### user
 
@@ -784,6 +769,20 @@ Usable in public and private channels
 ```php
 user         //info about you
 user @user   //info about @user
+```
+### userrank
+
+User Ranks!
+
+Accessible though: userrank, ur
+
+Usable in public  channels
+
+#### Usage
+
+```php
+userrank <user>        //list of tags
+userrank <user> <rank> //shows your tags
 ```
 ### version
 

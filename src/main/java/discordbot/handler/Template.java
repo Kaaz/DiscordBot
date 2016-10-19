@@ -108,12 +108,11 @@ public class Template {
 	}
 
 	/**
-	 *
 	 * see {@link Template#getAllKeyphrases(int, int)}
 	 *
-	 * @param contains keyphrase contains this string
+	 * @param contains    keyphrase contains this string
 	 * @param maxListSize maximum amount to retrieve
-	 * @param offset how many to skip
+	 * @param offset      how many to skip
 	 * @return list of filtered keyphrases
 	 */
 	public static List<String> getAllKeyphrases(String contains, int maxListSize, int offset) {
@@ -122,7 +121,7 @@ public class Template {
 				"SELECT DISTINCT keyphrase " +
 						"FROM template_texts " +
 						"WHERE keyphrase LIKE ? " +
-						"ORDER BY keyphrase ASC LIMIT ?, ?", "%"+contains+"%", offset, maxListSize)) {
+						"ORDER BY keyphrase ASC LIMIT ?, ?", "%" + contains + "%", offset, maxListSize)) {
 			while (rs.next()) {
 				ret.add(rs.getString("keyphrase"));
 			}
@@ -185,9 +184,9 @@ public class Template {
 	public synchronized void remove(String keyPhrase, String text) {
 		if (instance.dictionary.containsKey(keyPhrase)) {
 			if (instance.dictionary.get(keyPhrase).contains(text)) {
-				instance.dictionary.get(keyPhrase).remove(text);
 				try {
 					WebDb.get().query("DELETE FROM template_texts WHERE keyphrase = ? AND text = ? ", keyPhrase, text);
+					instance.dictionary.get(keyPhrase).remove(text);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
