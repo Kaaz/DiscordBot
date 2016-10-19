@@ -1,6 +1,7 @@
 # DiscordBot
 
 A Java bot for [Discord](https://discordapp.com/) using the [JDA library](https://github.com/DV8FromTheWorld/JDA).
+
 It uses mysql to store data, a create script can be found in the sql folder  
 To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [ffmpeg](https://www.ffmpeg.org/)
 If you'd like to run your own version of this project check the [installation part](#run-the-bot-yourself)
