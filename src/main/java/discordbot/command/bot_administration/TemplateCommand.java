@@ -86,7 +86,7 @@ public class TemplateCommand extends AbstractCommand {
 			case "del":
 			case "remove":
 				if (args.length < 3 || !args[2].matches("^\\d+$")) {
-					Template.get("command_template_invalid_option");
+					return Template.get("command_template_invalid_option");
 				}
 				int deleteIndex = Integer.parseInt(args[2]);
 				List<String> templateList = Template.getInstance().getAllFor(args[1]);

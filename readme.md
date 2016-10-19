@@ -1,8 +1,8 @@
 # DiscordBot
 
-A Java bot for [Discord](https://discordapp.com/) using the [Discord4J interface](https://github.com/austinv11/Discord4J/).  
+A Java bot for [Discord](https://discordapp.com/) using the [JDA library](https://github.com/DV8FromTheWorld/JDA).
 It uses mysql to store data, a create script can be found in the sql folder  
-To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [avconv](https://libav.org/avconv.html)  
+To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [ffmpeg](https://www.ffmpeg.org/)
 If you'd like to run your own version of this project check the [installation part](#run-the-bot-yourself)
 
 You can play/test it on discord 
@@ -532,7 +532,7 @@ profile <@user>  //shows the profile of @user
 ```
 ### purge
 
-purges messages
+deletes non-pinned messages
 
 Accessible though: purge, clear, delete
 
@@ -541,7 +541,8 @@ Usable in public  channels
 #### Usage
 
 ```php
-purge <limit>       //deletes non-pinned messages, optional limit
+purge               //deletes up to 100 messages
+purge <limit>       //deletes non-pinned messages
 purge @user         //deletes messages from user
 purge @user <limit> //deletes up to <limit> messages from user
 purge emily         //deletes my messages :(
