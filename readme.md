@@ -541,10 +541,10 @@ Usable in public  channels
 #### Usage
 
 ```php
-purge               //deletes non-pinned messages
+purge <limit>       //deletes non-pinned messages, optional limit
 purge @user         //deletes messages from user
 purge @user <limit> //deletes up to <limit> messages from user
-purge nova          //deletes my messages :(
+purge emily         //deletes my messages :(
 ```
 ### reboot
 

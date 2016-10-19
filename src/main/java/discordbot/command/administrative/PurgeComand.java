@@ -41,10 +41,10 @@ public class PurgeComand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"purge               //deletes non-pinned messages",
+				"purge <limit>       //deletes non-pinned messages, optional limit",
 				"purge @user         //deletes messages from user",
 				"purge @user <limit> //deletes up to <limit> messages from user",
-				"purge nova          //deletes my messages :("
+				"purge emily         //deletes my messages :("
 		};
 	}
 
@@ -70,23 +70,24 @@ public class PurgeComand extends AbstractCommand {
 			if (DisUtil.isUserMention(args[0])) {
 				System.out.println(DisUtil.mentionToId(args[0]));
 				toDeleteFrom = bot.client.getUserById(DisUtil.mentionToId(args[0]));
-				if (!hasManageMessages && !bot.client.getSelfInfo().equals(toDeleteFrom)) {
-					return Template.get("permission_missing_manage_messages");
-				}
 				if (args.length >= 2 && args[1].matches("^\\d+$")) {
 					deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
 				}
-			} else if (args[0].toLowerCase().equals("nova")) {
+			} else if (args[0].toLowerCase().equals("emily")) {
 				toDeleteFrom = bot.client.getSelfInfo();
 			} else if (args[0].matches("^\\d+$")) {
 				deleteAll = true;
 				deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[0]));
+			} else {
+				toDeleteFrom = DisUtil.findUserIn((TextChannel) channel, args[0]);
 			}
+		}
+		if (toDeleteFrom != null && !hasManageMessages && !bot.client.getSelfInfo().equals(toDeleteFrom)) {
+			return Template.get("permission_missing_manage_messages");
 		}
 		int deletedCount = 0;
 		List<Message> retrieve = channel.getHistory().retrieve(100);
 		for (Message msg : retrieve) {
-			System.out.println(msg.getAuthor().getUsername() + ":" + msg.getContent());
 			if (deletedCount == deleteLimit) {
 				break;
 			}
