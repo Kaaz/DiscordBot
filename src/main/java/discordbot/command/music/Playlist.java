@@ -88,8 +88,7 @@ public class Playlist extends AbstractCommand {
 				return Template.get("music_not_played_anything_yet");
 			}
 		} else if (args[0].equals("clear")) {
-			MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
-			player.clearPlayList();
+			MusicPlayerHandler.getFor(guild, bot).clearQueue();
 			return Template.get("music_playlist_cleared");
 		}
 		return Template.get("command_invalid_use");

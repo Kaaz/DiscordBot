@@ -148,10 +148,6 @@ public class MusicPlayerHandler {
 		return true;
 	}
 
-	public void clearPlayList() {
-//		AudioPlayer.getAudioPlayerForGuild(guild).getPlaylist().clear();
-	}
-
 	public int getCurrentlyPlaying() {
 		return this.currentlyPlaying;
 	}
@@ -307,6 +303,10 @@ public class MusicPlayerHandler {
 				return null;
 			}
 		});
+	}
+
+	public synchronized void clearQueue() {
+		queue.clear();
 	}
 
 	/**

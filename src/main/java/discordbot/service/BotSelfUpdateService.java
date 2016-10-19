@@ -34,7 +34,7 @@ public class BotSelfUpdateService extends AbstractService {
 
 	@Override
 	public long getDelayBetweenRuns() {
-		return TimeUnit.MINUTES.toMillis(30);
+		return TimeUnit.MINUTES.toMillis(15);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class BotSelfUpdateService extends AbstractService {
 		if (latestVersion.isHigherThan(Launcher.getVersion())) {
 			usersHaveBeenWarned = true;
 			for (TextChannel channel : getSubscribedChannels()) {
-				bot.out.sendAsyncMessage(channel, String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
+				bot.out.sendAsyncMessage(channel, Template.get("bot_self_update_restart", Launcher.getVersion().toString(), latestVersion.toString()), null);
 			}
 			for (Guild guild : bot.client.getGuilds()) {
 				String announce = GuildSettings.get(guild).getOrDefault(SettingBotUpdateWarning.class);
@@ -60,11 +60,11 @@ public class BotSelfUpdateService extends AbstractService {
 					case "off":
 						continue;
 					case "always":
-						bot.out.sendAsyncMessage(bot.getDefaultChannel(guild), String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
+						bot.out.sendAsyncMessage(bot.getDefaultChannel(guild), Template.get("bot_self_update_restart", Launcher.getVersion().toString(), latestVersion.toString()), null);
 						break;
 					case "playing":
 						if (guild.getAudioManager().isConnected()) {
-							bot.out.sendAsyncMessage(bot.getMusicChannel(guild), String.format(Template.get("bot_self_update_restart"), Launcher.getVersion().toString(), latestVersion.toString()), null);
+							bot.out.sendAsyncMessage(bot.getMusicChannel(guild), Template.get("bot_self_update_restart", Launcher.getVersion().toString(), latestVersion.toString()), null);
 						}
 						break;
 					default:
