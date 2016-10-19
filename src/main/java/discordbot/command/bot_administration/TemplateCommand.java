@@ -86,18 +86,22 @@ public class TemplateCommand extends AbstractCommand {
 			case "remove":
 			case "list":
 				int currentPage = 0;
-				int itemsPerPage = 25;
+				int itemsPerPage = 30;
 				int maxPage = 1 + Template.uniquePhraseCount() / itemsPerPage;
 				if (args.length >= 2) {
 					if (args[1].matches("^\\d+$")) {
 						currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage - 1);
 					} else {
+						List<String> allKeyphrases = Template.getAllKeyphrases(args[1], itemsPerPage, 0);
+						if (allKeyphrases.isEmpty()) {
+							return "No keyphases matching `" + args[1] + "`";
+						}
 						return String.format("All keyphrases matching `%s`: ", args[1]) + Config.EOL +
-								Misc.makeTable(Template.getAllKeyphrases(args[1], itemsPerPage, 0), 45, 2);
+								Misc.makeTable(allKeyphrases, 50, 2);
 					}
 				}
 				return String.format("All keyphrases: [page %s/%s]", currentPage + 1, maxPage) + Config.EOL +
-						Misc.makeTable(Template.getAllKeyphrases(itemsPerPage, currentPage * itemsPerPage), 45, 2);
+						Misc.makeTable(Template.getAllKeyphrases(itemsPerPage, currentPage * itemsPerPage), 50, 2);
 			default:
 				args[0] = args[0].toLowerCase();
 				List<String> templates = Template.getInstance().getAllFor(args[0]);
