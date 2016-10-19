@@ -1,6 +1,7 @@
 package discordbot.threads;
 
 import discordbot.core.AbstractService;
+import discordbot.main.BotContainer;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import org.reflections.Reflections;
@@ -11,10 +12,10 @@ import java.util.List;
 import java.util.Set;
 
 public class ServiceHandlerThread extends Thread {
-	private DiscordBot bot;
+	private BotContainer bot;
 	private List<AbstractService> instances;
 
-	public ServiceHandlerThread(DiscordBot bot) {
+	public ServiceHandlerThread(BotContainer bot) {
 		super("ServiceHandler");
 		instances = new ArrayList<>();
 		this.bot = bot;
@@ -25,7 +26,7 @@ public class ServiceHandlerThread extends Thread {
 		Set<Class<? extends AbstractService>> classes = reflections.getSubTypesOf(AbstractService.class);
 		for (Class<? extends AbstractService> serviceClass : classes) {
 			try {
-				instances.add(serviceClass.getConstructor(DiscordBot.class).newInstance(bot));
+				instances.add(serviceClass.getConstructor(BotContainer.class).newInstance(bot));
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				e.printStackTrace();
 			}
@@ -37,7 +38,7 @@ public class ServiceHandlerThread extends Thread {
 		boolean initialized = false;
 		while (!Launcher.killAllThreads) {
 			try {
-				if (bot.isReady()) {
+				if (bot.allShardsReady()) {
 					if (bot != null) {
 						if (!initialized) {
 							initServices();

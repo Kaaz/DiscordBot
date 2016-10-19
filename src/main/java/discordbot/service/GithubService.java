@@ -1,6 +1,7 @@
 package discordbot.service;
 
 import discordbot.core.AbstractService;
+import discordbot.main.BotContainer;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.modules.github.GitHub;
@@ -22,7 +23,7 @@ public class GithubService extends AbstractService {
 
 	private final static int MAX_COMMITS_PER_POST = 10;
 
-	public GithubService(DiscordBot b) {
+	public GithubService(BotContainer b) {
 		super(b);
 	}
 
@@ -47,6 +48,7 @@ public class GithubService extends AbstractService {
 
 	@Override
 	public void run() {
+		DiscordBot bot = this.bot.getShards()[0];
 		String totalMessage;
 		String commitsMessage = "";
 		long lastKnownCommitTimestamp = Long.parseLong("0" + getData("last_date"));
@@ -92,7 +94,7 @@ public class GithubService extends AbstractService {
 				totalMessage += Misc.makeAsciiTable(Arrays.asList("hash", "committer", "description"), tblContent);
 			}
 			for (TextChannel chan : getSubscribedChannels()) {
-				bot.out.sendAsyncMessage(chan, totalMessage, null);
+				sendTo(chan, totalMessage);
 			}
 		}
 		saveData("last_date", newLastKnownCommitTimestamp);

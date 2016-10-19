@@ -15,12 +15,12 @@ import java.util.function.Consumer;
 
 public class OutgoingContentHandler {
 	private final static long DELETE_INTERVAL = 500L;
-	private final DiscordBot bot;
+	private final DiscordBot botInstance;
 	private final MessageDeleter deleteThread;
 	private final RoleModifier roleThread;
 
 	public OutgoingContentHandler(DiscordBot b) {
-		bot = b;
+		botInstance = b;
 		deleteThread = new MessageDeleter();
 		roleThread = new RoleModifier();
 	}
@@ -90,11 +90,15 @@ public class OutgoingContentHandler {
 				}
 			}
 		}
-		sendPrivateMessage(bot.client.getUserById(Config.CREATOR_ID), errorMessage);
+		sendPrivateMessage(botInstance.client.getUserById(Config.CREATOR_ID), errorMessage);
 	}
 
 	public void sendMessageToCreator(String message) {
-		sendPrivateMessage(bot.client.getUserById(Config.CREATOR_ID), message);
+		if (botInstance.getShardId() == 0) {
+			sendPrivateMessage(botInstance.client.getUserById(Config.CREATOR_ID), message);
+		} else {
+			sendPrivateMessage(botInstance.getContainer().getPMShard().client.getUserById(Config.CREATOR_ID), message);
+		}
 	}
 
 	/**
@@ -104,7 +108,11 @@ public class OutgoingContentHandler {
 	 * @param message the message
 	 */
 	public void sendPrivateMessage(User target, String message) {
-		target.getPrivateChannel().sendMessageAsync(message, null);
+		if (botInstance.getShardId() == 0) {
+			target.getPrivateChannel().sendMessageAsync(message, null);
+		} else {
+			botInstance.getContainer().getPMShard().client.getUserById(target.getId()).getPrivateChannel().sendMessageAsync(message, null);
+		}
 	}
 
 	/**

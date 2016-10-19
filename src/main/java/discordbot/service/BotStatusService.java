@@ -1,6 +1,7 @@
 package discordbot.service;
 
 import discordbot.core.AbstractService;
+import discordbot.main.BotContainer;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.TextChannel;
@@ -45,7 +46,7 @@ public class BotStatusService extends AbstractService {
 	};
 	Random rng;
 
-	public BotStatusService(DiscordBot b) {
+	public BotStatusService(BotContainer b) {
 		super(b);
 		rng = new Random();
 	}
@@ -62,7 +63,7 @@ public class BotStatusService extends AbstractService {
 
 	@Override
 	public boolean shouldIRun() {
-		return !bot.statusLocked;
+		return !bot.getShards()[0].statusLocked;
 	}
 
 	@Override
@@ -72,6 +73,7 @@ public class BotStatusService extends AbstractService {
 	@Override
 	public void run() {
 		int roll = rng.nextInt(100);
+		DiscordBot bot = this.bot.getShards()[0];
 		TextChannel channel = bot.client.getTextChannelById(Config.BOT_CHANNEL_ID);
 		if (channel != null) {
 			List<InviteUtil.AdvancedInvite> invites = channel.getInvites();

@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.login.LoginException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,21 +30,29 @@ public class DiscordBot {
 	public SecurityHandler security = null;
 	public OutgoingContentHandler out = null;
 	public boolean statusLocked = false;
-	private Set<String> bannedGuilds;
 	private AutoReplyHandler autoReplyhandler;
 	private GameHandler gameHandler = null;
 	private boolean isReady = false;
 	private Map<Guild, TextChannel> defaultChannels = new ConcurrentHashMap<>();
 	private Map<Guild, TextChannel> musicChannels = new ConcurrentHashMap<>();
+	private int shardId;
+	private BotContainer container;
 
-	public DiscordBot() throws LoginException, InterruptedException {
+	public DiscordBot(int shardId, int numShards) throws LoginException, InterruptedException {
 		registerHandlers();
 		JDABuilder builder = new JDABuilder().setBotToken(Config.BOT_TOKEN);
+		this.shardId = shardId;
+		if (numShards > 1) {
+			builder.useSharding(shardId, numShards);
+		}
 		builder.addListener(new JDAEvents(this));
 		client = builder.buildAsync();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 	}
 
+	public int getShardId() {
+		return shardId;
+	}
 
 	public boolean isReady() {
 		return isReady;
@@ -288,5 +295,13 @@ public class DiscordBot {
 
 	public void setVolume(Guild guild, float volume) {
 		MusicPlayerHandler.getFor(guild, this).setVolume(volume);
+	}
+
+	public BotContainer getContainer() {
+		return container;
+	}
+
+	public void setContainer(BotContainer container) {
+		this.container = container;
 	}
 }

@@ -5,4 +5,5 @@ public class QActiveSubscriptions {
 	public String code = "";
 	public int channelId = 0;
 	public String displayName = "";
+	public int guildId = 0;
 }

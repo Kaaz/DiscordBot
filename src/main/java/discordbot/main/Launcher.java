@@ -6,6 +6,7 @@ import discordbot.core.ExitCode;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
+import discordbot.db.table.TGuild;
 import discordbot.db.table.TMusic;
 import discordbot.threads.ServiceHandlerThread;
 import discordbot.util.YTUtil;
@@ -28,8 +29,8 @@ public class Launcher {
 		Launcher.init();
 		if (Config.BOT_ENABLED) {
 			try {
-				DiscordBot nb = new DiscordBot();
-				Thread serviceHandler = new ServiceHandlerThread(nb);
+				BotContainer botContainer = new BotContainer((TGuild.getActiveGuildCount()));
+				Thread serviceHandler = new ServiceHandlerThread(botContainer);
 //				serviceHandler.setDaemon(true);
 				serviceHandler.start();
 			} catch (Exception e) {

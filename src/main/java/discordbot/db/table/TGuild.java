@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TGuild {
 	private static Map<String, Integer> guildIdCache = new ConcurrentHashMap<>();
+	private static Map<Integer, String> discordIdCache = new ConcurrentHashMap<>();
 
 	public static int getCachedId(String discordId) {
 		if (!guildIdCache.containsKey(discordId)) {
@@ -28,6 +29,17 @@ public class TGuild {
 			guildIdCache.put(discordId, server.id);
 		}
 		return guildIdCache.get(discordId);
+	}
+
+	public static String getCachedDiscordId(int id) {
+		if (!discordIdCache.containsKey(id)) {
+			OGuild server = findById(id);
+			if (server.id == 0) {
+				return "";
+			}
+			discordIdCache.put(id, server.discord_id);
+		}
+		return discordIdCache.get(id);
 	}
 
 	public static OGuild findBy(String discordId) {
@@ -87,6 +99,25 @@ public class TGuild {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * retrieves the amount of active guilds
+	 * note: this value could be higher than the actual active guilds if the bot missed a leave guild event
+	 *
+	 * @return active guild count
+	 */
+	public static int getActiveGuildCount() {
+		int amount = 0;
+		try (ResultSet rs = WebDb.get().select("SELECT sum(id) AS amount FROM guilds WHERE active = 1")) {
+			while (rs.next()) {
+				amount = rs.getInt("amount");
+			}
+			rs.getStatement().close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return amount;
 	}
 
 	public static List<OGuild> getBannedGuilds() {

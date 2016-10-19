@@ -33,12 +33,13 @@ public class TSubscriptions {
 	public static List<QActiveSubscriptions> getSubscriptionsForChannel(int channelId) {
 		ArrayList<QActiveSubscriptions> list = new ArrayList<>();
 		try (ResultSet rs = WebDb.get().select("" +
-				"SELECT se.id,se.name, se.display_name " +
+				"SELECT se.id,se.name, se.display_name, su.server_id " +
 				"FROM subscriptions su " +
 				"JOIN services se ON se.id = su.service_id " +
 				"WHERE su.channel_id = ? AND se.activated = 1 AND su.subscribed = 1 ", channelId)) {
 			while (rs.next()) {
 				QActiveSubscriptions row = new QActiveSubscriptions();
+				row.guildId = rs.getInt("server_id");
 				row.serviceId = rs.getInt("id");
 				row.code = rs.getString("name");
 				row.displayName = rs.getString("display_name");
@@ -54,12 +55,13 @@ public class TSubscriptions {
 	public static List<QActiveSubscriptions> getSubscriptionsForService(int serviceId) {
 		ArrayList<QActiveSubscriptions> list = new ArrayList<>();
 		try (ResultSet rs = WebDb.get().select("" +
-				"SELECT se.id, su.channel_id, se.name,se.display_name  " +
+				"SELECT se.id, su.channel_id, se.name,se.display_name, su.server_id  " +
 				"FROM subscriptions su " +
 				"JOIN services se ON se.id = su.service_id " +
 				"WHERE se.id = ? AND su.subscribed = 1 ", serviceId)) {
 			while (rs.next()) {
 				QActiveSubscriptions row = new QActiveSubscriptions();
+				row.guildId = rs.getInt("server_id");
 				row.serviceId = rs.getInt("id");
 				row.channelId = rs.getInt("channel_id");
 				row.code = rs.getString("name");
