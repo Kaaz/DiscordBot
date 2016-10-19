@@ -10,6 +10,10 @@ import discordbot.util.Misc;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * !template
  * manages the templates
@@ -76,21 +80,41 @@ public class TemplateCommand extends AbstractCommand {
 						text += " " + args[i];
 					}
 					Template.getInstance().add(args[1], EmojiParser.parseToAliases(text));
-					return discordbot.handler.Template.get("command_template_added");
+					return Template.get("command_template_added");
 				}
-				return discordbot.handler.Template.get("command_template_added_failed");
+				return Template.get("command_template_added_failed");
 			case "remove":
 			case "list":
 				int currentPage = 0;
 				int itemsPerPage = 25;
 				int maxPage = 1 + Template.uniquePhraseCount() / itemsPerPage;
 				if (args.length >= 2) {
-					currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage - 1);
+					if (args[1].matches("^\\d+$")) {
+						currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage - 1);
+					} else {
+						return String.format("All keyphrases matching `%s`: ", args[1]) + Config.EOL +
+								Misc.makeTable(Template.getAllKeyphrases(args[1], itemsPerPage, 0), 45, 2);
+					}
 				}
 				return String.format("All keyphrases: [page %s/%s]", currentPage + 1, maxPage) + Config.EOL +
 						Misc.makeTable(Template.getAllKeyphrases(itemsPerPage, currentPage * itemsPerPage), 45, 2);
 			default:
-				return discordbot.handler.Template.get("command_template_invalid_option");
+				args[0] = args[0].toLowerCase();
+				List<String> templates = Template.getInstance().getAllFor(args[0]);
+				if (args.length == 1) {
+					List<List<String>> body = new ArrayList<>();
+					int index = 0;
+					for (String template : templates) {
+						body.add(Arrays.asList(String.valueOf(index++), template));
+					}
+					if (templates.isEmpty()) {
+						Template.get("command_template_not_found", args[0]);
+					}
+					return "Template overview for `" + args[0] + "`" + Config.EOL +
+							Misc.makeAsciiTable(Arrays.asList("#", "value"), body);
+				}
+				return Template.get("command_template_invalid_option");
+
 		}
 	}
 }

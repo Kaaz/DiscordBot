@@ -108,6 +108,32 @@ public class Template {
 	}
 
 	/**
+	 *
+	 * see {@link Template#getAllKeyphrases(int, int)}
+	 *
+	 * @param contains keyphrase contains this string
+	 * @param maxListSize maximum amount to retrieve
+	 * @param offset how many to skip
+	 * @return list of filtered keyphrases
+	 */
+	public static List<String> getAllKeyphrases(String contains, int maxListSize, int offset) {
+		List<String> ret = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT DISTINCT keyphrase " +
+						"FROM template_texts " +
+						"WHERE keyphrase LIKE ? " +
+						"ORDER BY keyphrase ASC LIMIT ?, ?", "%"+contains+"%", offset, maxListSize)) {
+			while (rs.next()) {
+				ret.add(rs.getString("keyphrase"));
+			}
+			rs.getStatement().close();
+		} catch (SQLException e) {
+			System.out.println(e);
+		}
+		return ret;
+	}
+
+	/**
 	 * Retrieves the number of unique phrases
 	 *
 	 * @return number
@@ -123,6 +149,19 @@ public class Template {
 			System.out.println(e);
 		}
 		return amount;
+	}
+
+	/**
+	 * returns a list of all texts for specified keyphrase
+	 *
+	 * @param keyphrase to return a list of
+	 * @return list
+	 */
+	public List<String> getAllFor(String keyphrase) {
+		if (instance.dictionary.containsKey(keyphrase)) {
+			return instance.dictionary.get(keyphrase);
+		}
+		return new ArrayList<>();
 	}
 
 	public String[] getPhrases() {
@@ -143,7 +182,7 @@ public class Template {
 	 * @param keyPhrase keyphrase
 	 * @param text      text
 	 */
-	public void remove(String keyPhrase, String text) {
+	public synchronized void remove(String keyPhrase, String text) {
 		if (instance.dictionary.containsKey(keyPhrase)) {
 			if (instance.dictionary.get(keyPhrase).contains(text)) {
 				instance.dictionary.get(keyPhrase).remove(text);
@@ -162,7 +201,7 @@ public class Template {
 	 * @param keyPhrase keyphrase
 	 * @param text      the text
 	 */
-	public void add(String keyPhrase, String text) {
+	public synchronized void add(String keyPhrase, String text) {
 		try {
 			WebDb.get().query("INSERT INTO template_texts(keyphrase,text) VALUES(?, ?)", keyPhrase, text);
 			if (!instance.dictionary.containsKey(keyPhrase)) {
@@ -179,7 +218,7 @@ public class Template {
 	 *
 	 * @param keyPhrase phrase to refresh
 	 */
-	public void reload(String keyPhrase) {
+	public synchronized void reload(String keyPhrase) {
 		if (!instance.dictionary.containsKey(keyPhrase)) {
 			instance.dictionary.put(keyPhrase, new ArrayList<>());
 		}
@@ -195,7 +234,7 @@ public class Template {
 	/**
 	 * refreshes the data from the database
 	 */
-	public void load() {
+	public synchronized void load() {
 		dictionary = new HashMap<>();
 		try (ResultSet rs = WebDb.get().select("SELECT id, keyphrase, text FROM template_texts")) {
 			while (rs.next()) {
