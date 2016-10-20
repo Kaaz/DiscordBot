@@ -71,6 +71,7 @@ public class GuildStatsCommand extends AbstractCommand {
 		totals += String.format("%s voice channels" + Config.EOL, voice);
 		totals += String.format("%s text channels" + Config.EOL, channels);
 		totals += String.format("%s users" + Config.EOL, users);
+		totals += String.format("%s shards" + Config.EOL, bot.getContainer().getShards().length);
 		if (activeVoice > 0) {
 			totals += String.format("And I'm playing music on %s guilds" + Config.EOL, activeVoice);
 		}
