@@ -74,7 +74,7 @@ public class GuildStatsCommand extends AbstractCommand {
 			totChannels += channels;
 			totVoice += voiceChannels;
 			totActiveVoice += activeVoice;
-			body.add(Arrays.asList("" + shard.getShardId(), "" + numGuilds, "" + users, "" + channels, voiceChannels == 0 ? "n/a" : "none", "" + activeVoice, "" + requests));
+			body.add(Arrays.asList("" + shard.getShardId(), "" + numGuilds, "" + users, "" + channels, "" + voiceChannels, activeVoice == 0 ? "" : "" + activeVoice, "" + requests));
 		}
 		if (bot.getContainer().getShards().length > 1) {
 			return Misc.makeAsciiTable(Arrays.asList("#", "Guilds", "Users", "T-Chan", "V-Chan", "Playing on", "Requests"), body, Arrays.asList("TOTAL", "" + totGuilds, "" + totUsers, "" + totChannels, "" + totVoice, "" + totActiveVoice, "" + totRequests));
