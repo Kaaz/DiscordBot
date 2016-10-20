@@ -109,7 +109,7 @@ public class TGuild {
 	 */
 	public static int getActiveGuildCount() {
 		int amount = 0;
-		try (ResultSet rs = WebDb.get().select("SELECT sum(id) AS amount FROM guilds WHERE active = 1")) {
+		try (ResultSet rs = WebDb.get().select("SELECT count(id) AS amount FROM guilds WHERE active = 1")) {
 			while (rs.next()) {
 				amount = rs.getInt("amount");
 			}
