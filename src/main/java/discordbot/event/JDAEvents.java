@@ -85,6 +85,7 @@ public class JDAEvents extends ListenerAdapter {
 				}
 			}
 			TBotEvent.insert("GUILD", "JOIN", String.format(" %s [dis-id: %s][iid: %s]", guild.getName(), guild.getId(), server.id));
+			discordBot.getContainer().guildJoined();
 			discordBot.out.sendMessageToCreator(String.format("[**event**] [**guild**] I have just **joined** **%s** (discord-id = %s)", guild.getName(), guild.getId()));
 			if (outChannel != null) {
 				discordBot.out.sendAsyncMessage(outChannel, message, null);
@@ -103,6 +104,7 @@ public class JDAEvents extends ListenerAdapter {
 		OGuild server = TGuild.findBy(guild.getId());
 		server.active = 0;
 		TGuild.update(server);
+		discordBot.getContainer().guildLeft();
 		TBotEvent.insert("GUILD", "LEAVE", String.format(" %s [dis-id: %s][iid: %s]", guild.getName(), guild.getId(), server.id));
 		discordBot.out.sendMessageToCreator(String.format("[**event**] [**guild**] I have been **kicked** from **%s** (discord-id = %s)", server.name, server.discord_id));
 	}

@@ -1,6 +1,9 @@
 package discordbot.main;
 
+import discordbot.core.ExitCode;
+
 import javax.security.auth.login.LoginException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Shared information between bots
@@ -8,11 +11,30 @@ import javax.security.auth.login.LoginException;
 public class BotContainer {
 	private final int numShards;
 	private final DiscordBot[] shards;
+	private volatile AtomicInteger numGuilds;
 
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException {
 		this.numShards = 1 + ((numGuilds + 1000) / 2500);
 		shards = new DiscordBot[numShards];
 		initShards();
+		this.numGuilds = new AtomicInteger(numGuilds);
+	}
+
+	/**
+	 * update the numguilds so that we can check if we need an extra shard
+	 */
+	public void guildJoined() {
+		int suggestedShards = 1 + ((numGuilds.incrementAndGet() + 1000) / 2500);
+		if (suggestedShards > numShards) {
+			Launcher.stop(ExitCode.REBOOT);
+		}
+	}
+
+	/**
+	 * {@link BotContainer#guildJoined()}
+	 */
+	public void guildLeft() {
+		numGuilds.decrementAndGet();
 	}
 
 	public DiscordBot[] getShards() {
