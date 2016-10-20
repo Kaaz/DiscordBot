@@ -10,7 +10,7 @@ public class BotContainer {
 	private final DiscordBot[] shards;
 
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException {
-		this.numShards = 10 + ((numGuilds + 1000) / 2500);
+		this.numShards = 1 + ((numGuilds + 1000) / 2500);
 		shards = new DiscordBot[numShards];
 		initShards();
 	}

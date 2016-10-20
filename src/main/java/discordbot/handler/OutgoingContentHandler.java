@@ -93,12 +93,14 @@ public class OutgoingContentHandler {
 		sendPrivateMessage(botInstance.client.getUserById(Config.CREATOR_ID), errorMessage);
 	}
 
+	/**
+	 * send a message to creator {@link Config#CREATOR_ID}
+	 * has to be in the {@link Config#BOT_GUILD_ID } bot's guild
+	 *
+	 * @param message the message to send
+	 */
 	public void sendMessageToCreator(String message) {
-		if (botInstance.getShardId() == 0) {
-			sendPrivateMessage(botInstance.client.getUserById(Config.CREATOR_ID), message);
-		} else {
-			sendPrivateMessage(botInstance.getContainer().getPMShard().client.getUserById(Config.CREATOR_ID), message);
-		}
+		sendPrivateMessage(botInstance.getContainer().getBotFor(Config.BOT_GUILD_ID).client.getUserById(Config.CREATOR_ID), message);
 	}
 
 	/**
@@ -108,11 +110,7 @@ public class OutgoingContentHandler {
 	 * @param message the message
 	 */
 	public void sendPrivateMessage(User target, String message) {
-		if (botInstance.getShardId() == 0) {
-			target.getPrivateChannel().sendMessageAsync(message, null);
-		} else {
-			botInstance.getContainer().getPMShard().client.getUserById(target.getId()).getPrivateChannel().sendMessageAsync(message, null);
-		}
+		target.getPrivateChannel().sendMessageAsync(message, null);
 	}
 
 	/**
