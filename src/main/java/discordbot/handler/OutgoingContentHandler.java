@@ -94,10 +94,11 @@ public class OutgoingContentHandler {
 	}
 
 	public void sendMessageToCreator(String message) {
-		if (botInstance.getShardId() == 0) {
-			sendPrivateMessage(botInstance.client.getUserById(Config.CREATOR_ID), message);
+		User user = botInstance.client.getUserById(Config.CREATOR_ID);
+		if (user != null) {
+			sendPrivateMessage(user, message);
 		} else {
-			sendPrivateMessage(botInstance.getContainer().getPMShard().client.getUserById(Config.CREATOR_ID), message);
+			sendPrivateMessage(botInstance.getContainer().getBotFor(Config.BOT_GUILD_ID).client.getUserById(Config.CREATOR_ID), message);
 		}
 	}
 
@@ -108,11 +109,7 @@ public class OutgoingContentHandler {
 	 * @param message the message
 	 */
 	public void sendPrivateMessage(User target, String message) {
-		if (botInstance.getShardId() == 0) {
-			target.getPrivateChannel().sendMessageAsync(message, null);
-		} else {
-			botInstance.getContainer().getPMShard().client.getUserById(target.getId()).getPrivateChannel().sendMessageAsync(message, null);
-		}
+		target.getPrivateChannel().sendMessageAsync(message, null);
 	}
 
 	/**

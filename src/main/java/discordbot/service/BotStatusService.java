@@ -44,7 +44,7 @@ public class BotStatusService extends AbstractService {
 			"Let dreams be dreams",
 			"Rare pepe"
 	};
-	Random rng;
+	private final Random rng;
 
 	public BotStatusService(BotContainer b) {
 		super(b);
@@ -75,17 +75,18 @@ public class BotStatusService extends AbstractService {
 		int roll = rng.nextInt(100);
 		DiscordBot bot = this.bot.getShards()[0];
 		TextChannel channel = bot.client.getTextChannelById(Config.BOT_CHANNEL_ID);
-		if (channel != null) {
+		if (channel != null && roll <= 5) {
 			List<InviteUtil.AdvancedInvite> invites = channel.getInvites();
 			if (invites.size() > 0) {
-				if (roll < 10) {
-					bot.client.getAccountManager().setGame("Feedback @ https://discord.gg/" + invites.get(0).getCode());
-					return;
-				}
+				bot.client.getAccountManager().setGame("Feedback @ https://discord.gg/" + invites.get(0).getCode());
+				return;
 			} else {
 				bot.out.sendPrivateMessage(bot.client.getUserById(Config.CREATOR_ID), ":exclamation: I am out of invites for `" + channel.getName() + "` Click here to make more :D " + channel.getAsMention());
 			}
-
+		}
+		if (roll <= 15) {
+			bot.client.getAccountManager().setGame("@emily help or !help for help");
+			return;
 		}
 		bot.client.getAccountManager().setGame(statusList[new Random().nextInt(statusList.length)]);
 	}

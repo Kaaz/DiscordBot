@@ -10,7 +10,7 @@ public class BotContainer {
 	private final DiscordBot[] shards;
 
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException {
-		this.numShards = 10 + ((numGuilds + 1000) / 2500);
+		this.numShards = 1 + ((numGuilds + 1000) / 2500);
 		shards = new DiscordBot[numShards];
 		initShards();
 	}
@@ -29,10 +29,6 @@ public class BotContainer {
 		return getBotFor(Long.parseLong(discordGuildId));
 	}
 
-	public DiscordBot getPMShard() {
-		return shards[0];
-	}
-
 	/**
 	 * Retrieves the right shard for the guildId
 	 *
@@ -46,6 +42,12 @@ public class BotContainer {
 		return shards[(int) ((discordGuildId >> 22) % numShards)];
 	}
 
+	/**
+	 * creates a new instance for each shard
+	 *
+	 * @throws LoginException       can't log in
+	 * @throws InterruptedException ¯\_(ツ)_/¯
+	 */
 	private void initShards() throws LoginException, InterruptedException {
 		for (int i = 0; i < shards.length; i++) {
 			shards[i] = new DiscordBot(i, shards.length);

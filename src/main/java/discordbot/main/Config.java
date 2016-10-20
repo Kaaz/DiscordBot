@@ -18,6 +18,10 @@ public class Config {
 	@ConfigurationOption
 	public static String BOT_NAME = "NovaBot";
 
+	//Bot's own discord server
+	@ConfigurationOption
+	public static String BOT_GUILD_ID = "225168913808228352";
+
 	//Bot's own channel on its own server
 	@ConfigurationOption
 	public static String BOT_CHANNEL_ID = "225170823898464256";
