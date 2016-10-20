@@ -78,7 +78,8 @@ public class MusicPlayerHandler {
 			if (queue.isEmpty()) {
 				addToQueue(getRandomSong());
 			}
-			LocalSource ls = new LocalSource(new File(queue.poll().filename));
+			OMusic poll = queue.poll();
+			LocalSource ls = new LocalSource(new File(poll.filename));
 			audioQueue.add(ls);
 		}
 	}
@@ -229,6 +230,7 @@ public class MusicPlayerHandler {
 		}
 		OMusic record = TMusic.findByFileName(mp3file.getAbsolutePath());
 		if (record.id == 0) {
+			bot.out.sendErrorToMe(new Exception("No record for file"), "filename: ", mp3file.getAbsolutePath(), "plz fix", "I want music", bot);
 			return false;
 		}
 		queue.offer(record);

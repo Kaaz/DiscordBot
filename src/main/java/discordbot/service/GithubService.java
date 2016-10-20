@@ -91,7 +91,7 @@ public class GithubService extends AbstractService {
 			if (commitCount <= 3) {
 				totalMessage += commitsMessage;
 			} else {
-				totalMessage += Misc.makeAsciiTable(Arrays.asList("hash", "committer", "description"), tblContent);
+				totalMessage += Misc.makeAsciiTable(Arrays.asList("hash", "committer", "description"), tblContent, null);
 			}
 			for (TextChannel chan : getSubscribedChannels()) {
 				sendTo(chan, totalMessage);

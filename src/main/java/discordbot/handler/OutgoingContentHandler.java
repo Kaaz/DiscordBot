@@ -100,7 +100,12 @@ public class OutgoingContentHandler {
 	 * @param message the message to send
 	 */
 	public void sendMessageToCreator(String message) {
-		sendPrivateMessage(botInstance.getContainer().getBotFor(Config.BOT_GUILD_ID).client.getUserById(Config.CREATOR_ID), message);
+		User user = botInstance.client.getUserById(Config.CREATOR_ID);
+		if (user != null) {
+			sendPrivateMessage(user, message);
+		} else {
+			sendPrivateMessage(botInstance.getContainer().getBotFor(Config.BOT_GUILD_ID).client.getUserById(Config.CREATOR_ID), message);
+		}
 	}
 
 	/**

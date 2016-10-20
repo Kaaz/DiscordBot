@@ -77,7 +77,7 @@ public class QueryCommand extends AbstractCommand {
 				table.add(row);
 			}
 			r.getStatement().close();
-			return Misc.makeAsciiTable(header, table);
+			return Misc.makeAsciiTable(header, table, null);
 		} catch (SQLException e) {
 			System.out.println("ERORRRROR");
 			return "error in query! " + e.getMessage() + Config.EOL + e.getSQLState();

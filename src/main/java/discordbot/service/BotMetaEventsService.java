@@ -28,7 +28,7 @@ public class BotMetaEventsService extends AbstractService {
 
 	@Override
 	public long getDelayBetweenRuns() {
-		return TimeUnit.MINUTES.toMillis(1);
+		return TimeUnit.MINUTES.toMillis(5);
 	}
 
 	@Override
@@ -44,16 +44,16 @@ public class BotMetaEventsService extends AbstractService {
 	public void run() {
 		int lastId = Integer.parseInt("0" + getData("last_broadcast_id"));
 		List<OBotEvent> events = TBotEvent.getEventsAfter(lastId);
+		List<TextChannel> subscribedChannels = getSubscribedChannels();
 		if (events.isEmpty()) {
 			return;
 		}
-		String output = "";
 		for (OBotEvent event : events) {
-			output += String.format("[**%s**] [**%s**] [**%s**]: %s" + Config.EOL, dateFormat.format(event.createdOn), event.group, event.subGroup, event.data);
+			String output = String.format("[**%s**] [**%s**] [**%s**]: %s" + Config.EOL, dateFormat.format(event.createdOn), event.group, event.subGroup, event.data);
+			for (TextChannel channel : subscribedChannels) {
+				channel.sendMessageAsync(output, null);
+			}
 			lastId = event.id;
-		}
-		for (TextChannel channel : getSubscribedChannels()) {
-			sendTo(channel, output);
 		}
 		saveData("last_broadcast_id", lastId);
 	}

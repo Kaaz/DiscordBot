@@ -80,10 +80,16 @@ public class PurgeComand extends AbstractCommand {
 				deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[0]));
 			} else {
 				toDeleteFrom = DisUtil.findUserIn((TextChannel) channel, args[0]);
+				if (args.length >= 2 && args[1].matches("^\\d+$")) {
+					deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
+				}
 			}
 		}
 		if (toDeleteFrom != null && !hasManageMessages && !bot.client.getSelfInfo().equals(toDeleteFrom)) {
 			return Template.get("permission_missing_manage_messages");
+		}
+		if (author.equals(toDeleteFrom)) {
+			deleteLimit++;//exclude the command itself from the limit
 		}
 		int deletedCount = 0;
 		List<Message> retrieve = channel.getHistory().retrieve(100);

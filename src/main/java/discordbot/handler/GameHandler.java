@@ -125,7 +125,7 @@ public class GameHandler {
 			row.add(game.getFullname());
 			table.add(row);
 		});
-		return Misc.makeAsciiTable(Arrays.asList("code", "gamename"), table);
+		return Misc.makeAsciiTable(Arrays.asList("code", "gamename"), table, null);
 	}
 
 	public List<AbstractGame> getGameList() {
