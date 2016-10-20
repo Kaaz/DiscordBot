@@ -85,7 +85,7 @@ public class AutoReplyCommand extends AbstractCommand {
 				tbl.add(row);
 			}
 			return "The following All Auto replies information. For details about a specific one use **`ar <tag>`**" + Config.EOL +
-					Misc.makeAsciiTable(Arrays.asList("tag", "trigger", "cooldown", "response"), tbl);
+					Misc.makeAsciiTable(Arrays.asList("tag", "trigger", "cooldown", "response"), tbl, null);
 		}
 		if (args.length >= 2) {
 			if (args[1].length() < MIN_TAG_LENGTH) {
@@ -187,7 +187,7 @@ public class AutoReplyCommand extends AbstractCommand {
 			tbl.add(Arrays.asList("pattern", "" + replyPattern.pattern));
 			tbl.add(Arrays.asList("reply", "" + replyPattern.reply));
 			tbl.add(Arrays.asList("cooldown", "" + TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 1000L) / 1000L, false, false)));
-			return "Auto reply information for `" + args[0] + "`:" + Misc.makeAsciiTable(Arrays.asList("Property", "Value"), tbl);
+			return "Auto reply information for `" + args[0] + "`:" + Misc.makeAsciiTable(Arrays.asList("Property", "Value"), tbl, null);
 		}
 		return Template.get("invalid_use");
 	}

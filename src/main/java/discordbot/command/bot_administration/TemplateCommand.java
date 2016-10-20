@@ -126,7 +126,7 @@ public class TemplateCommand extends AbstractCommand {
 						body.add(Arrays.asList(String.valueOf(index++), template));
 					}
 					return "Template overview for `" + args[0] + "`" + Config.EOL +
-							Misc.makeAsciiTable(Arrays.asList("#", "value"), body);
+							Misc.makeAsciiTable(Arrays.asList("#", "value"), body, null);
 				}
 				return Template.get("command_template_invalid_option");
 		}

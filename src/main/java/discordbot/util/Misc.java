@@ -126,9 +126,10 @@ public class Misc {
 	/**
 	 * @param headers array containing the headers
 	 * @param table   array[n size] of array's[header size], containing the rows of the table
+	 * @param footer
 	 * @return a formatted table
 	 */
-	public static String makeAsciiTable(List<String> headers, List<List<String>> table) {
+	public static String makeAsciiTable(List<String> headers, List<List<String>> table, List<String> footer) {
 		StringBuilder sb = new StringBuilder();
 		int padding = 1;
 		int[] widths = new int[headers.size()];
@@ -138,6 +139,9 @@ public class Misc {
 		for (int i = 0; i < headers.size(); i++) {
 			if (headers.get(i).length() > widths[i]) {
 				widths[i] = headers.get(i).length();
+				if (footer != null) {
+					widths[i] = Math.max(widths[i], footer.get(i).length());
+				}
 			}
 		}
 		for (List<String> row : table) {
@@ -148,10 +152,10 @@ public class Misc {
 				}
 			}
 		}
-		sb.append("```xl").append(Config.EOL);
+		sb.append("```").append(Config.EOL);
 		String formatLine = "┃";
 		for (int width : widths) {
-			formatLine += " %-" + width + "s ┃";
+			formatLine += " %" + width + "s ┃";
 		}
 		formatLine += Config.EOL;
 		sb.append(appendSeparatorLine("┏", "┳", "┓", padding, widths));
@@ -159,6 +163,10 @@ public class Misc {
 		sb.append(appendSeparatorLine("┣", "╋", "┫", padding, widths));
 		for (List<String> row : table) {
 			sb.append(String.format(formatLine, row.toArray()));
+		}
+		if (footer != null) {
+			sb.append(appendSeparatorLine("┣", "╋", "┫", padding, widths));
+			sb.append(String.format(formatLine, footer.toArray()));
 		}
 		sb.append(appendSeparatorLine("┗", "┻", "┛", padding, widths));
 		sb.append("```");

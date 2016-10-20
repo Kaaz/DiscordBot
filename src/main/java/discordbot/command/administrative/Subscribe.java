@@ -81,7 +81,7 @@ public class Subscribe extends AbstractCommand {
 			if (tbl.size() > 0) {
 				return "Active Subscriptions" + Config.EOL +
 						"This channel is currenty subscribed for: " +
-						Misc.makeAsciiTable(headers, tbl);
+						Misc.makeAsciiTable(headers, tbl, null);
 			}
 			return Template.get("command_subscribe_channel_has_no_subscriptions") + Config.EOL +
 					"Possible options to subscribe to: " +
@@ -137,6 +137,6 @@ public class Subscribe extends AbstractCommand {
 			row.add(service.displayName);
 			table.add(row);
 		}
-		return Misc.makeAsciiTable(Arrays.asList("code", "name"), table);
+		return Misc.makeAsciiTable(Arrays.asList("code", "name"), table, null);
 	}
 }

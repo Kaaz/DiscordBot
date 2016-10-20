@@ -142,17 +142,21 @@ The rankings go according to the table below:
 
 Name | Time spend |
 --- | --- | 
-Spectator | 0 seconds 
+Spectator | 16 minutes 
 Outsider | about an hour 
-Lurker | 3 hours 
-Prospect | 23 hours 
-Friendly | 2 days 
-Regular | 6 days 
-Honored | 13 days 
-Veteran | 29 days 
-Revered | 59 days 
-Herald | 89 days 
-Exalted | 179 days 
+Lurker | 4 hours 
+Neutral | about a day
+Prospect | 2 days 
+Friendly | 4 days 
+Regular | 7 days 
+Honored | 14 days 
+Veteran | 28 days 
+Revered | 60 days 
+Herald | 90 days 
+Exalted | 180 days 
+Beloved | 365 days 
+Favorite | 700 days 
+Consul | 1000 days 
 
 
 ## Run the bot yourself

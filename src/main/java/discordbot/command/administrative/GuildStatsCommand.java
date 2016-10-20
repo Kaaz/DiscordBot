@@ -1,7 +1,6 @@
 package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
-import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.Guild;
@@ -50,32 +49,36 @@ public class GuildStatsCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, MessageChannel channel, User author) {
-		int channels = 0, voice = 0, users = 0, activeVoice = 0;//bot.client.getVoiceChannels().size();
-		String totals = "";
-		List<Guild> guilds = bot.client.getGuilds();
-		List<String> header = Arrays.asList("discord-id", "name");
-		List<List<String>> table = new ArrayList<>();
-		for (Guild guild : guilds) {
-			List<String> row = new ArrayList<>();
-			row.add(guild.getId());
-			row.add(guild.getName());
-			table.add(row);
-			channels += guild.getTextChannels().size();
-			voice += guild.getVoiceChannels().size();
-			users += guild.getUsers().size();
-			if (bot.client.getAudioManager(guild).isConnected()) {
-				activeVoice++;
+		return getTotalTable();
+	}
+
+	public String getTotalTable() {
+		List<List<String>> body = new ArrayList<>();
+		int totGuilds = 0, totUsers = 0, totChannels = 0, totVoice = 0, totActiveVoice = 0, totRequests = 0;
+		for (DiscordBot shard : bot.getContainer().getShards()) {
+			List<Guild> guilds = shard.client.getGuilds();
+			int numGuilds = guilds.size();
+			int users = shard.client.getUsers().size();
+			int channels = shard.client.getTextChannels().size();
+			int voiceChannels = shard.client.getVoiceChannels().size();
+			int activeVoice = 0;
+			int requests = shard.client.getResponseTotal();
+			for (Guild guild : shard.client.getGuilds()) {
+				if (bot.client.getAudioManager(guild).isConnected()) {
+					activeVoice++;
+				}
 			}
+			totRequests += requests;
+			totGuilds += numGuilds;
+			totUsers += users;
+			totChannels += channels;
+			totVoice += voiceChannels;
+			totActiveVoice += activeVoice;
+			body.add(Arrays.asList("" + shard.getShardId(), "" + numGuilds, "" + users, "" + channels, voiceChannels == 0 ? "n/a" : "none", "" + activeVoice, "" + requests));
 		}
-		totals += String.format("Connected to %s guilds" + Config.EOL, guilds.size());
-		totals += String.format("%s voice channels" + Config.EOL, voice);
-		totals += String.format("%s text channels" + Config.EOL, channels);
-		totals += String.format("%s users" + Config.EOL, users);
-		totals += String.format("%s shards" + Config.EOL, bot.getContainer().getShards().length);
-		if (activeVoice > 0) {
-			totals += String.format("And I'm playing music on %s guilds" + Config.EOL, activeVoice);
+		if (bot.getContainer().getShards().length > 1) {
+			return Misc.makeAsciiTable(Arrays.asList("#", "Guilds", "Users", "T-Chan", "V-Chan", "Playing on", "Requests"), body, Arrays.asList("TOTAL", "" + totGuilds, "" + totUsers, "" + totChannels, "" + totVoice, "" + totActiveVoice, "" + totRequests));
 		}
-		return "Statistics! " + (bot.isCreator(author) && args.length == 1 ? Misc.makeAsciiTable(header, table) : "") + Config.EOL +
-				totals;
+		return Misc.makeAsciiTable(Arrays.asList("#", "Guilds", "Users", "T-Chan", "V-Chan", "Playing on", "Requests"), body, null);
 	}
 }

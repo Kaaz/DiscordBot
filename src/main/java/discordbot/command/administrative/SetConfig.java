@@ -92,7 +92,7 @@ public class SetConfig extends AbstractCommand {
 				List<String> headers = new ArrayList<>();
 				Collections.addAll(headers, "Setting name", "Current", "Default");
 				ret += Misc.makeAsciiTable(headers,
-						data);
+						data, null);
 				return ret;
 			} else {
 				if (args[0].equalsIgnoreCase("autoupdate")) {

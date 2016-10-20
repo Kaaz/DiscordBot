@@ -71,7 +71,7 @@ public class TimeUtil {
 		} else if (diff < 24 * HOUR_MILLIS) {
 			return diff / HOUR_MILLIS + (shortText ? "h" : " hours " + chronology);
 		} else if (diff < 48 * HOUR_MILLIS) {
-			return shortText ? "~1d" : future ? "tomorrow" : "yesterday";
+			return shortText ? "~1d" : future ? showChronology ? "tomorrow" : "about a day" : "yesterday";
 		} else if (diff < 14 * DAY_MILLIS || !shortText) {
 			return diff / DAY_MILLIS + (shortText ? "d" : " days " + chronology);
 		}
