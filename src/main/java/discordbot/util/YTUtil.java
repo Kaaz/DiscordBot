@@ -90,7 +90,7 @@ public class YTUtil {
 		infoArgs.add("--audio-format");
 		infoArgs.add("mp3");
 		infoArgs.add("--max-filesize");
-		infoArgs.add("64m");
+		infoArgs.add("32m");
 		infoArgs.add("--output");
 		infoArgs.add(Config.MUSIC_DIRECTORY + "/" + videocode + ".%(ext)s");
 		infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
