@@ -25,9 +25,6 @@ public class Config {
 	//Bot's own channel on its own server
 	@ConfigurationOption
 	public static String BOT_CHANNEL_ID = "225170823898464256";
-	//Bot's own channel on its own server
-	@ConfigurationOption
-	public static String BOT_GUILD_ID = "225168913808228352";
 
 	//token used to login to discord
 	@ConfigurationOption
