@@ -5,6 +5,7 @@ import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
 import discordbot.guildsettings.defaults.SettingMusicPlayingMessage;
 import discordbot.guildsettings.defaults.SettingMusicVolume;
+import discordbot.handler.audiosources.StreamSource;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
@@ -16,11 +17,11 @@ import net.dv8tion.jda.player.hooks.events.FinishEvent;
 import net.dv8tion.jda.player.hooks.events.PlayEvent;
 import net.dv8tion.jda.player.hooks.events.PlayerEvent;
 import net.dv8tion.jda.player.hooks.events.SkipEvent;
-import net.dv8tion.jda.player.source.*;
+import net.dv8tion.jda.player.source.AudioInfo;
+import net.dv8tion.jda.player.source.AudioSource;
+import net.dv8tion.jda.player.source.LocalSource;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.nio.file.FileAlreadyExistsException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -76,11 +77,11 @@ public class MusicPlayerHandler {
 		LinkedList<AudioSource> audioQueue = player.getAudioQueue();
 		if (audioQueue.isEmpty()) {
 			if (queue.isEmpty()) {
-				addToQueue(getRandomSong());
+				audioQueue.add(new LocalSource(new File(getRandomSong())));
+			} else {
+				OMusic poll = queue.poll();
+				audioQueue.add(new LocalSource(new File(poll.filename)));
 			}
-			OMusic poll = queue.poll();
-			LocalSource ls = new LocalSource(new File(poll.filename));
-			audioQueue.add(ls);
 		}
 	}
 
@@ -274,37 +275,7 @@ public class MusicPlayerHandler {
 
 	public synchronized void addStream(String url) {
 		LinkedList<AudioSource> audioQueue = player.getAudioQueue();
-		player.getCurrentAudioSource();
-		audioQueue.add(new AudioSource() {
-			@Override
-			public String getSource() {
-				return null;
-			}
-
-			@Override
-			public AudioInfo getInfo() {
-				return null;
-			}
-
-			@Override
-			public AudioStream asStream() {
-				return new LocalStream(
-						Arrays.asList(
-								"ffmpeg",       //Program launch
-								"-i", url,      //Input file, specifies to read from STDin (pipe)
-								"-f", "s16be",  //Format.  PCM, signed, 16bit, Big Endian
-								"-ac", "2",     //Channels. Specify 2 for stereo audio.
-								"-ar", "48000", //Rate. Opus requires an audio rate of 48000hz
-								"-map", "a",    //Makes sure to only output audio, even if the specified format supports other streams
-								"-"             //Used to specify STDout as the output location (pipe)
-						));
-			}
-
-			@Override
-			public File asFile(String path, boolean deleteOnExists) throws FileAlreadyExistsException, FileNotFoundException {
-				return null;
-			}
-		});
+		audioQueue.add(new StreamSource(url));
 	}
 
 	public synchronized void clearQueue() {
