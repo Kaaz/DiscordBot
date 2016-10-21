@@ -1,13 +1,13 @@
 package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,10 +50,28 @@ public class GuildStatsCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, MessageChannel channel, User author) {
+		if (args.length == 1 && args[0].equalsIgnoreCase("music")) {
+			return getPlayingOn();
+		}
 		return getTotalTable();
 	}
 
-	public String getTotalTable() {
+	private String getPlayingOn() {
+		int activeVoice = 0;
+		for (DiscordBot discordBot : bot.getContainer().getShards()) {
+			for (Guild guild : discordBot.client.getGuilds()) {
+				if (discordBot.client.getAudioManager(guild).isConnected()) {
+					activeVoice++;
+				}
+			}
+		}
+		if (activeVoice == 0) {
+			return Template.get("command_stats_not_playing_music");
+		}
+		return Template.get("command_stats_playing_music_on", activeVoice);
+	}
+
+	private String getTotalTable() {
 		List<List<String>> body = new ArrayList<>();
 		int totGuilds = 0, totUsers = 0, totChannels = 0, totVoice = 0, totActiveVoice = 0, totRequests = 0;
 		double totRequestPerSec = 0D;
