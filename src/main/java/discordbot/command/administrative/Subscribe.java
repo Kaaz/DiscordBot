@@ -97,7 +97,7 @@ public class Subscribe extends AbstractCommand {
 				if (subscription.subscribed == 1) {
 					subscription.subscribed = 0;
 					TSubscriptions.insertOrUpdate(subscription);
-					return String.format(Template.get("command_subscribe_unsubscribed_success"), service.displayName);
+					return Template.get("command_subscribe_unsubscribed_success", service.displayName);
 				}
 				return Template.get("command_subscribe_not_subscribed");
 			}

@@ -69,7 +69,7 @@ public class UserRankCommand extends AbstractCommand {
 				user = DisUtil.findUserIn((TextChannel) channel, args[0]);
 			}
 			if (user == null) {
-				return String.format(Template.get("cant_find_user"), args[0]);
+				return Template.get("cant_find_user", args[0]);
 			}
 			if (args.length == 1) {
 				OUserRank userRank = TUserRank.findBy(user.getId());

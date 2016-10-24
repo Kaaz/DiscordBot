@@ -142,7 +142,7 @@ public class JDAEvents extends ListenerAdapter {
 			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getUsername(), user.getDiscriminator(), guild.getName()));
 		}
 		if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
-			discordBot.out.sendAsyncMessage(discordBot.getDefaultChannel(guild), String.format(Template.get("welcome_new_user"), user.getAsMention()), null);
+			discordBot.out.sendAsyncMessage(discordBot.getDefaultChannel(guild), Template.get("welcome_new_user", user.getAsMention()), null);
 		}
 		if ("true".equals(settings.getOrDefault(SettingRoleTimeRanks.class))) {
 			RoleRankings.assignUserRole(discordBot, guild, user);
@@ -157,7 +157,7 @@ public class JDAEvents extends ListenerAdapter {
 			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** left the guild **%s**", user.getUsername(), user.getDiscriminator(), guild.getName()));
 		}
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingWelcomeNewUsers.class))) {
-			discordBot.out.sendAsyncMessage(guild.getTextChannels().get(0), String.format(Template.get("message_user_leaves"), user.getAsMention()), null);
+			discordBot.out.sendAsyncMessage(guild.getTextChannels().get(0), Template.get("message_user_leaves", user.getAsMention()), null);
 		}
 		OGuildMember guildMember = TGuildMember.findBy(guild.getId(), user.getId());
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());

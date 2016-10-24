@@ -100,7 +100,7 @@ public class CommandHandler {
 					}
 				}
 			} else if (cooldown > 0) {
-				outMsg = String.format(Template.get("command_on_cooldown"), TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false));
+				outMsg = Template.get("command_on_cooldown", TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false));
 			} else if (!hasRightVisibility(channel, command.getVisibility())) {
 				if (channel instanceof PrivateChannel) {
 					outMsg = Template.get("command_not_for_private");
@@ -114,7 +114,7 @@ public class CommandHandler {
 			outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat(inputMessage);
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
-			outMsg = String.format(Template.get("unknown_command"), GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help");
+			outMsg = Template.get("unknown_command", GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help");
 		}
 		if (!outMsg.isEmpty()) {
 			bot.out.sendAsyncMessage(channel, outMsg, (message) -> {
