@@ -2,6 +2,9 @@ package discordbot.db.version;
 
 import discordbot.db.IDbVersion;
 
+/**
+ * Start the logging of bot events such as joining / leaving guilds
+ */
 public class db_07_to_08 implements IDbVersion {
 	@Override
 	public int getFromVersion() {

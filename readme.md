@@ -31,16 +31,16 @@ Current list of all available commands. See below for a more detailed list
 
 Commands | | | | |
 --- | --- | ---| ---| ---
-[8ball](#8ball) | [autoreply](#autoreply) | [bank](#bank) | [blackjack](#blackjack) | [catfact](#catfact)
-[changename](#changename) | [command](#command) | [config](#config) | [current](#current) | [exec](#exec)
-[exit](#exit) | [game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info)
-[invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild)
-[mcstatus](#mcstatus) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
-[poll](#poll) | [profile](#profile) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit)
-[reload](#reload) | [report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate)
-[say](#say) | [sendfile](#sendfile) | [skip](#skip) | [slot](#slot) | [stop](#stop)
-[subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template) | [user](#user)
-[userrank](#userrank) | [version](#version) | [volume](#volume) | 
+[8ball](#8ball) | [autoreply](#autoreply) | [blackjack](#blackjack) | [catfact](#catfact) | [changename](#changename)
+[command](#command) | [config](#config) | [current](#current) | [exec](#exec) | [exit](#exit)
+[game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite)
+[join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild) | [mcstatus](#mcstatus)
+[ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm) | [poll](#poll)
+[profile](#profile) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload)
+[report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate) | [say](#say)
+[sendfile](#sendfile) | [skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe)
+[system](#system) | [tag](#tag) | [template](#template) | [user](#user) | [userrank](#userrank)
+[version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -230,21 +230,6 @@ ar guild <tag> <guildid>   //guild of a tag, 0 for global
 ar test <tag> <text>       //test for a match
 ar delete <tag>            //deletes a tag
 ```
-### bank
-
-For all your banking needs
-
-Accessible though: bank, currency, money
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-bank                       //shows current balance
-bank history               //shows last transactions
-bank donate @user <amount> //donates <amount> to @user 
-```
 ### blackjack
 
 play a game of blackjack!
@@ -316,11 +301,8 @@ Usable in public  channels
 
 ```php
 current               //info about the currently playing song
-current title <title> //sets title of current song
+current vote <1-10>   //Cast your vote to the song; 1=worst, 10=best
 current ban           //bans the current track from being randomly played
-current artist        //sets the artist of current song
-current correct       //accept the systems suggestion of title/artist
-current reversed      //accept the systems suggestion in reverse [title=artist,artist=title]
 ```
 ### exec
 
