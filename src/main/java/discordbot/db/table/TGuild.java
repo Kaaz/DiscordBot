@@ -24,6 +24,7 @@ public class TGuild {
 			OGuild server = findBy(discordId);
 			if (server.id == 0) {
 				server.discord_id = discordId;
+				server.name = discordId;
 				insert(server);
 			}
 			guildIdCache.put(discordId, server.id);
@@ -83,7 +84,7 @@ public class TGuild {
 			WebDb.get().query(
 					"UPDATE guilds SET discord_id = ?, name = ?, owner = ?, active = ?, banned = ? " +
 							"WHERE id = ? ",
-					record.discord_id, record.name, record.owner, record.active, record.banned, record.id
+					record.discord_id, record.name, record.owner == 0 ? null : record.owner, record.active, record.banned, record.id
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -95,7 +96,7 @@ public class TGuild {
 			record.id = WebDb.get().insert(
 					"INSERT INTO guilds(discord_id, name, owner,active,banned) " +
 							"VALUES (?,?,?,?,?)",
-					record.discord_id, record.name, record.owner, record.active, record.banned);
+					record.discord_id, record.name,  record.owner == 0 ? null : record.owner, record.active, record.banned);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

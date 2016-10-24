@@ -101,6 +101,6 @@ public class GuildStatsCommand extends AbstractCommand {
 		if (bot.getContainer().getShards().length > 1) {
 			return Misc.makeAsciiTable(Arrays.asList("Shard", "Guilds", "Users", "T-Chan", "V-Chan", "Music", "Requests"), body, Arrays.asList("TOTAL", "" + totGuilds, "" + totUsers, "" + totChannels, "" + totVoice, "" + totActiveVoice, String.format("%.2f/s", totRequestPerSec)));
 		}
-		return Misc.makeAsciiTable(Arrays.asList("#", "Guilds", "Users", "T-Chan", "V-Chan", "Playing on", "Requests"), body, null);
+		return Misc.makeAsciiTable(Arrays.asList("Shard", "Guilds", "Users", "T-Chan", "V-Chan", "Playing on", "Requests"), body, null);
 	}
 }

@@ -1,7 +1,9 @@
 package discordbot.handler;
 
 import discordbot.db.WebDb;
+import discordbot.db.model.OGuild;
 import discordbot.db.table.TGuild;
+import discordbot.db.table.TUser;
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.DefaultGuildSettings;
 import net.dv8tion.jda.entities.Guild;
@@ -24,8 +26,15 @@ public class GuildSettings {
 
 	private GuildSettings(Guild guild) {
 		this.settings = new ConcurrentHashMap<>();
+		OGuild record = TGuild.findBy(guild.getId());
+		if (record.id == 0) {
+			record.name = guild.getName();
+			record.discord_id = guild.getId();
+			record.owner = TUser.getCachedId(guild.getOwnerId());
+			TGuild.insert(record);
+		}
+		this.id = record.id;
 		settingInstance.put(guild, this);
-		this.id = TGuild.findBy(guild.getId()).id;
 		loadSettings();
 	}
 

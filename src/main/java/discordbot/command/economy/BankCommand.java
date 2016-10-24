@@ -42,7 +42,7 @@ public class BankCommand extends AbstractCommand {
 
 	@Override
 	public boolean isListed() {
-		return true;
+		return false;
 	}
 
 	@Override
