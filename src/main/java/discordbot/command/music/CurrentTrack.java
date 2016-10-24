@@ -10,6 +10,7 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.Guild;
@@ -88,37 +89,42 @@ public class CurrentTrack extends AbstractCommand {
 			guessTitle = splitTitle[splitTitle.length - 1].trim();
 			guessArtist = splitTitle[splitTitle.length - 2].trim();
 		}
-		if (args.length >= 1) {
+		if (args.length >= 1 && bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
 			String value = "";
 			for (int i = 1; i < args.length; i++) {
 				value += args[i] + " ";
 			}
 			value = value.trim();
-			if (args[0].equalsIgnoreCase("ban") && bot.isOwner(channel, author)) {
-				song.banned = 1;
-				TMusic.update(song);
-				return Template.get("command_current_banned_success");
-			}
-			if (args.length > 1 && args[0].equalsIgnoreCase("title")) {
-				song.title = value;
-				TMusic.update(song);
-				helpedOut = true;
-			} else if (args.length > 1 && args[0].equalsIgnoreCase("artist")) {
-				song.artist = value;
-				TMusic.update(song);
-				helpedOut = true;
-			} else if (args[0].equalsIgnoreCase("correct")) {
-				song.artist = guessArtist;
-				song.title = guessTitle;
-				TMusic.update(song);
-				helpedOut = true;
-			} else if (args[0].equalsIgnoreCase("reversed")) {
-				song.artist = guessTitle;
-				song.title = guessArtist;
-				TMusic.update(song);
-				helpedOut = true;
-			} else {
-				return Template.get("invalid_command_use");
+
+			switch (args[0].toLowerCase()) {
+				case "ban":
+					song.banned = 1;
+					TMusic.update(song);
+					return Template.get("command_current_banned_success");
+				case "title":
+					song.title = value;
+					TMusic.update(song);
+					helpedOut = true;
+					break;
+				case "artist":
+					song.artist = value;
+					TMusic.update(song);
+					helpedOut = true;
+					break;
+				case "correct":
+					song.artist = guessArtist;
+					song.title = guessTitle;
+					TMusic.update(song);
+					helpedOut = true;
+					break;
+				case "reversed":
+					song.artist = guessTitle;
+					song.title = guessArtist;
+					TMusic.update(song);
+					helpedOut = true;
+					break;
+				default:
+					return Template.get("invalid_command_use");
 			}
 			titleIsEmpty = song.title == null || song.title.isEmpty();
 			artistIsEmpty = song.artist == null || song.artist.isEmpty();
@@ -134,32 +140,34 @@ public class CurrentTrack extends AbstractCommand {
 		ret += getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL;
 
 		if (GuildSettings.get(guild).getOrDefault(SettingMusicShowListeners.class).equals("true")) {
-			List<User> userlist = new ArrayList<>();//bot.getCurrentlyListening(channel.getGuild());
-			if (userlist.size() > 0) {
+			List<User> userList = musicHandler.getUsersInVoiceChannel();
+			if (userList.size() > 0) {
 				ret += ":headphones:  Listeners" + Config.EOL;
-				ArrayList<String> displayList = userlist.stream().map(User::getUsername).collect(Collectors.toCollection(ArrayList::new));
+				ArrayList<String> displayList = userList.stream().map(User::getUsername).collect(Collectors.toCollection(ArrayList::new));
 				ret += Misc.makeTable(displayList);
 			}
 		}
-		if (titleIsEmpty || artistIsEmpty) {
-			ret += "I am missing some information about this song. Could you help me out:question:" + Config.EOL;
-			ret += "If you know the title or artist of this song type **current artist <name>** or **current title <name>**" + Config.EOL;
-			if (!titleIsEmpty) {
-				ret += "Title: " + song.title + Config.EOL;
-			}
-			if (!artistIsEmpty) {
-				ret += "Artist: " + song.artist + Config.EOL;
-			}
-			if (!helpedOut && !"".equals(guessArtist) && !"".equals(guessTitle)) {
-				ret += Config.EOL + "If I can make a guess:" + Config.EOL;
-				ret += "artist: **" + guessArtist + "**" + Config.EOL;
-				ret += "title: **" + guessTitle + "**" + Config.EOL;
-				ret += "If thats correct type **" + DisUtil.getCommandPrefix(channel) + "np correct** or if its reversed **" + DisUtil.getCommandPrefix(channel) + "np reversed**";
+		if (bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
+			if (titleIsEmpty || artistIsEmpty) {
+				ret += "I am missing some information about this song. Could you help me out:question:" + Config.EOL;
+				ret += "If you know the title or artist of this song type **current artist <name>** or **current title <name>**" + Config.EOL;
+				if (!titleIsEmpty) {
+					ret += "Title: " + song.title + Config.EOL;
+				}
+				if (!artistIsEmpty) {
+					ret += "Artist: " + song.artist + Config.EOL;
+				}
+				if (!helpedOut && !"".equals(guessArtist) && !"".equals(guessTitle)) {
+					ret += Config.EOL + "If I can make a guess:" + Config.EOL;
+					ret += "artist: **" + guessArtist + "**" + Config.EOL;
+					ret += "title: **" + guessTitle + "**" + Config.EOL;
+					ret += "If thats correct type **" + DisUtil.getCommandPrefix(channel) + "np correct** or if its reversed **" + DisUtil.getCommandPrefix(channel) + "np reversed**";
 
+				}
 			}
-		}
-		if (helpedOut) {
-			ret += "Thanks for helping out " + author.getAsMention() + "! Have a :cookie:!";
+			if (helpedOut) {
+				ret += "Thanks for helping out " + author.getAsMention() + "! Have a :cookie:!";
+			}
 		}
 		return ret;
 	}
