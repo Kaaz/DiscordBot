@@ -147,23 +147,21 @@ public class CurrentTrack extends AbstractCommand {
 				ret += Misc.makeTable(displayList);
 			}
 		}
-		if (bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
-			if (titleIsEmpty || artistIsEmpty) {
-				ret += "I am missing some information about this song. Could you help me out:question:" + Config.EOL;
-				ret += "If you know the title or artist of this song type **current artist <name>** or **current title <name>**" + Config.EOL;
-				if (!titleIsEmpty) {
-					ret += "Title: " + song.title + Config.EOL;
-				}
-				if (!artistIsEmpty) {
-					ret += "Artist: " + song.artist + Config.EOL;
-				}
-				if (!helpedOut && !"".equals(guessArtist) && !"".equals(guessTitle)) {
-					ret += Config.EOL + "If I can make a guess:" + Config.EOL;
-					ret += "artist: **" + guessArtist + "**" + Config.EOL;
-					ret += "title: **" + guessTitle + "**" + Config.EOL;
-					ret += "If thats correct type **" + DisUtil.getCommandPrefix(channel) + "np correct** or if its reversed **" + DisUtil.getCommandPrefix(channel) + "np reversed**";
+		if (bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN) && (titleIsEmpty || artistIsEmpty)) {
+			ret += "I am missing some information about this song. Could you help me out:question:" + Config.EOL;
+			ret += "If you know the title or artist of this song type **current artist <name>** or **current title <name>**" + Config.EOL;
+			if (!titleIsEmpty) {
+				ret += "Title: " + song.title + Config.EOL;
+			}
+			if (!artistIsEmpty) {
+				ret += "Artist: " + song.artist + Config.EOL;
+			}
+			if (!helpedOut && !"".equals(guessArtist) && !"".equals(guessTitle)) {
+				ret += Config.EOL + "If I can make a guess:" + Config.EOL;
+				ret += "artist: **" + guessArtist + "**" + Config.EOL;
+				ret += "title: **" + guessTitle + "**" + Config.EOL;
+				ret += "If thats correct type **" + DisUtil.getCommandPrefix(channel) + "np correct** or if its reversed **" + DisUtil.getCommandPrefix(channel) + "np reversed**";
 
-				}
 			}
 			if (helpedOut) {
 				ret += "Thanks for helping out " + author.getAsMention() + "! Have a :cookie:!";
