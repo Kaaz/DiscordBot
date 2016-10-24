@@ -90,7 +90,7 @@ public class TTag {
 		}
 		try {
 			WebDb.get().query(
-					"DELETE FROM tags WHERE tag_name = ? and guild_id = ? ",
+					"DELETE FROM tags WHERE tag_name = ? AND guild_id = ? ",
 					record.tagname, record.guildId
 			);
 		} catch (Exception e) {

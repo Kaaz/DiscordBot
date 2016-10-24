@@ -6,11 +6,18 @@ import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
+import org.apache.commons.lang3.time.DateUtils;
+import org.knowm.xchart.BitmapEncoder;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.style.GGPlot2Theme;
+import org.knowm.xchart.style.markers.SeriesMarkers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * !reboot
@@ -50,8 +57,50 @@ public class GuildStatsCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, MessageChannel channel, User author) {
-		if (args.length == 1 && args[0].equalsIgnoreCase("music")) {
-			return getPlayingOn();
+		if (args.length == 0) {
+			return getTotalTable();
+		}
+		switch (args[0].toLowerCase()) {
+			case "music":
+				return getPlayingOn();
+			case "users":
+				if (!(channel instanceof TextChannel)) {
+					return Template.get("command_invalid_use");
+				}
+				TreeMap<Date, Integer> map = new TreeMap<>();
+				Guild guild = ((TextChannel) channel).getGuild();
+				List<User> joins = new ArrayList<>(guild.getUsers());
+				Collections.sort(joins, (User a, User b) -> guild.getJoinDateForUser(a).compareTo(guild.getJoinDateForUser(b)));
+				for (User join : joins) {
+					Date time = DateUtils.round(new Date(guild.getJoinDateForUser(join).toInstant().toEpochMilli()), Calendar.DAY_OF_MONTH);
+					if (!map.containsKey(time)) {
+						map.put(time, 0);
+					}
+					map.put(time, map.get(time) + 1);
+				}
+				List<Date> xData = new ArrayList<>();
+				List<Integer> yData = new ArrayList<>();
+				int total = 0;
+				for (Map.Entry<Date, Integer> entry : map.entrySet()) {
+					total += entry.getValue();
+					xData.add(entry.getKey());
+					yData.add(total);
+				}
+				XYChart chart = new XYChart(1024, 600);
+				chart.setTitle("Users over time for " + guild.getName());
+				chart.setXAxisTitle("Date");
+				chart.setYAxisTitle("Users");
+				chart.getStyler().setTheme(new GGPlot2Theme());
+				XYSeries series = chart.addSeries("Users", xData, yData);
+				series.setMarker(SeriesMarkers.CIRCLE);
+				try {
+					File f = new File("./Sample_Chart.png");
+					BitmapEncoder.saveBitmap(chart, f.getAbsolutePath(), BitmapEncoder.BitmapFormat.PNG);
+					channel.sendFileAsync(f, null, message -> f.delete());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return "";
 		}
 		return getTotalTable();
 	}
@@ -73,7 +122,7 @@ public class GuildStatsCommand extends AbstractCommand {
 
 	private String getTotalTable() {
 		List<List<String>> body = new ArrayList<>();
-		int totGuilds = 0, totUsers = 0, totChannels = 0, totVoice = 0, totActiveVoice = 0, totRequests = 0;
+		int totGuilds = 0, totUsers = 0, totChannels = 0, totVoice = 0, totActiveVoice = 0;
 		double totRequestPerSec = 0D;
 		for (DiscordBot shard : bot.getContainer().getShards()) {
 			List<Guild> guilds = shard.client.getGuilds();
@@ -90,7 +139,6 @@ public class GuildStatsCommand extends AbstractCommand {
 			}
 			double requestPerSec = ((double) requests) / ((double) (System.currentTimeMillis() / 1000D - bot.startupTimeStamp));
 			totRequestPerSec += requestPerSec;
-			totRequests += requests;
 			totGuilds += numGuilds;
 			totUsers += users;
 			totChannels += channels;
