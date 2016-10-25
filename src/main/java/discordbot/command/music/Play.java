@@ -16,6 +16,7 @@ import net.dv8tion.jda.entities.*;
 import net.dv8tion.jda.utils.PermissionUtil;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * !play
@@ -109,16 +110,20 @@ public class Play extends AbstractCommand {
 //							message.updateMessageAsync(Template.get("music_resampling"), null);
 //							YTUtil.resampleToWav(finalVideocode);
 						}
-						if (filecheck.exists()) {
-							OMusic rec = TMusic.findByYoutubeId(finalVideocode);
-							rec.youtubeTitle = YTUtil.getTitleFromPage(finalVideocode);
-							rec.youtubecode = finalVideocode;
-							rec.filename = filecheck.getAbsolutePath();
-							TMusic.update(rec);
-							message.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
-							bot.addSongToQueue(filecheck.getAbsolutePath(), guild);
-						} else {
-							message.updateMessageAsync("Download failed, the song is most likely too long!", null);
+						try {
+							if (filecheck.exists()) {
+								OMusic rec = TMusic.findByYoutubeId(finalVideocode);
+								rec.youtubeTitle = YTUtil.getTitleFromPage(finalVideocode);
+								rec.youtubecode = finalVideocode;
+								rec.filename = filecheck.toPath().toRealPath().toString();
+								TMusic.update(rec);
+								message.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
+								bot.addSongToQueue(filecheck.getAbsolutePath(), guild);
+							} else {
+								message.updateMessageAsync("Download failed, the song is most likely too long!", null);
+							}
+						} catch (IOException e) {
+							bot.out.sendErrorToMe(e);
 						}
 					});
 					return "";
