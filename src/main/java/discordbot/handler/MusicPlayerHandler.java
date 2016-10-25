@@ -22,6 +22,8 @@ import net.dv8tion.jda.player.source.AudioSource;
 import net.dv8tion.jda.player.source.LocalSource;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.LinkOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -85,7 +87,7 @@ public class MusicPlayerHandler {
 		}
 	}
 
-	private synchronized void trackStarted() {
+	private synchronized void trackStarted() throws IOException {
 		currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000L;
 		OMusic record;
 		File f = null;
@@ -95,6 +97,10 @@ public class MusicPlayerHandler {
 		if (info != null) {
 			System.out.println(info.getOrigin());
 			f = new File(info.getOrigin());
+			System.out.println(f.getCanonicalPath());
+			System.out.println(f.toPath().toRealPath(LinkOption.NOFOLLOW_LINKS));
+			System.out.println(f.getAbsolutePath());
+
 			record = TMusic.findByFileName(f.getAbsolutePath());
 			if (record.id > 0) {
 				record.lastplaydate = System.currentTimeMillis() / 1000L;
@@ -301,7 +307,11 @@ public class MusicPlayerHandler {
 				}
 			}
 			if (event instanceof PlayEvent) {
-				trackStarted();
+				try {
+					trackStarted();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
