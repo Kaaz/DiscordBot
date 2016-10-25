@@ -87,11 +87,13 @@ public class MusicPlayerHandler {
 
 	private synchronized void trackStarted() {
 		currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000L;
-		AudioInfo info = player.getCurrentAudioSource().getInfo();
 		OMusic record;
 		File f = null;
 		final String messageType = GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class);
+		AudioInfo info = player.getCurrentAudioSource().getInfo();
+		System.out.println(info);
 		if (info != null) {
+			System.out.println(info.getOrigin());
 			f = new File(info.getOrigin());
 			record = TMusic.findByFileName(f.getAbsolutePath());
 			if (record.id > 0) {
