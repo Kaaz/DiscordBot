@@ -75,6 +75,9 @@ public class MusicPlayerHandler {
 	private synchronized void trackEnded() throws InterruptedException {
 		currentSongLength = 0;
 		LinkedList<AudioSource> audioQueue = player.getAudioQueue();
+		if (player.isStopped()) {
+			return;
+		}
 		if (audioQueue.isEmpty()) {
 			if (queue.isEmpty()) {
 				audioQueue.add(new LocalSource(new File(getRandomSong())));
@@ -263,10 +266,9 @@ public class MusicPlayerHandler {
 		return userList;
 	}
 
-	public void stopMusic() {
+	public synchronized void stopMusic() {
 		currentlyPlaying = 0;
 		player.stop();
-		player.reload(false);
 	}
 
 	public List<OMusic> getQueue() {
