@@ -5,6 +5,7 @@ import discordbot.core.ExitCode;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
+import discordbot.permission.SimpleRank;
 import discordbot.util.UpdateUtil;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
@@ -43,7 +44,7 @@ public class RebootCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, MessageChannel channel, User author) {
-		if (bot.isOwner(channel, author)) {
+		if (bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
 			if (args.length > 0 && args[0].equalsIgnoreCase("update") && UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
 				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_update"), message -> {
 					Launcher.stop(ExitCode.UPDATE);

@@ -9,8 +9,8 @@ public enum SimpleRank {
 	USER(),
 	GUILD_ADMIN(),
 	GUILD_OWNER(),
-	BOT_ADMIN(),
 	CONTRIBUTOR(),
+	BOT_ADMIN(),
 	CREATOR();
 
 	public boolean isAtLeast(SimpleRank rank) {

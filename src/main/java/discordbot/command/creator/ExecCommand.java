@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
@@ -47,8 +48,8 @@ public class ExecCommand extends AbstractCommand {
 
 	@Override
 	public String execute(String[] args, MessageChannel channel, User author) {
-		if (!bot.isCreator(author)) {
-			return ":upside_down: There's only one person who I trust enough to do that";
+		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
+			return ":upside_down: Bot Administrator+";
 		}
 		if (args.length == 0) {
 			return ":face_palm: I expected you to know how to use it";
