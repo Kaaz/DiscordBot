@@ -16,6 +16,7 @@ import net.dv8tion.jda.entities.*;
 import net.dv8tion.jda.utils.PermissionUtil;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * !play
@@ -99,32 +100,43 @@ public class Play extends AbstractCommand {
 				videocode = ytSearch.getResults(Joiner.on(" ").join(args));
 			}
 			if (YTUtil.isValidYoutubeCode(videocode)) {
-
-				final File filecheck = new File(YTUtil.getOutputPath(videocode));
-				if (!filecheck.exists()) {
-					String finalVideocode = videocode;
-					bot.out.sendAsyncMessage(channel, Template.get("music_downloading_hang_on"), message -> {
-						System.out.println("starting download with code:::::" + finalVideocode);
-						if (YTUtil.downloadfromYoutubeAsMp3(finalVideocode)) {
+				try {
+					final File filecheck = new File(YTUtil.getOutputPath(videocode));
+					if (!filecheck.exists()) {
+						String finalVideocode = videocode;
+						bot.out.sendAsyncMessage(channel, Template.get("music_downloading_hang_on"), message -> {
+							System.out.println("starting download with code:::::" + finalVideocode);
+							if (YTUtil.downloadfromYoutubeAsMp3(finalVideocode)) {
 //							message.updateMessageAsync(Template.get("music_resampling"), null);
 //							YTUtil.resampleToWav(finalVideocode);
-						}
-						if (filecheck.exists()) {
-							OMusic rec = TMusic.findByYoutubeId(finalVideocode);
-							rec.youtubeTitle = YTUtil.getTitleFromPage(finalVideocode);
-							rec.youtubecode = finalVideocode;
-							rec.filename = filecheck.getAbsolutePath();
-							TMusic.update(rec);
-							message.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
-							bot.addSongToQueue(filecheck.getAbsolutePath(), guild);
-						} else {
-							message.updateMessageAsync("Download failed, the song is most likely too long!", null);
-						}
-					});
-					return "";
-				} else if (filecheck.exists()) {
-					bot.addSongToQueue(filecheck.getAbsolutePath(), guild);
-					return Template.get("music_added_to_queue");
+							}
+							try {
+								if (filecheck.exists()) {
+									String path = filecheck.toPath().toRealPath().toString();
+									OMusic rec = TMusic.findByYoutubeId(finalVideocode);
+									rec.youtubeTitle = YTUtil.getTitleFromPage(finalVideocode);
+									rec.youtubecode = finalVideocode;
+									rec.filename = path;
+									TMusic.update(rec);
+									message.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
+									bot.addSongToQueue(path, guild);
+								} else {
+									message.updateMessageAsync("Download failed, the song is most likely too long!", null);
+								}
+							} catch (Exception e) {
+								bot.out.sendErrorToMe(e);
+							}
+
+						});
+
+						return "";
+					} else if (filecheck.exists()) {
+						String path = filecheck.toPath().toRealPath().toString();
+						bot.addSongToQueue(path, guild);
+						return Template.get("music_added_to_queue");
+					}
+				} catch (IOException e) {
+					bot.out.sendErrorToMe(e);
 				}
 			} else {
 
