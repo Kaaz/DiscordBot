@@ -10,8 +10,8 @@ import net.dv8tion.jda.entities.User;
 public class PollCommand extends AbstractCommand {
 	private static final int MAX_DURATION_IN_MINUTES = 10;
 
-	public PollCommand(DiscordBot b) {
-		super(b);
+	public PollCommand() {
+		super();
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class PollCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 
 		if (args.length == 0) {
 			return "show overview";

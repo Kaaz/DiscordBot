@@ -23,8 +23,8 @@ import java.util.List;
  */
 public class Playlist extends AbstractCommand {
 
-	public Playlist(DiscordBot b) {
-		super(b);
+	public Playlist() {
+		super();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class Playlist extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		if (args.length == 0) {
 			MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);

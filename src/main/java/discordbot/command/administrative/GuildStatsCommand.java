@@ -24,8 +24,8 @@ import java.util.*;
  * restarts the bot
  */
 public class GuildStatsCommand extends AbstractCommand {
-	public GuildStatsCommand(DiscordBot b) {
-		super(b);
+	public GuildStatsCommand() {
+		super();
 	}
 
 	@Override
@@ -56,13 +56,13 @@ public class GuildStatsCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (args.length == 0) {
-			return getTotalTable();
+			return getTotalTable(bot);
 		}
 		switch (args[0].toLowerCase()) {
 			case "music":
-				return getPlayingOn();
+				return getPlayingOn(bot);
 			case "users":
 				if (!(channel instanceof TextChannel)) {
 					return Template.get("command_invalid_use");
@@ -102,10 +102,10 @@ public class GuildStatsCommand extends AbstractCommand {
 				}
 				return "";
 		}
-		return getTotalTable();
+		return getTotalTable(bot);
 	}
 
-	private String getPlayingOn() {
+	private String getPlayingOn(DiscordBot bot) {
 		int activeVoice = 0;
 		for (DiscordBot discordBot : bot.getContainer().getShards()) {
 			for (Guild guild : discordBot.client.getGuilds()) {
@@ -120,7 +120,7 @@ public class GuildStatsCommand extends AbstractCommand {
 		return Template.get("command_stats_playing_music_on", activeVoice);
 	}
 
-	private String getTotalTable() {
+	private String getTotalTable(DiscordBot bot) {
 		List<List<String>> body = new ArrayList<>();
 		int totGuilds = 0, totUsers = 0, totChannels = 0, totVoice = 0, totActiveVoice = 0;
 		double totRequestPerSec = 0D;

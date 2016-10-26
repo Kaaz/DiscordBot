@@ -15,8 +15,8 @@ import net.dv8tion.jda.entities.VoiceChannel;
  * make the bot join the channel of the user
  */
 public class Join extends AbstractCommand {
-	public Join(DiscordBot b) {
-		super(b);
+	public Join() {
+		super();
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class Join extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		TextChannel chan = (TextChannel) channel;
 		if (args.length == 0) {
 			VoiceChannel voiceChannel = chan.getGuild().getVoiceStatusOfUser(author).getChannel();

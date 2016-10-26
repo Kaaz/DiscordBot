@@ -19,8 +19,8 @@ import java.net.URLConnection;
  * gives you a random cat fact
  */
 public class Cats extends AbstractCommand {
-	public Cats(DiscordBot b) {
-		super(b);
+	public Cats() {
+		super();
 	}
 
 	public static String getCatFact() {
@@ -62,7 +62,7 @@ public class Cats extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		String catFact = getCatFact();
 		if (catFact != null) {
 			return StringEscapeUtils.unescapeHtml4(catFact);

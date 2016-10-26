@@ -39,8 +39,8 @@ public class CurrentTrack extends AbstractCommand {
 	private final float SOUND_TRESHHOLD = 0.4F;
 	private final int BLOCK_PARTS = 10;
 
-	public CurrentTrack(DiscordBot b) {
-		super(b);
+	public CurrentTrack() {
+		super();
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class CurrentTrack extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		boolean helpedOut = false;
 		Guild guild = ((TextChannel) channel).getGuild();
 		OMusic song = TMusic.findById(bot.getCurrentlyPlayingSong(guild));

@@ -11,8 +11,8 @@ import net.dv8tion.jda.entities.User;
  * make the bot say something
  */
 public class Say extends AbstractCommand {
-	public Say(DiscordBot b) {
-		super(b);
+	public Say() {
+		super();
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class Say extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		boolean first = true;
 		String ret = "";
 		if (args.length > 0) {

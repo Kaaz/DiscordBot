@@ -15,8 +15,8 @@ import java.util.List;
  * manages roles
  */
 public class RoleCommand extends AbstractCommand {
-	public RoleCommand(DiscordBot b) {
-		super(b);
+	public RoleCommand() {
+		super();
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class RoleCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		if (!bot.isOwner(channel, author)) {
 			return Template.get("command_no_permission");

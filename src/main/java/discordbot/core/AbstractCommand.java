@@ -8,11 +8,10 @@ import net.dv8tion.jda.entities.User;
 
 public abstract class AbstractCommand {
 
-	protected DiscordBot bot;
 	private CommandCategory commandCategory = CommandCategory.UNKNOWN;
 
-	public AbstractCommand(DiscordBot bot) {
-		this.bot = bot;
+	public AbstractCommand() {
+
 	}
 
 	/**
@@ -83,5 +82,5 @@ public abstract class AbstractCommand {
 		return true;
 	}
 
-	public abstract String execute(String[] args, MessageChannel channel, User author);
+	public abstract String execute(DiscordBot bot, String[] args, MessageChannel channel, User author);
 }

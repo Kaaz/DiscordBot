@@ -18,8 +18,8 @@ public class ImportMusicCommand extends AbstractCommand {
 	private AtomicInteger filesImported = new AtomicInteger(0);
 	private AtomicInteger filesScanned = new AtomicInteger(0);
 
-	public ImportMusicCommand(DiscordBot bot) {
-		super(bot);
+	public ImportMusicCommand() {
+		super();
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class ImportMusicCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (author.getId().equals("97284813643329536") || bot.isCreator(author)) {
 			if (isInProgress.get()) {
 				return "currently in progress :D";

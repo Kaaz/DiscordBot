@@ -3,9 +3,8 @@ package discordbot.handler;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import discordbot.db.WebDb;
-import discordbot.exceptions.TemplateNotSetException;
+import discordbot.db.table.TBotEvent;
 import discordbot.main.Config;
-import discordbot.main.DiscordBot;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,22 +19,11 @@ import java.util.Random;
  */
 public class Template {
 
-	private static final Template instance = new Template();
-	private DiscordBot bot = null;
-	private Random rnd;
-	private HashMap<String, List<String>> dictionary;
+	private static Random rnd = new Random();
+	static private HashMap<String, List<String>> dictionary;
 
 	private Template() {
-		rnd = new Random();
-		load();
-	}
-
-	public static void setBot(DiscordBot bot) {
-		instance.bot = bot;
-	}
-
-	public static Template getInstance() {
-		return instance;
+		initialize();
 	}
 
 	/**
@@ -45,13 +33,11 @@ public class Template {
 	 * @return a random string out of the options for the keyphrase
 	 */
 	public static String get(String keyPhrase) {
-		if (!Config.SHOW_KEYPHRASE && instance.dictionary.containsKey(keyPhrase)) {
-			List<String> list = instance.dictionary.get(keyPhrase);
-			return list.get(instance.rnd.nextInt(list.size()));
+		if (!Config.SHOW_KEYPHRASE && dictionary.containsKey(keyPhrase)) {
+			List<String> list = dictionary.get(keyPhrase);
+			return list.get(rnd.nextInt(list.size()));
 		}
-		if (instance.bot != null && !Config.SHOW_KEYPHRASE) {
-			instance.bot.out.sendErrorToMe(new TemplateNotSetException(keyPhrase), "key", keyPhrase, "copy this", "**!template add " + keyPhrase + "** ", instance.bot);
-		}
+		TBotEvent.insert("ERROR", "TEMPLATE", String.format("the phrase `%s` is not set!", keyPhrase));
 		return "**`" + keyPhrase + "`**";
 	}
 
@@ -151,14 +137,32 @@ public class Template {
 	}
 
 	/**
+	 * refreshes the data from the database
+	 */
+	public static synchronized void initialize() {
+		dictionary = new HashMap<>();
+		try (ResultSet rs = WebDb.get().select("SELECT id, keyphrase, text FROM template_texts")) {
+			while (rs.next()) {
+				if (!dictionary.containsKey(rs.getString("keyphrase"))) {
+					dictionary.put(rs.getString("keyphrase"), new ArrayList<>());
+				}
+				dictionary.get(rs.getString("keyphrase")).add(rs.getString("text"));
+			}
+			rs.getStatement().close();
+		} catch (SQLException e) {
+			System.out.println(e);
+		}
+	}
+
+	/**
 	 * returns a list of all texts for specified keyphrase
 	 *
 	 * @param keyphrase to return a list of
 	 * @return list
 	 */
-	public List<String> getAllFor(String keyphrase) {
-		if (instance.dictionary.containsKey(keyphrase)) {
-			return instance.dictionary.get(keyphrase);
+	public static List<String> getAllFor(String keyphrase) {
+		if (dictionary.containsKey(keyphrase)) {
+			return dictionary.get(keyphrase);
 		}
 		return new ArrayList<>();
 	}
@@ -169,7 +173,7 @@ public class Template {
 
 	public int countTemplates() {
 		int count = 0;
-		for (List<String> list : instance.dictionary.values()) {
+		for (List<String> list : dictionary.values()) {
 			count += list.size();
 		}
 		return count;
@@ -181,12 +185,12 @@ public class Template {
 	 * @param keyPhrase keyphrase
 	 * @param text      text
 	 */
-	public synchronized void remove(String keyPhrase, String text) {
-		if (instance.dictionary.containsKey(keyPhrase)) {
-			if (instance.dictionary.get(keyPhrase).contains(text)) {
+	public static synchronized void remove(String keyPhrase, String text) {
+		if (dictionary.containsKey(keyPhrase)) {
+			if (dictionary.get(keyPhrase).contains(text)) {
 				try {
 					WebDb.get().query("DELETE FROM template_texts WHERE keyphrase = ? AND text = ? ", keyPhrase, text);
-					instance.dictionary.get(keyPhrase).remove(text);
+					dictionary.get(keyPhrase).remove(text);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -200,13 +204,13 @@ public class Template {
 	 * @param keyPhrase keyphrase
 	 * @param text      the text
 	 */
-	public synchronized void add(String keyPhrase, String text) {
+	public static synchronized void add(String keyPhrase, String text) {
 		try {
 			WebDb.get().query("INSERT INTO template_texts(keyphrase,text) VALUES(?, ?)", keyPhrase, text);
-			if (!instance.dictionary.containsKey(keyPhrase)) {
-				instance.dictionary.put(keyPhrase, new ArrayList<>());
+			if (!dictionary.containsKey(keyPhrase)) {
+				dictionary.put(keyPhrase, new ArrayList<>());
 			}
-			instance.dictionary.get(keyPhrase).add(text);
+			dictionary.get(keyPhrase).add(text);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -218,30 +222,12 @@ public class Template {
 	 * @param keyPhrase phrase to refresh
 	 */
 	public synchronized void reload(String keyPhrase) {
-		if (!instance.dictionary.containsKey(keyPhrase)) {
-			instance.dictionary.put(keyPhrase, new ArrayList<>());
+		if (!dictionary.containsKey(keyPhrase)) {
+			dictionary.put(keyPhrase, new ArrayList<>());
 		}
-		instance.dictionary.get(keyPhrase).clear();
+		dictionary.get(keyPhrase).clear();
 		try (ResultSet rs = WebDb.get().select("SELECT text FROM template_texts WHERE keyphrase = ?", keyPhrase)) {
-			instance.dictionary.get(keyPhrase).add(rs.getString("text"));
-			rs.getStatement().close();
-		} catch (SQLException e) {
-			System.out.println(e);
-		}
-	}
-
-	/**
-	 * refreshes the data from the database
-	 */
-	public synchronized void load() {
-		dictionary = new HashMap<>();
-		try (ResultSet rs = WebDb.get().select("SELECT id, keyphrase, text FROM template_texts")) {
-			while (rs.next()) {
-				if (!dictionary.containsKey(rs.getString("keyphrase"))) {
-					dictionary.put(rs.getString("keyphrase"), new ArrayList<>());
-				}
-				dictionary.get(rs.getString("keyphrase")).add(rs.getString("text"));
-			}
+			dictionary.get(keyPhrase).add(rs.getString("text"));
 			rs.getStatement().close();
 		} catch (SQLException e) {
 			System.out.println(e);

@@ -15,8 +15,8 @@ import net.dv8tion.jda.entities.User;
  * restarts the bot
  */
 public class RebootCommand extends AbstractCommand {
-	public RebootCommand(DiscordBot b) {
-		super(b);
+	public RebootCommand() {
+		super();
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class RebootCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
 			if (args.length > 0 && args[0].equalsIgnoreCase("update") && UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
 				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_update"), message -> {

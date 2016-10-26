@@ -12,8 +12,8 @@ import net.dv8tion.jda.entities.User;
  * reloads config
  */
 public class Reload extends AbstractCommand {
-	public Reload(DiscordBot b) {
-		super(b);
+	public Reload() {
+		super();
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class Reload extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
 			return Template.get("no_permission");
 		}

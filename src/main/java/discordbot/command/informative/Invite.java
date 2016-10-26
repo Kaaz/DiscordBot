@@ -11,8 +11,8 @@ import net.dv8tion.jda.entities.User;
  * Instructions on how to invite the bot to a discord server
  */
 public class Invite extends AbstractCommand {
-	public Invite(DiscordBot b) {
-		super(b);
+	public Invite() {
+		super();
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class Invite extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		return "I am honored you'd want to invite me! :hugging: " + Config.EOL +
 				"You can add me to your guild/server with the following link : " + Config.EOL +
 				"https://discordapp.com/oauth2/authorize?client_id=" + bot.client.getSelfInfo().getId() + "&scope=bot";

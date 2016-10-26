@@ -25,8 +25,8 @@ import java.io.File;
 public class Play extends AbstractCommand {
 	YTSearch ytSearch;
 
-	public Play(DiscordBot b) {
-		super(b);
+	public Play() {
+		super();
 		ytSearch = new YTSearch(Config.GOOGLE_API_KEY);
 	}
 
@@ -65,7 +65,7 @@ public class Play extends AbstractCommand {
 			return false;
 		}
 		for (User user : channel.getUsers()) {
-			if (user.getId().equals(bot.client.getSelfInfo().getId())) {
+			if (user.getId().equals(guild.getJDA().getSelfInfo().getId())) {
 				return true;
 			}
 		}
@@ -73,7 +73,7 @@ public class Play extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		TextChannel txt = (TextChannel) channel;
 		Guild guild = txt.getGuild();
 		if (!PermissionUtil.checkPermission(txt, bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {

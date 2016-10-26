@@ -11,8 +11,8 @@ import java.io.File;
 /**
  */
 public class SendFileCommand extends AbstractCommand {
-	public SendFileCommand(DiscordBot b) {
-		super(b);
+	public SendFileCommand() {
+		super();
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class SendFileCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (!bot.isCreator(author)) {
 			return ":upside_down: There's only one person who I trust enough to do that";
 		}

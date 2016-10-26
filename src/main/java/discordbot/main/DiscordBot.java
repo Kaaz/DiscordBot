@@ -23,7 +23,6 @@ public class DiscordBot {
 	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 	public final long startupTimeStamp;
 	public JDA client;
-	public CommandHandler commands;
 	public Timer timer = new Timer();
 	public String mentionMe;
 	public ChatBotHandler chatBotHandler = null;
@@ -46,6 +45,7 @@ public class DiscordBot {
 			builder.useSharding(shardId, numShards);
 		}
 		builder.addListener(new JDAEvents(this));
+		builder.setEnableShutdownHook(false);
 		client = builder.buildAsync();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 	}
@@ -66,10 +66,9 @@ public class DiscordBot {
 	 * @return is the user an admin?
 	 */
 	public boolean isAdmin(MessageChannel channel, User user) {
-		if (channel == null || channel instanceof PrivateChannel) {
-			return false;
-		}
-		return isCreator(user) || ((TextChannel) channel).checkPermission(user, Permission.ADMINISTRATOR);
+		if (!(channel == null || channel instanceof PrivateChannel))
+			if (isCreator(user) || ((TextChannel) channel).checkPermission(user, Permission.ADMINISTRATOR)) return true;
+		return false;
 	}
 
 	/**
@@ -173,8 +172,6 @@ public class DiscordBot {
 	}
 
 	public void loadConfiguration() {
-		commands.load();
-		Template.getInstance().load();
 		defaultChannels = new ConcurrentHashMap<>();
 		musicChannels = new ConcurrentHashMap<>();
 		chatBotHandler = new ChatBotHandler();
@@ -187,10 +184,8 @@ public class DiscordBot {
 	}
 
 	private void registerHandlers() {
-		commands = new CommandHandler(this);
 		security = new SecurityHandler(this);
 		gameHandler = new GameHandler(this);
-		Template.setBot(this);
 		out = new OutgoingContentHandler(this);
 		timer = new Timer();
 		autoReplyhandler = new AutoReplyHandler(this);
@@ -224,8 +219,8 @@ public class DiscordBot {
 
 
 	public void handlePrivateMessage(PrivateChannel channel, User author, Message message) {
-		if (commands.isCommand(null, message.getRawContent())) {
-			commands.process(channel, author, message.getRawContent());
+		if (CommandHandler.isCommand(null, message.getRawContent(), mentionMe)) {
+			CommandHandler.process(this, channel, author, message.getRawContent());
 		} else {
 			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getRawContent()), null);
 		}
@@ -245,8 +240,8 @@ public class DiscordBot {
 			gameHandler.execute(author, channel, message.getRawContent());
 			return;
 		}
-		if (commands.isCommand(channel, message.getRawContent())) {
-			commands.process(channel, author, message.getRawContent());
+		if (CommandHandler.isCommand(channel, message.getRawContent(), mentionMe)) {
+			CommandHandler.process(this, channel, author, message.getRawContent());
 			return;
 		}
 		if (GuildSettings.getFor(channel, SettingAutoReplyModule.class).equals("true")) {

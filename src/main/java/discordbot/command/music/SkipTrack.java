@@ -13,8 +13,8 @@ import net.dv8tion.jda.entities.User;
  * skips current active track
  */
 public class SkipTrack extends AbstractCommand {
-	public SkipTrack(DiscordBot b) {
-		super(b);
+	public SkipTrack() {
+		super();
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class SkipTrack extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (args.length >= 1) {
 			switch (args[0]) {
 				case "perm":

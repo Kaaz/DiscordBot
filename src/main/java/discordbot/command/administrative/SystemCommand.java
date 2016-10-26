@@ -12,8 +12,8 @@ import net.dv8tion.jda.entities.User;
  * shows status of the bot's system
  */
 public class SystemCommand extends AbstractCommand {
-	public SystemCommand(DiscordBot b) {
-		super(b);
+	public SystemCommand() {
+		super();
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class SystemCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		final Runtime runtime = Runtime.getRuntime();
 		StringBuilder sb = new StringBuilder();
 		long memoryLimit = runtime.maxMemory();

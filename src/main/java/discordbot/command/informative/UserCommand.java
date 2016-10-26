@@ -20,8 +20,8 @@ import net.dv8tion.jda.entities.User;
  * shows some info about the user
  */
 public class UserCommand extends AbstractCommand {
-	public UserCommand(DiscordBot b) {
-		super(b);
+	public UserCommand() {
+		super();
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class UserCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		User infoUser = null;
 		if (args.length == 0) {
 			infoUser = author;

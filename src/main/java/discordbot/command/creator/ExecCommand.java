@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 /**
  */
 public class ExecCommand extends AbstractCommand {
-	public ExecCommand(DiscordBot b) {
-		super(b);
+	public ExecCommand() {
+		super();
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class ExecCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
 			return ":upside_down: Bot Administrator+";
 		}

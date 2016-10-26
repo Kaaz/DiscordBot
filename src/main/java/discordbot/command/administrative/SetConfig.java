@@ -21,8 +21,8 @@ import java.util.*;
  * gets/sets the configuration of the bot
  */
 public class SetConfig extends AbstractCommand {
-	public SetConfig(DiscordBot b) {
-		super(b);
+	public SetConfig() {
+		super();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class SetConfig extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild;
 		if (bot.isCreator(author) && args.length >= 1 && (args[0].matches("^\\d{10,}$") || args[0].matches("i\\d+"))) {
 			if (args[0].matches("i\\d+")) {

@@ -7,10 +7,7 @@ import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
 import discordbot.db.WebDb;
 import discordbot.db.model.OCommandCooldown;
-import discordbot.db.table.TCommandCooldown;
-import discordbot.db.table.TCommandLog;
-import discordbot.db.table.TGuild;
-import discordbot.db.table.TUser;
+import discordbot.db.table.*;
 import discordbot.guildsettings.defaults.SettingBotChannel;
 import discordbot.guildsettings.defaults.SettingCleanupMessages;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
@@ -37,40 +34,34 @@ import java.util.TimerTask;
  */
 public class CommandHandler {
 
-	private DiscordBot bot;
-	private HashMap<String, AbstractCommand> commands;
-	private HashMap<String, AbstractCommand> commandsAlias;
-	private HashMap<String, String> customCommands;
-
-	public CommandHandler() {
-	}
-
-	public CommandHandler(DiscordBot b) {
-		bot = b;
-	}
+	private static HashMap<String, AbstractCommand> commands = new HashMap<>();
+	private static HashMap<String, AbstractCommand> commandsAlias = new HashMap<>();
+	private static HashMap<String, String> customCommands = new HashMap<>();
 
 	/**
 	 * checks if the the message in channel is a command
 	 *
-	 * @param channel the channel the message came from
-	 * @param msg     the message
+	 * @param channel   the channel the message came from
+	 * @param msg       the message
+	 * @param mentionMe the user mention string
 	 * @return whether or not the message is a command
 	 */
-	public boolean isCommand(TextChannel channel, String msg) {
-		return msg.startsWith(DisUtil.getCommandPrefix(channel)) || msg.startsWith(bot.mentionMe);
+	public static boolean isCommand(TextChannel channel, String msg, String mentionMe) {
+		return msg.startsWith(DisUtil.getCommandPrefix(channel)) || msg.startsWith(mentionMe);
 	}
 
 	/**
 	 * directs the command to the right class
 	 *
-	 * @param channel          which channel
-	 * @param author           author
-	 * @param incommingMessage message
+	 * @param bot             The bot instance
+	 * @param channel         which channel
+	 * @param author          author
+	 * @param incomingMessage message
 	 */
-	public void process(MessageChannel channel, User author, String incommingMessage) {
+	public static void process(DiscordBot bot, MessageChannel channel, User author, String incomingMessage) {
 		String outMsg = "";
 		boolean startedWithMention = false;
-		String inputMessage = incommingMessage;
+		String inputMessage = incomingMessage;
 		if (inputMessage.startsWith(bot.mentionMe)) {
 			inputMessage = inputMessage.replace(bot.mentionMe, "").trim();
 			startedWithMention = true;
@@ -83,7 +74,7 @@ public class CommandHandler {
 			AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
 			long cooldown = getCommandCooldown(command, author, channel);
 			if (hasRightVisibility(channel, command.getVisibility()) && cooldown <= 0) {
-				String commandOutput = command.execute(args, channel, author);
+				String commandOutput = command.execute(bot, args, channel, author);
 				if (!commandOutput.isEmpty()) {
 					outMsg = commandOutput;
 				}
@@ -130,7 +121,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean hasRightVisibility(MessageChannel channel, CommandVisibility visibility) {
+	private static boolean hasRightVisibility(MessageChannel channel, CommandVisibility visibility) {
 		if (channel instanceof PrivateChannel) {
 			return visibility.isForPrivate();
 		}
@@ -145,7 +136,7 @@ public class CommandHandler {
 	 * @param channel the channel
 	 * @return seconds till next use
 	 */
-	private long getCommandCooldown(AbstractCommand command, User author, MessageChannel channel) {
+	private static long getCommandCooldown(AbstractCommand command, User author, MessageChannel channel) {
 		if (command instanceof ICommandCooldown) {
 			long now = System.currentTimeMillis() / 1000L;
 			ICommandCooldown cd = (ICommandCooldown) command;
@@ -159,7 +150,7 @@ public class CommandHandler {
 					break;
 				case GUILD:
 					if (channel instanceof PrivateChannel) {
-						bot.out.sendErrorToMe(new Exception("Command with guild-scale cooldown in private!"), "command", command.getCommand(), "user", author.getUsername(), bot);
+						TBotEvent.insert("ERROR", "CMD_CD", String.format("`%s` issued the `%s` Command with guild-scale cooldown in private channel!", author.getUsername(), command.getCommand()));
 					}
 					targetId = ((TextChannel) channel).getGuild().getId();
 					break;
@@ -185,12 +176,12 @@ public class CommandHandler {
 		return 0;
 	}
 
-	private boolean shouldCleanUpMessages(MessageChannel channel) {
+	private static boolean shouldCleanUpMessages(MessageChannel channel) {
 		String cleanupMethod = GuildSettings.getFor(channel, SettingCleanupMessages.class);
-		String mychannel = GuildSettings.getFor(channel, SettingBotChannel.class);
+		String myChannel = GuildSettings.getFor(channel, SettingBotChannel.class);
 		if ("yes".equals(cleanupMethod)) {
 			return true;
-		} else if ("nonstandard".equals(cleanupMethod) && !((TextChannel) channel).getName().equalsIgnoreCase(mychannel)) {
+		} else if ("nonstandard".equals(cleanupMethod) && !((TextChannel) channel).getName().equalsIgnoreCase(myChannel)) {
 			return true;
 		}
 		return false;
@@ -200,7 +191,7 @@ public class CommandHandler {
 	 * @param key command with or without the Config.BOT_COMMAND_PREFIX
 	 * @return instance of Command for Key or null
 	 */
-	public AbstractCommand getCommand(String key) {
+	public static AbstractCommand getCommand(String key) {
 		if (key.startsWith(Config.BOT_COMMAND_PREFIX)) {
 			key = key.substring(Config.BOT_COMMAND_PREFIX.length());
 		}
@@ -214,31 +205,16 @@ public class CommandHandler {
 	}
 
 	/**
-	 * Lists the active commands
-	 *
-	 * @return list of code-commands
-	 */
-	public String[] getCommands() {
-		return commands.keySet().toArray(new String[commands.keySet().size()]);
-	}
-
-	/**
 	 * Lists the active custom commands
 	 *
 	 * @return list of code-commands
 	 */
-	public String[] getCustomCommands() {
+	public static String[] getCustomCommands() {
 		return customCommands.keySet().toArray(new String[customCommands.keySet().size()]);
 	}
 
-	public AbstractCommand[] getCommandObjects() {
+	public static AbstractCommand[] getCommandObjects() {
 		return commands.values().toArray(new AbstractCommand[commands.values().size()]);
-	}
-
-	public void load() {
-		loadCommands();
-		loadAliases();
-		loadCustomCommands();
 	}
 
 	/**
@@ -247,7 +223,7 @@ public class CommandHandler {
 	 * @param input  command
 	 * @param output return
 	 */
-	public void addCustomCommand(String input, String output) {
+	public static void addCustomCommand(String input, String output) {
 		try {
 			WebDb.get().query("DELETE FROM commands WHERE input = ? AND server = 1", input);
 			WebDb.get().query("INSERT INTO commands (server,input,output) VALUES(1, ?, ?)", input, output);
@@ -258,42 +234,36 @@ public class CommandHandler {
 	}
 
 	/**
-	 * removes a custom command
-	 *
-	 * @param input command
+	 * Loads all the custom commands
 	 */
-	public void removeCustomCommand(String input) {
-		try {
-			WebDb.get().query("DELETE FROM commands WHERE input = ?", input);
-			loadCustomCommands();
+	private static void loadCustomCommands() {
+		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands ")) {
+			while (r != null && r.next()) {
+				if (!commands.containsKey(r.getString("input")) && !customCommands.containsKey(r.getString("input"))) {
+					customCommands.put(r.getString("input"), r.getString("output"));
+				}
+			}
+			if (r != null) {
+				r.getStatement().close();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	/**
-	 * initializes the commands
+	 * Loads aliases for the commands
 	 */
-	private void loadCommands() {
-		commands = new HashMap<>();
-		Reflections reflections = new Reflections("discordbot.command");
-		Set<Class<? extends AbstractCommand>> classes = reflections.getSubTypesOf(AbstractCommand.class);
-		for (Class<? extends AbstractCommand> s : classes) {
-			try {
-				String packageName = s.getPackage().getName();
-				AbstractCommand c = s.getConstructor(DiscordBot.class).newInstance(bot);
-				c.setCommandCategory(CommandCategory.fromPackage(packageName.substring(packageName.lastIndexOf(".") + 1)));
-				if (!c.isEnabled()) {
-					continue;
+	private static void loadAliases() {
+		for (AbstractCommand command : commands.values()) {
+			for (String alias : command.getAliases()) {
+				if (!commandsAlias.containsKey(alias)) {
+					commandsAlias.put(alias, command);
+				} else {
+					DiscordBot.LOGGER.warn(String.format("Duplicate alias found! The commands `%s` and `%s` use the alias `%s`",
+							command.getCommand(), commandsAlias.get(alias).getCommand(), alias));
 				}
-				if (!isCommandCategoryEnabled(c.getCommandCategory())) {
-					continue;
-				}
-				if (!commands.containsKey(c.getCommand())) {
-					commands.put(c.getCommand(), c);
-				}
-			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-				e.printStackTrace();
 			}
 		}
 	}
@@ -304,7 +274,7 @@ public class CommandHandler {
 	 * @param category the category to check
 	 * @return enabled?
 	 */
-	private boolean isCommandCategoryEnabled(CommandCategory category) {
+	private static boolean isCommandCategoryEnabled(CommandCategory category) {
 		switch (category) {
 			case MUSIC:
 				return Config.MODULE_ECONOMY_ENABLED;
@@ -320,39 +290,57 @@ public class CommandHandler {
 	}
 
 	/**
-	 * Loads aliases for the commands
+	 * Lists the active commands
+	 *
+	 * @return list of code-commands
 	 */
-	private void loadAliases() {
-		commandsAlias = new HashMap<>();
-		for (AbstractCommand command : commands.values()) {
-			for (String alias : command.getAliases()) {
-				if (!commandsAlias.containsKey(alias)) {
-					commandsAlias.put(alias, command);
-				} else {
-					DiscordBot.LOGGER.warn(String.format("Duplicate alias found! The commands `%s` and `%s` use the alias `%s`",
-							command.getCommand(), commandsAlias.get(alias).getCommand(), alias));
-				}
-			}
+	public static String[] getCommands() {
+		return commands.keySet().toArray(new String[commands.keySet().size()]);
+	}
+
+	public static void initialize() {
+		loadCommands();
+		loadAliases();
+		loadCustomCommands();
+	}
+
+	/**
+	 * removes a custom command
+	 *
+	 * @param input command
+	 */
+	public static void removeCustomCommand(String input) {
+		try {
+			WebDb.get().query("DELETE FROM commands WHERE input = ?", input);
+			loadCustomCommands();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Loads all the custom commands
+	 * initializes the commands
 	 */
-	private void loadCustomCommands() {
-		customCommands = new HashMap<>();
-		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands ")) {
-			while (r != null && r.next()) {
-				if (!commands.containsKey(r.getString("input")) && !customCommands.containsKey(r.getString("input"))) {
-					customCommands.put(r.getString("input"), r.getString("output"));
+	private static void loadCommands() {
+		Reflections reflections = new Reflections("discordbot.command");
+		Set<Class<? extends AbstractCommand>> classes = reflections.getSubTypesOf(AbstractCommand.class);
+		for (Class<? extends AbstractCommand> s : classes) {
+			try {
+				String packageName = s.getPackage().getName();
+				AbstractCommand c = s.getConstructor().newInstance();
+				c.setCommandCategory(CommandCategory.fromPackage(packageName.substring(packageName.lastIndexOf(".") + 1)));
+				if (!c.isEnabled()) {
+					continue;
 				}
+				if (!isCommandCategoryEnabled(c.getCommandCategory())) {
+					continue;
+				}
+				if (!commands.containsKey(c.getCommand())) {
+					commands.put(c.getCommand(), c);
+				}
+			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+				e.printStackTrace();
 			}
-			if (r != null) {
-				r.getStatement().close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
-
 	}
 }

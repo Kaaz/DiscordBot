@@ -1,6 +1,10 @@
 package discordbot.main;
 
 import discordbot.core.ExitCode;
+import discordbot.handler.CommandHandler;
+import discordbot.handler.GameHandler;
+import discordbot.handler.SecurityHandler;
+import discordbot.handler.Template;
 
 import javax.security.auth.login.LoginException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,6 +20,7 @@ public class BotContainer {
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException {
 		this.numShards = 1 + ((numGuilds + 1000) / 2500);
 		shards = new DiscordBot[numShards];
+		initHandlers();
 		initShards();
 		this.numGuilds = new AtomicInteger(numGuilds);
 	}
@@ -75,6 +80,14 @@ public class BotContainer {
 			shards[i] = new DiscordBot(i, shards.length);
 			shards[i].setContainer(this);
 		}
+	}
+
+	private void initHandlers() {
+		CommandHandler.initialize();
+		GameHandler.initialize();
+		SecurityHandler.initialize();
+		Template.initialize();
+
 	}
 
 	/**

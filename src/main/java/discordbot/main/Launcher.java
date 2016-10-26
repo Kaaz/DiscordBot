@@ -17,6 +17,7 @@ import java.util.Properties;
 
 public class Launcher {
 	public static boolean killAllThreads = false;
+	private static BotContainer botContainer = null;
 	private static ProgramVersion version = new ProgramVersion(1);
 
 	public static ProgramVersion getVersion() {
@@ -29,7 +30,7 @@ public class Launcher {
 		Launcher.init();
 		if (Config.BOT_ENABLED) {
 			try {
-				BotContainer botContainer = new BotContainer((TGuild.getActiveGuildCount()));
+				botContainer = new BotContainer((TGuild.getActiveGuildCount()));
 				Thread serviceHandler = new ServiceHandlerThread(botContainer);
 //				serviceHandler.setDaemon(true);
 				serviceHandler.start();
@@ -59,7 +60,11 @@ public class Launcher {
 	 * @param reason why!?
 	 */
 	public static void stop(ExitCode reason) {
-
+		if (botContainer != null) {
+			for (DiscordBot discordBot : botContainer.getShards()) {
+				discordBot.client.shutdown(true);
+			}
+		}
 		DiscordBot.LOGGER.error("Exiting", reason);
 		System.exit(reason.getCode());
 	}

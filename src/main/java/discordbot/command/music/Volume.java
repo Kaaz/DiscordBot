@@ -17,8 +17,8 @@ import net.dv8tion.jda.entities.User;
  * With no params returns the current volume
  */
 public class Volume extends AbstractCommand {
-	public Volume(DiscordBot b) {
-		super(b);
+	public Volume() {
+		super();
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class Volume extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		if (args.length > 0) {
 			float volume;

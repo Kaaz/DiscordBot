@@ -21,8 +21,8 @@ public class BlackJackCommand extends AbstractCommand {
 	public final long DEALER_TURN_INTERVAL = 2000L;
 	private Map<String, Blackjack> playerGames = new ConcurrentHashMap<>();
 
-	public BlackJackCommand(DiscordBot b) {
-		super(b);
+	public BlackJackCommand() {
+		super();
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class BlackJackCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (args.length == 0) {
 			if (playerGames.containsKey(author.getId()) && playerGames.get(author.getId()).isInProgress()) {
 				return "You are still in a game. To finish type **blackjack stand**" + Config.EOL +

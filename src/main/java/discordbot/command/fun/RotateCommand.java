@@ -82,8 +82,8 @@ public class RotateCommand extends AbstractCommand {
 		charMap.put("\u2045", "\u2046");
 	}
 
-	public RotateCommand(DiscordBot bot) {
-		super(bot);
+	public RotateCommand() {
+		super();
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class RotateCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		List<String> inputArray = new ArrayList<>();
 		String output = "";
 		for (String arg : args) {

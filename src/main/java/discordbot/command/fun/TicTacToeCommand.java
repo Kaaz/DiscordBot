@@ -8,8 +8,8 @@ import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 public class TicTacToeCommand extends AbstractCommand {
-	public TicTacToeCommand(DiscordBot b) {
-		super(b);
+	public TicTacToeCommand() {
+		super();
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class TicTacToeCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		return "The games have been moved to the `" + DisUtil.getCommandPrefix(channel) + "game` command";
 	}
 }

@@ -13,8 +13,8 @@ import net.dv8tion.jda.entities.User;
  * leaves the guild
  */
 public class LeaveGuildCommand extends AbstractCommand {
-	public LeaveGuildCommand(DiscordBot b) {
-		super(b);
+	public LeaveGuildCommand() {
+		super();
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class LeaveGuildCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		boolean shouldLeave = false;
 		Guild guild = ((TextChannel) channel).getGuild();
 		if (!bot.isAdmin(channel, author)) {

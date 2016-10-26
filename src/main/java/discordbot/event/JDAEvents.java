@@ -13,6 +13,7 @@ import discordbot.guildsettings.defaults.SettingPMUserEvents;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.guildsettings.defaults.SettingWelcomeNewUsers;
 import discordbot.handler.GuildSettings;
+import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -225,7 +226,7 @@ public class JDAEvents extends ListenerAdapter {
 			}
 		}
 		if (shouldLeave) {
-			audioManager.closeAudioConnection();
+			MusicPlayerHandler.getFor(event.getGuild(), discordBot).leave();
 			discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(channel.getGuild()), Template.get("music_no_one_listens_i_leave"), null);
 		}
 	}

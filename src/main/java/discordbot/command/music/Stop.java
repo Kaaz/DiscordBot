@@ -15,8 +15,8 @@ import net.dv8tion.jda.entities.User;
  * make the bot stop playing music
  */
 public class Stop extends AbstractCommand {
-	public Stop(DiscordBot b) {
-		super(b);
+	public Stop() {
+		super();
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class Stop extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		MusicPlayerHandler.getFor(guild, bot).stopMusic();
 		bot.leaveVoice(guild);

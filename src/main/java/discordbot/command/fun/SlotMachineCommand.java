@@ -20,8 +20,8 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 
 	private final long SPIN_INTERVAL = 2000L;
 
-	public SlotMachineCommand(DiscordBot bot) {
-		super(bot);
+	public SlotMachineCommand() {
+		super();
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (args.length == 0 || args.length >= 1 && args[0].equals("play")) {
 			final SlotMachine slotMachine = new SlotMachine();
 			bot.out.sendAsyncMessage(channel, slotMachine.toString(), message -> {

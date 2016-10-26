@@ -23,27 +23,18 @@ import java.util.stream.Collectors;
  * Manages permissions/bans for discord
  */
 public class SecurityHandler {
+	private static HashSet<String> bannedGuilds;
+	private static HashSet<String> bannedUsers;
+	private static HashSet<String> contributers;
+	private static HashSet<String> botAdmins;
 	private final DiscordBot discordBot;
-	private HashSet<String> bannedGuilds;
-	private HashSet<String> bannedUsers;
-	private HashSet<String> contributers;
-	private HashSet<String> botAdmins;
 
 	public SecurityHandler(DiscordBot discordBot) {
 
 		this.discordBot = discordBot;
-		loadLists();
 	}
 
-	public boolean isBanned(Guild guild) {
-		return isGuildBanned(guild.getId());
-	}
-
-	public boolean isGuildBanned(String discordId) {
-		return bannedGuilds.contains(discordId);
-	}
-
-	private void loadLists() {
+	public static synchronized void initialize() {
 		bannedGuilds = new HashSet<>();
 		bannedUsers = new HashSet<>();
 		contributers = new HashSet<>();
@@ -56,6 +47,14 @@ public class SecurityHandler {
 		List<OUserRank> bot_admin = TUserRank.getUsersWith(TRank.findBy("BOT_ADMIN").id);
 		contributers.addAll(contributor.stream().map(oUserRank -> TUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
 		contributers.addAll(bot_admin.stream().map(oUserRank -> TUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
+	}
+
+	public boolean isBanned(Guild guild) {
+		return isGuildBanned(guild.getId());
+	}
+
+	public boolean isGuildBanned(String discordId) {
+		return bannedGuilds.contains(discordId);
 	}
 
 	public SimpleRank getSimpleRank(User user) {

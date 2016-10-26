@@ -30,8 +30,8 @@ public class OldPlay extends AbstractCommand {
 	private final Pattern musicResultFilterPattern = Pattern.compile("^#?([0-9]{1,2})$");
 	private Map<String, ArrayList<Integer>> userFilteredSongs = new ConcurrentHashMap<>();
 
-	public OldPlay(DiscordBot b) {
-		super(b);
+	public OldPlay() {
+		super();
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class OldPlay extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		TextChannel tc = (TextChannel) channel;
 		if (MusicPlayerHandler.getFor(tc.getGuild(), bot).getUsersInVoiceChannel().size() == 0) {
 			return Template.get("music_no_users_in_channel");

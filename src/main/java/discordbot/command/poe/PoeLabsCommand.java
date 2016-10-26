@@ -27,8 +27,8 @@ public class PoeLabsCommand extends AbstractCommand {
 	));
 	private Pattern imagePattern = Pattern.compile("(?m)(normal|uber|merciless|cruel) lab notes[\\s]*(https?:.*(png|jpg))", Pattern.MULTILINE);
 
-	public PoeLabsCommand(DiscordBot b) {
-		super(b);
+	public PoeLabsCommand() {
+		super();
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class PoeLabsCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		List<Post> search = RedditScraper.search("pathofexile", "title%3ADaily+Labyrinth+author%3AAutoModerator&sort=new&restrict_sr=on&t=day");
 
 		if (!search.isEmpty()) {

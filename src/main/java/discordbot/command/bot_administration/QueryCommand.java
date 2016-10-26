@@ -19,8 +19,8 @@ import java.util.List;
 /**
  */
 public class QueryCommand extends AbstractCommand {
-	public QueryCommand(DiscordBot b) {
-		super(b);
+	public QueryCommand() {
+		super();
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class QueryCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
 			return ":upside_down: You have to be a bot administrator";
 		}

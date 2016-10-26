@@ -4,6 +4,7 @@ import discordbot.command.CommandCategory;
 import discordbot.core.AbstractCommand;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingHelpInPM;
+import discordbot.handler.CommandHandler;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.Config;
@@ -23,8 +24,8 @@ import java.util.HashMap;
  * help function
  */
 public class Help extends AbstractCommand {
-	public Help(DiscordBot b) {
-		super(b);
+	public Help() {
+		super();
 	}
 
 	@Override
@@ -52,11 +53,11 @@ public class Help extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		String commandPrefix = GuildSettings.getFor(channel, SettingCommandPrefix.class);
 		boolean showHelpInPM = GuildSettings.getFor(channel, SettingHelpInPM.class).equals("true");
 		if (args.length > 0 && !args[0].equals("style2") && !args[0].equals("style3")) {
-			AbstractCommand c = bot.commands.getCommand(DisUtil.filterPrefix(args[0], channel));
+			AbstractCommand c = CommandHandler.getCommand(DisUtil.filterPrefix(args[0], channel));
 			if (c != null) {
 				String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + Config.EOL;
 				ArrayList<String> aliases = new ArrayList<>();
@@ -82,7 +83,7 @@ public class Help extends AbstractCommand {
 			SimpleRank userRank = bot.security.getSimpleRank(author, channel);
 			String ret = "I know the following commands: " + Config.EOL + Config.EOL;
 			HashMap<CommandCategory, ArrayList<String>> commandList = new HashMap<>();
-			AbstractCommand[] commandObjects = bot.commands.getCommandObjects();
+			AbstractCommand[] commandObjects = CommandHandler.getCommandObjects();
 			for (AbstractCommand command : commandObjects) {
 				if (!command.isListed() || !command.isEnabled() || !userRank.isAtLeast(command.getCommandCategory().getRankRequired())) {
 					continue;

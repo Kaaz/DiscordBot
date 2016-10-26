@@ -23,7 +23,6 @@ import net.dv8tion.jda.player.source.LocalSource;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.LinkOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -93,13 +92,8 @@ public class MusicPlayerHandler {
 		File f = null;
 		final String messageType = GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class);
 		AudioInfo info = player.getCurrentAudioSource().getInfo();
-		System.out.println(info);
 		if (info != null) {
-			System.out.println(info.getOrigin());
 			f = new File(info.getOrigin());
-			System.out.println(f.getCanonicalPath());
-			System.out.println(f.toPath().toRealPath(LinkOption.NOFOLLOW_LINKS));
-			System.out.println(f.getAbsolutePath());
 
 			record = TMusic.findByFileName(f.getAbsolutePath());
 			if (record.id > 0) {
@@ -147,13 +141,14 @@ public class MusicPlayerHandler {
 	}
 
 	public boolean isConnected() {
-		return guild.getAudioManager().getConnectedChannel() == null;
+		return guild.getAudioManager().getConnectedChannel() != null;
 	}
 
 	public boolean leave() {
-		if (isConnected()) {
+		if (!isConnected()) {
 			return false;
 		}
+		stopMusic();
 		guild.getAudioManager().closeAudioConnection();
 		return true;
 	}

@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
  */
 public class TagCommand extends AbstractCommand {
 
-	public TagCommand(DiscordBot b) {
-		super(b);
+	public TagCommand() {
+		super();
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class TagCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		if (args.length == 0 || args[0].equals("list")) {
 			List<OTag> tags = TTag.getTagsFor(guild.getId());

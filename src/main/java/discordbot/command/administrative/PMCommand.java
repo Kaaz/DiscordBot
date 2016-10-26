@@ -12,8 +12,8 @@ import net.dv8tion.jda.entities.User;
  * make the bot pm someone
  */
 public class PMCommand extends AbstractCommand {
-	public PMCommand(DiscordBot b) {
-		super(b);
+	public PMCommand() {
+		super();
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class PMCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (!bot.isOwner(channel, author) && !bot.isAdmin(channel, author)) {
 			return Template.get("command_no_permission");
 		}

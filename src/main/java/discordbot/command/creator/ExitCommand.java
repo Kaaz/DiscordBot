@@ -13,8 +13,8 @@ import net.dv8tion.jda.entities.User;
  * completely stops the program
  */
 public class ExitCommand extends AbstractCommand {
-	public ExitCommand(DiscordBot b) {
-		super(b);
+	public ExitCommand() {
+		super();
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class ExitCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (bot.isCreator(author)) {
 			bot.out.sendAsyncMessage(channel, "I am being killed :sob: farewell world! :wave: ", message -> {
 				Launcher.stop(ExitCode.STOP);

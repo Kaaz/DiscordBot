@@ -18,8 +18,8 @@ public class RollCommand extends AbstractCommand {
 	Random rng;
 	Pattern dice = Pattern.compile("(\\d+)d(\\d+)\\+?(\\d+)?");
 
-	public RollCommand(DiscordBot b) {
-		super(b);
+	public RollCommand() {
+		super();
 		rng = new Random();
 	}
 
@@ -68,7 +68,7 @@ public class RollCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		int min = 1, max = 6, max_dice = 40, min_sides = 2;
 		if (args.length == 1) {
 			Matcher match = dice.matcher(args[0]);

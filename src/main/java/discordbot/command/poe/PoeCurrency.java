@@ -27,8 +27,8 @@ import java.util.List;
  * Analyzes an item from path of exile
  */
 public class PoeCurrency extends AbstractCommand {
-	public PoeCurrency(DiscordBot b) {
-		super(b);
+	public PoeCurrency() {
+		super();
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class PoeCurrency extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (args.length > 1) {
 			if (args[0].equalsIgnoreCase("token")) {
 				OPoEToken token = TPoEToken.findBy(author.getId());

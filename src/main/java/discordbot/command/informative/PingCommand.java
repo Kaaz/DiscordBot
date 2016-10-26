@@ -9,8 +9,8 @@ import net.dv8tion.jda.entities.User;
  * !ping
  */
 public class PingCommand extends AbstractCommand {
-	public PingCommand(DiscordBot b) {
-		super(b);
+	public PingCommand() {
+		super();
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class PingCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		long now = System.currentTimeMillis();
 		bot.out.sendAsyncMessage(channel, ":outbox_tray: checking ping", message -> message.updateMessageAsync(":inbox_tray: ping is " + (System.currentTimeMillis() - now) + "ms", null));
 		return "";

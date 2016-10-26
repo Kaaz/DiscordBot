@@ -12,8 +12,8 @@ import net.dv8tion.jda.entities.User;
  */
 public class GameCommandCommand extends AbstractCommand {
 
-	public GameCommandCommand(DiscordBot b) {
-		super(b);
+	public GameCommandCommand() {
+		super();
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class GameCommandCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		return "";//for the implementation see GameHandler
 	}
 }

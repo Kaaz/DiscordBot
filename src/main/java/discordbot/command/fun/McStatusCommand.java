@@ -19,8 +19,8 @@ public class McStatusCommand extends AbstractCommand {
 	final private int defaultPort = 25565;
 	final private String gid = "135024304835395585";
 
-	public McStatusCommand(DiscordBot bot) {
-		super(bot);
+	public McStatusCommand() {
+		super();
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class McStatusCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		String host = "localhost";
 		int port = defaultPort;
 		if (args.length == 1) {

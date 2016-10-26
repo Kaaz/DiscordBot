@@ -33,8 +33,8 @@ public class RedditCommand extends AbstractCommand {
 			"i.reddituploads.com"
 	}));
 
-	public RedditCommand(DiscordBot b) {
-		super(b);
+	public RedditCommand() {
+		super();
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class RedditCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		String subReddit = "funny";
 		if (args.length > 0) {
 			subReddit = args[0];

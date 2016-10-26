@@ -20,8 +20,8 @@ import net.dv8tion.jda.entities.User;
  */
 public class UserRankCommand extends AbstractCommand {
 
-	public UserRankCommand(DiscordBot b) {
-		super(b);
+	public UserRankCommand() {
+		super();
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class UserRankCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.CREATOR)) {
 			return Template.get("no_permission");
 		}

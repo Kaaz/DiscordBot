@@ -33,6 +33,7 @@ public class ReadmeHelper {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		WebDb.init();
 		RoleRankings.init();
+		CommandHandler.initialize();
 
 		String template = readFile("readme_template.md", StandardCharsets.UTF_8);
 		template = template.replace("%_COMMANDS_LIST_SIMPLE_%", readmeCommandSimpleList());
@@ -62,6 +63,7 @@ public class ReadmeHelper {
 	}
 
 	private static String readmeListOfgames() {
+		GameHandler.initialize();
 		GameHandler gameHandler = new GameHandler(null);
 		List<AbstractGame> gameList = gameHandler.getGameList();
 		String s = "";
@@ -100,17 +102,15 @@ public class ReadmeHelper {
 	 */
 	private static String readmeCommandSimpleList() {
 		String s = "";
-		CommandHandler commandHandler = new CommandHandler();
-		commandHandler.load();
 		ArrayList<String> sortedCommandList = new ArrayList<>();
-		Collections.addAll(sortedCommandList, commandHandler.getCommands());
+		Collections.addAll(sortedCommandList, CommandHandler.getCommands());
 		Collections.sort(sortedCommandList);
 		s += "Commands | | | | |" + Config.EOL;
 		s += "--- | --- | ---| ---| ---" + Config.EOL;
 		int columns = 5;
 		int currentColumn = 0;
 		for (String commandName : sortedCommandList) {
-			AbstractCommand command = commandHandler.getCommand(commandName);
+			AbstractCommand command = CommandHandler.getCommand(commandName);
 			if (command.isListed() && command.isEnabled()) {
 				s += "[" + command.getCommand() + "](#" + command.getCommand() + ")";
 				if (currentColumn % columns <= (columns - 2)) {
@@ -126,13 +126,11 @@ public class ReadmeHelper {
 
 	private static String readmeCommandDetailsList() {
 		String text = "";
-		CommandHandler commandHandler = new CommandHandler();
-		commandHandler.load();
 		ArrayList<String> sortedCommandList = new ArrayList<>();
-		Collections.addAll(sortedCommandList, commandHandler.getCommands());
+		Collections.addAll(sortedCommandList, CommandHandler.getCommands());
 		Collections.sort(sortedCommandList);
 		for (String commandName : sortedCommandList) {
-			AbstractCommand command = commandHandler.getCommand(commandName);
+			AbstractCommand command = CommandHandler.getCommand(commandName);
 			if (!command.isEnabled() || !command.isListed()) {
 				continue;
 			}

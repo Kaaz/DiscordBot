@@ -20,21 +20,36 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameHandler {
 
 	private static final String COMMAND_NAME = "game";
+	private static final Map<String, Class<? extends AbstractGame>> gameClassMap = new HashMap<>();
+	private static final Map<String, AbstractGame> gameInfoMap = new HashMap<>();
+	private static boolean initialized = false;
+	private final Map<String, Message> lastMessage = new ConcurrentHashMap<>();
 	private final DiscordBot bot;
-	private final Map<String, Class<? extends AbstractGame>> gameClassMap;
-	private final Map<String, AbstractGame> gameInfoMap;
-	private final Map<String, Message> lastMessage;
 	private Map<String, AbstractGame> playerGames = new ConcurrentHashMap<>();
 	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
-	private Map<String, String> usersInPlayMode;
+	private Map<String, String> usersInPlayMode = new ConcurrentHashMap<>();
 
 	public GameHandler(DiscordBot bot) {
 		this.bot = bot;
-		gameClassMap = new HashMap<>();
-		gameInfoMap = new HashMap<>();
-		lastMessage = new ConcurrentHashMap<>();
-		usersInPlayMode = new ConcurrentHashMap<>();
-		collectGameClasses();
+	}
+
+	public synchronized static void initialize() {
+		if (initialized) {
+			return;
+		}
+		initialized = true;
+		Reflections reflections = new Reflections("discordbot.games");
+		Set<Class<? extends AbstractGame>> classes = reflections.getSubTypesOf(AbstractGame.class);
+		for (Class<? extends AbstractGame> gameClass : classes) {
+			try {
+				AbstractGame abstractGame = gameClass.getConstructor().newInstance();
+				gameClassMap.put(abstractGame.getCodeName(), gameClass);
+				gameInfoMap.put(abstractGame.getCodeName(), abstractGame);
+			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private boolean isInPlayMode(User user, TextChannel channel) {
@@ -98,21 +113,6 @@ public class GameHandler {
 				bot.out.deleteMessage(msgToDelete);
 			}
 			lastMessage.put(channel.getId(), msg);
-		}
-	}
-
-	private void collectGameClasses() {
-		Reflections reflections = new Reflections("discordbot.games");
-		Set<Class<? extends AbstractGame>> classes = reflections.getSubTypesOf(AbstractGame.class);
-		for (Class<? extends AbstractGame> gameClass : classes) {
-			try {
-				AbstractGame abstractGame = gameClass.getConstructor().newInstance();
-				gameClassMap.put(abstractGame.getCodeName(), gameClass);
-				gameInfoMap.put(abstractGame.getCodeName(), abstractGame);
-			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
 		}
 	}
 

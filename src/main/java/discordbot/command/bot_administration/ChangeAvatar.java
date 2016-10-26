@@ -10,8 +10,8 @@ import net.dv8tion.jda.entities.User;
  * manage avatar
  */
 public class ChangeAvatar extends AbstractCommand {
-	public ChangeAvatar(DiscordBot b) {
-		super(b);
+	public ChangeAvatar() {
+		super();
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class ChangeAvatar extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (!bot.isCreator(author)) {
 			return ":upside_down: There's only one person who I trust enough to do that";
 		}

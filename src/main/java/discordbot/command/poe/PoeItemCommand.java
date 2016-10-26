@@ -12,8 +12,8 @@ import net.dv8tion.jda.entities.User;
  * Analyzes an item from path of exile
  */
 public class PoeItemCommand extends AbstractCommand {
-	public PoeItemCommand(DiscordBot b) {
-		super(b);
+	public PoeItemCommand() {
+		super();
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class PoeItemCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		String input = Joiner.on(" ").join(args);
 		ItemAnalyzer itemAnalyzer = new ItemAnalyzer();
 		return itemAnalyzer.attemptToANALyze(input).toString();

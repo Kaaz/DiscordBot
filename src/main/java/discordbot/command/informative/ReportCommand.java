@@ -9,8 +9,8 @@ import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 public class ReportCommand extends AbstractCommand {
-	public ReportCommand(DiscordBot b) {
-		super(b);
+	public ReportCommand() {
+		super();
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class ReportCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (args.length <= 3) {
 			return "Usage: " + getUsage()[0];
 		}

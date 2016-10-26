@@ -19,8 +19,8 @@ import java.util.List;
  * manages the templates
  */
 public class TemplateCommand extends AbstractCommand {
-	public TemplateCommand(DiscordBot b) {
-		super(b);
+	public TemplateCommand() {
+		super();
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class TemplateCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
 			return discordbot.handler.Template.get("no_permission");
 		}
@@ -78,7 +78,7 @@ public class TemplateCommand extends AbstractCommand {
 					for (int i = 3; i < args.length; i++) {
 						text += " " + args[i];
 					}
-					Template.getInstance().add(args[1], EmojiParser.parseToAliases(text));
+					Template.add(args[1], EmojiParser.parseToAliases(text));
 					return Template.get("command_template_added");
 				}
 				return Template.get("command_template_added_failed");
@@ -89,9 +89,9 @@ public class TemplateCommand extends AbstractCommand {
 					return Template.get("command_template_invalid_option");
 				}
 				int deleteIndex = Integer.parseInt(args[2]);
-				List<String> templateList = Template.getInstance().getAllFor(args[1]);
+				List<String> templateList = Template.getAllFor(args[1]);
 				if (templateList.size() > deleteIndex) {
-					Template.getInstance().remove(args[1], templateList.get(deleteIndex));
+					Template.remove(args[1], templateList.get(deleteIndex));
 					return Template.get("command_template_delete_success");
 				}
 				return Template.get("command_template_delete_failed");
@@ -111,11 +111,15 @@ public class TemplateCommand extends AbstractCommand {
 								Misc.makeTable(allKeyphrases, 50, 2);
 					}
 				}
+				List<String> allKeyphrases = Template.getAllKeyphrases(itemsPerPage, currentPage * itemsPerPage);
+				if (allKeyphrases.isEmpty()) {
+					return "No keyphrases set at this moment.";
+				}
 				return String.format("All keyphrases: [page %s/%s]", currentPage + 1, maxPage) + Config.EOL +
-						Misc.makeTable(Template.getAllKeyphrases(itemsPerPage, currentPage * itemsPerPage), 50, 2);
+						Misc.makeTable(allKeyphrases, 50, 2);
 			default:
 				args[0] = args[0].toLowerCase();
-				List<String> templates = Template.getInstance().getAllFor(args[0]);
+				List<String> templates = Template.getAllFor(args[0]);
 				if (args.length == 1) {
 					if (templates.isEmpty()) {
 						return Template.get("command_template_not_found", args[0]);

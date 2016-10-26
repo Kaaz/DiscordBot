@@ -12,8 +12,8 @@ import net.dv8tion.jda.entities.User;
  * Stream from url
  */
 public class StreamCommand extends AbstractCommand {
-	public StreamCommand(DiscordBot b) {
-		super(b);
+	public StreamCommand() {
+		super();
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class StreamCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		TextChannel tc = (TextChannel) channel;
 		if (!tc.getGuild().getAudioManager().isConnected()) {
 			return Template.get("music_no_users_in_channel");

@@ -11,8 +11,8 @@ import net.dv8tion.jda.entities.User;
  * changes the bots name
  */
 public class ChangeName extends AbstractCommand {
-	public ChangeName(DiscordBot b) {
-		super(b);
+	public ChangeName() {
+		super();
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class ChangeName extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (!bot.isCreator(author)) {
 			return ":upside_down: There's only one person who I trust enough to do that";
 		}

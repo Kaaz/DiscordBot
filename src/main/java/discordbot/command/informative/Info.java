@@ -3,6 +3,7 @@ package discordbot.command.informative;
 import discordbot.command.CooldownScale;
 import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
+import discordbot.handler.CommandHandler;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
@@ -25,8 +26,8 @@ import java.util.List;
 public class Info extends AbstractCommand implements ICommandCooldown {
 	private Trello trello;
 
-	public Info(DiscordBot b) {
-		super(b);
+	public Info() {
+		super();
 		trello = new TrelloImpl(Config.TRELLO_API_KEY, Config.TRELLO_TOKEN);
 	}
 
@@ -68,7 +69,7 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (args.length > 0 && Config.TRELLO_ACTIVE) {
 			switch (args[0].toLowerCase()) {
 				case "planned":
@@ -91,7 +92,7 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 		}
 		return "What am I? *" + response + "* " + Config.EOL +
 				"Currently active on " + bot.client.getGuilds().size() + " guilds and the last time I restarted was  " + onlineFor + "." + Config.EOL +
-				"Running version `" + Launcher.getVersion().toString() + "` and there are " + bot.commands.getCommands().length + " commands I can perform type **" + DisUtil.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
+				"Running version `" + Launcher.getVersion().toString() + "` and there are " + CommandHandler.getCommands().length + " commands I can perform type **" + DisUtil.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
 				"If I can't help you out, you can always try to poke __" + user.getUsername() + "#" + user.getDiscriminator() + "__ or join my *" + DisUtil.getCommandPrefix(channel) + "discord*";
 	}
 

@@ -13,8 +13,8 @@ import net.dv8tion.jda.entities.User;
  * make the bot leave
  */
 public class Leave extends AbstractCommand {
-	public Leave(DiscordBot b) {
-		super(b);
+	public Leave() {
+		super();
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class Leave extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (bot.leaveVoice(((TextChannel) channel).getGuild())) {
 			return Template.get("command_leave_success");
 		}

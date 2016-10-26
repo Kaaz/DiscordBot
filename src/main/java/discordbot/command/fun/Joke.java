@@ -3,6 +3,7 @@ package discordbot.command.fun;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import discordbot.core.AbstractCommand;
+import discordbot.handler.CommandHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.MessageChannel;
@@ -20,8 +21,8 @@ import java.util.Random;
  * gives you a random chuck norris joke with chuck norris replaced by <@user>
  */
 public class Joke extends AbstractCommand {
-	public Joke(DiscordBot b) {
-		super(b);
+	public Joke() {
+		super();
 	}
 
 	@Override
@@ -45,11 +46,11 @@ public class Joke extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		bot.out.sendAsyncMessage(channel, Template.get("command_joke_wait"), message -> {
 			String joketxt = "";
 			if (new Random().nextInt(100) < 80) {
-				joketxt = bot.commands.getCommand("reddit").execute(new String[]{"jokes"}, channel, author);
+				joketxt = CommandHandler.getCommand("reddit").execute(bot, new String[]{"jokes"}, channel, author);
 			} else {
 				joketxt = getJokeFromWeb(author.getUsername());
 			}

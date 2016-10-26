@@ -30,8 +30,8 @@ import java.util.regex.PatternSyntaxException;
 public class AutoReplyCommand extends AbstractCommand {
 	public final static int MIN_TAG_LENGTH = 2;
 
-	public AutoReplyCommand(DiscordBot b) {
-		super(b);
+	public AutoReplyCommand() {
+		super();
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class AutoReplyCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		if (!bot.isAdmin(channel, author)) {
 			return Template.get("no_permission");

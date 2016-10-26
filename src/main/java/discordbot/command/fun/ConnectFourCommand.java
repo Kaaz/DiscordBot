@@ -9,8 +9,8 @@ import net.dv8tion.jda.entities.User;
 
 public class ConnectFourCommand extends AbstractCommand {
 
-	public ConnectFourCommand(DiscordBot b) {
-		super(b);
+	public ConnectFourCommand() {
+		super();
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class ConnectFourCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String execute(String[] args, MessageChannel channel, User author) {
+	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		return "The games have been moved to the `" + DisUtil.getCommandPrefix(channel) + "game` command";
 	}
 }
