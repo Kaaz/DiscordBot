@@ -96,7 +96,7 @@ public class TGuild {
 			record.id = WebDb.get().insert(
 					"INSERT INTO guilds(discord_id, name, owner,active,banned) " +
 							"VALUES (?,?,?,?,?)",
-					record.discord_id, record.name,  record.owner == 0 ? null : record.owner, record.active, record.banned);
+					record.discord_id, record.name, record.owner == 0 ? null : record.owner, record.active, record.banned);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

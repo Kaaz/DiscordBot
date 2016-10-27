@@ -72,6 +72,10 @@ public class JDAEvents extends ListenerAdapter {
 		if (server.id == 0) {
 			TGuild.insert(server);
 		}
+		if (server.isBanned()) {
+			guild.getManager().leave();
+			return;
+		}
 		String cmdPre = GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
 		if (server.active != 1) {
 			String message = "Thanks for adding me to your guild!" + Config.EOL +
@@ -87,7 +91,6 @@ public class JDAEvents extends ListenerAdapter {
 			}
 			TBotEvent.insert("GUILD", "JOIN", String.format(" %s [dis-id: %s][iid: %s]", guild.getName(), guild.getId(), server.id));
 			discordBot.getContainer().guildJoined();
-//			discordBot.out.sendMessageToCreator(String.format("[**event**] [**guild**] I have just **joined** **%s** (discord-id = %s)", guild.getName(), guild.getId()));
 			if (outChannel != null) {
 				discordBot.out.sendAsyncMessage(outChannel, message, null);
 			} else {
@@ -106,8 +109,10 @@ public class JDAEvents extends ListenerAdapter {
 		server.active = 0;
 		TGuild.update(server);
 		discordBot.getContainer().guildLeft();
+		if (server.isBanned()) {
+			return;
+		}
 		TBotEvent.insert("GUILD", "LEAVE", String.format(" %s [dis-id: %s][iid: %s]", guild.getName(), guild.getId(), server.id));
-//		discordBot.out.sendMessageToCreator(String.format("[**event**] [**guild**] I have been **kicked** from **%s** (discord-id = %s)", server.name, server.discord_id));
 	}
 
 	@Override

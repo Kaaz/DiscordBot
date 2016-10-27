@@ -24,7 +24,7 @@ import java.io.IOException;
  * yea.. play is probably not a good name at the moment
  */
 public class Play extends AbstractCommand {
-	YTSearch ytSearch;
+	private YTSearch ytSearch;
 
 	public Play() {
 		super();

@@ -12,4 +12,8 @@ public class OGuild extends AbstractModel {
 	public int owner = 0;
 	public int active = 0;
 	public int banned = 0;
+
+	public boolean isBanned() {
+		return banned == 1;
+	}
 }
