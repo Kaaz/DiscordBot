@@ -56,7 +56,7 @@ public class YTUtil {
 					new InputStreamReader(
 							yc.getInputStream()));
 			String input = "";
-			String inputLine = "";
+			String inputLine;
 			while ((inputLine = in.readLine()) != null)
 				input += inputLine;
 			in.close();
@@ -84,7 +84,6 @@ public class YTUtil {
 		infoArgs.add("--verbose");
 		infoArgs.add("--no-check-certificate");
 		infoArgs.add("-x"); //audio only
-		infoArgs.add("--prefer-avconv");
 		infoArgs.add("--ffmpeg-location");
 		infoArgs.add(Config.YOUTUBEDL_BIN);
 		infoArgs.add("--audio-format");
