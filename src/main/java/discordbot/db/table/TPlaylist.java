@@ -29,6 +29,23 @@ public class TPlaylist {
 		return s;
 	}
 
+	public static OPlaylist findBy(int userId, int guildId) {
+		OPlaylist s = new OPlaylist();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT id, title, owner_id, guild_id, visibility_level, edit_type, create_date  " +
+						"FROM playlist " +
+						"WHERE owner_id = ? AND guild_id = ?", userId, guildId)) {
+			if (rs.next()) {
+				s = fillRecord(rs);
+			}
+			rs.getStatement().close();
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return s;
+	}
+
+
 	public static OPlaylist findById(int internalId) {
 		OPlaylist s = new OPlaylist();
 		try (ResultSet rs = WebDb.get().select(
@@ -75,10 +92,11 @@ public class TPlaylist {
 
 	public static void insert(OPlaylist record) {
 		try {
+			record.createdOn = new Timestamp(System.currentTimeMillis());
 			record.id = WebDb.get().insert(
 					"INSERT INTO playlist(title, owner_id, guild_id, visibility_level, edit_type, create_date) " +
 							"VALUES (?,?,?,?,?,?)",
-					record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(), new Timestamp(System.currentTimeMillis()));
+					record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(), record.createdOn);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

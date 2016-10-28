@@ -9,6 +9,7 @@ public class TimeUtil {
 	private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
 	private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 	private static final SimpleDateFormat timestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+	private static final SimpleDateFormat ymdFormat = new SimpleDateFormat("yyyy/mm/dd");
 
 	public static String getTimestampFormat(long time) {
 		try {
@@ -16,6 +17,10 @@ public class TimeUtil {
 		} catch (Exception e) {
 			return "cant figure out (" + time + ")";
 		}
+	}
+
+	public static String formatYMD(Date date) {
+		return timestamp.format(date);
 	}
 
 	/**

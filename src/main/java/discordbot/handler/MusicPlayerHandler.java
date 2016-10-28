@@ -74,6 +74,9 @@ public class MusicPlayerHandler {
 	public int getActivePLaylistId() {
 		return activePlayListId;
 	}
+	public synchronized void setActivePlayListId(int id){
+		activePlayListId = id;
+	}
 
 	public long getStartTimeStamp() {
 		return currentSongStartTimeInSeconds;
