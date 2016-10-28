@@ -7,6 +7,7 @@ import discordbot.guildsettings.defaults.SettingMusicPlayingMessage;
 import discordbot.guildsettings.defaults.SettingMusicVolume;
 import discordbot.handler.audiosources.StreamSource;
 import discordbot.main.DiscordBot;
+import discordbot.util.DisUtil;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
@@ -38,6 +39,7 @@ public class MusicPlayerHandler {
 	private volatile int currentlyPlaying = 0;
 	private volatile long currentSongLength = 0;
 	private volatile long currentSongStartTimeInSeconds = 0;
+	private volatile int activePlayListId = 0;
 	private Random rng;
 	private AudioManager manager;
 	private volatile LinkedList<OMusic> queue;
@@ -69,6 +71,10 @@ public class MusicPlayerHandler {
 		}
 	}
 
+	public int getActivePLaylistId() {
+		return activePlayListId;
+	}
+
 	public long getStartTimeStamp() {
 		return currentSongStartTimeInSeconds;
 	}
@@ -94,7 +100,6 @@ public class MusicPlayerHandler {
 		AudioInfo info = player.getCurrentAudioSource().getInfo();
 		if (info != null) {
 			f = new File(info.getOrigin());
-
 			record = TMusic.findByFileName(f.getAbsolutePath());
 			if (record.id > 0) {
 				record.lastplaydate = System.currentTimeMillis() / 1000L;
@@ -107,13 +112,18 @@ public class MusicPlayerHandler {
 		}
 		if (!messageType.equals("off") && record.id > 0) {
 			String msg;
+			if (activePlayListId == 0) {
+				msg = "[ no `" + DisUtil.getCommandPrefix(guild) + "playlist`] ";
+			} else {
+				msg = "[some list] ";
+			}
 			if (record.youtubeTitle.isEmpty()) {
-				msg = "plz send help:: " + f.getName();
+				msg += "plz send help:: " + f.getName();
 			} else {
 				if (record.artist != null && record.title != null && !record.artist.trim().isEmpty() && !record.title.trim().isEmpty()) {
-					msg = "Now playing " + record.artist + " - " + record.title;
+					msg += ":notes: " + record.artist + " - " + record.title;
 				} else {
-					msg = "Now playing " + record.youtubeTitle;//+ "  *need details about song!* see **" + DisUtil.getCommandPrefix(guild) + "np**";
+					msg += ":notes: " + record.youtubeTitle;
 				}
 			}
 			final long deleteAfter = currentSongLength * 1000L;

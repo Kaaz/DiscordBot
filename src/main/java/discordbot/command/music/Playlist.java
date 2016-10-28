@@ -2,20 +2,13 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.OMusic;
-import discordbot.db.table.TMusic;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
-import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import discordbot.util.Misc;
-import discordbot.util.TimeUtil;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
-
-import java.util.List;
 
 /**
  * !playlist
@@ -29,7 +22,7 @@ public class Playlist extends AbstractCommand {
 
 	@Override
 	public String getDescription() {
-		return "information about the playlist/history";
+		return "information about the playlists";
 	}
 
 	@Override
@@ -40,15 +33,20 @@ public class Playlist extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"playlist          //playlist queue",
-				"playlist clear    //playlist queue",
-				"playlist history  //list of recently played songs"
+				"playlist              //info about the current playlist",
+				"playlist use mine     //use your playlist",
+				"playlist use guild    //use the guild's playlist",
+				"playlist use global   //use the global playlist",
+				"playlist setting      //check the settings for the active playlist",
+				"playlist list         //yes list list, see what playlists there are",
 		};
 	}
 
 	@Override
 	public String[] getAliases() {
-		return new String[0];
+		return new String[]{
+				"pl"
+		};
 	}
 
 	@Override
@@ -59,37 +57,20 @@ public class Playlist extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
+		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 		if (args.length == 0) {
-			MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
-			List<OMusic> queue = player.getQueue();
-			String ret = "Music Queue" + Config.EOL;
-			if (queue.size() == 0) {
-				ret += "The queue is currently empty. " + Config.EOL +
-						"To add a song use the **play** command!";
-			} else {
-				int i = 0;
-				for (OMusic song : queue) {
-					i++;
-					ret += String.format("#%03d %s", i, song.youtubeTitle) + Config.EOL;
-				}
+			int listId = player.getActivePLaylistId();
+			if (listId == 0) {
+				return "no playlist active at the moment, using the global list.";
 			}
-			return ret;
-		} else if (args[0].equals("history")) {
-			List<OMusic> recentlyPlayed = TMusic.getRecentlyPlayed(10);
-			if (recentlyPlayed.size() > 0) {
-				String ret = "List of recently played music " + Config.EOL;
-				ret += String.format("    %-16s %s", ":watch:", ":notes:") + Config.EOL;
-				String tableContent = "";
-				for (OMusic song : recentlyPlayed) {
-					tableContent += String.format("%-7s%s", TimeUtil.getRelativeTime(song.lastplaydate), song.youtubeTitle) + Config.EOL;
-				}
-				return ret + Misc.makeTable(tableContent);
-			} else {
-				return Template.get("music_not_played_anything_yet");
+			return "";
+		} else {
+			switch (args[0].toLowerCase()) {
+				case "use":
+					break;
+				case "setting":
+					break;
 			}
-		} else if (args[0].equals("clear")) {
-			MusicPlayerHandler.getFor(guild, bot).clearQueue();
-			return Template.get("music_playlist_cleared");
 		}
 		return Template.get("command_invalid_use");
 	}

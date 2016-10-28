@@ -30,7 +30,6 @@ public class TBotEvent {
 		}
 		return s;
 	}
-
 	private static OBotEvent fillRecord(ResultSet rs) throws SQLException {
 		OBotEvent s = new OBotEvent();
 		s.id = rs.getInt("id");
