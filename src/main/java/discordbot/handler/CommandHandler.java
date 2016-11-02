@@ -14,6 +14,7 @@ import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingShowUnknownCommands;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
 import net.dv8tion.jda.entities.MessageChannel;
@@ -106,6 +107,22 @@ public class CommandHandler {
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
 			outMsg = Template.get("unknown_command", GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help");
+		}
+		if (channel instanceof TextChannel) {
+			TextChannel tc = (TextChannel) channel;
+			Launcher.log("command executed", "bot", "command",
+					"input", incomingMessage,
+					"user-id", author.getId(),
+					"user-name", author.getUsername(),
+					"guild-id", tc.getGuild().getId(),
+					"guild-name", tc.getGuild().getName(),
+					"response", outMsg);
+		} else {
+			Launcher.log("command executed", "bot", "command-private",
+					"input", incomingMessage,
+					"user-id", author.getId(),
+					"user-name", author.getUsername(),
+					"response", outMsg);
 		}
 		if (!outMsg.isEmpty()) {
 			bot.out.sendAsyncMessage(channel, outMsg, (message) -> {

@@ -91,6 +91,9 @@ public class JDAEvents extends ListenerAdapter {
 			}
 			TBotEvent.insert("GUILD", "JOIN", String.format(" %s [dis-id: %s][iid: %s]", guild.getName(), guild.getId(), server.id));
 			discordBot.getContainer().guildJoined();
+			Launcher.log("bot joins guild", "bot", "guild-join",
+					"guild-id", guild.getId(),
+					"guild-name", guild.getName());
 			if (outChannel != null) {
 				discordBot.out.sendAsyncMessage(outChannel, message, null);
 			} else {
@@ -113,6 +116,9 @@ public class JDAEvents extends ListenerAdapter {
 			return;
 		}
 		TBotEvent.insert("GUILD", "LEAVE", String.format(" %s [dis-id: %s][iid: %s]", guild.getName(), guild.getId(), server.id));
+		Launcher.log("bot leaves guild", "bot", "guild-leave",
+				"guild-id", guild.getId(),
+				"guild-name", guild.getName());
 	}
 
 	@Override
@@ -150,6 +156,12 @@ public class JDAEvents extends ListenerAdapter {
 		if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
 			discordBot.out.sendAsyncMessage(discordBot.getDefaultChannel(guild), Template.get("welcome_new_user", user.getAsMention()), null);
 		}
+		Launcher.log("user joins guild", "guild", "member-join",
+				"guild-id", guild.getId(),
+				"guild-name", guild.getName(),
+				"user-id", user.getId(),
+				"user-name", user.getUsername());
+
 		if ("true".equals(settings.getOrDefault(SettingRoleTimeRanks.class))) {
 			RoleRankings.assignUserRole(discordBot, guild, user);
 		}
@@ -165,6 +177,11 @@ public class JDAEvents extends ListenerAdapter {
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingWelcomeNewUsers.class))) {
 			discordBot.out.sendAsyncMessage(guild.getTextChannels().get(0), Template.get("message_user_leaves", user.getUsername()), null);
 		}
+		Launcher.log("user leaves guild", "guild", "member-leave",
+				"guild-id", guild.getId(),
+				"guild-name", guild.getName(),
+				"user-id", user.getId(),
+				"user-name", user.getUsername());
 		OGuildMember guildMember = TGuildMember.findBy(guild.getId(), user.getId());
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());
 		TGuildMember.insertOrUpdate(guildMember);

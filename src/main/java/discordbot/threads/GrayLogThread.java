@@ -1,20 +1,14 @@
 package discordbot.threads;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import discordbot.main.Config;
 import org.graylog2.gelfclient.*;
 import org.graylog2.gelfclient.transport.GelfTransport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class GrayLogThread extends Thread {
-	public static final Logger LOGGER = LoggerFactory.getLogger(GrayLogThread.class);
-	private final Gson gson;
-	private LinkedBlockingQueue<Map> itemsToLog =
+	private LinkedBlockingQueue<GelfMessage> itemsToLog =
 			new LinkedBlockingQueue<>();
 	private volatile boolean loggerTerminated = false;
 	private GelfConfiguration config;
@@ -23,12 +17,11 @@ public class GrayLogThread extends Thread {
 
 	public GrayLogThread() throws InterruptedException {
 		super("graylog-writer");
-		gson = new GsonBuilder().create();
 		connect();
 	}
 
 	private void connect() throws InterruptedException {
-		config = new GelfConfiguration(new InetSocketAddress("10.120.34.139", 12202))
+		config = new GelfConfiguration(new InetSocketAddress(Config.BOT_GRAYLOG_HOST, Config.BOT_GRAYLOG_PORT))
 				.transport(GelfTransports.UDP)
 				.queueSize(512)
 				.connectTimeout(5000)
@@ -36,28 +29,19 @@ public class GrayLogThread extends Thread {
 				.tcpNoDelay(true)
 				.sendBufferSize(32768);
 		transport = GelfTransports.create(config);
-		builder = new GelfMessageBuilder("??", "emily-bot.pw")
+		builder = new GelfMessageBuilder("??", Config.BOT_WEBSITE)
 				.level(GelfMessageLevel.INFO)
-				.additionalField("_source", "emily-bot-test")
+				.additionalField("env", Config.BOT_ENV)
 				.additionalField("from_gelf", "true");
-//		for (int i = 0; i < 5; i++) {
-		int i = 1;
-		GelfMessage message = builder.message("This is message #" + i).build();
-		message.addAdditionalField("anderveld", "anderewaarde");
-		message.setFullMessage("the full message is blablabla");
-		message.setTimestamp(System.currentTimeMillis() / 1000L);
-		transport.trySend(message);
-//		}
 		Thread.sleep(10000);
 	}
 
 	public void run() {
 		try {
-			Map logMessage;
+			GelfMessage logMessage;
 			while (!loggerTerminated) {
 				logMessage = itemsToLog.take();
-				gson.toJson(logMessage);
-
+				transport.trySend(logMessage);
 			}
 		} catch (InterruptedException iex) {
 		} finally {
@@ -65,10 +49,28 @@ public class GrayLogThread extends Thread {
 		}
 	}
 
-	public void log(Map lm) {
+	/**
+	 * @param message the log message
+	 * @param type    the category of the log message
+	 * @param subtype the subcategory of a logmessage
+	 * @param args    optional extra arguments
+	 */
+	public void log(String message, String type, String subtype, Object... args) {
 		if (loggerTerminated) return;
 		try {
-			itemsToLog.put(lm);
+			GelfMessage msg = builder.message(message).build();
+			msg.setFullMessage(message);
+			for (int i = 0; i < args.length; i += 2) {
+				if (args[i] == null || args[i + 1] == null) {
+					break;
+				}
+				msg.addAdditionalField(String.valueOf(args[i]), String.valueOf(args[i + 1]));
+			}
+			msg.addAdditionalField("event", type);
+			msg.addAdditionalField("sub-event", subtype);
+
+			msg.setTimestamp(System.currentTimeMillis() / 1000L);
+			itemsToLog.put(msg);
 		} catch (InterruptedException iex) {
 			Thread.currentThread().interrupt();
 			throw new RuntimeException("Unexpected interruption");

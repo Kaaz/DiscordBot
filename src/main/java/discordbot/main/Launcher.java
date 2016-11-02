@@ -8,6 +8,7 @@ import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TGuild;
 import discordbot.db.table.TMusic;
+import discordbot.threads.GrayLogThread;
 import discordbot.threads.ServiceHandlerThread;
 import discordbot.util.YTUtil;
 
@@ -17,8 +18,23 @@ import java.util.Properties;
 
 public class Launcher {
 	public static boolean killAllThreads = false;
+	private static GrayLogThread GRAYLOG;
 	private static BotContainer botContainer = null;
 	private static ProgramVersion version = new ProgramVersion(1);
+
+	/**
+	 * log all the things!
+	 *
+	 * @param message the log message
+	 * @param type    the category of the log message
+	 * @param subtype the subcategory of a logmessage
+	 * @param args    optional extra arguments
+	 */
+	public static void log(String message, String type, String subtype, Object... args) {
+		if (GRAYLOG != null && Config.BOT_GRAYLOG_ACTIVE) {
+			GRAYLOG.log(message, type, subtype, args);
+		}
+	}
 
 	public static ProgramVersion getVersion() {
 		return version;
@@ -45,13 +61,15 @@ public class Launcher {
 		}
 	}
 
-	private static void init() throws IOException {
+	private static void init() throws IOException, InterruptedException {
 		Properties props = new Properties();
 		props.load(Launcher.class.getClassLoader().getResourceAsStream("version.properties"));
 		Launcher.version = ProgramVersion.fromString(String.valueOf(props.getOrDefault("version", "1")));
 		DiscordBot.LOGGER.info("Started with version: " + Launcher.version);
 		DbUpdate dbUpdate = new DbUpdate(WebDb.get());
 		dbUpdate.updateToCurrent();
+		Launcher.GRAYLOG = new GrayLogThread();
+		Launcher.GRAYLOG.start();
 	}
 
 	/**

@@ -84,6 +84,9 @@ public class Playlist extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
+		if (1 == 1) {//yep I know
+			return Template.get("command_disabled");
+		}
 		int listId = player.getActivePLaylistId();
 		OPlaylist playlist;
 		if (listId > 0) {

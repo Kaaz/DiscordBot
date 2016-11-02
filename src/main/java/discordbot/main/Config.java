@@ -8,6 +8,18 @@ public class Config {
 	//bot enabled? must be set to true in order to run
 	@ConfigurationOption
 	public static boolean BOT_ENABLED = false;
+	@ConfigurationOption
+	public static String BOT_WEBSITE = "emily-bot.pw";
+	@ConfigurationOption
+	public static String BOT_ENV = "test";
+
+	@ConfigurationOption
+	public static boolean BOT_GRAYLOG_ACTIVE = false;
+	@ConfigurationOption
+	public static String BOT_GRAYLOG_HOST = "10.120.34.139";
+	@ConfigurationOption
+	public static int BOT_GRAYLOG_PORT = 12202;
+
 
 	@ConfigurationOption
 	public static boolean BOT_AUTO_UPDATE = false;

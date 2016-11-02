@@ -7,7 +7,7 @@ import discordbot.guildsettings.defaults.SettingMusicPlayingMessage;
 import discordbot.guildsettings.defaults.SettingMusicVolume;
 import discordbot.handler.audiosources.StreamSource;
 import discordbot.main.DiscordBot;
-import discordbot.util.DisUtil;
+import discordbot.main.Launcher;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
@@ -74,7 +74,8 @@ public class MusicPlayerHandler {
 	public int getActivePLaylistId() {
 		return activePlayListId;
 	}
-	public synchronized void setActivePlayListId(int id){
+
+	public synchronized void setActivePlayListId(int id) {
 		activePlayListId = id;
 	}
 
@@ -114,11 +115,11 @@ public class MusicPlayerHandler {
 			record = new OMusic();
 		}
 		if (!messageType.equals("off") && record.id > 0) {
-			String msg;
+			String msg = "";
 			if (activePlayListId == 0) {
-				msg = "[ no `" + DisUtil.getCommandPrefix(guild) + "playlist`] ";
+//				msg = "[ no `" + DisUtil.getCommandPrefix(guild) + "playlist`] ";
 			} else {
-				msg = "[some list] ";
+//				msg = "[some list] ";
 			}
 			if (record.youtubeTitle.isEmpty()) {
 				msg += "plz send help:: " + f.getName();
@@ -236,6 +237,9 @@ public class MusicPlayerHandler {
 				e.printStackTrace();
 			}
 			player.play();
+			Launcher.log("Start playing", "music", "start",
+					"guild-id", guild.getId(),
+					"guild-name", guild.getName());
 		}
 	}
 
@@ -282,6 +286,9 @@ public class MusicPlayerHandler {
 	public synchronized void stopMusic() {
 		currentlyPlaying = 0;
 		player.stop();
+		Launcher.log("Stop playing", "music", "stop",
+				"guild-id", guild.getId(),
+				"guild-name", guild.getName());
 	}
 
 	public List<OMusic> getQueue() {
