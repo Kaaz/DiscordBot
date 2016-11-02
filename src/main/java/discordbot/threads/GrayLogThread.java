@@ -33,7 +33,6 @@ public class GrayLogThread extends Thread {
 				.level(GelfMessageLevel.INFO)
 				.additionalField("env", Config.BOT_ENV)
 				.additionalField("from_gelf", "true");
-		Thread.sleep(10000);
 	}
 
 	public void run() {
