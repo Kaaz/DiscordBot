@@ -48,6 +48,13 @@ public class BotSelfUpdateService extends AbstractService {
 		ProgramVersion latestVersion = UpdateUtil.getLatestVersion();
 		DiscordBot bot = this.bot.getShards()[0];
 		if (latestVersion.isHigherThan(Launcher.getVersion())) {
+			bot.timer.schedule(
+					new TimerTask() {
+						@Override
+						public void run() {
+							Launcher.stop(ExitCode.UPDATE);
+						}
+					}, TimeUnit.MINUTES.toMillis(1));
 			usersHaveBeenWarned = true;
 			for (TextChannel channel : getSubscribedChannels()) {
 				sendTo(channel, Template.get("bot_self_update_restart", Launcher.getVersion().toString(), latestVersion.toString()));
@@ -71,14 +78,6 @@ public class BotSelfUpdateService extends AbstractService {
 					}
 				}
 			}
-			bot.timer.schedule(
-					new TimerTask() {
-						@Override
-						public void run() {
-							Launcher.stop(ExitCode.UPDATE);
-						}
-					}
-					, TimeUnit.MINUTES.toMillis(1));
 		}
 	}
 
