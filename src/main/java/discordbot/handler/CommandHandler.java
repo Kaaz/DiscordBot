@@ -27,8 +27,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Handles all the commands
@@ -37,7 +39,7 @@ public class CommandHandler {
 
 	private static HashMap<String, AbstractCommand> commands = new HashMap<>();
 	private static HashMap<String, AbstractCommand> commandsAlias = new HashMap<>();
-	private static HashMap<String, String> customCommands = new HashMap<>();
+	private static Map<String, String> customCommands = new ConcurrentHashMap<>();
 
 	/**
 	 * checks if the the message in channel is a command
@@ -256,7 +258,7 @@ public class CommandHandler {
 	private static void loadCustomCommands() {
 		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands ")) {
 			while (r != null && r.next()) {
-				if (!commands.containsKey(r.getString("input")) && !customCommands.containsKey(r.getString("input"))) {
+				if (!commands.containsKey(r.getString("input"))) {
 					customCommands.put(r.getString("input"), r.getString("output"));
 				}
 			}
