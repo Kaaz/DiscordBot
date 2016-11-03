@@ -5,10 +5,13 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
+import discordbot.guildsettings.defaults.SettingMusicRole;
+import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.YTSearch;
 import discordbot.util.YTUtil;
 import net.dv8tion.jda.Permission;
@@ -51,7 +54,8 @@ public class Play extends AbstractCommand {
 		return new String[]{
 				"play <youtubelink>    //download and plays song",
 				"play <part of title>  //shows search results",
-				"play                  //just start playing something"
+				"play                  //just start playing something",
+				"play role <role>      //you need this role in order to play music"
 		};
 	}
 
@@ -77,6 +81,11 @@ public class Play extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		TextChannel txt = (TextChannel) channel;
 		Guild guild = txt.getGuild();
+		SimpleRank simpleRank = bot.security.getSimpleRank(author, txt);
+		String rolerequirement = GuildSettings.getFor(channel, SettingMusicRole.class);
+		if (!rolerequirement.equals("none")) {
+
+		}
 		if (!PermissionUtil.checkPermission(txt, bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
 			return "";
 		}
@@ -106,10 +115,7 @@ public class Play extends AbstractCommand {
 						String finalVideocode = videocode;
 						bot.out.sendAsyncMessage(channel, Template.get("music_downloading_hang_on"), message -> {
 							System.out.println("starting download with code:::::" + finalVideocode);
-							if (YTUtil.downloadfromYoutubeAsMp3(finalVideocode)) {
-//							message.updateMessageAsync(Template.get("music_resampling"), null);
-//							YTUtil.resampleToWav(finalVideocode);
-							}
+							YTUtil.downloadfromYoutubeAsMp3(finalVideocode);
 							try {
 								if (filecheck.exists()) {
 									String path = filecheck.toPath().toRealPath().toString();

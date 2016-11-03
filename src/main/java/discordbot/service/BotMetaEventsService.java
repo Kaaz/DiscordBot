@@ -5,6 +5,9 @@ import discordbot.db.model.OBotEvent;
 import discordbot.db.table.TBotEvent;
 import discordbot.main.BotContainer;
 import discordbot.main.Config;
+import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
+import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.TextChannel;
 
 import java.text.SimpleDateFormat;
@@ -45,6 +48,33 @@ public class BotMetaEventsService extends AbstractService {
 		int lastId = Integer.parseInt("0" + getData("last_broadcast_id"));
 		List<OBotEvent> events = TBotEvent.getEventsAfter(lastId);
 		List<TextChannel> subscribedChannels = getSubscribedChannels();
+		int totGuilds = 0, totUsers = 0, totChannels = 0, totVoice = 0, totActiveVoice = 0;
+		for (DiscordBot shard : bot.getShards()) {
+			List<Guild> guilds = shard.client.getGuilds();
+			int numGuilds = guilds.size();
+			int users = shard.client.getUsers().size();
+			int channels = shard.client.getTextChannels().size();
+			int voiceChannels = shard.client.getVoiceChannels().size();
+			int activeVoice = 0;
+			for (Guild guild : shard.client.getGuilds()) {
+				if (shard.client.getAudioManager(guild).isConnected()) {
+					activeVoice++;
+				}
+			}
+			totGuilds += numGuilds;
+			totUsers += users;
+			totChannels += channels;
+			totVoice += voiceChannels;
+			totActiveVoice += activeVoice;
+		}
+		Launcher.log("Statistics", "bot", "meta-stats",
+				"guilds", totGuilds,
+				"users", totUsers,
+				"channels", totChannels,
+				"voice-channels", totVoice,
+				"radio-channels", totActiveVoice
+		);
+
 		if (events.isEmpty()) {
 			return;
 		}
@@ -56,6 +86,7 @@ public class BotMetaEventsService extends AbstractService {
 			lastId = event.id;
 		}
 		saveData("last_broadcast_id", lastId);
+
 	}
 
 	@Override

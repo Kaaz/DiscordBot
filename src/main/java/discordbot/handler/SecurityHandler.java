@@ -75,11 +75,11 @@ public class SecurityHandler {
 		if (user.isBot()) {
 			return SimpleRank.BOT;
 		}
-		if (contributers.contains(user.getId())) {
-			return SimpleRank.CONTRIBUTOR;
-		}
 		if (botAdmins.contains(user.getId())) {
 			return SimpleRank.BOT_ADMIN;
+		}
+		if (contributers.contains(user.getId())) {
+			return SimpleRank.CONTRIBUTOR;
 		}
 		if (bannedUsers.contains(user.getId())) {
 			return SimpleRank.BANNED_USER;

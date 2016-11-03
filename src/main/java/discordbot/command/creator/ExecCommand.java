@@ -61,7 +61,7 @@ public class ExecCommand extends AbstractCommand {
 			} else {
 				process = Runtime.getRuntime().exec(Joiner.on(" ").join(args));
 			}
-			process.waitFor(2, TimeUnit.MINUTES);
+			process.waitFor(1, TimeUnit.MINUTES);
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			StringBuilder sb = new StringBuilder();
