@@ -31,8 +31,7 @@ public class GrayLogThread extends Thread {
 		transport = GelfTransports.create(config);
 		builder = new GelfMessageBuilder("??", Config.BOT_WEBSITE)
 				.level(GelfMessageLevel.INFO)
-				.additionalField("env", Config.BOT_ENV)
-				.additionalField("from_gelf", "true");
+				.additionalField("env", Config.BOT_ENV);
 	}
 
 	public void run() {

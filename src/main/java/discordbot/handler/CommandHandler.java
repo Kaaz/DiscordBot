@@ -101,7 +101,7 @@ public class CommandHandler {
 				}
 			}
 		} else if (customCommands.containsKey(input[0])) {
-			outMsg = customCommands.get(input[0]);
+			outMsg = DisUtil.replaceTags(customCommands.get(input[0]), author, channel);
 		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
 			outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat(inputMessage);
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||

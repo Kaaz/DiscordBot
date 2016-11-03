@@ -5,12 +5,14 @@ import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingUseEconomy;
 import discordbot.handler.GuildSettings;
 import discordbot.main.Config;
+import net.dv8tion.jda.OnlineStatus;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.*;
 import net.dv8tion.jda.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -44,6 +46,52 @@ public class DisUtil {
 			return GuildSettings.getFor(((TextChannel) channel), SettingUseEconomy.class).equals("true");
 		}
 		return false;
+	}
+
+	/**
+	 * Replaces tags with a
+	 *
+	 * @param input   the message to replace tags in
+	 * @param user    user info for user related tags
+	 * @param channel channel/guild info
+	 * @return formatted string
+	 */
+	public static String replaceTags(String input, User user, MessageChannel channel) {
+		Guild guild = null;
+		if (channel instanceof TextChannel) {
+			guild = ((TextChannel) channel).getGuild();
+		}
+		String output = input.replace("\\%", "\u0013");
+		output = output
+				.replace("%user%", user.getUsername())
+				.replace("%user-id%", user.getId())
+				.replace("%nick%", ((guild == null || guild.getNicknameForUser(user) == null) ? user.getUsername() : guild.getNicknameForUser(user)))
+				.replace("%discrim%", user.getDiscriminator())
+				.replace("%guild%", (guild == null) ? "Private" : guild.getName())
+				.replace("%guild-id%", (guild == null) ? "0" : guild.getId())
+				.replace("%guild-users%", (guild == null) ? "0" : guild.getUsers().size() + "")
+				.replace("%channel%", (guild == null) ? "Private" : ((TextChannel) channel).getName())
+				.replace("%channel-id%", (guild == null) ? "0" : channel.getId());
+		if (guild == null) {
+			return output.replace("\u0013", "%");
+		}
+		int ind;
+		Random rng = new Random();
+		while ((ind = output.indexOf("%rand-user%")) != -1) {
+			output = output.substring(0, ind) +
+					guild.getUsers().get(rng.nextInt(guild.getUsers().size())).getUsername()
+					+ output.substring(ind + 11);
+		}
+
+		if (output.contains("%rand-user-online%")) {
+			List<User> onlines = new ArrayList<>();
+			guild.getUsers().stream().filter((u) -> (u.getOnlineStatus().equals(OnlineStatus.ONLINE))).forEach(onlines::add);
+			while ((ind = output.indexOf("%rand-user-online%")) != -1)
+				output = output.substring(0, ind) +
+						onlines.get(rng.nextInt(onlines.size())).getUsername()
+						+ output.substring(ind + 18);
+		}
+		return output.replace("\u0013", "%");
 	}
 
 	/**
