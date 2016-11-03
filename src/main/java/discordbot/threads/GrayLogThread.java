@@ -62,7 +62,7 @@ public class GrayLogThread extends Thread {
 				if (args[i] == null || args[i + 1] == null) {
 					break;
 				}
-				msg.addAdditionalField(String.valueOf(args[i]), String.valueOf(args[i + 1]));
+				msg.addAdditionalField(String.valueOf(args[i]), args[i + 1]);
 			}
 			msg.addAdditionalField("event", type);
 			msg.addAdditionalField("sub-event", subtype);
