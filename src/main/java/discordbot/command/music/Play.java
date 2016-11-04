@@ -83,8 +83,8 @@ public class Play extends AbstractCommand {
 		Guild guild = txt.getGuild();
 		SimpleRank simpleRank = bot.security.getSimpleRank(author, txt);
 		String rolerequirement = GuildSettings.getFor(channel, SettingMusicRole.class);
-		if (!rolerequirement.equals("none")) {
-
+		if (!"none".equals(rolerequirement)) {
+				
 		}
 		if (!PermissionUtil.checkPermission(txt, bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
 			return "";

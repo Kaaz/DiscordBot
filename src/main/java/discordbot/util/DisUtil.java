@@ -60,10 +60,12 @@ public class DisUtil {
 		Guild guild = null;
 		if (channel instanceof TextChannel) {
 			guild = ((TextChannel) channel).getGuild();
+
 		}
 		String output = input.replace("\\%", "\u0013");
 		output = output
 				.replace("%user%", user.getUsername())
+				.replace("%user-mention%", user.getAsMention())
 				.replace("%user-id%", user.getId())
 				.replace("%nick%", ((guild == null || guild.getNicknameForUser(user) == null) ? user.getUsername() : guild.getNicknameForUser(user)))
 				.replace("%discrim%", user.getDiscriminator())
@@ -71,7 +73,8 @@ public class DisUtil {
 				.replace("%guild-id%", (guild == null) ? "0" : guild.getId())
 				.replace("%guild-users%", (guild == null) ? "0" : guild.getUsers().size() + "")
 				.replace("%channel%", (guild == null) ? "Private" : ((TextChannel) channel).getName())
-				.replace("%channel-id%", (guild == null) ? "0" : channel.getId());
+				.replace("%channel-id%", (guild == null) ? "0" : channel.getId())
+				.replace("%channel-mention%", (guild == null) ? "Private" : ((TextChannel) channel).getAsMention());
 		if (guild == null) {
 			return output.replace("\u0013", "%");
 		}

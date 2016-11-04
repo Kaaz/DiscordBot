@@ -30,6 +30,7 @@ public class CustomCommand extends AbstractCommand {
 				"Key                Replacement\n" +
 				"---                ---\n" +
 				"%user%             Username \n" +
+				"%user-mention%     Mentions user \n" +
 				"%user-id%          ID of user\n" +
 				"%nick%             Nickname\n" +
 				"%discrim%          discrim\n" +
@@ -38,6 +39,7 @@ public class CustomCommand extends AbstractCommand {
 				"%guild-users%      amount of users in the guild\n" +
 				"%channel%          channel name\n" +
 				"%channel-id%       channel id\n" +
+				"%channel-mention%  Mentions channel\n" +
 				"%rand-user%        random user in guild\n" +
 				"%rand-user-online% random ONLINE user in guild";
 	}
