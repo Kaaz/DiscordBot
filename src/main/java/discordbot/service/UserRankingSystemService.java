@@ -45,7 +45,7 @@ public class UserRankingSystemService extends AbstractService {
 			List<Guild> guilds = discordBot.client.getGuilds();
 			for (Guild guild : guilds) {
 				GuildSettings settings = GuildSettings.get(guild);
-				if (settings.getOrDefault(SettingRoleTimeRanks.class).equals("true") && RoleRankings.canModifyRoles(guild, discordBot.client.getSelfInfo())) {
+				if (settings != null && "true".equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && RoleRankings.canModifyRoles(guild, discordBot.client.getSelfInfo())) {
 					handleGuild(discordBot, guild);
 				}
 			}

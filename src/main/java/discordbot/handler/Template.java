@@ -69,6 +69,8 @@ public class Template {
 			rs.getStatement().close();
 		} catch (SQLException e) {
 			System.out.println(e);
+			e.printStackTrace();
+
 		}
 		return ret;
 	}
@@ -89,6 +91,7 @@ public class Template {
 			rs.getStatement().close();
 		} catch (SQLException e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 		return ret;
 	}
@@ -114,6 +117,7 @@ public class Template {
 			rs.getStatement().close();
 		} catch (SQLException e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 		return ret;
 	}
@@ -132,6 +136,7 @@ public class Template {
 			rs.getStatement().close();
 		} catch (SQLException e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 		return amount;
 	}
@@ -151,6 +156,7 @@ public class Template {
 			rs.getStatement().close();
 		} catch (SQLException e) {
 			System.out.println(e);
+			e.getStackTrace();
 		}
 	}
 
@@ -231,6 +237,7 @@ public class Template {
 			rs.getStatement().close();
 		} catch (SQLException e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 }
