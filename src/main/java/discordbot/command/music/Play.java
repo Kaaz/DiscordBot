@@ -84,17 +84,18 @@ public class Play extends AbstractCommand {
 		SimpleRank simpleRank = bot.security.getSimpleRank(author, txt);
 		String rolerequirement = GuildSettings.getFor(channel, SettingMusicRole.class);
 		if (!"none".equals(rolerequirement)) {
-				
+
 		}
 		if (!PermissionUtil.checkPermission(txt, bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
 			return "";
 		}
 		if (!isInVoiceWith(guild, author)) {
-			bot.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
 			try {
+				bot.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
 				Thread.sleep(2000L);// ¯\_(ツ)_/¯
-			} catch (InterruptedException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
+				return "Can't connect to you";
 			}
 			if (bot.isConnectedTo(guild.getVoiceStatusOfUser(author).getChannel())) {
 				return "can't connect to you";

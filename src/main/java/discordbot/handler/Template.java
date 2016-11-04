@@ -8,10 +8,8 @@ import discordbot.main.Config;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Handles the text templates
@@ -21,6 +19,7 @@ public class Template {
 
 	private static Random rnd = new Random();
 	static private HashMap<String, List<String>> dictionary;
+	static private ConcurrentHashMap<Integer, Map<String, List<String>>> guildDictionary;
 
 	private Template() {
 		initialize();
@@ -33,9 +32,18 @@ public class Template {
 	 * @return a random string out of the options for the keyphrase
 	 */
 	public static String get(String keyPhrase) {
-		if (!Config.SHOW_KEYPHRASE && dictionary.containsKey(keyPhrase)) {
-			List<String> list = dictionary.get(keyPhrase);
-			return list.get(rnd.nextInt(list.size()));
+		return get(0, keyPhrase);
+	}
+
+	public static String get(int guildId, String keyPhrase) {
+		if (!Config.SHOW_KEYPHRASE) {
+			if (guildId > 0 && guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyPhrase)) {
+				List<String> list = guildDictionary.get(guildId).get(keyPhrase);
+				return list.get(rnd.nextInt(list.size()));
+			} else if (dictionary.containsKey(keyPhrase)) {
+				List<String> list = dictionary.get(keyPhrase);
+				return list.get(rnd.nextInt(list.size()));
+			}
 		}
 		TBotEvent.insert("ERROR", "TEMPLATE", String.format("the phrase `%s` is not set!", keyPhrase));
 		return "**`" + keyPhrase + "`**";
@@ -49,8 +57,12 @@ public class Template {
 	 * @return formatted keyphrase
 	 */
 	public static String get(String keyPhrase, Object... parameters) {
+		return get(0, keyPhrase, parameters);
+	}
+
+	public static String get(int guildId, String keyPhrase, Object... parameters) {
 		if (!Config.SHOW_KEYPHRASE) {
-			return String.format(get(keyPhrase), parameters);
+			return String.format(get(guildId, keyPhrase), parameters);
 		}
 		return "`" + keyPhrase + "` params: `" + Joiner.on("`, `").join(parameters) + "`";
 	}
@@ -109,7 +121,8 @@ public class Template {
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT DISTINCT keyphrase " +
 						"FROM template_texts " +
-						"WHERE keyphrase LIKE ? " +
+						"WHERE guild_id = 0 " +
+						"AND keyphrase LIKE ? " +
 						"ORDER BY keyphrase ASC LIMIT ?, ?", "%" + contains + "%", offset, maxListSize)) {
 			while (rs.next()) {
 				ret.add(rs.getString("keyphrase"));
@@ -129,7 +142,7 @@ public class Template {
 	 */
 	public static int uniquePhraseCount() {
 		int amount = 0;
-		try (ResultSet rs = WebDb.get().select("SELECT count(DISTINCT keyphrase) AS sum FROM template_texts ORDER BY keyphrase ASC ")) {
+		try (ResultSet rs = WebDb.get().select("SELECT count(DISTINCT keyphrase) AS sum FROM template_texts WHERE guild_id = 0 ORDER BY keyphrase ASC ")) {
 			if (rs.next()) {
 				amount = rs.getInt("sum");
 			}
@@ -146,12 +159,25 @@ public class Template {
 	 */
 	public static synchronized void initialize() {
 		dictionary = new HashMap<>();
-		try (ResultSet rs = WebDb.get().select("SELECT id, keyphrase, text FROM template_texts")) {
+		guildDictionary = new ConcurrentHashMap<>();
+		try (ResultSet rs = WebDb.get().select("SELECT id,guild_id, keyphrase, text FROM template_texts")) {
 			while (rs.next()) {
-				if (!dictionary.containsKey(rs.getString("keyphrase"))) {
-					dictionary.put(rs.getString("keyphrase"), new ArrayList<>());
+				String keyphrase = rs.getString("keyphrase");
+				int guildId = rs.getInt("guild_id");
+				if (guildId == 0) {
+					if (!dictionary.containsKey(keyphrase)) {
+						dictionary.put(keyphrase, new ArrayList<>());
+					}
+					dictionary.get(keyphrase).add(rs.getString("text"));
+				} else {
+					if (!guildDictionary.containsKey(guildId)) {
+						guildDictionary.put(guildId, new ConcurrentHashMap<>());
+					}
+					if (!guildDictionary.get(guildId).containsKey(keyphrase)) {
+						guildDictionary.get(guildId).put(keyphrase, new ArrayList<>());
+					}
+					guildDictionary.get(guildId).get(keyphrase).add(rs.getString("text"));
 				}
-				dictionary.get(rs.getString("keyphrase")).add(rs.getString("text"));
 			}
 			rs.getStatement().close();
 		} catch (SQLException e) {
@@ -173,16 +199,11 @@ public class Template {
 		return new ArrayList<>();
 	}
 
-	public String[] getPhrases() {
-		return dictionary.keySet().toArray(new String[dictionary.keySet().size()]);
-	}
-
-	public int countTemplates() {
-		int count = 0;
-		for (List<String> list : dictionary.values()) {
-			count += list.size();
+	public static List<String> getAllFor(int guildId, String keyphrase) {
+		if (guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyphrase)) {
+			return guildDictionary.get(guildId).get(keyphrase);
 		}
-		return count;
+		return getAllFor(keyphrase);
 	}
 
 	/**
@@ -204,6 +225,19 @@ public class Template {
 		}
 	}
 
+	public static synchronized void remove(int guildId, String keyPhrase, String text) {
+		if (guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyPhrase)) {
+			if (guildDictionary.get(guildId).get(keyPhrase).contains(text)) {
+				try {
+					WebDb.get().query("DELETE FROM template_texts WHERE keyphrase = ? AND text = ? AND guild_id = ?", keyPhrase, text, guildId);
+					guildDictionary.get(guildId).get(keyPhrase).remove(text);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 	/**
 	 * adds a template for a keyphrase
 	 *
@@ -212,7 +246,7 @@ public class Template {
 	 */
 	public static synchronized void add(String keyPhrase, String text) {
 		try {
-			WebDb.get().query("INSERT INTO template_texts(keyphrase,text) VALUES(?, ?)", keyPhrase, text);
+			WebDb.get().query("INSERT INTO template_texts(keyphrase,text,guild_id) VALUES(?, ?, 0)", keyPhrase, text);
 			if (!dictionary.containsKey(keyPhrase)) {
 				dictionary.put(keyPhrase, new ArrayList<>());
 			}
@@ -220,6 +254,42 @@ public class Template {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * adds a template for a keyphrase for a guild
+	 * Only adds the template if the template exists in the dictionary
+	 *
+	 * @param guildId   internal guild id
+	 * @param keyPhrase keyphrase
+	 * @param text      the text
+	 */
+	public static synchronized boolean add(int guildId, String keyPhrase, String text) {
+		if (!dictionary.containsKey(keyPhrase)) {
+			return false;
+		}
+		try {
+			WebDb.get().query("INSERT INTO template_texts(guild_id,keyphrase,text) VALUES(?, ?, ?)", guildId, keyPhrase, text);
+			if (!dictionary.containsKey(keyPhrase)) {
+				dictionary.put(keyPhrase, new ArrayList<>());
+			}
+			dictionary.get(keyPhrase).add(text);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public String[] getPhrases() {
+		return dictionary.keySet().toArray(new String[dictionary.keySet().size()]);
+	}
+
+	public int countTemplates() {
+		int count = 0;
+		for (List<String> list : dictionary.values()) {
+			count += list.size();
+		}
+		return count;
 	}
 
 	/**
@@ -232,7 +302,7 @@ public class Template {
 			dictionary.put(keyPhrase, new ArrayList<>());
 		}
 		dictionary.get(keyPhrase).clear();
-		try (ResultSet rs = WebDb.get().select("SELECT text FROM template_texts WHERE keyphrase = ?", keyPhrase)) {
+		try (ResultSet rs = WebDb.get().select("SELECT text FROM template_texts WHERE keyphrase = ? AND guild_id = 0", keyPhrase)) {
 			dictionary.get(keyPhrase).add(rs.getString("text"));
 			rs.getStatement().close();
 		} catch (SQLException e) {
