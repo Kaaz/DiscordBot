@@ -155,7 +155,7 @@ public class Misc {
 		sb.append("```").append(Config.EOL);
 		String formatLine = "┃";
 		for (int width : widths) {
-			formatLine += " %" + width + "s ┃";
+			formatLine += " %-" + width + "s ┃";
 		}
 		formatLine += Config.EOL;
 		sb.append(appendSeparatorLine("┏", "┳", "┓", padding, widths));

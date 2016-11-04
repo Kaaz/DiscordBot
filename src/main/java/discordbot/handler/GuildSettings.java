@@ -7,12 +7,13 @@ import discordbot.db.table.TGuild;
 import discordbot.db.table.TUser;
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.DefaultGuildSettings;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
+import discordbot.guildsettings.defaults.SettingMusicRole;
+import discordbot.permission.SimpleRank;
+import net.dv8tion.jda.entities.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,12 +23,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GuildSettings {
 	private final static Map<Guild, GuildSettings> settingInstance = new ConcurrentHashMap<>();
 	private final Map<String, String> settings;
+	private final Guild guild;
 	private int id = 0;
 	private boolean initialized = false;
 
 	private GuildSettings(Guild guild) {
 		this.settings = new ConcurrentHashMap<>();
 		OGuild record = TGuild.findBy(guild.getId());
+		this.guild = guild;
 		if (record.id == 0) {
 			record.name = EmojiParser.parseToAliases(guild.getName());
 			record.discord_id = guild.getId();
@@ -139,5 +142,21 @@ public class GuildSettings {
 			return DefaultGuildSettings.get(key).getDefault();
 		}
 		return "";
+	}
+
+	public boolean canUseMusicCommands(User user, SimpleRank userRank) {
+		String requiredRole = getOrDefault(SettingMusicRole.class);
+		boolean roleFound = true;
+		if (!"none".equals(requiredRole) && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+			roleFound = false;
+			List<Role> roles = guild.getRolesForUser(user);
+			for (Role role : roles) {
+				if (role.getName().equalsIgnoreCase(requiredRole)) {
+					roleFound = true;
+					break;
+				}
+			}
+		}
+		return roleFound;
 	}
 }

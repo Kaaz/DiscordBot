@@ -81,11 +81,11 @@ public class Play extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		TextChannel txt = (TextChannel) channel;
 		Guild guild = txt.getGuild();
-		SimpleRank simpleRank = bot.security.getSimpleRank(author, txt);
-		String rolerequirement = GuildSettings.getFor(channel, SettingMusicRole.class);
-		if (!"none".equals(rolerequirement)) {
-
+		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
+		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
+			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
+
 		if (!PermissionUtil.checkPermission(txt, bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
 			return "";
 		}
@@ -139,8 +139,9 @@ public class Play extends AbstractCommand {
 						return "";
 					} else if (filecheck.exists()) {
 						String path = filecheck.toPath().toRealPath().toString();
+						OMusic rec = TMusic.findByFileName(path);
 						bot.addSongToQueue(path, guild);
-						return Template.get("music_added_to_queue");
+						return Template.get("music_added_to_queue", rec.youtubeTitle);
 					}
 				} catch (IOException e) {
 					bot.out.sendErrorToMe(e);

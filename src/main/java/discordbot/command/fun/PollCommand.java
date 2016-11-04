@@ -15,6 +15,11 @@ public class PollCommand extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isListed() {
+		return false;
+	}
+
+	@Override
 	public String getDescription() {
 		return "Strawpoll: propose a question and choices for the chat to vote on";
 	}

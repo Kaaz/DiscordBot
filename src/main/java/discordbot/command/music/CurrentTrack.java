@@ -6,6 +6,7 @@ import discordbot.db.model.OMusic;
 import discordbot.db.model.OMusicVote;
 import discordbot.db.table.TMusic;
 import discordbot.db.table.TMusicVote;
+import discordbot.guildsettings.defaults.SettingMusicRole;
 import discordbot.guildsettings.defaults.SettingMusicShowListeners;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
@@ -80,6 +81,10 @@ public class CurrentTrack extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		boolean helpedOut = false;
 		Guild guild = ((TextChannel) channel).getGuild();
+		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
+		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
+			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
+		}
 		OMusic song = TMusic.findById(bot.getCurrentlyPlayingSong(guild));
 		if (song.id == 0) {
 			return Template.get("command_currentlyplaying_nosong");
@@ -175,25 +180,35 @@ public class CurrentTrack extends AbstractCommand {
 				ret += Misc.makeTable(displayList);
 			}
 		}
-		if (bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN) && (titleIsEmpty || artistIsEmpty)) {
-			ret += "I am missing some information about this song. Could you help me out:question:" + Config.EOL;
-			ret += "If you know the title or artist of this song type **current artist <name>** or **current title <name>**" + Config.EOL;
-			if (!titleIsEmpty) {
-				ret += "Title: " + song.title + Config.EOL;
+//		if (bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN) && (titleIsEmpty || artistIsEmpty)) {
+//			ret += "I am missing some information about this song. Could you help me out:question:" + Config.EOL;
+//			ret += "If you know the title or artist of this song type **current artist <name>** or **current title <name>**" + Config.EOL;
+//			if (!titleIsEmpty) {
+//				ret += "Title: " + song.title + Config.EOL;
+//			}
+//			if (!artistIsEmpty) {
+//				ret += "Artist: " + song.artist + Config.EOL;
+//			}
+//			if (!helpedOut && !"".equals(guessArtist) && !"".equals(guessTitle)) {
+//				ret += Config.EOL + "If I can make a guess:" + Config.EOL;
+//				ret += "artist: **" + guessArtist + "**" + Config.EOL;
+//				ret += "title: **" + guessTitle + "**" + Config.EOL;
+//				ret += "If thats correct type **" + DisUtil.getCommandPrefix(channel) + "np correct** or if its reversed **" + DisUtil.getCommandPrefix(channel) + "np reversed**";
+//			}
+//			if (helpedOut) {
+//				ret += "Thanks for helping out " + author.getAsMention() + "! Have a :cookie:!";
+//			}
+//		}
+		List<OMusic> queue = musicHandler.getQueue();
+		if (queue.size() > 0) {
+			ret += Config.EOL + ":musical_note: *Next up:* " + Config.EOL;
+			for (int i = 0; i < Math.min(2, queue.size()); i++) {
+				ret += ":point_right: " + queue.get(i).youtubeTitle + Config.EOL;
 			}
-			if (!artistIsEmpty) {
-				ret += "Artist: " + song.artist + Config.EOL;
+			if (queue.size() > 2) {
+				ret += Config.EOL + "... And **" + (queue.size() - 2) + "** more!";
 			}
-			if (!helpedOut && !"".equals(guessArtist) && !"".equals(guessTitle)) {
-				ret += Config.EOL + "If I can make a guess:" + Config.EOL;
-				ret += "artist: **" + guessArtist + "**" + Config.EOL;
-				ret += "title: **" + guessTitle + "**" + Config.EOL;
-				ret += "If thats correct type **" + DisUtil.getCommandPrefix(channel) + "np correct** or if its reversed **" + DisUtil.getCommandPrefix(channel) + "np reversed**";
 
-			}
-			if (helpedOut) {
-				ret += "Thanks for helping out " + author.getAsMention() + "! Have a :cookie:!";
-			}
 		}
 		return ret;
 	}

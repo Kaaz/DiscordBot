@@ -2,9 +2,12 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
+import discordbot.guildsettings.defaults.SettingMusicRole;
+import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
@@ -47,6 +50,10 @@ public class Stop extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
+		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
+		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
+			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
+		}
 		MusicPlayerHandler.getFor(guild, bot).stopMusic();
 		bot.leaveVoice(guild);
 		return Template.get("command_stop_success");

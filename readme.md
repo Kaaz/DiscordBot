@@ -35,12 +35,12 @@ Commands | | | | |
 [command](#command) | [config](#config) | [current](#current) | [exec](#exec) | [exit](#exit)
 [game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite)
 [join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild) | [mcstatus](#mcstatus)
-[ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm) | [poll](#poll)
-[profile](#profile) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload)
-[report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate) | [say](#say)
-[sendfile](#sendfile) | [skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe)
-[system](#system) | [tag](#tag) | [template](#template) | [user](#user) | [userrank](#userrank)
-[version](#version) | [volume](#volume) | 
+[ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm) | [profile](#profile)
+[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
+[role](#role) | [roll](#roll) | [rotate](#rotate) | [say](#say) | [sendfile](#sendfile)
+[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
+[tag](#tag) | [template](#template) | [user](#user) | [userrank](#userrank) | [version](#version)
+[volume](#volume) | 
 
 ## Games
 
@@ -524,22 +524,6 @@ Usable in public and private channels
 
 ```php
 pm <@user> <message..>
-```
-### poll
-
-Strawpoll: propose a question and choices for the chat to vote on
-
-Accessible though: poll
-
-Usable in public  channels
-
-#### Usage
-
-```php
-poll          //status of active poll 
-poll create <question> ;<duration in minutes>;<option1>;<option2>;<etc.> 
-              //creates a poll for the duration
-poll 1-9      //vote on the options
 ```
 ### profile
 

@@ -3,11 +3,13 @@ package discordbot.handler;
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
 import discordbot.db.table.TMusic;
+import discordbot.guildsettings.defaults.SettingMusicChannelTitle;
 import discordbot.guildsettings.defaults.SettingMusicPlayingMessage;
 import discordbot.guildsettings.defaults.SettingMusicVolume;
 import discordbot.handler.audiosources.StreamSource;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
+import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
@@ -21,6 +23,7 @@ import net.dv8tion.jda.player.hooks.events.SkipEvent;
 import net.dv8tion.jda.player.source.AudioInfo;
 import net.dv8tion.jda.player.source.AudioSource;
 import net.dv8tion.jda.player.source.LocalSource;
+import net.dv8tion.jda.utils.PermissionUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,6 +116,11 @@ public class MusicPlayerHandler {
 			}
 		} else {
 			record = new OMusic();
+		}
+		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingMusicChannelTitle.class))) {
+			if (PermissionUtil.checkPermission(bot.getMusicChannel(guild), bot.client.getSelfInfo(), Permission.MANAGE_CHANNEL)) {
+				bot.getMusicChannel(guild).getManager().setTopic(":notes: " + record.youtubeTitle).update();
+			}
 		}
 		if (!messageType.equals("off") && record.id > 0) {
 			String msg = "";
