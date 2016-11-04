@@ -1,5 +1,6 @@
 package discordbot.event;
 
+import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.ExitCode;
 import discordbot.db.model.OGuild;
 import discordbot.db.model.OGuildMember;
@@ -67,7 +68,7 @@ public class JDAEvents extends ListenerAdapter {
 		TUser.update(user);
 		OGuild server = TGuild.findBy(guild.getId());
 		server.discord_id = guild.getId();
-		server.name = guild.getName();
+		server.name = EmojiParser.parseToAliases(guild.getName());
 		server.owner = user.id;
 		if (server.id == 0) {
 			TGuild.insert(server);

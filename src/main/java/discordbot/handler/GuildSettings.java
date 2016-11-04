@@ -1,5 +1,6 @@
 package discordbot.handler;
 
+import com.vdurmont.emoji.EmojiParser;
 import discordbot.db.WebDb;
 import discordbot.db.model.OGuild;
 import discordbot.db.table.TGuild;
@@ -28,7 +29,7 @@ public class GuildSettings {
 		this.settings = new ConcurrentHashMap<>();
 		OGuild record = TGuild.findBy(guild.getId());
 		if (record.id == 0) {
-			record.name = guild.getName();
+			record.name = EmojiParser.parseToAliases(guild.getName());
 			record.discord_id = guild.getId();
 			record.owner = TUser.getCachedId(guild.getOwnerId());
 			TGuild.insert(record);
