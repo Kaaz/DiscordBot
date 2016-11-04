@@ -209,7 +209,7 @@ public class Template {
 	}
 
 	public static List<String> getAllFor(int guildId, String keyphrase) {
-		if (guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyphrase)) {
+		if (guildId > 0 && guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyphrase)) {
 			return guildDictionary.get(guildId).get(keyphrase);
 		}
 		return getAllFor(keyphrase);
@@ -235,6 +235,10 @@ public class Template {
 	}
 
 	public static synchronized void remove(int guildId, String keyPhrase, String text) {
+		if (guildId == 0) {
+			remove(keyPhrase, text);
+			return;
+		}
 		if (guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyPhrase)) {
 			if (guildDictionary.get(guildId).get(keyPhrase).contains(text)) {
 				try {
