@@ -26,10 +26,7 @@ import org.reflections.Reflections;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -40,6 +37,7 @@ public class CommandHandler {
 	private static HashMap<String, AbstractCommand> commands = new HashMap<>();
 	private static HashMap<String, AbstractCommand> commandsAlias = new HashMap<>();
 	private static Map<String, String> customCommands = new ConcurrentHashMap<>();
+	private static Map<Integer, Map<String, String>> guildCommands = new ConcurrentHashMap<>();
 
 	/**
 	 * checks if the the message in channel is a command
@@ -64,10 +62,14 @@ public class CommandHandler {
 	public static void process(DiscordBot bot, MessageChannel channel, User author, String incomingMessage) {
 		String outMsg = "";
 		boolean startedWithMention = false;
+		int guildId = 0;
 		String inputMessage = incomingMessage;
 		if (inputMessage.startsWith(bot.mentionMe)) {
 			inputMessage = inputMessage.replace(bot.mentionMe, "").trim();
 			startedWithMention = true;
+		}
+		if (channel instanceof TextChannel) {
+			guildId = TGuild.getCachedId(((TextChannel) channel).getGuild().getId());
 		}
 		String[] input = inputMessage.split(" ");
 		String args[] = new String[input.length - 1];
@@ -104,6 +106,8 @@ public class CommandHandler {
 			}
 		} else if (customCommands.containsKey(input[0])) {
 			outMsg = DisUtil.replaceTags(customCommands.get(input[0]), author, channel);
+		} else if (guildCommands.containsKey(guildId) && guildCommands.get(guildId).containsKey(input[0])) {
+			outMsg = DisUtil.replaceTags(guildCommands.get(guildId).get(input[0]), author, channel);
 		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
 			outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat(inputMessage);
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
@@ -226,11 +230,18 @@ public class CommandHandler {
 	/**
 	 * Lists the active custom commands
 	 *
+	 * @param guildId the internal guild id
 	 * @return list of code-commands
 	 */
-	public static String[] getCustomCommands() {
-		return customCommands.keySet().toArray(new String[customCommands.keySet().size()]);
+	public static List<String> getCustomCommands(int guildId) {
+		List<String> cmds = new ArrayList<>();
+		cmds.addAll(customCommands.keySet());
+		if (guildCommands.containsKey(guildId)) {
+			cmds.addAll(guildCommands.get(guildId).keySet());
+		}
+		return cmds;
 	}
+
 
 	public static AbstractCommand[] getCommandObjects() {
 		return commands.values().toArray(new AbstractCommand[commands.values().size()]);
@@ -242,10 +253,10 @@ public class CommandHandler {
 	 * @param input  command
 	 * @param output return
 	 */
-	public static void addCustomCommand(String input, String output) {
+	public static void addCustomCommand(int guildId, String input, String output) {
 		try {
-			WebDb.get().query("DELETE FROM commands WHERE input = ? AND server = 1", input);
-			WebDb.get().query("INSERT INTO commands (server,input,output) VALUES(1, ?, ?)", input, output);
+			WebDb.get().query("DELETE FROM commands WHERE input = ? AND server = ?", input, guildId);
+			WebDb.get().query("INSERT INTO commands (server,input,output) VALUES(?, ?, ?)", guildId, input, output);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -256,10 +267,18 @@ public class CommandHandler {
 	 * Loads all the custom commands
 	 */
 	private static void loadCustomCommands() {
-		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands ")) {
+		try (ResultSet r = WebDb.get().select("SELECT server,input, output FROM commands ")) {
 			while (r != null && r.next()) {
-				if (!commands.containsKey(r.getString("input"))) {
-					customCommands.put(r.getString("input"), r.getString("output"));
+				int guildId = r.getInt("server");
+				if (guildId == 0) {
+					if (!commands.containsKey(r.getString("input"))) {
+						customCommands.put(r.getString("input"), r.getString("output"));
+					}
+				} else {
+					if (!guildCommands.containsKey(guildId)) {
+						guildCommands.put(guildId, new ConcurrentHashMap<>());
+					}
+					guildCommands.get(guildId).put(r.getString("input"), r.getString("output"));
 				}
 			}
 			if (r != null) {
@@ -326,11 +345,12 @@ public class CommandHandler {
 	/**
 	 * removes a custom command
 	 *
-	 * @param input command
+	 * @param guildId internal id of the guild
+	 * @param input   command
 	 */
-	public static void removeCustomCommand(String input) {
+	public static void removeCustomCommand(int guildId, String input) {
 		try {
-			WebDb.get().query("DELETE FROM commands WHERE input = ?", input);
+			WebDb.get().query("DELETE FROM commands WHERE input = ? AND server = ?", input, guildId);
 			loadCustomCommands();
 		} catch (SQLException e) {
 			e.printStackTrace();

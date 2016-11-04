@@ -116,7 +116,7 @@ public class JDAEvents extends ListenerAdapter {
 		if (server.isBanned()) {
 			return;
 		}
-		TBotEvent.insert("GUILD", "LEAVE", String.format(" %s [dis-id: %s][iid: %s]", guild.getName(), guild.getId(), server.id));
+		TBotEvent.insert("GUILD", "LEAVE", String.format(" %s [dis-id: %s][iid: %s]", EmojiParser.parseToAliases(guild.getName()), guild.getId(), server.id));
 		Launcher.log("bot leaves guild", "bot", "guild-leave",
 				"guild-id", guild.getId(),
 				"guild-name", guild.getName());

@@ -1,7 +1,9 @@
 package discordbot.command.administrative;
 
+import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
+import discordbot.db.table.TGuild;
 import discordbot.handler.CommandHandler;
 import discordbot.handler.Template;
 import discordbot.main.Config;
@@ -9,6 +11,7 @@ import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
 import java.util.Arrays;
@@ -68,7 +71,7 @@ public class CustomCommand extends AbstractCommand {
 
 	@Override
 	public CommandVisibility getVisibility() {
-		return CommandVisibility.BOTH;
+		return CommandVisibility.PUBLIC;
 	}
 
 	@Override
@@ -76,6 +79,7 @@ public class CustomCommand extends AbstractCommand {
 		if (!bot.isAdmin(channel, author)) {
 			return Template.get("permission_denied");
 		}
+		int guildId = TGuild.getCachedId(((TextChannel) channel).getGuild().getId());
 		String prefix = DisUtil.getCommandPrefix(channel);
 		if (args.length >= 2 && Arrays.asList(valid_actions).contains(args[0])) {
 			if (args[0].equals("add") && args.length > 2) {
@@ -86,14 +90,14 @@ public class CustomCommand extends AbstractCommand {
 				if (args[0].startsWith(prefix)) {
 					args[0] = args[0].substring(prefix.length());
 				}
-				CommandHandler.addCustomCommand(args[1], output.trim());
+				CommandHandler.addCustomCommand(guildId, args[1], EmojiParser.parseToAliases(output.trim()));
 				return "Added " + prefix + args[1];
 			} else if (args[0].equals("delete")) {
-				CommandHandler.removeCustomCommand(args[1]);
+				CommandHandler.removeCustomCommand(guildId, args[1]);
 				return "Removed " + prefix + args[1];
 			}
 		} else if (args.length > 0 && args[0].equalsIgnoreCase("list")) {
-			return "All custom commands: " + Config.EOL + Misc.makeTable(Arrays.asList(CommandHandler.getCustomCommands()));
+			return "All custom commands: " + Config.EOL + Misc.makeTable(CommandHandler.getCustomCommands(guildId));
 		} else {
 			return getDescription();
 		}

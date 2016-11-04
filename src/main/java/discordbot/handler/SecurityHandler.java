@@ -46,7 +46,7 @@ public class SecurityHandler {
 		List<OUserRank> contributor = TUserRank.getUsersWith(TRank.findBy("CONTRIBUTOR").id);
 		List<OUserRank> bot_admin = TUserRank.getUsersWith(TRank.findBy("BOT_ADMIN").id);
 		contributers.addAll(contributor.stream().map(oUserRank -> TUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
-		contributers.addAll(bot_admin.stream().map(oUserRank -> TUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
+		botAdmins.addAll(bot_admin.stream().map(oUserRank -> TUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
 	}
 
 	public boolean isBanned(Guild guild) {
