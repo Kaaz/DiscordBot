@@ -169,11 +169,13 @@ public class RoleRankings {
 	 */
 	public static void fixRoles(List<Guild> guilds, JDA instance) {
 		for (Guild guild : guilds) {
-			if (!GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanks.class).equals("true")) {
-				continue;
-			}
-			if (canModifyRoles(guild, instance.getSelfInfo())) {
-				fixForServer(guild);
+			if (GuildSettings.get(guild) != null) {
+				if (!GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanks.class).equals("true")) {
+					continue;
+				}
+				if (canModifyRoles(guild, instance.getSelfInfo())) {
+					fixForServer(guild);
+				}
 			}
 		}
 	}
