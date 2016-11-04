@@ -57,8 +57,7 @@ public class CustomCommand extends AbstractCommand {
 		return new String[]{
 				"command add <command> <action>  //adds a command",
 				"command delete <command>        //deletes a command",
-				"command list                    //shows a list of existing custom commands"
-
+				"command                         //shows a list of existing custom commands"
 		};
 	}
 
@@ -96,10 +95,11 @@ public class CustomCommand extends AbstractCommand {
 				CommandHandler.removeCustomCommand(guildId, args[1]);
 				return "Removed " + prefix + args[1];
 			}
-		} else if (args.length > 0 && args[0].equalsIgnoreCase("list")) {
+		} else if (args.length == 0 || (args.length > 0 && args[0].equalsIgnoreCase("list"))) {
 			return "All custom commands: " + Config.EOL + Misc.makeTable(CommandHandler.getCustomCommands(guildId));
 		} else {
-			return getDescription();
+			return "```" + Config.EOL +
+					getDescription() + Config.EOL + "```";
 		}
 		return Template.get("permission_denied");
 	}

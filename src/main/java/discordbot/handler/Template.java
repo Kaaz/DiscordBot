@@ -4,7 +4,9 @@ package discordbot.handler;
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import discordbot.db.WebDb;
 import discordbot.db.table.TBotEvent;
+import discordbot.db.table.TGuild;
 import discordbot.main.Config;
+import net.dv8tion.jda.entities.MessageChannel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -35,6 +37,10 @@ public class Template {
 		return get(0, keyPhrase);
 	}
 
+	public static String get(MessageChannel channel, String keyPhrase) {
+		return get(TGuild.getCachedId(channel), keyPhrase);
+	}
+
 	public static String get(int guildId, String keyPhrase) {
 		if (!Config.SHOW_KEYPHRASE) {
 			if (guildId > 0 && guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyPhrase)) {
@@ -60,6 +66,10 @@ public class Template {
 		return get(0, keyPhrase, parameters);
 	}
 
+	public static String get(MessageChannel channel, String keyPhrase, Object... parameters) {
+		return get(TGuild.getCachedId(channel), keyPhrase, parameters);
+	}
+
 	public static String get(int guildId, String keyPhrase, Object... parameters) {
 		if (!Config.SHOW_KEYPHRASE) {
 			return String.format(get(guildId, keyPhrase), parameters);
@@ -82,7 +92,6 @@ public class Template {
 		} catch (SQLException e) {
 			System.out.println(e);
 			e.printStackTrace();
-
 		}
 		return ret;
 	}

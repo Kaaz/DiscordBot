@@ -3,6 +3,8 @@ package discordbot.db.table;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
 import discordbot.db.model.OGuild;
+import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.TextChannel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +20,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TGuild {
 	private static Map<String, Integer> guildIdCache = new ConcurrentHashMap<>();
 	private static Map<Integer, String> discordIdCache = new ConcurrentHashMap<>();
+
+	/**
+	 * Retrieves the internal guild id for {@link MessageChannel} channel
+	 *
+	 * @param channel the channel to check
+	 * @return internal guild-id OR 0 if no guild could be found
+	 */
+	public static int getCachedId(MessageChannel channel) {
+		if (channel instanceof TextChannel) {
+			return getCachedId(((TextChannel) channel).getGuild().getId());
+		}
+		return 0;
+	}
 
 	public static int getCachedId(String discordId) {
 		if (!guildIdCache.containsKey(discordId)) {

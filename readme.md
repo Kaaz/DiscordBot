@@ -116,6 +116,7 @@ module_games | true | Let people play games against each other
 music_channel | music | Channel where the bots music-related output goes to
 music_channel_title | false | Updates the music channel's topic with the currently playing song<br/>true  -> yes change the topic at the beginning of every song<br/>false -> leave the channel topic title alone!
 music_playing_message | clear | Clear the now playing message?<br/>clear  -> sends a message and deletes it when the song is over or skipped<br/>normal -> send the message and just leave it be<br/>off    -> don't send now playing messages
+music_role_requirement | none | In order to use music commands you need this role!<br/>Setting this value to none will disable the requirement
 music_show_listeners | true | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
 music_volume | 10 | sets the default volume of the music player<br/>So the next time the bot connects it starts with this volume<br/><br/>Accepts a value between 0 and 100
 pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
@@ -261,18 +262,35 @@ Accessible though: changename
 Usable in public and private channels
 ### command
 
-Add and remove custom commands
+Add and remove custom commands.
+There are a few keywords you can use in commands. These tags will be replaced by its value 
 
-Accessible though: command
+Key                Replacement
+---                ---
+%user%             Username 
+%user-mention%     Mentions user 
+%user-id%          ID of user
+%nick%             Nickname
+%discrim%          discrim
+%guild%            Guild name
+%guild-id%         guild id
+%guild-users%      amount of users in the guild
+%channel%          channel name
+%channel-id%       channel id
+%channel-mention%  Mentions channel
+%rand-user%        random user in guild
+%rand-user-online% random ONLINE user in guild
 
-Usable in public and private channels
+Accessible though: command, cmd
+
+Usable in public  channels
 
 #### Usage
 
 ```php
 command add <command> <action>  //adds a command
 command delete <command>        //deletes a command
-command list                    //shows a list of existing custom commands
+command                         //shows a list of existing custom commands
 ```
 ### config
 
@@ -458,21 +476,41 @@ Usable in public  channels
 play <youtubelink>    //download and plays song
 play <part of title>  //shows search results
 play                  //just start playing something
+play role <role>      //you need this role in order to play music
 ```
 ### playlist
 
-information about the playlist/history
+information about the playlists
 
-Accessible though: playlist
+Accessible though: playlist, pl
 
 Usable in public  channels
 
 #### Usage
 
 ```php
-playlist          //playlist queue
-playlist clear    //playlist queue
-playlist history  //list of recently played songs
+-- using playlists 
+playlist mine                        //use your playlist
+playlist guild                       //use the guild's playlist
+playlist global                      //use the global playlist
+playlist settings                    //check the settings for the active playlist
+playlist settings <playlistname>     //check the settings for the active playlist
+playlist                             //info about the current playlist
+playlist list                        //see what playlists there are
+
+-- Adding and removing music from the playlist
+playlist show <pagenumber>           //shows music in the playlist
+playlist add                         //adds the currently playing song
+playlist add <youtubelink>           //adds the link to the playlist
+playlist remove                      //removes the currently playing song
+playlist remove <youtubelink>        //removes song from playlist
+playlist removeall                   //removes ALL songs from playlist
+
+-- Changing the settings of the playlist
+playlist title <new title>           //edit the playlist title
+playlist edit-type <new type>        //change the edit-type of a playlist
+playlist visibility <new visibility> //change who can see the playlist
+playlist reset                       //reset settings to default
 ```
 ### pm
 

@@ -2,12 +2,14 @@ package discordbot.command.bot_administration;
 
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;
+import discordbot.db.table.TGuild;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
 import java.util.ArrayList;
@@ -51,8 +53,16 @@ public class TemplateCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
-			return discordbot.handler.Template.get("no_permission");
+		SimpleRank userRank = bot.security.getSimpleRank(author);
+		int guildId = 0;
+		if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+			return Template.get(channel, "no_permission");
+		}
+		if (!userRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+			if (!(channel instanceof TextChannel)) {
+				return Template.get(channel, "command_not_for_private ");
+			}
+			guildId = TGuild.getCachedId(channel);
 		}
 		if (args.length == 0) {
 			String usage = ":gear: **Options**:```php" + Config.EOL;
@@ -63,7 +73,7 @@ public class TemplateCommand extends AbstractCommand {
 		}
 		switch (args[0]) {
 			case "toggledebug":
-				if (bot.isCreator(author)) {
+				if (userRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
 					Config.SHOW_KEYPHRASE = !Config.SHOW_KEYPHRASE;
 					if (Config.SHOW_KEYPHRASE) {
 						return "Keyphrases shown ";
@@ -71,30 +81,30 @@ public class TemplateCommand extends AbstractCommand {
 						return "Keyphrases are being translated";
 					}
 				}
-				return Template.get("no_permission");
+				return Template.get(channel, "no_permission");
 			case "add":
 				if (args.length >= 3) {
 					String text = args[2];
 					for (int i = 3; i < args.length; i++) {
 						text += " " + args[i];
 					}
-					Template.add(args[1], EmojiParser.parseToAliases(text));
-					return Template.get("command_template_added");
+					Template.add(guildId, args[1], EmojiParser.parseToAliases(text));
+					return Template.get(channel, "command_template_added");
 				}
-				return Template.get("command_template_added_failed");
+				return Template.get(channel, "command_template_added_failed");
 			case "delete":
 			case "del":
 			case "remove":
 				if (args.length < 3 || !args[2].matches("^\\d+$")) {
-					return Template.get("command_template_invalid_option");
+					return Template.get(channel, "command_template_invalid_option");
 				}
 				int deleteIndex = Integer.parseInt(args[2]);
-				List<String> templateList = Template.getAllFor(args[1]);
+				List<String> templateList = Template.getAllFor(guildId, args[1]);
 				if (templateList.size() > deleteIndex) {
-					Template.remove(args[1], templateList.get(deleteIndex));
-					return Template.get("command_template_delete_success");
+					Template.remove(guildId, args[1], templateList.get(deleteIndex));
+					return Template.get(channel, "command_template_delete_success");
 				}
-				return Template.get("command_template_delete_failed");
+				return Template.get(channel, "command_template_delete_failed");
 			case "list":
 				int currentPage = 0;
 				int itemsPerPage = 30;
@@ -119,10 +129,10 @@ public class TemplateCommand extends AbstractCommand {
 						Misc.makeTable(allKeyphrases, 50, 2);
 			default:
 				args[0] = args[0].toLowerCase();
-				List<String> templates = Template.getAllFor(args[0]);
+				List<String> templates = Template.getAllFor(guildId, args[0]);
 				if (args.length == 1) {
 					if (templates.isEmpty()) {
-						return Template.get("command_template_not_found", args[0]);
+						return Template.get(channel, "command_template_not_found", args[0]);
 					}
 					List<List<String>> body = new ArrayList<>();
 					int index = 0;
@@ -132,7 +142,7 @@ public class TemplateCommand extends AbstractCommand {
 					return "Template overview for `" + args[0] + "`" + Config.EOL +
 							Misc.makeAsciiTable(Arrays.asList("#", "value"), body, null);
 				}
-				return Template.get("command_template_invalid_option");
+				return Template.get(channel, "command_template_invalid_option");
 		}
 	}
 }
