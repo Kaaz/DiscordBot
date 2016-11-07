@@ -25,6 +25,7 @@ import net.dv8tion.jda.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -130,7 +131,7 @@ public class CurrentTrack extends AbstractCommand {
 			}
 		}
 
-		if (args.length >= 1 && bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
+		if (args.length >= 1 && !args[0].equals("update") && bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
 			String value = "";
 			for (int i = 1; i < args.length; i++) {
 				value += args[i] + " ";
@@ -213,6 +214,23 @@ public class CurrentTrack extends AbstractCommand {
 				ret += Config.EOL + "... And **" + (queue.size() - 2) + "** more!";
 			}
 
+		}
+		if (args.length == 1 && args[0].equals("update")) {
+			channel.sendMessageAsync(ret, message -> {
+				bot.timer.scheduleAtFixedRate(new TimerTask() {
+					@Override
+					public void run() {
+						if (player.getCurrentlyPlaying() != song.id) {
+							this.cancel();
+							return;
+						}
+						message.updateMessageAsync(
+								getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL
+								, null);
+					}
+				}, 10000L, 10000L);
+			});
+			return "";
 		}
 		return ret;
 	}
