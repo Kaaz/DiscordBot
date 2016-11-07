@@ -278,15 +278,23 @@ public class Template {
 	 * @param text      the text
 	 */
 	public static synchronized boolean add(int guildId, String keyPhrase, String text) {
-		if (!dictionary.containsKey(keyPhrase)) {
+		if (!dictionary.containsKey(keyPhrase) && guildId > 0) {
 			return false;
+		}
+		if (guildId == 0) {
+			add(keyPhrase, text);
+			return true;
 		}
 		try {
 			WebDb.get().query("INSERT INTO template_texts(guild_id,keyphrase,text) VALUES(?, ?, ?)", guildId, keyPhrase, text);
-			if (!dictionary.containsKey(keyPhrase)) {
-				dictionary.put(keyPhrase, new ArrayList<>());
+			if (!guildDictionary.containsKey(guildId)) {
+				guildDictionary.put(guildId, new ConcurrentHashMap<>());
 			}
-			dictionary.get(keyPhrase).add(text);
+			if (!guildDictionary.get(guildId).containsKey(keyPhrase)) {
+				guildDictionary.get(guildId).put(keyPhrase, new ArrayList<>());
+			}
+			guildDictionary.get(guildId).get(keyPhrase).add(text);
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
