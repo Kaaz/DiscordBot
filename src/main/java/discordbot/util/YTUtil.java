@@ -91,7 +91,7 @@ public class YTUtil {
 		infoArgs.add("--audio-format");
 		infoArgs.add("mp3");
 		infoArgs.add("--max-filesize");
-		infoArgs.add(userRank.isAtLeast(SimpleRank.CONTRIBUTOR) ? "128m" : "32m");
+		infoArgs.add(userRank.isAtLeast(SimpleRank.CONTRIBUTOR) ? "128m" : "64m");
 		infoArgs.add("--output");
 		infoArgs.add(Config.MUSIC_DIRECTORY + "/" + videocode + ".%(ext)s");
 		infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
