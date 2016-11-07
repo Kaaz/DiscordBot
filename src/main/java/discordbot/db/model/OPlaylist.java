@@ -13,6 +13,18 @@ public class OPlaylist extends AbstractModel {
 	private Visibility visibility = Visibility.GUILD;
 	private EditType editType = EditType.PUBLIC_ADD;
 
+	public boolean isGlobalList() {
+		return id > 0 && ownerId == 0 && guildId == 0;
+	}
+
+	public boolean isGuildList() {
+		return id > 0 && guildId > 0 && ownerId == 0;
+	}
+
+	public boolean isPersonal() {
+		return id > 0 && guildId == 0 && ownerId > 0;
+	}
+
 	public Visibility getVisibility() {
 		return visibility;
 	}
@@ -43,7 +55,7 @@ public class OPlaylist extends AbstractModel {
 		PUBLIC(1, "Anyone can see and use the playlist"),
 		PUBLIC_USE(2, "Anyone can use the playlist"),
 		GUILD(3, "only this guild can see/use the playlist"),
-		PRIVATE(4, "only you can see/use it");
+		PRIVATE(4, "only you/admins can see/use it");
 
 		private final int id;
 		private final String description;

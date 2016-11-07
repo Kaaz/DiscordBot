@@ -36,8 +36,8 @@ public class DiscordBot {
 	private AutoReplyHandler autoReplyhandler;
 	private GameHandler gameHandler = null;
 	private boolean isReady = false;
-	private Map<Guild, TextChannel> defaultChannels = new ConcurrentHashMap<>();
-	private Map<Guild, TextChannel> musicChannels = new ConcurrentHashMap<>();
+	private final Map<Guild, TextChannel> defaultChannels = new ConcurrentHashMap<>();
+	private final Map<Guild, TextChannel> musicChannels = new ConcurrentHashMap<>();
 	private int shardId;
 	private BotContainer container;
 
@@ -121,7 +121,6 @@ public class DiscordBot {
 					break;
 				}
 			}
-
 			if (!foundChannel) {
 				TextChannel target = null;
 				for (TextChannel channel : guild.getTextChannels()) {
@@ -176,8 +175,8 @@ public class DiscordBot {
 	}
 
 	public void loadConfiguration() {
-		defaultChannels = new ConcurrentHashMap<>();
-		musicChannels = new ConcurrentHashMap<>();
+		defaultChannels.clear();
+		musicChannels.clear();
 		chatBotHandler = new ChatBotHandler();
 		autoReplyhandler.reload();
 	}

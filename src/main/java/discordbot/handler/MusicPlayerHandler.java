@@ -13,6 +13,7 @@ import discordbot.guildsettings.music.SettingMusicVolume;
 import discordbot.handler.audiosources.StreamSource;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
+import discordbot.util.DisUtil;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
@@ -121,7 +122,7 @@ public class MusicPlayerHandler {
 				CMusic.update(record);
 				currentlyPlaying = record.id;
 				currentSongLength = info.getDuration().getTotalSeconds();
-				CMusicLog.insert(CGuild.getCachedId(guild.getId()), record.id,0);
+				CMusicLog.insert(CGuild.getCachedId(guild.getId()), record.id, 0);
 			}
 		} else {
 			record = new OMusic();
@@ -132,8 +133,7 @@ public class MusicPlayerHandler {
 			}
 		}
 		if (!messageType.equals("off") && record.id > 0) {
-			String msg = "";
-//			String msg = "[*" + DisUtil.getCommandPrefix(guild) + "playlist* " + playlist.title + "] ";
+			String msg = "[`" + DisUtil.getCommandPrefix(guild) + "pl` " + playlist.title + "] ";
 			if (record.artist != null && record.title != null && !record.artist.trim().isEmpty() && !record.title.trim().isEmpty()) {
 				msg += ":notes: " + record.artist + " - " + record.title;
 			} else {

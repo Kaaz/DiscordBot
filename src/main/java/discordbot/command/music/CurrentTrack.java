@@ -2,10 +2,12 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.OMusic;
-import discordbot.db.model.OMusicVote;
 import discordbot.db.controllers.CMusic;
 import discordbot.db.controllers.CMusicVote;
+import discordbot.db.controllers.CPlaylist;
+import discordbot.db.model.OMusic;
+import discordbot.db.model.OMusicVote;
+import discordbot.db.model.OPlaylist;
 import discordbot.guildsettings.music.SettingMusicRole;
 import discordbot.guildsettings.music.SettingMusicShowListeners;
 import discordbot.handler.GuildSettings;
@@ -85,7 +87,8 @@ public class CurrentTrack extends AbstractCommand {
 		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
 			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
-		OMusic song = CMusic.findById(bot.getCurrentlyPlayingSong(guild));
+		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
+		OMusic song = CMusic.findById(player.getCurrentlyPlaying());
 		if (song.id == 0) {
 			return Template.get("command_currentlyplaying_nosong");
 		}
@@ -166,7 +169,8 @@ public class CurrentTrack extends AbstractCommand {
 			titleIsEmpty = song.title == null || song.title.isEmpty();
 			artistIsEmpty = song.artist == null || song.artist.isEmpty();
 		}
-		String ret = "Currently playing " + ":notes: ";
+		OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
+		String ret = "[`" + DisUtil.getCommandPrefix(channel) + "pl` " + playlist.title + "] " + ":notes: ";
 		ret += songTitle;
 		ret += Config.EOL + Config.EOL;
 		MusicPlayerHandler musicHandler = MusicPlayerHandler.getFor(guild, bot);

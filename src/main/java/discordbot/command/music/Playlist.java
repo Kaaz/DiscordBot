@@ -1,5 +1,6 @@
 package discordbot.command.music;
 
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
@@ -11,6 +12,7 @@ import discordbot.guildsettings.music.SettingMusicRole;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
+import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.Misc;
@@ -48,21 +50,21 @@ public class Playlist extends AbstractCommand {
 	public String[] getUsage() {
 		return new String[]{
 				"-- using playlists ",
-				"playlist mine                        //use your playlist",
+//				"playlist mine                        //use your playlist",
 				"playlist guild                       //use the guild's playlist",
 				"playlist global                      //use the global playlist",
 				"playlist settings                    //check the settings for the active playlist",
-				"playlist settings <playlistname>     //check the settings for the active playlist",
+//				"playlist settings <playlistname>     //check the settings for the active playlist",
 				"playlist                             //info about the current playlist",
-				"playlist list                        //see what playlists there are",
+//				"playlist list                        //see what playlists there are",
 				"",
 				"-- Adding and removing music from the playlist",
-				"playlist show <pagenumber>           //shows music in the playlist",
+//				"playlist show <pagenumber>           //shows music in the playlist",
 				"playlist add                         //adds the currently playing song",
-				"playlist add <youtubelink>           //adds the link to the playlist",
+//				"playlist add <youtubelink>           //adds the link to the playlist",
 				"playlist remove                      //removes the currently playing song",
-				"playlist remove <youtubelink>        //removes song from playlist",
-				"playlist removeall                   //removes ALL songs from playlist",
+//				"playlist remove <youtubelink>        //removes song from playlist",
+//				"playlist removeall                   //removes ALL songs from playlist",
 				"",
 				"-- Changing the settings of the playlist",
 				"playlist title <new title>           //edit the playlist title",
@@ -105,18 +107,22 @@ public class Playlist extends AbstractCommand {
 			if (args.length == 1) {
 				switch (args[0].toLowerCase()) {
 					case "mine":
-						playlist = findPlaylist("mine", author, guild);
-						player.setActivePlayListId(playlist.id);
-						return Template.get(channel, "music_playlist_changed", playlist.title);
+//						playlist = findPlaylist("mine", author, guild);
+//						player.setActivePlayListId(playlist.id);
+//						return Template.get(channel, "music_playlist_changed", playlist.title);
+						return "Only global and guild lists for now, sorry!";
 					case "guild":
 						playlist = findPlaylist("guild", author, guild);
 						player.setActivePlayListId(playlist.id);
 						return Template.get(channel, "music_playlist_changed", playlist.title);
 					case "global":
-					default:
 						playlist = findPlaylist("global", author, guild);
 						player.setActivePlayListId(playlist.id);
 						return Template.get(channel, "music_playlist_changed", playlist.title);
+					case "add":
+					case "remove":
+					default:
+						break;
 				}
 			}
 			switch (args[0].toLowerCase()) {
@@ -124,13 +130,58 @@ public class Playlist extends AbstractCommand {
 					break;
 				case "setting":
 				case "settings":
-					if (args.length < 3) {
-						if (args.length > 1) {
-							return makeSettingsTable(findPlaylist(args[1], author, guild));
-						}
+					if (args.length < 2) {
 						return makeSettingsTable(playlist);
+					} else {
+						if (playlist.isGlobalList()) {
+							return Template.get(channel, "playlist_global_readonly");
+						}
+						if (playlist.isPersonal()) {
+							return "Personal playlists are not fully done yet, sorry!";
+						}
+						switch (args[1].toLowerCase()) {
+							case "title":
+								if (args.length == 2) {
+									return Template.get(channel, "command_playlist_title", playlist.title);
+								}
+								if (playlist.isGuildList() && userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+									playlist.title = Joiner.on(" ").join(Arrays.copyOfRange(args, 2, args.length));
+									CPlaylist.update(playlist);
+									player.setActivePlayListId(playlist.id);
+									return Template.get(channel, "playlist_title_updated", playlist.title);
+								}
+
+								return Template.get(channel, "playlist_title_no_permission");
+							case "edit-type":
+							case "edittype":
+							case "edit":
+								if (args.length == 2) {
+									List<List<String>> tbl = new ArrayList<>();
+									for (OPlaylist.EditType editType : OPlaylist.EditType.values()) {
+										if (editType.getId() < 1) continue;
+										tbl.add(Arrays.asList((editType == playlist.getEditType() ? "*" : " ") + editType.getId(), editType.toString(), editType.getDescription()));
+									}
+									return "the edit-type of the playlist. A `*` indicates the selected option" + Config.EOL +
+											Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
+											"Private in a guild-setting refers to users with admin privileges";
+								}
+							case "vis":
+							case "visibility":
+								if (args.length == 2) {
+									List<List<String>> tbl = new ArrayList<>();
+									for (OPlaylist.Visibility visibility : OPlaylist.Visibility.values()) {
+										if (visibility.getId() < 1) continue;
+										tbl.add(Arrays.asList((visibility == playlist.getVisibility() ? "*" : " ") + visibility.getId(), visibility.toString(), visibility.getDescription()));
+									}
+									return "the visibility-type of the playlist. A `*` indicates the selected option" + Config.EOL +
+											Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
+											"Private in a guild-setting refers to users with admin privileges";
+								}
+								return "soon-tm";
+							default:
+								return "No such setting";
+						}
 					}
-					break;
 			}
 		}
 		return Template.get("command_invalid_use");
