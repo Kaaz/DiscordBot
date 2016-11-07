@@ -2,8 +2,10 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
+import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
@@ -49,6 +51,11 @@ public class SkipTrack extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+		Guild guild = ((TextChannel) channel).getGuild();
+		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
+		if (!player.isPlaying()) {
+
+		}
 		if (args.length >= 1) {
 			switch (args[0]) {
 				case "perm":
@@ -59,8 +66,7 @@ public class SkipTrack extends AbstractCommand {
 			}
 
 		}
-		bot.skipCurrentSong(((TextChannel) channel).getGuild());
+		player.skipSong();
 		return "";
-//		return Template.get("command_skip_song_skipped");
 	}
 }

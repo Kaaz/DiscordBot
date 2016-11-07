@@ -14,22 +14,22 @@ import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
 /**
- * !stop
- * make the bot stop playing music
+ * !pause
+ * pause the music or resume it
  */
-public class Stop extends AbstractCommand {
-	public Stop() {
+public class PauseCommand extends AbstractCommand {
+	public PauseCommand() {
 		super();
 	}
 
 	@Override
 	public String getDescription() {
-		return "stops playing music";
+		return "pauses the music or resumes it if its paused";
 	}
 
 	@Override
 	public String getCommand() {
-		return "stop";
+		return "pause";
 	}
 
 	@Override
@@ -44,7 +44,9 @@ public class Stop extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[0];
+		return new String[]{
+				"resume"
+		};
 	}
 
 	@Override
@@ -54,8 +56,12 @@ public class Stop extends AbstractCommand {
 		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
 			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
-		MusicPlayerHandler.getFor(guild, bot).stopMusic();
-		bot.leaveVoice(guild);
-		return Template.get("command_stop_success");
+		if (!MusicPlayerHandler.getFor(guild, bot).canTogglePause()) {
+			return Template.get("music_state_not_started");
+		}
+		if (MusicPlayerHandler.getFor(guild, bot).togglePause()) {
+			return Template.get("music_state_paused");
+		}
+		return Template.get("music_state_resumed");
 	}
 }

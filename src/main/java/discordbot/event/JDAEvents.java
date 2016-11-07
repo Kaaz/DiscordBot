@@ -2,13 +2,13 @@ package discordbot.event;
 
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.ExitCode;
-import discordbot.db.model.OGuild;
-import discordbot.db.model.OGuildMember;
-import discordbot.db.model.OUser;
 import discordbot.db.controllers.CBotEvent;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CGuildMember;
 import discordbot.db.controllers.CUser;
+import discordbot.db.model.OGuild;
+import discordbot.db.model.OGuildMember;
+import discordbot.db.model.OUser;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingPMUserEvents;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
@@ -39,6 +39,7 @@ import net.dv8tion.jda.managers.AudioManager;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.TimerTask;
 
 /**
  * Created on 12-10-2016
@@ -155,7 +156,16 @@ public class JDAEvents extends ListenerAdapter {
 			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getUsername(), user.getDiscriminator(), guild.getName()));
 		}
 		if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
-			discordBot.out.sendAsyncMessage(discordBot.getDefaultChannel(guild), Template.get("welcome_new_user", user.getAsMention()), null);
+			discordBot.out.sendAsyncMessage(discordBot.getDefaultChannel(guild), Template.get("welcome_new_user", user.getAsMention()), message -> {
+				discordBot.timer.schedule(new TimerTask() {
+					@Override
+					public void run() {
+						if (message != null) {
+							message.deleteMessage();
+						}
+					}
+				}, Config.DELETE_MESSAGES_AFTER);
+			});
 		}
 		Launcher.log("user joins guild", "guild", "member-join",
 				"guild-id", guild.getId(),
@@ -176,7 +186,16 @@ public class JDAEvents extends ListenerAdapter {
 			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** left the guild **%s**", user.getUsername(), user.getDiscriminator(), guild.getName()));
 		}
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingWelcomeNewUsers.class))) {
-			discordBot.out.sendAsyncMessage(guild.getTextChannels().get(0), Template.get("message_user_leaves", user.getUsername()), null);
+			discordBot.out.sendAsyncMessage(guild.getTextChannels().get(0), Template.get("message_user_leaves", user.getUsername()), message -> {
+				discordBot.timer.schedule(new TimerTask() {
+					@Override
+					public void run() {
+						if (message != null) {
+							message.deleteMessage();
+						}
+					}
+				}, Config.DELETE_MESSAGES_AFTER);
+			});
 		}
 		Launcher.log("user leaves guild", "guild", "member-leave",
 				"guild-id", guild.getId(),

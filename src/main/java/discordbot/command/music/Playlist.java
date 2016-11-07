@@ -1,14 +1,18 @@
 package discordbot.command.music;
 
+import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.OPlaylist;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CPlaylist;
 import discordbot.db.controllers.CUser;
+import discordbot.db.model.OPlaylist;
+import discordbot.guildsettings.music.SettingMusicRole;
+import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.Misc;
 import discordbot.util.TimeUtil;
 import net.dv8tion.jda.entities.Guild;
@@ -84,8 +88,9 @@ public class Playlist extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
-		if (1 == 1) {//yep I know
-			return Template.get("command_disabled");
+		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
+		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
+			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
 		int listId = player.getActivePLaylistId();
 		OPlaylist playlist;
@@ -95,24 +100,23 @@ public class Playlist extends AbstractCommand {
 			playlist = new OPlaylist();
 		}
 		if (args.length == 0) {
-			if (playlist.id == 0) {
-				return "no playlist active at the moment, using the global list.";
-			}
-			return "";
+			return Template.get(channel, "music_playlist_using", playlist.title);
 		} else {
 			if (args.length == 1) {
 				switch (args[0].toLowerCase()) {
 					case "mine":
 						playlist = findPlaylist("mine", author, guild);
 						player.setActivePlayListId(playlist.id);
-						return "Changed to your playlist!";
+						return Template.get(channel, "music_playlist_changed", playlist.title);
 					case "guild":
 						playlist = findPlaylist("guild", author, guild);
 						player.setActivePlayListId(playlist.id);
-						return "Changed the guild's playlist!";
+						return Template.get(channel, "music_playlist_changed", playlist.title);
 					case "global":
-						player.setActivePlayListId(0);
-						return "Stopped using a playlist!";
+					default:
+						playlist = findPlaylist("global", author, guild);
+						player.setActivePlayListId(playlist.id);
+						return Template.get(channel, "music_playlist_changed", playlist.title);
 				}
 			}
 			switch (args[0].toLowerCase()) {
@@ -123,9 +127,6 @@ public class Playlist extends AbstractCommand {
 					if (args.length < 3) {
 						if (args.length > 1) {
 							return makeSettingsTable(findPlaylist(args[1], author, guild));
-						}
-						if (playlist.id == 0) {
-							return "Global playlist has no settings";
 						}
 						return makeSettingsTable(playlist);
 					}
@@ -138,23 +139,27 @@ public class Playlist extends AbstractCommand {
 	private OPlaylist findPlaylist(String search, User user, Guild guild) {
 		int userId;
 		int guildId = CGuild.getCachedId(guild.getId());
-		if ("mine".equalsIgnoreCase(search)) {
-			userId = CUser.getCachedId(user.getId());
-		} else if ("guild".equalsIgnoreCase(search)) {
-			userId = 0;
-		} else {
-			return CPlaylist.findBy(CUser.getCachedId(user.getId()));
+		OPlaylist playlist;
+		String title;
+		switch (search.toLowerCase()) {
+			case "mine":
+				title = user.getUsername() + "'s list";
+				userId = CUser.getCachedId(user.getId(), user.getUsername());
+				playlist = CPlaylist.findBy(userId);
+				break;
+			case "guild":
+				title = EmojiParser.parseToAliases(guild.getName()) + "'s list";
+				playlist = CPlaylist.findBy(0, guildId);
+				break;
+			case "global":
+			default:
+				title = "Global";
+				playlist = CPlaylist.findBy(0, 0);
+				break;
 		}
-		OPlaylist playlist = CPlaylist.findBy(userId, guildId);
 		if (playlist.id == 0) {
-			if (userId > 0) {
-				playlist = CPlaylist.findBy(CUser.getCachedId(user.getId()));
-			}
-			if (playlist.id == 0) {
-				playlist.ownerId = userId;
-				playlist.guildId = guildId;
-				CPlaylist.insert(playlist);
-			}
+			playlist.title = title;
+			CPlaylist.insert(playlist);
 		}
 		return playlist;
 	}

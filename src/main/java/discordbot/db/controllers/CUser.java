@@ -21,6 +21,10 @@ public class CUser {
 	private static Map<Integer, String> discordCache = new ConcurrentHashMap<>();
 
 	public static int getCachedId(String discordId) {
+		return getCachedId(discordId, discordId);
+	}
+
+	public static int getCachedId(String discordId, String username) {
 		if (!userCache.containsKey(discordId)) {
 			OUser user = findBy(discordId);
 			if (user.id == 0) {

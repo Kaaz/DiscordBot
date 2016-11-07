@@ -2,7 +2,7 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.guildsettings.defaults.SettingMusicVolume;
+import discordbot.guildsettings.music.SettingMusicVolume;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;

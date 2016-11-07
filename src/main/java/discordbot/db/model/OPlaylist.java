@@ -17,12 +17,20 @@ public class OPlaylist extends AbstractModel {
 		return visibility;
 	}
 
+	public void setVisibility(Visibility visibility) {
+		this.visibility = visibility;
+	}
+
 	public void setVisibility(int visibilityId) {
 		this.visibility = Visibility.fromId(visibilityId);
 	}
 
 	public EditType getEditType() {
 		return editType;
+	}
+
+	public void setEditType(EditType editType) {
+		this.editType = editType;
 	}
 
 	public void setEditType(int editId) {

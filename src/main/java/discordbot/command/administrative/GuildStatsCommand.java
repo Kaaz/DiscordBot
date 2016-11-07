@@ -1,8 +1,11 @@
 package discordbot.command.administrative;
 
+import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
+import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
@@ -60,9 +63,10 @@ public class GuildStatsCommand extends AbstractCommand {
 		if (args.length == 0) {
 			return getTotalTable(bot);
 		}
+		SimpleRank userrank = bot.security.getSimpleRank(author, channel);
 		switch (args[0].toLowerCase()) {
 			case "music":
-				return getPlayingOn(bot);
+				return getPlayingOn(bot, userrank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 2 && args[1].equalsIgnoreCase("guilds"));
 			case "users":
 				if (!(channel instanceof TextChannel)) {
 					return Template.get("command_invalid_use");
@@ -105,19 +109,24 @@ public class GuildStatsCommand extends AbstractCommand {
 		return getTotalTable(bot);
 	}
 
-	private String getPlayingOn(DiscordBot bot) {
+	private String getPlayingOn(DiscordBot bot, boolean showGuildnames) {
 		int activeVoice = 0;
+		ArrayList<String> guildnames = new ArrayList<>();
 		for (DiscordBot discordBot : bot.getContainer().getShards()) {
 			for (Guild guild : discordBot.client.getGuilds()) {
 				if (discordBot.client.getAudioManager(guild).isConnected()) {
 					activeVoice++;
+					guildnames.add(guild.getName());
 				}
 			}
 		}
 		if (activeVoice == 0) {
 			return Template.get("command_stats_not_playing_music");
 		}
-		return Template.get("command_stats_playing_music_on", activeVoice);
+		if (!showGuildnames) {
+			return Template.get("command_stats_playing_music_on", activeVoice);
+		}
+		return Template.get("command_stats_playing_music_on", activeVoice) + Config.EOL + Joiner.on(", ").join(guildnames);
 	}
 
 	private String getTotalTable(DiscordBot bot) {

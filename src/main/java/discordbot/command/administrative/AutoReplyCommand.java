@@ -95,7 +95,7 @@ public class AutoReplyCommand extends AbstractCommand {
 			if (args[0].equals("create")) {
 				if (replyPattern.id == 0) {
 					replyPattern.tag = args[1];
-					replyPattern.userId = CUser.getCachedId(author.getId());
+					replyPattern.userId = CUser.getCachedId(author.getId(), author.getUsername());
 					replyPattern.guildId = bot.isCreator(author) ? 0 : CGuild.getCachedId(guild.getId());
 					CReplyPattern.insert(replyPattern);
 					return Template.get("command_autoreply_created", args[1]);

@@ -1,11 +1,11 @@
 package discordbot.command.informative;
 
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.OGuildMember;
-import discordbot.db.model.OUser;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CGuildMember;
 import discordbot.db.controllers.CUser;
+import discordbot.db.model.OGuildMember;
+import discordbot.db.model.OUser;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -63,7 +63,7 @@ public class UserCommand extends AbstractCommand {
 			infoUser = DisUtil.findUserIn((TextChannel) channel, args[0]);
 		}
 		if (infoUser != null) {
-			int userId = CUser.getCachedId(infoUser.getId());
+			int userId = CUser.getCachedId(infoUser.getId(), infoUser.getUsername());
 			int guildId = 0;
 			StringBuilder sb = new StringBuilder();
 			String nickname = infoUser.getUsername();

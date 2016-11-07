@@ -1,7 +1,7 @@
 package discordbot.role;
 
-import discordbot.db.model.OGuildMember;
 import discordbot.db.controllers.CGuildMember;
+import discordbot.db.model.OGuildMember;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanksPrefix;
 import discordbot.handler.GuildSettings;
@@ -34,21 +34,21 @@ public class RoleRankings {
 
 	public static void init() {
 		//this may or may not be based on the ph scale
-		roles.add(new MemberShipRole("Spectator", new Color(0x1A142F), 0));
-		roles.add(new MemberShipRole("Outsider", new Color(0x293276), TimeUnit.HOURS.toMillis(1L)));
-		roles.add(new MemberShipRole("Lurker", new Color(0x283486), TimeUnit.HOURS.toMillis(4L)));
-		roles.add(new MemberShipRole("Neutral", new Color(0x303D91), TimeUnit.DAYS.toMillis(1L)));
-		roles.add(new MemberShipRole("Prospect", new Color(0x414D9C), TimeUnit.DAYS.toMillis(2L)));
-		roles.add(new MemberShipRole("Friendly", new Color(0x3F77AB), TimeUnit.DAYS.toMillis(4L)));
-		roles.add(new MemberShipRole("Regular", new Color(0x4C8CAD), TimeUnit.DAYS.toMillis(7L)));
-		roles.add(new MemberShipRole("Honored", new Color(0x00893B), TimeUnit.DAYS.toMillis(14L)));
-		roles.add(new MemberShipRole("Veteran", new Color(0xADCA1F), TimeUnit.DAYS.toMillis(28L)));
-		roles.add(new MemberShipRole("Revered", new Color(0xEFC006), TimeUnit.DAYS.toMillis(60L)));
-		roles.add(new MemberShipRole("Herald", new Color(0xFF9A00), TimeUnit.DAYS.toMillis(90L)));
-		roles.add(new MemberShipRole("Exalted", new Color(0xE52021), TimeUnit.DAYS.toMillis(180L)));
-		roles.add(new MemberShipRole("Beloved", new Color(0xD61B1E), TimeUnit.DAYS.toMillis(365L)));
-		roles.add(new MemberShipRole("Favorite", new Color(0xA72618), TimeUnit.DAYS.toMillis(700L)));
-		roles.add(new MemberShipRole("Consul", new Color(0x862718), TimeUnit.DAYS.toMillis(1000L)));
+		roles.add(new MemberShipRole("Spectator", new Color(0xA700FF), 0));
+		roles.add(new MemberShipRole("Outsider", new Color(0x7901F9), TimeUnit.HOURS.toMillis(1L)));
+		roles.add(new MemberShipRole("Lurker", new Color(0x4C03F4), TimeUnit.HOURS.toMillis(4L)));
+		roles.add(new MemberShipRole("Neutral", new Color(0x2205EF), TimeUnit.DAYS.toMillis(1L)));
+		roles.add(new MemberShipRole("Prospect", new Color(0x0612E9), TimeUnit.DAYS.toMillis(2L)));
+		roles.add(new MemberShipRole("Friendly", new Color(0x083AE4), TimeUnit.DAYS.toMillis(4L)));
+		roles.add(new MemberShipRole("Regular", new Color(0x095FDF), TimeUnit.DAYS.toMillis(7L)));
+		roles.add(new MemberShipRole("Honored", new Color(0x0A83DA), TimeUnit.DAYS.toMillis(14L)));
+		roles.add(new MemberShipRole("Veteran", new Color(0x0CA4D4), TimeUnit.DAYS.toMillis(28L)));
+		roles.add(new MemberShipRole("Revered", new Color(0x0DC3CF), TimeUnit.DAYS.toMillis(60L)));
+		roles.add(new MemberShipRole("Herald", new Color(0x0ECAB4), TimeUnit.DAYS.toMillis(90L)));
+		roles.add(new MemberShipRole("Exalted", new Color(0x0FC490), TimeUnit.DAYS.toMillis(180L)));
+		roles.add(new MemberShipRole("Beloved", new Color(0x10BF6D), TimeUnit.DAYS.toMillis(365L)));
+		roles.add(new MemberShipRole("Favorite", new Color(0x11BA4D), TimeUnit.DAYS.toMillis(700L)));
+		roles.add(new MemberShipRole("Consul", new Color(0x11B52F), TimeUnit.DAYS.toMillis(1000L)));
 		for (MemberShipRole role : roles) {
 			roleNames.add(role.getName().toLowerCase());
 		}

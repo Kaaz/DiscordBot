@@ -103,7 +103,7 @@ public class TagCommand extends AbstractCommand {
 			if (tag.id == 0) {
 				tag.tagname = args[0];
 				tag.guildId = CGuild.getCachedId(guild.getId());
-				tag.userId = CUser.getCachedId(author.getId());
+				tag.userId = CUser.getCachedId(author.getId(), author.getUsername());
 				tag.created = new Timestamp(System.currentTimeMillis());
 			}
 			tag.response = EmojiParser.parseToAliases(output);

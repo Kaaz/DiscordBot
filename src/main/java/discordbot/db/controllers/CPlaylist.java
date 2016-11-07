@@ -7,11 +7,15 @@ import discordbot.db.model.OPlaylist;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * data communication with the controllers `playlist`
  */
 public class CPlaylist {
+	private static Random rng = new Random();
 
 	public static OPlaylist findBy(int userId) {
 		OPlaylist s = new OPlaylist();
@@ -21,12 +25,23 @@ public class CPlaylist {
 						"WHERE owner_id = ? ", userId)) {
 			if (rs.next()) {
 				s = fillRecord(rs);
+			} else {
+				s.ownerId = userId;
 			}
 			rs.getStatement().close();
 		} catch (Exception e) {
 			Logger.fatal(e);
 		}
 		return s;
+	}
+
+	public static OPlaylist getGlobalList() {
+		OPlaylist globalList = findBy(0, 0);
+		if (globalList.id == 0) {
+			globalList.title = "Global";
+			insert(globalList);
+		}
+		return globalList;
 	}
 
 	public static OPlaylist findBy(int userId, int guildId) {
@@ -37,6 +52,9 @@ public class CPlaylist {
 						"WHERE owner_id = ? AND guild_id = ?", userId, guildId)) {
 			if (rs.next()) {
 				s = fillRecord(rs);
+			} else {
+				s.ownerId = userId;
+				s.guildId = guildId;
 			}
 			rs.getStatement().close();
 		} catch (Exception e) {
@@ -62,6 +80,70 @@ public class CPlaylist {
 		return s;
 	}
 
+	/**
+	 * Retrieves a somewhat random item from the playlist
+	 *
+	 * @param playlistId the playlist to look in
+	 * @return
+	 */
+	public static String getRandomMusic(int playlistId) {
+		List<String> potentialSongs = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT m.id, m.filename " +
+						"FROM music m " +
+						"JOIN playlist_item pi ON pi.music_id = m.id " +
+						"JOIN playlist pl ON pl.id = pi.playlist_id  " +
+						"WHERE m.banned = 0 AND pl.id = ? " +
+						"ORDER BY pi.last_played ASC " +
+						"LIMIT 50", playlistId)) {
+			while (rs.next()) {
+				potentialSongs.add(rs.getString("filename"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (!potentialSongs.isEmpty()) {
+			return potentialSongs.get(rng.nextInt(potentialSongs.size()));
+		}
+		return null;
+	}
+
+	/**
+	 * Add a song to a playlist
+	 *
+	 * @param playlistId the playlist to add to
+	 * @param musicId    the id of the music record
+	 * @return success
+	 */
+	public static boolean addToPlayList(int playlistId, int musicId) {
+		try {
+			WebDb.get().query(
+					"INSERT INTO playlist_item(playlist_id, music_id, last_played) " +
+							"VALUES (?,?,?) ON DUPLICATE KEY UPDATE last_played=last_played ",
+					playlistId, musicId, 0
+			);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * updates the last time a song was played in a playlist
+	 *
+	 * @param playlistId id of the playlist
+	 * @param musicId    id of the music recordf
+	 */
+	public static void updateLastPlayed(int playlistId, int musicId) {
+		try {
+			WebDb.get().query("UPDATE playlist_item SET last_played = ? WHERE playlist_id = ? AND music_id = ?",
+					System.currentTimeMillis(), playlistId, musicId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private static OPlaylist fillRecord(ResultSet rs) throws SQLException {
 		OPlaylist r = new OPlaylist();
 		r.id = rs.getInt("id");
@@ -69,7 +151,7 @@ public class CPlaylist {
 		r.ownerId = rs.getInt("owner_id");
 		r.guildId = rs.getInt("guild_id");
 		r.setEditType(rs.getInt("edit_type"));
-		r.setVisibility(rs.getInt("visibility_type"));
+		r.setVisibility(rs.getInt("visibility_level"));
 		r.createdOn = rs.getTimestamp("create_date");
 		return r;
 	}

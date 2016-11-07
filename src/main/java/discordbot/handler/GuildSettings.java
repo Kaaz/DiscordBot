@@ -2,12 +2,12 @@ package discordbot.handler;
 
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.db.WebDb;
-import discordbot.db.model.OGuild;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CUser;
+import discordbot.db.model.OGuild;
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.DefaultGuildSettings;
-import discordbot.guildsettings.defaults.SettingMusicRole;
+import discordbot.guildsettings.music.SettingMusicRole;
 import discordbot.permission.SimpleRank;
 import net.dv8tion.jda.entities.*;
 
@@ -34,7 +34,7 @@ public class GuildSettings {
 		if (record.id == 0) {
 			record.name = EmojiParser.parseToAliases(guild.getName());
 			record.discord_id = guild.getId();
-			record.owner = CUser.getCachedId(guild.getOwnerId());
+			record.owner = CUser.getCachedId(guild.getOwnerId(), guild.getOwner().getUsername());
 			CGuild.insert(record);
 		}
 		this.id = record.id;

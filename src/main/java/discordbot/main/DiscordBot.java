@@ -2,7 +2,11 @@ package discordbot.main;
 
 import discordbot.event.JDAEvents;
 import discordbot.guildsettings.DefaultGuildSettings;
-import discordbot.guildsettings.defaults.*;
+import discordbot.guildsettings.defaults.SettingActiveChannels;
+import discordbot.guildsettings.defaults.SettingAutoReplyModule;
+import discordbot.guildsettings.defaults.SettingBotChannel;
+import discordbot.guildsettings.defaults.SettingEnableChatBot;
+import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.handler.*;
 import discordbot.role.RoleRankings;
 import net.dv8tion.jda.JDA;
@@ -260,10 +264,6 @@ public class DiscordBot {
 		return MusicPlayerHandler.getFor(guild, this).getVolume();
 	}
 
-	public void stopMusic(Guild guild) {
-		MusicPlayerHandler.getFor(guild, this).stopMusic();
-	}
-
 	public int getCurrentlyPlayingSong(Guild guild) {
 		return MusicPlayerHandler.getFor(guild, this).getCurrentlyPlaying();
 	}
@@ -276,16 +276,8 @@ public class DiscordBot {
 		return MusicPlayerHandler.getFor(channel.getGuild(), this).isConnectedTo(channel);
 	}
 
-	public boolean isConnected(Guild guild) {
-		return MusicPlayerHandler.getFor(guild, this).leave();
-	}
-
 	public boolean leaveVoice(Guild guild) {
 		return MusicPlayerHandler.getFor(guild, this).leave();
-	}
-
-	public boolean playRandomSong(Guild guild) {
-		return MusicPlayerHandler.getFor(guild, this).playRandomSong();
 	}
 
 	public void setVolume(Guild guild, float volume) {

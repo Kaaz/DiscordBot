@@ -6,8 +6,8 @@ import discordbot.command.CommandVisibility;
 import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
 import discordbot.db.WebDb;
-import discordbot.db.model.OCommandCooldown;
 import discordbot.db.controllers.*;
+import discordbot.db.model.OCommandCooldown;
 import discordbot.guildsettings.defaults.SettingBotChannel;
 import discordbot.guildsettings.defaults.SettingCleanupMessages;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
@@ -89,7 +89,7 @@ public class CommandHandler {
 						usedArguments.append(arg).append(" ");
 					}
 					if (!(channel instanceof PrivateChannel)) {
-						CCommandLog.saveLog(CUser.getCachedId(author.getId()),
+						CCommandLog.saveLog(CUser.getCachedId(author.getId(), author.getUsername()),
 								CGuild.getCachedId(((TextChannel) channel).getGuild().getId()),
 								input[0],
 								EmojiParser.parseToAliases(usedArguments.toString()).trim());
@@ -136,7 +136,9 @@ public class CommandHandler {
 					bot.timer.schedule(new TimerTask() {
 						@Override
 						public void run() {
-							message.deleteMessage();
+							if (message != null) {
+								message.deleteMessage();
+							}
 						}
 					}, Config.DELETE_MESSAGES_AFTER);
 				}

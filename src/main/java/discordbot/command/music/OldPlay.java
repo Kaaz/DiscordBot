@@ -146,7 +146,7 @@ public class OldPlay extends AbstractCommand {
 				return Template.get("command_play_no_results");
 			}
 		} else {
-			if (bot.playRandomSong(tc.getGuild())) {
+			if (MusicPlayerHandler.getFor(tc.getGuild(), bot).playRandomSong()) {
 				return Template.get("music_started_playing_random");
 			} else {
 				return Template.get("music_failed_to_start");

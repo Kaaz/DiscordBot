@@ -1,11 +1,15 @@
 package discordbot.handler;
 
 import discordbot.db.WebDb;
-import discordbot.db.model.OMusic;
+import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CMusic;
-import discordbot.guildsettings.defaults.SettingMusicChannelTitle;
-import discordbot.guildsettings.defaults.SettingMusicPlayingMessage;
-import discordbot.guildsettings.defaults.SettingMusicVolume;
+import discordbot.db.controllers.CMusicLog;
+import discordbot.db.controllers.CPlaylist;
+import discordbot.db.model.OMusic;
+import discordbot.db.model.OPlaylist;
+import discordbot.guildsettings.music.SettingMusicChannelTitle;
+import discordbot.guildsettings.music.SettingMusicPlayingMessage;
+import discordbot.guildsettings.music.SettingMusicVolume;
 import discordbot.handler.audiosources.StreamSource;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
@@ -43,6 +47,7 @@ public class MusicPlayerHandler {
 	private volatile long currentSongLength = 0;
 	private volatile long currentSongStartTimeInSeconds = 0;
 	private volatile int activePlayListId = 0;
+	private volatile OPlaylist playlist;
 	private Random rng;
 	private AudioManager manager;
 	private volatile LinkedList<OMusic> queue;
@@ -64,6 +69,8 @@ public class MusicPlayerHandler {
 		}
 		player.setVolume(Float.parseFloat(GuildSettings.get(guild).getOrDefault(SettingMusicVolume.class)) / 100F);
 		playerInstances.put(guild, this);
+		playlist = CPlaylist.getGlobalList();
+		activePlayListId = playlist.id;
 	}
 
 	public static MusicPlayerHandler getFor(Guild guild, DiscordBot bot) {
@@ -79,7 +86,8 @@ public class MusicPlayerHandler {
 	}
 
 	public synchronized void setActivePlayListId(int id) {
-		activePlayListId = id;
+		playlist = CPlaylist.findById(id);
+		activePlayListId = playlist.id;
 	}
 
 	public long getStartTimeStamp() {
@@ -113,6 +121,7 @@ public class MusicPlayerHandler {
 				CMusic.update(record);
 				currentlyPlaying = record.id;
 				currentSongLength = info.getDuration().getTotalSeconds();
+				CMusicLog.insert(CGuild.getCachedId(guild.getId()), record.id,0);
 			}
 		} else {
 			record = new OMusic();
@@ -124,20 +133,13 @@ public class MusicPlayerHandler {
 		}
 		if (!messageType.equals("off") && record.id > 0) {
 			String msg = "";
-			if (activePlayListId == 0) {
-//				msg = "[ no `" + DisUtil.getCommandPrefix(guild) + "playlist`] ";
+//			String msg = "[*" + DisUtil.getCommandPrefix(guild) + "playlist* " + playlist.title + "] ";
+			if (record.artist != null && record.title != null && !record.artist.trim().isEmpty() && !record.title.trim().isEmpty()) {
+				msg += ":notes: " + record.artist + " - " + record.title;
 			} else {
-//				msg = "[some list] ";
+				msg += ":notes: " + record.youtubeTitle;
 			}
-			if (record.youtubeTitle.isEmpty()) {
-				msg += "plz send help:: " + f.getName();
-			} else {
-				if (record.artist != null && record.title != null && !record.artist.trim().isEmpty() && !record.title.trim().isEmpty()) {
-					msg += ":notes: " + record.artist + " - " + record.title;
-				} else {
-					msg += ":notes: " + record.youtubeTitle;
-				}
-			}
+
 			final long deleteAfter = currentSongLength * 1000L;
 			bot.getMusicChannel(guild).sendMessageAsync(msg, message -> {
 				if (messageType.equals("clear")) {
@@ -145,7 +147,9 @@ public class MusicPlayerHandler {
 							new TimerTask() {
 								@Override
 								public void run() {
-									message.deleteMessage();
+									if (message != null) {
+										message.deleteMessage();
+									}
 								}
 							}, deleteAfter
 					);
@@ -237,6 +241,10 @@ public class MusicPlayerHandler {
 		return addToQueue(getRandomSong());
 	}
 
+	public synchronized boolean isPlaying() {
+		return player.isPlaying();
+	}
+
 	public synchronized void startPlaying() {
 		if (!player.isPlaying()) {
 			try {
@@ -264,11 +272,6 @@ public class MusicPlayerHandler {
 		}
 		queue.offer(record);
 		startPlaying();
-//		LocalSource ls = new LocalSource(mp3file);
-//		player.getAudioQueue().add(ls);
-//		if (!player.isPlaying()) {
-//			player.play();
-//		}
 		return true;
 	}
 
@@ -277,8 +280,7 @@ public class MusicPlayerHandler {
 	}
 
 	public void setVolume(float volume) {
-		volume = Math.min(1F, Math.max(0F, volume));
-		player.setVolume(volume);
+		player.setVolume(Math.min(1F, Math.max(0F, volume)));
 	}
 
 	public List<User> getUsersInVoiceChannel() {
@@ -289,6 +291,29 @@ public class MusicPlayerHandler {
 			userList.addAll(connectedUsers.stream().filter(user -> !user.isBot()).collect(Collectors.toList()));
 		}
 		return userList;
+	}
+
+	/**
+	 * check if the player can be paused to start with
+	 *
+	 * @return if its either playing or already paused
+	 */
+	public synchronized boolean canTogglePause() {
+		return player.isPlaying() || player.isPaused();
+	}
+
+	/**
+	 * toggle paused
+	 *
+	 * @return true if paused, false otherwise
+	 */
+	public synchronized boolean togglePause() {
+		if (!player.isPaused()) {
+			player.pause();
+		} else {
+			startPlaying();
+		}
+		return player.isPaused();
 	}
 
 	public synchronized void stopMusic() {

@@ -1,4 +1,4 @@
-package discordbot.guildsettings.defaults;
+package discordbot.guildsettings.music;
 
 import discordbot.guildsettings.AbstractGuildSetting;
 

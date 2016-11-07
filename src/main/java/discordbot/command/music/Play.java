@@ -3,9 +3,9 @@ package discordbot.command.music;
 import com.google.common.base.Joiner;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.OMusic;
 import discordbot.db.controllers.CMusic;
-import discordbot.guildsettings.defaults.SettingMusicRole;
+import discordbot.db.model.OMusic;
+import discordbot.guildsettings.music.SettingMusicRole;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
@@ -90,7 +90,7 @@ public class Play extends AbstractCommand {
 			return "";
 		}
 		if (!isInVoiceWith(guild, author)) {
-			if(guild.getVoiceStatusOfUser(author).getChannel() == null){
+			if (guild.getVoiceStatusOfUser(author).getChannel() == null) {
 				return "you are not in a voicechannel";
 			}
 			try {
@@ -108,15 +108,15 @@ public class Play extends AbstractCommand {
 		}
 		if (args.length > 0) {
 
-			String videocode = YTUtil.extractCodeFromUrl(args[0]);
-			if (!YTUtil.isValidYoutubeCode(videocode)) {
-				videocode = ytSearch.getResults(Joiner.on(" ").join(args));
+			String videoCode = YTUtil.extractCodeFromUrl(args[0]);
+			if (!YTUtil.isValidYoutubeCode(videoCode)) {
+				videoCode = ytSearch.getResults(Joiner.on(" ").join(args));
 			}
-			if (YTUtil.isValidYoutubeCode(videocode)) {
+			if (YTUtil.isValidYoutubeCode(videoCode)) {
 				try {
-					final File filecheck = new File(YTUtil.getOutputPath(videocode));
+					final File filecheck = new File(YTUtil.getOutputPath(videoCode));
 					if (!filecheck.exists()) {
-						String finalVideocode = videocode;
+						String finalVideocode = videoCode;
 						bot.out.sendAsyncMessage(channel, Template.get("music_downloading_hang_on"), message -> {
 							YTUtil.downloadfromYoutubeAsMp3(finalVideocode, userRank);
 							try {
@@ -154,7 +154,7 @@ public class Play extends AbstractCommand {
 
 			}
 		} else {
-			if (bot.playRandomSong(guild)) {
+			if (MusicPlayerHandler.getFor(guild, bot).playRandomSong()) {
 				return Template.get("music_started_playing_random");
 			} else {
 				return Template.get("music_failed_to_start");

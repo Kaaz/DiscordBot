@@ -85,7 +85,7 @@ public class UserRankCommand extends AbstractCommand {
 				if (rank.id == 0) {
 					return Template.get("command_userrank_rank_not_exists", args[1]);
 				}
-				OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId()));
+				OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId(), user.getUsername()));
 				userRank.rankId = rank.id;
 				CUserRank.insertOrUpdate(userRank);
 				return Template.get("command_userrank_rank", user.getUsername(), rank.codeName);
