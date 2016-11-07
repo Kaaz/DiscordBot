@@ -90,6 +90,9 @@ public class Play extends AbstractCommand {
 			return "";
 		}
 		if (!isInVoiceWith(guild, author)) {
+			if(guild.getVoiceStatusOfUser(author).getChannel() == null){
+				return "you are not in a voicechannel";
+			}
 			try {
 				bot.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
 				Thread.sleep(2000L);// ¯\_(ツ)_/¯
@@ -115,8 +118,7 @@ public class Play extends AbstractCommand {
 					if (!filecheck.exists()) {
 						String finalVideocode = videocode;
 						bot.out.sendAsyncMessage(channel, Template.get("music_downloading_hang_on"), message -> {
-							System.out.println("starting download with code:::::" + finalVideocode);
-							YTUtil.downloadfromYoutubeAsMp3(finalVideocode);
+							YTUtil.downloadfromYoutubeAsMp3(finalVideocode, userRank);
 							try {
 								if (filecheck.exists()) {
 									String path = filecheck.toPath().toRealPath().toString();

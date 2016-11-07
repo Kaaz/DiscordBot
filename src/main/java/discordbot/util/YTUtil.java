@@ -1,6 +1,7 @@
 package discordbot.util;
 
 import discordbot.main.Config;
+import discordbot.permission.SimpleRank;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.BufferedReader;
@@ -74,9 +75,10 @@ public class YTUtil {
 	 * downloads a youtube video as an mp3
 	 *
 	 * @param videocode youtube video id
+	 * @param userRank
 	 * @return success or not
 	 */
-	public static boolean downloadfromYoutubeAsMp3(String videocode) {
+	public static boolean downloadfromYoutubeAsMp3(String videocode, SimpleRank userRank) {
 		System.out.println("YT:: downloading " + videocode);
 		System.out.println("YT:: https://www.youtube.com/watch?v=" + videocode);
 		List<String> infoArgs = new LinkedList<>();
@@ -89,7 +91,7 @@ public class YTUtil {
 		infoArgs.add("--audio-format");
 		infoArgs.add("mp3");
 		infoArgs.add("--max-filesize");
-		infoArgs.add("32m");
+		infoArgs.add(userRank.isAtLeast(SimpleRank.CONTRIBUTOR) ? "128m" : "32m");
 		infoArgs.add("--output");
 		infoArgs.add(Config.MUSIC_DIRECTORY + "/" + videocode + ".%(ext)s");
 		infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
@@ -101,9 +103,9 @@ public class YTUtil {
 			InputStream stdout = process.getInputStream();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
 			String line;
-			while ((line = reader.readLine()) != null) {
-				System.out.println("YT: " + line);
-			}
+//			while ((line = reader.readLine()) != null) {
+//				System.out.println("YT: " + line);
+//			}
 			process.waitFor();
 			process.destroy();
 		} catch (IOException | InterruptedException e) {

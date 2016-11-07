@@ -32,11 +32,11 @@ public class OutgoingContentHandler {
 	 * @return IMessage or null
 	 */
 	public void sendAsyncMessage(MessageChannel channel, String content, Consumer<Message> callback) {
-		channel.sendMessageAsync(content, callback);
+		channel.sendMessageAsync(content.substring(0, Math.min(1999, content.length())), callback);
 	}
 
 	public Message sendMessage(MessageChannel channel, String content) {
-		return channel.sendMessage(content);
+		return channel.sendMessage(content.substring(0, Math.min(1999, content.length())));
 	}
 
 	/**
