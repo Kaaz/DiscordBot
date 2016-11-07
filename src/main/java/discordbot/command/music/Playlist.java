@@ -217,7 +217,7 @@ public class Playlist extends AbstractCommand {
 
 	private String makeSettingsTable(OPlaylist playlist) {
 		List<List<String>> body = new ArrayList<>();
-		String owner = playlist.ownerId == 0 ? "Guild" : CUser.findById(playlist.ownerId).name;
+		String owner = playlist.isGlobalList() ? "Emily" : playlist.isGuildList() ? "Guild" : CUser.findById(playlist.ownerId).name;
 		body.add(Arrays.asList("Title", playlist.title));
 		body.add(Arrays.asList("Owner", owner));
 		body.add(Arrays.asList("edit-type", playlist.getEditType().getDescription()));
