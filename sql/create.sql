@@ -78,7 +78,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `banks`
+-- Table structure for controllers `banks`
 --
 
 DROP TABLE IF EXISTS `banks`;
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `banks` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bank_reserverations`
+-- Table structure for controllers `bank_reserverations`
 --
 
 DROP TABLE IF EXISTS `bank_reserverations`;
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `bank_reserverations` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bank_transactions`
+-- Table structure for controllers `bank_transactions`
 --
 
 DROP TABLE IF EXISTS `bank_transactions`;
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `bank_transactions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `channels`
+-- Table structure for controllers `channels`
 --
 
 DROP TABLE IF EXISTS `channels`;
@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `channels` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `commands`
+-- Table structure for controllers `commands`
 --
 
 DROP TABLE IF EXISTS `commands`;
@@ -170,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `commands` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `command_cooldown`
+-- Table structure for controllers `command_cooldown`
 --
 
 DROP TABLE IF EXISTS `command_cooldown`;
@@ -187,7 +187,7 @@ CREATE TABLE IF NOT EXISTS `command_cooldown` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `command_log`
+-- Table structure for controllers `command_log`
 --
 
 DROP TABLE IF EXISTS `command_log`;
@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS `command_log` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `guild_member`
+-- Table structure for controllers `guild_member`
 --
 
 DROP TABLE IF EXISTS `guild_member`;
@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS `guild_member` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `guild_settings`
+-- Table structure for controllers `guild_settings`
 --
 
 DROP TABLE IF EXISTS `guild_settings`;
@@ -239,7 +239,7 @@ CREATE TABLE IF NOT EXISTS `guild_settings` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `playlist`
+-- Table structure for controllers `playlist`
 --
 
 DROP TABLE IF EXISTS music;
@@ -261,7 +261,7 @@ CREATE TABLE IF NOT EXISTS `playlist` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `poe_token`
+-- Table structure for controllers `poe_token`
 --
 
 DROP TABLE IF EXISTS `poe_token`;
@@ -276,7 +276,7 @@ CREATE TABLE IF NOT EXISTS `poe_token` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `servers`
+-- Table structure for controllers `servers`
 --
 
 DROP TABLE IF EXISTS guilds;
@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS `servers` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `services`
+-- Table structure for controllers `services`
 --
 
 DROP TABLE IF EXISTS `services`;
@@ -314,7 +314,7 @@ CREATE TABLE IF NOT EXISTS `services` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `service_variables`
+-- Table structure for controllers `service_variables`
 --
 
 DROP TABLE IF EXISTS `service_variables`;
@@ -330,7 +330,7 @@ CREATE TABLE IF NOT EXISTS `service_variables` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `subscriptions`
+-- Table structure for controllers `subscriptions`
 --
 
 DROP TABLE IF EXISTS `subscriptions`;
@@ -347,7 +347,7 @@ CREATE TABLE IF NOT EXISTS `subscriptions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `template_texts`
+-- Table structure for controllers `template_texts`
 --
 
 DROP TABLE IF EXISTS `template_texts`;
@@ -365,7 +365,7 @@ CREATE TABLE IF NOT EXISTS `template_texts` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table structure for controllers `users`
 --
 
 DROP TABLE IF EXISTS `users`;

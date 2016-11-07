@@ -2,7 +2,7 @@ package discordbot.command.poe;
 
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OPoEToken;
-import discordbot.db.table.TPoEToken;
+import discordbot.db.controllers.CPoEToken;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -59,16 +59,16 @@ public class PoeCurrency extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (args.length > 1) {
 			if (args[0].equalsIgnoreCase("token")) {
-				OPoEToken token = TPoEToken.findBy(author.getId());
+				OPoEToken token = CPoEToken.findBy(author.getId());
 				token.session_id = args[1];
-				TPoEToken.insertOrUpdate(token);
+				CPoEToken.insertOrUpdate(token);
 				return "Updated your token!";
 			} else if (args[0].equalsIgnoreCase("league")) {
 				return "not implemented yet sorry boys!";
 			}
 			return Template.get("command_invalid_usage");
 		}
-		OPoEToken token = TPoEToken.findBy(author.getId());
+		OPoEToken token = CPoEToken.findBy(author.getId());
 		AuthInfo account = new AuthInfo(token.session_id);
 		DataReader reader = new DataReader(account);
 		if (!reader.authenticate()) {

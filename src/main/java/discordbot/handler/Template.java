@@ -3,8 +3,8 @@ package discordbot.handler;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import discordbot.db.WebDb;
-import discordbot.db.table.TBotEvent;
-import discordbot.db.table.TGuild;
+import discordbot.db.controllers.CBotEvent;
+import discordbot.db.controllers.CGuild;
 import discordbot.main.Config;
 import net.dv8tion.jda.entities.MessageChannel;
 
@@ -38,7 +38,7 @@ public class Template {
 	}
 
 	public static String get(MessageChannel channel, String keyPhrase) {
-		return get(TGuild.getCachedId(channel), keyPhrase);
+		return get(CGuild.getCachedId(channel), keyPhrase);
 	}
 
 	public static String get(int guildId, String keyPhrase) {
@@ -51,7 +51,7 @@ public class Template {
 				return list.get(rnd.nextInt(list.size()));
 			}
 		}
-		TBotEvent.insert("ERROR", "TEMPLATE", String.format("the phrase `%s` is not set!", keyPhrase));
+		CBotEvent.insert("ERROR", "TEMPLATE", String.format("the phrase `%s` is not set!", keyPhrase));
 		return "**`" + keyPhrase + "`**";
 	}
 
@@ -67,7 +67,7 @@ public class Template {
 	}
 
 	public static String get(MessageChannel channel, String keyPhrase, Object... parameters) {
-		return get(TGuild.getCachedId(channel), keyPhrase, parameters);
+		return get(CGuild.getCachedId(channel), keyPhrase, parameters);
 	}
 
 	public static String get(int guildId, String keyPhrase, Object... parameters) {

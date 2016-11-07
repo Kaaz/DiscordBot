@@ -1,8 +1,8 @@
 package discordbot.handler;
 
 import discordbot.db.model.OReplyPattern;
-import discordbot.db.table.TGuild;
-import discordbot.db.table.TReplyPattern;
+import discordbot.db.controllers.CGuild;
+import discordbot.db.controllers.CReplyPattern;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.PrivateChannel;
@@ -37,7 +37,7 @@ public class AutoReplyHandler {
 		}
 		TextChannel channel = (TextChannel) message.getChannel();
 		String guildId = channel.getGuild().getId();
-		int internalGuildId = TGuild.getCachedId(guildId);
+		int internalGuildId = CGuild.getCachedId(guildId);
 		Long now = System.currentTimeMillis();
 		for (int index = 0; index < replies.length; index++) {
 			if (replies[index].guildId == 0 || replies[index].guildId == internalGuildId) {
@@ -74,7 +74,7 @@ public class AutoReplyHandler {
 	}
 
 	public void reload() {
-		List<OReplyPattern> all = TReplyPattern.getAll();
+		List<OReplyPattern> all = CReplyPattern.getAll();
 		replies = new AutoReply[all.size()];
 		int index = 0;
 		for (OReplyPattern reply : all) {

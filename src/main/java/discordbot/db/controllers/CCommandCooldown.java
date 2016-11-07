@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -8,9 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * data communication with the table `service_variables`
+ * data communication with the controllers `service_variables`
  */
-public class TCommandCooldown {
+public class CCommandCooldown {
 
 	public static OCommandCooldown findBy(String commandName, String targetId, int targetType) {
 		OCommandCooldown record = new OCommandCooldown();

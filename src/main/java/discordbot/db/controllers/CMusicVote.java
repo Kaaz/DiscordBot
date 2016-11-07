@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -9,11 +9,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
- * data communication with the table `music_votes`
+ * data communication with the controllers `music_votes`
  */
-public class TMusicVote {
+public class CMusicVote {
 	public static OMusicVote findBy(int songId, String userDiscordId) {
-		return findBy(songId, TUser.getCachedId(userDiscordId));
+		return findBy(songId, CUser.getCachedId(userDiscordId));
 	}
 
 	public static OMusicVote findBy(int songId, int userId) {
@@ -42,7 +42,7 @@ public class TMusicVote {
 	}
 
 	public static void insertOrUpdate(int songId, String userDiscordId, int vote) {
-		insertOrUpdate(songId, TUser.getCachedId(userDiscordId), vote);
+		insertOrUpdate(songId, CUser.getCachedId(userDiscordId), vote);
 	}
 
 	public static void insertOrUpdate(int songId, int userId, int vote) {

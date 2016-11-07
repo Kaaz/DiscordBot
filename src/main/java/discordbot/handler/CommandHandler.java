@@ -7,7 +7,7 @@ import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
 import discordbot.db.WebDb;
 import discordbot.db.model.OCommandCooldown;
-import discordbot.db.table.*;
+import discordbot.db.controllers.*;
 import discordbot.guildsettings.defaults.SettingBotChannel;
 import discordbot.guildsettings.defaults.SettingCleanupMessages;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
@@ -69,7 +69,7 @@ public class CommandHandler {
 			startedWithMention = true;
 		}
 		if (channel instanceof TextChannel) {
-			guildId = TGuild.getCachedId(((TextChannel) channel).getGuild().getId());
+			guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());
 		}
 		String[] input = inputMessage.split(" ");
 		String args[] = new String[input.length - 1];
@@ -89,8 +89,8 @@ public class CommandHandler {
 						usedArguments.append(arg).append(" ");
 					}
 					if (!(channel instanceof PrivateChannel)) {
-						TCommandLog.saveLog(TUser.getCachedId(author.getId()),
-								TGuild.getCachedId(((TextChannel) channel).getGuild().getId()),
+						CCommandLog.saveLog(CUser.getCachedId(author.getId()),
+								CGuild.getCachedId(((TextChannel) channel).getGuild().getId()),
 								input[0],
 								EmojiParser.parseToAliases(usedArguments.toString()).trim());
 					}
@@ -173,7 +173,7 @@ public class CommandHandler {
 					break;
 				case GUILD:
 					if (channel instanceof PrivateChannel) {
-						TBotEvent.insert("ERROR", "CMD_CD", String.format("`%s` issued the `%s` Command with guild-scale cooldown in private channel!", author.getUsername(), command.getCommand()));
+						CBotEvent.insert("ERROR", "CMD_CD", String.format("`%s` issued the `%s` Command with guild-scale cooldown in private channel!", author.getUsername(), command.getCommand()));
 					}
 					targetId = ((TextChannel) channel).getGuild().getId();
 					break;
@@ -184,14 +184,14 @@ public class CommandHandler {
 					targetId = "";
 					break;
 			}
-			OCommandCooldown cooldown = TCommandCooldown.findBy(command.getCommand(), targetId, cd.getCooldownScale().getId());
+			OCommandCooldown cooldown = CCommandCooldown.findBy(command.getCommand(), targetId, cd.getCooldownScale().getId());
 			if (cooldown.lastTime + cd.getCooldownDuration() <= now) {
 
 				cooldown.command = command.getCommand();
 				cooldown.targetId = targetId;
 				cooldown.targetType = cd.getCooldownScale().getId();
 				cooldown.lastTime = now;
-				TCommandCooldown.insertOrUpdate(cooldown);
+				CCommandCooldown.insertOrUpdate(cooldown);
 				return 0;
 			}
 			return cooldown.lastTime + cd.getCooldownDuration() - now;

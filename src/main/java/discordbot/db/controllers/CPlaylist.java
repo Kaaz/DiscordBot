@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -9,9 +9,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
- * data communication with the table `playlist`
+ * data communication with the controllers `playlist`
  */
-public class TPlaylist {
+public class CPlaylist {
 
 	public static OPlaylist findBy(int userId) {
 		OPlaylist s = new OPlaylist();

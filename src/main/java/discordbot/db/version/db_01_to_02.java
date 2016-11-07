@@ -3,7 +3,7 @@ package discordbot.db.version;
 import discordbot.db.IDbVersion;
 
 /**
- * table for the tag command
+ * controllers for the tag command
  */
 public class db_01_to_02 implements IDbVersion {
 	@Override

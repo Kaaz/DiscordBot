@@ -4,9 +4,9 @@ import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OGuild;
 import discordbot.db.model.OReplyPattern;
-import discordbot.db.table.TGuild;
-import discordbot.db.table.TReplyPattern;
-import discordbot.db.table.TUser;
+import discordbot.db.controllers.CGuild;
+import discordbot.db.controllers.CReplyPattern;
+import discordbot.db.controllers.CUser;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -73,7 +73,7 @@ public class AutoReplyCommand extends AbstractCommand {
 		}
 		if (args.length == 0) {
 
-			List<OReplyPattern> all = TReplyPattern.getAll();
+			List<OReplyPattern> all = CReplyPattern.getAll();
 			List<List<String>> tbl = new ArrayList<>();
 			for (OReplyPattern replyPattern : all) {
 				List<String> row = new ArrayList<>();
@@ -91,13 +91,13 @@ public class AutoReplyCommand extends AbstractCommand {
 			if (args[1].length() < MIN_TAG_LENGTH) {
 				return Template.get("command_autoreply_tag_length", MIN_TAG_LENGTH);
 			}
-			OReplyPattern replyPattern = TReplyPattern.findBy(args[1]);
+			OReplyPattern replyPattern = CReplyPattern.findBy(args[1]);
 			if (args[0].equals("create")) {
 				if (replyPattern.id == 0) {
 					replyPattern.tag = args[1];
-					replyPattern.userId = TUser.getCachedId(author.getId());
-					replyPattern.guildId = bot.isCreator(author) ? 0 : TGuild.getCachedId(guild.getId());
-					TReplyPattern.insert(replyPattern);
+					replyPattern.userId = CUser.getCachedId(author.getId());
+					replyPattern.guildId = bot.isCreator(author) ? 0 : CGuild.getCachedId(guild.getId());
+					CReplyPattern.insert(replyPattern);
 					return Template.get("command_autoreply_created", args[1]);
 				}
 				return Template.get("command_autoreply_already_exists", args[1]);
@@ -116,8 +116,8 @@ public class AutoReplyCommand extends AbstractCommand {
 				case "delete":
 				case "remove":
 				case "del":
-					if (bot.isCreator(author) || (bot.isAdmin(channel, author) && TGuild.getCachedId(guild.getId()) == replyPattern.id))
-						TReplyPattern.delete(replyPattern);
+					if (bot.isCreator(author) || (bot.isAdmin(channel, author) && CGuild.getCachedId(guild.getId()) == replyPattern.id))
+						CReplyPattern.delete(replyPattern);
 					bot.loadConfiguration();
 					return Template.get("command_autoreply_deleted", args[1]);
 				case "regex":
@@ -125,7 +125,7 @@ public class AutoReplyCommand extends AbstractCommand {
 					try {
 						Pattern pattern = Pattern.compile(restOfArgs);//used to see if a patterns is valid, invalid = exception ;)
 						replyPattern.pattern = restOfArgs;
-						TReplyPattern.update(replyPattern);
+						CReplyPattern.update(replyPattern);
 					} catch (PatternSyntaxException exception) {
 						return Template.get("command_autoreply_regex_invalid") + Config.EOL +
 								exception.getDescription() + Config.EOL +
@@ -138,7 +138,7 @@ public class AutoReplyCommand extends AbstractCommand {
 						return Template.get("no_permission");
 					}
 					if (!args[2].equals("0")) {
-						OGuild server = TGuild.findBy(args[2]);
+						OGuild server = CGuild.findBy(args[2]);
 						if (server.id == 0) {
 							return Template.get("command_autoreply_guild_invalid", args[2]);
 						}
@@ -146,21 +146,21 @@ public class AutoReplyCommand extends AbstractCommand {
 					} else {
 						replyPattern.guildId = 0;
 					}
-					TReplyPattern.update(replyPattern);
+					CReplyPattern.update(replyPattern);
 					return Template.get("command_autoreply_guild_saved", args[2]);
 				case "response":
 				case "reply":
 					replyPattern.reply = EmojiParser.parseToAliases(restOfArgs);
-					TReplyPattern.update(replyPattern);
+					CReplyPattern.update(replyPattern);
 					return Template.get("command_autoreply_response_saved");
 				case "tag":
 					replyPattern.tag = args[2];
-					TReplyPattern.update(replyPattern);
+					CReplyPattern.update(replyPattern);
 					return Template.get("command_autoreply_tag_saved");
 				case "cd":
 				case "cooldown":
 					replyPattern.cooldown = Long.parseLong(args[2]);
-					TReplyPattern.update(replyPattern);
+					CReplyPattern.update(replyPattern);
 					return Template.get("command_autoreply_cooldown_saved");
 				case "test":
 					Pattern pattern = Pattern.compile(replyPattern.pattern);
@@ -175,7 +175,7 @@ public class AutoReplyCommand extends AbstractCommand {
 			}
 		}
 		if (args.length == 1) {
-			OReplyPattern replyPattern = TReplyPattern.findBy(args[0]);
+			OReplyPattern replyPattern = CReplyPattern.findBy(args[0]);
 			if (replyPattern.id == 0) {
 				return Template.get("command_autoreply_not_exists", args[0]);
 			}

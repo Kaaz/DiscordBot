@@ -4,8 +4,8 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OMusic;
 import discordbot.db.model.OMusicVote;
-import discordbot.db.table.TMusic;
-import discordbot.db.table.TMusicVote;
+import discordbot.db.controllers.CMusic;
+import discordbot.db.controllers.CMusicVote;
 import discordbot.guildsettings.defaults.SettingMusicRole;
 import discordbot.guildsettings.defaults.SettingMusicShowListeners;
 import discordbot.handler.GuildSettings;
@@ -85,7 +85,7 @@ public class CurrentTrack extends AbstractCommand {
 		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
 			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
-		OMusic song = TMusic.findById(bot.getCurrentlyPlayingSong(guild));
+		OMusic song = CMusic.findById(bot.getCurrentlyPlayingSong(guild));
 		if (song.id == 0) {
 			return Template.get("command_currentlyplaying_nosong");
 		}
@@ -113,10 +113,10 @@ public class CurrentTrack extends AbstractCommand {
 			}
 			Matcher m = votePattern.matcher(voteInput);
 			if (m.find()) {
-				OMusicVote voteRecord = TMusicVote.findBy(song.id, author.getId());
+				OMusicVote voteRecord = CMusicVote.findBy(song.id, author.getId());
 				if (m.group(1) != null) {
 					int vote = Math.max(1, Math.min(10, Integer.parseInt(m.group(1))));
-					TMusicVote.insertOrUpdate(song.id, author.getId(), vote);
+					CMusicVote.insertOrUpdate(song.id, author.getId(), vote);
 					return "vote is registered (" + vote + ")";
 				}
 				if (voteRecord.vote > 0) {
@@ -136,28 +136,28 @@ public class CurrentTrack extends AbstractCommand {
 			switch (args[0].toLowerCase()) {
 				case "ban":
 					song.banned = 1;
-					TMusic.update(song);
+					CMusic.update(song);
 					return Template.get("command_current_banned_success");
 				case "title":
 					song.title = value;
-					TMusic.update(song);
+					CMusic.update(song);
 					helpedOut = true;
 					break;
 				case "artist":
 					song.artist = value;
-					TMusic.update(song);
+					CMusic.update(song);
 					helpedOut = true;
 					break;
 				case "correct":
 					song.artist = guessArtist;
 					song.title = guessTitle;
-					TMusic.update(song);
+					CMusic.update(song);
 					helpedOut = true;
 					break;
 				case "reversed":
 					song.artist = guessTitle;
 					song.title = guessArtist;
-					TMusic.update(song);
+					CMusic.update(song);
 					helpedOut = true;
 					break;
 				default:

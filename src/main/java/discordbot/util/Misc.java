@@ -52,20 +52,20 @@ public class Misc {
 	}
 
 	/**
-	 * @param items items in the table
-	 * @return formatted table
+	 * @param items items in the controllers
+	 * @return formatted controllers
 	 */
 	public static String makeTable(List<String> items) {
 		return makeTable(items, 16, 4);
 	}
 
 	/**
-	 * Makes a table-like display of list of items
+	 * Makes a controllers-like display of list of items
 	 *
-	 * @param items        items in the table
+	 * @param items        items in the controllers
 	 * @param columnLength length of a column(filled up with whitespace)
 	 * @param columns      amount of columns
-	 * @return formatted table
+	 * @return formatted controllers
 	 */
 	public static String makeTable(List<String> items, int columnLength, int columns) {
 		String ret = "```xl" + Config.EOL;
@@ -85,7 +85,7 @@ public class Misc {
 
 	/**
 	 * @param tableText text
-	 * @return formatted table
+	 * @return formatted controllers
 	 */
 	public static String makeTable(String tableText) {
 		return "```xl" + Config.EOL
@@ -125,9 +125,9 @@ public class Misc {
 
 	/**
 	 * @param headers array containing the headers
-	 * @param table   array[n size] of array's[header size], containing the rows of the table
+	 * @param table   array[n size] of array's[header size], containing the rows of the controllers
 	 * @param footer
-	 * @return a formatted table
+	 * @return a formatted controllers
 	 */
 	public static String makeAsciiTable(List<String> headers, List<List<String>> table, List<String> footer) {
 		StringBuilder sb = new StringBuilder();
@@ -179,9 +179,9 @@ public class Misc {
 	 * @param left    character on the left
 	 * @param middle  character in the middle
 	 * @param right   character on the right
-	 * @param padding table cell padding
+	 * @param padding controllers cell padding
 	 * @param sizes   width of each cell
-	 * @return a filler row for the table
+	 * @return a filler row for the controllers
 	 */
 	private static String appendSeparatorLine(String left, String middle, String right, int padding, int... sizes) {
 		boolean first = true;

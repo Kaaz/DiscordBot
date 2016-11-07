@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OMusic;
-import discordbot.db.table.TMusic;
+import discordbot.db.controllers.CMusic;
 import discordbot.guildsettings.defaults.SettingMusicRole;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
@@ -122,11 +122,11 @@ public class Play extends AbstractCommand {
 							try {
 								if (filecheck.exists()) {
 									String path = filecheck.toPath().toRealPath().toString();
-									OMusic rec = TMusic.findByYoutubeId(finalVideocode);
+									OMusic rec = CMusic.findByYoutubeId(finalVideocode);
 									rec.youtubeTitle = YTUtil.getTitleFromPage(finalVideocode);
 									rec.youtubecode = finalVideocode;
 									rec.filename = path;
-									TMusic.update(rec);
+									CMusic.update(rec);
 									message.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
 									bot.addSongToQueue(path, guild);
 								} else {
@@ -141,7 +141,7 @@ public class Play extends AbstractCommand {
 						return "";
 					} else if (filecheck.exists()) {
 						String path = filecheck.toPath().toRealPath().toString();
-						OMusic rec = TMusic.findByFileName(path);
+						OMusic rec = CMusic.findByFileName(path);
 						bot.addSongToQueue(path, guild);
 						return Template.get("music_added_to_queue", rec.youtubeTitle);
 					}

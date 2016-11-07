@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -9,10 +9,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TTag {
+public class CTag {
 
 	public static OTag findBy(String discordGuildId, String tagname) {
-		return findBy(TGuild.getCachedId(discordGuildId), tagname);
+		return findBy(CGuild.getCachedId(discordGuildId), tagname);
 	}
 
 	public static OTag findBy(int serverId, String tagName) {
@@ -32,7 +32,7 @@ public class TTag {
 	}
 
 	public static List<OTag> getTagsFor(String guildDiscordId, String userDiscordId) {
-		return getTagsFor(TGuild.getCachedId(guildDiscordId), TUser.getCachedId(userDiscordId));
+		return getTagsFor(CGuild.getCachedId(guildDiscordId), CUser.getCachedId(userDiscordId));
 	}
 
 	public static List<OTag> getTagsFor(int guildId, int userId) {
@@ -53,7 +53,7 @@ public class TTag {
 	}
 
 	public static List<OTag> getTagsFor(String guildDiscordId) {
-		return getTagsFor(TGuild.getCachedId(guildDiscordId));
+		return getTagsFor(CGuild.getCachedId(guildDiscordId));
 	}
 
 	public static List<OTag> getTagsFor(int guildId) {

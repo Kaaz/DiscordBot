@@ -2,7 +2,7 @@ package discordbot.command.economy;
 
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OBank;
-import discordbot.db.table.TBanks;
+import discordbot.db.controllers.CBanks;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.MessageChannel;
@@ -47,7 +47,7 @@ public class BankCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		OBank bank = TBanks.findBy(author.getId());
+		OBank bank = CBanks.findBy(author.getId());
 		return String.format("Your current balance is `%s` %s ", bank.currentBalance, Config.ECONOMY_CURRENCY_ICON);
 	}
 }

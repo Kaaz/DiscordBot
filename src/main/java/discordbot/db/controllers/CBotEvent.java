@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * data communication with the table `bot_events`
+ * data communication with the controllers `bot_events`
  */
-public class TBotEvent {
+public class CBotEvent {
 
 	public static OBotEvent findBy(String id) {
 		OBotEvent s = new OBotEvent();

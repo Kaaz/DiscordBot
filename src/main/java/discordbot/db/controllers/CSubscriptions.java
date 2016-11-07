@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * data communication with the table `subscriptions`
+ * data communication with the controllers `subscriptions`
  */
-public class TSubscriptions {
+public class CSubscriptions {
 	public static OSubscription findBy(int serverId, int channelId, int serviceId) {
 		OSubscription token = new OSubscription();
 		try (ResultSet rs = WebDb.get().select(

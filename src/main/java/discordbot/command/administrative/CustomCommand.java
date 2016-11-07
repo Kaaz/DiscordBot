@@ -3,7 +3,7 @@ package discordbot.command.administrative;
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.db.table.TGuild;
+import discordbot.db.controllers.CGuild;
 import discordbot.handler.CommandHandler;
 import discordbot.handler.Template;
 import discordbot.main.Config;
@@ -78,7 +78,7 @@ public class CustomCommand extends AbstractCommand {
 		if (!bot.isAdmin(channel, author)) {
 			return Template.get("permission_denied");
 		}
-		int guildId = TGuild.getCachedId(((TextChannel) channel).getGuild().getId());
+		int guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());
 		String prefix = DisUtil.getCommandPrefix(channel);
 		if (args.length >= 2 && Arrays.asList(valid_actions).contains(args[0])) {
 			if (args[0].equals("add") && args.length > 2) {

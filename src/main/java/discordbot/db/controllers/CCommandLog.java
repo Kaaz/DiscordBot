@@ -1,14 +1,14 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.db.WebDb;
 
 import java.sql.Date;
 
 /**
- * data communication with the table `command_log`
+ * data communication with the controllers `command_log`
  * Created on 30-8-2016
  */
-public class TCommandLog {
+public class CCommandLog {
 
 	public static void saveLog(int userId, int guildId, String commandUsed, String commandArgs) {
 		try {

@@ -3,7 +3,7 @@ package discordbot.db.version;
 import discordbot.db.IDbVersion;
 
 /**
- * Start with a meta table for meta information such as database version
+ * Start with a meta controllers for meta information such as database version
  */
 public class db_00_to_01 implements IDbVersion {
 	@Override

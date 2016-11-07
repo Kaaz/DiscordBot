@@ -2,7 +2,7 @@ package discordbot.service;
 
 import discordbot.core.AbstractService;
 import discordbot.db.model.OBotEvent;
-import discordbot.db.table.TBotEvent;
+import discordbot.db.controllers.CBotEvent;
 import discordbot.main.BotContainer;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -46,7 +46,7 @@ public class BotMetaEventsService extends AbstractService {
 	@Override
 	public void run() {
 		int lastId = Integer.parseInt("0" + getData("last_broadcast_id"));
-		List<OBotEvent> events = TBotEvent.getEventsAfter(lastId);
+		List<OBotEvent> events = CBotEvent.getEventsAfter(lastId);
 		List<TextChannel> subscribedChannels = getSubscribedChannels();
 		int totGuilds = 0, totUsers = 0, totChannels = 0, totVoice = 0, totActiveVoice = 0;
 		for (DiscordBot shard : bot.getShards()) {

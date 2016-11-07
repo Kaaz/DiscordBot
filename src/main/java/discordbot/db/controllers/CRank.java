@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * data communication with the table `ranks`
+ * data communication with the controllers `ranks`
  */
-public class TRank {
+public class CRank {
 
 	public static ORank findBy(String codeName) {
 		ORank s = new ORank();

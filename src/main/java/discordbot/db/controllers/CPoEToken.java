@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -8,12 +8,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * data communication with the table `poe_token`
+ * data communication with the controllers `poe_token`
  */
-public class TPoEToken {
+public class CPoEToken {
 	public static OPoEToken findBy(String discordId) {
 		OPoEToken token = new OPoEToken();
-		int userId = TUser.getCachedId(discordId);
+		int userId = CUser.getCachedId(discordId);
 		token.userId = userId;
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT *  " +

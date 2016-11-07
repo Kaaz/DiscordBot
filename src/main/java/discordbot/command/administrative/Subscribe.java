@@ -5,10 +5,10 @@ import discordbot.core.AbstractCommand;
 import discordbot.db.model.OService;
 import discordbot.db.model.OSubscription;
 import discordbot.db.model.QActiveSubscriptions;
-import discordbot.db.table.TChannels;
-import discordbot.db.table.TGuild;
-import discordbot.db.table.TServices;
-import discordbot.db.table.TSubscriptions;
+import discordbot.db.controllers.CChannels;
+import discordbot.db.controllers.CGuild;
+import discordbot.db.controllers.CServices;
+import discordbot.db.controllers.CSubscriptions;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -71,7 +71,7 @@ public class Subscribe extends AbstractCommand {
 		List<List<String>> tbl = new ArrayList<>();
 		if (args.length == 0) {
 			Collections.addAll(headers, "code", "name");
-			List<QActiveSubscriptions> subscriptionsForChannel = TSubscriptions.getSubscriptionsForChannel(TChannels.getCachedId(txt.getId(), txt.getGuild().getId()));
+			List<QActiveSubscriptions> subscriptionsForChannel = CSubscriptions.getSubscriptionsForChannel(CChannels.getCachedId(txt.getId(), txt.getGuild().getId()));
 			for (QActiveSubscriptions subscriptions : subscriptionsForChannel) {
 				ArrayList<String> row = new ArrayList<>();
 				row.add(subscriptions.code);
@@ -89,14 +89,14 @@ public class Subscribe extends AbstractCommand {
 		}
 		if (args[0].equalsIgnoreCase("stop")) {
 			if (args.length > 1) {
-				OService service = TServices.findBy(args[1].trim());
+				OService service = CServices.findBy(args[1].trim());
 				if (service.id == 0) {
 					return Template.get("command_subscribe_invalid_service");
 				}
-				OSubscription subscription = TSubscriptions.findBy(TGuild.getCachedId(txt.getGuild().getId()), TChannels.getCachedId(channel.getId(), txt.getGuild().getId()), service.id);
+				OSubscription subscription = CSubscriptions.findBy(CGuild.getCachedId(txt.getGuild().getId()), CChannels.getCachedId(channel.getId(), txt.getGuild().getId()), service.id);
 				if (subscription.subscribed == 1) {
 					subscription.subscribed = 0;
-					TSubscriptions.insertOrUpdate(subscription);
+					CSubscriptions.insertOrUpdate(subscription);
 					return Template.get("command_subscribe_unsubscribed_success", service.displayName);
 				}
 				return Template.get("command_subscribe_not_subscribed");
@@ -112,17 +112,17 @@ public class Subscribe extends AbstractCommand {
 					"Possible options to subscribe to: " +
 					getServicesTable();
 		}
-		OService service = TServices.findBy(args[0].trim());
+		OService service = CServices.findBy(args[0].trim());
 		if (service.id == 0) {
 			return Template.get("command_subscribe_invalid_service");
 		}
-		OSubscription subscription = TSubscriptions.findBy(TGuild.getCachedId(txt.getGuild().getId()), TChannels.getCachedId(channel.getId(), ((TextChannel) channel).getGuild().getId()), service.id);
+		OSubscription subscription = CSubscriptions.findBy(CGuild.getCachedId(txt.getGuild().getId()), CChannels.getCachedId(channel.getId(), ((TextChannel) channel).getGuild().getId()), service.id);
 		if (subscription.subscribed == 0) {
 			subscription.subscribed = 1;
-			subscription.channelId = TChannels.getCachedId(channel.getId(), txt.getGuild().getId());
-			subscription.serverId = TGuild.getCachedId(txt.getGuild().getId());
+			subscription.channelId = CChannels.getCachedId(channel.getId(), txt.getGuild().getId());
+			subscription.serverId = CGuild.getCachedId(txt.getGuild().getId());
 			subscription.serviceId = service.id;
-			TSubscriptions.insertOrUpdate(subscription);
+			CSubscriptions.insertOrUpdate(subscription);
 			return Template.get("command_subscribe_success");
 		}
 		return Template.get("command_subscribe_already_subscribed");
@@ -130,7 +130,7 @@ public class Subscribe extends AbstractCommand {
 
 	private String getServicesTable() {
 		List<List<String>> table = new ArrayList<>();
-		List<OService> allActive = TServices.getAllActive();
+		List<OService> allActive = CServices.getAllActive();
 		for (OService service : allActive) {
 			ArrayList<String> row = new ArrayList<>();
 			row.add(service.name);

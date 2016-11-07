@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * data communication with the table `users`
+ * data communication with the controllers `users`
  * Created on 10-8-2016
  */
-public class TUser {
+public class CUser {
 
 	private static Map<String, Integer> userCache = new ConcurrentHashMap<>();
 	private static Map<Integer, String> discordCache = new ConcurrentHashMap<>();

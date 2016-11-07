@@ -3,8 +3,8 @@ package discordbot.handler;
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.db.WebDb;
 import discordbot.db.model.OGuild;
-import discordbot.db.table.TGuild;
-import discordbot.db.table.TUser;
+import discordbot.db.controllers.CGuild;
+import discordbot.db.controllers.CUser;
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.SettingMusicRole;
@@ -29,13 +29,13 @@ public class GuildSettings {
 
 	private GuildSettings(Guild guild) {
 		this.settings = new ConcurrentHashMap<>();
-		OGuild record = TGuild.findBy(guild.getId());
+		OGuild record = CGuild.findBy(guild.getId());
 		this.guild = guild;
 		if (record.id == 0) {
 			record.name = EmojiParser.parseToAliases(guild.getName());
 			record.discord_id = guild.getId();
-			record.owner = TUser.getCachedId(guild.getOwnerId());
-			TGuild.insert(record);
+			record.owner = CUser.getCachedId(guild.getOwnerId());
+			CGuild.insert(record);
 		}
 		this.id = record.id;
 		settingInstance.put(guild, this);

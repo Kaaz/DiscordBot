@@ -2,7 +2,7 @@ package discordbot.handler;
 
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
-import discordbot.db.table.TMusic;
+import discordbot.db.controllers.CMusic;
 import discordbot.guildsettings.defaults.SettingMusicChannelTitle;
 import discordbot.guildsettings.defaults.SettingMusicPlayingMessage;
 import discordbot.guildsettings.defaults.SettingMusicVolume;
@@ -107,10 +107,10 @@ public class MusicPlayerHandler {
 		AudioInfo info = player.getCurrentAudioSource().getInfo();
 		if (info != null) {
 			f = new File(info.getOrigin());
-			record = TMusic.findByFileName(f.getAbsolutePath());
+			record = CMusic.findByFileName(f.getAbsolutePath());
 			if (record.id > 0) {
 				record.lastplaydate = System.currentTimeMillis() / 1000L;
-				TMusic.update(record);
+				CMusic.update(record);
 				currentlyPlaying = record.id;
 				currentSongLength = info.getDuration().getTotalSeconds();
 			}
@@ -257,7 +257,7 @@ public class MusicPlayerHandler {
 			bot.out.sendErrorToMe(new Exception("NoMusicFile"), "filename: ", mp3file.getAbsolutePath(), "plz fix", "I want music", bot);
 			return false;
 		}
-		OMusic record = TMusic.findByFileName(mp3file.getAbsolutePath());
+		OMusic record = CMusic.findByFileName(mp3file.getAbsolutePath());
 		if (record.id == 0) {
 			bot.out.sendErrorToMe(new Exception("No record for file"), "filename: ", mp3file.getAbsolutePath(), "plz fix", "I want music", bot);
 			return false;

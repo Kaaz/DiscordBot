@@ -6,8 +6,8 @@ import discordbot.core.ExitCode;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
 import discordbot.db.model.OMusic;
-import discordbot.db.table.TGuild;
-import discordbot.db.table.TMusic;
+import discordbot.db.controllers.CGuild;
+import discordbot.db.controllers.CMusic;
 import discordbot.threads.GrayLogThread;
 import discordbot.threads.ServiceHandlerThread;
 import discordbot.util.YTUtil;
@@ -46,7 +46,7 @@ public class Launcher {
 		Launcher.init();
 		if (Config.BOT_ENABLED) {
 			try {
-				botContainer = new BotContainer((TGuild.getActiveGuildCount()));
+				botContainer = new BotContainer((CGuild.getActiveGuildCount()));
 				Thread serviceHandler = new ServiceHandlerThread(botContainer);
 //				serviceHandler.setDaemon(true);
 				serviceHandler.start();
@@ -96,11 +96,11 @@ public class Launcher {
 		for (String file : fileList) {
 			System.out.println(file);
 			String videocode = file.replace(".mp3", "");
-			OMusic rec = TMusic.findByYoutubeId(videocode);
+			OMusic rec = CMusic.findByYoutubeId(videocode);
 			rec.youtubeTitle = YTUtil.getTitleFromPage(videocode);
 			rec.youtubecode = videocode;
 			rec.filename = videocode + ".mp3";
-			TMusic.update(rec);
+			CMusic.update(rec);
 		}
 	}
 }

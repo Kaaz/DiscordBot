@@ -4,7 +4,7 @@ import discordbot.db.model.OChannel;
 import discordbot.db.model.OServiceVariable;
 import discordbot.db.model.OSubscription;
 import discordbot.db.model.QActiveSubscriptions;
-import discordbot.db.table.*;
+import discordbot.db.controllers.*;
 import discordbot.main.BotContainer;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.TextChannel;
@@ -32,17 +32,17 @@ public abstract class AbstractService {
 
 	public List<TextChannel> getSubscribedChannels() {
 		List<TextChannel> channels = new ArrayList<>();
-		List<QActiveSubscriptions> subscriptionsForService = TSubscriptions.getSubscriptionsForService(TServices.getCachedId(getIdentifier()));
+		List<QActiveSubscriptions> subscriptionsForService = CSubscriptions.getSubscriptionsForService(CServices.getCachedId(getIdentifier()));
 		for (QActiveSubscriptions activeSubscriptions : subscriptionsForService) {
-			OChannel databaseChannel = TChannels.findById(activeSubscriptions.channelId);
-			DiscordBot botInstance = bot.getBotFor(TGuild.getCachedDiscordId(activeSubscriptions.guildId));
+			OChannel databaseChannel = CChannels.findById(activeSubscriptions.channelId);
+			DiscordBot botInstance = bot.getBotFor(CGuild.getCachedDiscordId(activeSubscriptions.guildId));
 			TextChannel botChannel = botInstance.client.getTextChannelById(databaseChannel.discord_id);
 			if (botChannel != null) {
 				channels.add(botChannel);
 			} else {
-				OSubscription subscription = TSubscriptions.findBy(databaseChannel.server_id, databaseChannel.id, TServices.getCachedId(getIdentifier()));
+				OSubscription subscription = CSubscriptions.findBy(databaseChannel.server_id, databaseChannel.id, CServices.getCachedId(getIdentifier()));
 				subscription.subscribed = 0;
-				TSubscriptions.insertOrUpdate(subscription);
+				CSubscriptions.insertOrUpdate(subscription);
 				botInstance.out.sendErrorToMe(new Exception("Subscription channel not found"),
 						"result", "Now unsubscribed!",
 						"channelID", databaseChannel.discord_id,
@@ -95,7 +95,7 @@ public abstract class AbstractService {
 	 */
 	private OServiceVariable getDataObject(String key) {
 		if (!cache.containsKey(key)) {
-			cache.put(key, TServiceVariables.findBy(getIdentifier(), key));
+			cache.put(key, CServiceVariables.findBy(getIdentifier(), key));
 		}
 		return cache.get(key);
 	}
@@ -110,9 +110,9 @@ public abstract class AbstractService {
 	protected void saveData(String key, Object value) {
 		OServiceVariable dataObject = getDataObject(key);
 		dataObject.variable = key;
-		dataObject.serviceId = TServices.getCachedId(getIdentifier());
+		dataObject.serviceId = CServices.getCachedId(getIdentifier());
 		dataObject.value = String.valueOf(value);
-		TServiceVariables.insertOrUpdate(dataObject);
+		CServiceVariables.insertOrUpdate(dataObject);
 	}
 
 	/**

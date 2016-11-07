@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -8,12 +8,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * data communication with the table `guild_member`
+ * data communication with the controllers `guild_member`
  */
-public class TGuildMember {
+public class CGuildMember {
 
 	public static OGuildMember findBy(String guildDiscordId, String userDiscordId) {
-		return findBy(TGuild.getCachedId(guildDiscordId), TUser.getCachedId(userDiscordId));
+		return findBy(CGuild.getCachedId(guildDiscordId), CUser.getCachedId(userDiscordId));
 	}
 
 	public static OGuildMember findBy(int guildId, int userId) {

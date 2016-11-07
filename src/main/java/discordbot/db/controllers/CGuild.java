@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -14,10 +14,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * data communication with the table `servers`
+ * data communication with the controllers `servers`
  * Created on 10-8-2016
  */
-public class TGuild {
+public class CGuild {
 	private static Map<String, Integer> guildIdCache = new ConcurrentHashMap<>();
 	private static Map<Integer, String> discordIdCache = new ConcurrentHashMap<>();
 

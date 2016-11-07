@@ -4,9 +4,9 @@ import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OTag;
-import discordbot.db.table.TGuild;
-import discordbot.db.table.TTag;
-import discordbot.db.table.TUser;
+import discordbot.db.controllers.CGuild;
+import discordbot.db.controllers.CTag;
+import discordbot.db.controllers.CUser;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -67,32 +67,32 @@ public class TagCommand extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		if (args.length == 0 || args[0].equals("list")) {
-			List<OTag> tags = TTag.getTagsFor(guild.getId());
+			List<OTag> tags = CTag.getTagsFor(guild.getId());
 			if (tags.isEmpty()) {
 				return Template.get("command_tag_no_tags");
 			}
 			return "The following tags exist: " + Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
 		} else if (args[0].equalsIgnoreCase("mine")) {
-			List<OTag> tags = TTag.getTagsFor(guild.getId(), author.getId());
+			List<OTag> tags = CTag.getTagsFor(guild.getId(), author.getId());
 			if (tags.isEmpty()) {
 				return Template.get("command_tag_no_tags");
 			}
 			return "You have made the following tags: " + Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
 		}
 		if (args.length == 2 && args[0].equalsIgnoreCase("delete")) {
-			OTag tag = TTag.findBy(guild.getId(), args[1]);
+			OTag tag = CTag.findBy(guild.getId(), args[1]);
 			if (tag.id > 0) {
-				if (!bot.isAdmin(channel, author) && TUser.getCachedId(author.getId()) != tag.userId) {
+				if (!bot.isAdmin(channel, author) && CUser.getCachedId(author.getId()) != tag.userId) {
 					return Template.get("command_tag_only_delete_own");
 				}
-				TTag.delete(tag);
+				CTag.delete(tag);
 				return Template.get("command_tag_delete_success");
 			}
 			return Template.get("command_tag_nothing_to_delete");
 		}
-		OTag tag = TTag.findBy(guild.getId(), args[0]);
+		OTag tag = CTag.findBy(guild.getId(), args[0]);
 		if (args.length > 1) {
-			if (tag.id > 0 && tag.userId != TUser.getCachedId(author.getId())) {
+			if (tag.id > 0 && tag.userId != CUser.getCachedId(author.getId())) {
 				return Template.get("command_tag_only_creator_can_edit");
 			}
 			String output = "";
@@ -102,15 +102,15 @@ public class TagCommand extends AbstractCommand {
 			output = output.trim();
 			if (tag.id == 0) {
 				tag.tagname = args[0];
-				tag.guildId = TGuild.getCachedId(guild.getId());
-				tag.userId = TUser.getCachedId(author.getId());
+				tag.guildId = CGuild.getCachedId(guild.getId());
+				tag.userId = CUser.getCachedId(author.getId());
 				tag.created = new Timestamp(System.currentTimeMillis());
 			}
 			tag.response = EmojiParser.parseToAliases(output);
 			if (tag.response.length() > 2000) {
 				tag.response = tag.response.substring(0, 1999);
 			}
-			TTag.insert(tag);
+			CTag.insert(tag);
 			return Template.get("command_tag_saved");
 		}
 		if (tag.id > 0) {

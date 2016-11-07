@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * data communication with the table `reply_pattern`
+ * data communication with the controllers `reply_pattern`
  */
-public class TReplyPattern {
+public class CReplyPattern {
 	public static OReplyPattern findBy(String tag) {
 		OReplyPattern record = new OReplyPattern();
 		try (ResultSet rs = WebDb.get().select(

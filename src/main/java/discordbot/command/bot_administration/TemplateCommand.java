@@ -2,7 +2,7 @@ package discordbot.command.bot_administration;
 
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;
-import discordbot.db.table.TGuild;
+import discordbot.db.controllers.CGuild;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -62,7 +62,7 @@ public class TemplateCommand extends AbstractCommand {
 			if (!(channel instanceof TextChannel)) {
 				return Template.get(channel, "command_not_for_private ");
 			}
-			guildId = TGuild.getCachedId(channel);
+			guildId = CGuild.getCachedId(channel);
 		}
 		if (args.length == 0) {
 			String usage = ":gear: **Options**:```php" + Config.EOL;

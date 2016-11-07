@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * data communication with the table `user_rank`
+ * data communication with the controllers `user_rank`
  */
-public class TUserRank {
+public class CUserRank {
 
 	public static OUserRank findBy(String userDiscordId) {
-		return findBy(TUser.getCachedId(userDiscordId));
+		return findBy(CUser.getCachedId(userDiscordId));
 	}
 
 	public static OUserRank findBy(int userId) {

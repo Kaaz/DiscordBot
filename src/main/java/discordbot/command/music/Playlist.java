@@ -3,9 +3,9 @@ package discordbot.command.music;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.model.OPlaylist;
-import discordbot.db.table.TGuild;
-import discordbot.db.table.TPlaylist;
-import discordbot.db.table.TUser;
+import discordbot.db.controllers.CGuild;
+import discordbot.db.controllers.CPlaylist;
+import discordbot.db.controllers.CUser;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
@@ -90,7 +90,7 @@ public class Playlist extends AbstractCommand {
 		int listId = player.getActivePLaylistId();
 		OPlaylist playlist;
 		if (listId > 0) {
-			playlist = TPlaylist.findById(listId);
+			playlist = CPlaylist.findById(listId);
 		} else {
 			playlist = new OPlaylist();
 		}
@@ -137,23 +137,23 @@ public class Playlist extends AbstractCommand {
 
 	private OPlaylist findPlaylist(String search, User user, Guild guild) {
 		int userId;
-		int guildId = TGuild.getCachedId(guild.getId());
+		int guildId = CGuild.getCachedId(guild.getId());
 		if ("mine".equalsIgnoreCase(search)) {
-			userId = TUser.getCachedId(user.getId());
+			userId = CUser.getCachedId(user.getId());
 		} else if ("guild".equalsIgnoreCase(search)) {
 			userId = 0;
 		} else {
-			return TPlaylist.findBy(TUser.getCachedId(user.getId()));
+			return CPlaylist.findBy(CUser.getCachedId(user.getId()));
 		}
-		OPlaylist playlist = TPlaylist.findBy(userId, guildId);
+		OPlaylist playlist = CPlaylist.findBy(userId, guildId);
 		if (playlist.id == 0) {
 			if (userId > 0) {
-				playlist = TPlaylist.findBy(TUser.getCachedId(user.getId()));
+				playlist = CPlaylist.findBy(CUser.getCachedId(user.getId()));
 			}
 			if (playlist.id == 0) {
 				playlist.ownerId = userId;
 				playlist.guildId = guildId;
-				TPlaylist.insert(playlist);
+				CPlaylist.insert(playlist);
 			}
 		}
 		return playlist;
@@ -161,7 +161,7 @@ public class Playlist extends AbstractCommand {
 
 	private String makeSettingsTable(OPlaylist playlist) {
 		List<List<String>> body = new ArrayList<>();
-		String owner = playlist.ownerId == 0 ? "Guild" : TUser.findById(playlist.ownerId).name;
+		String owner = playlist.ownerId == 0 ? "Guild" : CUser.findById(playlist.ownerId).name;
 		body.add(Arrays.asList("Title", playlist.title));
 		body.add(Arrays.asList("Owner", owner));
 		body.add(Arrays.asList("edit-type", playlist.getEditType().getDescription()));

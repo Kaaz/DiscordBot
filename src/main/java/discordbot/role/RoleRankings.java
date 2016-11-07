@@ -1,7 +1,7 @@
 package discordbot.role;
 
 import discordbot.db.model.OGuildMember;
-import discordbot.db.table.TGuildMember;
+import discordbot.db.controllers.CGuildMember;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanksPrefix;
 import discordbot.handler.GuildSettings;
@@ -188,12 +188,12 @@ public class RoleRankings {
 	 */
 	public static void assignUserRole(DiscordBot bot, Guild guild, User user) {
 		List<Role> roles = guild.getRolesForUser(user);
-		OGuildMember membership = TGuildMember.findBy(guild.getId(), user.getId());
+		OGuildMember membership = CGuildMember.findBy(guild.getId(), user.getId());
 		boolean hasTargetRole = false;
 		String prefix = RoleRankings.getPrefix(guild);
 		if (membership.joinDate == null) {
 			membership.joinDate = new Timestamp(System.currentTimeMillis());
-			TGuildMember.insertOrUpdate(membership);
+			CGuildMember.insertOrUpdate(membership);
 		}
 		MemberShipRole targetRole = RoleRankings.getHighestRole(System.currentTimeMillis() - membership.joinDate.getTime());
 		for (Role role : roles) {

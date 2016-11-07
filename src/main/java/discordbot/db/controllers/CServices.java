@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -12,9 +12,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * data communication with the table `services`
+ * data communication with the controllers `services`
  */
-public class TServices {
+public class CServices {
 	private static Map<String, Integer> serviceCache = new ConcurrentHashMap<>();
 
 	public static int getCachedId(String serviceName) {

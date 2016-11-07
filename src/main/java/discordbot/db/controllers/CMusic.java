@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * data communication with the table `playlist`
+ * data communication with the controllers `playlist`
  */
-public class TMusic {
+public class CMusic {
 	public static OMusic findByYoutubeId(String youtubeCode) {
 		OMusic music = new OMusic();
 		try (ResultSet rs = WebDb.get().select(

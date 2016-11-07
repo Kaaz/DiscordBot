@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -10,12 +10,12 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
- * data communication with the table `banks`
+ * data communication with the controllers `banks`
  */
-public class TBanks {
+public class CBanks {
 
 	public static OBank findBy(String discordId) {
-		return findBy(TUser.getCachedId(discordId));
+		return findBy(CUser.getCachedId(discordId));
 	}
 
 	public static OBank findBy(int userId) {

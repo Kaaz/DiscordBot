@@ -5,10 +5,10 @@ import discordbot.core.ExitCode;
 import discordbot.db.model.OGuild;
 import discordbot.db.model.OGuildMember;
 import discordbot.db.model.OUser;
-import discordbot.db.table.TBotEvent;
-import discordbot.db.table.TGuild;
-import discordbot.db.table.TGuildMember;
-import discordbot.db.table.TUser;
+import discordbot.db.controllers.CBotEvent;
+import discordbot.db.controllers.CGuild;
+import discordbot.db.controllers.CGuildMember;
+import discordbot.db.controllers.CUser;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingPMUserEvents;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
@@ -62,16 +62,16 @@ public class JDAEvents extends ListenerAdapter {
 	public void onGuildJoin(GuildJoinEvent event) {
 		Guild guild = event.getGuild();
 		User owner = guild.getOwner();
-		OUser user = TUser.findBy(owner.getId());
+		OUser user = CUser.findBy(owner.getId());
 		user.discord_id = owner.getId();
 		user.name = owner.getUsername();
-		TUser.update(user);
-		OGuild server = TGuild.findBy(guild.getId());
+		CUser.update(user);
+		OGuild server = CGuild.findBy(guild.getId());
 		server.discord_id = guild.getId();
 		server.name = EmojiParser.parseToAliases(guild.getName());
 		server.owner = user.id;
 		if (server.id == 0) {
-			TGuild.insert(server);
+			CGuild.insert(server);
 		}
 		if (server.isBanned()) {
 			guild.getManager().leave();
@@ -90,7 +90,7 @@ public class JDAEvents extends ListenerAdapter {
 					break;
 				}
 			}
-			TBotEvent.insert("GUILD", "JOIN", String.format(" %s [dis-id: %s][iid: %s]", guild.getName(), guild.getId(), server.id));
+			CBotEvent.insert("GUILD", "JOIN", String.format(" %s [dis-id: %s][iid: %s]", guild.getName(), guild.getId(), server.id));
 			discordBot.getContainer().guildJoined();
 			Launcher.log("bot joins guild", "bot", "guild-join",
 					"guild-id", guild.getId(),
@@ -102,21 +102,21 @@ public class JDAEvents extends ListenerAdapter {
 			}
 			server.active = 1;
 		}
-		TGuild.update(server);
+		CGuild.update(server);
 		DiscordBot.LOGGER.info("[event] JOINED SERVER! " + guild.getName());
 	}
 
 	@Override
 	public void onGuildLeave(GuildLeaveEvent event) {
 		Guild guild = event.getGuild();
-		OGuild server = TGuild.findBy(guild.getId());
+		OGuild server = CGuild.findBy(guild.getId());
 		server.active = 0;
-		TGuild.update(server);
+		CGuild.update(server);
 		discordBot.getContainer().guildLeft();
 		if (server.isBanned()) {
 			return;
 		}
-		TBotEvent.insert("GUILD", "LEAVE", String.format(" %s [dis-id: %s][iid: %s]", EmojiParser.parseToAliases(guild.getName()), guild.getId(), server.id));
+		CBotEvent.insert("GUILD", "LEAVE", String.format(" %s [dis-id: %s][iid: %s]", EmojiParser.parseToAliases(guild.getName()), guild.getId(), server.id));
 		Launcher.log("bot leaves guild", "bot", "guild-leave",
 				"guild-id", guild.getId(),
 				"guild-name", guild.getName());
@@ -147,9 +147,9 @@ public class JDAEvents extends ListenerAdapter {
 		User user = event.getUser();
 		Guild guild = event.getGuild();
 		GuildSettings settings = GuildSettings.get(guild);
-		OGuildMember guildMember = TGuildMember.findBy(guild.getId(), user.getId());
+		OGuildMember guildMember = CGuildMember.findBy(guild.getId(), user.getId());
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());
-		TGuildMember.insertOrUpdate(guildMember);
+		CGuildMember.insertOrUpdate(guildMember);
 
 		if ("true".equals(settings.getOrDefault(SettingPMUserEvents.class))) {
 			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getUsername(), user.getDiscriminator(), guild.getName()));
@@ -183,9 +183,9 @@ public class JDAEvents extends ListenerAdapter {
 				"guild-name", guild.getName(),
 				"user-id", user.getId(),
 				"user-name", user.getUsername());
-		OGuildMember guildMember = TGuildMember.findBy(guild.getId(), user.getId());
+		OGuildMember guildMember = CGuildMember.findBy(guild.getId(), user.getId());
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());
-		TGuildMember.insertOrUpdate(guildMember);
+		CGuildMember.insertOrUpdate(guildMember);
 	}
 
 	@Override

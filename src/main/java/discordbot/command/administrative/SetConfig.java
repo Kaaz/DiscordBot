@@ -2,7 +2,7 @@ package discordbot.command.administrative;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.db.table.TGuild;
+import discordbot.db.controllers.CGuild;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
@@ -61,7 +61,7 @@ public class SetConfig extends AbstractCommand {
 		Guild guild;
 		if (bot.isCreator(author) && args.length >= 1 && (args[0].matches("^\\d{10,}$") || args[0].matches("i\\d+"))) {
 			if (args[0].matches("i\\d+")) {
-				guild = bot.client.getGuildById(TGuild.findById(Integer.parseInt(args[0].substring(1))).discord_id);
+				guild = bot.client.getGuildById(CGuild.findById(Integer.parseInt(args[0].substring(1))).discord_id);
 			} else {
 				guild = bot.client.getGuildById(args[0]);
 			}

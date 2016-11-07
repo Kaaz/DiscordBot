@@ -1,4 +1,4 @@
-package discordbot.db.table;
+package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
@@ -8,12 +8,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * data communication with the table `service_variables`
+ * data communication with the controllers `service_variables`
  */
-public class TServiceVariables {
+public class CServiceVariables {
 
 	public static OServiceVariable findBy(String serviceName, String variable) {
-		return findBy(TServices.getCachedId(serviceName), variable);
+		return findBy(CServices.getCachedId(serviceName), variable);
 	}
 
 	public static OServiceVariable findBy(int serviceId, String variable) {
