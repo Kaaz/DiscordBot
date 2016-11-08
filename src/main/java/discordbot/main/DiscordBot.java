@@ -26,6 +26,8 @@ public class DiscordBot {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 	public final long startupTimeStamp;
+	private final Map<Guild, TextChannel> defaultChannels = new ConcurrentHashMap<>();
+	private final Map<Guild, TextChannel> musicChannels = new ConcurrentHashMap<>();
 	public JDA client;
 	public Timer timer = new Timer();
 	public String mentionMe;
@@ -36,8 +38,6 @@ public class DiscordBot {
 	private AutoReplyHandler autoReplyhandler;
 	private GameHandler gameHandler = null;
 	private boolean isReady = false;
-	private final Map<Guild, TextChannel> defaultChannels = new ConcurrentHashMap<>();
-	private final Map<Guild, TextChannel> musicChannels = new ConcurrentHashMap<>();
 	private int shardId;
 	private BotContainer container;
 
@@ -210,10 +210,6 @@ public class DiscordBot {
 		MusicPlayerHandler.getFor(guild, this).addStream(url);
 		MusicPlayerHandler.getFor(guild, this).startPlaying();
 
-	}
-
-	public void addSongToQueue(String filename, Guild guild) {
-		MusicPlayerHandler.getFor(guild, this).addToQueue(filename);
 	}
 
 	public void skipCurrentSong(Guild guild) {

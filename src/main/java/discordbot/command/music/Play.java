@@ -106,6 +106,7 @@ public class Play extends AbstractCommand {
 		} else if (MusicPlayerHandler.getFor(guild, bot).getUsersInVoiceChannel().size() == 0) {
 			return Template.get("music_no_users_in_channel");
 		}
+		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 		if (args.length > 0) {
 
 			String videoCode = YTUtil.extractCodeFromUrl(args[0]);
@@ -128,7 +129,7 @@ public class Play extends AbstractCommand {
 									rec.filename = path;
 									CMusic.update(rec);
 									message.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
-									bot.addSongToQueue(path, guild);
+									player.addToQueue(path, author);
 								} else {
 									message.updateMessageAsync("Download failed, the song is most likely too long!", null);
 								}
@@ -142,7 +143,7 @@ public class Play extends AbstractCommand {
 					} else if (filecheck.exists()) {
 						String path = filecheck.toPath().toRealPath().toString();
 						OMusic rec = CMusic.findByFileName(path);
-						bot.addSongToQueue(path, guild);
+						player.addToQueue(path, author);
 						return Template.get("music_added_to_queue", rec.youtubeTitle);
 					}
 				} catch (IOException e) {

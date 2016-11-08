@@ -253,7 +253,7 @@ public class MusicPlayerHandler {
 	 * @return successfully started playing
 	 */
 	public boolean playRandomSong() {
-		return addToQueue(getRandomSong());
+		return addToQueue(getRandomSong(), null);
 	}
 
 	public synchronized boolean isPlaying() {
@@ -274,7 +274,7 @@ public class MusicPlayerHandler {
 		}
 	}
 
-	public synchronized boolean addToQueue(String filename) {
+	public synchronized boolean addToQueue(String filename, User user) {
 		File mp3file = new File(filename);
 		if (!mp3file.exists()) {//check in config directory
 			bot.out.sendErrorToMe(new Exception("NoMusicFile"), "filename: ", mp3file.getAbsolutePath(), "plz fix", "I want music", bot);
@@ -284,6 +284,20 @@ public class MusicPlayerHandler {
 		if (record.id == 0) {
 			bot.out.sendErrorToMe(new Exception("No record for file"), "filename: ", mp3file.getAbsolutePath(), "plz fix", "I want music", bot);
 			return false;
+		}
+		if (!playlist.isGlobalList() && user != null) {
+			if (playlist.isGuildList() && guild.isMember(user)) {
+				switch (playlist.getEditType()) {
+					case PRIVATE_AUTO:
+						if (!PermissionUtil.checkPermission(guild, user, Permission.ADMINISTRATOR)) {
+							break;
+						}
+					case PUBLIC_AUTO:
+						CPlaylist.addToPlayList(playlist.id, record.id);
+					default:
+						break;
+				}
+			}
 		}
 		queue.offer(record);
 		startPlaying();

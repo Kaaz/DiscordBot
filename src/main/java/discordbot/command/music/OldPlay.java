@@ -73,6 +73,7 @@ public class OldPlay extends AbstractCommand {
 		if (MusicPlayerHandler.getFor(tc.getGuild(), bot).getUsersInVoiceChannel().size() == 0) {
 			return Template.get("music_no_users_in_channel");
 		}
+		MusicPlayerHandler player = MusicPlayerHandler.getFor(tc.getGuild(), bot);
 		if (args.length > 0) {
 			Matcher filterMatch = musicResultFilterPattern.matcher(args[0]);
 			if (filterMatch.matches() && userFilteredSongs.containsKey(author.getId())) {
@@ -82,7 +83,7 @@ public class OldPlay extends AbstractCommand {
 						int songId = userFilteredSongs.get(author.getId()).get(selectedIndex - 1);
 						try (ResultSet rs = WebDb.get().select("SELECT filename, youtube_title, artist FROM music WHERE id = ?", songId)) {
 							if (rs.next()) {
-								bot.addSongToQueue(rs.getString("filename"), tc.getGuild());
+								player.addToQueue(rs.getString("filename"), author);
 							}
 							rs.getStatement().close();
 						} catch (SQLException e) {
@@ -105,7 +106,7 @@ public class OldPlay extends AbstractCommand {
 			if (YTUtil.isValidYoutubeCode(videocode)) {
 				File filecheck = new File(Config.MUSIC_DIRECTORY + videocode + ".mp3");
 				if (filecheck.exists()) {
-					bot.addSongToQueue(videocode + ".mp3", tc.getGuild());
+					player.addToQueue(videocode + ".mp3", author);
 					return Template.get("music_added_to_queue");
 				}
 			} else {
