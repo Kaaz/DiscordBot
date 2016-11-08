@@ -8,6 +8,7 @@ import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
@@ -59,7 +60,8 @@ public class SetConfig extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild;
-		if (bot.isCreator(author) && args.length >= 1 && (args[0].matches("^\\d{10,}$") || args[0].matches("i\\d+"))) {
+		SimpleRank rank = bot.security.getSimpleRank(author, channel);
+		if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1 && (args[0].matches("^\\d{10,}$") || args[0].matches("i\\d+"))) {
 			if (args[0].matches("i\\d+")) {
 				guild = bot.client.getGuildById(CGuild.findById(Integer.parseInt(args[0].substring(1))).discord_id);
 			} else {
@@ -73,7 +75,7 @@ public class SetConfig extends AbstractCommand {
 			guild = ((TextChannel) channel).getGuild();
 		}
 		int count = args.length;
-		if (bot.isAdmin(channel, author)) {
+		if (rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			if (count == 0) {
 				Map<String, String> settings = GuildSettings.get(guild).getSettings();
 				ArrayList<String> keys = new ArrayList<>(settings.keySet());
@@ -83,11 +85,17 @@ public class SetConfig extends AbstractCommand {
 				List<List<String>> data = new ArrayList<>();
 				for (String key : keys) {
 					if (DefaultGuildSettings.get(key).isReadOnly()) {
-						continue;
+						if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+							continue;
+						}
 					}
 					List<String> row = new ArrayList<>();
-					String different = settings.get(key).equals(DefaultGuildSettings.getDefault(key)) ? " " : "*";
-					row.add(different + key);
+					String indicator = "";
+					if (rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+						indicator = DefaultGuildSettings.get(key).isReadOnly() ? "r" : " ";
+					}
+					indicator += settings.get(key).equals(DefaultGuildSettings.getDefault(key)) ? " " : "*";
+					row.add(indicator + key);
 					row.add(settings.get(key));
 					row.add(DefaultGuildSettings.getDefault(key));
 					data.add(row);
