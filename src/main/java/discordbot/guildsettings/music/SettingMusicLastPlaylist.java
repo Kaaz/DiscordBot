@@ -28,6 +28,6 @@ public class SettingMusicLastPlaylist extends AbstractGuildSetting {
 
 	@Override
 	public boolean isValidValue(String input) {
-		return false;
+		return true;
 	}
 }

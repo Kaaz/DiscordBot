@@ -120,7 +120,6 @@ public class GuildSettings {
 
 	public boolean set(String key, String value) {
 		if (DefaultGuildSettings.isValidKey(key) &&
-				!DefaultGuildSettings.get(key).isReadOnly() &&
 				DefaultGuildSettings.get(key).isValidValue(value)
 				) {
 			try {

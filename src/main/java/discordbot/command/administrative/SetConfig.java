@@ -113,7 +113,7 @@ public class SetConfig extends AbstractCommand {
 				if (!DefaultGuildSettings.isValidKey(args[0])) {
 					return Template.get("command_config_key_not_exists");
 				}
-				if (DefaultGuildSettings.get(args[0]).isReadOnly()) {
+				if (DefaultGuildSettings.get(args[0]).isReadOnly() && !rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
 					return Template.get("command_config_key_read_only");
 				}
 				if (count >= 2 && GuildSettings.get(guild).set(args[0], args[1])) {

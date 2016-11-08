@@ -8,6 +8,7 @@ import discordbot.db.controllers.CPlaylist;
 import discordbot.db.model.OMusic;
 import discordbot.db.model.OPlaylist;
 import discordbot.guildsettings.music.SettingMusicChannelTitle;
+import discordbot.guildsettings.music.SettingMusicLastPlaylist;
 import discordbot.guildsettings.music.SettingMusicPlayingMessage;
 import discordbot.guildsettings.music.SettingMusicVolume;
 import discordbot.handler.audiosources.StreamSource;
@@ -70,7 +71,13 @@ public class MusicPlayerHandler {
 		}
 		player.setVolume(Float.parseFloat(GuildSettings.get(guild).getOrDefault(SettingMusicVolume.class)) / 100F);
 		playerInstances.put(guild, this);
-		playlist = CPlaylist.getGlobalList();
+		int savedPlaylist = Integer.parseInt(GuildSettings.get(guild).getOrDefault(SettingMusicLastPlaylist.class));
+		if (savedPlaylist > 0) {
+			playlist = CPlaylist.findById(savedPlaylist);
+		}
+		if (savedPlaylist == 0 || playlist.id == 0) {
+			playlist = CPlaylist.getGlobalList();
+		}
 		activePlayListId = playlist.id;
 	}
 
@@ -89,6 +96,7 @@ public class MusicPlayerHandler {
 	public synchronized void setActivePlayListId(int id) {
 		playlist = CPlaylist.findById(id);
 		activePlayListId = playlist.id;
+		GuildSettings.get(guild).set(SettingMusicLastPlaylist.class, "" + id);
 	}
 
 	public long getStartTimeStamp() {
