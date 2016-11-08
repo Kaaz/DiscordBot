@@ -91,7 +91,7 @@ public class JDAEvents extends ListenerAdapter {
 					break;
 				}
 			}
-			CBotEvent.insert("GUILD", "JOIN", String.format(" %s [dis-id: %s][iid: %s]", guild.getName(), guild.getId(), server.id));
+			CBotEvent.insert("GUILD", "JOIN", String.format(" %s [dis-id: %s][iid: %s][u: %s]", guild.getName(), guild.getId(), server.id, guild.getUsers().size()));
 			discordBot.getContainer().guildJoined();
 			Launcher.log("bot joins guild", "bot", "guild-join",
 					"guild-id", guild.getId(),
@@ -164,7 +164,7 @@ public class JDAEvents extends ListenerAdapter {
 							message.deleteMessage();
 						}
 					}
-				}, Config.DELETE_MESSAGES_AFTER);
+				}, Config.DELETE_MESSAGES_AFTER * 5);
 			});
 		}
 		Launcher.log("user joins guild", "guild", "member-join",
@@ -173,7 +173,7 @@ public class JDAEvents extends ListenerAdapter {
 				"user-id", user.getId(),
 				"user-name", user.getUsername());
 
-		if ("true".equals(settings.getOrDefault(SettingRoleTimeRanks.class))) {
+		if ("true".equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && !user.isBot()) {
 			RoleRankings.assignUserRole(discordBot, guild, user);
 		}
 	}

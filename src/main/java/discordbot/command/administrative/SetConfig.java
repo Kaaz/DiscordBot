@@ -82,6 +82,9 @@ public class SetConfig extends AbstractCommand {
 				ret += Config.EOL + "\\* means different from default";
 				List<List<String>> data = new ArrayList<>();
 				for (String key : keys) {
+					if (DefaultGuildSettings.get(key).isReadOnly()) {
+						continue;
+					}
 					List<String> row = new ArrayList<>();
 					String different = settings.get(key).equals(DefaultGuildSettings.getDefault(key)) ? " " : "*";
 					row.add(different + key);
@@ -101,6 +104,9 @@ public class SetConfig extends AbstractCommand {
 				}
 				if (!DefaultGuildSettings.isValidKey(args[0])) {
 					return Template.get("command_config_key_not_exists");
+				}
+				if (DefaultGuildSettings.get(args[0]).isReadOnly()) {
+					return Template.get("command_config_key_read_only");
 				}
 				if (count >= 2 && GuildSettings.get(guild).set(args[0], args[1])) {
 					bot.reloadGuild(guild);

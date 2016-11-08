@@ -5,8 +5,10 @@ import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CGuild;
+import discordbot.db.controllers.CMusic;
 import discordbot.db.controllers.CPlaylist;
 import discordbot.db.controllers.CUser;
+import discordbot.db.model.OMusic;
 import discordbot.db.model.OPlaylist;
 import discordbot.guildsettings.music.SettingMusicRole;
 import discordbot.handler.GuildSettings;
@@ -91,6 +93,8 @@ public class Playlist extends AbstractCommand {
 		Guild guild = ((TextChannel) channel).getGuild();
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
+		int nowPlayingId = player.getCurrentlyPlaying();
+		OMusic musicRec = CMusic.findById(nowPlayingId);
 		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
 			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
@@ -105,6 +109,7 @@ public class Playlist extends AbstractCommand {
 			return Template.get(channel, "music_playlist_using", playlist.title);
 		} else {
 			if (args.length == 1) {
+				boolean isAdding = false;
 				switch (args[0].toLowerCase()) {
 					case "mine":
 //						playlist = findPlaylist("mine", author, guild);
@@ -120,7 +125,41 @@ public class Playlist extends AbstractCommand {
 						player.setActivePlayListId(playlist.id);
 						return Template.get(channel, "music_playlist_changed", playlist.title);
 					case "add":
+						isAdding = true;
 					case "remove":
+						if (playlist.isGlobalList()) {
+							return Template.get(channel, "playlist_global_readonly");
+						}
+						if (playlist.isPersonal()) {
+							return "Personal lists aren't implemented yet, sorry!";
+						}
+						if (nowPlayingId == 0) {
+							return Template.get(channel, "command_currentlyplaying_nosong");
+						}
+						switch (playlist.getEditType()) {
+							case PRIVATE_AUTO:
+							case PUBLIC_AUTO:
+								return Template.get(channel, "playlist_music_added_auto");
+							case PUBLIC_FULL:
+								if (!isAdding) {
+									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
+									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
+								}
+							case PUBLIC_ADD:
+								CPlaylist.addToPlayList(playlist.id, nowPlayingId);
+								return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle, playlist.title);
+							case PRIVATE:
+								if (playlist.isGuildList() && playlist.guildId != CGuild.getCachedId(guild.getId())) {
+									return Template.get(channel, "no_permission");
+								}
+								if (isAdding) {
+									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
+									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
+								} else {
+									CPlaylist.addToPlayList(playlist.id, nowPlayingId);
+									return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle, playlist.title);
+								}
+						}
 					default:
 						break;
 				}
@@ -139,19 +178,18 @@ public class Playlist extends AbstractCommand {
 						if (playlist.isPersonal()) {
 							return "Personal playlists are not fully done yet, sorry!";
 						}
+						if (playlist.isGuildList() && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+							return Template.get(channel, "playlist_title_no_permission");
+						}
 						switch (args[1].toLowerCase()) {
 							case "title":
 								if (args.length == 2) {
 									return Template.get(channel, "command_playlist_title", playlist.title);
 								}
-								if (playlist.isGuildList() && userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-									playlist.title = Joiner.on(" ").join(Arrays.copyOfRange(args, 2, args.length));
-									CPlaylist.update(playlist);
-									player.setActivePlayListId(playlist.id);
-									return Template.get(channel, "playlist_title_updated", playlist.title);
-								}
-
-								return Template.get(channel, "playlist_title_no_permission");
+								playlist.title = Joiner.on(" ").join(Arrays.copyOfRange(args, 2, args.length));
+								CPlaylist.update(playlist);
+								player.setActivePlayListId(playlist.id);
+								return Template.get(channel, "playlist_title_updated", playlist.title);
 							case "edit-type":
 							case "edittype":
 							case "edit":
@@ -165,6 +203,17 @@ public class Playlist extends AbstractCommand {
 											Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
 											"Private in a guild-setting refers to users with admin privileges";
 								}
+								if (args.length > 2 && args[2].matches("^\\d+$")) {
+									OPlaylist.EditType editType = OPlaylist.EditType.fromId(Integer.parseInt(args[2]));
+									if (editType.equals(OPlaylist.EditType.UNKNOWN)) {
+										Template.get(channel, "playlist_setting_invalid", args[2], "edittype");
+									}
+									playlist.setEditType(editType);
+									CPlaylist.update(playlist);
+									player.setActivePlayListId(playlist.id);
+									return Template.get(channel, "playlist_setting_updated", "edittype", args[2]);
+								}
+								return Template.get(channel, "playlist_setting_not_numeric", "edittype");
 							case "vis":
 							case "visibility":
 								if (args.length == 2) {
@@ -175,9 +224,19 @@ public class Playlist extends AbstractCommand {
 									}
 									return "the visibility-type of the playlist. A `*` indicates the selected option" + Config.EOL +
 											Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
-											"Private in a guild-setting refers to users with admin privileges";
+											"Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
 								}
-								return "soon-tm";
+								if (args.length > 2 && args[2].matches("^\\d+$")) {
+									OPlaylist.Visibility visibility = OPlaylist.Visibility.fromId(Integer.parseInt(args[2]));
+									if (visibility.equals(OPlaylist.Visibility.UNKNOWN)) {
+										Template.get(channel, "playlist_setting_invalid", args[2], "visibility");
+									}
+									playlist.setVisibility(visibility);
+									CPlaylist.update(playlist);
+									player.setActivePlayListId(playlist.id);
+									return Template.get(channel, "playlist_setting_updated", "visibility", args[2]);
+								}
+								return Template.get("playlist_setting_not_numeric", "visibility");
 							default:
 								return "No such setting";
 						}

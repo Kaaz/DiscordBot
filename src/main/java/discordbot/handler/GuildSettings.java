@@ -120,7 +120,9 @@ public class GuildSettings {
 
 	public boolean set(String key, String value) {
 		if (DefaultGuildSettings.isValidKey(key) &&
-				DefaultGuildSettings.get(key).isValidValue(value)) {
+				!DefaultGuildSettings.get(key).isReadOnly() &&
+				DefaultGuildSettings.get(key).isValidValue(value)
+				) {
 			try {
 				WebDb.get().insert("INSERT INTO guild_settings (guild, name, config) VALUES(?, ?, ?) " +
 						"ON DUPLICATE KEY UPDATE config=?", id, key, value, value);

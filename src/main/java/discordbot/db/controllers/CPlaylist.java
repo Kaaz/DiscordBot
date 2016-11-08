@@ -129,6 +129,19 @@ public class CPlaylist {
 		return false;
 	}
 
+	public static boolean removeFromPlayList(int playlistId, int musicId) {
+		try {
+			WebDb.get().query(
+					"DELETE FROM playlist_item WHERE playlist_id = ? AND music_id = ?",
+					playlistId, musicId
+			);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	/**
 	 * updates the last time a song was played in a playlist
 	 *

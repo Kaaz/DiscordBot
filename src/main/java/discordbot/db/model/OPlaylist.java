@@ -86,11 +86,11 @@ public class OPlaylist extends AbstractModel {
 
 	public enum EditType {
 		UNKNOWN(0, "??"),
-		PUBLIC_AUTO(1, "all songs played are automatically added"),
-		PUBLIC_FULL(2, "Anyone can add and remove stongs from the playlist"),
-		PUBLIC_ADD(3, "Anyone can add songs, but not remove them"),
-		PRIVATE_AUTO(4, "Songs played by you will be added automatically"),
-		PRIVATE(5, "Only the owner can add/remove songs from the playlist");
+		PUBLIC_AUTO(1, "all music played is automatically added"),
+		PUBLIC_FULL(2, "Anyone can add and remove music from the playlist"),
+		PUBLIC_ADD(3, "Anyone can add music, but not remove it"),
+		PRIVATE_AUTO(4, "Music played by you/admins will be added automatically"),
+		PRIVATE(5, "Only the owner/admin can add/remove music from the playlist manually ");
 
 		private final int id;
 		private final String description;

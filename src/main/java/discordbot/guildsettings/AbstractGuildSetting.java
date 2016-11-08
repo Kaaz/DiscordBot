@@ -24,6 +24,16 @@ abstract public class AbstractGuildSetting {
 	public abstract String[] getDescription();
 
 	/**
+	 * Whether a config setting is read-only
+	 * Used to save guild-specific settings which are set automatically
+	 *
+	 * @return is readonly?
+	 */
+	public boolean isReadOnly() {
+		return false;
+	}
+
+	/**
 	 * Checks if the value is a valid setting
 	 *
 	 * @param input value to check
