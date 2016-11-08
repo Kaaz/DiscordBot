@@ -116,7 +116,7 @@ public class GuildStatsCommand extends AbstractCommand {
 			for (Guild guild : discordBot.client.getGuilds()) {
 				if (discordBot.client.getAudioManager(guild).isConnected()) {
 					activeVoice++;
-					guildnames.add(guild.getName() +" size["+guild.getUsers().size()+"] channel["+discordBot.client.getAudioManager(guild).getConnectedChannel().getUsers().size()+"]");
+					guildnames.add(guild.getName() + " size[" + guild.getUsers().size() + "] channel[" + discordBot.client.getAudioManager(guild).getConnectedChannel().getUsers().size() + "]");
 				}
 			}
 		}
@@ -126,7 +126,7 @@ public class GuildStatsCommand extends AbstractCommand {
 		if (!showGuildnames) {
 			return Template.get("command_stats_playing_music_on", activeVoice);
 		}
-		return Template.get("command_stats_playing_music_on", activeVoice) + Config.EOL + Joiner.on(", ").join(guildnames);
+		return Template.get("command_stats_playing_music_on", activeVoice) + Config.EOL + Joiner.on(Config.EOL).join(guildnames);
 	}
 
 	private String getTotalTable(DiscordBot bot) {
