@@ -129,7 +129,7 @@ public class Playlist extends AbstractCommand {
 						player.setActivePlayListId(playlist.id);
 						return Template.get(channel, "music_playlist_changed", playlist.title);
 					case "global":
-						if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+						if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 							return Template.get(channel, "no_permission");
 						}
 						playlist = findPlaylist("global", author, guild);
