@@ -1,11 +1,11 @@
 package discordbot.handler;
 
-import discordbot.db.model.OGuild;
-import discordbot.db.model.OUserRank;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CRank;
 import discordbot.db.controllers.CUser;
 import discordbot.db.controllers.CUserRank;
+import discordbot.db.model.OGuild;
+import discordbot.db.model.OUserRank;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import net.dv8tion.jda.Permission;
@@ -72,7 +72,7 @@ public class SecurityHandler {
 		if (discordBot.isCreator(user)) {
 			return SimpleRank.CREATOR;
 		}
-		if (user.isBot()) {
+		if (guild == null && user.isBot()) {
 			return SimpleRank.BOT;
 		}
 		if (botAdmins.contains(user.getId())) {
@@ -90,6 +90,9 @@ public class SecurityHandler {
 			}
 			if (PermissionUtil.checkPermission(guild, user, Permission.ADMINISTRATOR)) {
 				return SimpleRank.GUILD_ADMIN;
+			}
+			if (user.isBot()) {
+				return SimpleRank.BOT;
 			}
 		}
 		return SimpleRank.USER;
