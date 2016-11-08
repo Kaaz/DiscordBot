@@ -86,7 +86,7 @@ public class CPlaylist {
 				"SELECT m.* " +
 				"FROM music m " +
 				"JOIN playlist_item pi ON pi.music_id = m.id " +
-				"WHERE pi.playlist_id = ?" +
+				"WHERE pi.playlist_id = ? " +
 				"ORDER BY m.youtube_title ASC " +
 				"LIMIT ?, ?", playlistId, offset, maxListSize)) {
 			while (rs.next()) {

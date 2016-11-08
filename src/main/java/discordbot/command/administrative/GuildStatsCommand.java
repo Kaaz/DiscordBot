@@ -116,7 +116,7 @@ public class GuildStatsCommand extends AbstractCommand {
 			for (Guild guild : discordBot.client.getGuilds()) {
 				if (discordBot.client.getAudioManager(guild).isConnected()) {
 					activeVoice++;
-					guildnames.add(guild.getName());
+					guildnames.add(guild.getName() +" size["+guild.getUsers().size()+"] channel["+discordBot.client.getAudioManager(guild).getConnectedChannel().getUsers().size()+"]");
 				}
 			}
 		}
