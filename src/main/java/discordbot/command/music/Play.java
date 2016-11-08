@@ -4,7 +4,9 @@ import com.google.common.base.Joiner;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CMusic;
+import discordbot.db.controllers.CPlaylist;
 import discordbot.db.model.OMusic;
+import discordbot.db.model.OPlaylist;
 import discordbot.guildsettings.music.SettingMusicRole;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
@@ -155,9 +157,15 @@ public class Play extends AbstractCommand {
 
 			}
 		} else {
-			if (MusicPlayerHandler.getFor(guild, bot).playRandomSong()) {
+			if (player.playRandomSong()) {
 				return Template.get("music_started_playing_random");
 			} else {
+				OPlaylist pl = CPlaylist.findById(player.getActivePLaylistId());
+				if (!pl.isGlobalList()) {
+					if (CPlaylist.getMusicCount(pl.id) == 0) {
+						return Template.get("music_failed_playlist_empty", pl.title);
+					}
+				}
 				return Template.get("music_failed_to_start");
 			}
 		}

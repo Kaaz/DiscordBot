@@ -25,7 +25,6 @@ import net.dv8tion.jda.player.hooks.PlayerEventListener;
 import net.dv8tion.jda.player.hooks.events.FinishEvent;
 import net.dv8tion.jda.player.hooks.events.PlayEvent;
 import net.dv8tion.jda.player.hooks.events.PlayerEvent;
-import net.dv8tion.jda.player.hooks.events.SkipEvent;
 import net.dv8tion.jda.player.source.AudioInfo;
 import net.dv8tion.jda.player.source.AudioSource;
 import net.dv8tion.jda.player.source.LocalSource;
@@ -115,7 +114,13 @@ public class MusicPlayerHandler {
 		LinkedList<AudioSource> audioQueue = player.getAudioQueue();
 		if (audioQueue.isEmpty()) {
 			if (queue.isEmpty()) {
-				audioQueue.add(new LocalSource(new File(getRandomSong())));
+				String filename = getRandomSong();
+				if (filename != null) {
+					audioQueue.add(new LocalSource(new File(filename)));
+				} else {
+					player.stop();
+					bot.getMusicChannel(guild).sendMessageAsync("Stopped playing because the playlist is empty", null);
+				}
 			} else {
 				OMusic poll = queue.poll();
 				audioQueue.add(new LocalSource(new File(poll.filename)));
@@ -230,6 +235,9 @@ public class MusicPlayerHandler {
 	 */
 	private String getRandomSong() {
 		ArrayList<String> potentialSongs = new ArrayList<>();
+		if (!playlist.isGlobalList()) {
+			return CPlaylist.getRandomMusic(playlist.id);
+		}
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT filename, youtube_title, lastplaydate " +
 						"FROM music " +
@@ -253,7 +261,11 @@ public class MusicPlayerHandler {
 	 * @return successfully started playing
 	 */
 	public boolean playRandomSong() {
-		return addToQueue(getRandomSong(), null);
+		String randomSong = getRandomSong();
+		if (randomSong != null) {
+			return addToQueue(randomSong, null);
+		}
+		return false;
 	}
 
 	public synchronized boolean isPlaying() {
@@ -373,10 +385,11 @@ public class MusicPlayerHandler {
 
 		@Override
 		public void onEvent(PlayerEvent event) {
-			if (event instanceof SkipEvent || event instanceof FinishEvent) {
+//			if (event instanceof SkipEvent || event instanceof FinishEvent) {
+			if (event instanceof FinishEvent) {
 				try {
 					trackEnded();
-					if (!player.isPlaying()) {
+					if (!player.isPlaying() && !player.getAudioQueue().isEmpty()) {
 						player.play();
 					}
 				} catch (InterruptedException e) {

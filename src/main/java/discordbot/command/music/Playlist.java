@@ -17,8 +17,8 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
+import discordbot.util.DisUtil;
 import discordbot.util.Misc;
-import discordbot.util.TimeUtil;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
@@ -58,13 +58,13 @@ public class Playlist extends AbstractCommand {
 				"playlist settings                    //check the settings for the active playlist",
 //				"playlist settings <playlistname>     //check the settings for the active playlist",
 				"playlist                             //info about the current playlist",
-//				"playlist list                        //see what playlists there are",
+				"playlist list <pagenumber>           //Shows the music in the playlist",
 				"",
 				"-- Adding and removing music from the playlist",
 //				"playlist show <pagenumber>           //shows music in the playlist",
-				"playlist add                         //adds the currently playing song",
+				"playlist add                         //adds the currently playing music",
 //				"playlist add <youtubelink>           //adds the link to the playlist",
-				"playlist remove                      //removes the currently playing song",
+				"playlist remove                      //removes the currently playing music",
 //				"playlist remove <youtubelink>        //removes song from playlist",
 //				"playlist removeall                   //removes ALL songs from playlist",
 				"",
@@ -72,7 +72,7 @@ public class Playlist extends AbstractCommand {
 				"playlist title <new title>           //edit the playlist title",
 				"playlist edit-type <new type>        //change the edit-type of a playlist",
 				"playlist visibility <new visibility> //change who can see the playlist",
-				"playlist reset                       //reset settings to default",
+//				"playlist reset                       //reset settings to default",
 		};
 	}
 
@@ -106,9 +106,14 @@ public class Playlist extends AbstractCommand {
 			playlist = new OPlaylist();
 		}
 		if (args.length == 0) {
-			return Template.get(channel, "music_playlist_using", playlist.title);
+			if (playlist.isGlobalList()) {
+				return Template.get(channel, "music_playlist_using", playlist.title);
+			}
+			return Template.get(channel, "music_playlist_using", playlist.title) +
+					"Settings " + makeSettingsTable(playlist) +
+					"To add the currently playing music to the playlist use `" + DisUtil.getCommandPrefix(channel) + "pl add`, check out `" + DisUtil.getCommandPrefix(channel) + "help pl` for more info";
 		} else {
-			if (args.length == 1) {
+			if (args.length >= 1) {
 				boolean isAdding = false;
 				switch (args[0].toLowerCase()) {
 					case "mine":
@@ -117,10 +122,16 @@ public class Playlist extends AbstractCommand {
 //						return Template.get(channel, "music_playlist_changed", playlist.title);
 						return "Only global and guild lists for now, sorry!";
 					case "guild":
+						if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+							return Template.get(channel, "no_permission");
+						}
 						playlist = findPlaylist("guild", author, guild);
 						player.setActivePlayListId(playlist.id);
 						return Template.get(channel, "music_playlist_changed", playlist.title);
 					case "global":
+						if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+							return Template.get(channel, "no_permission");
+						}
 						playlist = findPlaylist("global", author, guild);
 						player.setActivePlayListId(playlist.id);
 						return Template.get(channel, "music_playlist_changed", playlist.title);
@@ -146,6 +157,13 @@ public class Playlist extends AbstractCommand {
 									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
 								}
 							case PUBLIC_ADD:
+								if (!isAdding) {
+									if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+										CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
+										return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
+									}
+									return Template.get(channel, "no_permission");
+								}
 								CPlaylist.addToPlayList(playlist.id, nowPlayingId);
 								return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle, playlist.title);
 							case PRIVATE:
@@ -160,6 +178,29 @@ public class Playlist extends AbstractCommand {
 									return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle, playlist.title);
 								}
 						}
+					case "list":
+					case "music":
+						if (playlist.isGlobalList()) {
+							return Template.get(channel, "playlist_global_readonly");
+						}
+						int currentPage = 0;
+						int itemsPerPage = 50;
+						int maxPage = 1 + CPlaylist.getMusicCount(playlist.id) / itemsPerPage;
+						if (args.length >= 2) {
+							if (args[1].matches("^\\d+$")) {
+								currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage - 1);
+							}
+						}
+						List<OMusic> items = CPlaylist.getMusic(playlist.id, itemsPerPage, currentPage * itemsPerPage);
+						if (items.isEmpty()) {
+							return "The playlist is empty.";
+						}
+						List<List<String>> tbl = new ArrayList<>();
+						for (OMusic item : items) {
+							tbl.add(Arrays.asList("" + item.id, item.youtubeTitle));
+						}
+						return String.format("Music in the playlist: [page %s/%s]", currentPage + 1, maxPage) + Config.EOL +
+								Misc.makeAsciiTable(Arrays.asList("#", "Title"), tbl, null);
 					default:
 						break;
 				}
@@ -280,8 +321,8 @@ public class Playlist extends AbstractCommand {
 		body.add(Arrays.asList("Title", playlist.title));
 		body.add(Arrays.asList("Owner", owner));
 		body.add(Arrays.asList("edit-type", playlist.getEditType().getDescription()));
-		body.add(Arrays.asList("visibility", playlist.getVisibility().getDescription()));
-		body.add(Arrays.asList("created", TimeUtil.formatYMD(playlist.createdOn)));
+//		body.add(Arrays.asList("visibility", playlist.getVisibility().getDescription()));
+//		body.add(Arrays.asList("created", TimeUtil.formatYMD(playlist.createdOn)));
 		return Misc.makeAsciiTable(Arrays.asList("Name", "Value"), body, null);
 	}
 }

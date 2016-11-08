@@ -103,9 +103,9 @@ public class YTUtil {
 			InputStream stdout = process.getInputStream();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
 			String line;
-//			while ((line = reader.readLine()) != null) {
-//				System.out.println("YT: " + line);
-//			}
+			while ((line = reader.readLine()) != null) {
+				System.out.println("YT: " + line);
+			}
 			process.waitFor();
 			process.destroy();
 		} catch (IOException | InterruptedException e) {

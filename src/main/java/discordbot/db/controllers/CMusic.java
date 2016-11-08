@@ -62,7 +62,7 @@ public class CMusic {
 	}
 
 
-	private static OMusic fillRecord(ResultSet resultset) throws SQLException {
+	public static OMusic fillRecord(ResultSet resultset) throws SQLException {
 		OMusic music = new OMusic();
 		music.id = resultset.getInt("id");
 		music.youtubecode = resultset.getString("youtubecode");

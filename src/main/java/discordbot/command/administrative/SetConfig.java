@@ -80,8 +80,8 @@ public class SetConfig extends AbstractCommand {
 				Map<String, String> settings = GuildSettings.get(guild).getSettings();
 				ArrayList<String> keys = new ArrayList<>(settings.keySet());
 				Collections.sort(keys);
-				String ret = "Current Settings for " + guild.getName() + Config.EOL;
-				ret += Config.EOL + "\\* means different from default";
+				String ret = "Current Settings for " + guild.getName() + Config.EOL + Config.EOL;
+				ret += ":information_source: Settings indicated with a `*` are different from the default value";
 				List<List<String>> data = new ArrayList<>();
 				for (String key : keys) {
 					if (DefaultGuildSettings.get(key).isReadOnly()) {

@@ -2,6 +2,7 @@ package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
+import discordbot.db.model.OMusic;
 import discordbot.db.model.OPlaylist;
 
 import java.sql.ResultSet;
@@ -63,7 +64,6 @@ public class CPlaylist {
 		return s;
 	}
 
-
 	public static OPlaylist findById(int internalId) {
 		OPlaylist s = new OPlaylist();
 		try (ResultSet rs = WebDb.get().select(
@@ -80,11 +80,44 @@ public class CPlaylist {
 		return s;
 	}
 
+	public static List<OMusic> getMusic(int playlistId, int maxListSize, int offset) {
+		List<OMusic> ret = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select("" +
+				"SELECT m.* " +
+				"FROM music m " +
+				"JOIN playlist_item pi ON pi.music_id = m.id " +
+				"ORDER BY m.youtube_title ASC " +
+				"LIMIT ?, ?", offset, maxListSize)) {
+			while (rs.next()) {
+				ret.add(CMusic.fillRecord(rs));
+			}
+			rs.getStatement().close();
+		} catch (SQLException e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return ret;
+	}
+
+
+	public static int getMusicCount(int playlistId) {
+		int amount = 0;
+		try (ResultSet rs = WebDb.get().select("SELECT count(*) AS amount FROM playlist_item WHERE playlist_id = ?", playlistId)) {
+			while (rs.next()) {
+				amount = rs.getInt("amount");
+			}
+			rs.getStatement().close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return amount;
+	}
+
 	/**
 	 * Retrieves a somewhat random item from the playlist
 	 *
 	 * @param playlistId the playlist to look in
-	 * @return
+	 * @return absolute path to file
 	 */
 	public static String getRandomMusic(int playlistId) {
 		List<String> potentialSongs = new ArrayList<>();
