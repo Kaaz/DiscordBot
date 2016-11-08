@@ -93,10 +93,17 @@ public class MusicPlayerHandler {
 		return activePlayListId;
 	}
 
+	/**
+	 * Sets the active playlist, or refreshes the currently cached one
+	 *
+	 * @param id internal id of the playlist
+	 */
 	public synchronized void setActivePlayListId(int id) {
 		playlist = CPlaylist.findById(id);
-		activePlayListId = playlist.id;
-		GuildSettings.get(guild).set(SettingMusicLastPlaylist.class, "" + id);
+		if (activePlayListId != playlist.id) {
+			activePlayListId = playlist.id;
+			GuildSettings.get(guild).set(SettingMusicLastPlaylist.class, "" + id);
+		}
 	}
 
 	public long getStartTimeStamp() {
