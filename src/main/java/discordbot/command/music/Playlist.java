@@ -153,7 +153,11 @@ public class Playlist extends AbstractCommand {
 									return Template.get(channel, "no_permission");
 								}
 							case PUBLIC_AUTO:
-								CPlaylist.addToPlayList(playlist.id, nowPlayingId);
+								if (isAdding) {
+									CPlaylist.addToPlayList(playlist.id, nowPlayingId);
+								} else {
+									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
+								}
 								return Template.get(channel, "playlist_music_added_auto");
 							case PUBLIC_FULL:
 								if (!isAdding) {
