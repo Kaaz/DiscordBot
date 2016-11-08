@@ -4,6 +4,7 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Message;
@@ -45,6 +46,7 @@ public class PurgeComand extends AbstractCommand {
 				"purge <limit>       //deletes non-pinned messages",
 				"purge @user         //deletes messages from user",
 				"purge @user <limit> //deletes up to <limit> messages from user",
+				"purge commands      //delete command related messages",
 				"purge emily         //deletes my messages :("
 		};
 	}
@@ -63,10 +65,31 @@ public class PurgeComand extends AbstractCommand {
 		User toDeleteFrom = null;
 		int deleteLimit = 100;
 		boolean deleteAll = true;
-		if (!bot.isOwner(channel, author) && !bot.client.getSelfInfo().equals(author)) {
-			return Template.get("command_invalid_use");
+		SimpleRank rank = bot.security.getSimpleRank(author, channel);
+		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && !bot.client.getSelfInfo().equals(author)) {
+			return Template.get("no_permission");
 		}
 		if (args.length >= 1) {
+			if (args[0].equals("commands")) {
+				if (!hasManageMessages) {
+					Template.get("permission_missing_manage_messages");
+				}
+				bot.out.sendAsyncMessage(channel, Template.get("command_purge_success"), message -> {
+					bot.out.deleteMessage(message);
+				});
+				String cmdPrefix = DisUtil.getCommandPrefix(channel);
+				List<Message> retrieve = channel.getHistory().retrieve(200);
+				for (Message message : retrieve) {
+					if (message.isPinned()) {
+						continue;
+					}
+					if (message.getAuthor().getId().equals(bot.client.getSelfInfo().getId()) ||
+							message.getRawContent().startsWith(cmdPrefix)) {
+						bot.out.deleteMessage(message);
+					}
+				}
+				return "";
+			}
 			deleteAll = false;
 			if (DisUtil.isUserMention(args[0])) {
 				toDeleteFrom = bot.client.getUserById(DisUtil.mentionToId(args[0]));
