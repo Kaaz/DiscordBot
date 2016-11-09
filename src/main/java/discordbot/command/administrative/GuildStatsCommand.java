@@ -134,7 +134,7 @@ public class GuildStatsCommand extends AbstractCommand {
 		return Template.get("command_stats_playing_music_on", activeVoice) + Config.EOL +
 				Misc.makeAsciiTable(Arrays.asList("Name", "users", "in voice"),
 						body,
-						Arrays.asList("TOTAL", "" + totUsersInGuilds, "" + totUsersInVoice));
+						activeVoice > 1 ? Arrays.asList("TOTAL", "" + totUsersInGuilds, "" + totUsersInVoice) : null);
 	}
 
 	private String getTotalTable(DiscordBot bot) {
