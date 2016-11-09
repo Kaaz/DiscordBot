@@ -51,7 +51,7 @@ public class AutoReplyHandler {
 				Long lastUse = getCooldown(guildId, index);
 				if (lastUse + replies[index].cooldown < now) {
 					Matcher matcher = replies[index].pattern.matcher(message.getContent());
-					if (matcher.matches()) {
+					if (matcher.find()) {
 						saveCooldown(guildId, index, now);
 						bot.out.sendAsyncMessage(channel, message.getAuthor().getAsMention() + ", " + replies[index].reply, null);
 						return true;
@@ -88,7 +88,7 @@ public class AutoReplyHandler {
 		int index = 0;
 		for (OReplyPattern reply : all) {
 			AutoReply ar = new AutoReply();
-			ar.pattern = Pattern.compile(reply.pattern);
+			ar.pattern = Pattern.compile(reply.pattern, Pattern.DOTALL + Pattern.CASE_INSENSITIVE);
 			ar.tag = reply.tag;
 			ar.cooldown = reply.cooldown;
 			ar.reply = reply.reply;
