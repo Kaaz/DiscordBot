@@ -117,7 +117,7 @@ public class SetConfig extends AbstractCommand {
 					return Template.get("command_config_key_read_only");
 				}
 				if (count >= 2 && GuildSettings.get(guild).set(args[0], args[1])) {
-					bot.reloadGuild(guild);
+					bot.clearChannels(guild);
 					return Template.get("command_config_key_modified");
 				}
 				String tblContent = "";

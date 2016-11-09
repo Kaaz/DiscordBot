@@ -78,6 +78,7 @@ public class JDAEvents extends ListenerAdapter {
 			guild.getManager().leave();
 			return;
 		}
+		discordBot.loadGuild(guild);
 		String cmdPre = GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
 		if (server.active != 1) {
 			String message = "Thanks for adding me to your guild!" + Config.EOL +
@@ -113,6 +114,7 @@ public class JDAEvents extends ListenerAdapter {
 		OGuild server = CGuild.findBy(guild.getId());
 		server.active = 0;
 		CGuild.update(server);
+		discordBot.clearGuildData(guild);
 		discordBot.getContainer().guildLeft();
 		if (server.isBanned()) {
 			return;

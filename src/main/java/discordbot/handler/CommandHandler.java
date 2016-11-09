@@ -51,6 +51,12 @@ public class CommandHandler {
 		return msg.startsWith(DisUtil.getCommandPrefix(channel)) || msg.startsWith(mentionMe);
 	}
 
+	public static void removeGuild(int guildId) {
+		if (guildCommands.containsKey(guildId)) {
+			guildCommands.remove(guildId);
+		}
+	}
+
 	/**
 	 * directs the command to the right class
 	 *
@@ -244,7 +250,6 @@ public class CommandHandler {
 		return cmds;
 	}
 
-
 	public static AbstractCommand[] getCommandObjects() {
 		return commands.values().toArray(new AbstractCommand[commands.values().size()]);
 	}
@@ -262,7 +267,7 @@ public class CommandHandler {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		loadCustomCommands();
+		loadCustomCommands(guildId);
 	}
 
 	/**
@@ -283,6 +288,24 @@ public class CommandHandler {
 					guildCommands.get(guildId).put(r.getString("input"), r.getString("output"));
 				}
 			}
+			if (r != null) {
+				r.getStatement().close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void loadCustomCommands(int guildId) {
+		removeGuild(guildId);
+		try (ResultSet r = WebDb.get().select("SELECT input, output FROM commands WHERE server = ?", guildId)) {
+			while (r != null && r.next()) {
+				if (!guildCommands.containsKey(guildId)) {
+					guildCommands.put(guildId, new ConcurrentHashMap<>());
+				}
+				guildCommands.get(guildId).put(r.getString("input"), r.getString("output"));
+			}
+
 			if (r != null) {
 				r.getStatement().close();
 			}

@@ -56,6 +56,12 @@ public class GuildSettings {
 		return DefaultGuildSettings.getDefault(settingClass);
 	}
 
+	public static void remove(Guild guild) {
+		if (settingInstance.containsKey(guild)) {
+			settingInstance.remove(guild);
+		}
+	}
+
 	public static GuildSettings get(Guild guild) {
 		if (settingInstance.containsKey(guild)) {
 			return settingInstance.get(guild);

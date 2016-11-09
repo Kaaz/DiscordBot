@@ -10,7 +10,10 @@ import net.dv8tion.jda.entities.MessageChannel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -19,12 +22,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Template {
 
+	static private final Map<String, List<String>> dictionary = new ConcurrentHashMap<>();
+	static private final ConcurrentHashMap<Integer, Map<String, List<String>>> guildDictionary = new ConcurrentHashMap<>();
 	private static Random rnd = new Random();
-	static private HashMap<String, List<String>> dictionary;
-	static private ConcurrentHashMap<Integer, Map<String, List<String>>> guildDictionary;
 
 	private Template() {
 		initialize();
+	}
+
+	public static void removeGuild(int guildId) {
+		if (guildDictionary.containsKey(guildId)) {
+			guildDictionary.remove(guildId);
+		}
 	}
 
 	/**
@@ -167,8 +176,8 @@ public class Template {
 	 * refreshes the data from the database
 	 */
 	public static synchronized void initialize() {
-		dictionary = new HashMap<>();
-		guildDictionary = new ConcurrentHashMap<>();
+		dictionary.clear();
+		guildDictionary.clear();
 		try (ResultSet rs = WebDb.get().select("SELECT id,guild_id, keyphrase, text FROM template_texts")) {
 			while (rs.next()) {
 				String keyphrase = rs.getString("keyphrase");
@@ -187,6 +196,29 @@ public class Template {
 					}
 					guildDictionary.get(guildId).get(keyphrase).add(rs.getString("text"));
 				}
+			}
+			rs.getStatement().close();
+		} catch (SQLException e) {
+			System.out.println(e);
+			e.getStackTrace();
+		}
+	}
+
+	public static synchronized void initialize(int guildId) {
+		if (guildDictionary.containsKey(guildId)) {
+			guildDictionary.remove(guildId);
+		}
+		try (ResultSet rs = WebDb.get().select("SELECT id,keyphrase, text FROM template_texts WHERE guild_id = ?", guildId)) {
+			while (rs.next()) {
+				String keyphrase = rs.getString("keyphrase");
+				if (!guildDictionary.containsKey(guildId)) {
+					guildDictionary.put(guildId, new ConcurrentHashMap<>());
+				}
+				if (!guildDictionary.get(guildId).containsKey(keyphrase)) {
+					guildDictionary.get(guildId).put(keyphrase, new ArrayList<>());
+				}
+				guildDictionary.get(guildId).get(keyphrase).add(rs.getString("text"));
+
 			}
 			rs.getStatement().close();
 		} catch (SQLException e) {

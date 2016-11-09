@@ -2,14 +2,15 @@ package discordbot.command.administrative;
 
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.OGuild;
-import discordbot.db.model.OReplyPattern;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CReplyPattern;
 import discordbot.db.controllers.CUser;
+import discordbot.db.model.OGuild;
+import discordbot.db.model.OReplyPattern;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.Misc;
 import discordbot.util.TimeUtil;
 import net.dv8tion.jda.entities.Guild;
@@ -20,6 +21,7 @@ import net.dv8tion.jda.entities.User;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -68,7 +70,8 @@ public class AutoReplyCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
-		if (!bot.isAdmin(channel, author)) {
+		SimpleRank rank = bot.security.getSimpleRankForGuild(author, guild);
+		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			return Template.get("no_permission");
 		}
 		if (args.length == 0) {
@@ -96,7 +99,8 @@ public class AutoReplyCommand extends AbstractCommand {
 				if (replyPattern.id == 0) {
 					replyPattern.tag = args[1];
 					replyPattern.userId = CUser.getCachedId(author.getId(), author.getUsername());
-					replyPattern.guildId = bot.isCreator(author) ? 0 : CGuild.getCachedId(guild.getId());
+					replyPattern.guildId = rank.isAtLeast(SimpleRank.CREATOR) ? 0 : CGuild.getCachedId(guild.getId());
+					replyPattern.cooldown = TimeUnit.MINUTES.toMillis(1);
 					CReplyPattern.insert(replyPattern);
 					return Template.get("command_autoreply_created", args[1]);
 				}
@@ -116,12 +120,14 @@ public class AutoReplyCommand extends AbstractCommand {
 				case "delete":
 				case "remove":
 				case "del":
-					if (bot.isCreator(author) || (bot.isAdmin(channel, author) && CGuild.getCachedId(guild.getId()) == replyPattern.id))
+					if (rank.isAtLeast(SimpleRank.CREATOR) || (rank.isAtLeast(SimpleRank.GUILD_ADMIN) && CGuild.getCachedId(guild.getId()) == replyPattern.id)) {
 						CReplyPattern.delete(replyPattern);
-					bot.loadConfiguration();
+						bot.reloadAutoReplies();
+					}
 					return Template.get("command_autoreply_deleted", args[1]);
 				case "regex":
 				case "pattern":
+				case "trigger":
 					try {
 						Pattern pattern = Pattern.compile(restOfArgs);//used to see if a patterns is valid, invalid = exception ;)
 						replyPattern.pattern = restOfArgs;
@@ -131,13 +137,16 @@ public class AutoReplyCommand extends AbstractCommand {
 								exception.getDescription() + Config.EOL +
 								Misc.makeTable(exception.getMessage());
 					}
+					bot.reloadAutoReplies();
 					return Template.get("command_autoreply_regex_saved");
 				case "guild":
 				case "gid":
-					if (!bot.isCreator(author)) {
+					if (!rank.isAtLeast(SimpleRank.CREATOR)) {
 						return Template.get("no_permission");
 					}
-					if (!args[2].equals("0")) {
+					if (args[2].equalsIgnoreCase("this")) {
+						replyPattern.guildId = CGuild.getCachedId(guild.getId());
+					} else if (!args[2].equals("0")) {
 						OGuild server = CGuild.findBy(args[2]);
 						if (server.id == 0) {
 							return Template.get("command_autoreply_guild_invalid", args[2]);
@@ -147,20 +156,24 @@ public class AutoReplyCommand extends AbstractCommand {
 						replyPattern.guildId = 0;
 					}
 					CReplyPattern.update(replyPattern);
+					bot.reloadAutoReplies();
 					return Template.get("command_autoreply_guild_saved", args[2]);
 				case "response":
 				case "reply":
 					replyPattern.reply = EmojiParser.parseToAliases(restOfArgs);
 					CReplyPattern.update(replyPattern);
+					bot.reloadAutoReplies();
 					return Template.get("command_autoreply_response_saved");
 				case "tag":
 					replyPattern.tag = args[2];
 					CReplyPattern.update(replyPattern);
+					bot.reloadAutoReplies();
 					return Template.get("command_autoreply_tag_saved");
 				case "cd":
 				case "cooldown":
-					replyPattern.cooldown = Long.parseLong(args[2]);
+					replyPattern.cooldown = Math.max(TimeUnit.MINUTES.toMillis(1), Long.parseLong(args[2]));
 					CReplyPattern.update(replyPattern);
+					bot.reloadAutoReplies();
 					return Template.get("command_autoreply_cooldown_saved");
 				case "test":
 					Pattern pattern = Pattern.compile(replyPattern.pattern);

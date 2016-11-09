@@ -1,5 +1,6 @@
 package discordbot.main;
 
+import discordbot.db.controllers.CGuild;
 import discordbot.event.JDAEvents;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.SettingActiveChannels;
@@ -178,16 +179,48 @@ public class DiscordBot {
 		defaultChannels.clear();
 		musicChannels.clear();
 		chatBotHandler = new ChatBotHandler();
+	}
+	public void reloadAutoReplies(){
 		autoReplyhandler.reload();
 	}
 
-	public void reloadGuild(Guild guild) {
+	/**
+	 * Clears the cached channels for a guild
+	 *
+	 * @param guild the guild to clear for
+	 */
+	public void clearChannels(Guild guild) {
 		defaultChannels.remove(guild);
 		musicChannels.remove(guild);
 	}
 
+	/**
+	 * Remove all cached objects for a guild
+	 *
+	 * @param guild the guild to clear
+	 */
+	public void clearGuildData(Guild guild) {
+		defaultChannels.remove(guild);
+		musicChannels.remove(guild);
+		GuildSettings.remove(guild);
+		Template.removeGuild(CGuild.getCachedId(guild.getId()));
+		autoReplyhandler.removeGuild(guild.getId());
+		MusicPlayerHandler.removeGuild(guild);
+	}
+
+	/**
+	 * load data for a guild
+	 *
+	 * @param guild guild to load for
+	 */
+	public void loadGuild(Guild guild) {
+		int cachedId = CGuild.getCachedId(guild.getId());
+		Template.initialize(cachedId);
+		CommandHandler.loadCustomCommands(cachedId);
+	}
+
 	private void registerHandlers() {
-		security = new SecurityHandler(this);
+		security = new SecurityHandler();
 		gameHandler = new GameHandler(this);
 		out = new OutgoingContentHandler(this);
 		timer = new Timer();

@@ -1,13 +1,14 @@
 package discordbot.handler;
 
-import discordbot.db.model.OReplyPattern;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CReplyPattern;
+import discordbot.db.model.OReplyPattern;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.PrivateChannel;
 import net.dv8tion.jda.entities.TextChannel;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,14 +19,20 @@ import java.util.regex.Pattern;
  * Handles the automatic responses to messages
  */
 public class AutoReplyHandler {
+	private final Map<String, Long[]> cooldowns;
 	private DiscordBot bot;
-	private AutoReply[] replies;
-	private volatile Map<String, Long[]> cooldowns;
+	private volatile AutoReply[] replies;
 
 	public AutoReplyHandler(DiscordBot bot) {
 		this.bot = bot;
 		cooldowns = new ConcurrentHashMap<>();
 		reload();
+	}
+
+	public void removeGuild(String discordGuildId) {
+		if (cooldowns.containsKey(discordGuildId)) {
+			cooldowns.remove(discordGuildId);
+		}
 	}
 
 	public boolean autoReplied(Message message) {
@@ -52,7 +59,6 @@ public class AutoReplyHandler {
 				}
 			}
 		}
-
 		return false;
 	}
 
@@ -60,7 +66,7 @@ public class AutoReplyHandler {
 		if (!cooldowns.containsKey(guildId)) {
 			cooldowns.put(guildId, new Long[replies.length]);
 		}
-		if (cooldowns.get(guildId)[index] == null) {
+		if (index >= cooldowns.get(guildId).length || cooldowns.get(guildId)[index] == null) {
 			return 0;
 		}
 		return cooldowns.get(guildId)[index];
@@ -69,6 +75,9 @@ public class AutoReplyHandler {
 	private void saveCooldown(String guildId, int index, long value) {
 		if (!cooldowns.containsKey(guildId)) {
 			cooldowns.put(guildId, new Long[replies.length]);
+		}
+		if (cooldowns.get(guildId).length != replies.length) {
+			cooldowns.put(guildId, Arrays.copyOf(cooldowns.get(guildId), replies.length));
 		}
 		cooldowns.get(guildId)[index] = value;
 	}

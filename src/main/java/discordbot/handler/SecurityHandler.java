@@ -6,7 +6,7 @@ import discordbot.db.controllers.CUser;
 import discordbot.db.controllers.CUserRank;
 import discordbot.db.model.OGuild;
 import discordbot.db.model.OUserRank;
-import discordbot.main.DiscordBot;
+import discordbot.main.Config;
 import discordbot.permission.SimpleRank;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Guild;
@@ -25,19 +25,16 @@ import java.util.stream.Collectors;
 public class SecurityHandler {
 	private static HashSet<String> bannedGuilds;
 	private static HashSet<String> bannedUsers;
-	private static HashSet<String> contributers;
+	private static HashSet<String> contributors;
 	private static HashSet<String> botAdmins;
-	private final DiscordBot discordBot;
 
-	public SecurityHandler(DiscordBot discordBot) {
-
-		this.discordBot = discordBot;
+	public SecurityHandler() {
 	}
 
 	public static synchronized void initialize() {
 		bannedGuilds = new HashSet<>();
 		bannedUsers = new HashSet<>();
-		contributers = new HashSet<>();
+		contributors = new HashSet<>();
 		botAdmins = new HashSet<>();
 
 		List<OGuild> bannedList = CGuild.getBannedGuilds();
@@ -45,7 +42,7 @@ public class SecurityHandler {
 
 		List<OUserRank> contributor = CUserRank.getUsersWith(CRank.findBy("CONTRIBUTOR").id);
 		List<OUserRank> bot_admin = CUserRank.getUsersWith(CRank.findBy("BOT_ADMIN").id);
-		contributers.addAll(contributor.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
+		contributors.addAll(contributor.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
 		botAdmins.addAll(bot_admin.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
 	}
 
@@ -69,7 +66,7 @@ public class SecurityHandler {
 	}
 
 	public SimpleRank getSimpleRankForGuild(User user, Guild guild) {
-		if (discordBot.isCreator(user)) {
+		if (user.getId().equals(Config.CREATOR_ID)) {
 			return SimpleRank.CREATOR;
 		}
 		if (guild == null && user.isBot()) {
@@ -78,7 +75,7 @@ public class SecurityHandler {
 		if (botAdmins.contains(user.getId())) {
 			return SimpleRank.BOT_ADMIN;
 		}
-		if (contributers.contains(user.getId())) {
+		if (contributors.contains(user.getId())) {
 			return SimpleRank.CONTRIBUTOR;
 		}
 		if (bannedUsers.contains(user.getId())) {

@@ -80,6 +80,12 @@ public class MusicPlayerHandler {
 		activePlayListId = playlist.id;
 	}
 
+	public static void removeGuild(Guild guild) {
+		if (playerInstances.containsKey(guild)) {
+			playerInstances.remove(guild);
+		}
+	}
+
 	public static MusicPlayerHandler getFor(Guild guild, DiscordBot bot) {
 		if (playerInstances.containsKey(guild)) {
 			return playerInstances.get(guild);
