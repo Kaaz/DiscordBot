@@ -3,13 +3,14 @@ package discordbot.command.fun;
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.OTag;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CTag;
 import discordbot.db.controllers.CUser;
+import discordbot.db.model.OTag;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
@@ -66,6 +67,7 @@ public class TagCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
+		SimpleRank rank = bot.security.getSimpleRank(author, channel);
 		if (args.length == 0 || args[0].equals("list")) {
 			List<OTag> tags = CTag.getTagsFor(guild.getId());
 			if (tags.isEmpty()) {
@@ -82,7 +84,7 @@ public class TagCommand extends AbstractCommand {
 		if (args.length == 2 && args[0].equalsIgnoreCase("delete")) {
 			OTag tag = CTag.findBy(guild.getId(), args[1]);
 			if (tag.id > 0) {
-				if (!bot.isAdmin(channel, author) && CUser.getCachedId(author.getId()) != tag.userId) {
+				if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && CUser.getCachedId(author.getId()) != tag.userId) {
 					return Template.get("command_tag_only_delete_own");
 				}
 				CTag.delete(tag);

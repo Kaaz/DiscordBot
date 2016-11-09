@@ -8,6 +8,7 @@ import discordbot.handler.CommandHandler;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.MessageChannel;
@@ -75,7 +76,8 @@ public class CustomCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (!bot.isAdmin(channel, author)) {
+		SimpleRank rank = bot.security.getSimpleRank(author, channel);
+		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			return Template.get("permission_denied");
 		}
 		int guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());

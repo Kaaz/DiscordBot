@@ -62,37 +62,7 @@ public class DiscordBot {
 	public boolean isReady() {
 		return isReady;
 	}
-
-	/**
-	 * Shortcut to check if a user is an administrator
-	 *
-	 * @param channel channel to check for
-	 * @param user    the user to check
-	 * @return is the user an admin?
-	 */
-	public boolean isAdmin(MessageChannel channel, User user) {
-		if (!(channel == null || channel instanceof PrivateChannel))
-			if (isCreator(user) || ((TextChannel) channel).checkPermission(user, Permission.ADMINISTRATOR)) return true;
-		return false;
-	}
-
-	/**
-	 * check if a user is the owner of a guild or isCreator
-	 *
-	 * @param channel the channel
-	 * @param user    the user to check
-	 * @return user is owner
-	 */
-	public boolean isOwner(MessageChannel channel, User user) {
-		if (channel instanceof PrivateChannel) {
-			return isCreator(user);
-		}
-		if (channel instanceof TextChannel) {
-			return ((TextChannel) channel).getGuild().getOwner().equals(user) || isCreator(user);
-		}
-		return isCreator(user);
-	}
-
+	
 	/**
 	 * checks if user is creator
 	 *
@@ -180,7 +150,8 @@ public class DiscordBot {
 		musicChannels.clear();
 		chatBotHandler = new ChatBotHandler();
 	}
-	public void reloadAutoReplies(){
+
+	public void reloadAutoReplies() {
 		autoReplyhandler.reload();
 	}
 

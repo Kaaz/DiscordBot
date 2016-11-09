@@ -3,6 +3,7 @@ package discordbot.command.administrative;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
@@ -38,7 +39,8 @@ public class PMCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (!bot.isOwner(channel, author) && !bot.isAdmin(channel, author)) {
+		SimpleRank rank = bot.security.getSimpleRank(author, channel);
+		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			return Template.get("command_no_permission");
 		}
 		if (args.length > 1) {

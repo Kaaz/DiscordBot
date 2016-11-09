@@ -5,6 +5,7 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.role.RoleRankings;
 import net.dv8tion.jda.entities.*;
 
@@ -57,7 +58,8 @@ public class RoleCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
-		if (!bot.isOwner(channel, author)) {
+		SimpleRank rank = bot.security.getSimpleRank(author, channel);
+		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			return Template.get("command_no_permission");
 		}
 		if (args.length == 0 || args[0].equals("list")) {
