@@ -8,10 +8,13 @@ import discordbot.modules.reddit.RedditScraper;
 import discordbot.modules.reddit.pojo.Image;
 import discordbot.modules.reddit.pojo.ImagePreview;
 import discordbot.modules.reddit.pojo.Post;
+import net.dv8tion.jda.MessageBuilder;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import javax.imageio.ImageIO;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -23,7 +26,7 @@ import java.util.*;
  */
 public class RedditCommand extends AbstractCommand {
 
-	private static final Set<String> whitelistedDomains = new HashSet<String>(Arrays.asList(new String[]{
+	private static final Set<String> whitelistedDomains = new HashSet<>(Arrays.asList(new String[]{
 			"imgur.com",
 			"i.imgur.com",
 			"i.redd.it",
@@ -89,8 +92,9 @@ public class RedditCommand extends AbstractCommand {
 		if (preview.images.size() > 0) {
 			for (Image image : preview.images) {
 				try (InputStream in = new URL(StringEscapeUtils.unescapeHtml4(image.source.url)).openStream()) {
-//					PermissionUtil
-//					channel.sendFileAsync(ImageIO.read(in), post.data.id + ".jpg" + post.data.title, null);
+					File outputfile = new File("tmp_" + channel.getId() + ".jpg");
+					ImageIO.write(ImageIO.read(in), "jpg", outputfile);
+					channel.sendFileAsync(outputfile, new MessageBuilder().appendString(post.data.title).build(), message -> outputfile.delete());
 					return "";
 				} catch (IOException e) {
 					e.printStackTrace();
