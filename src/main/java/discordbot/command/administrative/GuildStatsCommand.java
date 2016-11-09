@@ -1,6 +1,5 @@
 package discordbot.command.administrative;
 
-import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.Config;
@@ -66,7 +65,7 @@ public class GuildStatsCommand extends AbstractCommand {
 		SimpleRank userrank = bot.security.getSimpleRank(author, channel);
 		switch (args[0].toLowerCase()) {
 			case "music":
-				return getPlayingOn(bot, userrank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 2 && args[1].equalsIgnoreCase("guilds"));
+				return getPlayingOn(bot, userrank.isAtLeast(SimpleRank.BOT_ADMIN) || (args.length >= 2 && args[1].equalsIgnoreCase("guilds")));
 			case "users":
 				if (!(channel instanceof TextChannel)) {
 					return Template.get("command_invalid_use");
@@ -112,11 +111,17 @@ public class GuildStatsCommand extends AbstractCommand {
 	private String getPlayingOn(DiscordBot bot, boolean showGuildnames) {
 		int activeVoice = 0;
 		ArrayList<String> guildnames = new ArrayList<>();
+		int totUsersInVoice = 0, totUsersInGuilds = 0;
+		List<List<String>> body = new ArrayList<>();
 		for (DiscordBot discordBot : bot.getContainer().getShards()) {
 			for (Guild guild : discordBot.client.getGuilds()) {
 				if (discordBot.client.getAudioManager(guild).isConnected()) {
 					activeVoice++;
-					guildnames.add(guild.getName() + " size[" + guild.getUsers().size() + "] channel[" + discordBot.client.getAudioManager(guild).getConnectedChannel().getUsers().size() + "]");
+					int guildUsersInVoice = discordBot.client.getAudioManager(guild).getConnectedChannel().getUsers().size() - 1;
+					int guildUsers = guild.getUsers().size();
+					body.add(Arrays.asList(guild.getName(), "" + guildUsers, "" + guildUsersInVoice));
+					totUsersInVoice += guildUsersInVoice;
+					totUsersInGuilds += guildUsers;
 				}
 			}
 		}
@@ -126,7 +131,10 @@ public class GuildStatsCommand extends AbstractCommand {
 		if (!showGuildnames) {
 			return Template.get("command_stats_playing_music_on", activeVoice);
 		}
-		return Template.get("command_stats_playing_music_on", activeVoice) + Config.EOL + Joiner.on(Config.EOL).join(guildnames);
+		return Template.get("command_stats_playing_music_on", activeVoice) + Config.EOL +
+				Misc.makeAsciiTable(Arrays.asList("Name", "users", "in voice"),
+						body,
+						Arrays.asList("TOTAL", "" + totUsersInGuilds, "" + totUsersInVoice));
 	}
 
 	private String getTotalTable(DiscordBot bot) {
