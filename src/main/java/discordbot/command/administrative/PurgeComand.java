@@ -70,13 +70,10 @@ public class PurgeComand extends AbstractCommand {
 			return Template.get("no_permission");
 		}
 		if (args.length >= 1) {
-			if (args[0].equals("commands")) {
+			if (args[0].equals("commands") || args[0].equals("command")) {
 				if (!hasManageMessages) {
 					Template.get("permission_missing_manage_messages");
 				}
-				bot.out.sendAsyncMessage(channel, Template.get("command_purge_success"), message -> {
-					bot.out.deleteMessage(message);
-				});
 				String cmdPrefix = DisUtil.getCommandPrefix(channel);
 				List<Message> retrieve = channel.getHistory().retrieve(200);
 				for (Message message : retrieve) {
@@ -88,6 +85,7 @@ public class PurgeComand extends AbstractCommand {
 						bot.out.deleteMessage(message);
 					}
 				}
+				bot.out.sendAsyncMessage(channel, Template.get("command_purge_success"), message -> bot.out.deleteMessage(message));
 				return "";
 			}
 			deleteAll = false;
