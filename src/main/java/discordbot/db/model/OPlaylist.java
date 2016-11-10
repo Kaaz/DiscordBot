@@ -11,7 +11,7 @@ public class OPlaylist extends AbstractModel {
 	public Timestamp createdOn = null;
 	public int guildId = 0;
 	private Visibility visibility = Visibility.GUILD;
-	private EditType editType = EditType.PUBLIC_ADD;
+	private EditType editType = EditType.PUBLIC_AUTO;
 
 	public boolean isGlobalList() {
 		return id > 0 && ownerId == 0 && guildId == 0;
