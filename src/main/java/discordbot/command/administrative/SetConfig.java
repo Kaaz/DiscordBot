@@ -48,7 +48,7 @@ public class SetConfig extends AbstractCommand {
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"setting"
+				"setting", "cfg"
 		};
 	}
 
@@ -106,10 +106,6 @@ public class SetConfig extends AbstractCommand {
 						data, null);
 				return ret;
 			} else {
-				if (args[0].equalsIgnoreCase("autoupdate")) {
-					Config.BOT_AUTO_UPDATE = Boolean.parseBoolean(args[1]);
-					return "AutoUpdate set to " + Config.BOT_AUTO_UPDATE;
-				}
 				if (!DefaultGuildSettings.isValidKey(args[0])) {
 					return Template.get("command_config_key_not_exists");
 				}

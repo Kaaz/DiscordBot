@@ -177,7 +177,7 @@ public class CommandHandler {
 			long now = System.currentTimeMillis() / 1000L;
 			ICommandCooldown cd = (ICommandCooldown) command;
 			String targetId;
-			switch (cd.getCooldownScale()) {
+			switch (cd.getScope()) {
 				case USER:
 					targetId = author.getId();
 					break;
@@ -197,12 +197,12 @@ public class CommandHandler {
 					targetId = "";
 					break;
 			}
-			OCommandCooldown cooldown = CCommandCooldown.findBy(command.getCommand(), targetId, cd.getCooldownScale().getId());
+			OCommandCooldown cooldown = CCommandCooldown.findBy(command.getCommand(), targetId, cd.getScope().getId());
 			if (cooldown.lastTime + cd.getCooldownDuration() <= now) {
 
 				cooldown.command = command.getCommand();
 				cooldown.targetId = targetId;
-				cooldown.targetType = cd.getCooldownScale().getId();
+				cooldown.targetType = cd.getScope().getId();
 				cooldown.lastTime = now;
 				CCommandCooldown.insertOrUpdate(cooldown);
 				return 0;

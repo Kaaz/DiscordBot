@@ -158,16 +158,19 @@ public class JDAEvents extends ListenerAdapter {
 			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getUsername(), user.getDiscriminator(), guild.getName()));
 		}
 		if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
-			discordBot.out.sendAsyncMessage(discordBot.getDefaultChannel(guild), Template.get("welcome_new_user", user.getAsMention()), message -> {
-				discordBot.timer.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						if (message != null) {
-							message.deleteMessage();
-						}
-					}
-				}, Config.DELETE_MESSAGES_AFTER * 5);
-			});
+			TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
+			defaultChannel.sendMessageAsync(
+					Template.getWithTags(defaultChannel, "welcome_new_user", user),
+					message ->
+							discordBot.timer.schedule(new TimerTask() {
+								@Override
+								public void run() {
+									if (message != null) {
+										message.deleteMessage();
+									}
+								}
+							}, Config.DELETE_MESSAGES_AFTER * 5)
+			);
 		}
 		Launcher.log("user joins guild", "guild", "member-join",
 				"guild-id", guild.getId(),
@@ -188,16 +191,19 @@ public class JDAEvents extends ListenerAdapter {
 			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** left the guild **%s**", user.getUsername(), user.getDiscriminator(), guild.getName()));
 		}
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingWelcomeNewUsers.class))) {
-			discordBot.out.sendAsyncMessage(guild.getTextChannels().get(0), Template.get("message_user_leaves", user.getUsername()), message -> {
-				discordBot.timer.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						if (message != null) {
-							message.deleteMessage();
-						}
-					}
-				}, Config.DELETE_MESSAGES_AFTER);
-			});
+			TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
+			defaultChannel.sendMessageAsync(
+					Template.getWithTags(defaultChannel, "message_user_leaves", user),
+					message ->
+							discordBot.timer.schedule(new TimerTask() {
+								@Override
+								public void run() {
+									if (message != null) {
+										message.deleteMessage();
+									}
+								}
+							}, Config.DELETE_MESSAGES_AFTER * 5)
+			);
 		}
 		Launcher.log("user leaves guild", "guild", "member-leave",
 				"guild-id", guild.getId(),

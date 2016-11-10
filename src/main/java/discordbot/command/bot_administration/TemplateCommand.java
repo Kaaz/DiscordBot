@@ -38,10 +38,31 @@ public class TemplateCommand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"template list <page>                 //lists all keyphrases",
-				"template list <contains>     		  //lists all options for keyphrase",
-				"template remove <keyphrase> <index>  //removes selected template for keyphrase",
-				"template add <keyphrase> <text...>   //adds a template for keyphrase"};
+				"template <keyphrase>                  //shows all templates for a keyphrase",
+				"template add <keyphrase> <text...>    //adds a template for keyphrase",
+				"template search <contains>            //searches for keyphrases matching part of the <contains>",
+				"template list <page>                  //lists all keyphrases",
+				"template remove <keyphrase> <index>   //removes selected template for keyphrase",
+				"",
+				"There are a few keywords you can utilize in templates. These keywords will be replaced by its value ",
+				"",
+				"Key                Replacement",
+				"---                ---",
+				"%user%             Username ",
+				"%user-mention%     Mentions user ",
+				"%user-id%          ID of user",
+				"%nick%             Nickname",
+				"%discrim%          discrim",
+				"%guild%            Guild name",
+				"%guild-id%         guild id",
+				"%guild-users%      amount of users in the guild",
+				"%channel%          channel name",
+				"%channel-id%       channel id",
+				"%channel-mention%  Mentions channel",
+				"%rand-user%        random user in guild",
+				"%rand-user-online% random ONLINE user in guild"
+
+		};
 	}
 
 	@Override
@@ -106,6 +127,7 @@ public class TemplateCommand extends AbstractCommand {
 				}
 				return Template.get(channel, "command_template_delete_failed");
 			case "list":
+			case "search":
 				int currentPage = 0;
 				int itemsPerPage = 30;
 				int maxPage = 1 + Template.uniquePhraseCount() / itemsPerPage;

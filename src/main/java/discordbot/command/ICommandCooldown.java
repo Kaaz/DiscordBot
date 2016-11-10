@@ -15,7 +15,7 @@ public interface ICommandCooldown {
 	/**
 	 * cooldown on what scale?
 	 *
-	 * @return scale of the cooldown
+	 * @return scope of the cooldown
 	 */
-	CooldownScale getCooldownScale();
+	CooldownScope getScope();
 }

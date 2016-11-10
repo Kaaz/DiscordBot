@@ -6,7 +6,9 @@ import discordbot.db.WebDb;
 import discordbot.db.controllers.CBotEvent;
 import discordbot.db.controllers.CGuild;
 import discordbot.main.Config;
+import discordbot.util.DisUtil;
 import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,6 +50,10 @@ public class Template {
 
 	public static String get(MessageChannel channel, String keyPhrase) {
 		return get(CGuild.getCachedId(channel), keyPhrase);
+	}
+
+	public static String getWithTags(MessageChannel channel, String keyphrase, User user) {
+		return DisUtil.replaceTags(get(channel, keyphrase), user, channel);
 	}
 
 	public static String get(int guildId, String keyPhrase) {

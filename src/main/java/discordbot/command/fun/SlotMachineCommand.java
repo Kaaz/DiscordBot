@@ -1,6 +1,6 @@
 package discordbot.command.fun;
 
-import discordbot.command.CooldownScale;
+import discordbot.command.CooldownScope;
 import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
 import discordbot.games.SlotMachine;
@@ -30,8 +30,8 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 	}
 
 	@Override
-	public CooldownScale getCooldownScale() {
-		return CooldownScale.USER;
+	public CooldownScope getScope() {
+		return CooldownScope.USER;
 	}
 
 	@Override

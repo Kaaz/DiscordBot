@@ -1,6 +1,6 @@
 package discordbot.command.informative;
 
-import discordbot.command.CooldownScale;
+import discordbot.command.CooldownScope;
 import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.CommandHandler;
@@ -37,8 +37,8 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 	}
 
 	@Override
-	public CooldownScale getCooldownScale() {
-		return CooldownScale.CHANNEL;
+	public CooldownScope getScope() {
+		return CooldownScope.CHANNEL;
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
 public class PollCommand extends AbstractCommand {
-	private static final int MAX_DURATION_IN_MINUTES = 10;
+	private static final int MAX_DURATION_IN_MINUTES = 30;
 
 	public PollCommand() {
 		super();
@@ -73,7 +73,7 @@ public class PollCommand extends AbstractCommand {
 			}
 			int minutes = Integer.parseInt(split[1]);
 			if (minutes <= 0 || minutes > MAX_DURATION_IN_MINUTES) {
-				return Template.get("command_poll_time_out_of_range");
+				return Template.get("command_poll_time_out_of_range", 1, MAX_DURATION_IN_MINUTES);
 			}
 
 		}
