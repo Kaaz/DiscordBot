@@ -85,7 +85,12 @@ public class CommandHandler {
 			AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
 			long cooldown = getCommandCooldown(command, author, channel);
 			if (hasRightVisibility(channel, command.getVisibility()) && cooldown <= 0) {
-				String commandOutput = command.execute(bot, args, channel, author);
+				String commandOutput;
+				if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
+					commandOutput = commands.get("help").execute(bot, new String[]{input[0]}, channel, author);
+				} else {
+					commandOutput = command.execute(bot, args, channel, author);
+				}
 				if (!commandOutput.isEmpty()) {
 					outMsg = commandOutput;
 				}
