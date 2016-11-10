@@ -110,7 +110,6 @@ public class GuildStatsCommand extends AbstractCommand {
 
 	private String getPlayingOn(DiscordBot bot, boolean showGuildnames) {
 		int activeVoice = 0;
-		ArrayList<String> guildnames = new ArrayList<>();
 		int totUsersInVoice = 0, totUsersInGuilds = 0;
 		List<List<String>> body = new ArrayList<>();
 		for (DiscordBot discordBot : bot.getContainer().getShards()) {
@@ -119,7 +118,7 @@ public class GuildStatsCommand extends AbstractCommand {
 					activeVoice++;
 					int guildUsersInVoice = discordBot.client.getAudioManager(guild).getConnectedChannel().getUsers().size() - 1;
 					int guildUsers = guild.getUsers().size();
-					body.add(Arrays.asList(guild.getName(), "" + guildUsers, "" + guildUsersInVoice));
+					body.add(Arrays.asList(guild.getId(), guild.getName(), "" + guildUsers, "" + guildUsersInVoice));
 					totUsersInVoice += guildUsersInVoice;
 					totUsersInGuilds += guildUsers;
 				}
@@ -132,9 +131,9 @@ public class GuildStatsCommand extends AbstractCommand {
 			return Template.get("command_stats_playing_music_on", activeVoice);
 		}
 		return Template.get("command_stats_playing_music_on", activeVoice) + Config.EOL +
-				Misc.makeAsciiTable(Arrays.asList("Name", "users", "in voice"),
+				Misc.makeAsciiTable(Arrays.asList("Discord Id", "Name", "users", "in voice"),
 						body,
-						activeVoice > 1 ? Arrays.asList("TOTAL", "" + totUsersInGuilds, "" + totUsersInVoice) : null);
+						activeVoice > 1 ? Arrays.asList("-", "TOTAL", "" + totUsersInGuilds, "" + totUsersInVoice) : null);
 	}
 
 	private String getTotalTable(DiscordBot bot) {
@@ -154,7 +153,7 @@ public class GuildStatsCommand extends AbstractCommand {
 					activeVoice++;
 				}
 			}
-			double requestPerSec = ((double) requests) / ((double) (System.currentTimeMillis() / 1000D - bot.startupTimeStamp));
+			double requestPerSec = ((double) requests) / (System.currentTimeMillis() / 1000D - bot.startupTimeStamp);
 			totRequestPerSec += requestPerSec;
 			totGuilds += numGuilds;
 			totUsers += users;

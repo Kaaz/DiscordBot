@@ -4,7 +4,8 @@ package discordbot.main;
 import com.wezinkhof.configuration.ConfigurationOption;
 
 public class Config {
-
+	
+	public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36";
 	//bot enabled? must be set to true in order to run
 	@ConfigurationOption
 	public static boolean BOT_ENABLED = false;
