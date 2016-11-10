@@ -49,7 +49,7 @@ public class FMLCommand extends AbstractCommand {
 			if (document != null) {
 				Elements fmls = document.select(".fmllink");
 				if (!fmls.isEmpty()) {
-					String fmylife = fmls.get(0).toString();
+					String fmylife = fmls.get(0).toString().replaceAll("<.*?>", "").replaceAll("&.*?;", "");
 					return StringEscapeUtils.unescapeHtml4(fmylife);
 				}
 			}
