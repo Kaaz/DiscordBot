@@ -163,6 +163,28 @@ public class CPlaylist {
 		return false;
 	}
 
+	/**
+	 * checks if music is present in a playlist
+	 *
+	 * @param playlistId the playlist to check
+	 * @param musicId    id of the music record
+	 * @return found music in list?
+	 */
+	public static boolean isInPlaylist(int playlistId, int musicId) {
+		boolean isInList = false;
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT * FROM playlist_item WHERE playlist_id = ? AND music_id = ?",
+				playlistId, musicId)) {
+			if (rs.next()) {
+				isInList = true;
+			}
+			rs.getStatement().close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isInList;
+	}
+
 	public static boolean removeFromPlayList(int playlistId, int musicId) {
 		try {
 			WebDb.get().query(

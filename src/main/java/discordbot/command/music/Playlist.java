@@ -136,8 +136,11 @@ public class Playlist extends AbstractCommand {
 						player.setActivePlayListId(playlist.id);
 						return Template.get(channel, "music_playlist_changed", playlist.title);
 					case "add":
+					case "+":
 						isAdding = true;
 					case "remove":
+					case "del":
+					case "-":
 						if (playlist.isGlobalList()) {
 							return Template.get(channel, "playlist_global_readonly");
 						}
@@ -155,10 +158,12 @@ public class Playlist extends AbstractCommand {
 							case PUBLIC_AUTO:
 								if (isAdding) {
 									CPlaylist.addToPlayList(playlist.id, nowPlayingId);
+									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle);
 								} else {
 									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
+									return Template.get(channel, "playlist_music_added_auto");
 								}
-								return Template.get(channel, "playlist_music_added_auto");
+
 							case PUBLIC_FULL:
 								if (!isAdding) {
 									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
@@ -172,16 +177,22 @@ public class Playlist extends AbstractCommand {
 									}
 									return Template.get(channel, "no_permission");
 								}
+								if (CPlaylist.isInPlaylist(playlist.id, nowPlayingId)) {
+									return Template.get(channel, "playlist_music_already_added", musicRec.youtubeTitle, playlist.title);
+								}
 								CPlaylist.addToPlayList(playlist.id, nowPlayingId);
 								return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle, playlist.title);
 							case PRIVATE:
 								if (playlist.isGuildList() && playlist.guildId != CGuild.getCachedId(guild.getId())) {
 									return Template.get(channel, "no_permission");
 								}
-								if (isAdding) {
+								if (!isAdding) {
 									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
 									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
 								} else {
+									if (CPlaylist.isInPlaylist(playlist.id, nowPlayingId)) {
+										return Template.get(channel, "playlist_music_already_added", musicRec.youtubeTitle, playlist.title);
+									}
 									CPlaylist.addToPlayList(playlist.id, nowPlayingId);
 									return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle, playlist.title);
 								}
