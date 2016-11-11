@@ -124,7 +124,7 @@ public class GithubService extends AbstractService {
 				first = false;
 				ret = ":arrow_up: `" + sha.substring(0, 7) + "` " + timeString + ":pencil: `" + line + "`" + Config.EOL;
 			} else {
-				ret += ":arrow_upper_right: `.......` " + timeString + ":page_facing_up: `" + line + "`" + Config.EOL;
+				ret += ":arrow_upper_right: `.......` " + timeString + ":speech_balloon: `" + line + "`" + Config.EOL;
 			}
 		}
 		return ret;

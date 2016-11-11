@@ -18,6 +18,7 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.main.GuildCheckResult;
 import discordbot.main.Launcher;
 import discordbot.role.RoleRankings;
 import net.dv8tion.jda.MessageHistory;
@@ -80,11 +81,27 @@ public class JDAEvents extends ListenerAdapter {
 		}
 		discordBot.loadGuild(guild);
 		String cmdPre = GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
+		GuildCheckResult guildCheck = discordBot.security.checkGuild(guild);
 		if (server.active != 1) {
 			String message = "Thanks for adding me to your guild!" + Config.EOL +
 					"To see what I can do you can type the command `" + cmdPre + "help`." + Config.EOL +
 					"Most of my features are opt-in, which means that you'll have to enable them first. Admins can use `" + cmdPre + "config` to change my settings." + Config.EOL +
 					"If you need help or would like to give feedback, feel free to let me know on either `" + cmdPre + "discord` or `" + cmdPre + "github`";
+			switch (guildCheck) {
+				case TEST_GUILD:
+					message = Config.EOL + " :warning: The guild has been categorized as a test guild. This means that I will in about a day or when the next cleanup happens." + Config.EOL +
+							"If this is not a test guild feel free to join my `" + cmdPre + "discord` and ask to have your guild added to the whitelist!";
+					break;
+				case BOT_GUILD:
+					message = ":warning: :robot: Too many bots here, I'm leaving! " + Config.EOL +
+							"If your guild is not a collection of bots and you actually plan on using me join my `" + cmdPre + "discord` and ask to have your guild added to the whitelist!";
+					break;
+				case SMALL:
+				case OWNER_TOO_NEW:
+				case OKE:
+				default:
+					break;
+			}
 			TextChannel outChannel = null;
 			for (TextChannel channel : guild.getTextChannels()) {
 				if (channel.checkPermission(event.getJDA().getSelfInfo(), Permission.MESSAGE_WRITE)) {
@@ -101,6 +118,9 @@ public class JDAEvents extends ListenerAdapter {
 				discordBot.out.sendAsyncMessage(outChannel, message, null);
 			} else {
 				discordBot.out.sendPrivateMessage(owner, message);
+			}
+			if (guildCheck.equals(GuildCheckResult.BOT_GUILD)) {
+				guild.getManager().leave();
 			}
 			server.active = 1;
 		}

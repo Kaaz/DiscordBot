@@ -230,11 +230,6 @@ public class DiscordBot {
 
 	}
 
-	public void skipCurrentSong(Guild guild) {
-		MusicPlayerHandler.getFor(guild, this).skipSong();
-	}
-
-
 	public void handlePrivateMessage(PrivateChannel channel, User author, Message message) {
 		if (CommandHandler.isCommand(null, message.getRawContent(), mentionMe)) {
 			CommandHandler.process(this, channel, author, message.getRawContent());
@@ -275,10 +270,6 @@ public class DiscordBot {
 
 	public float getVolume(Guild guild) {
 		return MusicPlayerHandler.getFor(guild, this).getVolume();
-	}
-
-	public int getCurrentlyPlayingSong(Guild guild) {
-		return MusicPlayerHandler.getFor(guild, this).getCurrentlyPlaying();
 	}
 
 	public void connectTo(VoiceChannel channel) {

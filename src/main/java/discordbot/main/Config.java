@@ -4,8 +4,16 @@ package discordbot.main;
 import com.wezinkhof.configuration.ConfigurationOption;
 
 public class Config {
-	
+
 	public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36";
+	//the bot/users ratio for guilds
+	public static final double GUILD_MAX_USER_BOT_RATIO = 0.75D;
+	//the minimum age of the guild owner's account in days
+	public static final long GUILD_OWNER_MIN_ACCOUNT_AGE = 7;
+	//if a guild has less users it will be marked as a test guild
+	public static final int GUILD_MIN_USERS = 5;
+	//the default time to delete messages after milliseconds
+	public static long DELETE_MESSAGES_AFTER = 120000;
 	//bot enabled? must be set to true in order to run
 	@ConfigurationOption
 	public static boolean BOT_ENABLED = false;
@@ -14,13 +22,13 @@ public class Config {
 	@ConfigurationOption
 	public static String BOT_ENV = "test";
 
+	//if you want to use graylog
 	@ConfigurationOption
 	public static boolean BOT_GRAYLOG_ACTIVE = false;
 	@ConfigurationOption
 	public static String BOT_GRAYLOG_HOST = "10.120.34.139";
 	@ConfigurationOption
 	public static int BOT_GRAYLOG_PORT = 12202;
-
 
 	@ConfigurationOption
 	public static boolean BOT_AUTO_UPDATE = false;
@@ -29,7 +37,7 @@ public class Config {
 	public static boolean BOT_ON_BOT_ACTION = false;
 	//display name of the bot
 	@ConfigurationOption
-	public static String BOT_NAME = "NovaBot";
+	public static String BOT_NAME = "Emily";
 
 	//Bot's own discord server
 	@ConfigurationOption
@@ -158,6 +166,5 @@ public class Config {
 	public static String TRELLO_TOKEN = "token-here";
 
 	public static String EOL = System.getProperty("line.separator");
-	public static long DELETE_MESSAGES_AFTER = 120000;
 	public static String CREATOR_ID = "97433066384928768";
 }

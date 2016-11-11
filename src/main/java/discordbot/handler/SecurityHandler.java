@@ -7,14 +7,17 @@ import discordbot.db.controllers.CUserRank;
 import discordbot.db.model.OGuild;
 import discordbot.db.model.OUserRank;
 import discordbot.main.Config;
+import discordbot.main.GuildCheckResult;
 import discordbot.permission.SimpleRank;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.utils.MiscUtil;
 import net.dv8tion.jda.utils.PermissionUtil;
 
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,6 +66,34 @@ public class SecurityHandler {
 			return getSimpleRankForGuild(user, ((TextChannel) channel).getGuild());
 		}
 		return getSimpleRankForGuild(user, null);
+	}
+
+	/**
+	 * Try and figure out what type of guild it is
+	 *
+	 * @param guild the guild to check
+	 * @return what category the guild is labeled as
+	 */
+	public GuildCheckResult checkGuild(Guild guild) {
+
+		int bots = 0;
+		int users = 0;
+		if (MiscUtil.getCreationTime(guild.getOwner().getId()).isBefore(OffsetDateTime.now().minusDays(Config.GUILD_OWNER_MIN_ACCOUNT_AGE))) {
+			return GuildCheckResult.OWNER_TOO_NEW;
+		}
+		for (User user : guild.getUsers()) {
+			if (user.isBot()) {
+				bots++;
+			}
+			users++;
+		}
+		if ((double) bots / users > Config.GUILD_MAX_USER_BOT_RATIO) {
+			return GuildCheckResult.BOT_GUILD;
+		}
+		if (users < Config.GUILD_MIN_USERS) {
+			return GuildCheckResult.TEST_GUILD;
+		}
+		return GuildCheckResult.OKE;
 	}
 
 	public SimpleRank getSimpleRankForGuild(User user, Guild guild) {
