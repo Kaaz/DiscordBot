@@ -100,7 +100,7 @@ public class TicTacToeGame extends AbstractGame<TicGameTurn> {
 			game.append(TileState.X.getEmoticon()).append(" = ").append(getPlayer(0).getUsername()).append(Config.EOL);
 			game.append(TileState.O.getEmoticon()).append(" = ").append(getPlayer(1).getUsername()).append(Config.EOL);
 			game.append("It's the turn of ").append(getActivePlayer().getAsMention()).append(Config.EOL);
-			game.append("to play type **game <number>**");
+			game.append("to play type **").append(getLastPrefix()).append("game <number>**");
 		}
 		if (getGameState().equals(GameState.OVER)) {
 			if (getWinnerIndex() == getTotalPlayers()) {

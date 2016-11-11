@@ -40,7 +40,60 @@ public class ConnectFourGame extends AbstractGame<Connect4Turn> {
 
 	@Override
 	protected boolean isTheGameOver() {
-		return false;
+
+		for (int j = 0; j < ROWS - 3; j++) {
+			for (int i = 0; i < COLS; i++) {
+				if (this.board.getValue(i, j) == getActivePlayerIndex() &&
+						this.board.getValue(i, j + 1) == getActivePlayerIndex() &&
+						this.board.getValue(i, j + 2) == getActivePlayerIndex() &&
+						this.board.getValue(i, j + 3) == getActivePlayerIndex()) {
+					setWinner(getActivePlayerIndex());
+					return true;
+				}
+			}
+		}
+		// verticalCheck
+		for (int i = 0; i < COLS - 3; i++) {
+			for (int j = 0; j < ROWS; j++) {
+				if (this.board.getValue(i, j) == getActivePlayerIndex() &&
+						this.board.getValue(i + 1, j) == getActivePlayerIndex() &&
+						this.board.getValue(i + 2, j) == getActivePlayerIndex() &&
+						this.board.getValue(i + 3, j) == getActivePlayerIndex()) {
+					setWinner(getActivePlayerIndex());
+					return true;
+				}
+			}
+		}
+		// ascendingDiagonalCheck
+		for (int i = 3; i < COLS; i++) {
+			for (int j = 0; j < ROWS - 3; j++) {
+				if (this.board.getValue(i, j) == getActivePlayerIndex() &&
+						this.board.getValue(i - 1, j + 1) == getActivePlayerIndex() &&
+						this.board.getValue(i - 2, j + 2) == getActivePlayerIndex() &&
+						this.board.getValue(i - 3, j + 3) == getActivePlayerIndex()) {
+					setWinner(getActivePlayerIndex());
+					return true;
+				}
+			}
+		}
+		// descendingDiagonalCheck
+		for (int i = 3; i < COLS; i++) {
+			for (int j = 3; j < ROWS; j++) {
+				if (this.board.getValue(i, j) == getActivePlayerIndex() &&
+						this.board.getValue(i - 1, j - 1) == getActivePlayerIndex() &&
+						this.board.getValue(i - 2, j - 2) == getActivePlayerIndex() &&
+						this.board.getValue(i - 3, j - 3) == getActivePlayerIndex()) {
+					setWinner(getActivePlayerIndex());
+					return true;
+				}
+			}
+		}
+		for (int i = 0; i < COLS; i++) {
+			if (board.canPlaceInColumn(i)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -69,7 +122,14 @@ public class ConnectFourGame extends AbstractGame<Connect4Turn> {
 			ret += board.intToPlayer(0) + " = " + getPlayer(0).getUsername() + Config.EOL;
 			ret += board.intToPlayer(1) + " = " + getPlayer(1).getUsername() + Config.EOL;
 			ret += "It's the turn of " + getActivePlayer().getAsMention() + Config.EOL;
-			ret += "to play type **game <columnnumber>**";
+			ret += "to play type **" + getLastPrefix() +"game <columnnumber>**";
+		}
+		if (getGameState().equals(GameState.OVER)) {
+			if (getWinnerIndex() == getTotalPlayers()) {
+				ret += "Its over! And its a draw!";
+			} else {
+				ret += "Its over! The winner is " + getPlayer(getWinnerIndex()).getAsMention();
+			}
 		}
 		return ret;
 	}

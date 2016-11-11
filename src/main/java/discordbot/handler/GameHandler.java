@@ -8,7 +8,6 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 import org.reflections.Reflections;
@@ -23,7 +22,6 @@ public class GameHandler {
 	private static final Map<String, Class<? extends AbstractGame>> gameClassMap = new HashMap<>();
 	private static final Map<String, AbstractGame> gameInfoMap = new HashMap<>();
 	private static boolean initialized = false;
-	private final Map<String, Message> lastMessage = new ConcurrentHashMap<>();
 	private final DiscordBot bot;
 	private Map<String, AbstractGame> playerGames = new ConcurrentHashMap<>();
 	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
@@ -107,12 +105,7 @@ public class GameHandler {
 			gameMessage = showList(channel);
 		}
 		if (!gameMessage.isEmpty()) {
-			Message msg = bot.out.sendMessage(channel, gameMessage);
-			if (lastMessage.containsKey(channel.getId())) {
-				Message msgToDelete = lastMessage.remove(channel.getId());
-				bot.out.deleteMessage(msgToDelete);
-			}
-			lastMessage.put(channel.getId(), msg);
+			bot.out.sendAsyncMessage(channel, gameMessage, null);
 		}
 	}
 
@@ -230,7 +223,7 @@ public class GameHandler {
 			} else if (args.length > 1 && DisUtil.isUserMention(args[1])) {
 				return createGamefromUserMention(player, args[1], args[0]);
 			}
-			return playTurn(player, args[0]);
+			return playTurn(player, args[0], channel);
 		}
 		if (isInAGame(player.getId())) {
 			return String.valueOf(getGame(player.getId()));
@@ -238,7 +231,7 @@ public class GameHandler {
 		return Template.get("playmode_not_in_game");
 	}
 
-	private String playTurn(User player, String input) {
+	private String playTurn(User player, String input, TextChannel channel) {
 		if (isInAGame(player.getId())) {
 			AbstractGame game = getGame(player.getId());
 			if (game == null) {
@@ -257,6 +250,7 @@ public class GameHandler {
 			if (!gameTurnInstance.parseInput(input)) {
 				return game.toString() + Config.EOL + ":exclamation: " + gameTurnInstance.getInputErrorMessage();
 			}
+			gameTurnInstance.setCommandPrefix(DisUtil.getCommandPrefix(channel));
 			if (!game.isValidMove(player, gameTurnInstance)) {
 				return game.toString() + Config.EOL + Template.get("playmode_not_a_valid_move");
 			}

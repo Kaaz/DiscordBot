@@ -64,7 +64,7 @@ public class GameOfSticks extends AbstractGame<GoSTurn> {
 		ret += Config.EOL + Config.EOL;
 		if (getGameState().equals(GameState.IN_PROGRESS) || getGameState().equals(GameState.READY)) {
 			ret += "It's the turn of " + getActivePlayer().getAsMention() + Config.EOL;
-			ret += "to play type **game 1-3**";
+			ret += "to play type **" + getLastPrefix() + "game 1-3**";
 		} else if (getGameState().equals(GameState.OVER)) {
 			ret += "Its over! The winner is " + getPlayer(getWinnerIndex()).getAsMention();
 		}

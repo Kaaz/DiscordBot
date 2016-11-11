@@ -8,8 +8,6 @@ import discordbot.core.AbstractCommand;
 import discordbot.db.WebDb;
 import discordbot.db.controllers.*;
 import discordbot.db.model.OCommandCooldown;
-import discordbot.guildsettings.defaults.SettingBotChannel;
-import discordbot.guildsettings.defaults.SettingCleanupMessages;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingShowUnknownCommands;
 import discordbot.main.Config;
@@ -142,18 +140,7 @@ public class CommandHandler {
 					"response", outMsg);
 		}
 		if (!outMsg.isEmpty()) {
-			bot.out.sendAsyncMessage(channel, outMsg, (message) -> {
-				if (shouldCleanUpMessages(channel)) {
-					bot.timer.schedule(new TimerTask() {
-						@Override
-						public void run() {
-							if (message != null) {
-								message.deleteMessage();
-							}
-						}
-					}, Config.DELETE_MESSAGES_AFTER);
-				}
-			});
+			bot.out.sendAsyncMessage(channel, outMsg);
 		}
 	}
 
@@ -210,17 +197,6 @@ public class CommandHandler {
 			return cooldown.lastTime + cd.getCooldownDuration() - now;
 		}
 		return 0;
-	}
-
-	private static boolean shouldCleanUpMessages(MessageChannel channel) {
-		String cleanupMethod = GuildSettings.getFor(channel, SettingCleanupMessages.class);
-		String myChannel = GuildSettings.getFor(channel, SettingBotChannel.class);
-		if ("yes".equals(cleanupMethod)) {
-			return true;
-		} else if ("nonstandard".equals(cleanupMethod) && !((TextChannel) channel).getName().equalsIgnoreCase(myChannel)) {
-			return true;
-		}
-		return false;
 	}
 
 	/**

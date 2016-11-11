@@ -10,6 +10,7 @@ import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.User;
 
+import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
@@ -33,6 +34,21 @@ public class OutgoingContentHandler {
 	 */
 	public void sendAsyncMessage(MessageChannel channel, String content, Consumer<Message> callback) {
 		channel.sendMessageAsync(content.substring(0, Math.min(1999, content.length())), callback);
+	}
+
+	public void sendAsyncMessage(MessageChannel channel, String content) {
+		channel.sendMessageAsync(content, (message) -> {
+			if (botInstance.shouldCleanUpMessages(channel)) {
+				botInstance.timer.schedule(new TimerTask() {
+					@Override
+					public void run() {
+						if (message != null) {
+							message.deleteMessage();
+						}
+					}
+				}, Config.DELETE_MESSAGES_AFTER);
+			}
+		});
 	}
 
 	public Message sendMessage(MessageChannel channel, String content) {

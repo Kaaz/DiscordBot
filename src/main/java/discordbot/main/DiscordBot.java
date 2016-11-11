@@ -3,10 +3,7 @@ package discordbot.main;
 import discordbot.db.controllers.CGuild;
 import discordbot.event.JDAEvents;
 import discordbot.guildsettings.DefaultGuildSettings;
-import discordbot.guildsettings.defaults.SettingActiveChannels;
-import discordbot.guildsettings.defaults.SettingAutoReplyModule;
-import discordbot.guildsettings.defaults.SettingBotChannel;
-import discordbot.guildsettings.defaults.SettingEnableChatBot;
+import discordbot.guildsettings.defaults.*;
 import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.handler.*;
 import discordbot.role.RoleRankings;
@@ -55,6 +52,23 @@ public class DiscordBot {
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 	}
 
+	/**
+	 * Should the bot clean up after itself in specified channel?
+	 *
+	 * @param channel the channel to check for
+	 * @return delete the message?
+	 */
+	public boolean shouldCleanUpMessages(MessageChannel channel) {
+		String cleanupMethod = GuildSettings.getFor(channel, SettingCleanupMessages.class);
+		String myChannel = GuildSettings.getFor(channel, SettingBotChannel.class);
+		if ("yes".equals(cleanupMethod)) {
+			return true;
+		} else if ("nonstandard".equals(cleanupMethod) && !((TextChannel) channel).getName().equalsIgnoreCase(myChannel)) {
+			return true;
+		}
+		return false;
+	}
+
 	public int getShardId() {
 		return shardId;
 	}
@@ -62,7 +76,7 @@ public class DiscordBot {
 	public boolean isReady() {
 		return isReady;
 	}
-	
+
 	/**
 	 * checks if user is creator
 	 *

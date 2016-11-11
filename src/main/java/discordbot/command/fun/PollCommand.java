@@ -51,7 +51,6 @@ public class PollCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-
 		if (args.length == 0) {
 			return "show overview";
 		}
@@ -75,8 +74,8 @@ public class PollCommand extends AbstractCommand {
 			if (minutes <= 0 || minutes > MAX_DURATION_IN_MINUTES) {
 				return Template.get("command_poll_time_out_of_range", 1, MAX_DURATION_IN_MINUTES);
 			}
-
 		}
-		return Template.get("command_not_implemented");
+//		return Template.get("command_not_implemented");
+		return "";
 	}
 }

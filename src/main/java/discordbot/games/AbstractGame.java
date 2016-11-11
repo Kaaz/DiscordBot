@@ -1,5 +1,6 @@
 package discordbot.games;
 
+import discordbot.main.Config;
 import net.dv8tion.jda.entities.User;
 
 import java.lang.reflect.InvocationTargetException;
@@ -11,6 +12,11 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	private User[] players;
 	private int activePlayerIndex = 0;
 	private int winnerIndex = -1;
+	private String lastPrefix = Config.BOT_COMMAND_PREFIX;
+
+	public String getLastPrefix() {
+		return lastPrefix;
+	}
 
 	/**
 	 * gets a short name of the game, this name is used as input to create a new game and as an identifier in the database
@@ -105,6 +111,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 		if (isTheGameOver()) {
 			gameState = GameState.OVER;
 		}
+		lastPrefix = turnInfo.getCommandPrefix();
 		endTurn();
 		return true;
 	}
