@@ -1,5 +1,6 @@
 package discordbot.service;
 
+import com.google.api.client.repackaged.com.google.common.base.Splitter;
 import discordbot.core.AbstractService;
 import discordbot.main.BotContainer;
 import discordbot.main.Config;
@@ -106,10 +107,26 @@ public class GithubService extends AbstractService {
 
 	private String commitOutputFormat(Long timestamp, String message, String committer, String sha) {
 		String timeString = "";
+		String ret = "";
 		long localtimestamp = timestamp + 1000 * 60 * 60 * 2;//+2hours cheat
 		if (System.currentTimeMillis() - localtimestamp > 1000 * 60 * 60 * 8) {//only when its 8h+
 			timeString = " :clock3: " + TimeUtil.getRelativeTime(localtimestamp / 1000L);
 		}
-		return ":arrow_up: `" + sha.substring(0, 7) + "` " + timeString + ":pencil: `" + message + "`" + Config.EOL;
+		Iterable<String> lines;
+		if (!message.contains("\n") && message.length() > 80) {
+			lines = Splitter.fixedLength(80).split(message);
+		} else {
+			lines = Arrays.asList(message.split("\\r?\\n", 0));
+		}
+		boolean first = true;
+		for (String line : lines) {
+			if (first) {
+				first = false;
+				ret = ":arrow_up: `" + sha.substring(0, 7) + "` " + timeString + ":pencil: `" + line + "`" + Config.EOL;
+			} else {
+				ret += ":arrow_upper_right: `.......` " + timeString + ":page_facing_up: `" + line + "`" + Config.EOL;
+			}
+		}
+		return ret;
 	}
 }
