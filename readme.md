@@ -33,14 +33,14 @@ Commands | | | | |
 --- | --- | ---| ---| ---
 [8ball](#8ball) | [autoreply](#autoreply) | [blackjack](#blackjack) | [catfact](#catfact) | [changename](#changename)
 [command](#command) | [config](#config) | [current](#current) | [exec](#exec) | [exit](#exit)
-[game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite)
-[join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild) | [mcstatus](#mcstatus)
-[ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm) | [profile](#profile)
-[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
-[role](#role) | [roll](#roll) | [rotate](#rotate) | [say](#say) | [sendfile](#sendfile)
-[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
-[tag](#tag) | [template](#template) | [user](#user) | [userrank](#userrank) | [version](#version)
-[volume](#volume) | 
+[fml](#fml) | [game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info)
+[invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild)
+[mcstatus](#mcstatus) | [pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist)
+[pm](#pm) | [prefix](#prefix) | [profile](#profile) | [purge](#purge) | [reboot](#reboot)
+[reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role) | [roll](#roll)
+[rotate](#rotate) | [say](#say) | [sendfile](#sendfile) | [skip](#skip) | [slot](#slot)
+[stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template)
+[user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -106,6 +106,7 @@ Key | Default | Description |
 --- | --- | ---|
 auto_reply | false | use the auto reply feature?<br/>Looks for patterns in messages and replies to them (with a cooldown)<br/>true -> enable auto replying to matched messages<br/>true -> disable auto replying
 bot_channel | general | Channel where the bots default output goes to
+bot_debug_templates | false | Show which templates are being used on places.<br/><br/>valid values: <br/>true       -> Shows the keyphrases being used <br/>false      -> Shows normal text <br/><br/>for instance if you don't have permission to access a command:<br/><br/>setting this to true would show:<br/>no_permission<br/><br/>false would show:<br/>You don't have permission to use that!
 bot_listen | all | What channels to listen to? (all;mine)<br/>all -> responds to all channels<br/>mine -> only responds to messages in configured channel
 bot_update_warning | playing | Show a warning that there is an update and that the bot will be updating soon.<br/>always  -> always show the message in the bot's configured default channel<br/>playing -> only announce when the bot is playing music and in the bot's configured music channel<br/>off     -> don't announce when the bot is going down for an update
 chat_bot_enabled | false | Chat with people
@@ -116,6 +117,7 @@ module_games | true | Let people play games against each other
 music_channel | music | Channel where the bots music-related output goes to
 music_channel_title | false | Updates the music channel's topic with the currently playing song<br/>true  -> yes change the topic at the beginning of every song<br/>false -> leave the channel topic title alone!
 music_playing_message | clear | Clear the now playing message?<br/>clear  -> sends a message and deletes it when the song is over or skipped<br/>normal -> send the message and just leave it be<br/>off    -> don't send now playing messages
+music_playlist_id | 0 | used to store the last used playlist 
 music_role_requirement | none | In order to use music commands you need this role!<br/>Setting this value to none will disable the requirement
 music_show_listeners | true | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
 music_volume | 10 | sets the default volume of the music player<br/>So the next time the bot connects it starts with this volume<br/><br/>Accepts a value between 0 and 100
@@ -125,7 +127,7 @@ use_economy | false | Use the economy feature?<br/>false -> nope!<br/>true -> ye
 user_time_ranks | false | This setting will require me to have the manage role permission!<br/>Users are given a role based on their time spend in the discord server<br/>If you'd like to use the time based ranks, be sure to check out the other settings first!<br/>Setting:  Use time based ranks?<br/>true  -> yes<br/>false -> no
 user_time_ranks_notify | no | Send a notification whenever a user goes up a rank?<br/>no      -> Don't notify anyone, stay silent!<br/>private -> send a private message to the user who ranked up<br/>public  -> announce it in a channel<br/>both    -> perform both private and public actions 
 user_time_ranks_prefix | [rank] | The prefix of the role name for the time based role ranking<br/>Using this prefix to manage roles so make sure its somewhat unique! Or you'll have to cleanup yourself :)<br/>If you'd like to use the time based ranks make sure to set this first!<br/><br/>The prefix can be between 3 and 8 in length
-welcome_new_users | false | Show a welcome message to new users?<br/>true  -> shows a welcome message to new users<br/>false -> stays silent
+welcome_new_users | false | Show a welcome message to new users?<br/>Valid options:<br/>true  -> shows a welcome when a user joins or leaves the guild<br/>false -> Disabled, doesn't say anything<br/><br/>The welcome message can be set with the template: <br/>welcome_new_user<br/><br/>The leave message can be set with the template: <br/>message_user_leaves<br/><br/>If multiple templates are set a random one will be chosen<br/>See the template command for more details
 
 
 
@@ -296,7 +298,7 @@ command                         //shows a list of existing custom commands
 
 Gets/sets the configuration of the bot
 
-Accessible though: config, setting
+Accessible though: config, setting, cfg
 
 Usable in public  channels
 
@@ -334,6 +336,13 @@ Usable in public and private channels
 completely shuts the bot down
 
 Accessible though: exit, brexit
+
+Usable in public and private channels
+### fml
+
+fmylife! Returns a random entry from fmylife.com
+
+Accessible though: fml
 
 Usable in public and private channels
 ### game
@@ -455,6 +464,13 @@ Usable in public  channels
 mcstatus <serverip>
 mcstatus <serverip> <serverport> 
 ```
+### pause
+
+pauses the music or resumes it if its paused
+
+Accessible though: pause, resume
+
+Usable in public  channels
 ### ping
 
 checks the latency of the bot
@@ -490,27 +506,19 @@ Usable in public  channels
 
 ```php
 -- using playlists 
-playlist mine                        //use your playlist
 playlist guild                       //use the guild's playlist
 playlist global                      //use the global playlist
 playlist settings                    //check the settings for the active playlist
-playlist settings <playlistname>     //check the settings for the active playlist
 playlist                             //info about the current playlist
-playlist list                        //see what playlists there are
+playlist list <pagenumber>           //Shows the music in the playlist
 
 -- Adding and removing music from the playlist
-playlist show <pagenumber>           //shows music in the playlist
-playlist add                         //adds the currently playing song
-playlist add <youtubelink>           //adds the link to the playlist
-playlist remove                      //removes the currently playing song
-playlist remove <youtubelink>        //removes song from playlist
-playlist removeall                   //removes ALL songs from playlist
+playlist add                         //adds the currently playing music
+playlist remove                      //removes the currently playing music
 
 -- Changing the settings of the playlist
 playlist title <new title>           //edit the playlist title
-playlist edit-type <new type>        //change the edit-type of a playlist
-playlist visibility <new visibility> //change who can see the playlist
-playlist reset                       //reset settings to default
+playlist edit <new type>             //change the edit-type of a playlist
 ```
 ### pm
 
@@ -525,6 +533,13 @@ Usable in public and private channels
 ```php
 pm <@user> <message..>
 ```
+### prefix
+
+Forgot what the prefix is? I got you covered
+
+Accessible though: prefix
+
+Usable in public and private channels
 ### profile
 
 Shows your profile in a fancy way
@@ -554,6 +569,7 @@ purge               //deletes up to 100 messages
 purge <limit>       //deletes non-pinned messages
 purge @user         //deletes messages from user
 purge @user <limit> //deletes up to <limit> messages from user
+purge commands      //delete command related messages
 purge emily         //deletes my messages :(
 ```
 ### reboot
@@ -761,10 +777,29 @@ Usable in public and private channels
 #### Usage
 
 ```php
-template list <page>                 //lists all keyphrases
-template list <contains>     		  //lists all options for keyphrase
-template remove <keyphrase> <index>  //removes selected template for keyphrase
-template add <keyphrase> <text...>   //adds a template for keyphrase
+template <keyphrase>                  //shows all templates for a keyphrase
+template add <keyphrase> <text...>    //adds a template for keyphrase
+template search <contains>            //searches for keyphrases matching part of the <contains>
+template list <page>                  //lists all keyphrases
+template remove <keyphrase> <index>   //removes selected template for keyphrase
+
+There are a few keywords you can utilize in templates. These keywords will be replaced by its value 
+
+Key                Replacement
+---                ---
+%user%             Username 
+%user-mention%     Mentions user 
+%user-id%          ID of user
+%nick%             Nickname
+%discrim%          discrim
+%guild%            Guild name
+%guild-id%         guild id
+%guild-users%      amount of users in the guild
+%channel%          channel name
+%channel-id%       channel id
+%channel-mention%  Mentions channel
+%rand-user%        random user in guild
+%rand-user-online% random ONLINE user in guild
 ```
 ### user
 

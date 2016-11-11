@@ -203,8 +203,9 @@ public class Playlist extends AbstractCommand {
 							return Template.get(channel, "playlist_global_readonly");
 						}
 						int currentPage = 0;
-						int itemsPerPage = 50;
-						int maxPage = 1 + CPlaylist.getMusicCount(playlist.id) / itemsPerPage;
+						int itemsPerPage = 25;
+						int totalTracks = CPlaylist.getMusicCount(playlist.id);
+						int maxPage = 1 + totalTracks / itemsPerPage;
 						if (args.length >= 2) {
 							if (args[1].matches("^\\d+$")) {
 								currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage - 1);
@@ -218,7 +219,7 @@ public class Playlist extends AbstractCommand {
 						for (OMusic item : items) {
 							tbl.add(Arrays.asList("" + item.id, item.youtubeTitle));
 						}
-						return String.format("Music in the playlist: [page %s/%s]", currentPage + 1, maxPage) + Config.EOL +
+						return String.format("Music in the playlist: [page %s/%s] (%s items)", currentPage + 1, maxPage, totalTracks) + Config.EOL +
 								Misc.makeAsciiTable(Arrays.asList("#", "Title"), tbl, null);
 					default:
 						break;
@@ -330,7 +331,7 @@ public class Playlist extends AbstractCommand {
 
 	private String makeSettingsTable(OPlaylist playlist) {
 		List<List<String>> body = new ArrayList<>();
-		String owner = playlist.isGlobalList() ? "Emily" : playlist.isGuildList() ? "Guild" : CUser.findById(playlist.ownerId).name;
+		String owner = playlist.isGlobalList() ? "Emily" : playlist.isGuildList() ? CGuild.findById(playlist.guildId).name : CUser.findById(playlist.ownerId).name;
 		body.add(Arrays.asList("Title", playlist.title));
 		body.add(Arrays.asList("Owner", owner));
 		body.add(Arrays.asList("edit-type", playlist.getEditType().getDescription()));

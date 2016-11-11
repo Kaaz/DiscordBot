@@ -149,7 +149,7 @@ public class MusicPlayerHandler {
 				currentlyPlaying = record.id;
 				currentSongLength = info.getDuration().getTotalSeconds();
 				CMusicLog.insert(CGuild.getCachedId(guild.getId()), record.id, 0);
-				if (!playlist.isGuildList()) {
+				if (!playlist.isGlobalList()) {
 					CPlaylist.updateLastPlayed(playlist.id, record.id);
 				}
 			}
