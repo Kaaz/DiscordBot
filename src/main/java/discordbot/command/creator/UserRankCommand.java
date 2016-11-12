@@ -11,9 +11,9 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  * !userrank
@@ -74,21 +74,21 @@ public class UserRankCommand extends AbstractCommand {
 			if (args.length == 1) {
 				OUserRank userRank = CUserRank.findBy(user.getId());
 				if (userRank.rankId == 0 && !bot.isCreator(user)) {
-					return Template.get("command_userrank_no_rank", user.getUsername());
+					return Template.get("command_userrank_no_rank", user.getName());
 				} else if (bot.isCreator(user)) {
-					return Template.get("command_userrank_rank", user.getUsername(), "creator");
+					return Template.get("command_userrank_rank", user.getName(), "creator");
 				} else {
-					return Template.get("command_userrank_rank", user.getUsername(), CRank.findById(userRank.rankId).codeName);
+					return Template.get("command_userrank_rank", user.getName(), CRank.findById(userRank.rankId).codeName);
 				}
 			} else if (args.length == 2) {
 				ORank rank = CRank.findBy(args[1]);
 				if (rank.id == 0) {
 					return Template.get("command_userrank_rank_not_exists", args[1]);
 				}
-				OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId(), user.getUsername()));
+				OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId(), user.getName()));
 				userRank.rankId = rank.id;
 				CUserRank.insertOrUpdate(userRank);
-				return Template.get("command_userrank_rank", user.getUsername(), rank.codeName);
+				return Template.get("command_userrank_rank", user.getName(), rank.codeName);
 			}
 		}
 		return Template.get("command_invalid_use");

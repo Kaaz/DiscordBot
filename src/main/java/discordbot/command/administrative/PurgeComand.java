@@ -6,12 +6,9 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.utils.PermissionUtil;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.List;
 
@@ -61,12 +58,14 @@ public class PurgeComand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		boolean hasManageMessages = PermissionUtil.checkPermission((TextChannel) channel, bot.client.getSelfInfo(), Permission.MESSAGE_MANAGE);
+		TextChannel chan = ((TextChannel) channel);
+		Guild guild = chan.getGuild();
+		boolean hasManageMessages = PermissionUtil.checkPermission(chan, guild.getMember(bot.client.getSelfUser()), Permission.MESSAGE_MANAGE);
 		User toDeleteFrom = null;
 		int deleteLimit = 100;
 		boolean deleteAll = true;
 		SimpleRank rank = bot.security.getSimpleRank(author, channel);
-		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && !bot.client.getSelfInfo().equals(author)) {
+		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && !bot.client.getSelfUser().equals(author)) {
 			return Template.get("no_permission");
 		}
 		if (args.length >= 1) {
@@ -75,12 +74,12 @@ public class PurgeComand extends AbstractCommand {
 					Template.get("permission_missing_manage_messages");
 				}
 				String cmdPrefix = DisUtil.getCommandPrefix(channel);
-				List<Message> retrieve = channel.getHistory().retrieve(200);
+				List<Message> retrieve = channel.getHistory().retrievePast(100).block();
 				for (Message message : retrieve) {
 					if (message.isPinned()) {
 						continue;
 					}
-					if (message.getAuthor().getId().equals(bot.client.getSelfInfo().getId()) ||
+					if (message.getAuthor().getId().equals(bot.client.getSelfUser().getId()) ||
 							message.getRawContent().startsWith(cmdPrefix)) {
 						bot.out.deleteMessage(message);
 					}
@@ -95,7 +94,7 @@ public class PurgeComand extends AbstractCommand {
 					deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
 				}
 			} else if (args[0].toLowerCase().equals("emily")) {
-				toDeleteFrom = bot.client.getSelfInfo();
+				toDeleteFrom = bot.client.getSelfUser();
 			} else if (args[0].matches("^\\d+$")) {
 				deleteAll = true;
 				deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[0]));
@@ -106,14 +105,14 @@ public class PurgeComand extends AbstractCommand {
 				}
 			}
 		}
-		if (toDeleteFrom != null && !hasManageMessages && !bot.client.getSelfInfo().equals(toDeleteFrom)) {
+		if (toDeleteFrom != null && !hasManageMessages && !bot.client.getSelfUser().equals(toDeleteFrom)) {
 			return Template.get("permission_missing_manage_messages");
 		}
 		if (author.equals(toDeleteFrom)) {
 			deleteLimit++;//exclude the command itself from the limit
 		}
 		int deletedCount = 0;
-		List<Message> retrieve = channel.getHistory().retrieve(100);
+		List<Message> retrieve = channel.getHistory().retrievePast(100).block();
 		for (Message msg : retrieve) {
 			if (deletedCount == deleteLimit) {
 				break;
@@ -121,7 +120,7 @@ public class PurgeComand extends AbstractCommand {
 			if (msg.isPinned()) {
 				continue;
 			}
-			if (deleteAll && (hasManageMessages || msg.getAuthor().getId().equals(bot.client.getSelfInfo().getId()))) {
+			if (deleteAll && (hasManageMessages || msg.getAuthor().getId().equals(bot.client.getSelfUser().getId()))) {
 				deletedCount++;
 				bot.out.deleteMessage(msg);
 			} else if (!deleteAll && toDeleteFrom != null && msg.getAuthor().getId().equals(toDeleteFrom.getId())) {

@@ -3,8 +3,9 @@ package discordbot.command.bot_administration;
 import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
+
 
 /**
  * !changename

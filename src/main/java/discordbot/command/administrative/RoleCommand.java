@@ -7,7 +7,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.role.RoleRankings;
-import net.dv8tion.jda.entities.*;
+import net.dv8tion.jda.core.entities.*;
 
 import java.util.List;
 
@@ -75,10 +75,10 @@ public class RoleCommand extends AbstractCommand {
 		}
 		switch (args[0]) {
 			case "cleanup":
-				RoleRankings.cleanUpRoles(guild, bot.client.getSelfInfo());
+				RoleRankings.cleanUpRoles(guild, bot.client.getSelfUser());
 				return "Removed all the time-based roles";
 			case "setup":
-				if (RoleRankings.canModifyRoles(guild, bot.client.getSelfInfo())) {
+				if (RoleRankings.canModifyRoles(guild, bot.client.getSelfUser())) {
 					RoleRankings.fixForServer(guild);
 					return "Set up all the required roles :smile:";
 				}

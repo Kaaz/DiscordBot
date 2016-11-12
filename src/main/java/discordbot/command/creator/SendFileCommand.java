@@ -3,10 +3,11 @@ package discordbot.command.creator;
 import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  */
@@ -50,7 +51,11 @@ public class SendFileCommand extends AbstractCommand {
 		}
 		File f = new File(Joiner.on("").join(args));
 		if (f.exists()) {
-			channel.sendFileAsync(f, null, null);
+			try {
+				channel.sendFile(f, null).queue();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			return "";
 		}
 		return "File doesn't exist";

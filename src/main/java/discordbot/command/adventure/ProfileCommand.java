@@ -6,9 +6,9 @@ import discordbot.main.DiscordBot;
 import discordbot.modules.profile.ProfileImageV1;
 import discordbot.modules.profile.ProfileImageV2;
 import discordbot.util.DisUtil;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 import java.io.File;
 
@@ -67,7 +67,7 @@ public class ProfileCommand extends AbstractCommand {
 				ProfileImageV2 version2 = new ProfileImageV2(user);
 				file = version2.getProfileImage();
 			}
-			channel.sendFileAsync(file, null, message -> file.delete());
+			channel.sendFile(file, null).queue(message -> file.delete());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.getStackTrace();
