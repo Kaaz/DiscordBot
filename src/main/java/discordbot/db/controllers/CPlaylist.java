@@ -207,7 +207,7 @@ public class CPlaylist {
 	public static void updateLastPlayed(int playlistId, int musicId) {
 		try {
 			WebDb.get().query("UPDATE playlist_item SET last_played = ? WHERE playlist_id = ? AND music_id = ?",
-					System.currentTimeMillis(), playlistId, musicId);
+					System.currentTimeMillis()/1000L, playlistId, musicId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
