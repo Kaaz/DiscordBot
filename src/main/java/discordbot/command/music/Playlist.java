@@ -147,6 +147,10 @@ public class Playlist extends AbstractCommand {
 						if (playlist.isPersonal()) {
 							return "Personal lists aren't implemented yet, sorry!";
 						}
+						if (args.length >= 2 && args[1].matches("^\\d+$")) {
+							musicRec = CMusic.findById(Integer.parseInt(args[1]));
+							nowPlayingId = musicRec.id;
+						}
 						if (nowPlayingId == 0) {
 							return Template.get(channel, "command_currentlyplaying_nosong");
 						}
@@ -158,10 +162,10 @@ public class Playlist extends AbstractCommand {
 							case PUBLIC_AUTO:
 								if (isAdding) {
 									CPlaylist.addToPlayList(playlist.id, nowPlayingId);
-									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle);
+									return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle);
 								} else {
 									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
-									return Template.get(channel, "playlist_music_added_auto");
+									return Template.get(channel, "playlist_music_removed");
 								}
 
 							case PUBLIC_FULL:
@@ -203,7 +207,7 @@ public class Playlist extends AbstractCommand {
 							return Template.get(channel, "playlist_global_readonly");
 						}
 						int currentPage = 0;
-						int itemsPerPage = 25;
+						int itemsPerPage = 20;
 						int totalTracks = CPlaylist.getMusicCount(playlist.id);
 						int maxPage = 1 + totalTracks / itemsPerPage;
 						if (args.length >= 2) {
@@ -215,12 +219,16 @@ public class Playlist extends AbstractCommand {
 						if (items.isEmpty()) {
 							return "The playlist is empty.";
 						}
-						List<List<String>> tbl = new ArrayList<>();
+						String playlistTable = Config.EOL;
 						for (OMusic item : items) {
-							tbl.add(Arrays.asList("" + item.id, item.youtubeTitle));
+							playlistTable += String.format(":hash: `%6s` \uD83D\uDD39 %s" + Config.EOL, item.id, item.youtubeTitle);
 						}
-						return String.format("Music in the playlist: [page %s/%s] (%s items)", currentPage + 1, maxPage, totalTracks) + Config.EOL +
-								Misc.makeAsciiTable(Arrays.asList("#", "Title"), tbl, null);
+						return String.format("Music in the playlist: %s" + Config.EOL, playlist.title) +
+								playlistTable + Config.EOL +
+								String.format("Showing [page %s/%s] (in total: %s items)", currentPage + 1, maxPage, totalTracks) + Config.EOL + Config.EOL +
+								"_You can use the `#` to remove an item from the playlist._" + Config.EOL + Config.EOL +
+								"_Example:_ `" + DisUtil.getCommandPrefix(channel) + "pl del 123`";
+
 					default:
 						break;
 				}

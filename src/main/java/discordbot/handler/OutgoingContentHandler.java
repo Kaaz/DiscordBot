@@ -37,7 +37,7 @@ public class OutgoingContentHandler {
 	}
 
 	public void sendAsyncMessage(MessageChannel channel, String content) {
-		channel.sendMessageAsync(content, (message) -> {
+		channel.sendMessageAsync(content.substring(0, Math.min(1999, content.length())), (message) -> {
 			if (botInstance.shouldCleanUpMessages(channel)) {
 				botInstance.timer.schedule(new TimerTask() {
 					@Override
