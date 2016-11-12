@@ -47,17 +47,27 @@ public class BotSelfUpdateService extends AbstractService {
 	public void run() {
 		ProgramVersion latestVersion = UpdateUtil.getLatestVersion();
 		DiscordBot bot = this.bot.getShards()[0];
-		if (latestVersion.isHigherThan(Launcher.getVersion())) {
+		if (latestVersion.isHigherThan(Launcher.getVersion()) || this.bot.needsMoreShards()) {
 			bot.timer.schedule(
 					new TimerTask() {
 						@Override
 						public void run() {
-							Launcher.stop(ExitCode.UPDATE);
+							if (latestVersion.isHigherThan(Launcher.getVersion())) {
+								Launcher.stop(ExitCode.UPDATE);
+							} else {
+								Launcher.stop(ExitCode.NEED_MORE_SHARDS);
+							}
 						}
 					}, TimeUnit.MINUTES.toMillis(1));
 			usersHaveBeenWarned = true;
+			String message;
+			if (latestVersion.isHigherThan(Launcher.getVersion())) {
+				message = Template.get("bot_self_update_restart", Launcher.getVersion().toString(), latestVersion.toString());
+			} else {
+				message = Template.get("bot_reboot_more_shards");
+			}
 			for (TextChannel channel : getSubscribedChannels()) {
-				sendTo(channel, Template.get("bot_self_update_restart", Launcher.getVersion().toString(), latestVersion.toString()));
+				sendTo(channel, message);
 			}
 			for (DiscordBot discordBot : this.bot.getShards()) {
 				for (Guild guild : discordBot.client.getGuilds()) {
@@ -66,11 +76,11 @@ public class BotSelfUpdateService extends AbstractService {
 						case "off":
 							continue;
 						case "always":
-							discordBot.out.sendAsyncMessage(bot.getDefaultChannel(guild), Template.get("bot_self_update_restart", Launcher.getVersion().toString(), latestVersion.toString()), null);
+							discordBot.out.sendAsyncMessage(bot.getDefaultChannel(guild), message, null);
 							break;
 						case "playing":
 							if (guild.getAudioManager().isConnected()) {
-								discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(guild), Template.get("bot_self_update_restart", Launcher.getVersion().toString(), latestVersion.toString()), null);
+								discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(guild), message, null);
 							}
 							break;
 						default:

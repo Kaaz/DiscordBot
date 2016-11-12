@@ -7,6 +7,7 @@ package discordbot.core;
 public enum ExitCode {
 	REBOOT(100),
 	STOP(101),
+	NEED_MORE_SHARDS(102),
 	UPDATE(200),
 	GENERIC_ERROR(300),
 	SHITTY_CONFIG(301),

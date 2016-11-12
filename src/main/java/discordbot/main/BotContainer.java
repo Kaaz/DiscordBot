@@ -16,9 +16,10 @@ public class BotContainer {
 	private final int numShards;
 	private final DiscordBot[] shards;
 	private volatile AtomicInteger numGuilds;
+	private volatile boolean needsMoreShards = false;
 
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException {
-		this.numShards = 1 + ((numGuilds + 1000) / 2500);
+		this.numShards = 1 + ((numGuilds + 1000) / 2000);
 		shards = new DiscordBot[numShards];
 		initHandlers();
 		initShards();
@@ -29,10 +30,19 @@ public class BotContainer {
 	 * update the numguilds so that we can check if we need an extra shard
 	 */
 	public void guildJoined() {
-		int suggestedShards = 1 + ((numGuilds.incrementAndGet() + 1000) / 2500);
+		int suggestedShards = 1 + ((numGuilds.incrementAndGet() + 500) / 2000);
 		if (suggestedShards > numShards) {
-			Launcher.stop(ExitCode.REBOOT);
+			needsMoreShards = true;
 		}
+	}
+
+	/**
+	 * check if there are more shards required
+	 *
+	 * @return need more shards?
+	 */
+	public boolean needsMoreShards() {
+		return needsMoreShards;
 	}
 
 	/**
