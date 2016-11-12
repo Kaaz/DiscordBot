@@ -1,7 +1,8 @@
 package discordbot.handler.discord;
 
-import net.dv8tion.jda.entities.Role;
-import net.dv8tion.jda.entities.User;
+
+import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.User;
 
 public class RoleModifyTask {
 

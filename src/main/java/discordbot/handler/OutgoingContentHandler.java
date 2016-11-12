@@ -5,10 +5,10 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.Role;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.User;
 
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -33,11 +33,11 @@ public class OutgoingContentHandler {
 	 * @return IMessage or null
 	 */
 	public void sendAsyncMessage(MessageChannel channel, String content, Consumer<Message> callback) {
-		channel.sendMessageAsync(content.substring(0, Math.min(1999, content.length())), callback);
+		channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue(callback);
 	}
 
 	public void sendAsyncMessage(MessageChannel channel, String content) {
-		channel.sendMessageAsync(content.substring(0, Math.min(1999, content.length())), (message) -> {
+		channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue((message) -> {
 			if (botInstance.shouldCleanUpMessages(channel)) {
 				botInstance.timer.schedule(new TimerTask() {
 					@Override
@@ -49,10 +49,6 @@ public class OutgoingContentHandler {
 				}, Config.DELETE_MESSAGES_AFTER);
 			}
 		});
-	}
-
-	public Message sendMessage(MessageChannel channel, String content) {
-		return channel.sendMessage(content.substring(0, Math.min(1999, content.length())));
 	}
 
 	/**
@@ -131,7 +127,7 @@ public class OutgoingContentHandler {
 	 * @param message the message
 	 */
 	public void sendPrivateMessage(User target, String message) {
-		target.getPrivateChannel().sendMessageAsync(message, null);
+		target.getPrivateChannel().sendMessage(message).queue();
 	}
 
 	/**
@@ -189,11 +185,10 @@ public class OutgoingContentHandler {
 					final RoleModifyTask roleToModify = itemsToDelete.take();
 					if (roleToModify != null) {
 						if (roleToModify.isAdd()) {
-							roleToModify.getRole().getGuild().getManager().addRoleToUser(roleToModify.getUser(), roleToModify.getRole());
+							roleToModify.getRole().getGuild().getController().addRolesToMember(roleToModify.getRole().getGuild().getMember(roleToModify.getUser()), roleToModify.getRole()).queue();
 						} else {
-							roleToModify.getRole().getGuild().getManager().removeRoleFromUser(roleToModify.getUser(), roleToModify.getRole());
+							roleToModify.getRole().getGuild().getController().removeRolesFromMember(roleToModify.getRole().getGuild().getMember(roleToModify.getUser()), roleToModify.getRole()).queue();
 						}
-						roleToModify.getRole().getGuild().getManager().update();
 					}
 					Thread.sleep(1000L);
 				}

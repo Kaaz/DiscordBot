@@ -7,8 +7,8 @@ import discordbot.db.controllers.CBotEvent;
 import discordbot.db.controllers.CGuild;
 import discordbot.main.Config;
 import discordbot.util.DisUtil;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

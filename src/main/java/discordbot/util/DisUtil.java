@@ -5,11 +5,12 @@ import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingUseEconomy;
 import discordbot.handler.GuildSettings;
 import discordbot.main.Config;
-import net.dv8tion.jda.OnlineStatus;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.*;
-import net.dv8tion.jda.utils.PermissionUtil;
+import net.dv8tion.jda.core.OnlineStatus;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
+import java.nio.channels.Channel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -64,14 +65,14 @@ public class DisUtil {
 		}
 		String output = input.replace("\\%", "\u0013");
 		output = output
-				.replace("%user%", user.getUsername())
+				.replace("%user%", user.getName())
 				.replace("%user-mention%", user.getAsMention())
 				.replace("%user-id%", user.getId())
-				.replace("%nick%", ((guild == null || guild.getNicknameForUser(user) == null) ? user.getUsername() : guild.getNicknameForUser(user)))
+				.replace("%nick%", ((guild == null || guild.getMember(user).getNickname() == null) ? user.getName() : guild.getMember(user).getNickname()))
 				.replace("%discrim%", user.getDiscriminator())
 				.replace("%guild%", (guild == null) ? "Private" : guild.getName())
 				.replace("%guild-id%", (guild == null) ? "0" : guild.getId())
-				.replace("%guild-users%", (guild == null) ? "0" : guild.getUsers().size() + "")
+				.replace("%guild-users%", (guild == null) ? "0" : guild.getMembers().size() + "")
 				.replace("%channel%", (guild == null) ? "Private" : ((TextChannel) channel).getName())
 				.replace("%channel-id%", (guild == null) ? "0" : channel.getId())
 				.replace("%channel-mention%", (guild == null) ? "Private" : ((TextChannel) channel).getAsMention());
@@ -82,16 +83,16 @@ public class DisUtil {
 		Random rng = new Random();
 		while ((ind = output.indexOf("%rand-user%")) != -1) {
 			output = output.substring(0, ind) +
-					guild.getUsers().get(rng.nextInt(guild.getUsers().size())).getUsername()
+					guild.getMembers().get(rng.nextInt(guild.getMembers().size())).getEffectiveName()
 					+ output.substring(ind + 11);
 		}
 
 		if (output.contains("%rand-user-online%")) {
-			List<User> onlines = new ArrayList<>();
-			guild.getUsers().stream().filter((u) -> (u.getOnlineStatus().equals(OnlineStatus.ONLINE))).forEach(onlines::add);
+			List<Member> onlines = new ArrayList<>();
+			guild.getMembers().stream().filter((u) -> (u.getOnlineStatus().equals(OnlineStatus.ONLINE))).forEach(onlines::add);
 			while ((ind = output.indexOf("%rand-user-online%")) != -1)
 				output = output.substring(0, ind) +
-						onlines.get(rng.nextInt(onlines.size())).getUsername()
+						onlines.get(rng.nextInt(onlines.size())).getEffectiveName()
 						+ output.substring(ind + 18);
 		}
 		return output.replace("\u0013", "%");
@@ -105,18 +106,15 @@ public class DisUtil {
 	 * @return IUser | null
 	 */
 	public static User findUserIn(TextChannel channel, String searchText) {
-		List<User> users = channel.getUsers();
-		List<User> potential = new ArrayList<>();
+		List<Member> users = channel.getMembers();
+		List<Member> potential = new ArrayList<>();
 		int smallestDiffIndex = 0, smallestDiff = 999;
-		for (User u : users) {
-			if (u.getUsername().equalsIgnoreCase(searchText)) {
-				return u;
+		for (Member u : users) {
+			if (u.getEffectiveName().equalsIgnoreCase(searchText)) {
+				return u.getUser();
 			}
 
-			String nick = channel.getGuild().getNicknameForUser(u);
-			if (nick == null) {
-				nick = u.getUsername();
-			}
+			String nick = u.getEffectiveName();
 			if (nick.toLowerCase().contains(searchText)) {
 				potential.add(u);
 				int d = Math.abs(nick.length() - searchText.length());
@@ -127,7 +125,7 @@ public class DisUtil {
 			}
 		}
 		if (!potential.isEmpty()) {
-			return potential.get(smallestDiffIndex);
+			return potential.get(smallestDiffIndex).getUser();
 		}
 		return null;
 	}
@@ -212,8 +210,8 @@ public class DisUtil {
 	 * @param role  the role to search for
 	 * @return list of user with specified role
 	 */
-	public static List<User> getUsersByRole(Guild guild, Role role) {
-		return guild.getUsers().stream().filter((user) -> guild.getRolesForUser(user).contains(role)).collect(Collectors.toList());
+	public static List<Member> getUsersByRole(Guild guild, Role role) {
+		return guild.getMembers().stream().filter((user) -> user.getRoles().contains(role)).collect(Collectors.toList());
 	}
 
 	/**
@@ -225,6 +223,6 @@ public class DisUtil {
 	 * @return permission found
 	 */
 	public static boolean hasPermission(User user, Guild guild, Permission permission) {
-		return PermissionUtil.checkPermission(guild, user, permission);
+		return PermissionUtil.checkPermission(guild, guild.getMember(user), permission);
 	}
 }

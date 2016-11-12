@@ -7,10 +7,13 @@ import discordbot.guildsettings.defaults.*;
 import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.handler.*;
 import discordbot.role.RoleRankings;
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.JDABuilder;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.*;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +42,9 @@ public class DiscordBot {
 	private int shardId;
 	private BotContainer container;
 
-	public DiscordBot(int shardId, int numShards) throws LoginException, InterruptedException {
+	public DiscordBot(int shardId, int numShards) throws LoginException, InterruptedException, RateLimitedException {
 		registerHandlers();
-		JDABuilder builder = new JDABuilder().setBotToken(Config.BOT_TOKEN);
+		JDABuilder builder = new JDABuilder(AccountType.BOT).setToken(Config.BOT_TOKEN);
 		this.shardId = shardId;
 		if (numShards > 1) {
 			builder.useSharding(shardId, numShards);
@@ -109,7 +112,7 @@ public class DiscordBot {
 			if (!foundChannel) {
 				TextChannel target = null;
 				for (TextChannel channel : guild.getTextChannels()) {
-					if (channel.checkPermission(client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+					if (PermissionUtil.checkPermission(channel, guild.getMember(client.getSelfUser()), Permission.MESSAGE_WRITE)) {
 						target = channel;
 						break;
 					}
@@ -152,7 +155,7 @@ public class DiscordBot {
 	 */
 	public void markReady(boolean ready) {
 		loadConfiguration();
-		mentionMe = "<@" + this.client.getSelfInfo().getId() + ">";
+		mentionMe = "<@" + this.client.getSelfUser().getId() + ">";
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds(), client);
 		this.isReady = ready;

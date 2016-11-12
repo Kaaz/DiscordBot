@@ -21,22 +21,21 @@ import discordbot.main.DiscordBot;
 import discordbot.main.GuildCheckResult;
 import discordbot.main.Launcher;
 import discordbot.role.RoleRankings;
-import net.dv8tion.jda.MessageHistory;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.*;
-import net.dv8tion.jda.events.DisconnectEvent;
-import net.dv8tion.jda.events.ReadyEvent;
-import net.dv8tion.jda.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.events.guild.GuildLeaveEvent;
-import net.dv8tion.jda.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.events.guild.member.GuildMemberLeaveEvent;
-import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.events.message.priv.PrivateMessageReceivedEvent;
-import net.dv8tion.jda.events.user.UserGameUpdateEvent;
-import net.dv8tion.jda.events.voice.VoiceJoinEvent;
-import net.dv8tion.jda.events.voice.VoiceLeaveEvent;
-import net.dv8tion.jda.hooks.ListenerAdapter;
-import net.dv8tion.jda.managers.AudioManager;
+import net.dv8tion.jda.core.MessageHistory;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.DisconnectEvent;
+import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -63,10 +62,10 @@ public class JDAEvents extends ListenerAdapter {
 
 	public void onGuildJoin(GuildJoinEvent event) {
 		Guild guild = event.getGuild();
-		User owner = guild.getOwner();
+		User owner = guild.getOwner().getUser();
 		OUser user = CUser.findBy(owner.getId());
 		user.discord_id = owner.getId();
-		user.name = owner.getUsername();
+		user.name = owner.getName();
 		CUser.update(user);
 		OGuild server = CGuild.findBy(guild.getId());
 		server.discord_id = guild.getId();
@@ -76,7 +75,7 @@ public class JDAEvents extends ListenerAdapter {
 			CGuild.insert(server);
 		}
 		if (server.isBanned()) {
-			guild.getManager().leave();
+			guild.leave().queue();
 			return;
 		}
 		discordBot.loadGuild(guild);
@@ -104,12 +103,12 @@ public class JDAEvents extends ListenerAdapter {
 			}
 			TextChannel outChannel = null;
 			for (TextChannel channel : guild.getTextChannels()) {
-				if (channel.checkPermission(event.getJDA().getSelfInfo(), Permission.MESSAGE_WRITE)) {
+				if (PermissionUtil.checkPermission(channel, guild.getMember(event.getJDA().getSelfUser()), Permission.MESSAGE_WRITE)) {
 					outChannel = channel;
 					break;
 				}
 			}
-			CBotEvent.insert("GUILD", "JOIN", String.format(" %s [dis-id: %s][iid: %s][u: %s]", guild.getName(), guild.getId(), server.id, guild.getUsers().size()));
+			CBotEvent.insert("GUILD", "JOIN", String.format(" %s [dis-id: %s][iid: %s][u: %s]", guild.getName(), guild.getId(), server.id, guild.getMembers().size()));
 			discordBot.getContainer().guildJoined();
 			Launcher.log("bot joins guild", "bot", "guild-join",
 					"guild-id", guild.getId(),
@@ -120,7 +119,7 @@ public class JDAEvents extends ListenerAdapter {
 				discordBot.out.sendPrivateMessage(owner, message);
 			}
 			if (guildCheck.equals(GuildCheckResult.BOT_GUILD)) {
-				guild.getManager().leave();
+				guild.leave();
 			}
 			server.active = 1;
 		}
@@ -167,7 +166,7 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-		User user = event.getUser();
+		User user = event.getMember().getUser();
 		Guild guild = event.getGuild();
 		GuildSettings settings = GuildSettings.get(guild);
 		OGuildMember guildMember = CGuildMember.findBy(guild.getId(), user.getId());
@@ -175,12 +174,12 @@ public class JDAEvents extends ListenerAdapter {
 		CGuildMember.insertOrUpdate(guildMember);
 
 		if ("true".equals(settings.getOrDefault(SettingPMUserEvents.class))) {
-			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getUsername(), user.getDiscriminator(), guild.getName()));
+			discordBot.out.sendPrivateMessage(guild.getOwner().getUser(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()));
 		}
 		if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
 			TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
-			defaultChannel.sendMessageAsync(
-					Template.getWithTags(defaultChannel, "welcome_new_user", user),
+			defaultChannel.sendMessage(
+					Template.getWithTags(defaultChannel, "welcome_new_user", user)).queue(
 					message ->
 							discordBot.timer.schedule(new TimerTask() {
 								@Override
@@ -196,7 +195,7 @@ public class JDAEvents extends ListenerAdapter {
 				"guild-id", guild.getId(),
 				"guild-name", guild.getName(),
 				"user-id", user.getId(),
-				"user-name", user.getUsername());
+				"user-name", user.getName());
 
 		if ("true".equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && !user.isBot()) {
 			RoleRankings.assignUserRole(discordBot, guild, user);
@@ -205,15 +204,15 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
-		User user = event.getUser();
+		User user = event.getMember().getUser();
 		Guild guild = event.getGuild();
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingPMUserEvents.class))) {
-			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** left the guild **%s**", user.getUsername(), user.getDiscriminator(), guild.getName()));
+			discordBot.out.sendPrivateMessage(guild.getOwner().getUser(), String.format("[user-event] **%s#%s** left the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()));
 		}
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingWelcomeNewUsers.class))) {
 			TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
-			defaultChannel.sendMessageAsync(
-					Template.getWithTags(defaultChannel, "message_user_leaves", user),
+			defaultChannel.sendMessage(
+					Template.getWithTags(defaultChannel, "message_user_leaves", user)).queue(
 					message ->
 							discordBot.timer.schedule(new TimerTask() {
 								@Override
@@ -229,7 +228,7 @@ public class JDAEvents extends ListenerAdapter {
 				"guild-id", guild.getId(),
 				"guild-name", guild.getName(),
 				"user-id", user.getId(),
-				"user-name", user.getUsername());
+				"user-name", user.getName());
 		OGuildMember guildMember = CGuildMember.findBy(guild.getId(), user.getId());
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());
 		CGuildMember.insertOrUpdate(guildMember);
@@ -241,33 +240,39 @@ public class JDAEvents extends ListenerAdapter {
 			return;
 		}
 		User user = event.getUser();
-		if (!user.isBot() || user.getId().equals(event.getJDA().getSelfInfo().getId())) {
+		Guild eventGuild = event.getGuild();
+		if (!user.isBot() || user.getId().equals(event.getJDA().getSelfUser().getId())) {
 			return;
 		}
-		Game status = user.getCurrentGame();
-		if (status == null || status.getName() == null || event.getJDA().getSelfInfo().getCurrentGame() == null) {
+
+		Game status = eventGuild.getMember(user).getGame();
+		if (status == null || status.getName() == null || eventGuild.getMember(event.getJDA().getSelfUser()).getGame() == null) {
 			return;
 		}
-		if (status.getName().equals(event.getJDA().getSelfInfo().getCurrentGame().getName())) {
+		if (status.getName().equals(eventGuild.getMember(event.getJDA().getSelfUser()).getGame().getName())) {
 			for (String specialGuild : specialGuilds) {
 				Guild guild = event.getJDA().getGuildById(specialGuild);
 				if (guild == null) {
 					continue;
 				}
-				User guildUser = guild.getUserById(user.getId());
+				Member guildUser = guild.getMemberById(user.getId());
 				if (guildUser != null) {
 					TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
 					MessageHistory history = defaultChannel.getHistory();
-					List<Message> retrieve = history.retrieve(25);
-					if (retrieve == null) {
-						return;
-					}
-					for (Message message : retrieve) {
-						if (message.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) {
+					try {
+						List<Message> retrieve = history.retrievePast(100).block();
+						if (retrieve == null) {
 							return;
 						}
+						for (Message message : retrieve) {
+							if (message.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) {
+								return;
+							}
+						}
+						discordBot.out.sendAsyncMessage(defaultChannel, "Oh hey look " + user.getAsMention() + " we have the same status :joy:", null);
+					} catch (RateLimitedException e) {
+						e.printStackTrace();
 					}
-					discordBot.out.sendAsyncMessage(defaultChannel, "Oh hey look " + user.getAsMention() + " we have the same status :joy:", null);
 				}
 
 			}

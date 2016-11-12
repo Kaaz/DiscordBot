@@ -2,11 +2,11 @@ package discordbot.command.creator;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.ORank;
-import discordbot.db.model.OUserRank;
 import discordbot.db.controllers.CRank;
 import discordbot.db.controllers.CUser;
 import discordbot.db.controllers.CUserRank;
+import discordbot.db.model.ORank;
+import discordbot.db.model.OUserRank;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;

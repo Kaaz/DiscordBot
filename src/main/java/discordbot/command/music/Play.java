@@ -16,9 +16,9 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.YTSearch;
 import discordbot.util.YTUtil;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.*;
-import net.dv8tion.jda.utils.PermissionUtil;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,12 +67,12 @@ public class Play extends AbstractCommand {
 	}
 
 	private boolean isInVoiceWith(Guild guild, User author) {
-		VoiceChannel channel = guild.getVoiceStatusOfUser(author).getChannel();
+		VoiceChannel channel = guild.getMember(author).getVoiceState().getChannel();
 		if (channel == null) {
 			return false;
 		}
-		for (User user : channel.getUsers()) {
-			if (user.getId().equals(guild.getJDA().getSelfInfo().getId())) {
+		for (Member members : channel.getMembers()) {
+			if (members.getUser().getId().equals(guild.getJDA().getSelfUser().getId())) {
 				return true;
 			}
 		}

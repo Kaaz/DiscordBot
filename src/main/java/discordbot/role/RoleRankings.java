@@ -6,12 +6,13 @@ import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanksPrefix;
 import discordbot.handler.GuildSettings;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.Role;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.utils.PermissionUtil;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.managers.RoleManagerUpdatable;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,28 +107,31 @@ public class RoleRankings {
 	 * @param rank  the role to add/modify
 	 */
 	private static void fixRole(Guild guild, MemberShipRole rank) {
-		List<Role> rolesByName = guild.getRolesByName(getFullName(guild, rank));
-		Role role;
-		boolean needsUpdate = false;
+		List<Role> rolesByName = guild.getRolesByName(getFullName(guild, rank), true);
 		if (rolesByName.size() > 0) {
-			role = rolesByName.get(0);
+			updateRole(rolesByName.get(0), guild, rank);
 		} else {
-			role = guild.createRole().getRole();
+			guild.getController().createRole().queue(role -> updateRole(role, guild, rank));
 		}
+	}
+
+	private static void updateRole(Role role, Guild guild, MemberShipRole rank) {
+		boolean needsUpdate = false;
+		RoleManagerUpdatable updater = role.getManagerUpdatable();
 		if (!role.getName().equals(getFullName(guild, rank))) {
-			role.getManager().setName(getFullName(guild, rank));
+			updater.getNameField().setValue(getFullName(guild, rank));
 			needsUpdate = true;
 		}
-		if (role.getColor() != rank.getColor().getRGB()) {
+		if (role.getColor().getRGB() != rank.getColor().getRGB()) {
 			role.getManager().setColor(rank.getColor());
 			needsUpdate = true;
 		}
-		if (!role.isGrouped()) {
+		if (!role.isHoisted()) {
 			needsUpdate = true;
-			role.getManager().setGrouped(true);
+			role.getManager().setHoisted(true);
 		}
 		if (needsUpdate) {
-			role.getManager().update();
+			updater.update().queue();
 		}
 	}
 
@@ -139,7 +143,7 @@ public class RoleRankings {
 	 * @return has the manage roles premission?
 	 */
 	public static boolean canModifyRoles(Guild guild, User ourUser) {
-		return PermissionUtil.checkPermission(guild, ourUser, Permission.MANAGE_ROLES);
+		return PermissionUtil.checkPermission(guild, guild.getMember(ourUser), Permission.MANAGE_ROLES);
 	}
 
 	/**
@@ -154,9 +158,9 @@ public class RoleRankings {
 		}
 		for (Role role : guild.getRoles()) {
 			if (role.getName().equals("new role") || role.getName().contains(getPrefix(guild))) {
-				role.getManager().delete();
+				role.delete().queue();
 			} else if (roleNames.contains(role.getName().toLowerCase())) {
-				role.getManager().delete();
+				role.delete().queue();
 			}
 		}
 	}
@@ -173,7 +177,7 @@ public class RoleRankings {
 				if (!"true".equals(GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanks.class))) {
 					continue;
 				}
-				if (canModifyRoles(guild, instance.getSelfInfo())) {
+				if (canModifyRoles(guild, instance.getSelfUser())) {
 					fixForServer(guild);
 				}
 			}
@@ -187,7 +191,7 @@ public class RoleRankings {
 	 * @param user  the user
 	 */
 	public static void assignUserRole(DiscordBot bot, Guild guild, User user) {
-		List<Role> roles = guild.getRolesForUser(user);
+		List<Role> roles = guild.getMember(user).getRoles();
 		OGuildMember membership = CGuildMember.findBy(guild.getId(), user.getId());
 		boolean hasTargetRole = false;
 		String prefix = RoleRankings.getPrefix(guild);
@@ -207,11 +211,11 @@ public class RoleRankings {
 		}
 
 		if (!hasTargetRole) {
-			List<Role> roleList = guild.getRolesByName(RoleRankings.getFullName(guild, targetRole));
+			List<Role> roleList = guild.getRolesByName(RoleRankings.getFullName(guild, targetRole), true);
 			if (roleList.size() > 0) {
 				bot.out.addRole(user, roleList.get(0));
 			} else {
-				bot.out.sendErrorToMe(new Exception("Role not found"), "guild", guild.getName(), "user", user.getUsername());
+				bot.out.sendErrorToMe(new Exception("Role not found"), "guild", guild.getName(), "user", user.getName());
 			}
 		}
 	}

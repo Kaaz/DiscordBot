@@ -6,10 +6,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.XYChart;
@@ -72,10 +69,10 @@ public class GuildStatsCommand extends AbstractCommand {
 				}
 				TreeMap<Date, Integer> map = new TreeMap<>();
 				Guild guild = ((TextChannel) channel).getGuild();
-				List<User> joins = new ArrayList<>(guild.getUsers());
-				Collections.sort(joins, (User a, User b) -> guild.getJoinDateForUser(a).compareTo(guild.getJoinDateForUser(b)));
-				for (User join : joins) {
-					Date time = DateUtils.round(new Date(guild.getJoinDateForUser(join).toInstant().toEpochMilli()), Calendar.DAY_OF_MONTH);
+				List<Member> joins = new ArrayList<>(guild.getMembers());
+				Collections.sort(joins, (Member a, Member b) -> a.getJoinDate().compareTo(b.getJoinDate()));
+				for (Member join : joins) {
+					Date time = DateUtils.round(new Date(join.getJoinDate().toInstant().toEpochMilli()), Calendar.DAY_OF_MONTH);
 					if (!map.containsKey(time)) {
 						map.put(time, 0);
 					}
@@ -99,7 +96,7 @@ public class GuildStatsCommand extends AbstractCommand {
 				try {
 					File f = new File("./Sample_Chart.png");
 					BitmapEncoder.saveBitmap(chart, f.getAbsolutePath(), BitmapEncoder.BitmapFormat.PNG);
-					channel.sendFileAsync(f, null, message -> f.delete());
+					channel.sendFile(f, null).queue(message -> f.delete());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -117,7 +114,7 @@ public class GuildStatsCommand extends AbstractCommand {
 				if (discordBot.client.getAudioManager(guild).isConnected()) {
 					activeVoice++;
 					int guildUsersInVoice = discordBot.client.getAudioManager(guild).getConnectedChannel().getUsers().size() - 1;
-					int guildUsers = guild.getUsers().size();
+					int guildUsers = guild.getMembers().size();
 					body.add(Arrays.asList(guild.getId(), guild.getName(), "" + guildUsers, "" + guildUsersInVoice));
 					totUsersInVoice += guildUsersInVoice;
 					totUsersInGuilds += guildUsers;
@@ -147,7 +144,7 @@ public class GuildStatsCommand extends AbstractCommand {
 			int channels = shard.client.getTextChannels().size();
 			int voiceChannels = shard.client.getVoiceChannels().size();
 			int activeVoice = 0;
-			int requests = shard.client.getResponseTotal();
+			long requests = shard.client.getResponseTotal();
 			for (Guild guild : shard.client.getGuilds()) {
 				if (bot.client.getAudioManager(guild).isConnected()) {
 					activeVoice++;

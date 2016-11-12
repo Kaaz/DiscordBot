@@ -1,8 +1,8 @@
 package discordbot.command.poe;
 
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.OPoEToken;
 import discordbot.db.controllers.CPoEToken;
+import discordbot.db.model.OPoEToken;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;

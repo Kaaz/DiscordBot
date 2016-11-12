@@ -9,13 +9,10 @@ import discordbot.db.model.OUserRank;
 import discordbot.main.Config;
 import discordbot.main.GuildCheckResult;
 import discordbot.permission.SimpleRank;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.utils.MiscUtil;
-import net.dv8tion.jda.utils.PermissionUtil;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.utils.MiscUtil;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.time.OffsetDateTime;
 import java.util.HashSet;
@@ -78,11 +75,11 @@ public class SecurityHandler {
 
 		int bots = 0;
 		int users = 0;
-		if (MiscUtil.getCreationTime(guild.getOwner().getId()).isBefore(OffsetDateTime.now().minusDays(Config.GUILD_OWNER_MIN_ACCOUNT_AGE))) {
+		if (MiscUtil.getCreationTime(guild.getOwner().getUser().getId()).isBefore(OffsetDateTime.now().minusDays(Config.GUILD_OWNER_MIN_ACCOUNT_AGE))) {
 			return GuildCheckResult.OWNER_TOO_NEW;
 		}
-		for (User user : guild.getUsers()) {
-			if (user.isBot()) {
+		for (Member user : guild.getMembers()) {
+			if (user.getUser().isBot()) {
 				bots++;
 			}
 			users++;
@@ -116,7 +113,7 @@ public class SecurityHandler {
 			if (guild.getOwner().equals(user)) {
 				return SimpleRank.GUILD_OWNER;
 			}
-			if (PermissionUtil.checkPermission(guild, user, Permission.ADMINISTRATOR)) {
+			if (PermissionUtil.checkPermission(guild, guild.getMember(user), Permission.ADMINISTRATOR)) {
 				return SimpleRank.GUILD_ADMIN;
 			}
 			if (user.isBot()) {

@@ -9,7 +9,10 @@ import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.music.SettingMusicRole;
 import discordbot.permission.SimpleRank;
-import net.dv8tion.jda.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.impl.JDAImpl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
