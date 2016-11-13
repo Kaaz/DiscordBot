@@ -1,7 +1,7 @@
 package discordbot.main;
 
 import discordbot.db.controllers.CBotPlayingOn;
-import discordbot.db.model.OBotPlayingOn3;
+import discordbot.db.model.OBotPlayingOn;
 import discordbot.handler.*;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.VoiceChannel;
@@ -98,8 +98,8 @@ public class BotContainer {
 	 * After the bot is ready to go; reconnect to the voicechannels and start playing where it left off
 	 */
 	private void onAllShardsReady() {
-		List<OBotPlayingOn3> radios = CBotPlayingOn.getAll();
-		for (OBotPlayingOn3 radio : radios) {
+		List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
+		for (OBotPlayingOn radio : radios) {
 			DiscordBot bot = getBotFor(radio.guildId);
 			Guild guild = bot.client.getGuildById(radio.guildId);
 			VoiceChannel vc = null;
