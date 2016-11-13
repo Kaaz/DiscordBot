@@ -139,7 +139,7 @@ public class CPlaylist {
 						"JOIN playlist pl ON pl.id = pi.playlist_id  " +
 						"WHERE m.banned = 0 AND pl.id = ? " +
 						"ORDER BY pi.last_played ASC " +
-						"LIMIT 50", playlistId)) {
+						"LIMIT 5", playlistId)) {
 			while (rs.next()) {
 				potentialSongs.add(rs.getString("filename"));
 			}
