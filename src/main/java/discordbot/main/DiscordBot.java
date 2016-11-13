@@ -35,7 +35,7 @@ public class DiscordBot {
 	public boolean statusLocked = false;
 	private AutoReplyHandler autoReplyhandler;
 	private GameHandler gameHandler = null;
-	private boolean isReady = false;
+	private volatile boolean isReady = false;
 	private int shardId;
 	private BotContainer container;
 
@@ -156,7 +156,7 @@ public class DiscordBot {
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds(), client);
 		this.isReady = ready;
-		System.gc();
+		container.allShardsReady();
 	}
 
 	public void loadConfiguration() {

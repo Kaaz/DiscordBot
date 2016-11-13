@@ -2,7 +2,6 @@ package discordbot.threads;
 
 import discordbot.core.AbstractService;
 import discordbot.main.BotContainer;
-import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import org.reflections.Reflections;
 
@@ -36,7 +35,7 @@ public class ServiceHandlerThread extends Thread {
 	@Override
 	public void run() {
 		boolean initialized = false;
-		while (!Launcher.killAllThreads) {
+		while (!Launcher.isBeingKilled) {
 			try {
 				if (bot.allShardsReady()) {
 					if (bot != null) {

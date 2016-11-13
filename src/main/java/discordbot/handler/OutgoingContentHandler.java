@@ -156,7 +156,7 @@ public class OutgoingContentHandler {
 
 		public void run() {
 			try {
-				while (!Launcher.killAllThreads) {
+				while (!Launcher.isBeingKilled) {
 					final Message msgToDelete = itemsToDelete.take();
 					if (msgToDelete != null) {
 						msgToDelete.deleteMessage();
@@ -185,7 +185,7 @@ public class OutgoingContentHandler {
 
 		public void run() {
 			try {
-				while (!Launcher.killAllThreads) {
+				while (!Launcher.isBeingKilled) {
 					final RoleModifyTask roleToModify = itemsToDelete.take();
 					if (roleToModify != null) {
 						if (roleToModify.isAdd()) {

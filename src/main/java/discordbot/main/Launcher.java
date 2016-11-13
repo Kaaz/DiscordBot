@@ -5,19 +5,22 @@ import discordbot.core.DbUpdate;
 import discordbot.core.ExitCode;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
-import discordbot.db.model.OMusic;
+import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CMusic;
+import discordbot.db.model.OMusic;
 import discordbot.threads.GrayLogThread;
 import discordbot.threads.ServiceHandlerThread;
 import discordbot.util.YTUtil;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.managers.AudioManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
 public class Launcher {
-	public static boolean killAllThreads = false;
+	public volatile static boolean isBeingKilled = false;
 	private static GrayLogThread GRAYLOG;
 	private static BotContainer botContainer = null;
 	private static ProgramVersion version = new ProgramVersion(1);
@@ -45,10 +48,14 @@ public class Launcher {
 		WebDb.init();
 		Launcher.init();
 		if (Config.BOT_ENABLED) {
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				public void run() {
+					Launcher.shutdownHook();
+				}
+			});
 			try {
 				botContainer = new BotContainer((CGuild.getActiveGuildCount()));
 				Thread serviceHandler = new ServiceHandlerThread(botContainer);
-//				serviceHandler.setDaemon(true);
 				serviceHandler.start();
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
@@ -78,13 +85,30 @@ public class Launcher {
 	 * @param reason why!?
 	 */
 	public static void stop(ExitCode reason) {
+		if (isBeingKilled) {
+			return;
+		}
+		isBeingKilled = true;
+		DiscordBot.LOGGER.error("Exiting because: " + reason);
+		System.exit(reason.getCode());
+	}
+
+	/**
+	 * shutdown hook, closing connections
+	 */
+	public static void shutdownHook() {
 		if (botContainer != null) {
 			for (DiscordBot discordBot : botContainer.getShards()) {
+				for (Guild guild : discordBot.client.getGuilds()) {
+					AudioManager audio = guild.getAudioManager();
+					if (audio.isConnected()) {
+						CBotPlayingOn.insert(guild.getId(), audio.getConnectedChannel().getId());
+					}
+				}
 				discordBot.client.shutdown(true);
 			}
 		}
-		DiscordBot.LOGGER.error("Exiting", reason);
-		System.exit(reason.getCode());
+
 	}
 
 	/**

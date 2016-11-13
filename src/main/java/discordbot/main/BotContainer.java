@@ -1,12 +1,13 @@
 package discordbot.main;
 
-import discordbot.core.ExitCode;
-import discordbot.handler.CommandHandler;
-import discordbot.handler.GameHandler;
-import discordbot.handler.SecurityHandler;
-import discordbot.handler.Template;
+import discordbot.db.controllers.CBotPlayingOn;
+import discordbot.db.model.OBotPlayingOn;
+import discordbot.handler.*;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.VoiceChannel;
 
 import javax.security.auth.login.LoginException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -17,6 +18,7 @@ public class BotContainer {
 	private final DiscordBot[] shards;
 	private volatile AtomicInteger numGuilds;
 	private volatile boolean needsMoreShards = false;
+	private volatile boolean allShardsReady = false;
 
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException {
 		this.numShards = 1 + ((numGuilds + 1000) / 2000);
@@ -92,6 +94,29 @@ public class BotContainer {
 		}
 	}
 
+	/**
+	 * After the bot is ready to go; reconnect to the voicechannels and start playing where it left off
+	 */
+	private void onAllShardsReady() {
+		List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
+		for (OBotPlayingOn radio : radios) {
+			DiscordBot bot = getBotFor(radio.guildId);
+			Guild guild = bot.client.getGuildById(radio.guildId);
+			VoiceChannel vc = null;
+			for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
+				if (voiceChannel.getId().equals(radio.channelId)) {
+					vc = voiceChannel;
+					break;
+				}
+			}
+			if (vc != null) {
+				MusicPlayerHandler.getFor(guild, bot).connectTo(vc);
+				MusicPlayerHandler.getFor(guild, bot).playRandomSong();
+			}
+		}
+		CBotPlayingOn.deleteAll();
+	}
+
 	private void initHandlers() {
 		CommandHandler.initialize();
 		GameHandler.initialize();
@@ -106,11 +131,16 @@ public class BotContainer {
 	 * @return all shards ready
 	 */
 	public boolean allShardsReady() {
+		if (allShardsReady) {
+			return allShardsReady;
+		}
 		for (DiscordBot shard : shards) {
 			if (!shard.isReady()) {
 				return false;
 			}
 		}
+		allShardsReady = true;
+		onAllShardsReady();
 		return true;
 	}
 }
