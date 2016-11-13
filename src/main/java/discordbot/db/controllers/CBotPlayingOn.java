@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * data communication with the controllers `bot_playing_on`
  */
-public class CBotPlayingOn2 {
+public class CBotPlayingOn {
 
 
 	private static OBotPlayingOn fillRecord(ResultSet resultset) throws SQLException {
