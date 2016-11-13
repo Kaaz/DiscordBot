@@ -48,7 +48,7 @@ public class CPlaylist {
 	public static OPlaylist findBy(int userId, int guildId) {
 		OPlaylist s = new OPlaylist();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, title, owner_id, guild_id, visibility_level, edit_type, create_date  " +
+				"SELECT id, title, owner_id, guild_id,play_type, visibility_level, edit_type, create_date  " +
 						"FROM playlist " +
 						"WHERE owner_id = ? AND guild_id = ?", userId, guildId)) {
 			if (rs.next()) {
@@ -67,7 +67,7 @@ public class CPlaylist {
 	public static OPlaylist findById(int internalId) {
 		OPlaylist s = new OPlaylist();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, title, owner_id, guild_id, visibility_level, edit_type, create_date  " +
+				"SELECT id, play_type,title, owner_id, guild_id, visibility_level, edit_type, create_date  " +
 						"FROM playlist " +
 						"WHERE id = ? ", internalId)) {
 			if (rs.next()) {
@@ -114,6 +114,16 @@ public class CPlaylist {
 		return amount;
 	}
 
+	public static String getNextTrack(int playlistId, OPlaylist.PlayType playType) {
+		switch (playType) {
+			case LOOP:
+				return getNextMusic(playlistId);
+			case SHUFFLE:
+			default:
+				return getRandomMusic(playlistId);
+		}
+	}
+
 	/**
 	 * Retrieves a somewhat random item from the playlist
 	 *
@@ -140,6 +150,25 @@ public class CPlaylist {
 			return potentialSongs.get(rng.nextInt(potentialSongs.size()));
 		}
 		return null;
+	}
+
+	public static String getNextMusic(int playlistId) {
+		String filename = null;
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT m.id, m.filename " +
+						"FROM music m " +
+						"JOIN playlist_item pi ON pi.music_id = m.id " +
+						"JOIN playlist pl ON pl.id = pi.playlist_id  " +
+						"WHERE m.banned = 0 AND pl.id = ? " +
+						"ORDER BY pi.last_played ASC " +
+						"LIMIT 1", playlistId)) {
+			while (rs.next()) {
+				filename = rs.getString("filename");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return filename;
 	}
 
 	/**
@@ -207,7 +236,7 @@ public class CPlaylist {
 	public static void updateLastPlayed(int playlistId, int musicId) {
 		try {
 			WebDb.get().query("UPDATE playlist_item SET last_played = ? WHERE playlist_id = ? AND music_id = ?",
-					System.currentTimeMillis()/1000L, playlistId, musicId);
+					System.currentTimeMillis() / 1000L, playlistId, musicId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -220,6 +249,7 @@ public class CPlaylist {
 		r.ownerId = rs.getInt("owner_id");
 		r.guildId = rs.getInt("guild_id");
 		r.setEditType(rs.getInt("edit_type"));
+		r.setPlayType(rs.getInt("play_type"));
 		r.setVisibility(rs.getInt("visibility_level"));
 		r.createdOn = rs.getTimestamp("create_date");
 		return r;
@@ -232,9 +262,9 @@ public class CPlaylist {
 		}
 		try {
 			WebDb.get().query(
-					"UPDATE playlist SET title = ?, owner_id = ?, guild_id = ?, visibility_level = ?, edit_type = ? " +
+					"UPDATE playlist SET title = ?, owner_id = ?, guild_id = ?, visibility_level = ?, edit_type = ?, play_type = ? " +
 							"WHERE id = ? ",
-					record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(), record.id
+					record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(), record.getPlayType().getId(), record.id
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -245,9 +275,9 @@ public class CPlaylist {
 		try {
 			record.createdOn = new Timestamp(System.currentTimeMillis());
 			record.id = WebDb.get().insert(
-					"INSERT INTO playlist(title, owner_id, guild_id, visibility_level, edit_type, create_date) " +
+					"INSERT INTO playlist(title, owner_id, guild_id, visibility_level, edit_type,play_type, create_date) " +
 							"VALUES (?,?,?,?,?,?)",
-					record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(), record.createdOn);
+					record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(), record.getPlayType().getId(), record.createdOn);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

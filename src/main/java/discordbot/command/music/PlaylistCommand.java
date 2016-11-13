@@ -32,9 +32,9 @@ import java.util.List;
  * !playlist
  * shows the current songs in the queue
  */
-public class Playlist extends AbstractCommand {
+public class PlaylistCommand extends AbstractCommand {
 
-	public Playlist() {
+	public PlaylistCommand() {
 		super();
 	}
 
@@ -63,6 +63,7 @@ public class Playlist extends AbstractCommand {
 				"-- Adding and removing music from the playlist",
 //				"playlist show <pagenumber>           //shows music in the playlist",
 				"playlist add                         //adds the currently playing music",
+				"playlist add guild                   //adds the currently playing to the guild list",
 //				"playlist add <youtubelink>           //adds the link to the playlist",
 				"playlist remove                      //removes the currently playing music",
 //				"playlist remove <youtubelink>        //removes song from playlist",
@@ -71,6 +72,7 @@ public class Playlist extends AbstractCommand {
 				"-- Changing the settings of the playlist",
 				"playlist title <new title>           //edit the playlist title",
 				"playlist edit <new type>             //change the edit-type of a playlist",
+				"playlist play <new type>             //change the play-type of a playlist",
 //				"playlist visibility <new visibility> //change who can see the playlist",
 //				"playlist reset                       //reset settings to default",
 		};
@@ -304,6 +306,27 @@ public class Playlist extends AbstractCommand {
 							return Template.get(channel, "playlist_setting_updated", "visibility", args[1]);
 						}
 						return Template.get("playlist_setting_not_numeric", "visibility");
+					case "play":
+					case "playtype":
+					case "play-type":
+						if (args.length == 1) {
+							List<List<String>> tbl = new ArrayList<>();
+							for (OPlaylist.PlayType playType : OPlaylist.PlayType.values()) {
+								if (playType.getId() < 1) continue;
+								tbl.add(Arrays.asList((playType == playlist.getPlayType() ? "*" : " ") + playType.getId(), playType.toString(), playType.getDescription()));
+							}
+							return "the play-type of the playlist. A `*` indicates the selected option" + Config.EOL +
+									Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
+									"Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
+						}
+						if (args.length > 1 && args[1].matches("^\\d+$")) {
+							OPlaylist.PlayType playType = OPlaylist.PlayType.fromId(Integer.parseInt(args[1]));
+							playlist.setPlayType(playType);
+							CPlaylist.update(playlist);
+							player.setActivePlayListId(playlist.id);
+							return Template.get(channel, "playlist_setting_updated", "play-type", args[1]);
+						}
+						return Template.get("playlist_setting_not_numeric", "play-type");
 
 				}
 			}
@@ -346,6 +369,7 @@ public class Playlist extends AbstractCommand {
 		body.add(Arrays.asList("Title", playlist.title));
 		body.add(Arrays.asList("Owner", owner));
 		body.add(Arrays.asList("edit-type", playlist.getEditType().getDescription()));
+		body.add(Arrays.asList("play-type", playlist.getPlayType().getDescription()));
 //		body.add(Arrays.asList("visibility", playlist.getVisibility().getDescription()));
 //		body.add(Arrays.asList("created", TimeUtil.formatYMD(playlist.createdOn)));
 		return Misc.makeAsciiTable(Arrays.asList("Name", "Value"), body, null);

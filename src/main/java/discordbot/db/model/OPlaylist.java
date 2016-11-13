@@ -12,6 +12,7 @@ public class OPlaylist extends AbstractModel {
 	public int guildId = 0;
 	private Visibility visibility = Visibility.GUILD;
 	private EditType editType = EditType.PUBLIC_AUTO;
+	private PlayType playType = PlayType.SHUFFLE;
 
 	public boolean isGlobalList() {
 		return id > 0 && ownerId == 0 && guildId == 0;
@@ -47,6 +48,18 @@ public class OPlaylist extends AbstractModel {
 
 	public void setEditType(int editId) {
 		this.editType = EditType.fromId(editId);
+	}
+
+	public PlayType getPlayType() {
+		return playType;
+	}
+
+	public void setPlayType(int id) {
+		setPlayType(PlayType.fromId(id));
+	}
+
+	public void setPlayType(PlayType playType) {
+		this.playType = playType;
 	}
 
 
@@ -108,6 +121,36 @@ public class OPlaylist extends AbstractModel {
 				}
 			}
 			return UNKNOWN;
+		}
+
+		public int getId() {
+			return id;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+	}
+
+	public enum PlayType {
+		SHUFFLE(1, "Randomly selects the next track"),
+		LOOP(2, "Iterates through the playlist");
+		private final int id;
+		private final String description;
+
+		PlayType(int id, String description) {
+
+			this.id = id;
+			this.description = description;
+		}
+
+		public static PlayType fromId(int id) {
+			for (PlayType et : values()) {
+				if (id == et.getId()) {
+					return et;
+				}
+			}
+			return SHUFFLE;
 		}
 
 		public int getId() {

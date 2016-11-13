@@ -245,7 +245,7 @@ public class MusicPlayerHandler {
 	private String getRandomSong() {
 		ArrayList<String> potentialSongs = new ArrayList<>();
 		if (!playlist.isGlobalList()) {
-			return CPlaylist.getRandomMusic(playlist.id);
+			return CPlaylist.getNextTrack(playlist.id, playlist.getPlayType());
 		}
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT filename, youtube_title, lastplaydate " +
