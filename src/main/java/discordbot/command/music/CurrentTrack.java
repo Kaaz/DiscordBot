@@ -141,6 +141,7 @@ public class CurrentTrack extends AbstractCommand {
 				case "ban":
 					song.banned = 1;
 					CMusic.update(song);
+					player.skipSong();
 					return Template.get("command_current_banned_success");
 				case "title":
 					song.title = value;
