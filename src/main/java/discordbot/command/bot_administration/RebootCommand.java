@@ -49,7 +49,7 @@ public class RebootCommand extends AbstractCommand {
 				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_update"), message -> {
 					Launcher.stop(ExitCode.UPDATE);
 				});
-			} else if (args.length > 0 && args[0].equals("forceupdate") || args[0].equals("fursupdate")) {
+			} else if (args.length > 0 && (args[0].equals("forceupdate") || args[0].equals("fursupdate"))) {
 				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_forceupdate"), message -> {
 					Launcher.stop(ExitCode.UPDATE);
 				});
