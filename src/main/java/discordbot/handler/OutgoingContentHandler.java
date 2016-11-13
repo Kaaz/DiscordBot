@@ -51,8 +51,8 @@ public class OutgoingContentHandler {
 		});
 	}
 
-	public Message sendMessage(MessageChannel channel, String content) {
-		return channel.sendMessage(content.substring(0, Math.min(1999, content.length())));
+	public void editAsync(Message message, String content, Consumer<Message> callback) {
+		message.updateMessageAsync(content.substring(0, Math.min(1999, content.length())), callback);
 	}
 
 	/**

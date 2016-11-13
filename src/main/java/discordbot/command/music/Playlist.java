@@ -141,16 +141,21 @@ public class Playlist extends AbstractCommand {
 					case "remove":
 					case "del":
 					case "-":
+						if (args.length > 1) {
+							if (args[1].equals("guild")) {
+								playlist = CPlaylist.findBy(0, CGuild.getCachedId(guild.getId()));
+							}
+						} else if (args.length > 1 && args[1].matches("^\\d+$")) {
+							musicRec = CMusic.findById(Integer.parseInt(args[1]));
+							nowPlayingId = musicRec.id;
+						}
 						if (playlist.isGlobalList()) {
 							return Template.get(channel, "playlist_global_readonly");
 						}
 						if (playlist.isPersonal()) {
 							return "Personal lists aren't implemented yet, sorry!";
 						}
-						if (args.length >= 2 && args[1].matches("^\\d+$")) {
-							musicRec = CMusic.findById(Integer.parseInt(args[1]));
-							nowPlayingId = musicRec.id;
-						}
+
 						if (nowPlayingId == 0) {
 							return Template.get(channel, "command_currentlyplaying_nosong");
 						}
@@ -162,10 +167,10 @@ public class Playlist extends AbstractCommand {
 							case PUBLIC_AUTO:
 								if (isAdding) {
 									CPlaylist.addToPlayList(playlist.id, nowPlayingId);
-									return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle);
+									return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle, playlist.title);
 								} else {
 									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
-									return Template.get(channel, "playlist_music_removed");
+									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
 								}
 
 							case PUBLIC_FULL:
