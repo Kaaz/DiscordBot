@@ -141,10 +141,8 @@ public class Playlist extends AbstractCommand {
 					case "remove":
 					case "del":
 					case "-":
-						if (args.length > 1) {
-							if (args[1].equals("guild")) {
-								playlist = CPlaylist.findBy(0, CGuild.getCachedId(guild.getId()));
-							}
+						if (args.length > 1 && args[1].equals("guild")) {
+							playlist = CPlaylist.findBy(0, CGuild.getCachedId(guild.getId()));
 						} else if (args.length > 1 && args[1].matches("^\\d+$")) {
 							musicRec = CMusic.findById(Integer.parseInt(args[1]));
 							nowPlayingId = musicRec.id;
