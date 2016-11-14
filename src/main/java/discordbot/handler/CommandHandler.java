@@ -65,6 +65,7 @@ public class CommandHandler {
 	 */
 	public static void process(DiscordBot bot, MessageChannel channel, User author, String incomingMessage) {
 		String outMsg = "";
+		boolean commandSuccess = true;
 		boolean startedWithMention = false;
 		int guildId = 0;
 		String inputMessage = incomingMessage;
@@ -121,6 +122,7 @@ public class CommandHandler {
 			outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat(inputMessage);
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
+			commandSuccess = false;
 			outMsg = Template.get("unknown_command", GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help");
 		}
 		if (channel instanceof TextChannel) {
@@ -142,6 +144,7 @@ public class CommandHandler {
 		if (!outMsg.isEmpty()) {
 			bot.out.sendAsyncMessage(channel, outMsg);
 		}
+		CUser.registerCommandUse(CUser.getCachedId(author.getId()));
 	}
 
 	private static boolean hasRightVisibility(MessageChannel channel, CommandVisibility visibility) {

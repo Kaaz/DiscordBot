@@ -85,6 +85,7 @@ public class CUser {
 		s.id = rs.getInt("id");
 		s.discord_id = rs.getString("discord_id");
 		s.name = rs.getString("name");
+		s.commandsUsed = rs.getInt("commands_used");
 		s.banned = rs.getInt("banned");
 		return s;
 	}
@@ -102,6 +103,18 @@ public class CUser {
 		return list;
 	}
 
+	public static void registerCommandUse(int userId) {
+		try {
+			WebDb.get().query(
+					"UPDATE users SET  commands_used = commands_used + 1 " +
+							"WHERE id = ? ",
+					userId
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void update(OUser record) {
 		if (record.id == 0) {
 			insert(record);
@@ -109,9 +122,9 @@ public class CUser {
 		}
 		try {
 			WebDb.get().query(
-					"UPDATE users SET discord_id = ?, name = ?, banned = ? " +
+					"UPDATE users SET discord_id = ?, name = ?, banned = ?, commands_used = ?" +
 							"WHERE id = ? ",
-					record.discord_id, record.name, record.banned, record.id
+					record.discord_id, record.name, record.banned, record.commandsUsed, record.id
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -121,9 +134,9 @@ public class CUser {
 	public static void insert(OUser record) {
 		try {
 			record.id = WebDb.get().insert(
-					"INSERT INTO users(discord_id, name,banned) " +
-							"VALUES (?,?,?)",
-					record.discord_id, record.name, record.banned);
+					"INSERT INTO users(discord_id,commands_used, name,banned) " +
+							"VALUES (?,?,?,?)",
+					record.discord_id, record.commandsUsed, record.name, record.banned);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

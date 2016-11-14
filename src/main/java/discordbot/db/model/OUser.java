@@ -10,4 +10,5 @@ public class OUser extends AbstractModel {
 	public String discord_id = "";
 	public String name = "";
 	public int banned = 0;
+	public int commandsUsed = 0;
 }

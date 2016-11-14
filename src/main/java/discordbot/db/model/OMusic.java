@@ -11,4 +11,6 @@ public class OMusic extends AbstractModel {
 	public long lastplaydate = 0;
 	public int banned = 0;
 	public String title = "";
+	public int playCount = 0;
+	public long lastManualPlaydate = 0L;
 }

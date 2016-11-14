@@ -65,9 +65,8 @@ public class MySQLAdapter {
 	}
 
 	public int query(String sql) throws SQLException {
-		try (Statement stmt = getConnection().createStatement();) {
-			int res = stmt.executeUpdate(sql);
-			return res;
+		try (Statement stmt = getConnection().createStatement()) {
+			return stmt.executeUpdate(sql);
 		}
 	}
 

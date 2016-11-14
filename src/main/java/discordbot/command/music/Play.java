@@ -129,6 +129,8 @@ public class Play extends AbstractCommand {
 									rec.youtubeTitle = YTUtil.getTitleFromPage(finalVideocode);
 									rec.youtubecode = finalVideocode;
 									rec.filename = path;
+									rec.playCount = 1;
+									rec.lastManualPlaydate = System.currentTimeMillis() / 1000L;
 									CMusic.update(rec);
 									message.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
 									player.addToQueue(path, author);
@@ -145,6 +147,7 @@ public class Play extends AbstractCommand {
 					} else if (filecheck.exists()) {
 						String path = filecheck.toPath().toRealPath().toString();
 						OMusic rec = CMusic.findByFileName(path);
+						CMusic.registerPlayRequest(rec.id);
 						player.addToQueue(path, author);
 						return Template.get("music_added_to_queue", rec.youtubeTitle);
 					}

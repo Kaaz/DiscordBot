@@ -74,10 +74,12 @@ public class UserCommand extends AbstractCommand {
 					nickname = infoUser.getUsername();
 				}
 			}
+			OUser dbUser = CUser.findBy(infoUser.getId());
 			sb.append("Querying for ").append(nickname).append(Config.EOL);
 			sb.append(":bust_in_silhouette: User: ").append(infoUser.getUsername()).append("#").append(infoUser.getDiscriminator()).append(Config.EOL);
 //			sb.append(":date: Account registered at ").append(infoUser.()).append(Config.EOL);
 			sb.append(":id: discord id:").append(infoUser.getId()).append(Config.EOL);
+			sb.append(":keyboard: Commands used:").append(dbUser.commandsUsed).append(Config.EOL);
 			if (guildId > 0) {
 				OGuildMember member = CGuildMember.findBy(guildId, userId);
 				if (member.joinDate != null) {
@@ -85,7 +87,7 @@ public class UserCommand extends AbstractCommand {
 				}
 			}
 			if (!infoUser.getAvatarUrl().endsWith("null.jpg")) {
-				sb.append(":frame_photo: Avatar: ").append("`").append(infoUser.getAvatarUrl()).append("`").append(Config.EOL);
+				sb.append(":frame_photo: Avatar: ").append("<").append(infoUser.getAvatarUrl()).append(">").append(Config.EOL);
 			}
 			if (infoUser.isBot()) {
 				sb.append(":robot: This user is a bot (or pretends to be)");
