@@ -303,7 +303,7 @@ public class DiscordBot {
 
 	public void sendStatsToDiscordPw() {
 		JSONObject data = new JSONObject();
-		data.put("server_count", client.getGuilds());
+		data.put("server_count", client.getGuilds().size());
 		if (totShards > 1) {
 			data.put("shard_id", shardId);
 			data.put("shard_count", totShards);
@@ -311,7 +311,7 @@ public class DiscordBot {
 		Unirest.post("https://bots.discord.pw/api/bots/" + client.getSelfInfo().getId() + "/stats")
 				.header("Authorization", Config.BOT_TOKEN_BOTS_DISCORD_PW)
 				.header("Content-Type", "application/json")
-				.body(data)
+				.body(data.toString())
 				.asJsonAsync();
 	}
 }
