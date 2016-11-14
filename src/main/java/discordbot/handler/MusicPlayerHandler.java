@@ -25,6 +25,7 @@ import net.dv8tion.jda.player.hooks.PlayerEventListener;
 import net.dv8tion.jda.player.hooks.events.FinishEvent;
 import net.dv8tion.jda.player.hooks.events.PlayEvent;
 import net.dv8tion.jda.player.hooks.events.PlayerEvent;
+import net.dv8tion.jda.player.hooks.events.RepeatEvent;
 import net.dv8tion.jda.player.source.AudioInfo;
 import net.dv8tion.jda.player.source.AudioSource;
 import net.dv8tion.jda.player.source.LocalSource;
@@ -78,6 +79,13 @@ public class MusicPlayerHandler {
 			playlist = CPlaylist.getGlobalList();
 		}
 		activePlayListId = playlist.id;
+	}
+
+	public synchronized boolean isInRepeatMode() {
+		return player.isRepeat();
+	}
+	public synchronized void setRepeat(boolean repeatMode) {
+		player.setRepeat(repeatMode);
 	}
 
 	public static void removeGuild(Guild guild) {
@@ -405,7 +413,7 @@ public class MusicPlayerHandler {
 					e.printStackTrace();
 				}
 			}
-			if (event instanceof PlayEvent) {
+			if (event instanceof PlayEvent || event instanceof RepeatEvent) {
 				try {
 					trackStarted();
 				} catch (IOException e) {
