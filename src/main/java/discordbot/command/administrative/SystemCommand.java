@@ -57,7 +57,7 @@ public class SystemCommand extends AbstractCommand {
 	private String getProgressbar(long current, long max) {
 		String bar = "";
 		final String BLOCK_INACTIVE = "▬";
-		final String BLOCK_ACTIVE = ":black_circle:";
+		final String BLOCK_ACTIVE = ":large_blue_circle:";
 		final int BLOCK_PARTS = 12;
 		int activeBLock = (int) (((float) current / (float) max) * (float) BLOCK_PARTS);
 		for (int i = 0; i < BLOCK_PARTS; i++) {
