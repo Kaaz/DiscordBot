@@ -36,7 +36,6 @@ import net.dv8tion.jda.events.user.UserGameUpdateEvent;
 import net.dv8tion.jda.events.voice.VoiceJoinEvent;
 import net.dv8tion.jda.events.voice.VoiceLeaveEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
-import net.dv8tion.jda.managers.AudioManager;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -284,22 +283,19 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onVoiceLeave(VoiceLeaveEvent event) {
-		VoiceChannel channel = event.getOldChannel();
-		AudioManager audioManager = channel.getGuild().getAudioManager();
-		VoiceChannel connectedVoice = audioManager.getConnectedChannel();
-		if (connectedVoice == null || !channel.getId().equals(connectedVoice.getId())) {
+		MusicPlayerHandler player = MusicPlayerHandler.getFor(event.getGuild(), discordBot);
+		if (!player.isConnected()) {
 			return;
 		}
-		boolean shouldLeave = true;
-		for (User user : connectedVoice.getUsers()) {
+		if (!player.isConnectedTo(event.getOldChannel())) {
+			return;
+		}
+		for (User user : event.getOldChannel().getUsers()) {
 			if (!user.isBot()) {
-				shouldLeave = false;
-				break;
+				return;
 			}
 		}
-		if (shouldLeave) {
-			MusicPlayerHandler.getFor(event.getGuild(), discordBot).leave();
-			discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(channel.getGuild()), Template.get("music_no_one_listens_i_leave"), null);
-		}
+		player.leave();
+		discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(event.getGuild()), Template.get("music_no_one_listens_i_leave"), null);
 	}
 }
