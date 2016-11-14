@@ -39,10 +39,8 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	 */
 	public final turnType getGameTurnInstance() {
 		Class<?> turnTypeClass = (Class<?>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-		turnType type;
 		try {
-			type = (turnType) turnTypeClass.getConstructor().newInstance();
-			return type;
+			return (turnType) turnTypeClass.getConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			e.printStackTrace();
 		}
