@@ -126,6 +126,7 @@ public class JDAEvents extends ListenerAdapter {
 		}
 		CGuild.update(server);
 		DiscordBot.LOGGER.info("[event] JOINED SERVER! " + guild.getName());
+		discordBot.sendStatsToDiscordPw();
 	}
 
 	@Override
@@ -143,6 +144,7 @@ public class JDAEvents extends ListenerAdapter {
 		Launcher.log("bot leaves guild", "bot", "guild-leave",
 				"guild-id", guild.getId(),
 				"guild-name", guild.getName());
+		discordBot.sendStatsToDiscordPw();
 	}
 
 	@Override

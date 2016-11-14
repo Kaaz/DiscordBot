@@ -1,5 +1,6 @@
 package discordbot.main;
 
+import com.mashape.unirest.http.Unirest;
 import discordbot.db.controllers.CGuild;
 import discordbot.event.JDAEvents;
 import discordbot.guildsettings.DefaultGuildSettings;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.*;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ public class DiscordBot {
 	public final long startupTimeStamp;
 	private final Map<Guild, TextChannel> defaultChannels = new ConcurrentHashMap<>();
 	private final Map<Guild, TextChannel> musicChannels = new ConcurrentHashMap<>();
+	private final int totShards;
 	public JDA client;
 	public Timer timer = new Timer();
 	public String mentionMe;
@@ -43,6 +46,7 @@ public class DiscordBot {
 		registerHandlers();
 		JDABuilder builder = new JDABuilder().setBotToken(Config.BOT_TOKEN);
 		this.shardId = shardId;
+		this.totShards = numShards;
 		if (numShards > 1) {
 			builder.useSharding(shardId, numShards);
 		}
@@ -156,6 +160,7 @@ public class DiscordBot {
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds(), client);
 		this.isReady = ready;
+		sendStatsToDiscordPw();
 		container.allShardsReady();
 	}
 
@@ -294,5 +299,19 @@ public class DiscordBot {
 
 	public void setContainer(BotContainer container) {
 		this.container = container;
+	}
+
+	public void sendStatsToDiscordPw() {
+		JSONObject data = new JSONObject();
+		data.put("server_count", client.getGuilds());
+		if (totShards > 1) {
+			data.put("shard_id", shardId);
+			data.put("shard_count", totShards);
+		}
+		Unirest.post("https://bots.discord.pw/api/bots/" + client.getSelfInfo().getId() + "/stats")
+				.header("Authorization", Config.BOT_TOKEN_BOTS_DISCORD_PW)
+				.header("Content-Type", "application/json")
+				.body(data)
+				.asJsonAsync();
 	}
 }

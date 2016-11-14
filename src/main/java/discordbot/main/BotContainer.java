@@ -1,10 +1,12 @@
 package discordbot.main;
 
+import com.mashape.unirest.http.Unirest;
 import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.model.OBotPlayingOn;
 import discordbot.handler.*;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.VoiceChannel;
+import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.util.List;
@@ -80,7 +82,6 @@ public class BotContainer {
 		}
 		return shards[(int) ((discordGuildId >> 22) % numShards)];
 	}
-
 	/**
 	 * creates a new instance for each shard
 	 *

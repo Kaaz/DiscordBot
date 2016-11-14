@@ -11,6 +11,7 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
+import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
@@ -81,6 +82,10 @@ public class CustomCommand extends AbstractCommand {
 			return Template.get("permission_denied");
 		}
 		int guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());
+		Guild guild = ((TextChannel) channel).getGuild();
+		guild.getManager().kick(author);
+		guild.getManager().update();
+
 		String prefix = DisUtil.getCommandPrefix(channel);
 		if (args.length >= 2 && Arrays.asList(valid_actions).contains(args[0])) {
 			if (args[0].equals("add") && args.length > 2) {

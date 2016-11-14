@@ -1,5 +1,6 @@
 package discordbot.command.fun;
 
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
@@ -37,18 +38,8 @@ public class Say extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		boolean first = true;
-		String ret = "";
 		if (args.length > 0) {
-			for (String s : args) {
-				if (first) {
-					first = false;
-					ret += s;
-				} else {
-					ret += " " + s;
-				}
-			}
-			return ret;
+			return Joiner.on(" ").join(args);
 		} else {
 			return Template.get("command_say_whatexactly");
 		}
