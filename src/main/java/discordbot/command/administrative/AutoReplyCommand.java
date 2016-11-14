@@ -38,7 +38,7 @@ public class AutoReplyCommand extends AbstractCommand {
 
 	@Override
 	public String getDescription() {
-		return "Patterns where the bot auto-replies to. ";
+		return "regular expression Patterns where the bot auto-replies to. ";
 	}
 
 	@Override

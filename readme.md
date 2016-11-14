@@ -40,7 +40,8 @@ Commands | | | | |
 [reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role) | [roll](#roll)
 [rotate](#rotate) | [say](#say) | [sendfile](#sendfile) | [skip](#skip) | [slot](#slot)
 [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template)
-[user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume) | 
+[uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume)
+
 
 ## Games
 
@@ -121,6 +122,7 @@ music_playlist_id | 0 | used to store the last used playlist
 music_role_requirement | none | In order to use music commands you need this role!<br/>Setting this value to none will disable the requirement
 music_show_listeners | true | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
 music_volume | 10 | sets the default volume of the music player<br/>So the next time the bot connects it starts with this volume<br/><br/>Accepts a value between 0 and 100
+music_vote_percent | 1 | Percentage of users (rounded down) required to skip the currently playing track<br/><br/>eg; when set to 25, and 5 listeners it would require 2 users to vote skip <br/><br/>Accepts a value between 1 and 100
 pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
 show_unknown_commands | false | Show message on nonexistent commands<br/>true -> returns a help message<br/>false -> stays silent
 use_economy | false | Use the economy feature?<br/>false -> nope!<br/>true -> yep!
@@ -283,7 +285,7 @@ Key                Replacement
 %rand-user%        random user in guild
 %rand-user-online% random ONLINE user in guild
 
-Accessible though: command, cmd
+Accessible though: command, cmd, commands, customcommand
 
 Usable in public  channels
 
@@ -514,11 +516,13 @@ playlist list <pagenumber>           //Shows the music in the playlist
 
 -- Adding and removing music from the playlist
 playlist add                         //adds the currently playing music
+playlist add guild                   //adds the currently playing to the guild list
 playlist remove                      //removes the currently playing music
 
 -- Changing the settings of the playlist
 playlist title <new title>           //edit the playlist title
 playlist edit <new type>             //change the edit-type of a playlist
+playlist play <new type>             //change the play-type of a playlist
 ```
 ### pm
 
@@ -801,6 +805,13 @@ Key                Replacement
 %rand-user%        random user in guild
 %rand-user-online% random ONLINE user in guild
 ```
+### uptime
+
+How long am I running for?
+
+Accessible though: uptime
+
+Usable in public and private channels
 ### user
 
 Shows information about the user

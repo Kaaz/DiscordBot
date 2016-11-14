@@ -73,7 +73,6 @@ public class GuildStatsCommand extends AbstractCommand {
 				TreeMap<Date, Integer> map = new TreeMap<>();
 				Guild guild = ((TextChannel) channel).getGuild();
 				List<User> joins = new ArrayList<>(guild.getUsers());
-				Collections.sort(joins, (User a, User b) -> guild.getJoinDateForUser(a).compareTo(guild.getJoinDateForUser(b)));
 				for (User join : joins) {
 					Date time = DateUtils.round(new Date(guild.getJoinDateForUser(join).toInstant().toEpochMilli()), Calendar.DAY_OF_MONTH);
 					if (!map.containsKey(time)) {

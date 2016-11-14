@@ -40,7 +40,7 @@ public class Invite extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		return "I am honored you'd want to invite me! :hugging: " + Config.EOL +
-				"You can add me to your guild/server with the following link : " +
+				"You can add me to your guild/server with the following link : " + Config.EOL +
 				"https://discordapp.com/oauth2/authorize?client_id=" + bot.client.getSelfInfo().getId() + "&scope=bot&permissions=70634560";
 	}
 }
