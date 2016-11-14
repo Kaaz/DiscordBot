@@ -2,6 +2,7 @@ package discordbot.command.creator;
 
 import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
@@ -49,7 +50,7 @@ public class ExecCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
-			return ":upside_down: Bot Administrator+";
+			return Template.get(channel,"command_no_permission");
 		}
 		if (args.length == 0) {
 			return ":face_palm: I expected you to know how to use it";
