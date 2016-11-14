@@ -276,7 +276,7 @@ public class CPlaylist {
 			record.createdOn = new Timestamp(System.currentTimeMillis());
 			record.id = WebDb.get().insert(
 					"INSERT INTO playlist(title, owner_id, guild_id, visibility_level, edit_type,play_type, create_date) " +
-							"VALUES (?,?,?,?,?,?)",
+							"VALUES (?,?,?,?,?,?,?)",
 					record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(), record.getPlayType().getId(), record.createdOn);
 		} catch (Exception e) {
 			e.printStackTrace();
