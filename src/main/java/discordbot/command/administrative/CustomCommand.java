@@ -65,7 +65,7 @@ public class CustomCommand extends AbstractCommand {
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"cmd"
+				"cmd", "commands", "customcommand"
 		};
 	}
 
