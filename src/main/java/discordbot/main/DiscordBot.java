@@ -302,6 +302,9 @@ public class DiscordBot {
 	}
 
 	public void sendStatsToDiscordPw() {
+		if (!Config.BOT_STATS_DISCORD_PW_ENABLED) {
+			return;
+		}
 		JSONObject data = new JSONObject();
 		data.put("server_count", client.getGuilds().size());
 		if (totShards > 1) {

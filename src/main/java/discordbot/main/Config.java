@@ -19,6 +19,9 @@ public class Config {
 	public static boolean BOT_ENABLED = false;
 	@ConfigurationOption
 	public static String BOT_TOKEN_BOTS_DISCORD_PW = "token-here";
+
+	@ConfigurationOption
+	public static boolean BOT_STATS_DISCORD_PW_ENABLED = false;
 	@ConfigurationOption
 	public static String BOT_WEBSITE = "emily-bot.pw";
 	@ConfigurationOption
