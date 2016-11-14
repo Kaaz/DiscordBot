@@ -34,6 +34,9 @@ public class CustomCommand extends AbstractCommand {
 				"Key                Replacement\n" +
 				"---                ---\n" +
 				"%user%             Username \n" +
+				"%args%             everything the user said besides the command \n" +
+				"%arg1%             the first argument of the user \n" +
+				"%arg9%             the 9th argument etc. a new argument starts after a space \n" +
 				"%user-mention%     Mentions user \n" +
 				"%user-id%          ID of user\n" +
 				"%nick%             Nickname\n" +

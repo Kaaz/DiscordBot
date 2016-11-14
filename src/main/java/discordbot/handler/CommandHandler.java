@@ -115,9 +115,9 @@ public class CommandHandler {
 				}
 			}
 		} else if (customCommands.containsKey(input[0])) {
-			outMsg = DisUtil.replaceTags(customCommands.get(input[0]), author, channel);
+			outMsg = DisUtil.replaceTags(customCommands.get(input[0]), author, channel, args);
 		} else if (guildCommands.containsKey(guildId) && guildCommands.get(guildId).containsKey(input[0])) {
-			outMsg = DisUtil.replaceTags(guildCommands.get(guildId).get(input[0]), author, channel);
+			outMsg = DisUtil.replaceTags(guildCommands.get(guildId).get(input[0]), author, channel, args);
 		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
 			outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat(inputMessage);
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
