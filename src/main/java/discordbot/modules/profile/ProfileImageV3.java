@@ -14,14 +14,14 @@ import java.io.IOException;
 import java.util.Random;
 
 public class ProfileImageV3 extends ProfileImage {
-	private Random rng;
+
 
 	public ProfileImageV3(User user) {
 		super(user);
-		rng = new Random();
 	}
 
 	public File getProfileImage() throws IOException {
+		Random rng = new Random(Long.parseLong(getUser().getId()));
 		int fontsize = 28;
 		if (getUser().getUsername().length() <= 4) {
 			fontsize = 32;
@@ -32,6 +32,10 @@ public class ProfileImageV3 extends ProfileImage {
 		OUser dbuser = CUser.findBy(getUser().getId());
 		double level = Math.log(dbuser.commandsUsed + 1);//+1 for this command
 		int xpPercent = (int) ((level % 1D) * 100D);
+		int skillPoints = (int) level + 3;
+		int health = rng.nextInt(skillPoints);
+		int attack = rng.nextInt(skillPoints - health);
+		int defense = skillPoints - health - attack;
 		Font defaultFont = new Font("Forte", Font.BOLD + Font.ITALIC, fontsize);
 		Font score = new Font("Forte", Font.BOLD, 24);
 		Font creditFont = new Font("Forte", Font.ITALIC, 12);
@@ -59,10 +63,10 @@ public class ProfileImageV3 extends ProfileImage {
 		GfxUtil.addText("" + (int) level, score, 173, 118, g, new Color(0xffff00));//rewards
 //		GfxUtil.addRightText("" + rng.nextInt(1000), score, 290, 118, g, new Color(0x36cbe9));//currency
 
-		GfxUtil.addCenterText("" + rng.nextInt(100), score, 31, 246, g, new Color(0x5c7e32));//health
-		GfxUtil.addCenterText("" + rng.nextInt(100), score, 134, 246, g, new Color(0x5c7e32));//attack
-		GfxUtil.addCenterText("" + rng.nextInt(100), score, 237, 246, g, new Color(0x5c7e32));//defense
-		File file = new File("profile_v2_" + getUser().getId() + ".png");
+		GfxUtil.addCenterText("" + health, score, 31, 246, g, new Color(0x5c7e32));//health
+		GfxUtil.addCenterText("" + attack, score, 134, 246, g, new Color(0x5c7e32));//attack
+		GfxUtil.addCenterText("" + defense, score, 237, 246, g, new Color(0x5c7e32));//defense
+		File file = new File("profile_v3_" + getUser().getId() + ".png");
 		ImageIO.write(result, "png", file);
 		return file;
 	}
