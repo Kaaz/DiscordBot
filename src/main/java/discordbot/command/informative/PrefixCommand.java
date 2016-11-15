@@ -1,9 +1,16 @@
 package discordbot.command.informative;
 
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
+import discordbot.guildsettings.defaults.SettingCommandPrefix;
+import discordbot.handler.GuildSettings;
+import discordbot.handler.Template;
+import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
 public class PrefixCommand extends AbstractCommand {
@@ -23,7 +30,10 @@ public class PrefixCommand extends AbstractCommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[]{};
+		return new String[]{
+				"prefix                           //shows the set prefix",
+				"prefix <prefix>                  //sets the prefix to <prefix>",
+		};
 	}
 
 	@Override
@@ -33,6 +43,17 @@ public class PrefixCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		return "My prefix on this guild is `" + DisUtil.getCommandPrefix(channel) + "`";
+		SimpleRank rank = bot.security.getSimpleRank(author, channel);
+		if (args.length > 0 && rank.isAtLeast(SimpleRank.GUILD_ADMIN) && channel instanceof TextChannel) {
+			TextChannel text = (TextChannel) channel;
+			GuildSettings guildSettings = GuildSettings.get(text.getGuild());
+			if (guildSettings.set(SettingCommandPrefix.class, args[0])) {
+				return Template.get(channel, "command_prefix_saved", args[0]);
+			}
+			return Template.get(channel, "command_prefix_invalid",
+					args[1],
+					"```" + Config.EOL + Joiner.on(Config.EOL).join(guildSettings.getDescription(SettingCommandPrefix.class)) + Config.EOL + "```");
+		}
+		return Template.get(channel, "command_prefix_is", DisUtil.getCommandPrefix(channel));
 	}
 }

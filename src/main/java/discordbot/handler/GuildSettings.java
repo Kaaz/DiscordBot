@@ -113,6 +113,10 @@ public class GuildSettings {
 		}
 	}
 
+	public String[] getDescription(Class<? extends AbstractGuildSetting> settingClass) {
+		return getDescription(DefaultGuildSettings.getKey(settingClass));
+	}
+
 	public String[] getDescription(String key) {
 		if (DefaultGuildSettings.isValidKey(key)) {
 			return DefaultGuildSettings.get(key).getDescription();
