@@ -2,6 +2,7 @@ package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
+import discordbot.main.BotContainer;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
@@ -65,7 +66,7 @@ public class GuildStatsCommand extends AbstractCommand {
 		SimpleRank userrank = bot.security.getSimpleRank(author, channel);
 		switch (args[0].toLowerCase()) {
 			case "music":
-				return getPlayingOn(bot, userrank.isAtLeast(SimpleRank.BOT_ADMIN) || (args.length >= 2 && args[1].equalsIgnoreCase("guilds")));
+				return getPlayingOn(bot.getContainer(), userrank.isAtLeast(SimpleRank.BOT_ADMIN) || (args.length >= 2 && args[1].equalsIgnoreCase("guilds")));
 			case "users":
 				if (!(channel instanceof TextChannel)) {
 					return Template.get("command_invalid_use");
@@ -107,15 +108,20 @@ public class GuildStatsCommand extends AbstractCommand {
 		return getTotalTable(bot);
 	}
 
-	private String getPlayingOn(DiscordBot bot, boolean showGuildnames) {
+	private String getPlayingOn(BotContainer container, boolean showGuildnames) {
 		int activeVoice = 0;
 		int totUsersInVoice = 0, totUsersInGuilds = 0;
 		List<List<String>> body = new ArrayList<>();
-		for (DiscordBot discordBot : bot.getContainer().getShards()) {
+		for (DiscordBot discordBot : container.getShards()) {
 			for (Guild guild : discordBot.client.getGuilds()) {
 				if (discordBot.client.getAudioManager(guild).isConnected()) {
 					activeVoice++;
-					int guildUsersInVoice = discordBot.client.getAudioManager(guild).getConnectedChannel().getUsers().size() - 1;
+					int guildUsersInVoice = 0;
+					for (User user : discordBot.client.getAudioManager(guild).getConnectedChannel().getUsers()) {
+						if (user != null && !user.isBot()) {
+							guildUsersInVoice++;
+						}
+					}
 					int guildUsers = guild.getUsers().size();
 					body.add(Arrays.asList(guild.getId(), guild.getName(), "" + guildUsers, "" + guildUsersInVoice));
 					totUsersInVoice += guildUsersInVoice;
