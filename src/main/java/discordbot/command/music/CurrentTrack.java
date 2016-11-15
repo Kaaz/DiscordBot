@@ -63,6 +63,8 @@ public class CurrentTrack extends AbstractCommand {
 				"current               //info about the currently playing song",
 				"current vote <1-10>   //Cast your vote to the song; 1=worst, 10=best",
 				"current ban           //bans the current track from being randomly played",
+				"current repeat        //repeats the currently playing song",
+				"current update        //updates the now playing message every 10 seconds",
 //				"current artist        //sets the artist of current song",
 //				"current correct       //accept the systems suggestion of title/artist",
 //				"current reversed      //accept the systems suggestion in reverse [title=artist,artist=title]",
@@ -138,6 +140,13 @@ public class CurrentTrack extends AbstractCommand {
 			}
 			value = value.trim();
 			switch (args[0].toLowerCase()) {
+				case "repeat":
+					boolean repeatMode = !player.isInRepeatMode();
+					player.setRepeat(repeatMode);
+					if (repeatMode) {
+						return Template.get("music_repeat_mode");
+					}
+					return Template.get("music_repeat_mode_stopped");
 				case "ban":
 					song.banned = 1;
 					CMusic.update(song);
@@ -174,6 +183,7 @@ public class CurrentTrack extends AbstractCommand {
 		OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
 		String ret = "[`" + DisUtil.getCommandPrefix(channel) + "pl` " + playlist.title + "] " + ":notes: ";
 		ret += songTitle;
+		final String autoUpdateText = ret;
 		ret += Config.EOL + Config.EOL;
 		MusicPlayerHandler musicHandler = MusicPlayerHandler.getFor(guild, bot);
 		ret += getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL;
@@ -226,14 +236,15 @@ public class CurrentTrack extends AbstractCommand {
 							return;
 						}
 						message.updateMessageAsync(
-								getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL
+								(player.isInRepeatMode() ? ":repeat: " : "") + autoUpdateText + Config.EOL +
+										getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL
 								, null);
 					}
 				}, 10000L, 10000L);
 			});
 			return "";
 		}
-		return ret;
+		return (player.isInRepeatMode() ? ":repeat: " : "") + ret;
 	}
 
 	/**

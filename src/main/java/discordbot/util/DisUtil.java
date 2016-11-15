@@ -1,5 +1,6 @@
 package discordbot.util;
 
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingUseEconomy;
@@ -49,7 +50,7 @@ public class DisUtil {
 	}
 
 	/**
-	 * Replaces tags with a
+	 * Replaces tags with a variable
 	 *
 	 * @param input   the message to replace tags in
 	 * @param user    user info for user related tags
@@ -57,6 +58,19 @@ public class DisUtil {
 	 * @return formatted string
 	 */
 	public static String replaceTags(String input, User user, MessageChannel channel) {
+		return replaceTags(input, user, channel, null);
+	}
+
+	/**
+	 * Replaces tags with a variable
+	 *
+	 * @param input   the message to replace tags in
+	 * @param user    user info for user related tags
+	 * @param channel channel/guild info
+	 * @return formatted string
+	 */
+
+	public static String replaceTags(String input, User user, MessageChannel channel, String[] userArgs) {
 		Guild guild = null;
 		if (channel instanceof TextChannel) {
 			guild = ((TextChannel) channel).getGuild();
@@ -77,6 +91,13 @@ public class DisUtil {
 				.replace("%channel-mention%", (guild == null) ? "Private" : ((TextChannel) channel).getAsMention());
 		if (guild == null) {
 			return output.replace("\u0013", "%");
+		}
+		if (userArgs != null) {
+			String allArgs = Joiner.on(" ").join(userArgs);
+			output = output.replace("%args%", allArgs);
+			for (int i = 0; i < userArgs.length; i++) {
+				output = output.replace("%arg" + (i + 1) + "%", userArgs[i]);
+			}
 		}
 		int ind;
 		Random rng = new Random();

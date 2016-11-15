@@ -4,6 +4,7 @@ import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.model.OBotPlayingOn;
 import discordbot.handler.*;
 import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
 
 import javax.security.auth.login.LoginException;
@@ -110,8 +111,18 @@ public class BotContainer {
 				}
 			}
 			if (vc != null) {
-				MusicPlayerHandler.getFor(guild, bot).connectTo(vc);
-				MusicPlayerHandler.getFor(guild, bot).playRandomSong();
+				boolean hasUsers = false;
+				for (User user : vc.getUsers()) {
+					if (!user.isBot()) {
+						hasUsers = true;
+						break;
+					}
+				}
+				if (hasUsers) {
+					MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
+					player.connectTo(vc);
+					player.playRandomSong();
+				}
 			}
 		}
 		CBotPlayingOn.deleteAll();

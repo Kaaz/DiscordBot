@@ -2,13 +2,13 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
+import discordbot.guildsettings.music.SettingMusicRole;
+import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import discordbot.permission.SimpleRank;
+import net.dv8tion.jda.entities.*;
 
 /**
  * !skip
@@ -49,12 +49,32 @@ public class SkipTrack extends AbstractCommand {
 		};
 	}
 
+	private boolean isInVoiceWith(Guild guild, User author) {
+		VoiceChannel channel = guild.getVoiceStatusOfUser(author).getChannel();
+		if (channel == null) {
+			return false;
+		}
+		for (User user : channel.getUsers()) {
+			if (user.getId().equals(guild.getJDA().getSelfInfo().getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
+		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
+		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
+			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
+		}
 		if (!player.isPlaying()) {
-
+			return Template.get("command_currentlyplaying_nosong");
+		}
+		if (!isInVoiceWith(guild, author)) {
+			return Template.get("music_not_same_voicechannel");
 		}
 		if (args.length >= 1) {
 			switch (args[0]) {
