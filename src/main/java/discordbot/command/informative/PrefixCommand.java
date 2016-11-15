@@ -51,7 +51,7 @@ public class PrefixCommand extends AbstractCommand {
 				return Template.get(channel, "command_prefix_saved", args[0]);
 			}
 			return Template.get(channel, "command_prefix_invalid",
-					args[1],
+					args[0],
 					"```" + Config.EOL + Joiner.on(Config.EOL).join(guildSettings.getDescription(SettingCommandPrefix.class)) + Config.EOL + "```");
 		}
 		return Template.get(channel, "command_prefix_is", DisUtil.getCommandPrefix(channel));
