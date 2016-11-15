@@ -46,25 +46,33 @@ public class BotSelfUpdateService extends AbstractService {
 	@Override
 	public void run() {
 		ProgramVersion latestVersion = UpdateUtil.getLatestVersion();
-		DiscordBot bot = this.bot.getShards()[0];
-		if (latestVersion.isHigherThan(Launcher.getVersion()) || this.bot.needsMoreShards()) {
-			bot.timer.schedule(
+		DiscordBot firstShard = bot.getShards()[0];
+		if (latestVersion.isHigherThan(Launcher.getVersion()) || bot.isTerminationRequested()) {
+			firstShard.timer.schedule(
 					new TimerTask() {
 						@Override
 						public void run() {
 							if (latestVersion.isHigherThan(Launcher.getVersion())) {
 								Launcher.stop(ExitCode.UPDATE);
+							} else if (bot.isTerminationRequested()) {
+								Launcher.stop(bot.getRebootReason());
 							} else {
 								Launcher.stop(ExitCode.NEED_MORE_SHARDS);
 							}
 						}
 					}, TimeUnit.MINUTES.toMillis(1));
 			usersHaveBeenWarned = true;
-			String message;
+			String message = Template.get("announce_reboot");
 			if (latestVersion.isHigherThan(Launcher.getVersion())) {
 				message = Template.get("bot_self_update_restart", Launcher.getVersion().toString(), latestVersion.toString());
-			} else {
-				message = Template.get("bot_reboot_more_shards");
+			} else if (bot.isTerminationRequested()) {
+				switch (bot.getRebootReason()) {
+					case NEED_MORE_SHARDS:
+						message = Template.get("bot_reboot_more_shards");
+						break;
+					default:
+						message = Template.get("announce_reboot");
+				}
 			}
 			for (TextChannel channel : getSubscribedChannels()) {
 				sendTo(channel, message);
@@ -76,7 +84,7 @@ public class BotSelfUpdateService extends AbstractService {
 						case "off":
 							continue;
 						case "always":
-							discordBot.out.sendAsyncMessage(bot.getDefaultChannel(guild), message, null);
+							discordBot.out.sendAsyncMessage(discordBot.getDefaultChannel(guild), message, null);
 							break;
 						case "playing":
 							if (guild.getAudioManager().isConnected()) {

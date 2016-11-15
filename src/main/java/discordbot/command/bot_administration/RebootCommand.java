@@ -47,15 +47,15 @@ public class RebootCommand extends AbstractCommand {
 		if (bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
 			if (args.length > 0 && args[0].equalsIgnoreCase("update") && UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
 				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_update"), message -> {
-					Launcher.stop(ExitCode.UPDATE);
+					bot.getContainer().requestExit(ExitCode.UPDATE);
 				});
 			} else if (args.length > 0 && (args[0].equals("forceupdate") || args[0].equals("fursupdate"))) {
 				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_forceupdate"), message -> {
-					Launcher.stop(ExitCode.UPDATE);
+					bot.getContainer().requestExit(ExitCode.UPDATE);
 				});
 			}
 			bot.out.sendAsyncMessage(channel, Template.get("command_reboot_success"), message -> {
-				Launcher.stop(ExitCode.REBOOT);
+				bot.getContainer().requestExit(ExitCode.REBOOT);
 			});
 		}
 		return Template.get("command_no_permission");

@@ -128,7 +128,7 @@ public class DisUtil {
 	public static User findUserIn(TextChannel channel, String searchText) {
 		List<User> users = channel.getUsers();
 		List<User> potential = new ArrayList<>();
-		int smallestDiffIndex = 0, smallestDiff = 999;
+		int smallestDiffIndex = 0, smallestDiff = -1;
 		for (User u : users) {
 			if (u.getUsername().equalsIgnoreCase(searchText)) {
 				return u;
@@ -141,7 +141,7 @@ public class DisUtil {
 			if (nick.toLowerCase().contains(searchText)) {
 				potential.add(u);
 				int d = Math.abs(nick.length() - searchText.length());
-				if (d < smallestDiff) {
+				if (d < smallestDiff || smallestDiff == -1) {
 					smallestDiff = d;
 					smallestDiffIndex = potential.size() - 1;
 				}

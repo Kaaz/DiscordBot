@@ -1,5 +1,6 @@
 package discordbot.main;
 
+import discordbot.core.ExitCode;
 import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.model.OBotPlayingOn;
 import discordbot.handler.*;
@@ -18,8 +19,10 @@ public class BotContainer {
 	private final int numShards;
 	private final DiscordBot[] shards;
 	private volatile AtomicInteger numGuilds;
-	private volatile boolean needsMoreShards = false;
 	private volatile boolean allShardsReady = false;
+
+	private volatile boolean terminationRequested = false;
+	private volatile ExitCode rebootReason = ExitCode.UNKNOWN;
 
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException {
 		this.numShards = 1 + ((numGuilds + 1000) / 2000);
@@ -30,22 +33,26 @@ public class BotContainer {
 	}
 
 	/**
+	 * Request that the bot exits
+	 *
+	 * @param reason the reason
+	 */
+	public synchronized void requestExit(ExitCode reason) {
+		if (!terminationRequested) {
+			terminationRequested = true;
+			rebootReason = reason;
+		}
+	}
+
+	/**
 	 * update the numguilds so that we can check if we need an extra shard
 	 */
 	public void guildJoined() {
 		int suggestedShards = 1 + ((numGuilds.incrementAndGet() + 500) / 2000);
 		if (suggestedShards > numShards) {
-			needsMoreShards = true;
+			terminationRequested = true;
+			rebootReason = ExitCode.NEED_MORE_SHARDS;
 		}
-	}
-
-	/**
-	 * check if there are more shards required
-	 *
-	 * @return need more shards?
-	 */
-	public boolean needsMoreShards() {
-		return needsMoreShards;
 	}
 
 	/**
@@ -153,5 +160,13 @@ public class BotContainer {
 		allShardsReady = true;
 		onAllShardsReady();
 		return true;
+	}
+
+	public boolean isTerminationRequested() {
+		return terminationRequested;
+	}
+
+	public ExitCode getRebootReason() {
+		return rebootReason;
 	}
 }

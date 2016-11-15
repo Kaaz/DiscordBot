@@ -4,7 +4,6 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.modules.profile.ProfileImageV1;
-import discordbot.modules.profile.ProfileImageV2;
 import discordbot.modules.profile.ProfileImageV3;
 import discordbot.util.DisUtil;
 import net.dv8tion.jda.entities.MessageChannel;
