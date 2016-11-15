@@ -63,7 +63,7 @@ public class Play extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[0];
+		return new String[]{"music", "p", "m"};
 	}
 
 	private boolean isInVoiceWith(Guild guild, User author) {
