@@ -30,7 +30,7 @@ public class ProfileImageV3 extends ProfileImage {
 			fontsize = 22;
 		}
 		OUser dbuser = CUser.findBy(getUser().getId());
-		double level = Math.log(dbuser.commandsUsed);
+		double level = Math.log(dbuser.commandsUsed + 1);//+1 for this command
 		int xpPercent = (int) ((level % 1D) * 100D);
 		Font defaultFont = new Font("Forte", Font.BOLD + Font.ITALIC, fontsize);
 		Font score = new Font("Forte", Font.BOLD, 24);
@@ -48,13 +48,13 @@ public class ProfileImageV3 extends ProfileImage {
 
 		g.drawImage(profileImg, 18, 33, 141, 159, 0, 0, profileImg.getWidth(), profileImg.getHeight(), null);
 		g.drawImage(backgroundImage, 0, 0, 320, 265, 0, 0, 320, 265, null);
-		g.drawImage(xpProgressBar, 137, 133, 314 - (int) ((181F / 100F) * (100F - xpPercent)), 148, 0, 0, 175, 15, null);
+		g.drawImage(xpProgressBar, 137, 133, 317 - (int) ((181D / 100D) * (100D - xpPercent)), 148, 0, 0, 175, 15, null);
 
 		GfxUtil.addCenterShadow(getUser().getUsername(), defaultFont, 222, 71 + (fontsize / 2), g, Color.black);
 		GfxUtil.addCenterText(getUser().getUsername(), defaultFont, 222, 71 + (fontsize / 2), g, Color.white);
 		GfxUtil.addRightText("made by Emily", creditFont, 318, 199, g, new Color(0x3A3A38));
 		GfxUtil.addCenterShadow("" + xpPercent + "%", creditFont, 218, 145, g, Color.black);
-		GfxUtil.addCenterText("" + xpPercent + "%", creditFont, 218, 145, g, new Color(0xFFFFFF - 0xf37000));//% xp
+		GfxUtil.addCenterText("" + xpPercent + "%", creditFont, 218, 145, g, new Color(0xf37000));//% xp
 
 		GfxUtil.addText("" + (int) level, score, 173, 118, g, new Color(0xffff00));//rewards
 //		GfxUtil.addRightText("" + rng.nextInt(1000), score, 290, 118, g, new Color(0x36cbe9));//currency

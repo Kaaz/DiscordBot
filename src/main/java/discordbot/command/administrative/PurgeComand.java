@@ -80,8 +80,8 @@ public class PurgeComand extends AbstractCommand {
 					if (message.isPinned()) {
 						continue;
 					}
-					if (message.getAuthor().getId().equals(bot.client.getSelfInfo().getId()) ||
-							message.getRawContent().startsWith(cmdPrefix)) {
+					if (message.getRawContent().startsWith(cmdPrefix)
+							&& (message.getAuthor() == null || message.getAuthor().getId().equals(bot.client.getSelfInfo().getId()))) {
 						bot.out.deleteMessage(message);
 					}
 				}
@@ -121,10 +121,10 @@ public class PurgeComand extends AbstractCommand {
 			if (msg.isPinned()) {
 				continue;
 			}
-			if (deleteAll && (hasManageMessages || msg.getAuthor().getId().equals(bot.client.getSelfInfo().getId()))) {
+			if (deleteAll && (hasManageMessages || (msg.getAuthor() != null && msg.getAuthor().getId().equals(bot.client.getSelfInfo().getId())))) {
 				deletedCount++;
 				bot.out.deleteMessage(msg);
-			} else if (!deleteAll && toDeleteFrom != null && msg.getAuthor().getId().equals(toDeleteFrom.getId())) {
+			} else if (!deleteAll && toDeleteFrom != null && msg.getAuthor() != null && msg.getAuthor().getId().equals(toDeleteFrom.getId())) {
 				deletedCount++;
 				bot.out.deleteMessage(msg);
 			}
