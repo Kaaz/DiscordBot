@@ -5,6 +5,7 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.modules.profile.ProfileImageV1;
 import discordbot.modules.profile.ProfileImageV2;
+import discordbot.modules.profile.ProfileImageV3;
 import discordbot.util.DisUtil;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
@@ -64,7 +65,7 @@ public class ProfileCommand extends AbstractCommand {
 				ProfileImageV1 version1 = new ProfileImageV1(user);
 				file = version1.getProfileImage();
 			} else {
-				ProfileImageV2 version2 = new ProfileImageV2(user);
+				ProfileImageV3 version2 = new ProfileImageV3(user);
 				file = version2.getProfileImage();
 			}
 			channel.sendFileAsync(file, null, message -> file.delete());
