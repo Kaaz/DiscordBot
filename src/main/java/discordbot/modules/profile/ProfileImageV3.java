@@ -22,12 +22,15 @@ public class ProfileImageV3 extends ProfileImage {
 
 	public File getProfileImage() throws IOException {
 		Random rng = new Random(Long.parseLong(getUser().getId()));
-		int fontsize = 28;
+		int fontSize;
 		if (getUser().getUsername().length() <= 4) {
-			fontsize = 32;
-		}
-		if (getUser().getUsername().length() > 8) {
-			fontsize = 22;
+			fontSize = 32;
+		} else if (getUser().getUsername().length() < 12) {
+			fontSize = 22;
+		} else if (getUser().getUsername().length() < 25) {
+			fontSize = 18;
+		} else {
+			fontSize = 14;
 		}
 		OUser dbuser = CUser.findBy(getUser().getId());
 		double level = Math.log(dbuser.commandsUsed + 1);//+1 for this command
@@ -36,7 +39,7 @@ public class ProfileImageV3 extends ProfileImage {
 		int health = rng.nextInt(skillPoints);
 		int attack = rng.nextInt(skillPoints - health);
 		int defense = skillPoints - health - attack;
-		Font defaultFont = new Font("Forte", Font.BOLD + Font.ITALIC, fontsize);
+		Font defaultFont = new Font("Forte", Font.BOLD + Font.ITALIC, fontSize);
 		Font score = new Font("Forte", Font.BOLD, 24);
 		Font creditFont = new Font("Forte", Font.ITALIC, 12);
 		BufferedImage result = new BufferedImage(
@@ -54,8 +57,8 @@ public class ProfileImageV3 extends ProfileImage {
 		g.drawImage(backgroundImage, 0, 0, 320, 265, 0, 0, 320, 265, null);
 		g.drawImage(xpProgressBar, 137, 133, 317 - (int) ((181D / 100D) * (100D - xpPercent)), 148, 0, 0, 175, 15, null);
 
-		GfxUtil.addCenterShadow(getUser().getUsername(), defaultFont, 222, 71 + (fontsize / 2), g, Color.black);
-		GfxUtil.addCenterText(getUser().getUsername(), defaultFont, 222, 71 + (fontsize / 2), g, Color.white);
+		GfxUtil.addCenterShadow(getUser().getUsername(), defaultFont, 222, 71 + (fontSize / 2), g, Color.black);
+		GfxUtil.addCenterText(getUser().getUsername(), defaultFont, 222, 71 + (fontSize / 2), g, Color.white);
 		GfxUtil.addRightText("made by Emily", creditFont, 318, 199, g, new Color(0x3A3A38));
 		GfxUtil.addCenterShadow("" + xpPercent + "%", creditFont, 218, 145, g, Color.black);
 		GfxUtil.addCenterText("" + xpPercent + "%", creditFont, 218, 145, g, new Color(0xf37000));//% xp
