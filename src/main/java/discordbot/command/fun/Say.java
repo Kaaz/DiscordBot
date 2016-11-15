@@ -27,6 +27,11 @@ public class Say extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isListed() {
+		return false;
+	}
+
+	@Override
 	public String[] getUsage() {
 		return new String[]{"say <anything>"};
 	}

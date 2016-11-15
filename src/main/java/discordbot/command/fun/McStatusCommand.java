@@ -42,6 +42,11 @@ public class McStatusCommand extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isListed() {
+		return false;
+	}
+
+	@Override
 	public CommandVisibility getVisibility() {
 		return CommandVisibility.PUBLIC;
 	}
