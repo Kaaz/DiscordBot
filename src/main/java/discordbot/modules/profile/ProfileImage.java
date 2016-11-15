@@ -21,7 +21,8 @@ public abstract class ProfileImage {
 	}
 
 	public BufferedImage getUserAvatar() throws IOException {
-		URLConnection connection = new URL(getUser().getAvatarUrl()).openConnection();
+
+		URLConnection connection = new URL(getUser().getAvatarUrl() != null ? getUser().getAvatarUrl() : getUser().getDefaultAvatarUrl()).openConnection();
 		connection.setRequestProperty("User-Agent", "bot emily-bot");
 		BufferedImage profileImg;
 		try {

@@ -86,7 +86,7 @@ public class UserCommand extends AbstractCommand {
 					sb.append(":date: joined: ").append(TimeUtil.getRelativeTime(member.joinDate.getTime() / 1000L, false, true)).append(Config.EOL);
 				}
 			}
-			if (!infoUser.getAvatarUrl().endsWith("null.jpg")) {
+			if (infoUser.getAvatarUrl() != null) {
 				sb.append(":frame_photo: Avatar: ").append("<").append(infoUser.getAvatarUrl()).append(">").append(Config.EOL);
 			}
 			if (infoUser.isBot()) {
