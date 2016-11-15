@@ -81,7 +81,7 @@ public class PurgeComand extends AbstractCommand {
 						continue;
 					}
 					if (message.getRawContent().startsWith(cmdPrefix)
-							&& (message.getAuthor() == null || message.getAuthor().getId().equals(bot.client.getSelfInfo().getId()))) {
+							|| (message.getAuthor() == null || message.getAuthor().getId().equals(bot.client.getSelfInfo().getId()))) {
 						bot.out.deleteMessage(message);
 					}
 				}
