@@ -1,12 +1,10 @@
 package discordbot.main;
 
-import com.mashape.unirest.http.Unirest;
 import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.model.OBotPlayingOn;
 import discordbot.handler.*;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.VoiceChannel;
-import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.util.List;
@@ -82,6 +80,7 @@ public class BotContainer {
 		}
 		return shards[(int) ((discordGuildId >> 22) % numShards)];
 	}
+
 	/**
 	 * creates a new instance for each shard
 	 *
@@ -111,8 +110,9 @@ public class BotContainer {
 				}
 			}
 			if (vc != null) {
-				MusicPlayerHandler.getFor(guild, bot).connectTo(vc);
-				MusicPlayerHandler.getFor(guild, bot).playRandomSong();
+				MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
+				player.connectTo(vc);
+				player.playRandomSong();
 			}
 		}
 		CBotPlayingOn.deleteAll();

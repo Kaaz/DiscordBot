@@ -84,6 +84,7 @@ public class MusicPlayerHandler {
 	public synchronized boolean isInRepeatMode() {
 		return player.isRepeat();
 	}
+
 	public synchronized void setRepeat(boolean repeatMode) {
 		player.setRepeat(repeatMode);
 	}
@@ -199,7 +200,7 @@ public class MusicPlayerHandler {
 		return channel.equals(guild.getAudioManager().getConnectedChannel());
 	}
 
-	public void connectTo(VoiceChannel channel) {
+	public synchronized void connectTo(VoiceChannel channel) {
 		guild.getAudioManager().openAudioConnection(channel);
 	}
 
@@ -277,7 +278,7 @@ public class MusicPlayerHandler {
 	 *
 	 * @return successfully started playing
 	 */
-	public boolean playRandomSong() {
+	public synchronized boolean playRandomSong() {
 		String randomSong = getRandomSong();
 		if (randomSong != null) {
 			return addToQueue(randomSong, null);

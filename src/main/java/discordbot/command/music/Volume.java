@@ -60,7 +60,7 @@ public class Volume extends AbstractCommand {
 				if (volume > 0 && volume <= 100) {
 					bot.setVolume(guild, volume / 100F);
 					GuildSettings.get(guild).set(SettingMusicVolume.class, String.valueOf((int) (bot.getVolume(guild) * 100F)));
-					return Template.get("command_volume_changed") + " (now " + ((int) (bot.getVolume(guild) * 100F)) + "%)";
+					return Template.get("command_volume_changed", (int)( (bot.getVolume(guild) * 100F)));
 				}
 			} catch (NumberFormatException ignored) {
 			}
