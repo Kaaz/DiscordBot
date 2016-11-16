@@ -53,10 +53,12 @@ public class RebootCommand extends AbstractCommand {
 				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_forceupdate"), message -> {
 					bot.getContainer().requestExit(ExitCode.UPDATE);
 				});
+			} else {
+				bot.out.sendAsyncMessage(channel, Template.get("command_reboot_success"), message -> {
+					bot.getContainer().requestExit(ExitCode.REBOOT);
+				});
 			}
-			bot.out.sendAsyncMessage(channel, Template.get("command_reboot_success"), message -> {
-				bot.getContainer().requestExit(ExitCode.REBOOT);
-			});
+			return "";
 		}
 		return Template.get("command_no_permission");
 	}
