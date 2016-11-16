@@ -9,6 +9,7 @@ import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.handler.*;
 import discordbot.role.RoleRankings;
 import discordbot.util.DisUtil;
+import discordbot.util.TimeUtil;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.Permission;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import java.util.Date;
 import java.util.Map;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,6 +30,7 @@ public class DiscordBot {
 	public final long startupTimeStamp;
 	private final Map<Guild, TextChannel> defaultChannels = new ConcurrentHashMap<>();
 	private final Map<Guild, TextChannel> musicChannels = new ConcurrentHashMap<>();
+	private final Map<Guild, TextChannel> logChannels = new ConcurrentHashMap<>();
 	private final int totShards;
 	public JDA client;
 	public Timer timer = new Timer();
@@ -71,6 +74,27 @@ public class DiscordBot {
 			return true;
 		}
 		return false;
+	}
+
+	public void logGuildEvent(Guild guild, String catagory, String message) {
+		String channelName = GuildSettings.get(guild).getOrDefault(SettingLoggingChannel.class);
+		if (channelName.equals("false")) {
+			return;
+		}
+		if (!logChannels.containsKey(guild)) {
+			TextChannel channel = DisUtil.findChannel(guild, channelName);
+			if (channel == null || !channel.checkPermission(client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+				GuildSettings.get(guild).set(SettingLoggingChannel.class, "false");
+				if (channel == null) {
+					out.sendAsyncMessage(getDefaultChannel(guild), Template.get("guild_logchannel_not_found", channelName));
+				} else {
+					out.sendAsyncMessage(getDefaultChannel(guild), Template.get("guild_logchannel_no_permission", channelName));
+				}
+				return;
+			}
+			logChannels.put(guild, channel);
+		}
+		out.sendAsyncMessage(logChannels.get(guild), String.format("\u231A`[%s]` %s %s", TimeUtil.timeFormat.format(new Date()), catagory, message));
 	}
 
 	public int getShardId() {
@@ -134,6 +158,7 @@ public class DiscordBot {
 	public void loadConfiguration() {
 		defaultChannels.clear();
 		musicChannels.clear();
+		logChannels.clear();
 		chatBotHandler = new ChatBotHandler();
 	}
 
@@ -149,6 +174,7 @@ public class DiscordBot {
 	public void clearChannels(Guild guild) {
 		defaultChannels.remove(guild);
 		musicChannels.remove(guild);
+		logChannels.remove(guild);
 	}
 
 	/**

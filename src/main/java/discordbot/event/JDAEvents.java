@@ -202,6 +202,7 @@ public class JDAEvents extends ListenerAdapter {
 		if ("true".equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && !user.isBot()) {
 			RoleRankings.assignUserRole(discordBot, guild, user);
 		}
+		discordBot.logGuildEvent(guild, "\uD83D\uDC64", "User **" + user.getUsername() + "** joined");
 	}
 
 	@Override
@@ -234,6 +235,7 @@ public class JDAEvents extends ListenerAdapter {
 		OGuildMember guildMember = CGuildMember.findBy(guild.getId(), user.getId());
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());
 		CGuildMember.insertOrUpdate(guildMember);
+		discordBot.logGuildEvent(guild, "\uD83D\uDC64", " **" + user.getUsername() + "** left");
 	}
 
 	@Override
