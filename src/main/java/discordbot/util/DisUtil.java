@@ -33,7 +33,7 @@ public class DisUtil {
 	 * @return found a mention
 	 */
 	public static boolean isUserMention(String input) {
-		return mentionUserPattern.matcher(input).matches();
+		return mentionUserPattern.matcher(input).find();
 	}
 
 	/**

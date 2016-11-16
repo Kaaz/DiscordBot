@@ -4,6 +4,8 @@ import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
+import discordbot.util.DisUtil;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -44,7 +46,14 @@ public class Say extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (args.length > 0) {
-			return Joiner.on(" ").join(args);
+			String output = Joiner.on(" ").join(args);
+			if (DisUtil.isUserMention(output)) {
+				if (bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.GUILD_ADMIN)) {
+					return output;
+				}
+				return Template.get("command_say_contains_mention");
+			}
+			return output;
 		} else {
 			return Template.get("command_say_whatexactly");
 		}
