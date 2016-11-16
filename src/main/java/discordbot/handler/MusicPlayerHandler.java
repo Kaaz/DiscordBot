@@ -168,15 +168,15 @@ public class MusicPlayerHandler {
 		}
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingMusicChannelTitle.class))) {
 			if (PermissionUtil.checkPermission(bot.getMusicChannel(guild), bot.client.getSelfInfo(), Permission.MANAGE_CHANNEL)) {
-				bot.getMusicChannel(guild).getManager().setTopic(":notes: " + record.youtubeTitle).update();
+				bot.getMusicChannel(guild).getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).update();
 			}
 		}
 		if (!messageType.equals("off") && record.id > 0) {
 			String msg = "[`" + DisUtil.getCommandPrefix(guild) + "pl` " + playlist.title + "] ";
 			if (record.artist != null && record.title != null && !record.artist.trim().isEmpty() && !record.title.trim().isEmpty()) {
-				msg += ":notes: " + record.artist + " - " + record.title;
+				msg += "\uD83C\uDFB6 " + record.artist + " - " + record.title;
 			} else {
-				msg += ":notes: " + record.youtubeTitle;
+				msg += "\uD83C\uDFB6 " + record.youtubeTitle;
 			}
 
 			final long deleteAfter = currentSongLength * 1000L;

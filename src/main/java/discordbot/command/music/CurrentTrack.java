@@ -37,10 +37,10 @@ import java.util.stream.Collectors;
  */
 public class CurrentTrack extends AbstractCommand {
 	private static final Pattern votePattern = Pattern.compile("^(?>vote|rate)\\s?(\\d+)?$");
-	private final String BLOCK_INACTIVE = "▬";
-	private final String BLOCK_ACTIVE = ":radio_button:";
-	private final String SOUND_CHILL = ":sound:";
-	private final String SOUND_LOUD = ":loud_sound:";
+	private final String BLOCK_INACTIVE = "\u25AC";
+	private final String BLOCK_ACTIVE = "\uD83D\uDD18";
+	private final String SOUND_CHILL = "\uD83D\uDD09";
+	private final String SOUND_LOUD = "\uD83D\uDD0A";
 	private final float SOUND_TRESHHOLD = 0.4F;
 	private final int BLOCK_PARTS = 10;
 
@@ -182,7 +182,7 @@ public class CurrentTrack extends AbstractCommand {
 			artistIsEmpty = song.artist == null || song.artist.isEmpty();
 		}
 		OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
-		String ret = "[`" + DisUtil.getCommandPrefix(channel) + "pl` " + playlist.title + "] " + ":notes: ";
+		String ret = "[`" + DisUtil.getCommandPrefix(channel) + "pl` " + playlist.title + "] " + "\uD83C\uDFB6 ";
 		ret += songTitle;
 		final String autoUpdateText = ret;
 		ret += Config.EOL + Config.EOL;
@@ -192,7 +192,7 @@ public class CurrentTrack extends AbstractCommand {
 		if (GuildSettings.get(guild).getOrDefault(SettingMusicShowListeners.class).equals("true")) {
 			List<User> userList = musicHandler.getUsersInVoiceChannel();
 			if (userList.size() > 0) {
-				ret += ":headphones:  Listeners" + Config.EOL;
+				ret += "\uD83C\uDFA7  Listeners" + Config.EOL;
 				ArrayList<String> displayList = userList.stream().map(User::getUsername).collect(Collectors.toCollection(ArrayList::new));
 				ret += Misc.makeTable(displayList);
 			}
@@ -218,9 +218,9 @@ public class CurrentTrack extends AbstractCommand {
 //		}
 		List<OMusic> queue = musicHandler.getQueue();
 		if (queue.size() > 0) {
-			ret += Config.EOL + ":musical_note: *Next up:* " + Config.EOL;
+			ret += Config.EOL + "\uD83C\uDFB5 *Next up:* " + Config.EOL;
 			for (int i = 0; i < Math.min(2, queue.size()); i++) {
-				ret += ":point_right: " + queue.get(i).youtubeTitle + Config.EOL;
+				ret += "\uD83D\uDC49 " + queue.get(i).youtubeTitle + Config.EOL;
 			}
 			if (queue.size() > 2) {
 				ret += Config.EOL + "... And **" + (queue.size() - 2) + "** more!";
@@ -237,7 +237,7 @@ public class CurrentTrack extends AbstractCommand {
 							return;
 						}
 						message.updateMessageAsync(
-								(player.isInRepeatMode() ? ":repeat: " : "") + autoUpdateText + Config.EOL +
+								(player.isInRepeatMode() ? "\uD83D\uDD01 " : "") + autoUpdateText + Config.EOL +
 										getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL
 								, null);
 					}
@@ -263,7 +263,7 @@ public class CurrentTrack extends AbstractCommand {
 								return;
 							}
 							OMusic song = CMusic.findById(player.getCurrentlyPlaying());
-							((TextChannel) channel).getManager().setTopic(getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + (song.id > 0 ? ":notes: " + song.youtubeTitle : "")).update();
+							((TextChannel) channel).getManager().setTopic(getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + (song.id > 0 ? "\uD83C\uDFB6 " + song.youtubeTitle : "")).update();
 						}
 					}, 10000L, 10000L);
 					return Template.get("music_channel_autotitle_start");
@@ -271,7 +271,7 @@ public class CurrentTrack extends AbstractCommand {
 				return Template.get("permission_missing_manage_channel");
 			}
 		}
-		return (player.isInRepeatMode() ? ":repeat: " : "") + ret;
+		return (player.isInRepeatMode() ? "\uD83D\uDD01 " : "") + ret;
 	}
 
 	/**
@@ -282,7 +282,7 @@ public class CurrentTrack extends AbstractCommand {
 	 */
 	private String getMediaplayerProgressbar(long startTime, long duration, float volume) {
 		long current = System.currentTimeMillis() / 1000 - startTime;
-		String bar = ":pause_button: ";
+		String bar = "\u23F8 ";
 		int activeBLock = (int) ((float) current / (float) duration * (float) BLOCK_PARTS);
 		for (int i = 0; i < BLOCK_PARTS; i++) {
 			if (i == activeBLock) {
