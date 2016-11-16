@@ -47,6 +47,7 @@ public class MusicPlayerHandler {
 	private final PlayerEventHandler pvh;
 	private volatile int currentlyPlaying = 0;
 	private volatile long currentSongLength = 0;
+	private volatile boolean updateChannelTitle = false;
 	private volatile long currentSongStartTimeInSeconds = 0;
 	private volatile int activePlayListId = 0;
 	private volatile OPlaylist playlist;
@@ -394,6 +395,14 @@ public class MusicPlayerHandler {
 
 	public synchronized void clearQueue() {
 		queue.clear();
+	}
+
+	public boolean isUpdateChannelTitle() {
+		return updateChannelTitle;
+	}
+
+	public void setUpdateChannelTitle(boolean updateChannelTitle) {
+		this.updateChannelTitle = updateChannelTitle;
 	}
 
 	/**

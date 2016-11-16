@@ -18,6 +18,7 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
+import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
@@ -133,7 +134,7 @@ public class CurrentTrack extends AbstractCommand {
 			}
 		}
 
-		if (args.length >= 1 && !args[0].equals("update") && bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
+		if (args.length >= 1 && !args[0].equals("update") && !args[0].equals("updatetitle") && bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
 			String value = "";
 			for (int i = 1; i < args.length; i++) {
 				value += args[i] + " ";
@@ -243,6 +244,32 @@ public class CurrentTrack extends AbstractCommand {
 				}, 10000L, 10000L);
 			});
 			return "";
+		} else if (args.length >= 1 && args[0].equals("updatetitle")) {
+			if (!userRank.isAtLeast(SimpleRank.USER)) {
+				return Template.get(channel, "command_no_permission");
+			}
+			if (player.isUpdateChannelTitle()) {
+				player.setUpdateChannelTitle(false);
+				return Template.get("music_channel_autotitle_stop");
+			} else {
+				if (((TextChannel) channel).checkPermission(bot.client.getSelfInfo(), Permission.MANAGE_CHANNEL)) {
+					player.setUpdateChannelTitle(true);
+					bot.timer.scheduleAtFixedRate(new TimerTask() {
+						@Override
+						public void run() {
+							if (!player.isUpdateChannelTitle() || !player.isPlaying()) {
+								player.setUpdateChannelTitle(false);
+								this.cancel();
+								return;
+							}
+							OMusic song = CMusic.findById(player.getCurrentlyPlaying());
+							((TextChannel) channel).getManager().setTopic(getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + (song.id > 0 ? ":notes: " + song.youtubeTitle : "")).update();
+						}
+					}, 10000L, 10000L);
+					return Template.get("music_channel_autotitle_start");
+				}
+				return Template.get("permission_missing_manage_channel");
+			}
 		}
 		return (player.isInRepeatMode() ? ":repeat: " : "") + ret;
 	}

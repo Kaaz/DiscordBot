@@ -193,6 +193,7 @@ public class JDAEvents extends ListenerAdapter {
 		Guild guild = event.getGuild();
 		GuildSettings settings = GuildSettings.get(guild);
 		OGuildMember guildMember = CGuildMember.findBy(guild.getId(), user.getId());
+		boolean firstTime = guildMember == null;
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());
 		CGuildMember.insertOrUpdate(guildMember);
 
@@ -202,7 +203,7 @@ public class JDAEvents extends ListenerAdapter {
 		if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
 			TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
 			defaultChannel.sendMessageAsync(
-					Template.getWithTags(defaultChannel, "welcome_new_user", user),
+					Template.getWithTags(defaultChannel, firstTime ? "welcome_new_user" : "welcome_back_user", user),
 					message ->
 							discordBot.timer.schedule(new TimerTask() {
 								@Override
