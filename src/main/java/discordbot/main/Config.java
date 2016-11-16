@@ -142,7 +142,7 @@ public class Config {
 
 	//a new user starts with this balance
 	@ConfigurationOption
-	public static int ECONOMY_START_BALANCE = 50;
+	public static int ECONOMY_START_BALANCE = 1;
 	//Use trello integration
 	@ConfigurationOption
 	public static boolean TRELLO_ACTIVE = false;

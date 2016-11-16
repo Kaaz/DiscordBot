@@ -49,6 +49,7 @@ public class BankCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		OBank bank = CBanks.findBy(author.getId());
+
 		return String.format("Your current balance is `%s` %s ", bank.currentBalance, Config.ECONOMY_CURRENCY_ICON);
 	}
 }

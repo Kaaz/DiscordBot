@@ -28,8 +28,10 @@ import net.dv8tion.jda.events.DisconnectEvent;
 import net.dv8tion.jda.events.ReadyEvent;
 import net.dv8tion.jda.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.events.guild.member.GuildMemberBanEvent;
 import net.dv8tion.jda.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.events.user.UserGameUpdateEvent;
@@ -167,6 +169,25 @@ public class JDAEvents extends ListenerAdapter {
 	}
 
 	@Override
+	public void onGuildMemberBan(GuildMemberBanEvent event) {
+		discordBot.logGuildEvent(event.getGuild(), "\uD83D\uDED1", "**" + event.getUser().getUsername() + "#" + event.getUser().getDiscriminator() + "** has been banned");
+	}
+
+	@Override
+	public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
+		String message = "**" + event.getUser().getUsername() + "#" + event.getUser().getDiscriminator() + "** changed nickname ";
+		if (event.getPrevNick() != null) {
+			message += "from _~~" + event.getPrevNick() + "~~_ ";
+		}
+		if (event.getNewNick() != null) {
+			message += "to **" + event.getNewNick() + "**";
+		} else {
+			message += "back to normal";
+		}
+		discordBot.logGuildEvent(event.getGuild(), "\uD83C\uDFF7", message);
+	}
+
+	@Override
 	public void onGuildMemberJoin(GuildMemberJoinEvent event) {
 		User user = event.getUser();
 		Guild guild = event.getGuild();
@@ -202,13 +223,14 @@ public class JDAEvents extends ListenerAdapter {
 		if ("true".equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && !user.isBot()) {
 			RoleRankings.assignUserRole(discordBot, guild, user);
 		}
-		discordBot.logGuildEvent(guild, "\uD83D\uDC64", "User **" + user.getUsername() + "** joined");
+		discordBot.logGuildEvent(guild, "\uD83D\uDC64", "**" + event.getUser().getUsername() + "#" + event.getUser().getDiscriminator() + "** joined the guild");
 	}
 
 	@Override
 	public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
 		User user = event.getUser();
 		Guild guild = event.getGuild();
+		boolean isActuallyBanned = event instanceof GuildMemberBanEvent;
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingPMUserEvents.class))) {
 			discordBot.out.sendPrivateMessage(guild.getOwner(), String.format("[user-event] **%s#%s** left the guild **%s**", user.getUsername(), user.getDiscriminator(), guild.getName()));
 		}
@@ -235,7 +257,9 @@ public class JDAEvents extends ListenerAdapter {
 		OGuildMember guildMember = CGuildMember.findBy(guild.getId(), user.getId());
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());
 		CGuildMember.insertOrUpdate(guildMember);
-		discordBot.logGuildEvent(guild, "\uD83D\uDC64", " **" + user.getUsername() + "** left");
+		if (!isActuallyBanned) {
+			discordBot.logGuildEvent(guild, "\uD83D\uDC64", " **" + event.getUser().getUsername() + "#" + event.getUser().getDiscriminator() + "** left");
+		}
 	}
 
 	@Override
