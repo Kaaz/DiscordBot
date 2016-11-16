@@ -42,7 +42,7 @@ public class CurrentTrack extends AbstractCommand {
 	private final String SOUND_CHILL = "\uD83D\uDD09";
 	private final String SOUND_LOUD = "\uD83D\uDD0A";
 	private final float SOUND_TRESHHOLD = 0.4F;
-	private final int BLOCK_PARTS = 10;
+	private final int BLOCK_PARTS = 12;
 
 	public CurrentTrack() {
 		super();
@@ -66,6 +66,7 @@ public class CurrentTrack extends AbstractCommand {
 				"current ban           //bans the current track from being randomly played",
 				"current repeat        //repeats the currently playing song",
 				"current update        //updates the now playing message every 10 seconds",
+				"current updatetitle   //updates the topic of the music channel every 10 seconds",
 //				"current artist        //sets the artist of current song",
 //				"current correct       //accept the systems suggestion of title/artist",
 //				"current reversed      //accept the systems suggestion in reverse [title=artist,artist=title]",
@@ -263,7 +264,7 @@ public class CurrentTrack extends AbstractCommand {
 								return;
 							}
 							OMusic song = CMusic.findById(player.getCurrentlyPlaying());
-							((TextChannel) channel).getManager().setTopic(getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + (song.id > 0 ? "\uD83C\uDFB6 " + song.youtubeTitle : "")).update();
+							((TextChannel) channel).getManager().setTopic((player.isInRepeatMode() ? "\uD83D\uDD01 " : "") + getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + (song.id > 0 ? "\uD83C\uDFB6 " + song.youtubeTitle : "")).update();
 						}
 					}, 10000L, 10000L);
 					return Template.get("music_channel_autotitle_start");
