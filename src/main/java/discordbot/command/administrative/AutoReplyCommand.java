@@ -76,7 +76,7 @@ public class AutoReplyCommand extends AbstractCommand {
 		}
 		if (args.length == 0) {
 
-			List<OReplyPattern> all = CReplyPattern.getAll();
+			List<OReplyPattern> all = CReplyPattern.getAll(CGuild.getCachedId(guild.getId()));
 			List<List<String>> tbl = new ArrayList<>();
 			for (OReplyPattern replyPattern : all) {
 				List<String> row = new ArrayList<>();
@@ -141,7 +141,7 @@ public class AutoReplyCommand extends AbstractCommand {
 					return Template.get("command_autoreply_regex_saved");
 				case "guild":
 				case "gid":
-					if (!rank.isAtLeast(SimpleRank.CREATOR)) {
+					if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
 						return Template.get("no_permission");
 					}
 					if (args[2].equalsIgnoreCase("this")) {

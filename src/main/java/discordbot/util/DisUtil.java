@@ -133,11 +133,7 @@ public class DisUtil {
 			if (u.getUsername().equalsIgnoreCase(searchText)) {
 				return u;
 			}
-
-			String nick = channel.getGuild().getNicknameForUser(u);
-			if (nick == null) {
-				nick = u.getUsername();
-			}
+			String nick = channel.getGuild().getEffectiveNameForUser(u);
 			if (nick.toLowerCase().contains(searchText)) {
 				potential.add(u);
 				int d = Math.abs(nick.length() - searchText.length());

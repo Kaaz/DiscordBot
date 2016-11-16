@@ -43,11 +43,37 @@ public class CReplyPattern {
 		return record;
 	}
 
+	/**
+	 * Retrieve all the auto-replies
+	 *
+	 * @return list of replies
+	 */
 	public static List<OReplyPattern> getAll() {
 		List<OReplyPattern> list = new ArrayList<>();
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT id, guild_id, user_id, tag, pattern, reply, created_on, cooldown  " +
 						"FROM reply_pattern")) {
+			while (rs.next()) {
+				list.add(fillRecord(rs));
+			}
+			rs.getStatement().close();
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return list;
+	}
+
+	/**
+	 * Only retrieve the auto-replies that are global or for a specific guild
+	 *
+	 * @param internalGuildId the internal guild id
+	 * @return a list of replies
+	 */
+	public static List<OReplyPattern> getAll(int internalGuildId) {
+		List<OReplyPattern> list = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT id, guild_id, user_id, tag, pattern, reply, created_on, cooldown  " +
+						"FROM reply_pattern WHERE guild_id = ? OR guild_id = 0", internalGuildId)) {
 			while (rs.next()) {
 				list.add(fillRecord(rs));
 			}

@@ -1,5 +1,6 @@
 package discordbot.command.adventure;
 
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
@@ -52,7 +53,7 @@ public class ProfileCommand extends AbstractCommand {
 			if (DisUtil.isUserMention(args[0])) {
 				user = bot.client.getUserById(DisUtil.mentionToId(args[0]));
 			} else {
-				user = DisUtil.findUserIn((TextChannel) channel, args[0].toLowerCase());
+				user = DisUtil.findUserIn((TextChannel) channel, Joiner.on(" ").join(args).toLowerCase());
 			}
 			if (user == null) {
 				return Template.get("cant_find_user", args[0]);
