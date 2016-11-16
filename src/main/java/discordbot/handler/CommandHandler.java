@@ -119,6 +119,7 @@ public class CommandHandler {
 		} else if (guildCommands.containsKey(guildId) && guildCommands.get(guildId).containsKey(input[0])) {
 			outMsg = DisUtil.replaceTags(guildCommands.get(guildId).get(input[0]), author, channel, args);
 		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
+			commandSuccess = false;
 			outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat(inputMessage);
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
@@ -144,7 +145,9 @@ public class CommandHandler {
 		if (!outMsg.isEmpty()) {
 			bot.out.sendAsyncMessage(channel, outMsg);
 		}
-		CUser.registerCommandUse(CUser.getCachedId(author.getId()));
+		if (commandSuccess) {
+			CUser.registerCommandUse(CUser.getCachedId(author.getId()));
+		}
 	}
 
 	private static boolean hasRightVisibility(MessageChannel channel, CommandVisibility visibility) {

@@ -45,10 +45,10 @@ public class RoleRankings {
 		roles.add(new MemberShipRole("Veteran", new Color(0x35B6D4), TimeUnit.DAYS.toMillis(28L)));
 		roles.add(new MemberShipRole("Revered", new Color(0x0DC3CF), TimeUnit.DAYS.toMillis(60L)));
 		roles.add(new MemberShipRole("Herald", new Color(0x0ECAB4), TimeUnit.DAYS.toMillis(90L)));
-		roles.add(new MemberShipRole("Exalted", new Color(0x0FC490), TimeUnit.DAYS.toMillis(180L)));
-		roles.add(new MemberShipRole("Beloved", new Color(0x10BF6D), TimeUnit.DAYS.toMillis(365L)));
-		roles.add(new MemberShipRole("Favorite", new Color(0x11BA4D), TimeUnit.DAYS.toMillis(700L)));
-		roles.add(new MemberShipRole("Consul", new Color(0x11B52F), TimeUnit.DAYS.toMillis(1000L)));
+		roles.add(new MemberShipRole("Exalted", new Color(0x0FC490), TimeUnit.DAYS.toMillis(180L), true));
+		roles.add(new MemberShipRole("Beloved", new Color(0x10BF6D), TimeUnit.DAYS.toMillis(365L), true));
+		roles.add(new MemberShipRole("Favorite", new Color(0x11BA4D), TimeUnit.DAYS.toMillis(700L), true));
+		roles.add(new MemberShipRole("Consul", new Color(0x11B52F), TimeUnit.DAYS.toMillis(1000L), true));
 		for (MemberShipRole role : roles) {
 			roleNames.add(role.getName().toLowerCase());
 		}
@@ -122,9 +122,9 @@ public class RoleRankings {
 			role.getManager().setColor(rank.getColor());
 			needsUpdate = true;
 		}
-		if (!role.isGrouped()) {
+		if (role.isGrouped() != rank.isHoisted()) {
 			needsUpdate = true;
-			role.getManager().setGrouped(true);
+			role.getManager().setGrouped(rank.isHoisted());
 		}
 		if (needsUpdate) {
 			role.getManager().update();

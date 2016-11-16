@@ -85,15 +85,15 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 			}
 		}
 		String onlineFor = TimeUtil.getRelativeTime(bot.startupTimeStamp, false);
-		net.dv8tion.jda.entities.User user = bot.client.getUserById(Config.CREATOR_ID);
 		String response = bot.chatBotHandler.chat("What are you?");
+		String prefix = DisUtil.getCommandPrefix(channel);
 		if (response.isEmpty()) {
 			response = "I'm batman";
 		}
 		return "What am I? *" + response + "* " + Config.EOL +
 				"Currently active on " + bot.client.getGuilds().size() + " guilds and the last time I restarted was  " + onlineFor + "." + Config.EOL +
-				"Running version `" + Launcher.getVersion().toString() + "` and there are " + CommandHandler.getCommands().length + " commands I can perform type **" + DisUtil.getCommandPrefix(channel) + "help** for a full list" + Config.EOL +
-				"If I can't help you out, you can always try to poke __" + user.getUsername() + "#" + user.getDiscriminator() + "__ or join my *" + DisUtil.getCommandPrefix(channel) + "discord*";
+				"Running version `" + Launcher.getVersion().toString() + "` and there are " + CommandHandler.getCommands().length + " commands I can perform type **" + prefix + "help** for a full list" + Config.EOL +
+				"If I can't help you out, you can always try your luck in my __" + prefix + "discord__";
 	}
 
 	private String getListFor(String listId, String itemPrefix) {
