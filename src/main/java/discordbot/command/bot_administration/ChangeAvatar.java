@@ -1,7 +1,9 @@
 package discordbot.command.bot_administration;
 
 import discordbot.core.AbstractCommand;
+import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -41,8 +43,9 @@ public class ChangeAvatar extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (!bot.isCreator(author)) {
-			return ":upside_down: There's only one person who I trust enough to do that";
+		SimpleRank rank = bot.security.getSimpleRank(author);
+		if (!rank.isAtLeast(SimpleRank.CREATOR)) {
+			return Template.get(channel, "command_no_permission");
 		}
 		if (args.length <= 1) {
 			return "Disabled for now :(";

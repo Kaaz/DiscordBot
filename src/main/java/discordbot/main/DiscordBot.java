@@ -82,16 +82,6 @@ public class DiscordBot {
 	}
 
 	/**
-	 * checks if user is creator
-	 *
-	 * @param user user to check
-	 * @return is creator?
-	 */
-	public boolean isCreator(User user) {
-		return user.getId().equals(Config.CREATOR_ID);
-	}
-
-	/**
 	 * Gets the default channel to output to
 	 * if configured channel can't be found, return the first channel
 	 *

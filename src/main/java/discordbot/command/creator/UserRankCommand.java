@@ -2,11 +2,11 @@ package discordbot.command.creator;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.ORank;
-import discordbot.db.model.OUserRank;
 import discordbot.db.controllers.CRank;
 import discordbot.db.controllers.CUser;
 import discordbot.db.controllers.CUserRank;
+import discordbot.db.model.ORank;
+import discordbot.db.model.OUserRank;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
@@ -56,7 +56,8 @@ public class UserRankCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.CREATOR)) {
+		SimpleRank authorRank = bot.security.getSimpleRank(author);
+		if (!authorRank.isAtLeast(SimpleRank.CREATOR)) {
 			return Template.get("no_permission");
 		}
 		if (args.length >= 1) {
@@ -71,24 +72,25 @@ public class UserRankCommand extends AbstractCommand {
 			if (user == null) {
 				return Template.get("cant_find_user", args[0]);
 			}
+			SimpleRank targetSimpleRank = bot.security.getSimpleRank(user);
 			if (args.length == 1) {
 				OUserRank userRank = CUserRank.findBy(user.getId());
-				if (userRank.rankId == 0 && !bot.isCreator(user)) {
+				if (userRank.rankId == 0 && !targetSimpleRank.isAtLeast(SimpleRank.CREATOR)) {
 					return Template.get("command_userrank_no_rank", user.getUsername());
-				} else if (bot.isCreator(user)) {
+				} else if (targetSimpleRank.isAtLeast(SimpleRank.CREATOR)) {
 					return Template.get("command_userrank_rank", user.getUsername(), "creator");
 				} else {
 					return Template.get("command_userrank_rank", user.getUsername(), CRank.findById(userRank.rankId).codeName);
 				}
 			} else if (args.length == 2) {
-				ORank rank = CRank.findBy(args[1]);
-				if (rank.id == 0) {
+				ORank newRank = CRank.findBy(args[1]);
+				if (newRank.id == 0) {
 					return Template.get("command_userrank_rank_not_exists", args[1]);
 				}
 				OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId(), user.getUsername()));
-				userRank.rankId = rank.id;
+				userRank.rankId = newRank.id;
 				CUserRank.insertOrUpdate(userRank);
-				return Template.get("command_userrank_rank", user.getUsername(), rank.codeName);
+				return Template.get("command_userrank_rank", user.getUsername(), newRank.codeName);
 			}
 		}
 		return Template.get("command_invalid_use");

@@ -5,6 +5,7 @@ import discordbot.core.ExitCode;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
+import discordbot.permission.SimpleRank;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -41,7 +42,8 @@ public class ExitCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (bot.isCreator(author)) {
+		SimpleRank rank = bot.security.getSimpleRank(author);
+		if (rank.isAtLeast(SimpleRank.CREATOR)) {
 			bot.out.sendAsyncMessage(channel, "I am being killed :sob: farewell world! :wave: ", message -> {
 				Launcher.stop(ExitCode.STOP);
 			});
