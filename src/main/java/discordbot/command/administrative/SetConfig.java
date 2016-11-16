@@ -41,7 +41,9 @@ public class SetConfig extends AbstractCommand {
 		return new String[]{
 				"config                    //overview",
 				"config <property>         //check details of property",
-				"config <property> <value> //sets property"
+				"config <property> <value> //sets property",
+				"",
+				"config reset yesimsure    //resets the configuration to the default settings",
 		};
 	}
 
@@ -74,9 +76,16 @@ public class SetConfig extends AbstractCommand {
 		} else {
 			guild = ((TextChannel) channel).getGuild();
 		}
-		int count = args.length;
+
 		if (rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-			if (count == 0) {
+			if (args.length > 0 && args[0].equalsIgnoreCase("reset")) {
+				if (args.length > 1 && args[1].equalsIgnoreCase("yesimsure")) {
+					return Template.get(channel, "command_config_reset_success");
+				}
+				GuildSettings.get(guild).reset();
+				return Template.get(channel, "command_config_reset_warning");
+			}
+			if (args.length == 0) {
 				Map<String, String> settings = GuildSettings.get(guild).getSettings();
 				ArrayList<String> keys = new ArrayList<>(settings.keySet());
 				Collections.sort(keys);
@@ -112,7 +121,7 @@ public class SetConfig extends AbstractCommand {
 				if (DefaultGuildSettings.get(args[0]).isReadOnly() && !rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
 					return Template.get("command_config_key_read_only");
 				}
-				if (count >= 2 && GuildSettings.get(guild).set(args[0], args[1])) {
+				if (args.length >= 2 && GuildSettings.get(guild).set(args[0], args[1])) {
 					bot.clearChannels(guild);
 					return Template.get("command_config_key_modified");
 				}

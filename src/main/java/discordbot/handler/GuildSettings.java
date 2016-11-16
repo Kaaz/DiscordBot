@@ -89,6 +89,7 @@ public class GuildSettings {
 		if (initialized || id <= 0) {
 			return;
 		}
+		settings.clear();
 		Map<String, AbstractGuildSetting> defaults = DefaultGuildSettings.getDefaults();
 		for (String key : defaults.keySet()) {
 			settings.put(key, defaults.get(key).getDefault());
@@ -153,6 +154,16 @@ public class GuildSettings {
 			return DefaultGuildSettings.get(key).getDefault();
 		}
 		return "";
+	}
+
+	public synchronized void reset() {
+		try {
+			WebDb.get().query("DELETE FROM guild_settings WHERE guild = ? ", id);
+			initialized = false;
+			loadSettings();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public boolean canUseMusicCommands(User user, SimpleRank userRank) {

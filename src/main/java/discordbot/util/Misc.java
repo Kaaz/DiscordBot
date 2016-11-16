@@ -88,7 +88,7 @@ public class Misc {
 	 * @return formatted controllers
 	 */
 	public static String makeTable(String tableText) {
-		return "```xl" + Config.EOL
+		return "```" + Config.EOL
 				+ tableText + Config.EOL +
 				"```" + Config.EOL;
 	}

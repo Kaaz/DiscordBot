@@ -20,15 +20,15 @@ public class BankCommand extends AbstractCommand {
 
 	@Override
 	public String getCommand() {
-		return "bank";
+		return "jar";
 	}
 
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"bank                       //shows current balance",
-				"bank history               //shows last transactions",
-				"bank donate @user <amount> //donates <amount> to @user ",
+				"jar                       //shows current balance",
+				"jar history               //shows last transactions",
+				"jar donate @user <amount> //donates <amount> to @user ",
 		};
 	}
 
@@ -37,6 +37,7 @@ public class BankCommand extends AbstractCommand {
 		return new String[]{
 				"currency",
 				"money",
+				"bank",
 		};
 	}
 
