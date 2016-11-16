@@ -1,6 +1,7 @@
 package discordbot.command.music;
 
 import com.google.common.base.Joiner;
+import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CMusic;
@@ -63,7 +64,7 @@ public class Play extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[0];
+		return new String[]{"music", "p", "m"};
 	}
 
 	private boolean isInVoiceWith(Guild guild, User author) {
@@ -126,7 +127,7 @@ public class Play extends AbstractCommand {
 								if (filecheck.exists()) {
 									String path = filecheck.toPath().toRealPath().toString();
 									OMusic rec = CMusic.findByYoutubeId(finalVideocode);
-									rec.youtubeTitle = YTUtil.getTitleFromPage(finalVideocode);
+									rec.youtubeTitle = EmojiParser.parseToAliases(YTUtil.getTitleFromPage(finalVideocode));
 									rec.youtubecode = finalVideocode;
 									rec.filename = path;
 									rec.playCount = 1;
