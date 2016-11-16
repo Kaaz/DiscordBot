@@ -66,6 +66,6 @@ public class Volume extends AbstractCommand {
 			}
 			return Template.get("command_volume_invalid_parameters");
 		}
-		return "Current volume: " + bot.getVolume(guild) * 100 + "%";
+		return "Current volume: " + (int) (bot.getVolume(guild) * 100F) + "%";
 	}
 }
