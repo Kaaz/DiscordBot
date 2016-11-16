@@ -6,6 +6,7 @@ import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingUseEconomy;
 import discordbot.handler.GuildSettings;
 import discordbot.main.Config;
+import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.OnlineStatus;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.*;
@@ -25,6 +26,37 @@ public class DisUtil {
 	private static final Pattern mentionUserPattern = Pattern.compile("<@!?([0-9]{4,})>");
 	private static final Pattern channelPattern = Pattern.compile("<#!?([0-9]{4,})>");
 	private static final Pattern anyMention = Pattern.compile("<[@#]!?([0-9]{4,})>");
+
+	/**
+	 * find a text channel by name
+	 *
+	 * @param guild       the guild to search in
+	 * @param channelName the channel to search for
+	 * @return TextChannel || null
+	 */
+	public static TextChannel findChannel(Guild guild, String channelName) {
+		for (TextChannel channel : guild.getTextChannels()) {
+			if (channel.getName().equalsIgnoreCase(channelName)) {
+				return channel;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the first channel in a guild where the bot has permission to write
+	 *
+	 * @param guild the guild to search in
+	 * @return TextChannel || null
+	 */
+	public static TextChannel findFirstWriteableChannel(JDA client, Guild guild) {
+		for (TextChannel channel : guild.getTextChannels()) {
+			if (channel.checkPermission(client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+				return channel;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Checks if the string contains a mention for a user
@@ -74,7 +106,6 @@ public class DisUtil {
 		Guild guild = null;
 		if (channel instanceof TextChannel) {
 			guild = ((TextChannel) channel).getGuild();
-
 		}
 		String output = input.replace("\\%", "\u0013");
 		output = output

@@ -8,6 +8,7 @@ import discordbot.guildsettings.defaults.*;
 import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.handler.*;
 import discordbot.role.RoleRankings;
+import discordbot.util.DisUtil;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.Permission;
@@ -17,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
@@ -100,26 +100,11 @@ public class DiscordBot {
 	 */
 	public TextChannel getDefaultChannel(Guild guild) {
 		if (!defaultChannels.containsKey(guild)) {
-			String channelName = GuildSettings.get(guild).getOrDefault(SettingBotChannel.class);
-			List<TextChannel> channelList = guild.getTextChannels();
-			boolean foundChannel = false;
-			for (TextChannel channel : channelList) {
-				if (channel.getName().equalsIgnoreCase(channelName)) {
-					foundChannel = true;
-					defaultChannels.put(guild, channel);
-					break;
-				}
+			TextChannel defaultChannel = DisUtil.findChannel(guild, GuildSettings.get(guild).getOrDefault(SettingBotChannel.class));
+			if (defaultChannel == null || !defaultChannel.checkPermission(client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+				defaultChannel = DisUtil.findFirstWriteableChannel(client, guild);
 			}
-			if (!foundChannel) {
-				TextChannel target = null;
-				for (TextChannel channel : guild.getTextChannels()) {
-					if (channel.checkPermission(client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
-						target = channel;
-						break;
-					}
-				}
-				defaultChannels.put(guild, target);
-			}
+			defaultChannels.put(guild, defaultChannel);
 		}
 		return defaultChannels.get(guild);
 	}
@@ -132,19 +117,11 @@ public class DiscordBot {
 	 */
 	public TextChannel getMusicChannel(Guild guild) {
 		if (!musicChannels.containsKey(guild)) {
-			String channelName = GuildSettings.get(guild).getOrDefault(SettingMusicChannel.class);
-			List<TextChannel> channelList = guild.getTextChannels();
-			boolean foundChannel = false;
-			for (TextChannel channel : channelList) {
-				if (channel.getName().equalsIgnoreCase(channelName)) {
-					foundChannel = true;
-					musicChannels.put(guild, channel);
-					break;
-				}
+			TextChannel channel = DisUtil.findChannel(guild, GuildSettings.get(guild).getOrDefault(SettingMusicChannel.class));
+			if (channel == null) {
+				channel = getDefaultChannel(guild);
 			}
-			if (!foundChannel) {
-				musicChannels.put(guild, getDefaultChannel(guild));
-			}
+			musicChannels.put(guild, channel);
 		}
 		return musicChannels.get(guild);
 	}
