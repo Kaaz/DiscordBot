@@ -47,6 +47,7 @@ public class MusicPlayerHandler {
 	private final PlayerEventHandler pvh;
 	private volatile int currentlyPlaying = 0;
 	private volatile long currentSongLength = 0;
+	private volatile long pauseStart = 0;
 	private volatile boolean updateChannelTitle = false;
 	private volatile long currentSongStartTimeInSeconds = 0;
 	private volatile int activePlayListId = 0;
@@ -121,10 +122,6 @@ public class MusicPlayerHandler {
 		}
 	}
 
-	public long getStartTimeStamp() {
-		return currentSongStartTimeInSeconds;
-	}
-
 	private synchronized void trackEnded() throws InterruptedException {
 		currentSongLength = 0;
 		LinkedList<AudioSource> audioQueue = player.getAudioQueue();
@@ -145,6 +142,10 @@ public class MusicPlayerHandler {
 	}
 
 	private synchronized void trackStarted() throws IOException {
+		if (currentlyPlaying != 0 && pauseStart > 0) {
+			pauseStart = 0;
+			return;
+		}
 		currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000L;
 		OMusic record;
 		File f = null;
@@ -228,7 +229,10 @@ public class MusicPlayerHandler {
 	 * @return timestamp in seconds
 	 */
 	public long getCurrentSongStartTime() {
-		return currentSongStartTimeInSeconds;
+		if (!player.isPaused()) {
+			return currentSongStartTimeInSeconds;
+		}
+		return currentSongStartTimeInSeconds + (System.currentTimeMillis() / 1000L - pauseStart);
 	}
 
 	/**
@@ -369,9 +373,11 @@ public class MusicPlayerHandler {
 	 */
 	public synchronized boolean togglePause() {
 		if (!player.isPaused()) {
+			pauseStart = System.currentTimeMillis() / 1000L;
 			player.pause();
 		} else {
-			startPlaying();
+			currentSongStartTimeInSeconds += (System.currentTimeMillis() / 1000L) - pauseStart;
+			player.play();
 		}
 		return player.isPaused();
 	}

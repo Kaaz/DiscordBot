@@ -42,7 +42,7 @@ public class CurrentTrack extends AbstractCommand {
 	private final String SOUND_CHILL = "\uD83D\uDD09";
 	private final String SOUND_LOUD = "\uD83D\uDD0A";
 	private final float SOUND_TRESHHOLD = 0.4F;
-	private final int BLOCK_PARTS = 12;
+	private final int BLOCK_PARTS = 10;
 
 	public CurrentTrack() {
 		super();
@@ -86,7 +86,6 @@ public class CurrentTrack extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		boolean helpedOut = false;
 		Guild guild = ((TextChannel) channel).getGuild();
 		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
 		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
@@ -99,8 +98,6 @@ public class CurrentTrack extends AbstractCommand {
 		}
 		boolean titleIsEmpty = song.title == null || song.title.isEmpty();
 		boolean artistIsEmpty = song.artist == null || song.artist.isEmpty();
-		String guessTitle = "";
-		String guessArtist = "";
 		String songTitle;
 		if (titleIsEmpty || artistIsEmpty) {
 			songTitle = song.youtubeTitle;
@@ -108,11 +105,6 @@ public class CurrentTrack extends AbstractCommand {
 			songTitle = song.artist + " - " + song.title;
 		}
 
-		if (song.youtubeTitle.toLowerCase().chars().filter(e -> e == '-').count() >= 1) {
-			String[] splitTitle = song.youtubeTitle.split("-");
-			guessTitle = splitTitle[splitTitle.length - 1].trim();
-			guessArtist = splitTitle[splitTitle.length - 2].trim();
-		}
 
 		if (args.length > 0) {
 			String voteInput = args[0].toLowerCase();
@@ -160,7 +152,7 @@ public class CurrentTrack extends AbstractCommand {
 		final String autoUpdateText = ret;
 		ret += Config.EOL + Config.EOL;
 		MusicPlayerHandler musicHandler = MusicPlayerHandler.getFor(guild, bot);
-		ret += getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL;
+		ret += getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL;
 
 		if (GuildSettings.get(guild).getOrDefault(SettingMusicShowListeners.class).equals("true")) {
 			List<User> userList = musicHandler.getUsersInVoiceChannel();
@@ -192,7 +184,7 @@ public class CurrentTrack extends AbstractCommand {
 						}
 						message.updateMessageAsync(
 								(player.isInRepeatMode() ? "\uD83D\uDD01 " : "") + autoUpdateText + Config.EOL +
-										getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + Config.EOL + Config.EOL
+										getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL
 								, null);
 					}
 				}, 10000L, 10000L);
@@ -206,7 +198,8 @@ public class CurrentTrack extends AbstractCommand {
 				player.setUpdateChannelTitle(false);
 				return Template.get("music_channel_autotitle_stop");
 			} else {
-				if (((TextChannel) channel).checkPermission(bot.client.getSelfInfo(), Permission.MANAGE_CHANNEL)) {
+				TextChannel musicChannel = bot.getMusicChannel(guild);
+				if (musicChannel.checkPermission(bot.client.getSelfInfo(), Permission.MANAGE_CHANNEL)) {
 					player.setUpdateChannelTitle(true);
 					bot.timer.scheduleAtFixedRate(new TimerTask() {
 						@Override
@@ -217,7 +210,11 @@ public class CurrentTrack extends AbstractCommand {
 								return;
 							}
 							OMusic song = CMusic.findById(player.getCurrentlyPlaying());
-							((TextChannel) channel).getManager().setTopic((player.isInRepeatMode() ? "\uD83D\uDD01 " : "") + getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume()) + (song.id > 0 ? "\uD83C\uDFB6 " + song.youtubeTitle : "")).update();
+							musicChannel.getManager().setTopic(
+									(player.isInRepeatMode() ? "\uD83D\uDD01 " : "") +
+											getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) +
+											(song.id > 0 ? "\uD83C\uDFB6 " + song.youtubeTitle : "")
+							).update();
 						}
 					}, 10000L, 10000L);
 					return Template.get("music_channel_autotitle_start");
@@ -234,9 +231,9 @@ public class CurrentTrack extends AbstractCommand {
 	 * @param volume    volume of the player
 	 * @return a formatted mediaplayer
 	 */
-	private String getMediaplayerProgressbar(long startTime, long duration, float volume) {
+	private String getMediaplayerProgressbar(long startTime, long duration, float volume, boolean isPaused) {
 		long current = System.currentTimeMillis() / 1000 - startTime;
-		String bar = "\u23F8 ";
+		String bar = isPaused ? "\u23EF" : "\u23F8 ";
 		int activeBLock = (int) ((float) current / (float) duration * (float) BLOCK_PARTS);
 		for (int i = 0; i < BLOCK_PARTS; i++) {
 			if (i == activeBLock) {
