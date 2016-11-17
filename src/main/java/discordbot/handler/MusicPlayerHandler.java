@@ -376,6 +376,10 @@ public class MusicPlayerHandler {
 		return player.isPaused();
 	}
 
+	public synchronized boolean isPaused() {
+		return player.isPaused();
+	}
+
 	public synchronized void stopMusic() {
 		currentlyPlaying = 0;
 		player.stop();

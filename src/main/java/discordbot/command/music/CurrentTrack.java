@@ -258,7 +258,7 @@ public class CurrentTrack extends AbstractCommand {
 					bot.timer.scheduleAtFixedRate(new TimerTask() {
 						@Override
 						public void run() {
-							if (!player.isUpdateChannelTitle() || !player.isPlaying()) {
+							if (!player.isUpdateChannelTitle() || !player.canTogglePause()) {
 								player.setUpdateChannelTitle(false);
 								this.cancel();
 								return;
