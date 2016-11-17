@@ -67,6 +67,8 @@ public class CurrentTrack extends AbstractCommand {
 				"current repeat        //repeats the currently playing song",
 				"current update        //updates the now playing message every 10 seconds",
 				"current updatetitle   //updates the topic of the music channel every 10 seconds",
+				"current source        //Shows the source of the video",
+				"current pm            //sends you a private message with the details",
 //				"current artist        //sets the artist of current song",
 //				"current correct       //accept the systems suggestion of title/artist",
 //				"current reversed      //accept the systems suggestion in reverse [title=artist,artist=title]",
@@ -144,6 +146,14 @@ public class CurrentTrack extends AbstractCommand {
 						return Template.get("command_current_banned_success");
 					}
 					return Template.get("no_permission");
+				case "source":
+					return Template.get(channel, "music_source_location", "<https://www.youtube.com/watch?v=" + song.youtubecode + ">");
+				case "pm":
+					bot.out.sendPrivateMessage(author,
+							"The track I'm playing now is: " + song.youtubeTitle + Config.EOL +
+									"You can find it here: https://www.youtube.com/watch?v=" + song.youtubecode
+					);
+					return Template.get(channel, "private_message_sent", guild.getEffectiveNameForUser(author));
 			}
 		}
 		OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());

@@ -35,13 +35,13 @@ Commands | | | | |
 [command](#command) | [config](#config) | [current](#current) | [exec](#exec) | [exit](#exit)
 [fml](#fml) | [game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info)
 [invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild)
-[mcstatus](#mcstatus) | [pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist)
-[pm](#pm) | [prefix](#prefix) | [profile](#profile) | [purge](#purge) | [reboot](#reboot)
-[reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role) | [roll](#roll)
-[rotate](#rotate) | [say](#say) | [sendfile](#sendfile) | [skip](#skip) | [slot](#slot)
-[stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template)
-[uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume)
-
+[pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
+[poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [prefix](#prefix) | [profile](#profile)
+[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
+[role](#role) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [skip](#skip)
+[slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag)
+[template](#template) | [uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version)
+[volume](#volume) | 
 
 ## Games
 
@@ -107,8 +107,9 @@ Key | Default | Description |
 --- | --- | ---|
 auto_reply | false | use the auto reply feature?<br/>Looks for patterns in messages and replies to them (with a cooldown)<br/>true -> enable auto replying to matched messages<br/>true -> disable auto replying
 bot_channel | general | Channel where the bots default output goes to
-bot_debug_templates | false | Show which templates are being used on places.<br/><br/>valid values: <br/>true       -> Shows the keyphrases being used <br/>false      -> Shows normal text <br/><br/>for instance if you don't have permission to access a command:<br/><br/>setting this to true would show:<br/>no_permission<br/><br/>false would show:<br/>You don't have permission to use that!
+bot_debug_templates | true | Show which templates are being used on places.<br/><br/>valid values: <br/>true       -> Shows the keyphrases being used <br/>false      -> Shows normal text <br/><br/>for instance if you don't have permission to access a command:<br/><br/>setting this to true would show:<br/>no_permission<br/><br/>false would show:<br/>You don't have permission to use that!
 bot_listen | all | What channels to listen to? (all;mine)<br/>all -> responds to all channels<br/>mine -> only responds to messages in configured channel
+bot_logging_channel | false | The channel where the logging of events happens. Such as users joining/leaving <br/><br/>Setting this to 'false' will disable it (without the quotes)<br/><br/>To enable it, set this setting to match the channel name where you want the logging to happen<br/>If you specify an invalid channel, this setting will disable itself
 bot_update_warning | playing | Show a warning that there is an update and that the bot will be updating soon.<br/>always  -> always show the message in the bot's configured default channel<br/>playing -> only announce when the bot is playing music and in the bot's configured music channel<br/>off     -> don't announce when the bot is going down for an update
 chat_bot_enabled | false | Chat with people
 cleanup_messages | no | Delete messages after a while? (yes;no;nonstandard)<br/>yes -> Always delete messages<br/>no -> Never delete messages<br/>nonstandard -> delete messages outside of bot's default channel
@@ -217,7 +218,7 @@ Accessible though: 8ball
 Usable in public and private channels
 ### autoreply
 
-Patterns where the bot auto-replies to. 
+regular expression Patterns where the bot auto-replies to. 
 
 Accessible though: autoreply, ar
 
@@ -272,6 +273,9 @@ There are a few keywords you can use in commands. These tags will be replaced by
 Key                Replacement
 ---                ---
 %user%             Username 
+%args%             everything the user said besides the command 
+%arg1%             the first argument of the user 
+%arg9%             the 9th argument etc. a new argument starts after a space 
 %user-mention%     Mentions user 
 %user-id%          ID of user
 %nick%             Nickname
@@ -310,6 +314,8 @@ Usable in public  channels
 config                    //overview
 config <property>         //check details of property
 config <property> <value> //sets property
+
+config reset yesimsure    //resets the configuration to the default settings
 ```
 ### current
 
@@ -325,6 +331,11 @@ Usable in public  channels
 current               //info about the currently playing song
 current vote <1-10>   //Cast your vote to the song; 1=worst, 10=best
 current ban           //bans the current track from being randomly played
+current repeat        //repeats the currently playing song
+current update        //updates the now playing message every 10 seconds
+current updatetitle   //updates the topic of the music channel every 10 seconds
+current source        //Shows the source of the video
+current pm            //sends you a private message with the details
 ```
 ### exec
 
@@ -452,20 +463,6 @@ Usable in public and private channels
 ```php
 leaveguild     //leaves the guild
 ```
-### mcstatus
-
-Shows some information about the server
-
-Accessible though: mcstatus
-
-Usable in public  channels
-
-#### Usage
-
-```php
-mcstatus <serverip>
-mcstatus <serverip> <serverport> 
-```
 ### pause
 
 pauses the music or resumes it if its paused
@@ -484,7 +481,7 @@ Usable in public and private channels
 
 Plays a song from youtube
 
-Accessible though: play
+Accessible though: play, music, p, m
 
 Usable in public  channels
 
@@ -537,6 +534,42 @@ Usable in public and private channels
 ```php
 pm <@user> <message..>
 ```
+### poec
+
+Returns a list of currency on your account
+
+Accessible though: poec
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+poec                   //returns list of currency for default league
+poec token <token>     //sets the session token
+poec league <league>   //currency for league
+```
+### poeitem
+
+Analyzes an item from path of exile.
+
+Accessible though: poeitem
+
+Usable in public and private channels
+### poelab
+
+Attempts to find a description from reddit for the Labyrinth instance.
+
+Accessible though: poelab
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+poelab              //lists for all difficulties
+poelab <difficulty> //only for that difficulty
+```
 ### prefix
 
 Forgot what the prefix is? I got you covered
@@ -544,6 +577,13 @@ Forgot what the prefix is? I got you covered
 Accessible though: prefix
 
 Usable in public and private channels
+
+#### Usage
+
+```php
+prefix                           //shows the set prefix
+prefix <prefix>                  //sets the prefix to <prefix>
+```
 ### profile
 
 Shows your profile in a fancy way
@@ -671,19 +711,6 @@ Usable in public and private channels
 
 ```php
 rotate <text..> 
-```
-### say
-
-repeats you
-
-Accessible though: say
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-say <anything>
 ```
 ### sendfile
 
