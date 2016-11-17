@@ -135,12 +135,7 @@ public class CurrentTrack extends AbstractCommand {
 			}
 		}
 
-		if (args.length >= 1 && !args[0].equals("update") && !args[0].equals("updatetitle") && bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
-			String value = "";
-			for (int i = 1; i < args.length; i++) {
-				value += args[i] + " ";
-			}
-			value = value.trim();
+		if (args.length >= 1) {
 			switch (args[0].toLowerCase()) {
 				case "repeat":
 					boolean repeatMode = !player.isInRepeatMode();
@@ -150,37 +145,14 @@ public class CurrentTrack extends AbstractCommand {
 					}
 					return Template.get("music_repeat_mode_stopped");
 				case "ban":
-					song.banned = 1;
-					CMusic.update(song);
-					player.skipSong();
-					return Template.get("command_current_banned_success");
-				case "title":
-					song.title = value;
-					CMusic.update(song);
-					helpedOut = true;
-					break;
-				case "artist":
-					song.artist = value;
-					CMusic.update(song);
-					helpedOut = true;
-					break;
-				case "correct":
-					song.artist = guessArtist;
-					song.title = guessTitle;
-					CMusic.update(song);
-					helpedOut = true;
-					break;
-				case "reversed":
-					song.artist = guessTitle;
-					song.title = guessArtist;
-					CMusic.update(song);
-					helpedOut = true;
-					break;
-				default:
-					return Template.get("invalid_command_use");
+					if (userRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+						song.banned = 1;
+						CMusic.update(song);
+						player.skipSong();
+						return Template.get("command_current_banned_success");
+					}
+					return Template.get("no_permission");
 			}
-			titleIsEmpty = song.title == null || song.title.isEmpty();
-			artistIsEmpty = song.artist == null || song.artist.isEmpty();
 		}
 		OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
 		String ret = "[`" + DisUtil.getCommandPrefix(channel) + "pl` " + playlist.title + "] " + "\uD83C\uDFB6 ";
@@ -198,25 +170,6 @@ public class CurrentTrack extends AbstractCommand {
 				ret += Misc.makeTable(displayList);
 			}
 		}
-//		if (bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN) && (titleIsEmpty || artistIsEmpty)) {
-//			ret += "I am missing some information about this song. Could you help me out:question:" + Config.EOL;
-//			ret += "If you know the title or artist of this song type **current artist <name>** or **current title <name>**" + Config.EOL;
-//			if (!titleIsEmpty) {
-//				ret += "Title: " + song.title + Config.EOL;
-//			}
-//			if (!artistIsEmpty) {
-//				ret += "Artist: " + song.artist + Config.EOL;
-//			}
-//			if (!helpedOut && !"".equals(guessArtist) && !"".equals(guessTitle)) {
-//				ret += Config.EOL + "If I can make a guess:" + Config.EOL;
-//				ret += "artist: **" + guessArtist + "**" + Config.EOL;
-//				ret += "title: **" + guessTitle + "**" + Config.EOL;
-//				ret += "If thats correct type **" + DisUtil.getCommandPrefix(channel) + "np correct** or if its reversed **" + DisUtil.getCommandPrefix(channel) + "np reversed**";
-//			}
-//			if (helpedOut) {
-//				ret += "Thanks for helping out " + author.getAsMention() + "! Have a :cookie:!";
-//			}
-//		}
 		List<OMusic> queue = musicHandler.getQueue();
 		if (queue.size() > 0) {
 			ret += Config.EOL + "\uD83C\uDFB5 *Next up:* " + Config.EOL;
