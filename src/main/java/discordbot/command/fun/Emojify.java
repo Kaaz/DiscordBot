@@ -51,14 +51,14 @@ public class Emojify extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (args.length > 0) {
-			String combined = Joiner.on(" ").join(args);
+			String combined = Joiner.on(" ").join(args).toLowerCase();
 			int strlen = combined.length();
 			if (combined.length() > MAX_SIZE) {
 				return Template.get("command_emojify_max_exceeded", MAX_SIZE);
 			}
 			StringBuilder output = new StringBuilder();
 			for (int i = 0; i < strlen; i++) {
-				output.append(Emojibet.getEmoji(combined.charAt(i)));
+				output.append(Emojibet.getEmojiFor(String.valueOf(combined.charAt(i))));
 				output.append("\u200B");
 			}
 			return output.toString();
