@@ -8,10 +8,7 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.entities.*;
 
 /**
  * !pause
@@ -56,10 +53,15 @@ public class PauseCommand extends AbstractCommand {
 		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
 			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
-		if (!MusicPlayerHandler.getFor(guild, bot).canTogglePause()) {
+		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
+		if (!player.canTogglePause()) {
 			return Template.get("music_state_not_started");
 		}
-		if (MusicPlayerHandler.getFor(guild, bot).togglePause()) {
+		VoiceChannel userVoice = guild.getVoiceStatusOfUser(author).getChannel();
+		if (userVoice == null || !player.isConnectedTo(userVoice)) {
+			return Template.get(channel, "music_not_same_voicechannel");
+		}
+		if (player.togglePause()) {
 			return Template.get("music_state_paused");
 		}
 		return Template.get("music_state_resumed");
