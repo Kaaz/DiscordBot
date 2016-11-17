@@ -216,7 +216,7 @@ public class DiscordBot {
 
 	public boolean setUserName(String newName) {
 		if (isReady && !getUserName().equals(newName)) {
-			client.getAccountManager().setUsername(newName);
+			client.getAccountManager().setUsername(newName).update();
 			return true;
 		}
 		return false;
