@@ -167,7 +167,7 @@ public class MusicPlayerHandler {
 			record = new OMusic();
 		}
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingMusicChannelTitle.class))) {
-			if (PermissionUtil.checkPermission(bot.getMusicChannel(guild), bot.client.getSelfInfo(), Permission.MANAGE_CHANNEL)) {
+			if (!isUpdateChannelTitle() && PermissionUtil.checkPermission(bot.getMusicChannel(guild), bot.client.getSelfInfo(), Permission.MANAGE_CHANNEL)) {
 				bot.getMusicChannel(guild).getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).update();
 			}
 		}
