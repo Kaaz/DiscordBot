@@ -78,7 +78,7 @@ public class BotMetaEventsService extends AbstractService {
 			return;
 		}
 		for (OBotEvent event : events) {
-			String output = String.format(":watch: `%s` `[%s]` %s %s", dateFormat.format(event.createdOn), event.group, event.subGroup, event.data);
+			String output = String.format(":watch: `%s` %s %s %s", dateFormat.format(event.createdOn), event.group, event.subGroup, event.data);
 			for (TextChannel channel : subscribedChannels) {
 				channel.sendMessageAsync(output, null);
 			}

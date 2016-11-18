@@ -66,7 +66,7 @@ public class Template {
 				return list.get(rnd.nextInt(list.size()));
 			}
 		}
-		CBotEvent.insert("ERROR", "TEMPLATE", String.format("the phrase `%s` is not set!", keyPhrase));
+		CBotEvent.insert(":warning:", ":label:", String.format("the phrase `%s` is not set!", keyPhrase));
 		return "**`" + keyPhrase + "`**";
 	}
 
