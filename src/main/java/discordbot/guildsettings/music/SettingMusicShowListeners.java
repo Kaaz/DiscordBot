@@ -16,9 +16,11 @@ public class SettingMusicShowListeners extends AbstractGuildSetting {
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"Show who's listening in the *current* command",
+		return new String[]{
+				"Show who's listening in the *current* command",
 				"true  -> List all the people who are currently listening to music",
-				"false -> Don't show listeners"};
+				"false -> Don't show listeners"
+		};
 	}
 
 	@Override
