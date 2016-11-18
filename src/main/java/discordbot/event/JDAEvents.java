@@ -193,7 +193,7 @@ public class JDAEvents extends ListenerAdapter {
 		Guild guild = event.getGuild();
 		GuildSettings settings = GuildSettings.get(guild);
 		OGuildMember guildMember = CGuildMember.findBy(guild.getId(), user.getId());
-		boolean firstTime = guildMember == null;
+		boolean firstTime = guildMember.joinDate == null;
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());
 		CGuildMember.insertOrUpdate(guildMember);
 
