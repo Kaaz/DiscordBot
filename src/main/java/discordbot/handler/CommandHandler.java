@@ -69,6 +69,7 @@ public class CommandHandler {
 		boolean startedWithMention = false;
 		int guildId = 0;
 		String inputMessage = incomingMessage;
+		String commandUsed = "-";
 		if (inputMessage.startsWith(bot.mentionMe)) {
 			inputMessage = inputMessage.replace(bot.mentionMe, "").trim();
 			startedWithMention = true;
@@ -82,6 +83,7 @@ public class CommandHandler {
 		System.arraycopy(input, 1, args, 0, input.length - 1);
 		if (commands.containsKey(input[0]) || commandsAlias.containsKey(input[0])) {
 			AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
+			commandUsed = command.getCommand();
 			long cooldown = getCommandCooldown(command, author, channel);
 			if (hasRightVisibility(channel, command.getVisibility()) && cooldown <= 0) {
 				String commandOutput;
@@ -115,8 +117,10 @@ public class CommandHandler {
 				}
 			}
 		} else if (customCommands.containsKey(input[0])) {
+			commandUsed = input[0];
 			outMsg = DisUtil.replaceTags(customCommands.get(input[0]), author, channel, args);
 		} else if (guildCommands.containsKey(guildId) && guildCommands.get(guildId).containsKey(input[0])) {
+			commandUsed = "custom:" + input[0];
 			outMsg = DisUtil.replaceTags(guildCommands.get(guildId).get(input[0]), author, channel, args);
 		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
 			commandSuccess = false;
@@ -126,26 +130,28 @@ public class CommandHandler {
 			commandSuccess = false;
 			outMsg = Template.get("unknown_command", GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help");
 		}
-		if (channel instanceof TextChannel) {
-			TextChannel tc = (TextChannel) channel;
-			Launcher.log("command executed", "bot", "command",
-					"input", incomingMessage,
-					"user-id", author.getId(),
-					"user-name", author.getUsername(),
-					"guild-id", tc.getGuild().getId(),
-					"guild-name", tc.getGuild().getName(),
-					"response", outMsg);
-		} else {
-			Launcher.log("command executed", "bot", "command-private",
-					"input", incomingMessage,
-					"user-id", author.getId(),
-					"user-name", author.getUsername(),
-					"response", outMsg);
-		}
 		if (!outMsg.isEmpty()) {
 			bot.out.sendAsyncMessage(channel, outMsg);
 		}
 		if (commandSuccess) {
+			if (channel instanceof TextChannel) {
+				TextChannel tc = (TextChannel) channel;
+				Launcher.log("command executed", "bot", "command",
+						"input", incomingMessage,
+						"user-id", author.getId(),
+						"command", commandUsed,
+						"user-name", author.getUsername(),
+						"guild-id", tc.getGuild().getId(),
+						"guild-name", tc.getGuild().getName(),
+						"response", outMsg);
+			} else {
+				Launcher.log("command executed", "bot", "command-private",
+						"input", incomingMessage,
+						"user-id", author.getId(),
+						"command", commandUsed,
+						"user-name", author.getUsername(),
+						"response", outMsg);
+			}
 			CUser.registerCommandUse(CUser.getCachedId(author.getId()));
 		}
 	}
