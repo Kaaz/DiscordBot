@@ -259,7 +259,7 @@ public class JDAEvents extends ListenerAdapter {
 		guildMember.joinDate = new Timestamp(System.currentTimeMillis());
 		CGuildMember.insertOrUpdate(guildMember);
 		if (!isActuallyBanned) {
-			discordBot.logGuildEvent(guild, "\uD83C\uDFC3", "**" + event.getUser().getUsername() + "#" + event.getUser().getDiscriminator() + "** left");
+			discordBot.logGuildEvent(guild, "\uD83C\uDFC3", "**" + event.getUser().getUsername() + "#" + event.getUser().getDiscriminator() + "** left the guild");
 		}
 	}
 

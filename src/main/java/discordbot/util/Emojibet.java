@@ -7,6 +7,14 @@ import java.util.Map;
 public class Emojibet {
 	private static final Map<String, String> emojis = new HashMap<>();
 	private static final String UNKNOWN = " ";
+	public static String GUILD_JOIN = "\uD83C\uDFE0";
+	public static String GUILD_LEAVE = "\uD83C\uDFDA";
+	public static String ERROR = "\uD83D\uDED1";
+	public static String WARNING = "\u26A0";
+	public static String KICKED = "\uD83E\uDD4A";
+	public static String BANNED = "\uD83D\uDD28";
+	public static String CALENDAR = "\uD83D\uDDD3";
+
 
 	static {
 		emojis.put("a", "\uD83C\uDDE6");
@@ -48,13 +56,19 @@ public class Emojibet {
 		emojis.put("?", "\u2754");
 		emojis.put("!", "\u2755");
 		emojis.put(" ", "\u25AB");
-
 	}
 
+	/**
+	 * emoji for single character
+	 *
+	 * @param character the character to look for
+	 * @return emoji version, or UNKNOWN
+	 */
 	public static String getEmojiFor(String character) {
 		if (emojis.containsKey(character)) {
 			return emojis.get(character);
 		}
 		return UNKNOWN;
 	}
+
 }
