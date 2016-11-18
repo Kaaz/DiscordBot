@@ -214,6 +214,29 @@ public class CPlaylist {
 		return isInList;
 	}
 
+	/**
+	 * empty the whole playlist!
+	 *
+	 * @param playlistId id of the playlist
+	 */
+	public static void resetPlaylist(int playlistId) {
+		try {
+			WebDb.get().query(
+					"DELETE FROM playlist_item WHERE playlist_id = ?",
+					playlistId
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * delete a track from the playlist
+	 *
+	 * @param playlistId internal playlist id
+	 * @param musicId    internal music id
+	 * @return track removed?
+	 */
 	public static boolean removeFromPlayList(int playlistId, int musicId) {
 		try {
 			WebDb.get().query(

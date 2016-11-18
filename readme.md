@@ -36,12 +36,11 @@ Commands | | | | |
 [fml](#fml) | [game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info)
 [invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild)
 [pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
-[poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [prefix](#prefix) | [profile](#profile)
-[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
-[role](#role) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [skip](#skip)
-[slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag)
-[template](#template) | [uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version)
-[volume](#volume) | 
+[prefix](#prefix) | [profile](#profile) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit)
+[reload](#reload) | [report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate)
+[sendfile](#sendfile) | [skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe)
+[system](#system) | [tag](#tag) | [template](#template) | [uptime](#uptime) | [user](#user)
+[userrank](#userrank) | [version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -515,6 +514,7 @@ playlist list <pagenumber>           //Shows the music in the playlist
 playlist add                         //adds the currently playing music
 playlist add guild                   //adds the currently playing to the guild list
 playlist remove                      //removes the currently playing music
+playlist removeall                   //removes ALL songs from playlist
 
 -- Changing the settings of the playlist
 playlist title <new title>           //edit the playlist title
@@ -533,42 +533,6 @@ Usable in public and private channels
 
 ```php
 pm <@user> <message..>
-```
-### poec
-
-Returns a list of currency on your account
-
-Accessible though: poec
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-poec                   //returns list of currency for default league
-poec token <token>     //sets the session token
-poec league <league>   //currency for league
-```
-### poeitem
-
-Analyzes an item from path of exile.
-
-Accessible though: poeitem
-
-Usable in public and private channels
-### poelab
-
-Attempts to find a description from reddit for the Labyrinth instance.
-
-Accessible though: poelab
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-poelab              //lists for all difficulties
-poelab <difficulty> //only for that difficulty
 ```
 ### prefix
 

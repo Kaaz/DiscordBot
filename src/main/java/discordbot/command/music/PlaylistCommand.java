@@ -67,7 +67,7 @@ public class PlaylistCommand extends AbstractCommand {
 //				"playlist add <youtubelink>           //adds the link to the playlist",
 				"playlist remove                      //removes the currently playing music",
 //				"playlist remove <youtubelink>        //removes song from playlist",
-//				"playlist removeall                   //removes ALL songs from playlist",
+				"playlist removeall                   //removes ALL songs from playlist",
 				"",
 				"-- Changing the settings of the playlist",
 				"playlist title <new title>           //edit the playlist title",
@@ -117,6 +117,7 @@ public class PlaylistCommand extends AbstractCommand {
 		} else {
 			if (args.length >= 1) {
 				boolean isAdding = false;
+				boolean removeAll = false;
 				switch (args[0].toLowerCase()) {
 					case "mine":
 //						playlist = findPlaylist("mine", author, guild);
@@ -140,6 +141,8 @@ public class PlaylistCommand extends AbstractCommand {
 					case "add":
 					case "+":
 						isAdding = true;
+					case "removeall":
+						removeAll = true;
 					case "remove":
 					case "del":
 					case "-":
@@ -168,19 +171,35 @@ public class PlaylistCommand extends AbstractCommand {
 								if (isAdding) {
 									CPlaylist.addToPlayList(playlist.id, nowPlayingId);
 									return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle, playlist.title);
+								} else if (removeAll) {
+									if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+										CPlaylist.resetPlaylist(playlist.id);
+										return Template.get(channel, "playlist_music_removed_all", playlist.title);
+									}
+									return Template.get(channel, "no_permission");
 								} else {
 									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
 									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
 								}
-
 							case PUBLIC_FULL:
 								if (!isAdding) {
+									if (removeAll) {
+										if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+											CPlaylist.resetPlaylist(playlist.id);
+											return Template.get(channel, "playlist_music_removed_all", playlist.title);
+										}
+										return Template.get(channel, "no_permission");
+									}
 									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
 									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
 								}
 							case PUBLIC_ADD:
 								if (!isAdding) {
 									if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+										if (removeAll) {
+											CPlaylist.resetPlaylist(playlist.id);
+											return Template.get(channel, "playlist_music_removed_all", playlist.title);
+										}
 										CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
 										return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
 									}
@@ -196,6 +215,13 @@ public class PlaylistCommand extends AbstractCommand {
 									return Template.get(channel, "no_permission");
 								}
 								if (!isAdding) {
+									if (removeAll) {
+										if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+											CPlaylist.resetPlaylist(playlist.id);
+											return Template.get(channel, "playlist_music_removed_all", playlist.title);
+										}
+										return Template.get(channel, "no_permission");
+									}
 									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
 									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
 								} else {
