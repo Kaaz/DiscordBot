@@ -3,7 +3,6 @@ package discordbot.main;
 import com.mashape.unirest.http.Unirest;
 import discordbot.db.controllers.CGuild;
 import discordbot.event.JDAEvents;
-import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.*;
 import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.handler.*;
@@ -260,7 +259,6 @@ public class DiscordBot {
 			}
 		}
 		if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
-				!DefaultGuildSettings.getDefault(SettingBotChannel.class).equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class)) &&
 				channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getRawContent()), null);
 		}
