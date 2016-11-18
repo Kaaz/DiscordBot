@@ -11,7 +11,7 @@ public class SettingMusicShowListeners extends AbstractGuildSetting {
 
 	@Override
 	public String getDefault() {
-		return "true";
+		return "false";
 	}
 
 	@Override
