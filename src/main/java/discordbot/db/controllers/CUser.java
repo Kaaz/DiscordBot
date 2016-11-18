@@ -1,5 +1,6 @@
 package discordbot.db.controllers;
 
+import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
 import discordbot.db.model.OUser;
@@ -30,6 +31,10 @@ public class CUser {
 			if (user.id == 0) {
 				user.discord_id = discordId;
 				insert(user);
+			}
+			if (user.name == null || user.name.isEmpty()) {
+				user.name = EmojiParser.parseToAliases(username);
+				update(user);
 			}
 			userCache.put(discordId, user.id);
 		}
