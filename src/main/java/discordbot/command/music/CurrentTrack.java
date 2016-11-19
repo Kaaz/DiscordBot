@@ -208,7 +208,7 @@ public class CurrentTrack extends AbstractCommand {
 				player.setUpdateChannelTitle(false);
 				return Template.get("music_channel_autotitle_stop");
 			} else {
-				TextChannel musicChannel = bot.getMusicChannel(guild);
+				TextChannel musicChannel = (TextChannel) channel;//bot.getMusicChannel(guild);
 				if (musicChannel.checkPermission(bot.client.getSelfInfo(), Permission.MANAGE_CHANNEL)) {
 					player.setUpdateChannelTitle(true);
 					bot.timer.scheduleAtFixedRate(new TimerTask() {

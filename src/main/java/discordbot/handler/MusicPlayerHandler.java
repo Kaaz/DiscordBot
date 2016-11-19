@@ -7,10 +7,7 @@ import discordbot.db.controllers.CMusicLog;
 import discordbot.db.controllers.CPlaylist;
 import discordbot.db.model.OMusic;
 import discordbot.db.model.OPlaylist;
-import discordbot.guildsettings.music.SettingMusicChannelTitle;
-import discordbot.guildsettings.music.SettingMusicLastPlaylist;
-import discordbot.guildsettings.music.SettingMusicPlayingMessage;
-import discordbot.guildsettings.music.SettingMusicVolume;
+import discordbot.guildsettings.music.*;
 import discordbot.handler.audiosources.StreamSource;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
@@ -127,12 +124,16 @@ public class MusicPlayerHandler {
 		LinkedList<AudioSource> audioQueue = player.getAudioQueue();
 		if (audioQueue.isEmpty()) {
 			if (queue.isEmpty()) {
-				String filename = getRandomSong();
-				if (filename != null) {
-					audioQueue.add(new LocalSource(new File(filename)));
-				} else {
-					player.stop();
-					bot.getMusicChannel(guild).sendMessageAsync("Stopped playing because the playlist is empty", null);
+				if ("false".equals(GuildSettings.get(guild).getOrDefault(SettingMusicQueueOnly.class))) {
+					String filename = getRandomSong();
+					if (filename != null) {
+						audioQueue.add(new LocalSource(new File(filename)));
+					} else {
+						player.stop();
+						bot.getMusicChannel(guild).sendMessageAsync("Stopped playing because the playlist is empty", null);
+					}
+				}else {
+					leave();
 				}
 			} else {
 				OMusic poll = queue.poll();
