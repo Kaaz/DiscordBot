@@ -36,11 +36,12 @@ Commands | | | | |
 [fml](#fml) | [game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info)
 [invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild)
 [pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
-[prefix](#prefix) | [profile](#profile) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit)
-[reload](#reload) | [report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate)
-[sendfile](#sendfile) | [skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe)
-[system](#system) | [tag](#tag) | [template](#template) | [uptime](#uptime) | [user](#user)
-[userrank](#userrank) | [version](#version) | [volume](#volume) | 
+[poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [prefix](#prefix) | [profile](#profile)
+[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
+[role](#role) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [skip](#skip)
+[slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag)
+[template](#template) | [uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version)
+[volume](#volume) | 
 
 ## Games
 
@@ -116,11 +117,13 @@ command_prefix | $ | Prefix for commands (between 1 and 3 characters)
 help_in_pm | false | show help in a private message?<br/>true  -> send a message to the user requesting help<br/>false -> output help to the channel where requested
 module_games | true | Let people play games against each other
 music_channel | music | Channel where the bots music-related output goes to
-music_channel_title | false | Updates the music channel's topic with the currently playing song<br/>true  -> yes change the topic at the beginning of every song<br/>false -> leave the channel topic title alone!
+music_channel_auto | false | The channel where I automatically connect to if a user joins<br/><br/>false:<br/>Not using this setting, wont auto-connect to anything.<br/><br/>setting this to match a voice channel name:<br/>The moment a user connects to the specified channel I connect too and start to play music.<br/><br/>Important to note: <br/>* If the configured channel does not exist, this setting will be turned off<br/>* If I'm already connected to a different voice-channel I won't use this setting
+music_channel_title | false | Updates the music channel's topic with the currently playing song<br/>auto  -> update the title every 10 seconds with the track its playing<br/>true  -> yes change the topic at the beginning of every song<br/>false -> leave the channel topic title alone!
 music_playing_message | clear | Clear the now playing message?<br/>clear  -> sends a message and deletes it when the song is over or skipped<br/>normal -> send the message and just leave it be<br/>off    -> don't send now playing messages
 music_playlist_id | 0 | used to store the last used playlist 
+music_queue_only | false | Stop playing music once the queue is empty?<br/><br/>true<br/>once the queue is empty I stop playing music and leave the voice channel<br/><br/>false<br/>If the queue is empty, I'm gonna pick the track.
 music_role_requirement | none | In order to use music commands you need this role!<br/>Setting this value to none will disable the requirement
-music_show_listeners | true | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
+music_show_listeners | false | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
 music_volume | 10 | sets the default volume of the music player<br/>So the next time the bot connects it starts with this volume<br/><br/>Accepts a value between 0 and 100
 music_vote_percent | 1 | Percentage of users (rounded down) required to skip the currently playing track<br/><br/>eg; when set to 25, and 5 listeners it would require 2 users to vote skip <br/><br/>Accepts a value between 1 and 100
 pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
@@ -533,6 +536,42 @@ Usable in public and private channels
 
 ```php
 pm <@user> <message..>
+```
+### poec
+
+Returns a list of currency on your account
+
+Accessible though: poec
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+poec                   //returns list of currency for default league
+poec token <token>     //sets the session token
+poec league <league>   //currency for league
+```
+### poeitem
+
+Analyzes an item from path of exile.
+
+Accessible though: poeitem
+
+Usable in public and private channels
+### poelab
+
+Attempts to find a description from reddit for the Labyrinth instance.
+
+Accessible though: poelab
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+poelab              //lists for all difficulties
+poelab <difficulty> //only for that difficulty
 ```
 ### prefix
 
