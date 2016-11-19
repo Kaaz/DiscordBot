@@ -13,6 +13,7 @@ import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingPMUserEvents;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.guildsettings.defaults.SettingWelcomeNewUsers;
+import discordbot.guildsettings.music.SettingMusicAutoVoiceChannel;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
@@ -314,13 +315,42 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onVoiceJoin(VoiceJoinEvent event) {
-		super.onVoiceJoin(event);
+		if (event.getUser().isBot()) {
+			return;
+		}
+		MusicPlayerHandler player = MusicPlayerHandler.getFor(event.getGuild(), discordBot);
+		if (player.isConnected()) {
+			return;
+		}
+		String autoChannel = GuildSettings.get(event.getGuild()).getOrDefault(SettingMusicAutoVoiceChannel.class);
+		if ("false".equalsIgnoreCase(autoChannel)) {
+			return;
+		}
+		if (event.getChannel().getName().equalsIgnoreCase(autoChannel)) {
+			player.connectTo(event.getChannel());
+			try {
+				Thread.sleep(2L);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			player.playRandomSong();
+		}
+		for (User user : event.getChannel().getUsers()) {
+			System.out.println(user.getUsername());
+		}
 	}
 
 
 	@Override
 	public void onVoiceLeave(VoiceLeaveEvent event) {
+		if (event.getUser().isBot()) {
+			return;
+		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(event.getGuild(), discordBot);
+		for (User user : event.getOldChannel().getUsers()) {
+			System.out.println(user.getUsername());
+		}
+
 		if (!player.isConnected()) {
 			return;
 		}
@@ -333,6 +363,11 @@ public class JDAEvents extends ListenerAdapter {
 			}
 		}
 		player.leave();
-		discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(event.getGuild()), Template.get("music_no_one_listens_i_leave"), null);
+		String autoChannel = GuildSettings.get(event.getGuild()).getOrDefault(SettingMusicAutoVoiceChannel.class);
+		if (!"false".equalsIgnoreCase(autoChannel) && event.getOldChannel().getName().equalsIgnoreCase(autoChannel)) {
+			return;
+		}
+		discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(event.getGuild()), Template.get("music_no_one_listens_i_leave"));
+
 	}
 }

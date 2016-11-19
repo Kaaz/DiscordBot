@@ -132,7 +132,7 @@ public class MusicPlayerHandler {
 						player.stop();
 						bot.getMusicChannel(guild).sendMessageAsync("Stopped playing because the playlist is empty", null);
 					}
-				}else {
+				} else {
 					leave();
 				}
 			} else {
