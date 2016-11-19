@@ -335,9 +335,6 @@ public class JDAEvents extends ListenerAdapter {
 			}
 			player.playRandomSong();
 		}
-		for (User user : event.getChannel().getUsers()) {
-			System.out.println(user.getUsername());
-		}
 	}
 
 
@@ -347,9 +344,6 @@ public class JDAEvents extends ListenerAdapter {
 			return;
 		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(event.getGuild(), discordBot);
-		for (User user : event.getOldChannel().getUsers()) {
-			System.out.println(user.getUsername());
-		}
 
 		if (!player.isConnected()) {
 			return;
