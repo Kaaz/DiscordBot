@@ -146,9 +146,11 @@ public class JDAEvents extends ListenerAdapter {
 		if (server.isBanned()) {
 			return;
 		}
-		CBotEvent.insert(":house_abandoned:", ":no_entry_sign:",
+		CBotEvent.insert(":house_abandoned:", ":fire:",
 				String.format(":id: %s | :hash: %s | %s",
-						EmojiParser.parseToAliases(guild.getName()), guild.getId(), server.id));
+						EmojiParser.parseToAliases(guild.getName()),
+						guild.getId(),
+						server.id));
 		Launcher.log("bot leaves guild", "bot", "guild-leave",
 				"guild-id", guild.getId(),
 				"guild-name", guild.getName());

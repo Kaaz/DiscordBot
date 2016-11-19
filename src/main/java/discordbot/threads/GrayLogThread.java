@@ -46,7 +46,6 @@ public class GrayLogThread extends Thread {
 			loggerTerminated = true;
 		}
 	}
-
 	/**
 	 * @param message the log message
 	 * @param type    the category of the log message
