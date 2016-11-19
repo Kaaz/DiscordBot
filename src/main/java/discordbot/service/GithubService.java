@@ -8,7 +8,6 @@ import discordbot.main.DiscordBot;
 import discordbot.modules.github.GitHub;
 import discordbot.modules.github.GithubConstants;
 import discordbot.modules.github.pojo.RepositoryCommit;
-import discordbot.util.Misc;
 import discordbot.util.TimeUtil;
 import net.dv8tion.jda.entities.TextChannel;
 
@@ -89,11 +88,7 @@ public class GithubService extends AbstractService {
 			} else {
 				totalMessage = "There have been **" + commitCount + "** commits to my code " + Config.EOL;
 			}
-			if (commitCount <= 3) {
-				totalMessage += commitsMessage;
-			} else {
-				totalMessage += Misc.makeAsciiTable(Arrays.asList("hash", "committer", "description"), tblContent, null);
-			}
+			totalMessage += commitsMessage;
 			for (TextChannel chan : getSubscribedChannels()) {
 				sendTo(chan, totalMessage);
 			}
