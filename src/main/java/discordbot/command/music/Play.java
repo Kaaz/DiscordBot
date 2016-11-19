@@ -115,8 +115,13 @@ public class Play extends AbstractCommand {
 			String videoCode = YTUtil.extractCodeFromUrl(args[0]);
 			if (!YTUtil.isValidYoutubeCode(videoCode)) {
 				YTSearch.SimpleResult results = ytSearch.getResults(Joiner.on(" ").join(args));
-				videoCode = results.getCode();
-				videoTitle = EmojiParser.parseToAliases(results.getTitle());
+				if (results != null) {
+					videoCode = results.getCode();
+					videoTitle = EmojiParser.parseToAliases(results.getTitle());
+				} else {
+					videoCode = null;
+					videoTitle = null;
+				}
 			} else {
 				videoTitle = "";
 			}

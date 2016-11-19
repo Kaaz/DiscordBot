@@ -1,5 +1,6 @@
 package discordbot.threads;
 
+import discordbot.db.controllers.CBotEvent;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.Launcher;
@@ -34,14 +35,17 @@ public class YoutubeThread extends Thread {
 		try {
 			YoutubeTask task;
 			while (!Launcher.isBeingKilled && !threadTerminated) {
-				task = queue.take();
-				task.getMessage().updateMessageAsync(Template.get("music_downloading_hang_on"), null);
-				downloadFromYoutubeAsMp3(task.getCode());
-				if (task.getCallback() != null) {
-					task.getCallback().accept(task.getMessage());
+				try {
+					task = queue.take();
+					task.getMessage().updateMessageAsync(Template.get("music_downloading_hang_on"), null);
+					downloadFromYoutubeAsMp3(task.getCode());
+					if (task.getCallback() != null) {
+						task.getCallback().accept(task.getMessage());
+					}
+				} catch (Exception e) {
+					CBotEvent.insert(":octagonal_sign:", ":musical_note:", e.getMessage());
 				}
 			}
-		} catch (InterruptedException iex) {
 		} finally {
 			threadTerminated = true;
 		}

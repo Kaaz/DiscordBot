@@ -11,6 +11,11 @@ public class SettingBotShowTemplates extends AbstractGuildSetting {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return true;
+	}
+
+	@Override
 	public String getDefault() {
 		return Config.SHOW_KEYPHRASE ? "true" : "false";
 	}
