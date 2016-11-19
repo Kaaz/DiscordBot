@@ -232,6 +232,7 @@ public class DiscordBot {
 		if (CommandHandler.isCommand(null, message.getRawContent(), mentionMe)) {
 			CommandHandler.process(this, channel, author, message.getRawContent());
 		} else {
+			channel.sendTyping();
 			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getRawContent()), null);
 		}
 	}
@@ -261,6 +262,7 @@ public class DiscordBot {
 		}
 		if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
 				channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
+			channel.sendTyping();
 			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getRawContent()), null);
 		}
 	}

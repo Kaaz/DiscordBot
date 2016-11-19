@@ -124,6 +124,7 @@ public class CommandHandler {
 			outMsg = DisUtil.replaceTags(guildCommands.get(guildId).get(input[0]), author, channel, args);
 		} else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
 			commandSuccess = false;
+			channel.sendTyping();
 			outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat(inputMessage);
 		} else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
 				GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
