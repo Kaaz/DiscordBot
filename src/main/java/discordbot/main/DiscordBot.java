@@ -54,6 +54,7 @@ public class DiscordBot {
 		}
 		builder.addListener(new JDAEvents(this));
 		builder.setEnableShutdownHook(false);
+		builder.setBulkDeleteSplittingEnabled(false);
 		client = builder.buildAsync();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 	}

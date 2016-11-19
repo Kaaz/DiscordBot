@@ -13,6 +13,7 @@ import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.utils.PermissionUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,6 +63,8 @@ public class PurgeComand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		boolean hasManageMessages = PermissionUtil.checkPermission((TextChannel) channel, bot.client.getSelfInfo(), Permission.MESSAGE_MANAGE);
+		TextChannel textChannel = (TextChannel) channel;
+		List<Message> messagesToDelete = new ArrayList<>();
 		User toDeleteFrom = null;
 		int deleteLimit = 100;
 		boolean deleteAll = true;
@@ -80,12 +83,12 @@ public class PurgeComand extends AbstractCommand {
 					if (message.isPinned()) {
 						continue;
 					}
-					if (message.getRawContent().startsWith(cmdPrefix)
+					if ((message.getRawContent().startsWith(cmdPrefix) && hasManageMessages)
 							|| (message.getAuthor() == null || message.getAuthor().getId().equals(bot.client.getSelfInfo().getId()))) {
-						bot.out.deleteMessage(message);
+						messagesToDelete.add(message);
 					}
 				}
-				bot.out.sendAsyncMessage(channel, Template.get("command_purge_success"), message -> bot.out.deleteMessage(message));
+				deleteBulk(bot, (TextChannel) channel, hasManageMessages, messagesToDelete);
 				return "";
 			}
 			deleteAll = false;
@@ -98,11 +101,11 @@ public class PurgeComand extends AbstractCommand {
 				toDeleteFrom = bot.client.getSelfInfo();
 			} else if (args[0].matches("^\\d+$")) {
 				deleteAll = true;
-				deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[0]));
+				deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[0])) + 1;
 			} else {
 				toDeleteFrom = DisUtil.findUserIn((TextChannel) channel, args[0]);
 				if (args.length >= 2 && args[1].matches("^\\d+$")) {
-					deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
+					deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1])) + 1;
 				}
 			}
 		}
@@ -123,18 +126,23 @@ public class PurgeComand extends AbstractCommand {
 			}
 			if (deleteAll && (hasManageMessages || (msg.getAuthor() != null && msg.getAuthor().getId().equals(bot.client.getSelfInfo().getId())))) {
 				deletedCount++;
-				bot.out.deleteMessage(msg);
+				messagesToDelete.add(msg);
 			} else if (!deleteAll && toDeleteFrom != null && msg.getAuthor() != null && msg.getAuthor().getId().equals(toDeleteFrom.getId())) {
 				deletedCount++;
-				bot.out.deleteMessage(msg);
+				messagesToDelete.add(msg);
 			}
 		}
-		if (hasManageMessages) {
-			bot.out.sendAsyncMessage(channel, Template.get("command_purge_success"), message -> {
-				bot.out.deleteMessage(message);
+		deleteBulk(bot, (TextChannel) channel, hasManageMessages, messagesToDelete);
+		return "";
+	}
+
+	private void deleteBulk(DiscordBot bot, TextChannel channel, boolean hasManageMessages, List<Message> messagesToDelete) {
+		if (hasManageMessages || !messagesToDelete.isEmpty()) {
+			bot.out.sendAsyncMessage(channel, Template.get(
+					hasManageMessages ? "command_purge_success" : "permission_missing_manage_messages"), message -> {
+				messagesToDelete.add(message);
+				channel.deleteMessages(messagesToDelete);
 			});
-			return "";
 		}
-		return Template.get("permission_missing_manage_messages");
 	}
 }

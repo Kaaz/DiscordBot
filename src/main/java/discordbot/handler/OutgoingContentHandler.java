@@ -17,12 +17,10 @@ import java.util.function.Consumer;
 public class OutgoingContentHandler {
 	private final static long DELETE_INTERVAL = 500L;
 	private final DiscordBot botInstance;
-	private final MessageDeleter deleteThread;
 	private final RoleModifier roleThread;
 
 	public OutgoingContentHandler(DiscordBot b) {
 		botInstance = b;
-		deleteThread = new MessageDeleter();
 		roleThread = new RoleModifier();
 	}
 
@@ -134,46 +132,6 @@ public class OutgoingContentHandler {
 		target.getPrivateChannel().sendMessageAsync(message, null);
 	}
 
-	/**
-	 * Puts a message in the delete queue
-	 *
-	 * @param message the message to delete
-	 */
-	public void deleteMessage(Message message) {
-		deleteThread.offer(message);
-	}
-
-	/**
-	 * simple thread to delete messages, since it bugs out otherwise
-	 */
-	private class MessageDeleter extends Thread {
-		private LinkedBlockingQueue<Message> itemsToDelete = new LinkedBlockingQueue<>();
-		private volatile boolean processTerminated = false;
-
-		MessageDeleter() {
-			start();
-		}
-
-		public void run() {
-			try {
-				while (!Launcher.isBeingKilled) {
-					final Message msgToDelete = itemsToDelete.take();
-					if (msgToDelete != null) {
-						msgToDelete.deleteMessage();
-					}
-					Thread.sleep(DELETE_INTERVAL);
-				}
-			} catch (InterruptedException ignored) {
-			} finally {
-				processTerminated = true;
-			}
-		}
-
-		public void offer(Message lm) {
-			if (processTerminated) return;
-			itemsToDelete.offer(lm);
-		}
-	}
 
 	private class RoleModifier extends Thread {
 		private LinkedBlockingQueue<RoleModifyTask> itemsToDelete = new LinkedBlockingQueue<>();
