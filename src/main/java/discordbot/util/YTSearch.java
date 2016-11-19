@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author John Grosh (jagrosh)
+ * Helper class to search for tracks on youtube
  */
 public class YTSearch {
 	private final YouTube youtube;

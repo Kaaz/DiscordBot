@@ -123,7 +123,7 @@ public class DisUtil {
 		if (guild == null) {
 			return output.replace("\u0013", "%");
 		}
-		if (userArgs != null) {
+		if (userArgs != null && output.contains("%arg")) {
 			String allArgs = Joiner.on(" ").join(userArgs);
 			output = output.replace("%args%", allArgs);
 			for (int i = 0; i < userArgs.length; i++) {

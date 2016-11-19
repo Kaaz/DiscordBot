@@ -8,9 +8,11 @@ import org.graylog2.gelfclient.transport.GelfTransport;
 import java.net.InetSocketAddress;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Sending messages to graylog
+ */
 public class GrayLogThread extends Thread {
-	private LinkedBlockingQueue<GelfMessage> itemsToLog =
-			new LinkedBlockingQueue<>();
+	private LinkedBlockingQueue<GelfMessage> itemsToLog = new LinkedBlockingQueue<>();
 	private volatile boolean loggerTerminated = false;
 	private GelfTransport transport;
 	private GelfMessageBuilder builder;

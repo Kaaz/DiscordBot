@@ -14,18 +14,17 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
+/**
+ * Thread for grabbing tracks from youtube
+ */
 public class YoutubeThread extends Thread {
-	private LinkedBlockingQueue<YoutubeTask> queue =
-			new LinkedBlockingQueue<>();
+	private LinkedBlockingQueue<YoutubeTask> queue = new LinkedBlockingQueue<>();
 	private volatile boolean threadTerminated = false;
 
 	public YoutubeThread() throws InterruptedException {
 		super("yt-to-mp3");
-		init();
 	}
 
-	private void init() {
-	}
 
 	public int getQueueSize() {
 		return queue.size();
