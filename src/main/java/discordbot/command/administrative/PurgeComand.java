@@ -21,6 +21,8 @@ import java.util.List;
  * Purges messages in channel
  */
 public class PurgeComand extends AbstractCommand {
+	private static final int BULK_DELETE_MAX = 100;
+
 	public PurgeComand() {
 		super();
 	}
@@ -136,13 +138,47 @@ public class PurgeComand extends AbstractCommand {
 		return "";
 	}
 
+	/**
+	 * Deletes a bunch of messages
+	 *
+	 * @param bot               the jda instance
+	 * @param channel           channel to delete messages in
+	 * @param hasManageMessages does the bot have the Permission.MANAGE_CHANNEL for channel
+	 * @param messagesToDelete  list of messages to delete
+	 */
 	private void deleteBulk(DiscordBot bot, TextChannel channel, boolean hasManageMessages, List<Message> messagesToDelete) {
-		if (hasManageMessages || !messagesToDelete.isEmpty()) {
+		if (messagesToDelete.isEmpty()) {
+			return;
+		}
+		if (hasManageMessages && messagesToDelete.size() > 1) {
 			bot.out.sendAsyncMessage(channel, Template.get(
-					hasManageMessages ? "command_purge_success" : "permission_missing_manage_messages"), message -> {
+					"command_purge_success"), message -> {
+				for (int index = 0; index < messagesToDelete.size(); index += BULK_DELETE_MAX) {
+					if (messagesToDelete.size() - index < 2) {
+						messagesToDelete.get(index).deleteMessage();
+					} else {
+						channel.deleteMessages(messagesToDelete.subList(index, Math.min(index + BULK_DELETE_MAX, messagesToDelete.size())));
+					}
+					try {
+						Thread.sleep(2000L);
+					} catch (Exception ignored) {
+					}
+				}
 				messagesToDelete.add(message);
 				channel.deleteMessages(messagesToDelete);
 			});
+		} else {
+			bot.out.sendAsyncMessage(channel, Template.get("permission_missing_manage_messages"), message -> {
+				messagesToDelete.add(message);
+				for (Message toDelete : messagesToDelete) {
+					toDelete.deleteMessage();
+					try {
+						Thread.sleep(500L);
+					} catch (Exception ignored) {
+					}
+				}
+			});
 		}
 	}
+}
 }
