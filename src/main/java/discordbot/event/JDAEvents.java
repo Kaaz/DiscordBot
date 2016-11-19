@@ -110,7 +110,12 @@ public class JDAEvents extends ListenerAdapter {
 					break;
 				}
 			}
-			CBotEvent.insert(":house:", ":white_check_mark:", String.format(" %s | :id: %s | :hash: %s | :busts_in_silhouette: %s", guild.getName(), guild.getId(), server.id, guild.getUsers().size()));
+			CBotEvent.insert(":house:", ":white_check_mark:",
+					String.format(":id: %s | :hash: %s | :busts_in_silhouette: %s | %s",
+							guild.getId(),
+							server.id,
+							guild.getUsers().size(),
+							EmojiParser.parseToAliases(guild.getName())));
 			discordBot.getContainer().guildJoined();
 			Launcher.log("bot joins guild", "bot", "guild-join",
 					"guild-id", guild.getId(),
@@ -141,7 +146,9 @@ public class JDAEvents extends ListenerAdapter {
 		if (server.isBanned()) {
 			return;
 		}
-		CBotEvent.insert(":house_abandoned:", ":no_entry_sign:", String.format(" %s | :id: %s | :hash: %s", EmojiParser.parseToAliases(guild.getName()), guild.getId(), server.id));
+		CBotEvent.insert(":house_abandoned:", ":no_entry_sign:",
+				String.format(":id: %s | :hash: %s | %s",
+						EmojiParser.parseToAliases(guild.getName()), guild.getId(), server.id));
 		Launcher.log("bot leaves guild", "bot", "guild-leave",
 				"guild-id", guild.getId(),
 				"guild-name", guild.getName());
