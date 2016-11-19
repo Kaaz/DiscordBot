@@ -1,17 +1,12 @@
 package discordbot.util;
 
 import discordbot.main.Config;
-import discordbot.permission.SimpleRank;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,86 +66,8 @@ public class YTUtil {
 		return StringEscapeUtils.unescapeHtml4(ret);
 	}
 
-	/**
-	 * downloads a youtube video as an mp3
-	 *
-	 * @param videocode youtube video id
-	 * @param userRank
-	 * @return success or not
-	 */
-	public static boolean downloadfromYoutubeAsMp3(String videocode, SimpleRank userRank) {
-		System.out.println("YT:: downloading " + videocode);
-		System.out.println("YT:: https://www.youtube.com/watch?v=" + videocode);
-		List<String> infoArgs = new LinkedList<>();
-		infoArgs.add(Config.YOUTUBEDL_EXE);
-		infoArgs.add("--verbose");
-		infoArgs.add("--no-check-certificate");
-		infoArgs.add("-x"); //audio only
-		infoArgs.add("--ffmpeg-location");
-		infoArgs.add(Config.YOUTUBEDL_BIN);
-		infoArgs.add("--audio-format");
-		infoArgs.add("mp3");
-		infoArgs.add("--max-filesize");
-		infoArgs.add(userRank.isAtLeast(SimpleRank.CONTRIBUTOR) ? "128m" : "64m");
-		infoArgs.add("--output");
-		infoArgs.add(Config.MUSIC_DIRECTORY + "/" + videocode + ".%(ext)s");
-		infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
-		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
-		builder.redirectErrorStream(true);
-		Process process = null;
-		try {
-			process = builder.start();
-			InputStream stdout = process.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				System.out.println("YT: " + line);
-			}
-			process.waitFor();
-			process.destroy();
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
 
 	public static String getOutputPath(String videoCode) {
 		return Config.MUSIC_DIRECTORY + videoCode + ".mp3";
-	}
-
-	public static boolean downloadPlayList(String playlist) {
-		System.out.println("YT:: downloading " + playlist);
-		List<String> infoArgs = new LinkedList<>();
-		infoArgs.add(Config.YOUTUBEDL_EXE);
-		infoArgs.add("--verbose");
-		infoArgs.add("--no-check-certificate");
-		infoArgs.add("-x"); //audio only
-		infoArgs.add("--ignore-errors"); //audio only
-		infoArgs.add("--prefer-avconv");
-		infoArgs.add("--ffmpeg-location");
-		infoArgs.add(Config.YOUTUBEDL_BIN);
-		infoArgs.add("--audio-format");
-		infoArgs.add("mp3");
-		infoArgs.add("--output");
-		infoArgs.add(Config.MUSIC_DIRECTORY + "tmp/%(id)s.%(ext)s");
-		infoArgs.add(playlist);
-		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
-		builder.redirectErrorStream(true);
-		Process process = null;
-		try {
-			process = builder.start();
-			InputStream stdout = process.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
-			String line = "";
-			while ((line = reader.readLine()) != null) {
-				System.out.println("YT: " + line);
-			}
-			process.waitFor();
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
 	}
 }

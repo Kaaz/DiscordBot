@@ -1,6 +1,7 @@
 package discordbot.threads;
 
 import discordbot.main.Config;
+import discordbot.main.Launcher;
 import org.graylog2.gelfclient.*;
 import org.graylog2.gelfclient.transport.GelfTransport;
 
@@ -11,7 +12,6 @@ public class GrayLogThread extends Thread {
 	private LinkedBlockingQueue<GelfMessage> itemsToLog =
 			new LinkedBlockingQueue<>();
 	private volatile boolean loggerTerminated = false;
-	private GelfConfiguration config;
 	private GelfTransport transport;
 	private GelfMessageBuilder builder;
 
@@ -21,7 +21,7 @@ public class GrayLogThread extends Thread {
 	}
 
 	private void connect() throws InterruptedException {
-		config = new GelfConfiguration(new InetSocketAddress(Config.BOT_GRAYLOG_HOST, Config.BOT_GRAYLOG_PORT))
+		GelfConfiguration config = new GelfConfiguration(new InetSocketAddress(Config.BOT_GRAYLOG_HOST, Config.BOT_GRAYLOG_PORT))
 				.transport(GelfTransports.UDP)
 				.queueSize(512)
 				.connectTimeout(5000)
@@ -37,7 +37,7 @@ public class GrayLogThread extends Thread {
 	public void run() {
 		try {
 			GelfMessage logMessage;
-			while (!loggerTerminated) {
+			while (!loggerTerminated && !Launcher.isBeingKilled) {
 				logMessage = itemsToLog.take();
 				transport.trySend(logMessage);
 			}
@@ -46,6 +46,7 @@ public class GrayLogThread extends Thread {
 			loggerTerminated = true;
 		}
 	}
+
 	/**
 	 * @param message the log message
 	 * @param type    the category of the log message

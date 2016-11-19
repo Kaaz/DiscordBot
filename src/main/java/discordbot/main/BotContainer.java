@@ -1,16 +1,25 @@
 package discordbot.main;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import discordbot.core.ExitCode;
 import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.model.OBotPlayingOn;
 import discordbot.handler.*;
+import discordbot.threads.YoutubeThread;
 import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * Shared information between bots
@@ -20,11 +29,13 @@ public class BotContainer {
 	private final DiscordBot[] shards;
 	private volatile AtomicInteger numGuilds;
 	private volatile boolean allShardsReady = false;
-
+	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 	private volatile boolean terminationRequested = false;
 	private volatile ExitCode rebootReason = ExitCode.UNKNOWN;
+	private final YoutubeThread youtubeThread;
 
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException {
+		youtubeThread = new YoutubeThread();
 		this.numShards = 1 + ((numGuilds + 1000) / 2000);
 		shards = new DiscordBot[numShards];
 		initHandlers();
@@ -53,6 +64,24 @@ public class BotContainer {
 			terminationRequested = true;
 			rebootReason = ExitCode.NEED_MORE_SHARDS;
 		}
+	}
+
+	/**
+	 * Retrieves the shard recommendation from discord
+	 *
+	 * @return recommended shard count
+	 */
+	public int getRecommendedShards() {
+		try {
+			HttpResponse<JsonNode> request = Unirest.get("https://discordapp.com/api/gateway/bot")
+					.header("Authorization", "Bot " + Config.BOT_TOKEN)
+					.header("Content-Type", "application/json")
+					.asJson();
+			return Integer.parseInt(request.getBody().getObject().get("shards").toString());
+		} catch (UnirestException e) {
+			e.printStackTrace();
+		}
+		return 1;
 	}
 
 	/**
@@ -133,6 +162,7 @@ public class BotContainer {
 			}
 		}
 		CBotPlayingOn.deleteAll();
+		youtubeThread.start();
 	}
 
 	private void initHandlers() {
@@ -168,5 +198,25 @@ public class BotContainer {
 
 	public ExitCode getRebootReason() {
 		return rebootReason;
+	}
+
+	/**
+	 * Queue up a track to fetch from youtube
+	 *
+	 * @param youtubeCode the video code
+	 * @param message     message object
+	 * @param callback    the callback
+	 */
+	public void downloadRequest(String youtubeCode, Message message, Consumer<Message> callback) {
+		youtubeThread.addToQueue(youtubeCode, message, callback);
+	}
+
+	/**
+	 * how many tracks are in the queue to be processed?
+	 *
+	 * @return amount
+	 */
+	public int downloadsProcessing() {
+		return youtubeThread.getQueueSize();
 	}
 }

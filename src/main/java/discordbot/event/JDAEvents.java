@@ -148,9 +148,10 @@ public class JDAEvents extends ListenerAdapter {
 		}
 		CBotEvent.insert(":house_abandoned:", ":fire:",
 				String.format(":id: %s | :hash: %s | %s",
-						EmojiParser.parseToAliases(guild.getName()),
 						guild.getId(),
-						server.id));
+						server.id,
+						EmojiParser.parseToAliases(guild.getName())
+				));
 		Launcher.log("bot leaves guild", "bot", "guild-leave",
 				"guild-id", guild.getId(),
 				"guild-name", guild.getName());

@@ -1,6 +1,6 @@
 package discordbot.command.music;
 
-import com.google.common.base.Joiner;
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
@@ -111,54 +111,56 @@ public class Play extends AbstractCommand {
 		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 		if (args.length > 0) {
-
+			final String videoTitle;
 			String videoCode = YTUtil.extractCodeFromUrl(args[0]);
 			if (!YTUtil.isValidYoutubeCode(videoCode)) {
-				videoCode = ytSearch.getResults(Joiner.on(" ").join(args));
+				YTSearch.SimpleResult results = ytSearch.getResults(Joiner.on(" ").join(args));
+				videoCode = results.getCode();
+				videoTitle = EmojiParser.parseToAliases(results.getTitle());
+			} else {
+				videoTitle = "";
 			}
-			if (YTUtil.isValidYoutubeCode(videoCode)) {
-				try {
-					final File filecheck = new File(YTUtil.getOutputPath(videoCode));
-					if (!filecheck.exists()) {
-						String finalVideocode = videoCode;
-						bot.out.sendAsyncMessage(channel, Template.get("music_downloading_hang_on"), message -> {
-							YTUtil.downloadfromYoutubeAsMp3(finalVideocode, userRank);
+			if (videoCode != null && YTUtil.isValidYoutubeCode(videoCode)) {
+				final File filecheck = new File(YTUtil.getOutputPath(videoCode));
+				if (!filecheck.exists()) {
+					final String finalVideoCode = videoCode;
+					bot.out.sendAsyncMessage(channel, Template.get("music_downloading_in_queue", videoCode), message -> {
+						bot.getContainer().downloadRequest(finalVideoCode, message, message1 -> {
 							try {
 								if (filecheck.exists()) {
 									String path = filecheck.toPath().toRealPath().toString();
-									OMusic rec = CMusic.findByYoutubeId(finalVideocode);
-									rec.youtubeTitle = EmojiParser.parseToAliases(YTUtil.getTitleFromPage(finalVideocode));
-									rec.youtubecode = finalVideocode;
+									OMusic rec = CMusic.findByYoutubeId(finalVideoCode);
+									rec.youtubeTitle = !videoTitle.isEmpty() ? videoTitle : EmojiParser.parseToAliases(YTUtil.getTitleFromPage(finalVideoCode));
+									rec.youtubecode = finalVideoCode;
 									rec.filename = path;
-									rec.playCount = 1;
+									rec.playCount += 1;
 									rec.lastManualPlaydate = System.currentTimeMillis() / 1000L;
 									CMusic.update(rec);
-									message.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
+									message1.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
 									player.addToQueue(path, author);
 								} else {
-									message.updateMessageAsync("Download failed, the song is most likely too long!", null);
+									message1.updateMessageAsync("Download failed, the song is likely too long!", null);
 								}
-							} catch (Exception e) {
-								bot.out.sendErrorToMe(e);
+							} catch (IOException e) {
+								e.printStackTrace();
+								message1.updateMessageAsync(Template.get("music_file_error"), null);
 							}
-
 						});
-
-						return "";
-					} else if (filecheck.exists()) {
-						String path = filecheck.toPath().toRealPath().toString();
-						OMusic rec = CMusic.findByFileName(path);
-						CMusic.registerPlayRequest(rec.id);
-						player.addToQueue(path, author);
-						return Template.get("music_added_to_queue", rec.youtubeTitle);
-					}
-				} catch (IOException e) {
-					bot.out.sendErrorToMe(e);
+					});
+					return "";
+				}
+				try {
+					String path = filecheck.toPath().toRealPath().toString();
+					OMusic rec = CMusic.findByFileName(path);
+					CMusic.registerPlayRequest(rec.id);
+					player.addToQueue(path, author);
+					return Template.get("music_added_to_queue", rec.youtubeTitle);
+				} catch (Exception e) {
+					bot.out.sendErrorToMe(e, "ytcode", videoCode);
+					return Template.get("music_file_error");
 				}
 			} else {
-
 				return Template.get("command_play_no_results");
-
 			}
 		} else {
 			if (player.playRandomSong()) {
@@ -173,6 +175,5 @@ public class Play extends AbstractCommand {
 				return Template.get("music_failed_to_start");
 			}
 		}
-		return Template.get("music_not_added_to_queue");
 	}
 }

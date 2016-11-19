@@ -35,20 +35,20 @@ public class YTSearch {
 		if (search != null) {
 			search.setKey(apiKey);
 			search.setType("video");
-			search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)");
+			search.setFields("items(id/kind,id/videoId,snippet/title)");
 		}
 	}
 
-	public String getResults(String query) {
-		List<String> results = getResults(query, 1);
+	public SimpleResult getResults(String query) {
+		List<SimpleResult> results = getResults(query, 1);
 		if (!results.isEmpty()) {
 			return results.get(0);
 		}
-		return "";
+		return null;
 	}
 
-	public List<String> getResults(String query, int numresults) {
-		List<String> urls = new ArrayList<>();
+	public List<SimpleResult> getResults(String query, int numresults) {
+		List<SimpleResult> urls = new ArrayList<>();
 		search.setQ(query);
 		search.setMaxResults((long) numresults);
 
@@ -56,13 +56,29 @@ public class YTSearch {
 		try {
 			searchResponse = search.execute();
 			List<SearchResult> searchResultList = searchResponse.getItems();
-			searchResultList.forEach((sr) -> {
-				urls.add(sr.getId().getVideoId());
-			});
+			searchResultList.forEach((sr) -> urls.add(new SimpleResult(sr.getId().getVideoId(), sr.getSnippet().getTitle())));
 		} catch (IOException ex) {
 			DiscordBot.LOGGER.error("YTSearch failure: " + ex.toString());
 			return null;
 		}
 		return urls;
+	}
+
+	public class SimpleResult {
+		private final String code;
+		private final String title;
+
+		public SimpleResult(String code, String title) {
+			this.code = code;
+			this.title = title;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public String getCode() {
+			return code;
+		}
 	}
 }

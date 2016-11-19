@@ -105,7 +105,9 @@ public class GuildStatsCommand extends AbstractCommand {
 				}
 				return "";
 		}
-		return getTotalTable(bot);
+		int tracksProcessing = bot.getContainer().downloadsProcessing();
+		return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + Config.EOL +
+				getTotalTable(bot);
 	}
 
 	private String getPlayingOn(BotContainer container, boolean showGuildnames) {

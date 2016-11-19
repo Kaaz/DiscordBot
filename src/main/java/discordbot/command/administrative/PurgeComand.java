@@ -65,7 +65,6 @@ public class PurgeComand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		boolean hasManageMessages = PermissionUtil.checkPermission((TextChannel) channel, bot.client.getSelfInfo(), Permission.MESSAGE_MANAGE);
-		TextChannel textChannel = (TextChannel) channel;
 		List<Message> messagesToDelete = new ArrayList<>();
 		User toDeleteFrom = null;
 		int deleteLimit = 100;
