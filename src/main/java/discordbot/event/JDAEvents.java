@@ -68,7 +68,7 @@ public class JDAEvents extends ListenerAdapter {
 		User owner = guild.getOwner();
 		OUser user = CUser.findBy(owner.getId());
 		user.discord_id = owner.getId();
-		user.name = owner.getUsername();
+		user.name = EmojiParser.parseToAliases(owner.getUsername());
 		CUser.update(user);
 		OGuild server = CGuild.findBy(guild.getId());
 		server.discord_id = guild.getId();
@@ -344,7 +344,6 @@ public class JDAEvents extends ListenerAdapter {
 			return;
 		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(event.getGuild(), discordBot);
-
 		if (!player.isConnected()) {
 			return;
 		}

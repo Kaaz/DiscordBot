@@ -18,7 +18,7 @@ public class CBotEvent {
 	public static OBotEvent findBy(String id) {
 		OBotEvent s = new OBotEvent();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, created_on, event_group, sub_group, data " +
+				"SELECT id, created_on, event_group, log_level, sub_group, data " +
 						"FROM bot_events " +
 						"WHERE id = ? ", id)) {
 			if (rs.next()) {
@@ -30,6 +30,7 @@ public class CBotEvent {
 		}
 		return s;
 	}
+
 	private static OBotEvent fillRecord(ResultSet rs) throws SQLException {
 		OBotEvent s = new OBotEvent();
 		s.id = rs.getInt("id");
@@ -37,6 +38,7 @@ public class CBotEvent {
 		s.group = rs.getString("event_group");
 		s.subGroup = rs.getString("sub_group");
 		s.data = rs.getString("data");
+		s.logLevel = OBotEvent.Level.fromId(rs.getInt("log_level"));
 		return s;
 	}
 
@@ -54,19 +56,25 @@ public class CBotEvent {
 	}
 
 	public static void insert(String group, String subGroup, String data) {
+		insert(OBotEvent.Level.INFO, group, subGroup, data);
+	}
+
+	public static void insert(OBotEvent.Level logLevel, String group, String subGroup, String data) {
 		OBotEvent oBotEvent = new OBotEvent();
 		oBotEvent.group = group;
 		oBotEvent.subGroup = subGroup;
 		oBotEvent.data = data;
+		oBotEvent.logLevel = logLevel;
 		insert(oBotEvent);
 	}
+
 
 	public static void insert(OBotEvent record) {
 		try {
 			record.id = WebDb.get().insert(
-					"INSERT INTO bot_events(created_on, event_group, sub_group, data) " +
-							"VALUES (?,?,?,?)",
-					new Timestamp(System.currentTimeMillis()), record.group, record.subGroup, record.data);
+					"INSERT INTO bot_events(created_on, log_level, event_group, sub_group, data) " +
+							"VALUES (?,?,?,?,?)",
+					new Timestamp(System.currentTimeMillis()), record.logLevel.getId(), record.group, record.subGroup, record.data);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

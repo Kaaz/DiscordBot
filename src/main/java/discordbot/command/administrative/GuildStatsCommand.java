@@ -60,8 +60,10 @@ public class GuildStatsCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+		int tracksProcessing = bot.getContainer().downloadsProcessing();
 		if (args.length == 0) {
-			return getTotalTable(bot);
+			return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + Config.EOL +
+					getTotalTable(bot);
 		}
 		SimpleRank userrank = bot.security.getSimpleRank(author, channel);
 		switch (args[0].toLowerCase()) {
@@ -105,7 +107,6 @@ public class GuildStatsCommand extends AbstractCommand {
 				}
 				return "";
 		}
-		int tracksProcessing = bot.getContainer().downloadsProcessing();
 		return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + Config.EOL +
 				getTotalTable(bot);
 	}

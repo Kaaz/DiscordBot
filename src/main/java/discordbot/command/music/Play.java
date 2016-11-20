@@ -120,22 +120,23 @@ public class Play extends AbstractCommand {
 					videoTitle = EmojiParser.parseToAliases(results.getTitle());
 				} else {
 					videoCode = null;
-					videoTitle = null;
+					videoTitle = "";
 				}
 			} else {
-				videoTitle = "";
+				videoTitle = videoCode;
 			}
 			if (videoCode != null && YTUtil.isValidYoutubeCode(videoCode)) {
 				final File filecheck = new File(YTUtil.getOutputPath(videoCode));
-				if (!filecheck.exists()) {
+				boolean isInProgress = bot.getContainer().isInProgress(videoCode);
+				if (!filecheck.exists() && !isInProgress) {
 					final String finalVideoCode = videoCode;
-					bot.out.sendAsyncMessage(channel, Template.get("music_downloading_in_queue", videoCode), message -> {
-						bot.getContainer().downloadRequest(finalVideoCode, message, message1 -> {
+					bot.out.sendAsyncMessage(channel, Template.get("music_downloading_in_queue", videoTitle), message -> {
+						bot.getContainer().downloadRequest(finalVideoCode, videoTitle, message, message1 -> {
 							try {
 								if (filecheck.exists()) {
 									String path = filecheck.toPath().toRealPath().toString();
 									OMusic rec = CMusic.findByYoutubeId(finalVideoCode);
-									rec.youtubeTitle = !videoTitle.isEmpty() ? videoTitle : EmojiParser.parseToAliases(YTUtil.getTitleFromPage(finalVideoCode));
+									rec.youtubeTitle = (!videoTitle.isEmpty() && !videoTitle.equals(finalVideoCode)) ? videoTitle : EmojiParser.parseToAliases(YTUtil.getTitleFromPage(finalVideoCode));
 									rec.youtubecode = finalVideoCode;
 									rec.filename = path;
 									rec.playCount += 1;
@@ -144,7 +145,7 @@ public class Play extends AbstractCommand {
 									message1.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
 									player.addToQueue(path, author);
 								} else {
-									message1.updateMessageAsync("Download failed, the song is likely too long!", null);
+									message1.updateMessageAsync("Download failed, the song is likely too long or region locked!", null);
 								}
 							} catch (IOException e) {
 								e.printStackTrace();
@@ -153,6 +154,8 @@ public class Play extends AbstractCommand {
 						});
 					});
 					return "";
+				} else if (YTUtil.isValidYoutubeCode(videoCode) && isInProgress) {
+					return Template.get(channel, "music_downloading_in_progress", videoTitle);
 				}
 				try {
 					String path = filecheck.toPath().toRealPath().toString();

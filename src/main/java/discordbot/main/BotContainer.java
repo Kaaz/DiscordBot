@@ -207,8 +207,8 @@ public class BotContainer {
 	 * @param message     message object
 	 * @param callback    the callback
 	 */
-	public void downloadRequest(String youtubeCode, Message message, Consumer<Message> callback) {
-		youtubeThread.addToQueue(youtubeCode, message, callback);
+	public void downloadRequest(String youtubeCode, String youtubeTitle, Message message, Consumer<Message> callback) {
+		youtubeThread.addToQueue(youtubeCode, youtubeTitle, message, callback);
 	}
 
 	/**
@@ -218,5 +218,9 @@ public class BotContainer {
 	 */
 	public int downloadsProcessing() {
 		return youtubeThread.getQueueSize();
+	}
+
+	public synchronized boolean isInProgress(String videoCode) {
+		return youtubeThread.isInProgress(videoCode);
 	}
 }

@@ -11,20 +11,7 @@
 		</encoder>
 	</appender>
 
-	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-		</encoder>
-		<file>log/bootstrap.log</file>
-		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<fileNamePattern>log/bootstrap.%i.log</fileNamePattern>
-		</rollingPolicy>
-		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-			<MaxFileSize>10MB</MaxFileSize>
-		</triggeringPolicy>
-	</appender>
-
-	<root level="debug">
+	<root level="INFO">
 		<appender-ref ref="CONSOLE"/>
 		<!-- Uncomment the next line to also log to a file -->
 		<!-- <appender-ref ref="FILE"/> -->

@@ -7,6 +7,7 @@ import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
 import discordbot.db.WebDb;
 import discordbot.db.controllers.*;
+import discordbot.db.model.OBotEvent;
 import discordbot.db.model.OCommandCooldown;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingShowUnknownCommands;
@@ -186,7 +187,7 @@ public class CommandHandler {
 					break;
 				case GUILD:
 					if (channel instanceof PrivateChannel) {
-						CBotEvent.insert(":warning:", ":keyboard:", String.format("`%s` issued the `%s` Command with guild-scale cooldown in private channel!", author.getUsername(), command.getCommand()));
+						CBotEvent.insert(OBotEvent.Level.WARN,":warning:", ":keyboard:", String.format("`%s` issued the `%s` Command with guild-scale cooldown in private channel!", author.getUsername(), command.getCommand()));
 					}
 					targetId = ((TextChannel) channel).getGuild().getId();
 					break;
