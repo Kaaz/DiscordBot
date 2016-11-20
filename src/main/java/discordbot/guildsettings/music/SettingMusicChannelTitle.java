@@ -26,6 +26,6 @@ public class SettingMusicChannelTitle extends AbstractGuildSetting {
 
 	@Override
 	public boolean isValidValue(String input) {
-		return input != null && (input.equals("auto") && input.equals("true") || input.equals("false"));
+		return input != null && (input.equals("auto") || input.equals("true") || input.equals("false"));
 	}
 }
