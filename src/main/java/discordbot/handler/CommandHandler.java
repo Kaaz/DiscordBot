@@ -78,7 +78,7 @@ public class CommandHandler {
 		}
 		if (channel instanceof TextChannel) {
 			guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());
-			if (((TextChannel) channel).checkPermission(bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+			if (!((TextChannel) channel).checkPermission(bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
 				return;
 			}
 		}

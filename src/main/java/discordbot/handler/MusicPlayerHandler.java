@@ -169,11 +169,19 @@ public class MusicPlayerHandler {
 			record = new OMusic();
 		}
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingMusicChannelTitle.class))) {
-			if (!isUpdateChannelTitle() && PermissionUtil.checkPermission(bot.getMusicChannel(guild), bot.client.getSelfInfo(), Permission.MANAGE_CHANNEL)) {
-				bot.getMusicChannel(guild).getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).update();
+			if (bot.getMusicChannel(guild) != null && bot.getMusicChannel(guild).checkPermission(bot.client.getSelfInfo(), Permission.MANAGE_CHANNEL)) {
+				if (!isUpdateChannelTitle()) {
+					bot.getMusicChannel(guild).getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).update();
+				}
+			} else {
+				GuildSettings.get(guild).set(SettingMusicChannelTitle.class, "false");
 			}
 		}
 		if (!messageType.equals("off") && record.id > 0) {
+			if (!bot.getMusicChannel(guild).checkPermission(bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+				GuildSettings.get(guild).set(SettingMusicPlayingMessage.class, "off");
+				return;
+			}
 			String msg = "[`" + DisUtil.getCommandPrefix(guild) + "pl` " + playlist.title + "] ";
 			if (record.artist != null && record.title != null && !record.artist.trim().isEmpty() && !record.title.trim().isEmpty()) {
 				msg += "\uD83C\uDFB6 " + record.artist + " - " + record.title;
