@@ -11,8 +11,8 @@ import discordbot.main.DiscordBot;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Helper class to search for tracks on youtube
@@ -20,7 +20,7 @@ import java.util.List;
 public class YTSearch {
 	private final YouTube youtube;
 	private final YouTube.Search.List search;
-	private final HashMap<String, SimpleResult> cache = new HashMap<>();
+	private final ConcurrentHashMap<String, SimpleResult> cache = new ConcurrentHashMap<>();
 
 	public YTSearch(String apiKey) {
 		youtube = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), (HttpRequest request) -> {
