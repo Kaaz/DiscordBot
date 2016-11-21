@@ -72,7 +72,8 @@ public class PlaylistCommand extends AbstractCommand {
 				"-- Changing the settings of the playlist",
 				"playlist title <new title>           //edit the playlist title",
 				"playlist edit <new type>             //change the edit-type of a playlist",
-				"playlist play <new type>             //change the play-type of a playlist",
+				"playlist play <id>                   //plays a track from the playlist",
+				"playlist playtype <new type>         //change the play-type of a playlist",
 //				"playlist visibility <new visibility> //change who can see the playlist",
 //				"playlist reset                       //reset settings to default",
 		};
@@ -146,7 +147,7 @@ public class PlaylistCommand extends AbstractCommand {
 					case "remove":
 					case "del":
 					case "-":
-						if (args.length > 1 && args[1].equals("guild")) {
+						if (args.length > 1 && (args[1].equals("guild") || args[1].equals("g"))) {
 							playlist = CPlaylist.findBy(0, CGuild.getCachedId(guild.getId()));
 						} else if (args.length > 1 && args[1].matches("^\\d+$")) {
 							musicRec = CMusic.findById(Integer.parseInt(args[1]));
@@ -333,6 +334,15 @@ public class PlaylistCommand extends AbstractCommand {
 						}
 						return Template.get("playlist_setting_not_numeric", "visibility");
 					case "play":
+						if (args.length > 1 && args[1].matches("^\\d+$")) {
+							OMusic record = CMusic.findById(Integer.parseInt(args[1]));
+							if (record.id > 0) {
+								MusicPlayerHandler.getFor(guild, bot).addToQueue(record.filename, author);
+								return Template.get("music_added_to_queue", record.youtubeTitle);
+							}
+							return Template.get("music_not_added_to_queue", args[1]);
+						}
+						return Template.get("command_invalid_use");
 					case "playtype":
 					case "play-type":
 						if (args.length == 1) {
