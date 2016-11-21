@@ -16,6 +16,7 @@ import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
+import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.PrivateChannel;
 import net.dv8tion.jda.entities.TextChannel;
@@ -77,6 +78,9 @@ public class CommandHandler {
 		}
 		if (channel instanceof TextChannel) {
 			guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());
+			if (((TextChannel) channel).checkPermission(bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+				return;
+			}
 		}
 		String[] input = inputMessage.split(" ");
 		String args[] = new String[input.length - 1];
@@ -187,7 +191,7 @@ public class CommandHandler {
 					break;
 				case GUILD:
 					if (channel instanceof PrivateChannel) {
-						CBotEvent.insert(OBotEvent.Level.WARN,":warning:", ":keyboard:", String.format("`%s` issued the `%s` Command with guild-scale cooldown in private channel!", author.getUsername(), command.getCommand()));
+						CBotEvent.insert(OBotEvent.Level.WARN, ":warning:", ":keyboard:", String.format("`%s` issued the `%s` Command with guild-scale cooldown in private channel!", author.getUsername(), command.getCommand()));
 					}
 					targetId = ((TextChannel) channel).getGuild().getId();
 					break;
