@@ -3,12 +3,15 @@ package discordbot.command.fun;
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
+import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
+import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,7 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -51,12 +53,22 @@ public class MemeCommand extends AbstractCommand {
 	}
 
 	@Override
+	public CommandVisibility getVisibility() {
+		return CommandVisibility.BOTH;
+	}
+
+	@Override
 	public String[] getAliases() {
 		return new String[]{};
 	}
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+		if (channel instanceof TextChannel) {
+			if (!((TextChannel) channel).checkPermission(bot.client.getSelfInfo(), Permission.MESSAGE_ATTACH_FILES)) {
+				return Template.get("permission_missing_attach_files");
+			}
+		}
 		channel.sendTyping();
 		if (memeTypes.isEmpty()) {
 			loadMemeOptions();
@@ -107,7 +119,6 @@ public class MemeCommand extends AbstractCommand {
 			if (document != null) {
 				Elements fmls = document.select(".js-meme-selector option");
 				if (!fmls.isEmpty()) {
-					List<String> types = new ArrayList<>();
 					for (Element fml : fmls) {
 						memeTypes.add(fml.val());
 					}
