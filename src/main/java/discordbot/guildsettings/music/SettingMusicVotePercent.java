@@ -10,6 +10,11 @@ public class SettingMusicVotePercent extends AbstractGuildSetting {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return true;
+	}
+
+	@Override
 	public String getDefault() {
 		return "1";
 	}
@@ -21,7 +26,7 @@ public class SettingMusicVotePercent extends AbstractGuildSetting {
 				"",
 				"eg; when set to 25, and 5 listeners it would require 2 users to vote skip ",
 				"",
-				"Accepts a value between 1 and 100"
+				"Accepts a value between 1 and 100",
 		};
 	}
 

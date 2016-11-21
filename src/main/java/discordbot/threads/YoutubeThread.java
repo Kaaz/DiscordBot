@@ -22,58 +22,13 @@ import java.util.function.Consumer;
  * Threads for grabbing tracks from youtube
  */
 public class YoutubeThread extends Thread {
-	private LinkedBlockingQueue<YoutubeTask> queue = new LinkedBlockingQueue<>();
 	private final HashSet<String> itemsInProgress = new HashSet<>();
-	private volatile boolean threadTerminated = false;
 	ExecutorService executor = Executors.newFixedThreadPool(3);
+	private LinkedBlockingQueue<YoutubeTask> queue = new LinkedBlockingQueue<>();
+	private volatile boolean shutdownMode = false;
 
 	public YoutubeThread() throws InterruptedException {
 		super("yt-to-mp3");
-	}
-
-	public synchronized void registerProgress(String youtubeCode) {
-		itemsInProgress.add(youtubeCode);
-
-	}
-
-	public synchronized void unRegisterProgress(String youtubeCode) {
-		itemsInProgress.remove(youtubeCode);
-	}
-
-	public synchronized boolean isInProgress(String youtubeCode) {
-		return itemsInProgress.contains(youtubeCode);
-	}
-
-	public int getQueueSize() {
-		return queue.size();
-	}
-
-	public void run() {
-		try {
-			YoutubeTask task;
-			while (!Launcher.isBeingKilled && !threadTerminated) {
-				try {
-					task = queue.take();
-					executor.execute(new YTWorkerWorker(task.getCode(), task));
-					sleep(1_000L);
-				} catch (InterruptedException e) {
-					CBotEvent.insert(OBotEvent.Level.FATAL, ":octagonal_sign:", ":musical_note:", "yt worker broke " + e.getMessage());
-				}
-			}
-		} finally {
-			if (!Launcher.isBeingKilled) {
-				CBotEvent.insert(OBotEvent.Level.FATAL, ":octagonal_sign:", ":musical_note:", "Youtube-dl thread is dead!");
-			}
-			threadTerminated = true;
-		}
-	}
-
-	public void addToQueue(String youtubeCode, String youtubeTitle, Message message, Consumer<Message> callback) {
-		if (threadTerminated) {
-			CBotEvent.insert(OBotEvent.Level.FATAL, ":octagonal_sign:", ":musical_note:", "Youtube-dl thread is dead!");
-			return;
-		}
-		queue.offer(new YoutubeTask(youtubeCode, youtubeTitle, message, callback));
 	}
 
 	/**
@@ -149,6 +104,55 @@ public class YoutubeThread extends Thread {
 		return true;
 	}
 
+	public synchronized void registerProgress(String youtubeCode) {
+		itemsInProgress.add(youtubeCode);
+
+	}
+
+	public synchronized void unRegisterProgress(String youtubeCode) {
+		itemsInProgress.remove(youtubeCode);
+	}
+
+	public void shutown() {
+		shutdownMode = true;
+	}
+
+	public synchronized boolean isInProgress(String youtubeCode) {
+		return itemsInProgress.contains(youtubeCode);
+	}
+
+	public int getQueueSize() {
+		return queue.size();
+	}
+
+	public void run() {
+		try {
+			YoutubeTask task;
+			while (!Launcher.isBeingKilled) {
+				try {
+					task = queue.take();
+					executor.execute(new YTWorkerWorker(task.getCode(), task));
+					sleep(1_000L);
+				} catch (InterruptedException e) {
+					CBotEvent.insert(OBotEvent.Level.FATAL, ":octagonal_sign:", ":musical_note:", "yt worker broke " + e.getMessage());
+				}
+			}
+		} finally {
+			if (!Launcher.isBeingKilled) {
+				CBotEvent.insert(OBotEvent.Level.FATAL, ":octagonal_sign:", ":musical_note:", "Youtube-dl thread is dead!");
+			}
+			shutdownMode = true;
+		}
+	}
+
+	public void addToQueue(String youtubeCode, String youtubeTitle, Message message, Consumer<Message> callback) {
+		if (shutdownMode) {
+			CBotEvent.insert(OBotEvent.Level.FATAL, ":octagonal_sign:", ":musical_note:", "Youtube-dl thread is dead!");
+			return;
+		}
+		queue.offer(new YoutubeTask(youtubeCode, youtubeTitle, message, callback));
+	}
+
 	private class YoutubeTask {
 		private final String code;
 		private final String title;
@@ -198,20 +202,20 @@ public class YoutubeThread extends Thread {
 
 		public void run() {
 			try {
-				System.out.println("STARTED WORKING ON:: " + task.getCode());
+				if (shutdownMode) {
+					task.getMessage().updateMessageAsync(Template.get("music_downloading_shutdown", task.getTitle()), null);
+					return;
+				}
 				if (isInProgress(task.getCode())) {
-					System.out.println("ALREADY IN PROGRESS:: " + task.getCode());
 					task.getMessage().updateMessageAsync(Template.get("music_downloading_in_progress", task.getTitle()), null);
 					return;
 				}
 				registerProgress(task.getCode());
 				final File fileCheck = new File(YTUtil.getOutputPath(task.getCode()));
 				if (!fileCheck.exists()) {
-					System.out.println("DOWNLOADING:: " + task.getCode());
 					task.getMessage().updateMessageAsync(Template.get("music_downloading_hang_on"), null);
 					downloadFromYoutubeAsMp3(task.getCode());
 				}
-				System.out.println("DONE:: " + task.getCode());
 				if (task.getCallback() != null) {
 					task.getCallback().accept(task.getMessage());
 				}

@@ -139,7 +139,7 @@ public class CurrentTrack extends AbstractCommand {
 					}
 					return Template.get("music_repeat_mode_stopped");
 				case "ban":
-					if (userRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+					if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR)) {
 						song.banned = 1;
 						CMusic.update(song);
 						player.skipSong();

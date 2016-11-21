@@ -92,11 +92,19 @@ public class Play extends AbstractCommand {
 		if (!PermissionUtil.checkPermission(txt, bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
 			return "";
 		}
+		MusicPlayerHandler mph = MusicPlayerHandler.getFor(guild, bot);
 		if (!isInVoiceWith(guild, author)) {
 			if (guild.getVoiceStatusOfUser(author).getChannel() == null) {
 				return "you are not in a voicechannel";
 			}
 			try {
+				if (mph.isConnected()) {
+					if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+						return Template.get("music_not_same_voicechannel");
+					}
+					mph.leave();
+					Thread.sleep(2000L);// ¯\_(ツ)_/¯
+				}
 				bot.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
 				Thread.sleep(2000L);// ¯\_(ツ)_/¯
 			} catch (Exception e) {

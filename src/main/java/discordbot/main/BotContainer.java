@@ -52,6 +52,7 @@ public class BotContainer {
 		if (!terminationRequested) {
 			terminationRequested = true;
 			rebootReason = reason;
+			youtubeThread.shutown();
 		}
 	}
 

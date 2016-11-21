@@ -14,6 +14,9 @@ public class Emojibet {
 	public static String KICKED = "\uD83E\uDD4A";
 	public static String BANNED = "\uD83D\uDD28";
 	public static String CALENDAR = "\uD83D\uDDD3";
+	public static String LOCKED = "\uD83D\uDD12";
+	public static String UNLOCKED = "\uD83D\uDD13";
+	public static String KEY = "\uD83D\uDD11";
 
 
 	static {
