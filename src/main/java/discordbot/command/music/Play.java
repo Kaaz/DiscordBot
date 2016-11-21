@@ -111,9 +111,6 @@ public class Play extends AbstractCommand {
 				e.printStackTrace();
 				return "Can't connect to you";
 			}
-			if (bot.isConnectedTo(guild.getVoiceStatusOfUser(author).getChannel())) {
-				return "can't connect to you";
-			}
 		} else if (MusicPlayerHandler.getFor(guild, bot).getUsersInVoiceChannel().size() == 0) {
 			return Template.get("music_no_users_in_channel");
 		}

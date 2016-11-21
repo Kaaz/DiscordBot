@@ -80,14 +80,6 @@ public class MusicPlayerHandler {
 		activePlayListId = playlist.id;
 	}
 
-	public synchronized boolean isInRepeatMode() {
-		return player.isRepeat();
-	}
-
-	public synchronized void setRepeat(boolean repeatMode) {
-		player.setRepeat(repeatMode);
-	}
-
 	public static void removeGuild(Guild guild) {
 		if (playerInstances.containsKey(guild)) {
 			playerInstances.remove(guild);
@@ -100,6 +92,14 @@ public class MusicPlayerHandler {
 		} else {
 			return new MusicPlayerHandler(guild, bot);
 		}
+	}
+
+	public synchronized boolean isInRepeatMode() {
+		return player.isRepeat();
+	}
+
+	public synchronized void setRepeat(boolean repeatMode) {
+		player.setRepeat(repeatMode);
 	}
 
 	public int getActivePLaylistId() {
@@ -212,10 +212,9 @@ public class MusicPlayerHandler {
 	}
 
 	public boolean leave() {
-		if (!isConnected()) {
-			return false;
+		if (isConnected()) {
+			stopMusic();
 		}
-		stopMusic();
 		guild.getAudioManager().closeAudioConnection();
 		return true;
 	}
