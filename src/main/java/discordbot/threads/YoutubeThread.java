@@ -70,7 +70,6 @@ public class YoutubeThread extends Thread {
 
 	public synchronized void registerProgress(String youtubeCode) {
 		itemsInProgress.add(youtubeCode);
-
 	}
 
 	public synchronized void unRegisterProgress(String youtubeCode) {

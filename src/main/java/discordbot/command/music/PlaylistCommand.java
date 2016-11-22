@@ -265,7 +265,7 @@ public class PlaylistCommand extends AbstractCommand {
 						break;
 				}
 			}
-			if (args.length < 1) {
+			if (args.length < 1 || (args.length > 0 && args[0].equals("settings"))) {
 				return makeSettingsTable(playlist);
 			} else {
 				if (playlist.isGlobalList()) {
@@ -366,7 +366,6 @@ public class PlaylistCommand extends AbstractCommand {
 
 				}
 			}
-
 		}
 		return Template.get("command_invalid_use");
 	}
