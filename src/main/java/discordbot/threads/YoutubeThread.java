@@ -8,7 +8,8 @@ import discordbot.main.Launcher;
 import discordbot.util.YTUtil;
 import net.dv8tion.jda.entities.Message;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -165,10 +166,6 @@ public class YoutubeThread extends Thread {
 
 		public void run() {
 			try {
-				if (shutdownMode) {
-					task.getMessage().updateMessageAsync(Template.get("music_downloading_shutdown", task.getTitle()), null);
-					return;
-				}
 				if (isInProgress(task.getCode())) {
 					task.getMessage().updateMessageAsync(Template.get("music_downloading_in_progress", task.getTitle()), null);
 					return;

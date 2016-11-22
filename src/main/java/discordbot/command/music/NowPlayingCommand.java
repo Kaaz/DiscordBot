@@ -8,6 +8,7 @@ import discordbot.db.controllers.CPlaylist;
 import discordbot.db.model.OMusic;
 import discordbot.db.model.OMusicVote;
 import discordbot.db.model.OPlaylist;
+import discordbot.guildsettings.music.SettingMusicClearAdminOnly;
 import discordbot.guildsettings.music.SettingMusicRole;
 import discordbot.guildsettings.music.SettingMusicShowListeners;
 import discordbot.handler.GuildSettings;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
  * !current
  * retrieves information about the currently playing track
  */
-public class CurrentTrack extends AbstractCommand {
+public class NowPlayingCommand extends AbstractCommand {
 	private static final Pattern votePattern = Pattern.compile("^(?>vote|rate)\\s?(\\d+)?$");
 	private final String BLOCK_INACTIVE = "\u25AC";
 	private final String BLOCK_ACTIVE = "\uD83D\uDD18";
@@ -44,7 +45,7 @@ public class CurrentTrack extends AbstractCommand {
 	private final float SOUND_TRESHHOLD = 0.4F;
 	private final int BLOCK_PARTS = 10;
 
-	public CurrentTrack() {
+	public NowPlayingCommand() {
 		super();
 	}
 
@@ -61,14 +62,17 @@ public class CurrentTrack extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"current               //info about the currently playing song",
-				"current vote <1-10>   //Cast your vote to the song; 1=worst, 10=best",
-				"current ban           //bans the current track from being randomly played",
-				"current repeat        //repeats the currently playing song",
-				"current update        //updates the now playing message every 10 seconds",
-				"current updatetitle   //updates the topic of the music channel every 10 seconds",
-				"current source        //Shows the source of the video",
-				"current pm            //sends you a private message with the details",
+				"current                 //info about the currently playing song",
+				"current vote <1-10>     //Cast your vote to the song; 1=worst, 10=best",
+				"current repeat          //repeats the currently playing song",
+				"current update          //updates the now playing message every 10 seconds",
+				"current updatetitle     //updates the topic of the music channel every 10 seconds",
+				"current source          //Shows the source of the video",
+				"current pm              //sends you a private message with the details",
+				"",
+				"current clear               //clears everything in the queue",
+				"current clear admin         //check if clear is admin-only",
+				"current clear admin toggle  //switch between admin-only and normal",
 //				"current artist        //sets the artist of current song",
 //				"current correct       //accept the systems suggestion of title/artist",
 //				"current reversed      //accept the systems suggestion in reverse [title=artist,artist=title]",
@@ -95,18 +99,9 @@ public class CurrentTrack extends AbstractCommand {
 		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 		OMusic song = CMusic.findById(player.getCurrentlyPlaying());
-		if (song.id == 0) {
+		if (song.id == 0 && (args.length == 0 || !args[0].equals("clear"))) {
 			return Template.get("command_currentlyplaying_nosong");
 		}
-		boolean titleIsEmpty = song.title == null || song.title.isEmpty();
-		boolean artistIsEmpty = song.artist == null || song.artist.isEmpty();
-		String songTitle;
-		if (titleIsEmpty || artistIsEmpty) {
-			songTitle = song.youtubeTitle;
-		} else {
-			songTitle = song.artist + " - " + song.title;
-		}
-
 
 		if (args.length > 0) {
 			String voteInput = args[0].toLowerCase();
@@ -122,7 +117,7 @@ public class CurrentTrack extends AbstractCommand {
 					return "vote is registered (" + vote + ")";
 				}
 				if (voteRecord.vote > 0) {
-					return Template.get("music_your_vote", songTitle, voteRecord.vote);
+					return Template.get("music_your_vote", song.youtubeTitle, voteRecord.vote);
 				} else {
 					return Template.get("music_not_voted", DisUtil.getCommandPrefix(channel) + "np vote ");
 				}
@@ -154,11 +149,21 @@ public class CurrentTrack extends AbstractCommand {
 									"You can find it here: https://www.youtube.com/watch?v=" + song.youtubecode
 					);
 					return Template.get(channel, "private_message_sent", guild.getEffectiveNameForUser(author));
+				case "clear":
+					boolean adminOnly = "true".equals(GuildSettings.getFor(channel, SettingMusicClearAdminOnly.class));
+					if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && args.length > 2 && args[1].equals("admin") && args[2].equalsIgnoreCase("toggle")) {
+						GuildSettings.get(guild).set(SettingMusicClearAdminOnly.class, adminOnly ? "false" : "true");
+						adminOnly = !adminOnly;
+					} else if ((userRank.isAtLeast(SimpleRank.GUILD_ADMIN) || !adminOnly) && args.length == 1) {
+						player.clearQueue();
+						return Template.get("music_queue_cleared");
+					}
+					return Template.get("music_clear_mode", adminOnly ? "admin-only" : "normal");
 			}
 		}
 		OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
 		String ret = "[`" + DisUtil.getCommandPrefix(channel) + "pl` " + playlist.title + "] " + "\uD83C\uDFB6 ";
-		ret += songTitle;
+		ret += song.youtubeTitle;
 		final String autoUpdateText = ret;
 		ret += Config.EOL + Config.EOL;
 		MusicPlayerHandler musicHandler = MusicPlayerHandler.getFor(guild, bot);

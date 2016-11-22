@@ -59,12 +59,12 @@ public class YTSearch {
 		return null;
 	}
 
-	public List<SimpleResult> getPlayListItems(String listCode) {
+	public List<SimpleResult> getPlayListItems(String playlistCode) {
 		List<SimpleResult> playlist = new ArrayList<>();
 		try {
 			YouTube.PlaylistItems.List playlistRequest = youtube.playlistItems().list("id,contentDetails,snippet");
 			playlistRequest.setKey(apikey);
-			playlistRequest.setPlaylistId(listCode);
+			playlistRequest.setPlaylistId(playlistCode);
 			playlistRequest.setFields("items(contentDetails/videoId,snippet/title,snippet/publishedAt),nextPageToken,pageInfo");
 			String nextToken = "";
 			do {
