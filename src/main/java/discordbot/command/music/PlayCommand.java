@@ -32,10 +32,10 @@ import java.util.List;
  * plays a youtube link
  * yea.. play is probably not a good name at the moment
  */
-public class Play extends AbstractCommand {
+public class PlayCommand extends AbstractCommand {
 	private YTSearch ytSearch;
 
-	public Play() {
+	public PlayCommand() {
 		super();
 		ytSearch = new YTSearch(Config.GOOGLE_API_KEY);
 	}
@@ -125,9 +125,9 @@ public class Play extends AbstractCommand {
 			if (playlistCode != null) {
 				if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getId()).hasPermission(OUser.PermissionNode.IMPORT_PLAYLIST)) {
 					List<YTSearch.SimpleResult> items = ytSearch.getPlayListItems(playlistCode);
-					String output = ":+1: " + Config.EOL;
+					String output = "Added the following items to the playlit: " + Config.EOL;
 					for (YTSearch.SimpleResult track : items) {
-						String out = handleFile(player, bot, (TextChannel) channel, author, track.getCode(), track.getTitle());
+						String out = handleFile(player, bot, (TextChannel) channel, author, track.getCode(), track.getTitle(), false);
 						if (!"".equals(out)) {
 							output += out + Config.EOL;
 						}
@@ -144,12 +144,11 @@ public class Play extends AbstractCommand {
 					videoCode = null;
 					videoTitle = "";
 				}
-				return handleFile(player, bot, (TextChannel) channel, author, videoCode, videoTitle);
 			} else {
 				videoTitle = videoCode;
 			}
 			if (videoCode != null && YTUtil.isValidYoutubeCode(videoCode)) {
-				return handleFile(player, bot, (TextChannel) channel, author, videoCode, videoTitle);
+				return handleFile(player, bot, (TextChannel) channel, author, videoCode, videoTitle, true);
 			} else {
 				return Template.get("command_play_no_results");
 			}
@@ -168,7 +167,7 @@ public class Play extends AbstractCommand {
 		}
 	}
 
-	private String handleFile(MusicPlayerHandler player, DiscordBot bot, TextChannel channel, User invoker, String videoCode, String videoTitle) {
+	private String handleFile(MusicPlayerHandler player, DiscordBot bot, TextChannel channel, User invoker, String videoCode, String videoTitle, boolean useTemplates) {
 
 		final File filecheck = new File(YTUtil.getOutputPath(videoCode));
 		boolean isInProgress = bot.getContainer().isInProgress(videoCode);
@@ -206,7 +205,10 @@ public class Play extends AbstractCommand {
 			OMusic rec = CMusic.findByFileName(path);
 			CMusic.registerPlayRequest(rec.id);
 			player.addToQueue(path, invoker);
-			return Template.get("music_added_to_queue", rec.youtubeTitle);
+			if (useTemplates) {
+				return Template.get("music_added_to_queue", rec.youtubeTitle);
+			}
+			return "\u25AA " + rec.youtubeTitle;
 		} catch (Exception e) {
 			bot.out.sendErrorToMe(e, "ytcode", videoCode);
 			return Template.get("music_file_error");
