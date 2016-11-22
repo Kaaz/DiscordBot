@@ -74,14 +74,14 @@ public class TemplateCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		SimpleRank userRank = bot.security.getSimpleRank(author);
+		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
 		int guildId = 0;
 		if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			return Template.get(channel, "no_permission");
 		}
 		if (!userRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
 			if (!(channel instanceof TextChannel)) {
-				return Template.get(channel, "command_not_for_private ");
+				return Template.get(channel, "command_not_for_private");
 			}
 			guildId = CGuild.getCachedId(channel);
 		}
