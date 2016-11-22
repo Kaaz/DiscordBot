@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class YTUtil {
-	public final static Pattern yturl = Pattern.compile("^.*(?>(?>youtu.be/)|(?>v/)|(?>/u/\\w/)|(?>embed/)|(?>watch\\?))\\\\??v?=?([^#\\\\&\\?]*)(?>&list=([^#\\\\&\\?]*)).*");
+	public final static Pattern yturl = Pattern.compile("^.*(?>(?>youtu.be/)|(?>v/)|(?>/u/\\w/)|(?>embed/)|(?>watch\\?))\\\\??v?=?([^#\\\\&\\?]*)(?>&list=([^#\\\\&\\?]*)?)?.*");
 	private final static Pattern youtubeCode = Pattern.compile("^[A-Za-z0-9_-]{11}$");
 
 	/**

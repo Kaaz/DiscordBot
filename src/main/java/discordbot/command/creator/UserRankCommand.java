@@ -133,7 +133,7 @@ public class UserRankCommand extends AbstractCommand {
 					if (adding) {
 						dbUser.addPermission(node);
 						CUser.update(dbUser);
-						return String.format(":+1: adding `%s` from %s", node.toString(), user.getUsername());
+						return String.format(":+1: adding `%s` to %s", node.toString(), user.getUsername());
 					}
 					dbUser.removePermission(node);
 					CUser.update(dbUser);

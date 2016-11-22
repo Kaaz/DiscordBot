@@ -135,6 +135,9 @@ public class Play extends AbstractCommand {
 					return output;
 				}
 			}
+			System.out.println(YTUtil.isValidYoutubeCode(videoCode));
+			System.out.println(YTUtil.isValidYoutubeCode(videoCode));
+			System.out.println(YTUtil.isValidYoutubeCode(videoCode));
 			if (!YTUtil.isValidYoutubeCode(videoCode)) {
 				YTSearch.SimpleResult results = ytSearch.getResults(Joiner.on(" ").join(args));
 				if (results != null) {
@@ -149,6 +152,7 @@ public class Play extends AbstractCommand {
 				videoTitle = videoCode;
 			}
 			if (videoCode != null && YTUtil.isValidYoutubeCode(videoCode)) {
+				return handleFile(player, bot, (TextChannel) channel, author, videoCode, videoTitle);
 			} else {
 				return Template.get("command_play_no_results");
 			}
@@ -165,7 +169,6 @@ public class Play extends AbstractCommand {
 				return Template.get("music_failed_to_start");
 			}
 		}
-		return "";
 	}
 
 	private String handleFile(MusicPlayerHandler player, DiscordBot bot, TextChannel channel, User invoker, String videoCode, String videoTitle) {
