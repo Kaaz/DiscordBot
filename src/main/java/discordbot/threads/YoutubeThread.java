@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
@@ -27,6 +28,7 @@ public class YoutubeThread extends Thread {
 	ExecutorService executor = Executors.newFixedThreadPool(3);
 	private LinkedBlockingQueue<YoutubeTask> queue = new LinkedBlockingQueue<>();
 	private volatile boolean shutdownMode = false;
+	private final AtomicInteger counter = new AtomicInteger();
 
 	public YoutubeThread() throws InterruptedException {
 		super("yt-to-mp3");
@@ -74,6 +76,7 @@ public class YoutubeThread extends Thread {
 
 	public synchronized void unRegisterProgress(String youtubeCode) {
 		itemsInProgress.remove(youtubeCode);
+		counter.decrementAndGet();
 	}
 
 	public void shutown() {
@@ -85,7 +88,7 @@ public class YoutubeThread extends Thread {
 	}
 
 	public int getQueueSize() {
-		return queue.size();
+		return counter.get();
 	}
 
 	public void run() {
@@ -95,6 +98,7 @@ public class YoutubeThread extends Thread {
 				try {
 					task = queue.take();
 					executor.execute(new YTWorkerWorker(task.getCode(), task));
+					counter.incrementAndGet();
 					sleep(1_000L);
 				} catch (InterruptedException e) {
 					CBotEvent.insert(OBotEvent.Level.FATAL, ":octagonal_sign:", ":musical_note:", "yt worker broke " + e.getMessage());
