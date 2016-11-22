@@ -135,9 +135,6 @@ public class Play extends AbstractCommand {
 					return output;
 				}
 			}
-			System.out.println(YTUtil.isValidYoutubeCode(videoCode));
-			System.out.println(YTUtil.isValidYoutubeCode(videoCode));
-			System.out.println(YTUtil.isValidYoutubeCode(videoCode));
 			if (!YTUtil.isValidYoutubeCode(videoCode)) {
 				YTSearch.SimpleResult results = ytSearch.getResults(Joiner.on(" ").join(args));
 				if (results != null) {
