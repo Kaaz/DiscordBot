@@ -282,7 +282,7 @@ public class PlaylistCommand extends AbstractCommand {
 						if (args.length == 1) {
 							return Template.get(channel, "command_playlist_title", playlist.title);
 						}
-						playlist.title = Joiner.on(" ").join(Arrays.copyOfRange(args, 1, args.length));
+						playlist.title = EmojiParser.parseToAliases(Joiner.on(" ").join(Arrays.copyOfRange(args, 1, args.length)));
 						CPlaylist.update(playlist);
 						player.setActivePlayListId(playlist.id);
 						return Template.get(channel, "playlist_title_updated", playlist.title);
