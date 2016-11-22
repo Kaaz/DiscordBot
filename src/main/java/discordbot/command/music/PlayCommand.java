@@ -34,6 +34,7 @@ import java.util.List;
  */
 public class PlayCommand extends AbstractCommand {
 	private YTSearch ytSearch;
+	private static final int MAX_PLAYLIST_SIZE = 50;
 
 	public PlayCommand() {
 		super();
@@ -126,7 +127,12 @@ public class PlayCommand extends AbstractCommand {
 				if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getId()).hasPermission(OUser.PermissionNode.IMPORT_PLAYLIST)) {
 					List<YTSearch.SimpleResult> items = ytSearch.getPlayListItems(playlistCode);
 					String output = "Added the following items to the playlit: " + Config.EOL;
+					int playCount = 0;
 					for (YTSearch.SimpleResult track : items) {
+						if (++playCount == MAX_PLAYLIST_SIZE) {
+							output = "Maximum of **" + MAX_PLAYLIST_SIZE + "** items in the playlist!";
+							break;
+						}
 						String out = handleFile(player, bot, (TextChannel) channel, author, track.getCode(), track.getTitle(), false);
 						if (!"".equals(out)) {
 							output += out + Config.EOL;
