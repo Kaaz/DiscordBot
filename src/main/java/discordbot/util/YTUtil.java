@@ -11,8 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class YTUtil {
+	public final static Pattern yturl = Pattern.compile("^.*(?>(?>youtu.be/)|(?>v/)|(?>/u/\\w/)|(?>embed/)|(?>watch\\?))\\\\??v?=?([^#\\\\&\\?]*)(?>&list=([^#\\\\&\\?]*)).*");
 	private final static Pattern youtubeCode = Pattern.compile("^[A-Za-z0-9_-]{11}$");
-	private final static Pattern yturl = Pattern.compile("^.*((youtu.be/)|(v/)|(/u/\\w/)|(embed/)|(watch\\?))\\\\??v?=?([^#\\\\&\\?]*).*");
 
 	/**
 	 * checks if it could be a youtube videocode
@@ -33,9 +33,24 @@ public class YTUtil {
 	public static String extractCodeFromUrl(String url) {
 		Matcher matcher = yturl.matcher(url);
 		if (matcher.find()) {
-			return matcher.group(7);
+			return matcher.group(1);
 		}
 		return url;
+	}
+
+	/**
+	 * Extracts the playlistcode from a yt url
+	 * @param url the url
+	 * @return playlistcode || null if not found
+	 */
+	public static String getPlayListCode(String url) {
+		Matcher matcher = yturl.matcher(url);
+		if (matcher.find()) {
+			if (matcher.groupCount() == 2) {
+				return matcher.group(2);
+			}
+		}
+		return null;
 	}
 
 	/**

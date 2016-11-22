@@ -67,43 +67,6 @@ public class YoutubeThread extends Thread {
 		return true;
 	}
 
-	public static boolean downloadPlayList(String playlist) {
-		System.out.println("YT:: downloading " + playlist);
-		List<String> infoArgs = new LinkedList<>();
-		infoArgs.add(Config.YOUTUBEDL_EXE);
-		infoArgs.add("--verbose");
-		infoArgs.add("--no-check-certificate");
-		infoArgs.add("-x"); //audio only
-		infoArgs.add("--ignore-errors");
-		infoArgs.add("--prefer-avconv");
-		infoArgs.add("--ffmpeg-location");
-		infoArgs.add(Config.YOUTUBEDL_BIN);
-		infoArgs.add("--audio-format");
-		infoArgs.add("mp3");
-		infoArgs.add("--socket-timeout");
-		infoArgs.add("300");//give up after 600s
-		infoArgs.add("--output");
-		infoArgs.add(Config.MUSIC_DIRECTORY + "tmp/%(id)s.%(ext)s");
-		infoArgs.add(playlist);
-		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
-		builder.redirectErrorStream(true);
-		Process process = null;
-		try {
-			process = builder.start();
-			InputStream stdout = process.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
-			String line = "";
-			while ((line = reader.readLine()) != null) {
-				System.out.println("YT: " + line);
-			}
-			process.waitFor();
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-
 	public synchronized void registerProgress(String youtubeCode) {
 		itemsInProgress.add(youtubeCode);
 

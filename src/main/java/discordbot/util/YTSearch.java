@@ -4,6 +4,7 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.PlaylistItemListResponse;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import discordbot.main.Config;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Helper class to search for tracks on youtube
@@ -21,8 +23,10 @@ public class YTSearch {
 	private final YouTube youtube;
 	private final YouTube.Search.List search;
 	private final ConcurrentHashMap<String, SimpleResult> cache = new ConcurrentHashMap<>();
+	private String apikey;
 
 	public YTSearch(String apiKey) {
+		this.apikey = apiKey;
 		youtube = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), (HttpRequest request) -> {
 		}).setApplicationName(Config.BOT_NAME).build();
 		YouTube.Search.List tmp = null;
@@ -30,6 +34,7 @@ public class YTSearch {
 			tmp = youtube.search().list("id,snippet");
 			tmp.setOrder("relevance");
 			tmp.setVideoCategoryId("10");
+
 		} catch (IOException ex) {
 			DiscordBot.LOGGER.error("Failed to initialize search: " + ex.toString());
 		}
@@ -52,6 +57,27 @@ public class YTSearch {
 			return results.get(0);
 		}
 		return null;
+	}
+
+	public List<SimpleResult> getPlayListItems(String listCode) {
+		List<SimpleResult> playlist = new ArrayList<>();
+		try {
+			YouTube.PlaylistItems.List playlistRequest = youtube.playlistItems().list("id,contentDetails,snippet");
+			playlistRequest.setKey(apikey);
+			playlistRequest.setPlaylistId(listCode);
+			playlistRequest.setFields("items(contentDetails/videoId,snippet/title,snippet/publishedAt),nextPageToken,pageInfo");
+			String nextToken = "";
+			do {
+				playlistRequest.setPageToken(nextToken);
+				PlaylistItemListResponse playlistItemResult = playlistRequest.execute();
+				playlist.addAll(playlistItemResult.getItems().stream().map(playlistItem -> new SimpleResult(playlistItem.getContentDetails().getVideoId(), playlistItem.getSnippet().getTitle())).collect(Collectors.toList()));
+				nextToken = playlistItemResult.getNextPageToken();
+			} while (nextToken != null);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return playlist;
 	}
 
 	public List<SimpleResult> getResults(String query, int numresults) {

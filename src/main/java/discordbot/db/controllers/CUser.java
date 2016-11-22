@@ -92,6 +92,7 @@ public class CUser {
 		s.name = rs.getString("name");
 		s.commandsUsed = rs.getInt("commands_used");
 		s.banned = rs.getInt("banned");
+		s.setPermission(rs.getInt("permission_mask"));
 		return s;
 	}
 
@@ -127,9 +128,9 @@ public class CUser {
 		}
 		try {
 			WebDb.get().query(
-					"UPDATE users SET discord_id = ?, name = ?, banned = ?, commands_used = ? " +
+					"UPDATE users SET discord_id = ?, name = ?, banned = ?, commands_used = ?, permission_mask = ? " +
 							"WHERE id = ? ",
-					record.discord_id, record.name, record.banned, record.commandsUsed, record.id
+					record.discord_id, record.name, record.banned, record.commandsUsed, record.getEncodedPermissions(), record.id
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -139,9 +140,9 @@ public class CUser {
 	public static void insert(OUser record) {
 		try {
 			record.id = WebDb.get().insert(
-					"INSERT INTO users(discord_id,commands_used, name,banned) " +
-							"VALUES (?,?,?,?)",
-					record.discord_id, record.commandsUsed, record.name, record.banned);
+					"INSERT INTO users(discord_id,commands_used, name,banned, permission_mask) " +
+							"VALUES (?,?,?,?,?)",
+					record.discord_id, record.commandsUsed, record.name, record.banned, record.getEncodedPermissions());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
