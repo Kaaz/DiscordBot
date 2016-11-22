@@ -337,8 +337,11 @@ public class PlaylistCommand extends AbstractCommand {
 						if (args.length > 1 && args[1].matches("^\\d+$")) {
 							OMusic record = CMusic.findById(Integer.parseInt(args[1]));
 							if (record.id > 0) {
-								MusicPlayerHandler.getFor(guild, bot).addToQueue(record.filename, author);
-								return Template.get("music_added_to_queue", record.youtubeTitle);
+								if(player.canUseVoiceCommands(author,userRank)) {
+									player.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
+									player.addToQueue(record.filename, author);
+									return Template.get("music_added_to_queue", record.youtubeTitle);
+								}
 							}
 							return Template.get("music_not_added_to_queue", args[1]);
 						}

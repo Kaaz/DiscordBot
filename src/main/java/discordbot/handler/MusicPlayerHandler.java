@@ -11,11 +11,13 @@ import discordbot.guildsettings.music.*;
 import discordbot.handler.audiosources.StreamSource;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
+import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
+import net.dv8tion.jda.entities.VoiceStatus;
 import net.dv8tion.jda.managers.AudioManager;
 import net.dv8tion.jda.player.MusicPlayer;
 import net.dv8tion.jda.player.hooks.PlayerEventListener;
@@ -84,6 +86,34 @@ public class MusicPlayerHandler {
 		if (playerInstances.containsKey(guild)) {
 			playerInstances.remove(guild);
 		}
+	}
+
+	/**
+	 * Check if a user meets the requirements to use the music commands
+	 *
+	 * @return bool
+	 */
+	public boolean canUseVoiceCommands(User user, SimpleRank rank) {
+		if (PermissionUtil.checkPermission(guild, user, Permission.ADMINISTRATOR)) {
+			return true;
+		}
+		if (!GuildSettings.get(guild).canUseMusicCommands(user, rank)) {
+			return false;
+		}
+		VoiceStatus voiceStatus = guild.getVoiceStatusOfUser(user);
+		if (voiceStatus == null) {
+			return false;
+		}
+		VoiceChannel userVoice = voiceStatus.getChannel();
+		if (userVoice == null) {
+			return false;
+		}
+		if (guild.getAudioManager().getConnectedChannel() != null) {
+			if (!guild.getAudioManager().getConnectedChannel().equals(userVoice)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static MusicPlayerHandler getFor(Guild guild, DiscordBot bot) {
@@ -212,6 +242,13 @@ public class MusicPlayerHandler {
 	}
 
 	public synchronized void connectTo(VoiceChannel channel) {
+		if (guild.getAudioManager().isConnected()) {
+			if (!guild.getAudioManager().getConnectedChannel().equals(channel)) {
+				guild.getAudioManager().closeAudioConnection();
+			} else {
+				return;
+			}
+		}
 		guild.getAudioManager().openAudioConnection(channel);
 	}
 
