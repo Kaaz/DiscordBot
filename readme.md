@@ -35,13 +35,13 @@ Commands | | | | |
 [command](#command) | [config](#config) | [current](#current) | [exec](#exec) | [exit](#exit)
 [fml](#fml) | [game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info)
 [invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild)
-[pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
-[poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [prefix](#prefix) | [profile](#profile)
-[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
-[role](#role) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [skip](#skip)
-[slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag)
-[template](#template) | [uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version)
-[volume](#volume) | 
+[meme](#meme) | [pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist)
+[pm](#pm) | [poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [prefix](#prefix)
+[profile](#profile) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload)
+[report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile)
+[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
+[tag](#tag) | [template](#template) | [uptime](#uptime) | [user](#user) | [userrank](#userrank)
+[version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -118,12 +118,14 @@ help_in_pm | false | show help in a private message?<br/>true  -> send a message
 module_games | true | Let people play games against each other
 music_channel | music | Channel where the bots music-related output goes to
 music_channel_auto | false | The channel where I automatically connect to if a user joins<br/><br/>false:<br/>Not using this setting, wont auto-connect to anything.<br/><br/>setting this to match a voice channel name:<br/>The moment a user connects to the specified channel I connect too and start to play music.<br/><br/>Important to note: <br/>* If the configured channel does not exist, this setting will be turned off<br/>* If I'm already connected to a different voice-channel I won't use this setting
-music_channel_title | false | Updates the music channel's topic with the currently playing song<br/>auto  -> update the title every 10 seconds with the track its playing<br/>true  -> yes change the topic at the beginning of every song<br/>false -> leave the channel topic title alone!
+music_channel_title | false | Updates the music channel's topic with the currently playing song<br/><br/>auto  -> update the title every 10 seconds with the track its playing<br/>true  -> yes change the topic at the beginning of every song<br/>false -> leave the channel topic title alone!
+music_clear_admin_only | true | Only allow admins to clear the music queue?<br/><br/>true<br/>Only admins can clear the music queue<br/><br/>false<br/>Everyone can clear the queue
 music_playing_message | clear | Clear the now playing message?<br/>clear  -> sends a message and deletes it when the song is over or skipped<br/>normal -> send the message and just leave it be<br/>off    -> don't send now playing messages
 music_playlist_id | 0 | used to store the last used playlist 
 music_queue_only | false | Stop playing music once the queue is empty?<br/><br/>true<br/>once the queue is empty I stop playing music and leave the voice channel<br/><br/>false<br/>If the queue is empty, I'm gonna pick the track.
 music_role_requirement | none | In order to use music commands you need this role!<br/>Setting this value to none will disable the requirement
 music_show_listeners | false | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
+music_skip_admin_only | false | Only allow admins to use the skip command?<br/><br/>true<br/>Only admins have permission to use the skip command<br/><br/>false<br/>Everyone can use the skip command
 music_volume | 10 | sets the default volume of the music player<br/>So the next time the bot connects it starts with this volume<br/><br/>Accepts a value between 0 and 100
 music_vote_percent | 1 | Percentage of users (rounded down) required to skip the currently playing track<br/><br/>eg; when set to 25, and 5 listeners it would require 2 users to vote skip <br/><br/>Accepts a value between 1 and 100
 pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
@@ -330,14 +332,17 @@ Usable in public  channels
 #### Usage
 
 ```php
-current               //info about the currently playing song
-current vote <1-10>   //Cast your vote to the song; 1=worst, 10=best
-current ban           //bans the current track from being randomly played
-current repeat        //repeats the currently playing song
-current update        //updates the now playing message every 10 seconds
-current updatetitle   //updates the topic of the music channel every 10 seconds
-current source        //Shows the source of the video
-current pm            //sends you a private message with the details
+current                 //info about the currently playing song
+current vote <1-10>     //Cast your vote to the song; 1=worst, 10=best
+current repeat          //repeats the currently playing song
+current update          //updates the now playing message every 10 seconds
+current updatetitle     //updates the topic of the music channel every 10 seconds
+current source          //Shows the source of the video
+current pm              //sends you a private message with the details
+
+current clear               //clears everything in the queue
+current clear admin         //check if clear is admin-only
+current clear admin toggle  //switch between admin-only and normal
 ```
 ### exec
 
@@ -465,6 +470,23 @@ Usable in public and private channels
 ```php
 leaveguild     //leaves the guild
 ```
+### meme
+
+generate a meme!
+
+Accessible though: meme
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+meme type                               //list of all valid types
+meme <type> <toptext> || <bottomtext>   //make the meme!
+
+example: 
+meme sohappy If I could use this meme || I would be so happy
+```
 ### pause
 
 pauses the music or resumes it if its paused
@@ -522,7 +544,8 @@ playlist removeall                   //removes ALL songs from playlist
 -- Changing the settings of the playlist
 playlist title <new title>           //edit the playlist title
 playlist edit <new type>             //change the edit-type of a playlist
-playlist play <new type>             //change the play-type of a playlist
+playlist play <id>                   //plays a track from the playlist
+playlist playtype <new type>         //change the play-type of a playlist
 ```
 ### pm
 
@@ -733,8 +756,9 @@ Usable in public  channels
 #### Usage
 
 ```php
-skip      //skips current track
-skip perm //skips permanently; never hear this song again
+skip                  //skips current track
+skip adminonly        //check what skipmode its set on
+skip adminonly toggle //toggle the skipmode
 ```
 ### slot
 
@@ -858,7 +882,7 @@ user @user   //info about @user
 ```
 ### userrank
 
-User Ranks!
+This command is intended for bot admins
 
 Accessible though: userrank, ur
 
@@ -867,8 +891,10 @@ Usable in public  channels
 #### Usage
 
 ```php
-userrank <user>        //list of tags
-userrank <user> <rank> //shows your tags
+userrank <user>                   //check rank of user
+userrank <user> <rank>            //gives a rank to user
+userrank <user> perm <+/-> <node> //adds/removes permission from user
+userrank permlist                 //lists all permissions
 ```
 ### version
 
