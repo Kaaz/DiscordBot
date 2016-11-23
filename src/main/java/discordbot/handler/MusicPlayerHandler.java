@@ -10,7 +10,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
-import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 import discordbot.db.WebDb;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CMusic;
@@ -19,12 +18,12 @@ import discordbot.db.controllers.CPlaylist;
 import discordbot.db.model.OMusic;
 import discordbot.db.model.OPlaylist;
 import discordbot.guildsettings.music.*;
+import discordbot.handler.audio.AudioPlayerSendHandler;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.audio.AudioSendHandler;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
@@ -84,6 +83,7 @@ public class MusicPlayerHandler {
 
 	public static void init() {
 		AudioSourceManagers.registerLocalSource(playerManager);
+		playerManager.setFrameBufferDuration(10);
 	}
 
 	public static void removeGuild(Guild guild) {
@@ -177,27 +177,20 @@ public class MusicPlayerHandler {
 			playerManager.loadItemOrdered(player, new File(poll.filename).getAbsolutePath(), new AudioLoadResultHandler() {
 				@Override
 				public void trackLoaded(AudioTrack track) {
-					System.out.println("DONE LOADING: " + track.getInfo().identifier);
 					scheduler.queue(track);
 					startPlaying();
 				}
 
 				@Override
 				public void playlistLoaded(AudioPlaylist playlist) {
-//					playlist.getTracks().forEach(scheduler::queue);
-					System.out.println("DONE LOADING");
 				}
 
 				@Override
 				public void noMatches() {
-					// Notify the user that we've got nothing
-					System.out.println("NO MATCH WHATSOEVER");
 				}
 
 				@Override
 				public void loadFailed(FriendlyException throwable) {
-					// Notify the user that everything exploded
-					System.out.println("FAILFAILFAIL");
 				}
 			});
 		}
@@ -273,14 +266,11 @@ public class MusicPlayerHandler {
 	}
 
 	public synchronized void connectTo(VoiceChannel channel) {
-//		if (guild.getAudioManager().isConnected()) {
-//			if (!guild.getAudioManager().getConnectedChannel().equals(channel)) {
-//				guild.getAudioManager().closeAudioConnection();
-//			} else {
-//				return;
-//			}
-//		}
-		guild.getAudioManager().openAudioConnection(channel);
+		if (!isConnectedTo(channel)) {
+			if (guild.getAudioManager().getQueuedAudioConnection() == null) {
+				guild.getAudioManager().openAudioConnection(channel);
+			}
+		}
 	}
 
 	public boolean isConnected() {
@@ -324,7 +314,7 @@ public class MusicPlayerHandler {
 	 * Skips currently playing song
 	 */
 	public synchronized void skipSong() {
-		scheduler.nextTrack();
+		scheduler.skipTrack();
 	}
 
 	/**
@@ -368,8 +358,6 @@ public class MusicPlayerHandler {
 	}
 
 	public synchronized boolean isPlaying() {
-		System.out.println(player.getPlayingTrack());
-		System.out.println(player.isPaused());
 		return player.getPlayingTrack() != null;
 	}
 
@@ -378,7 +366,7 @@ public class MusicPlayerHandler {
 			if (player.isPaused()) {
 				player.setPaused(false);
 			} else {
-				scheduler.nextTrack();
+				scheduler.skipTrack();
 			}
 			Launcher.log("Start playing", "music", "start",
 					"guild-id", guild.getId(),
@@ -476,8 +464,7 @@ public class MusicPlayerHandler {
 	}
 
 	public synchronized void addStream(String url) {
-//		LinkedList<AudioSource> audioQueue = player.getAudioQueue();
-//		audioQueue.add(new StreamSource(url));
+
 	}
 
 	public synchronized void clearQueue() {
@@ -492,30 +479,6 @@ public class MusicPlayerHandler {
 		this.updateChannelTitle = updateChannelTitle;
 	}
 
-	public class AudioPlayerSendHandler implements AudioSendHandler {
-		private final AudioPlayer audioPlayer;
-		private AudioFrame lastFrame;
-
-		public AudioPlayerSendHandler(AudioPlayer audioPlayer) {
-			this.audioPlayer = audioPlayer;
-		}
-
-		@Override
-		public boolean canProvide() {
-			lastFrame = audioPlayer.provide();
-			return lastFrame != null;
-		}
-
-		@Override
-		public byte[] provide20MsAudio() {
-			return lastFrame.data;
-		}
-
-		@Override
-		public boolean isOpus() {
-			return true;
-		}
-	}
 
 	public class TrackScheduler extends AudioEventAdapter {
 		private final AudioPlayer player;
@@ -541,23 +504,26 @@ public class MusicPlayerHandler {
 			}
 		}
 
-		public void nextTrack() {
-			trackEnded();
-			AudioTrack poll = queue.poll();
-			player.stopTrack();
-			if (poll != null) {
-				System.out.println("POLL IS NOT EMPTY");
-				player.startTrack(poll, false);
-			} else {
-				//leave, etc.?
+		public void skipTrack() {
+			trackEnded();//yes it ended, go away
+			if (isInRepeatMode() && player.getPlayingTrack() != null) {
+				player.startTrack(player.getPlayingTrack().makeClone(), false);
+				return;
 			}
-			System.out.println("???");
+			player.stopTrack();
+			AudioTrack poll = queue.poll();
+			if (poll != null) {
+				player.startTrack(poll, false);
+			}
 		}
 
 		@Override
 		public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 			if (endReason.mayStartNext) {
-				nextTrack();
+				if (isInRepeatMode()) {
+					return;
+				}
+				skipTrack();
 			}
 		}
 	}

@@ -129,7 +129,7 @@ public class PlayCommand extends AbstractCommand {
 					String output = "Added the following items to the playlist: " + Config.EOL;
 					int playCount = 0;
 					for (YTSearch.SimpleResult track : items) {
-						if (++playCount == MAX_PLAYLIST_SIZE) {
+						if (playCount++ == MAX_PLAYLIST_SIZE) {
 							output += "Maximum of **" + MAX_PLAYLIST_SIZE + "** items in the playlist!";
 							break;
 						}

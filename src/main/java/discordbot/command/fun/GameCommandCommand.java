@@ -35,7 +35,10 @@ public class GameCommandCommand extends AbstractCommand {
 	public String[] getUsage() {
 		return new String[]{
 				"game list                 //to see a list games",
-				"game <@user> <gamecode>   //play a game against @user"};
+				"game <@user> <gamecode>   //play a game against @user",
+				"game cancel               //cancel an active game!"
+
+		};
 	}
 
 	@Override
