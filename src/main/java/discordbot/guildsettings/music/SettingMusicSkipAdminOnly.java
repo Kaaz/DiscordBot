@@ -15,6 +15,11 @@ public class SettingMusicSkipAdminOnly extends AbstractGuildSetting {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return true;
+	}
+
+	@Override
 	public String[] getDescription() {
 		return new String[]{"Only allow admins to use the skip command?",
 				"",

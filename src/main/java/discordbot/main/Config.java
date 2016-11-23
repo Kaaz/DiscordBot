@@ -92,10 +92,6 @@ public class Config {
 	@ConfigurationOption
 	public static String YOUTUBEDL_BIN = "H:/music/bin/";
 
-	//folder with the binary files required for youtubedl
-	@ConfigurationOption
-	public static String SOX_LOCATION = "/bin/sox";
-
 	//directory where all the music is stored
 	@ConfigurationOption
 	public static String MUSIC_DIRECTORY = "H:/music/";

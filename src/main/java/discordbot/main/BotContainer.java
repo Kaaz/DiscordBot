@@ -25,14 +25,14 @@ import java.util.function.Consumer;
  * Shared information between bots
  */
 public class BotContainer {
+	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 	private final int numShards;
 	private final DiscordBot[] shards;
+	private final YoutubeThread youtubeThread;
 	private volatile AtomicInteger numGuilds;
 	private volatile boolean allShardsReady = false;
-	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 	private volatile boolean terminationRequested = false;
 	private volatile ExitCode rebootReason = ExitCode.UNKNOWN;
-	private final YoutubeThread youtubeThread;
 
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException {
 		youtubeThread = new YoutubeThread();
@@ -171,7 +171,7 @@ public class BotContainer {
 		GameHandler.initialize();
 		SecurityHandler.initialize();
 		Template.initialize();
-
+		MusicPlayerHandler.init();
 	}
 
 	/**

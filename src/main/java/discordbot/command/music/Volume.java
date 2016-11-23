@@ -4,6 +4,7 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.guildsettings.music.SettingMusicVolume;
 import discordbot.handler.GuildSettings;
+import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.entities.Guild;
@@ -57,10 +58,11 @@ public class Volume extends AbstractCommand {
 			float volume;
 			try {
 				volume = Float.parseFloat(args[0]);
+				MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 				if (volume > 0 && volume <= 100) {
-					bot.setVolume(guild, volume / 100F);
-					GuildSettings.get(guild).set(SettingMusicVolume.class, String.valueOf((int) (bot.getVolume(guild) * 100F)));
-					return Template.get("command_volume_changed", (int)( (bot.getVolume(guild) * 100F)));
+					player.setVolume(volume);
+					GuildSettings.get(guild).set(SettingMusicVolume.class, String.valueOf((int) player.getVolume()));
+					return Template.get("command_volume_changed", (int) bot.getVolume(guild));
 				}
 			} catch (NumberFormatException ignored) {
 			}

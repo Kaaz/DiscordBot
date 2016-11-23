@@ -1,5 +1,16 @@
 package discordbot.handler;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 import discordbot.db.WebDb;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CMusic;
@@ -8,26 +19,16 @@ import discordbot.db.controllers.CPlaylist;
 import discordbot.db.model.OMusic;
 import discordbot.db.model.OPlaylist;
 import discordbot.guildsettings.music.*;
-import discordbot.handler.audiosources.StreamSource;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import net.dv8tion.jda.Permission;
+import net.dv8tion.jda.audio.AudioSendHandler;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.entities.VoiceStatus;
-import net.dv8tion.jda.managers.AudioManager;
-import net.dv8tion.jda.player.MusicPlayer;
-import net.dv8tion.jda.player.hooks.PlayerEventListener;
-import net.dv8tion.jda.player.hooks.events.FinishEvent;
-import net.dv8tion.jda.player.hooks.events.PlayEvent;
-import net.dv8tion.jda.player.hooks.events.PlayerEvent;
-import net.dv8tion.jda.player.hooks.events.RepeatEvent;
-import net.dv8tion.jda.player.source.AudioInfo;
-import net.dv8tion.jda.player.source.AudioSource;
-import net.dv8tion.jda.player.source.LocalSource;
 import net.dv8tion.jda.utils.PermissionUtil;
 
 import java.io.File;
@@ -35,15 +36,21 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 public class MusicPlayerHandler {
+	private final static DefaultAudioPlayerManager playerManager = new DefaultAudioPlayerManager();
 	private final static Map<Guild, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
 	private final Guild guild;
 	private final DiscordBot bot;
-	private final MusicPlayer player;
-	private final PlayerEventHandler pvh;
+	private final AudioPlayer player;
+	private final TrackScheduler scheduler;
+
+	private volatile boolean inRepeatMode = false;
+
 	private volatile int currentlyPlaying = 0;
 	private volatile long currentSongLength = 0;
 	private volatile long pauseStart = 0;
@@ -52,25 +59,18 @@ public class MusicPlayerHandler {
 	private volatile int activePlayListId = 0;
 	private volatile OPlaylist playlist;
 	private Random rng;
-	private AudioManager manager;
 	private volatile LinkedList<OMusic> queue;
 
 	private MusicPlayerHandler(Guild guild, DiscordBot bot) {
 		queue = new LinkedList<>();
-		pvh = new PlayerEventHandler();
 		this.guild = guild;
 		this.bot = bot;
 		rng = new Random();
-		manager = guild.getAudioManager();
-		if (manager.getSendingHandler() == null) {
-			manager = guild.getAudioManager();
-			player = new MusicPlayer();
-			manager.setSendingHandler(player);
-			player.addEventListener(pvh);
-		} else {
-			player = (MusicPlayer) manager.getSendingHandler();
-		}
-		player.setVolume(Float.parseFloat(GuildSettings.get(guild).getOrDefault(SettingMusicVolume.class)) / 100F);
+		player = playerManager.createPlayer();
+		scheduler = new TrackScheduler(player);
+		player.addListener(scheduler);
+		guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
+		player.setVolume(Integer.parseInt(GuildSettings.get(guild).getOrDefault(SettingMusicVolume.class)));
 		playerInstances.put(guild, this);
 		int savedPlaylist = Integer.parseInt(GuildSettings.get(guild).getOrDefault(SettingMusicLastPlaylist.class));
 		if (savedPlaylist > 0) {
@@ -82,9 +82,21 @@ public class MusicPlayerHandler {
 		activePlayListId = playlist.id;
 	}
 
+	public static void init() {
+		AudioSourceManagers.registerLocalSource(playerManager);
+	}
+
 	public static void removeGuild(Guild guild) {
 		if (playerInstances.containsKey(guild)) {
 			playerInstances.remove(guild);
+		}
+	}
+
+	public static MusicPlayerHandler getFor(Guild guild, DiscordBot bot) {
+		if (playerInstances.containsKey(guild)) {
+			return playerInstances.get(guild);
+		} else {
+			return new MusicPlayerHandler(guild, bot);
 		}
 	}
 
@@ -116,20 +128,12 @@ public class MusicPlayerHandler {
 		return true;
 	}
 
-	public static MusicPlayerHandler getFor(Guild guild, DiscordBot bot) {
-		if (playerInstances.containsKey(guild)) {
-			return playerInstances.get(guild);
-		} else {
-			return new MusicPlayerHandler(guild, bot);
-		}
-	}
-
 	public synchronized boolean isInRepeatMode() {
-		return player.isRepeat();
+		return inRepeatMode;
 	}
 
 	public synchronized void setRepeat(boolean repeatMode) {
-		player.setRepeat(repeatMode);
+		inRepeatMode = repeatMode;
 	}
 
 	public int getActivePLaylistId() {
@@ -149,26 +153,53 @@ public class MusicPlayerHandler {
 		}
 	}
 
-	private synchronized void trackEnded() throws InterruptedException {
+	private synchronized void trackEnded() {
 		currentSongLength = 0;
-		LinkedList<AudioSource> audioQueue = player.getAudioQueue();
-		if (audioQueue.isEmpty()) {
+		if (scheduler.queue.isEmpty()) {
 			if (queue.isEmpty()) {
 				if ("false".equals(GuildSettings.get(guild).getOrDefault(SettingMusicQueueOnly.class))) {
 					String filename = getRandomSong();
 					if (filename != null) {
-						audioQueue.add(new LocalSource(new File(filename)));
+						addToQueue(filename, null);
 					} else {
-						player.stop();
+						player.destroy();
 						bot.getMusicChannel(guild).sendMessageAsync("Stopped playing because the playlist is empty", null);
+						return;
 					}
 				} else {
 					leave();
 				}
-			} else {
-				OMusic poll = queue.poll();
-				audioQueue.add(new LocalSource(new File(poll.filename)));
 			}
+			OMusic poll = queue.poll();
+			if (poll == null) {
+				return;
+			}
+			playerManager.loadItemOrdered(player, new File(poll.filename).getAbsolutePath(), new AudioLoadResultHandler() {
+				@Override
+				public void trackLoaded(AudioTrack track) {
+					System.out.println("DONE LOADING: " + track.getInfo().identifier);
+					scheduler.queue(track);
+					startPlaying();
+				}
+
+				@Override
+				public void playlistLoaded(AudioPlaylist playlist) {
+//					playlist.getTracks().forEach(scheduler::queue);
+					System.out.println("DONE LOADING");
+				}
+
+				@Override
+				public void noMatches() {
+					// Notify the user that we've got nothing
+					System.out.println("NO MATCH WHATSOEVER");
+				}
+
+				@Override
+				public void loadFailed(FriendlyException throwable) {
+					// Notify the user that everything exploded
+					System.out.println("FAILFAILFAIL");
+				}
+			});
 		}
 	}
 
@@ -181,15 +212,15 @@ public class MusicPlayerHandler {
 		OMusic record;
 		File f = null;
 		final String messageType = GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class);
-		AudioInfo info = player.getCurrentAudioSource().getInfo();
+		AudioTrackInfo info = player.getPlayingTrack().getInfo();
 		if (info != null) {
-			f = new File(info.getOrigin());
+			f = new File(info.identifier);
 			record = CMusic.findByFileName(f.getAbsolutePath());
 			if (record.id > 0) {
 				record.lastplaydate = System.currentTimeMillis() / 1000L;
 				CMusic.update(record);
 				currentlyPlaying = record.id;
-				currentSongLength = info.getDuration().getTotalSeconds();
+				currentSongLength = info.length / 1000L;
 				CMusicLog.insert(CGuild.getCachedId(guild.getId()), record.id, 0);
 				if (!playlist.isGlobalList()) {
 					CPlaylist.updateLastPlayed(playlist.id, record.id);
@@ -293,7 +324,7 @@ public class MusicPlayerHandler {
 	 * Skips currently playing song
 	 */
 	public synchronized void skipSong() {
-		player.skipToNext();
+		scheduler.nextTrack();
 	}
 
 	/**
@@ -337,17 +368,18 @@ public class MusicPlayerHandler {
 	}
 
 	public synchronized boolean isPlaying() {
-		return player.isPlaying();
+		System.out.println(player.getPlayingTrack());
+		System.out.println(player.isPaused());
+		return player.getPlayingTrack() != null;
 	}
 
 	public synchronized void startPlaying() {
-		if (!player.isPlaying()) {
-			try {
-				trackEnded();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		if (!isPlaying()) {
+			if (player.isPaused()) {
+				player.setPaused(false);
+			} else {
+				scheduler.nextTrack();
 			}
-			player.play();
 			Launcher.log("Start playing", "music", "start",
 					"guild-id", guild.getId(),
 					"guild-name", guild.getName());
@@ -389,7 +421,7 @@ public class MusicPlayerHandler {
 	}
 
 	public void setVolume(float volume) {
-		player.setVolume(Math.min(1F, Math.max(0F, volume)));
+		player.setVolume(100);
 	}
 
 	public List<User> getUsersInVoiceChannel() {
@@ -408,7 +440,7 @@ public class MusicPlayerHandler {
 	 * @return if its either playing or already paused
 	 */
 	public synchronized boolean canTogglePause() {
-		return player.isPlaying() || player.isPaused();
+		return player.getPlayingTrack() != null || player.isPaused();
 	}
 
 	/**
@@ -419,10 +451,10 @@ public class MusicPlayerHandler {
 	public synchronized boolean togglePause() {
 		if (!player.isPaused()) {
 			pauseStart = System.currentTimeMillis() / 1000L;
-			player.pause();
+			player.setPaused(true);
 		} else {
 			currentSongStartTimeInSeconds += (System.currentTimeMillis() / 1000L) - pauseStart;
-			player.play();
+			player.setPaused(false);
 		}
 		return player.isPaused();
 	}
@@ -433,7 +465,7 @@ public class MusicPlayerHandler {
 
 	public synchronized void stopMusic() {
 		currentlyPlaying = 0;
-		player.stop();
+		player.destroy();
 		Launcher.log("Stop playing", "music", "stop",
 				"guild-id", guild.getId(),
 				"guild-name", guild.getName());
@@ -444,8 +476,8 @@ public class MusicPlayerHandler {
 	}
 
 	public synchronized void addStream(String url) {
-		LinkedList<AudioSource> audioQueue = player.getAudioQueue();
-		audioQueue.add(new StreamSource(url));
+//		LinkedList<AudioSource> audioQueue = player.getAudioQueue();
+//		audioQueue.add(new StreamSource(url));
 	}
 
 	public synchronized void clearQueue() {
@@ -460,30 +492,72 @@ public class MusicPlayerHandler {
 		this.updateChannelTitle = updateChannelTitle;
 	}
 
-	/**
-	 * Handles events for the music player
-	 */
-	private class PlayerEventHandler implements PlayerEventListener {
+	public class AudioPlayerSendHandler implements AudioSendHandler {
+		private final AudioPlayer audioPlayer;
+		private AudioFrame lastFrame;
+
+		public AudioPlayerSendHandler(AudioPlayer audioPlayer) {
+			this.audioPlayer = audioPlayer;
+		}
 
 		@Override
-		public void onEvent(PlayerEvent event) {
-//			if (event instanceof SkipEvent || event instanceof FinishEvent) {
-			if (event instanceof FinishEvent) {
-				try {
-					trackEnded();
-					if (!player.isPlaying() && !player.getAudioQueue().isEmpty()) {
-						player.play();
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+		public boolean canProvide() {
+			lastFrame = audioPlayer.provide();
+			return lastFrame != null;
+		}
+
+		@Override
+		public byte[] provide20MsAudio() {
+			return lastFrame.data;
+		}
+
+		@Override
+		public boolean isOpus() {
+			return true;
+		}
+	}
+
+	public class TrackScheduler extends AudioEventAdapter {
+		private final AudioPlayer player;
+		private final BlockingQueue<AudioTrack> queue;
+
+		public TrackScheduler(AudioPlayer player) {
+			this.player = player;
+			this.queue = new LinkedBlockingQueue<>();
+		}
+
+		public void queue(AudioTrack track) {
+			if (!player.startTrack(track, true)) {
+				queue.offer(track);
 			}
-			if (event instanceof PlayEvent || event instanceof RepeatEvent) {
-				try {
-					trackStarted();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		}
+
+		@Override
+		public void onTrackStart(AudioPlayer player, AudioTrack track) {
+			try {
+				trackStarted();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void nextTrack() {
+			trackEnded();
+			AudioTrack poll = queue.poll();
+			player.stopTrack();
+			if (poll != null) {
+				System.out.println("POLL IS NOT EMPTY");
+				player.startTrack(poll, false);
+			} else {
+				//leave, etc.?
+			}
+			System.out.println("???");
+		}
+
+		@Override
+		public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+			if (endReason.mayStartNext) {
+				nextTrack();
 			}
 		}
 	}
