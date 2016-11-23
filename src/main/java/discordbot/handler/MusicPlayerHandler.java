@@ -404,12 +404,12 @@ public class MusicPlayerHandler {
 		return true;
 	}
 
-	public float getVolume() {
+	public int getVolume() {
 		return player.getVolume();
 	}
 
-	public void setVolume(float volume) {
-		player.setVolume(100);
+	public void setVolume(int volume) {
+		player.setVolume(volume);
 	}
 
 	public List<User> getUsersInVoiceChannel() {

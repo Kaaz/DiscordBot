@@ -55,19 +55,19 @@ public class Volume extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		if (args.length > 0) {
-			float volume;
+			int volume;
 			try {
-				volume = Float.parseFloat(args[0]);
+				volume = Integer.parseInt(args[0]);
 				MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 				if (volume > 0 && volume <= 100) {
 					player.setVolume(volume);
-					GuildSettings.get(guild).set(SettingMusicVolume.class, String.valueOf((int) player.getVolume()));
-					return Template.get("command_volume_changed", (int) bot.getVolume(guild));
+					GuildSettings.get(guild).set(SettingMusicVolume.class, String.valueOf(player.getVolume()));
+					return Template.get("command_volume_changed", bot.getVolume(guild));
 				}
 			} catch (NumberFormatException ignored) {
 			}
 			return Template.get("command_volume_invalid_parameters");
 		}
-		return "Current volume: " + (int) bot.getVolume(guild) + "%";
+		return "Current volume: " + bot.getVolume(guild) + "%";
 	}
 }
