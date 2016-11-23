@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class PlayCommand extends AbstractCommand {
 	private YTSearch ytSearch;
-	private static final int MAX_PLAYLIST_SIZE = 25;
+	private static final int MAX_PLAYLIST_SIZE = 40;
 
 	public PlayCommand() {
 		super();
