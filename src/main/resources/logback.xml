@@ -11,7 +11,7 @@
 		</encoder>
 	</appender>
 
-	<root level="INFO">
+	<root level="WARN">
 		<appender-ref ref="CONSOLE"/>
 		<!-- Uncomment the next line to also log to a file -->
 		<!-- <appender-ref ref="FILE"/> -->

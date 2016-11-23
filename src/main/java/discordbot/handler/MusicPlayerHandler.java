@@ -1,5 +1,6 @@
 package discordbot.handler;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -84,6 +85,7 @@ public class MusicPlayerHandler {
 	public static void init() {
 		AudioSourceManagers.registerLocalSource(playerManager);
 		playerManager.setFrameBufferDuration(10);
+		playerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
 	}
 
 	public static void removeGuild(Guild guild) {
