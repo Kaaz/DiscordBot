@@ -183,7 +183,7 @@ public class GuildStatsCommand extends AbstractCommand {
 		}
 		List<String> header = Arrays.asList("Shard", "Guilds", "Users", "Text", "Voice", "DJ", "Requests");
 		if (minified) {
-			header = Arrays.asList("Gs", "Us", "Text", "Voice", "DJ");
+			header = Arrays.asList("G", "U", "T", "V", "DJ");
 		}
 		if (bot.getContainer().getShards().length > 1) {
 			if (minified) {
