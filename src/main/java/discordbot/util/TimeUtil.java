@@ -79,7 +79,7 @@ public class TimeUtil {
 		} else if (diff < 48 * HOUR_MILLIS) {
 			return shortText ? "~1d" : future ? showChronology ? "tomorrow" : "about a day" : "yesterday";
 		} else if (diff < 14 * DAY_MILLIS || !shortText) {
-			return diff / DAY_MILLIS + (shortText ? "d" : " days " + chronology);
+			return diff / DAY_MILLIS + (shortText ? "d" : " day" + (diff == 1 ? "" : "s") + " " + chronology);
 		}
 		return ">2w";
 	}
