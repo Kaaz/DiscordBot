@@ -32,16 +32,16 @@ Current list of all available commands. See below for a more detailed list
 Commands | | | | |
 --- | --- | ---| ---| ---
 [8ball](#8ball) | [autoreply](#autoreply) | [blackjack](#blackjack) | [catfact](#catfact) | [changename](#changename)
-[command](#command) | [config](#config) | [current](#current) | [exec](#exec) | [exit](#exit)
-[fml](#fml) | [game](#game) | [help](#help) | [importmusic](#importmusic) | [info](#info)
-[invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave) | [leaveguild](#leaveguild)
-[meme](#meme) | [pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist)
-[pm](#pm) | [poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [prefix](#prefix)
-[profile](#profile) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload)
-[report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile)
-[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
-[tag](#tag) | [template](#template) | [uptime](#uptime) | [user](#user) | [userrank](#userrank)
-[version](#version) | [volume](#volume) | 
+[command](#command) | [config](#config) | [consolecomm](#consolecomm) | [current](#current) | [exec](#exec)
+[exit](#exit) | [fml](#fml) | [game](#game) | [help](#help) | [importmusic](#importmusic)
+[info](#info) | [invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave)
+[leaveguild](#leaveguild) | [meme](#meme) | [pause](#pause) | [ping](#ping) | [play](#play)
+[playlist](#playlist) | [pm](#pm) | [prefix](#prefix) | [profile](#profile) | [purge](#purge)
+[reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role)
+[roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [skip](#skip) | [slot](#slot)
+[stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template)
+[uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume)
+
 
 ## Games
 
@@ -54,47 +54,6 @@ Key | Name | Players |
 cf | Connect Four | 2
 gos | Game of sticks | 2
 tic | Tic tac toe | 2
-
-
-## Global configuration
-
-The global configuration is stored in the application.cfg file, which is generated the first time you run the application
-
-The following settings can be set globally:
-
-Setting name | default | description
----|---|---
-BOT_ENABLED | false | Enables the bot<br/> This must be set to true in order to run the bot
-BOT_AUTO_UPDATE | false | Enable automatic updates. <br/>For this to work you'll have to launch the bot though my other project<br/>https://github.com/MaikWezinkhof/ConfigurationBuilder
-BOT_NAME | "NovaBot" | the default name of the bot,
-BOT_CHANNEL_ID | "225170823898464256" | Discord channel is of the bot's own channel
-BOT_TOKEN | "mybottokenhere" | token used to login to discord
-BOT_CHATTING_ENABLED | true | Enable cleverbot
-BOT_COMMAND_PREFIX | "!" |  prefix for all commands !help etc. This can be overriden per guild
-BOT_COMMAND_LOGGING | true | save the usage of commands
-BOT_COMMAND_SHOW_UNKNOWN | false | Reply to non existing commands? <br/> eg. hey that command doesn't exist
-MUSIC_DOWNLOAD_SOUNDCLOUD_EXE | "H:/" | location of the soundcloud jar
-MUSIC_DOWNLOAD_SOUNDCLOUD_API_TOKEN | "some-token" | token used to connect to soundcloud
-YOUTUBEDL_EXE | "H:/youtube-dl.exe" | location of youtubedl.exe
-YOUTUBEDL_BIN | "H:/music/bin/" | folder with the binary files required for ffmpeg
-MUSIC_DIRECTORY | "H:/music/" | directory where all the music is stored
-DB_HOST | "localhost" | mysql hostname
-DB_USER | "root" | mysql user
-DB_PASS | "" | mysql password
-DB_NAME | "discord" | mysql database name
-MODULE_ECONOMY_ENABLED | true | enable economy globally
-MODULE_POE_ENABLED | true | enable poe globally
-MODULE_HEARTHSTONE_ENABLED | true | enable hearthstone globally
-MODULE_MUSIC_ENABLED | true | enable music globally
-ECONOMY_CURRENCY_NAME | "" | name of the currency
-ECONOMY_CURRENCY_ICON | "" | emoticon of the currency
-TRELLO_ACTIVE | false | Use trello integration
-TRELLO_API_KEY | "api-key-here" | Use trello integration
-TRELLO_BOARD_ID | "1234" | trello board id
-TRELLO_LIST_BUGS | "1234" | trello list id 
-TRELLO_LIST_IN_PROGRESS | "1234" |  trello list id for in progress items
-TRELLO_LIST_PLANNED | "1234" | trello list id for planned items
-TRELLO_TOKEN | "token-here" | the trello token
 
 
 ## Per guild configuration
@@ -320,6 +279,20 @@ config <property>         //check details of property
 config <property> <value> //sets property
 
 config reset yesimsure    //resets the configuration to the default settings
+```
+### consolecomm
+
+Sets the communication channel of the console input
+
+Accessible though: consolecomm
+
+Usable in public  channels
+
+#### Usage
+
+```php
+consolecomm connect     //connects to current channel
+consolecomm disconnect  //disconnects from current
 ```
 ### current
 
@@ -560,42 +533,6 @@ Usable in public and private channels
 
 ```php
 pm <@user> <message..>
-```
-### poec
-
-Returns a list of currency on your account
-
-Accessible though: poec
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-poec                   //returns list of currency for default league
-poec token <token>     //sets the session token
-poec league <league>   //currency for league
-```
-### poeitem
-
-Analyzes an item from path of exile.
-
-Accessible though: poeitem
-
-Usable in public and private channels
-### poelab
-
-Attempts to find a description from reddit for the Labyrinth instance.
-
-Accessible though: poelab
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-poelab              //lists for all difficulties
-poelab <difficulty> //only for that difficulty
 ```
 ### prefix
 
@@ -924,3 +861,47 @@ Usable in public  channels
 volume              //shows current volume
 volume <1 to 100>   //sets volume
 ```
+
+
+
+## Global configuration
+
+The global configuration is stored in the application.cfg file, which is generated the first time you run the application
+
+The following settings can be set globally:
+
+Setting name | default | description
+---|---|---
+BOT_ENABLED | false | Enables the bot<br/> This must be set to true in order to run the bot
+BOT_AUTO_UPDATE | false | Enable automatic updates. <br/>For this to work you'll have to launch the bot though my other project<br/>https://github.com/MaikWezinkhof/ConfigurationBuilder
+BOT_NAME | "NovaBot" | the default name of the bot,
+BOT_CHANNEL_ID | "225170823898464256" | Discord channel is of the bot's own channel
+BOT_TOKEN | "mybottokenhere" | token used to login to discord
+BOT_CHATTING_ENABLED | true | Enable cleverbot
+BOT_COMMAND_PREFIX | "!" |  prefix for all commands !help etc. This can be overriden per guild
+BOT_COMMAND_LOGGING | true | save the usage of commands
+BOT_COMMAND_SHOW_UNKNOWN | false | Reply to non existing commands? <br/> eg. hey that command doesn't exist
+MUSIC_DOWNLOAD_SOUNDCLOUD_EXE | "H:/" | location of the soundcloud jar
+MUSIC_DOWNLOAD_SOUNDCLOUD_API_TOKEN | "some-token" | token used to connect to soundcloud
+YOUTUBEDL_EXE | "H:/youtube-dl.exe" | location of youtubedl.exe
+YOUTUBEDL_BIN | "H:/music/bin/" | folder with the binary files required for ffmpeg
+MUSIC_DIRECTORY | "H:/music/" | directory where all the music is stored
+DB_HOST | "localhost" | mysql hostname
+DB_USER | "root" | mysql user
+DB_PASS | "" | mysql password
+DB_NAME | "discord" | mysql database name
+MODULE_ECONOMY_ENABLED | true | enable economy globally
+MODULE_POE_ENABLED | true | enable poe globally
+MODULE_HEARTHSTONE_ENABLED | true | enable hearthstone globally
+MODULE_MUSIC_ENABLED | true | enable music globally
+ECONOMY_CURRENCY_NAME | "" | name of the currency
+ECONOMY_CURRENCY_ICON | "" | emoticon of the currency
+TRELLO_ACTIVE | false | Use trello integration
+TRELLO_API_KEY | "api-key-here" | Use trello integration
+TRELLO_BOARD_ID | "1234" | trello board id
+TRELLO_LIST_BUGS | "1234" | trello list id
+TRELLO_LIST_IN_PROGRESS | "1234" |  trello list id for in progress items
+TRELLO_LIST_PLANNED | "1234" | trello list id for planned items
+TRELLO_TOKEN | "token-here" | the trello token
+
+
