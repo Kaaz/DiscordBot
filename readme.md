@@ -33,15 +33,15 @@ Commands | | | | |
 --- | --- | ---| ---| ---
 [8ball](#8ball) | [autoreply](#autoreply) | [blackjack](#blackjack) | [catfact](#catfact) | [changename](#changename)
 [command](#command) | [config](#config) | [consolecomm](#consolecomm) | [current](#current) | [exec](#exec)
-[exit](#exit) | [fml](#fml) | [game](#game) | [help](#help) | [importmusic](#importmusic)
-[info](#info) | [invite](#invite) | [join](#join) | [joke](#joke) | [leave](#leave)
-[leaveguild](#leaveguild) | [meme](#meme) | [pause](#pause) | [ping](#ping) | [play](#play)
-[playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab)
-[prefix](#prefix) | [profile](#profile) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit)
-[reload](#reload) | [report](#report) | [role](#role) | [roll](#roll) | [rotate](#rotate)
-[sendfile](#sendfile) | [skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe)
-[system](#system) | [tag](#tag) | [template](#template) | [uptime](#uptime) | [user](#user)
-[userrank](#userrank) | [version](#version) | [volume](#volume) | 
+[exit](#exit) | [fml](#fml) | [game](#game) | [guildstats](#guildstats) | [help](#help)
+[importmusic](#importmusic) | [info](#info) | [invite](#invite) | [join](#join) | [joke](#joke)
+[leave](#leave) | [leaveguild](#leaveguild) | [meme](#meme) | [pause](#pause) | [ping](#ping)
+[play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem)
+[poelab](#poelab) | [prefix](#prefix) | [profile](#profile) | [purge](#purge) | [reboot](#reboot)
+[reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role) | [roll](#roll)
+[rotate](#rotate) | [sendfile](#sendfile) | [skip](#skip) | [slot](#slot) | [stop](#stop)
+[subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template) | [uptime](#uptime)
+[user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -352,6 +352,21 @@ Usable in public  channels
 game list                 //to see a list games
 game <@user> <gamecode>   //play a game against @user
 game cancel               //cancel an active game!
+```
+### guildstats
+
+shows some statistics
+
+Accessible though: guildstats, stats
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+stats         //stats!
+stats mini    //minified!
+stats users   //graph of when users joined!
 ```
 ### help
 

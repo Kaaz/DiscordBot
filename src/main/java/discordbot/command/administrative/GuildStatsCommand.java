@@ -43,12 +43,16 @@ public class GuildStatsCommand extends AbstractCommand {
 
 	@Override
 	public boolean isListed() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public String[] getUsage() {
-		return new String[]{};
+		return new String[]{
+				"stats         //stats!",
+				"stats mini    //minified!",
+				"stats users   //graph of when users joined!",
+		};
 	}
 
 	@Override
