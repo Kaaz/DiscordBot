@@ -46,18 +46,21 @@ public class YoutubeThread extends Thread {
 		infoArgs.add("--verbose");
 		infoArgs.add("--no-check-certificate");
 		infoArgs.add("-x"); //audio only
-		infoArgs.add("--ffmpeg-location");
-		infoArgs.add(Config.YOUTUBEDL_BIN);
+		infoArgs.add("--prefer-ffmpeg");
 		infoArgs.add("--audio-format");
 		infoArgs.add("mp3");
+		infoArgs.add("--hls-prefer-ffmpeg");
 		infoArgs.add("--max-filesize");
 		infoArgs.add("64m");
+		infoArgs.add("--postprocessor-arg");
+		infoArgs.add("-f s16be -ac 2 -ar 48000");
 		infoArgs.add("--output");
-		infoArgs.add(Config.MUSIC_DIRECTORY + "/" + videocode + ".%(ext)s");
+		infoArgs.add(Config.MUSIC_DIRECTORY + videocode + ".%(ext)s");
 		infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
 		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
 		builder.redirectErrorStream(true);
 
+//		builder.redirectOutput(ProcessBuilder.Redirect.appendTo(new File("C:/errorfile.txt")));
 		Process process = null;
 		try {
 			process = builder.start();

@@ -159,6 +159,9 @@ public class PlayCommand extends AbstractCommand {
 				return Template.get("command_play_no_results");
 			}
 		} else {
+			if (player.isPlaying()) {
+				return "";
+			}
 			if (player.playRandomSong()) {
 				return Template.get("music_started_playing_random");
 			} else {

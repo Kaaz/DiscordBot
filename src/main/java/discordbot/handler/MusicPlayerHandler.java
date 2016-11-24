@@ -200,6 +200,7 @@ public class MusicPlayerHandler {
 					bot.out.sendMessageToCreator("file:" + absolutePath);
 					trackToAdd.banned = 1; //keep them from the global playlist
 					CMusic.update(trackToAdd);
+					new File(absolutePath).delete();
 					if (finalKeepGoing) {
 						trackEnded();
 					}
@@ -254,7 +255,9 @@ public class MusicPlayerHandler {
 			} else {
 				msg += "\uD83C\uDFB6 " + record.youtubeTitle;
 			}
-
+			if (currentSongLength < 60) {
+				currentSongLength = 60;
+			}
 			final long deleteAfter = currentSongLength * 1000L;
 			bot.getMusicChannel(guild).sendMessageAsync(msg, message -> {
 				if (messageType.equals("clear")) {
