@@ -82,5 +82,12 @@ public abstract class AbstractCommand {
 		return true;
 	}
 
+	/**
+	 * @param bot     the shard where its executing on
+	 * @param args    arguments for the command
+	 * @param channel channel where the command is executed
+	 * @param author  who invoked the command
+	 * @return the message to output or an empty string for nothing
+	 */
 	public abstract String execute(DiscordBot bot, String[] args, MessageChannel channel, User author);
 }

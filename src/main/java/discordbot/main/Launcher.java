@@ -9,23 +9,25 @@ import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CMusic;
 import discordbot.db.model.OMusic;
+import discordbot.threads.ConsoleInputThread;
 import discordbot.threads.GrayLogThread;
 import discordbot.threads.ServiceHandlerThread;
-import discordbot.util.YTSearch;
 import discordbot.util.YTUtil;
 import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.managers.AudioManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.regex.Matcher;
 
 public class Launcher {
 	public volatile static boolean isBeingKilled = false;
 	private static GrayLogThread GRAYLOG;
 	private static BotContainer botContainer = null;
 	private static ProgramVersion version = new ProgramVersion(1);
+	private static ConsoleInputThread consoleInputThread;
+
 
 	/**
 	 * log all the things!
@@ -49,24 +51,8 @@ public class Launcher {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		WebDb.init();
 		Launcher.init();
-//		YTSearch ytSearch = new YTSearch(Config.GOOGLE_API_KEY);
-//		String url = "https://www.youtube.com/watch?v=v2AC41dglnM&list=RDv2AC41dglnM#t=0";
-//		Matcher matcher = YTUtil.yturl.matcher(url);
-//		if (matcher.find()) {
-//			for (int i = 0; i <= matcher.groupCount(); i++) {
-//				System.out.println(i + " - " + matcher.group(i));
-//			}
-//			if (matcher.groupCount() == 2) {
-//				List<YTSearch.SimpleResult> playListItems = ytSearch.getPlayListItems(matcher.group(2));
-//				for (YTSearch.SimpleResult playListItem : playListItems) {
-//					System.out.println(playListItem.getCode() + " - " + playListItem.getTitle());
-//				}
-//				System.out.println("Items in playlist: " + playListItems.size());
-//			}
-//
-//		}
-//		System.exit(0);
 		if (Config.BOT_ENABLED) {
+			consoleInputThread = new ConsoleInputThread();
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				public void run() {
 					Launcher.shutdownHook();
@@ -76,6 +62,7 @@ public class Launcher {
 				botContainer = new BotContainer((CGuild.getActiveGuildCount()));
 				Thread serviceHandler = new ServiceHandlerThread(botContainer);
 				serviceHandler.start();
+				consoleInputThread.start();
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
@@ -128,6 +115,14 @@ public class Launcher {
 			}
 		}
 
+	}
+
+	public static TextChannel getConsoleChannel() {
+		return consoleInputThread.getTextChannel();
+	}
+
+	public static void setConsoleChannel(TextChannel textChannel) {
+		consoleInputThread.setTextChannel(textChannel);
 	}
 
 	/**

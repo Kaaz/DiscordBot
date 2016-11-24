@@ -25,10 +25,10 @@ import java.util.function.Consumer;
  */
 public class YoutubeThread extends Thread {
 	private final HashSet<String> itemsInProgress = new HashSet<>();
+	private final AtomicInteger counter = new AtomicInteger();
 	ExecutorService executor = Executors.newFixedThreadPool(3);
 	private LinkedBlockingQueue<YoutubeTask> queue = new LinkedBlockingQueue<>();
 	private volatile boolean shutdownMode = false;
-	private final AtomicInteger counter = new AtomicInteger();
 
 	public YoutubeThread() throws InterruptedException {
 		super("yt-to-mp3");
@@ -94,7 +94,7 @@ public class YoutubeThread extends Thread {
 	public void run() {
 		try {
 			YoutubeTask task;
-			while (!Launcher.isBeingKilled) {
+			while (!shutdownMode && !Launcher.isBeingKilled) {
 				try {
 					task = queue.take();
 					executor.execute(new YTWorkerWorker(task.getCode(), task));
@@ -105,7 +105,7 @@ public class YoutubeThread extends Thread {
 				}
 			}
 		} finally {
-			if (!Launcher.isBeingKilled) {
+			if (!shutdownMode && !Launcher.isBeingKilled) {
 				CBotEvent.insert(OBotEvent.Level.FATAL, ":octagonal_sign:", ":musical_note:", "Youtube-dl thread is dead!");
 			}
 			shutdownMode = true;
@@ -169,6 +169,9 @@ public class YoutubeThread extends Thread {
 
 		public void run() {
 			try {
+				if (shutdownMode) {
+					return;
+				}
 				if (isInProgress(task.getCode())) {
 					task.getMessage().updateMessageAsync(Template.get("music_downloading_in_progress", task.getTitle()), null);
 					return;
