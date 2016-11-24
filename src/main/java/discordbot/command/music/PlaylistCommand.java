@@ -274,12 +274,9 @@ public class PlaylistCommand extends AbstractCommand {
 				if (playlist.isPersonal()) {
 					return "Personal playlists are not fully done yet, sorry!";
 				}
-				if (playlist.isGuildList() && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-					return Template.get(channel, "playlist_title_no_permission");
-				}
 				switch (args[0].toLowerCase()) {
 					case "title":
-						if (args.length == 1) {
+						if (args.length == 1 || !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 							return Template.get(channel, "command_playlist_title", playlist.title);
 						}
 						playlist.title = EmojiParser.parseToAliases(Joiner.on(" ").join(Arrays.copyOfRange(args, 1, args.length)));
@@ -289,7 +286,7 @@ public class PlaylistCommand extends AbstractCommand {
 					case "edit-type":
 					case "edittype":
 					case "edit":
-						if (args.length == 1) {
+						if (args.length == 1 || !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 							List<List<String>> tbl = new ArrayList<>();
 							for (OPlaylist.EditType editType : OPlaylist.EditType.values()) {
 								if (editType.getId() < 1) continue;
@@ -312,7 +309,7 @@ public class PlaylistCommand extends AbstractCommand {
 						return Template.get(channel, "playlist_setting_not_numeric", "edittype");
 					case "vis":
 					case "visibility":
-						if (args.length == 1) {
+						if (args.length == 1 || !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 							List<List<String>> tbl = new ArrayList<>();
 							for (OPlaylist.Visibility visibility : OPlaylist.Visibility.values()) {
 								if (visibility.getId() < 1) continue;
@@ -337,7 +334,7 @@ public class PlaylistCommand extends AbstractCommand {
 						if (args.length > 1 && args[1].matches("^\\d+$")) {
 							OMusic record = CMusic.findById(Integer.parseInt(args[1]));
 							if (record.id > 0) {
-								if(player.canUseVoiceCommands(author,userRank)) {
+								if (player.canUseVoiceCommands(author, userRank)) {
 									player.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
 									player.addToQueue(record.filename, author);
 									return Template.get("music_added_to_queue", record.youtubeTitle);
