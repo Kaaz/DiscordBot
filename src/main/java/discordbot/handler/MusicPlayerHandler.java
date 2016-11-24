@@ -176,7 +176,8 @@ public class MusicPlayerHandler {
 			if (poll == null) {
 				return;
 			}
-			playerManager.loadItemOrdered(player, new File(poll.filename).getAbsolutePath(), new AudioLoadResultHandler() {
+			String absolutePath = new File(poll.filename).getAbsolutePath();
+			playerManager.loadItemOrdered(player, absolutePath, new AudioLoadResultHandler() {
 				@Override
 				public void trackLoaded(AudioTrack track) {
 					scheduler.queue(track);
@@ -192,7 +193,8 @@ public class MusicPlayerHandler {
 				}
 
 				@Override
-				public void loadFailed(FriendlyException throwable) {
+				public void loadFailed(FriendlyException exception) {
+					bot.out.sendErrorToMe(exception, "file:", absolutePath);
 				}
 			});
 		}
