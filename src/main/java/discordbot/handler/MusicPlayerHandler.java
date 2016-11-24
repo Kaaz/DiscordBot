@@ -157,10 +157,12 @@ public class MusicPlayerHandler {
 
 	private synchronized void trackEnded() {
 		currentSongLength = 0;
+		boolean keepGoing = false;
 		if (scheduler.queue.isEmpty()) {
 			if (queue.isEmpty()) {
 				if ("false".equals(GuildSettings.get(guild).getOrDefault(SettingMusicQueueOnly.class))) {
 					String filename = getRandomSong();
+					keepGoing = true;
 					if (filename != null) {
 						addToQueue(filename, null);
 					} else {
@@ -172,11 +174,12 @@ public class MusicPlayerHandler {
 					leave();
 				}
 			}
-			OMusic poll = queue.poll();
-			if (poll == null) {
+			final OMusic trackToAdd = queue.poll();
+			if (trackToAdd == null) {
 				return;
 			}
-			String absolutePath = new File(poll.filename).getAbsolutePath();
+			String absolutePath = new File(trackToAdd.filename).getAbsolutePath();
+			boolean finalKeepGoing = keepGoing;
 			playerManager.loadItemOrdered(player, absolutePath, new AudioLoadResultHandler() {
 				@Override
 				public void trackLoaded(AudioTrack track) {
@@ -194,7 +197,12 @@ public class MusicPlayerHandler {
 
 				@Override
 				public void loadFailed(FriendlyException exception) {
-					bot.out.sendErrorToMe(exception, "file:", absolutePath);
+					bot.out.sendMessageToCreator("file:" + absolutePath);
+					trackToAdd.banned = 1; //keep them from the global playlist
+					CMusic.update(trackToAdd);
+					if (finalKeepGoing) {
+						trackEnded();
+					}
 				}
 			});
 		}
