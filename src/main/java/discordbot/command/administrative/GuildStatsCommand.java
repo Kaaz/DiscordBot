@@ -63,10 +63,13 @@ public class GuildStatsCommand extends AbstractCommand {
 		int tracksProcessing = bot.getContainer().downloadsProcessing();
 		if (args.length == 0) {
 			return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + Config.EOL +
-					getTotalTable(bot);
+					getTotalTable(bot, false);
 		}
 		SimpleRank userrank = bot.security.getSimpleRank(author, channel);
 		switch (args[0].toLowerCase()) {
+			case "mini":
+				return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + Config.EOL +
+						getTotalTable(bot, true);
 			case "music":
 				return getPlayingOn(bot.getContainer(), userrank.isAtLeast(SimpleRank.BOT_ADMIN) || (args.length >= 2 && args[1].equalsIgnoreCase("guilds")));
 			case "users":
@@ -108,7 +111,7 @@ public class GuildStatsCommand extends AbstractCommand {
 				return "";
 		}
 		return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + Config.EOL +
-				getTotalTable(bot);
+				getTotalTable(bot, false);
 	}
 
 	private String getPlayingOn(BotContainer container, boolean showGuildnames) {
@@ -144,7 +147,7 @@ public class GuildStatsCommand extends AbstractCommand {
 						activeVoice > 1 ? Arrays.asList("TOTAL", "" + activeVoice, "" + totUsersInGuilds, "" + totUsersInVoice) : null);
 	}
 
-	private String getTotalTable(DiscordBot bot) {
+	private String getTotalTable(DiscordBot bot, boolean minified) {
 		List<List<String>> body = new ArrayList<>();
 		int totGuilds = 0, totUsers = 0, totChannels = 0, totVoice = 0, totActiveVoice = 0;
 		double totRequestPerSec = 0D;
@@ -168,11 +171,22 @@ public class GuildStatsCommand extends AbstractCommand {
 			totChannels += channels;
 			totVoice += voiceChannels;
 			totActiveVoice += activeVoice;
-			body.add(Arrays.asList("" + shard.getShardId(), "" + numGuilds, "" + users, "" + channels, "" + voiceChannels, activeVoice == 0 ? "-" : "" + activeVoice, String.format("%.2f/s", requestPerSec)));
+			if (!minified) {
+				body.add(Arrays.asList("" + shard.getShardId(), "" + numGuilds, "" + users, "" + channels, "" + voiceChannels, activeVoice == 0 ? "-" : "" + activeVoice, String.format("%.2f/s", requestPerSec)));
+			} else {
+				body.add(Arrays.asList("" + numGuilds, "" + users, "" + channels, "" + voiceChannels, activeVoice == 0 ? "-" : "" + activeVoice));
+			}
+		}
+		List<String> header = Arrays.asList("Shard", "Guilds", "Users", "Text", "Voice", "DJ", "Requests");
+		if (minified) {
+			header = Arrays.asList("Gs", "Us", "Text", "Voice", "DJ");
 		}
 		if (bot.getContainer().getShards().length > 1) {
-			return Misc.makeAsciiTable(Arrays.asList("Shard", "Guilds", "Users", "T-Chan", "V-Chan", "Music", "Requests"), body, Arrays.asList("TOTAL", "" + totGuilds, "" + totUsers, "" + totChannels, "" + totVoice, "" + totActiveVoice, String.format("%.2f/s", totRequestPerSec)));
+			if (minified) {
+				return Misc.makeAsciiTable(header, body, Arrays.asList("" + totGuilds, "" + totUsers, "" + totChannels, "" + totVoice, "" + totActiveVoice));
+			}
+			return Misc.makeAsciiTable(header, body, Arrays.asList("TOTAL", "" + totGuilds, "" + totUsers, "" + totChannels, "" + totVoice, "" + totActiveVoice, String.format("%.2f/s", totRequestPerSec)));
 		}
-		return Misc.makeAsciiTable(Arrays.asList("Shard", "Guilds", "Users", "T-Chan", "V-Chan", "Playing on", "Requests"), body, null);
+		return Misc.makeAsciiTable(header, body, null);
 	}
 }
