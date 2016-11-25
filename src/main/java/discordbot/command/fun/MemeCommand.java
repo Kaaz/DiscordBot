@@ -94,12 +94,14 @@ public class MemeCommand extends AbstractCommand {
 		}
 		String topText = args[0];
 		String botText = "";
-		String[] memeText = Joiner.on("-").join(Arrays.copyOfRange(args, 1, args.length)).replaceAll("/", "").split("\\|\\|");
-		if (memeText.length > 0) {
-			if (memeText.length > 1) {
-				botText = memeText[1];
+		if (args.length > 1) {
+			String[] memeText = Joiner.on("-").join(Arrays.copyOfRange(args, 1, args.length)).replaceAll("/", "").split("\\|\\|");
+			if (memeText.length > 0) {
+				if (memeText.length > 1) {
+					botText = memeText[1];
+				}
+				topText = memeText[0];
 			}
-			topText = memeText[0];
 		}
 		Future<HttpResponse<String>> response = Unirest.get("https://memegen.link/" + type + "/" + topText + "/" + botText + ".jpg").asStringAsync();
 		try {
