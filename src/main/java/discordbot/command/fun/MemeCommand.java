@@ -69,17 +69,18 @@ public class MemeCommand extends AbstractCommand {
 				return Template.get("permission_missing_attach_files");
 			}
 		}
+		String msg = "Use one of the following meme types:" + Config.EOL;
 		channel.sendTyping();
 		if (memeTypes.isEmpty()) {
 			loadMemeOptions();
 		}
 		if (args.length == 0) {
-			return Template.get("command_invalid_usage");
+			return Template.get("command_invalid_usage") + Config.EOL +
+					msg + Misc.makeTable(new ArrayList<>(memeTypes));
 		}
 		switch (args[0].toLowerCase()) {
 			case "type":
 			case "list":
-				String msg = "All options for type:" + Config.EOL;
 				return msg + Misc.makeTable(new ArrayList<>(memeTypes));
 			case "reload":
 				loadMemeOptions();
@@ -87,10 +88,11 @@ public class MemeCommand extends AbstractCommand {
 		}
 		String type = args[0].toLowerCase();
 		if (!memeTypes.contains(type)) {
-			return Template.get("command_meme_invalid_type");
+			return Template.get("command_meme_invalid_type") +
+					msg + Misc.makeTable(new ArrayList<>(memeTypes));
 		}
-		String topText = "";
-		String botText = "";
+		String topText = "-";
+		String botText = "-";
 		if (args.length > 1) {
 			String[] memeText = Joiner.on("-").join(Arrays.copyOfRange(args, 1, args.length)).replaceAll("/", "").split("\\|\\|");
 			if (memeText.length > 0) {
