@@ -85,14 +85,11 @@ public class MemeCommand extends AbstractCommand {
 				loadMemeOptions();
 				return "+1";
 		}
-		if (args.length < 4) {
-			return Template.get("command_invalid_use");
-		}
 		String type = args[0].toLowerCase();
 		if (!memeTypes.contains(type)) {
 			return Template.get("command_meme_invalid_type");
 		}
-		String topText = args[0];
+		String topText = "";
 		String botText = "";
 		if (args.length > 1) {
 			String[] memeText = Joiner.on("-").join(Arrays.copyOfRange(args, 1, args.length)).replaceAll("/", "").split("\\|\\|");
