@@ -8,8 +8,7 @@ import discordbot.main.Launcher;
 import discordbot.util.YTUtil;
 import net.dv8tion.jda.entities.Message;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +42,6 @@ public class YoutubeThread extends Thread {
 	public static boolean downloadFromYoutubeAsMp3(String videocode) {
 		List<String> infoArgs = new LinkedList<>();
 		infoArgs.add(Config.YOUTUBEDL_EXE);
-		infoArgs.add("--verbose");
 		infoArgs.add("--no-check-certificate");
 		infoArgs.add("-x"); //audio only
 		infoArgs.add("--prefer-ffmpeg");
@@ -53,7 +51,7 @@ public class YoutubeThread extends Thread {
 		infoArgs.add("--max-filesize");
 		infoArgs.add("64m");
 		infoArgs.add("--postprocessor-arg");
-		infoArgs.add("-f s16be -ac 2 -ar 48000");
+		infoArgs.add("-acodec libmp3lame -ac 2 -ar 48000");
 		infoArgs.add("--output");
 		infoArgs.add(Config.MUSIC_DIRECTORY + videocode + ".%(ext)s");
 		infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
@@ -64,6 +62,10 @@ public class YoutubeThread extends Thread {
 		Process process = null;
 		try {
 			process = builder.start();
+//			StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(), true);
+//			StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(), true);
+//			errorGobbler.start();
+//			outputGobbler.start();
 			process.waitFor(10, TimeUnit.MINUTES);
 			process.destroy();
 		} catch (IOException | InterruptedException e) {
@@ -193,6 +195,54 @@ public class YoutubeThread extends Thread {
 			} finally {
 				unRegisterProgress(task.getCode());
 			}
+		}
+	}
+
+	private static class StreamGobbler extends Thread {
+		private InputStream is;
+		private StringBuilder output;
+		private volatile boolean completed; // mark volatile to guarantee a thread safety
+
+		public StreamGobbler(InputStream is, boolean readStream) {
+			this.is = is;
+			this.output = (readStream ? new StringBuilder(256) : null);
+		}
+
+		public void run() {
+			completed = false;
+			try {
+				String NL = System.getProperty("line.separator", "\r\n");
+
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr);
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (output != null)
+						System.out.println(line + NL);
+				}
+			} catch (IOException ex) {
+				// ex.printStackTrace();
+			}
+			completed = true;
+		}
+
+		/**
+		 * Get inputstream buffer or null if stream
+		 * was not consumed.
+		 *
+		 * @return
+		 */
+		public String getOutput() {
+			return (output != null ? output.toString() : null);
+		}
+
+		/**
+		 * Is input stream completed.
+		 *
+		 * @return
+		 */
+		public boolean isCompleted() {
+			return completed;
 		}
 	}
 }
