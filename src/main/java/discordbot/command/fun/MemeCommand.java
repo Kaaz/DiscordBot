@@ -92,11 +92,16 @@ public class MemeCommand extends AbstractCommand {
 		if (!memeTypes.contains(type)) {
 			return Template.get("command_meme_invalid_type");
 		}
+		String topText = args[0];
+		String botText = "";
 		String[] memeText = Joiner.on("-").join(Arrays.copyOfRange(args, 1, args.length)).replaceAll("/", "").split("\\|\\|");
-		if (memeText.length < 2) {
-			return Template.get("command_invalid_use");
+		if (memeText.length > 0) {
+			if (memeText.length > 1) {
+				botText = memeText[1];
+			}
+			topText = memeText[0];
 		}
-		Future<HttpResponse<String>> response = Unirest.get("https://memegen.link/" + type + "/" + memeText[0] + "/" + memeText[1] + ".jpg").asStringAsync();
+		Future<HttpResponse<String>> response = Unirest.get("https://memegen.link/" + type + "/" + topText + "/" + botText + ".jpg").asStringAsync();
 		try {
 			HttpResponse<String> theImg = response.get();
 			BufferedImage image = ImageIO.read(theImg.getRawBody());
@@ -120,7 +125,7 @@ public class MemeCommand extends AbstractCommand {
 				Elements fmls = document.select(".js-meme-selector option");
 				if (!fmls.isEmpty()) {
 					for (Element fml : fmls) {
-						memeTypes.add(fml.val());
+						memeTypes.add(fml.val().toLowerCase());
 					}
 				}
 			}
