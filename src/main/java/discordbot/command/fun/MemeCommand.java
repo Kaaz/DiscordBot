@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+
 public class MemeCommand extends AbstractCommand {
 	private final HashSet<String> memeTypes = new HashSet<>();
 

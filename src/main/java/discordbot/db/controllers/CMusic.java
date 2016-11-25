@@ -86,7 +86,7 @@ public class CMusic {
 			WebDb.get().query(
 					"UPDATE music SET  youtubecode = ?, filename = ?, youtube_title = ?, title = ?,artist = ?, lastplaydate = ?, banned = ?, play_count = ?, last_manual_playdate = ? " +
 							"WHERE id = ? ",
-					record.youtubecode, record.filename, record.youtubeTitle, record.title, record.artist, record.lastplaydate, record.banned, record.playCount, record.lastManualPlaydate, record.id
+					record.youtubecode, record.filename, record.youtubeTitle.substring(0, Math.min(100, record.youtubeTitle.length())), record.title, record.artist, record.lastplaydate, record.banned, record.playCount, record.lastManualPlaydate, record.id
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -102,7 +102,7 @@ public class CMusic {
 			record.id = WebDb.get().insert(
 					"INSERT INTO music(youtubecode, filename, youtube_title,title, artist, lastplaydate,play_count,last_manual_playdate, banned) " +
 							"VALUES (?,?,?,?,?,?,?,?,?)",
-					record.youtubecode, record.filename, record.youtubeTitle, record.title, record.artist, record.lastplaydate, record.playCount, record.lastManualPlaydate, record.banned);
+					record.youtubecode, record.filename, record.youtubeTitle.substring(0, Math.min(100, record.youtubeTitle.length())), record.title, record.artist, record.lastplaydate, record.playCount, record.lastManualPlaydate, record.banned);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
