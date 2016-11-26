@@ -59,7 +59,7 @@ public class Stop extends AbstractCommand {
 			return Template.get("command_currentlyplaying_nosong");
 		}
 		if (player.isConnected()) {
-			if (player.canUseVoiceCommands(author, userRank)) {
+			if (!player.canUseVoiceCommands(author, userRank)) {
 				return Template.get("music_not_same_voicechannel");
 			}
 			MusicPlayerHandler.getFor(guild, bot).stopMusic();
