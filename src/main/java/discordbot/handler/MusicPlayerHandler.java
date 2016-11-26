@@ -255,9 +255,6 @@ public class MusicPlayerHandler {
 			} else {
 				msg += "\uD83C\uDFB6 " + record.youtubeTitle;
 			}
-			if (currentSongLength < 60) {
-				currentSongLength = 60;
-			}
 			final long deleteAfter = currentSongLength * 1000L;
 			bot.getMusicChannel(guild).sendMessageAsync(msg, message -> {
 				if (messageType.equals("clear")) {
@@ -269,7 +266,7 @@ public class MusicPlayerHandler {
 										message.deleteMessage();
 									}
 								}
-							}, deleteAfter
+							}, Math.max(deleteAfter, 60_000L)
 					);
 				}
 			});

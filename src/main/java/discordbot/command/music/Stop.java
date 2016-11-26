@@ -54,8 +54,19 @@ public class Stop extends AbstractCommand {
 		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
 			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
-		MusicPlayerHandler.getFor(guild, bot).stopMusic();
-		bot.leaveVoice(guild);
-		return Template.get("command_stop_success");
+		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
+		if (!player.isPlaying()) {
+			return Template.get("command_currentlyplaying_nosong");
+		}
+		if (player.isConnected()) {
+			if (player.canUseVoiceCommands(author, userRank)) {
+				return Template.get("music_not_same_voicechannel");
+			}
+			MusicPlayerHandler.getFor(guild, bot).stopMusic();
+			bot.leaveVoice(guild);
+			return Template.get("command_stop_success");
+		}
+		return Template.get("command_currentlyplaying_nosong");
+
 	}
 }
