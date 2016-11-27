@@ -5,9 +5,11 @@ import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CMusic;
 import discordbot.db.controllers.CMusicVote;
 import discordbot.db.controllers.CPlaylist;
+import discordbot.db.controllers.CUser;
 import discordbot.db.model.OMusic;
 import discordbot.db.model.OMusicVote;
 import discordbot.db.model.OPlaylist;
+import discordbot.db.model.OUser;
 import discordbot.guildsettings.music.SettingMusicClearAdminOnly;
 import discordbot.guildsettings.music.SettingMusicRole;
 import discordbot.guildsettings.music.SettingMusicShowListeners;
@@ -134,7 +136,7 @@ public class NowPlayingCommand extends AbstractCommand {
 					}
 					return Template.get("music_repeat_mode_stopped");
 				case "ban":
-					if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR)) {
+					if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getId()).hasPermission(OUser.PermissionNode.BAN_TRACKS)) {
 						song.banned = 1;
 						CMusic.update(song);
 						player.skipSong();
