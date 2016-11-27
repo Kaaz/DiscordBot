@@ -66,10 +66,20 @@ public abstract class AbstractCommand {
 
 	/**
 	 * is a command enabled? it is by default
+	 * This enables/disables commands on a global scale
 	 *
 	 * @return command is enabled?
 	 */
 	public boolean isEnabled() {
+		return true;
+	}
+
+	/**
+	 * Whether the command can be blacklisted by guilds
+	 *
+	 * @return can be blacklisted?
+	 */
+	public boolean isBlacklistable() {
 		return true;
 	}
 

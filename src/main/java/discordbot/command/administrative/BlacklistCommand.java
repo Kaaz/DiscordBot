@@ -1,6 +1,9 @@
 package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
+import discordbot.db.controllers.CBlacklistCommand;
+import discordbot.db.controllers.CGuild;
+import discordbot.handler.CommandHandler;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -18,11 +21,13 @@ public class BlacklistCommand extends AbstractCommand {
 
 	@Override
 	public String getDescription() {
-		return "blacklist/whitelist channels/users from interaction with the bot" + Config.EOL + Config.EOL +
-				"Whitelist mode:" + Config.EOL +
-				"Only interact with channels/users on the whitelist" + Config.EOL + Config.EOL +
-				"blacklist mode:" + Config.EOL +
-				"Don't interact with users/channels on this list";
+		return
+				"blacklist commands, so that they can't be used";
+	}
+
+	@Override
+	public boolean isBlacklistable() {
+		return false;
 	}
 
 	@Override
@@ -38,15 +43,10 @@ public class BlacklistCommand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"bl channel                              //lists whitelisted/blacklisted channels ",
-				"bl user                                 //lists whitelisted/blacklisted users ",
-				"bl mode blacklist user                  //treat the user list as a blacklist",
-				"bl mode whitelist user                  //treat the user list as a whitelist",
-				"bl mode blacklist channel               //treat the channel list as a blacklist",
-				"bl mode whitelist channel               //treat the channel list as a whitelist",
-				"bl channel <add/remove> <channelname>   //Adds or removes a channel from the blacklist",
-				"bl user <add/remove> <mention>          //adds/removes user from the blacklist",
-				"bl mode disable                         //don't use the lists  ",
+				"bl command <command> [enable/disable]      //enables or disables commands",
+				"",
+				"example:",
+				"bl command meme disable                    //this disabled the meme command"
 		};
 	}
 
@@ -63,7 +63,43 @@ public class BlacklistCommand extends AbstractCommand {
 		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			return Template.get("no_permission");
 		}
+		int guildId = CGuild.getCachedId(channel);
+		if (args.length == 0) {
+			return "overview of blacklisted stuff goes here";
+		}
 
+		switch (args[0].toLowerCase()) {
+			case "command":
+				if (args.length < 2) {
+
+					return "The following commands are blacklisted: " + Config.EOL + Config.EOL +
+							":poop: :poop:";
+				}
+				AbstractCommand command = CommandHandler.getCommand(args[1].toLowerCase());
+				if (command == null) {
+					return Template.get("command_blacklist_command_not_found", args[1]);
+				}
+				if (!command.isBlacklistable()) {
+					return Template.get("command_blacklist_not_blacklistable", args[1]);
+				}
+				if (args.length < 3) {
+					if (CBlacklistCommand.find(guildId, command.getCommand()) != null) {
+						return Template.get("command_blacklist_command_disabled", command.getCommand());
+					}
+					return Template.get("command_blacklist_command_enabled", command.getCommand());
+				}
+				if (args.length >= 3) {
+					boolean disable = args[2].equalsIgnoreCase("disable");
+					if (disable) {
+						CBlacklistCommand.insertOrUpdate(guildId, command.getCommand());
+						return Template.get("command_blacklist_command_disabled", command.getCommand());
+					}
+					CBlacklistCommand.delete(guildId, command.getCommand());
+					return Template.get("command_blacklist_command_enabled", command.getCommand());
+				}
+
+				return String.format("Do stuff with the `%s` command", command.getCommand());
+		}
 		return Template.get("command_invalid_use");
 	}
 }

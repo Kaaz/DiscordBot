@@ -34,6 +34,11 @@ public class Help extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isBlacklistable() {
+		return false;
+	}
+
+	@Override
 	public String getCommand() {
 		return "help";
 	}

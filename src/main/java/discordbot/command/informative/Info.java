@@ -32,6 +32,11 @@ public class Info extends AbstractCommand implements ICommandCooldown {
 	}
 
 	@Override
+	public boolean isBlacklistable() {
+		return false;
+	}
+
+	@Override
 	public long getCooldownDuration() {
 		return 15L;
 	}

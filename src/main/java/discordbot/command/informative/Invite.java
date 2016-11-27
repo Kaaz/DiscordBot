@@ -26,6 +26,11 @@ public class Invite extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isBlacklistable() {
+		return false;
+	}
+
+	@Override
 	public String[] getUsage() {
 		return new String[]{};
 	}
