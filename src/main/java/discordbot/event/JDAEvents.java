@@ -43,6 +43,7 @@ import net.dv8tion.jda.hooks.ListenerAdapter;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 12-10-2016
@@ -350,17 +351,34 @@ public class JDAEvents extends ListenerAdapter {
 		if (!player.isConnectedTo(event.getOldChannel())) {
 			return;
 		}
-		for (User user : event.getOldChannel().getUsers()) {
+		for (User user : event.getGuild().getAudioManager().getConnectedChannel().getUsers()) {
 			if (!user.isBot()) {
 				return;
 			}
 		}
-		player.leave();
-		String autoChannel = GuildSettings.get(event.getGuild()).getOrDefault(SettingMusicAutoVoiceChannel.class);
-		if (!"false".equalsIgnoreCase(autoChannel) && event.getOldChannel().getName().equalsIgnoreCase(autoChannel)) {
-			return;
-		}
-		discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(event.getGuild()), Template.get("music_no_one_listens_i_leave"));
+		discordBot.timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				MusicPlayerHandler player = MusicPlayerHandler.getFor(event.getGuild(), discordBot);
+				if (!player.isConnected()) {
+					return;
+				}
+				if (!player.isConnectedTo(event.getOldChannel())) {
+					return;
+				}
+				for (User user : event.getGuild().getAudioManager().getConnectedChannel().getUsers()) {
+					if (!user.isBot()) {
+						return;
+					}
+				}
+				player.leave();
+				String autoChannel = GuildSettings.get(event.getGuild()).getOrDefault(SettingMusicAutoVoiceChannel.class);
+				if (!"false".equalsIgnoreCase(autoChannel) && event.getOldChannel().getName().equalsIgnoreCase(autoChannel)) {
+					return;
+				}
+				discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(event.getGuild()), Template.get("music_no_one_listens_i_leave"));
+			}
+		}, TimeUnit.SECONDS.toMillis(30));
 
 	}
 }
