@@ -305,4 +305,20 @@ public class CPlaylist {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * removes a track from all playlists
+	 *
+	 * @param musicId internal music id
+	 */
+	public static void deleteTrackFromPlaylists(int musicId) {
+		try {
+			WebDb.get().query(
+					"DELETE FROM playlist_item WHERE music_id = ?",
+					musicId
+			);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -342,7 +342,7 @@ public class MusicPlayerHandler {
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT filename, youtube_title, lastplaydate " +
 						"FROM music " +
-						"WHERE banned = 0 " +
+						"WHERE banned = 0 AND file_exists = 1 " +
 						"ORDER BY lastplaydate ASC " +
 						"LIMIT 50")) {
 			while (rs.next()) {

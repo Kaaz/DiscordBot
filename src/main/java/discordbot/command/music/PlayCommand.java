@@ -33,8 +33,8 @@ import java.util.List;
  * yea.. play is probably not a good name at the moment
  */
 public class PlayCommand extends AbstractCommand {
-	private YTSearch ytSearch;
 	private static final int MAX_PLAYLIST_SIZE = 40;
+	private YTSearch ytSearch;
 
 	public PlayCommand() {
 		super();
@@ -192,6 +192,7 @@ public class PlayCommand extends AbstractCommand {
 							rec.youtubecode = finalVideoCode;
 							rec.filename = path;
 							rec.playCount += 1;
+							rec.fileExists = 1;
 							rec.lastManualPlaydate = System.currentTimeMillis() / 1000L;
 							CMusic.update(rec);
 							message1.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);

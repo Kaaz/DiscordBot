@@ -16,7 +16,7 @@ public class CMusic {
 	public static OMusic findByYoutubeId(String youtubeCode) {
 		OMusic music = new OMusic();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, youtubecode, filename, youtube_title,title, artist, lastplaydate, banned, play_count, last_manual_playdate  " +
+				"SELECT *  " +
 						"FROM music " +
 						"WHERE youtubecode = ? ", youtubeCode)) {
 			if (rs.next()) {
@@ -32,7 +32,7 @@ public class CMusic {
 	public static OMusic findById(int id) {
 		OMusic music = new OMusic();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, youtubecode, filename, youtube_title,title, artist, lastplaydate, banned, play_count, last_manual_playdate  " +
+				"SELECT *  " +
 						"FROM music " +
 						"WHERE id = ? ", id)) {
 			if (rs.next()) {
@@ -48,7 +48,7 @@ public class CMusic {
 	public static OMusic findByFileName(String filename) {
 		OMusic music = new OMusic();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, youtubecode, filename, youtube_title,title, artist, lastplaydate, banned, play_count, last_manual_playdate  " +
+				"SELECT *  " +
 						"FROM music " +
 						"WHERE filename = ? ", filename)) {
 			if (rs.next()) {
@@ -74,6 +74,7 @@ public class CMusic {
 		music.banned = resultset.getInt("banned");
 		music.playCount = resultset.getInt("play_count");
 		music.lastManualPlaydate = resultset.getLong("last_manual_playdate");
+		music.fileExists = resultset.getInt("file_exists");
 		return music;
 	}
 
@@ -84,9 +85,13 @@ public class CMusic {
 		}
 		try {
 			WebDb.get().query(
-					"UPDATE music SET  youtubecode = ?, filename = ?, youtube_title = ?, title = ?,artist = ?, lastplaydate = ?, banned = ?, play_count = ?, last_manual_playdate = ? " +
+					"UPDATE music SET  youtubecode = ?, filename = ?, youtube_title = ?, " +
+							"title = ?,artist = ?, lastplaydate = ?, banned = ?, play_count = ?, last_manual_playdate = ?, " +
+							"file_exists = ? " +
 							"WHERE id = ? ",
-					record.youtubecode, record.filename, record.youtubeTitle.substring(0, Math.min(100, record.youtubeTitle.length())), record.title, record.artist, record.lastplaydate, record.banned, record.playCount, record.lastManualPlaydate, record.id
+					record.youtubecode, record.filename, record.youtubeTitle.substring(0, Math.min(100, record.youtubeTitle.length())),
+					record.title, record.artist, record.lastplaydate, record.banned, record.playCount, record.lastManualPlaydate,
+					record.fileExists, record.id
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -100,9 +105,11 @@ public class CMusic {
 		}
 		try {
 			record.id = WebDb.get().insert(
-					"INSERT INTO music(youtubecode, filename, youtube_title,title, artist, lastplaydate,play_count,last_manual_playdate, banned) " +
-							"VALUES (?,?,?,?,?,?,?,?,?)",
-					record.youtubecode, record.filename, record.youtubeTitle.substring(0, Math.min(100, record.youtubeTitle.length())), record.title, record.artist, record.lastplaydate, record.playCount, record.lastManualPlaydate, record.banned);
+					"INSERT INTO music(youtubecode, filename, youtube_title," +
+							"title, artist, lastplaydate,play_count,last_manual_playdate,file_exists, banned) " +
+							"VALUES (?,?,?,?,?,?,?,?,?,?)",
+					record.youtubecode, record.filename, record.youtubeTitle.substring(0, Math.min(100, record.youtubeTitle.length())),
+					record.title, record.artist, record.lastplaydate, record.playCount, record.lastManualPlaydate, record.fileExists, record.banned);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
