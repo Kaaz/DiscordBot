@@ -35,11 +35,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CommandHandler {
 
-	private static HashMap<String, AbstractCommand> commands = new HashMap<>();
-	private static HashMap<String, AbstractCommand> commandsAlias = new HashMap<>();
-	private static Map<String, String> customCommands = new ConcurrentHashMap<>();
-	private static Map<Integer, Map<String, String>> guildCommands = new ConcurrentHashMap<>();
-	private static Map<Integer, HashSet<String>> commandBlacklist = new ConcurrentHashMap<>();
+	private static final HashMap<String, AbstractCommand> commands = new HashMap<>();
+	private static final HashMap<String, AbstractCommand> commandsAlias = new HashMap<>();
+	private static final Map<String, String> customCommands = new ConcurrentHashMap<>();
+	private static final Map<Integer, Map<String, String>> guildCommands = new ConcurrentHashMap<>();
+	private static final Map<Integer, HashSet<String>> commandBlacklist = new ConcurrentHashMap<>();
 
 	/**
 	 * checks if the the message in channel is a command
@@ -434,7 +434,7 @@ public class CommandHandler {
 	 *
 	 * @param guildId internal guildid to reload it for
 	 */
-	public static void reloadBlackListFor(int guildId) {
+	public synchronized static void reloadBlackListFor(int guildId) {
 		if (commandBlacklist.containsKey(guildId)) {
 			commandBlacklist.get(guildId).clear();
 		} else {

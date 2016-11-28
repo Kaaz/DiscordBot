@@ -533,6 +533,7 @@ public class MusicPlayerHandler {
 		public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 			if (endReason.mayStartNext) {
 				if (isInRepeatMode()) {
+					player.startTrack(track.makeClone(), false);
 					return;
 				}
 				skipTrack();
