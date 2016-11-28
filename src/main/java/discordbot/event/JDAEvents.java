@@ -92,11 +92,11 @@ public class JDAEvents extends ListenerAdapter {
 					"If you need help or would like to give feedback, feel free to let me know on either `" + cmdPre + "discord` or `" + cmdPre + "github`";
 			switch (guildCheck) {
 				case TEST_GUILD:
-					message = Config.EOL + Config.EOL + " :warning: The guild has been categorized as a test guild. This means that I might leave this guild when the next cleanup happens." + Config.EOL +
+					message += Config.EOL + Config.EOL + " :warning: The guild has been categorized as a test guild. This means that I might leave this guild when the next cleanup happens." + Config.EOL +
 							"If this is not a test guild feel free to join my `" + cmdPre + "discord` and ask to have your guild added to the whitelist!";
 					break;
 				case BOT_GUILD:
-					message = Config.EOL + Config.EOL + ":warning: :robot: Too many bots here, I'm leaving! " + Config.EOL +
+					message += Config.EOL + Config.EOL + ":warning: :robot: Too many bots here, I'm leaving! " + Config.EOL +
 							"If your guild is not a collection of bots and you actually plan on using me join my `" + cmdPre + "discord` and ask to have your guild added to the whitelist!";
 					break;
 				case SMALL:
@@ -309,7 +309,6 @@ public class JDAEvents extends ListenerAdapter {
 					}
 					discordBot.out.sendAsyncMessage(defaultChannel, "Oh hey look " + user.getAsMention() + " we have the same status :joy:", null);
 				}
-
 			}
 		}
 	}
