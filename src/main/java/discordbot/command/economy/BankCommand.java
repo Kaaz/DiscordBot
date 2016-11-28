@@ -20,7 +20,7 @@ public class BankCommand extends AbstractCommand {
 
 	@Override
 	public String getCommand() {
-		return "jar";
+		return "bank";
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class BankCommand extends AbstractCommand {
 		return new String[]{
 				"currency",
 				"money",
-				"bank",
+				"jar",
 		};
 	}
 

@@ -7,6 +7,7 @@ import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
 import discordbot.db.WebDb;
 import discordbot.db.controllers.*;
+import discordbot.db.model.OBlacklistCommand;
 import discordbot.db.model.OBotEvent;
 import discordbot.db.model.OCommandCooldown;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
@@ -38,6 +39,7 @@ public class CommandHandler {
 	private static HashMap<String, AbstractCommand> commandsAlias = new HashMap<>();
 	private static Map<String, String> customCommands = new ConcurrentHashMap<>();
 	private static Map<Integer, Map<String, String>> guildCommands = new ConcurrentHashMap<>();
+	private static Map<Integer, HashSet<String>> commandBlacklist = new ConcurrentHashMap<>();
 
 	/**
 	 * checks if the the message in channel is a command
@@ -90,7 +92,9 @@ public class CommandHandler {
 			AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
 			commandUsed = command.getCommand();
 			long cooldown = getCommandCooldown(command, author, channel);
-			if (hasRightVisibility(channel, command.getVisibility()) && cooldown <= 0) {
+			if (guildId > 0 && commandBlacklist.containsKey(guildId) && commandBlacklist.get(guildId).contains(command.getCommand())) {
+				outMsg = Template.get("command_is_blacklisted", input[0]);
+			} else if (hasRightVisibility(channel, command.getVisibility()) && cooldown <= 0) {
 				String commandOutput;
 				if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
 					commandOutput = commands.get("help").execute(bot, new String[]{input[0]}, channel, author);
@@ -360,10 +364,14 @@ public class CommandHandler {
 		return commands.keySet().toArray(new String[commands.keySet().size()]);
 	}
 
+	/**
+	 * Initializes the commands
+	 */
 	public static void initialize() {
 		loadCommands();
 		loadAliases();
 		loadCustomCommands();
+		reloadBlackList();
 	}
 
 	/**
@@ -404,6 +412,37 @@ public class CommandHandler {
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	/**
+	 * (re-)loads the guild-specific blacklisted commands
+	 */
+	private static void reloadBlackList() {
+		commandBlacklist.clear();
+		List<OBlacklistCommand> blacklisted = CBlacklistCommand.getAllBlacklisted();
+		for (OBlacklistCommand item : blacklisted) {
+			if (!commandBlacklist.containsKey(item.guildId)) {
+				commandBlacklist.put(item.guildId, new HashSet<>());
+			}
+			commandBlacklist.get(item.guildId).add(item.command);
+		}
+	}
+
+	/**
+	 * reloads the blacklist for a guild
+	 *
+	 * @param guildId internal guildid to reload it for
+	 */
+	public static void reloadBlackListFor(int guildId) {
+		if (commandBlacklist.containsKey(guildId)) {
+			commandBlacklist.get(guildId).clear();
+		} else {
+			commandBlacklist.put(guildId, new HashSet<>());
+		}
+		List<OBlacklistCommand> blacklisted = CBlacklistCommand.getBlacklistedFor(guildId);
+		for (OBlacklistCommand item : blacklisted) {
+			commandBlacklist.get(item.guildId).add(item.command);
 		}
 	}
 }

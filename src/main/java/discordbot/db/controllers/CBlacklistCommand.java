@@ -42,7 +42,7 @@ public class CBlacklistCommand {
 
 	public static List<OBlacklistCommand> getAllBlacklisted() {
 		List<OBlacklistCommand> ret = new ArrayList<>();
-		try (ResultSet rs = WebDb.get().select("SELECT * FROM blacklist_commands WHERE")) {
+		try (ResultSet rs = WebDb.get().select("SELECT * FROM blacklist_commands")) {
 			while (rs.next()) {
 				ret.add(fillRecord(rs));
 			}

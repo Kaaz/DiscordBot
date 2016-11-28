@@ -94,6 +94,7 @@ public class MemeCommand extends AbstractCommand {
 		}
 		String topText = "-";
 		String botText = "-";
+
 		if (args.length > 1) {
 			String[] memeText = Joiner.on("-").join(Arrays.copyOfRange(args, 1, args.length)).replaceAll("/", "").split("\\|\\|");
 			if (memeText.length > 0) {
@@ -103,6 +104,7 @@ public class MemeCommand extends AbstractCommand {
 				topText = memeText[0];
 			}
 		}
+		String totalText = topText + " - ";
 		Future<HttpResponse<String>> response = Unirest.get("https://memegen.link/" + type + "/" + topText + "/" + botText + ".jpg").asStringAsync();
 		try {
 			HttpResponse<String> theImg = response.get();

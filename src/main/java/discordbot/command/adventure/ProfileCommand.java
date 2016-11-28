@@ -79,6 +79,6 @@ public class ProfileCommand extends AbstractCommand {
 
 	@Override
 	public boolean isListed() {
-		return true;
+		return false;
 	}
 }
