@@ -205,7 +205,7 @@ public class NowPlayingCommand extends AbstractCommand {
 							return;
 						}
 						message.updateMessageAsync(
-								(player.isInRepeatMode() ? "\uD83D\uDD01 " : "") + autoUpdateText + Config.EOL +
+								(player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + Config.EOL +
 										getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL
 								, null);
 					}
@@ -233,7 +233,7 @@ public class NowPlayingCommand extends AbstractCommand {
 							}
 							OMusic song = CMusic.findById(player.getCurrentlyPlaying());
 							musicChannel.getManager().setTopic(
-									(player.isInRepeatMode() ? "\uD83D\uDD01 " : "") +
+									(player.isInRepeatMode() ? "\uD83D\uDD02 " : "") +
 											getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) +
 											(song.id > 0 ? "\uD83C\uDFB6 " + song.youtubeTitle : "")
 							).update();
