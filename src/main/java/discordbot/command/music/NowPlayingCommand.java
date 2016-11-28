@@ -139,7 +139,7 @@ public class NowPlayingCommand extends AbstractCommand {
 					if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getId()).hasPermission(OUser.PermissionNode.BAN_TRACKS)) {
 						song.banned = 1;
 						CMusic.update(song);
-						player.skipSong();
+						player.forceSkip();
 						return Template.get("command_current_banned_success");
 					}
 					return Template.get("no_permission");

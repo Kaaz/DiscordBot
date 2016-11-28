@@ -350,6 +350,10 @@ public class JDAEvents extends ListenerAdapter {
 		if (!player.isConnectedTo(event.getOldChannel())) {
 			return;
 		}
+		player.unregisterVoteSkip(event.getUser());
+		if (player.getVoteCount() >= player.getRequiredVotes()) {
+			player.forceSkip();
+		}
 		for (User user : event.getGuild().getAudioManager().getConnectedChannel().getUsers()) {
 			if (!user.isBot()) {
 				return;

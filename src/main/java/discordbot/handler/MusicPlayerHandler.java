@@ -48,6 +48,7 @@ public class MusicPlayerHandler {
 	private final DiscordBot bot;
 	private final AudioPlayer player;
 	private final TrackScheduler scheduler;
+	private final HashSet<User> skipVotes;
 
 	private volatile boolean inRepeatMode = false;
 
@@ -80,6 +81,7 @@ public class MusicPlayerHandler {
 			playlist = CPlaylist.getGlobalList();
 		}
 		activePlayListId = playlist.id;
+		skipVotes = new HashSet<>();
 	}
 
 	public static void init() {
@@ -214,6 +216,7 @@ public class MusicPlayerHandler {
 			pauseStart = 0;
 			return;
 		}
+		skipVotes.clear();
 		currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000L;
 		OMusic record;
 		File f = null;
@@ -322,10 +325,40 @@ public class MusicPlayerHandler {
 		return currentSongLength;
 	}
 
+	public synchronized void unregisterVoteSkip(User user) {
+		skipVotes.remove(user);
+	}
+
+	public synchronized boolean voteSkip(User user) {
+		if (skipVotes.contains(user)) {
+			return false;
+		}
+		skipVotes.add(user);
+		return true;
+	}
+
 	/**
-	 * Skips currently playing song
+	 * retrieves the amount skip votes
+	 *
+	 * @return votes
 	 */
-	public synchronized void skipSong() {
+	public synchronized int getVoteCount() {
+		return skipVotes.size();
+	}
+
+	/**
+	 * Retrieves the amount of required votes in order to skip the track
+	 *
+	 * @return required votes
+	 */
+	public synchronized int getRequiredVotes() {
+		return Math.max(1, (int) (Double.parseDouble(GuildSettings.get(guild).getOrDefault(SettingMusicVotePercent.class)) / 100D * (double) getUsersInVoiceChannel().size()));
+	}
+
+	/**
+	 * Forcefully Skips the currently playing song
+	 */
+	public synchronized void forceSkip() {
 		scheduler.skipTrack();
 	}
 

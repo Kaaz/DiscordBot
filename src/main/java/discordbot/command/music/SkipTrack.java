@@ -36,6 +36,7 @@ public class SkipTrack extends AbstractCommand {
 				"skip                  //skips current track",
 				"skip adminonly        //check what skipmode its set on",
 				"skip adminonly toggle //toggle the skipmode",
+				"skip force            //admin-only, force a skip"
 //				"skip perm //skips permanently; never hear this song again"
 		};
 	}
@@ -85,6 +86,12 @@ public class SkipTrack extends AbstractCommand {
 		}
 		if (args.length >= 1) {
 			switch (args[0]) {
+				case "force":
+					if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+						player.forceSkip();
+						return "";
+					}
+					return Template.get("music_skip_admin_only");
 				case "perm":
 				case "permanent":
 					return Template.get("command_skip_permanent_success");
@@ -99,7 +106,18 @@ public class SkipTrack extends AbstractCommand {
 					return Template.get("command_invalid_usage");
 			}
 		}
-		player.skipSong();
-		return "";
+		if (player.getRequiredVotes() == 1) {
+			player.forceSkip();
+			return "";
+		}
+		boolean voteRegistered = player.voteSkip(author);
+		if (player.getVoteCount() >= player.getRequiredVotes()) {
+			player.forceSkip();
+			return Template.get("command_skip_song_skipped");
+		}
+		if (voteRegistered) {
+			return Template.get("command_skip_vote_success", player.getVoteCount(), player.getRequiredVotes());
+		}
+		return Template.get("command_skip_vote_failed");
 	}
 }
