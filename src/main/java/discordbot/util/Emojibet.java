@@ -17,6 +17,7 @@ public class Emojibet {
 	public static String LOCKED = "\uD83D\uDD12";
 	public static String UNLOCKED = "\uD83D\uDD13";
 	public static String KEY = "\uD83D\uDD11";
+	public static String NEXT_TRACK = "\u23ED";
 
 
 	static {

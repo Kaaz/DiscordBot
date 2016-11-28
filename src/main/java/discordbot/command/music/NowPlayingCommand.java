@@ -20,6 +20,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
+import discordbot.util.Emojibet;
 import discordbot.util.Misc;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Guild;
@@ -164,7 +165,11 @@ public class NowPlayingCommand extends AbstractCommand {
 			}
 		}
 		OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
-		String ret = "[`" + DisUtil.getCommandPrefix(channel) + "pl` " + playlist.title + "] " + "\uD83C\uDFB6 ";
+		String ret = "";
+		if (player.getRequiredVotes() > 1) {
+			ret += player.getVoteCount() + "/" + player.getRequiredVotes() + Emojibet.NEXT_TRACK;
+		}
+		ret += "[`" + DisUtil.getCommandPrefix(channel) + "pl` " + playlist.title + "] " + "\uD83C\uDFB6 ";
 		ret += song.youtubeTitle;
 		final String autoUpdateText = ret;
 		ret += Config.EOL + Config.EOL;
