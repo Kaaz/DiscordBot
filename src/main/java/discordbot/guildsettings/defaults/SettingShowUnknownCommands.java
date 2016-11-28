@@ -16,7 +16,7 @@ public class SettingShowUnknownCommands extends AbstractGuildSetting {
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"Show message on nonexistent commands",
+		return new String[]{"Show message on nonexistent commands and blacklisted commands",
 				"true -> returns a help message",
 				"false -> stays silent"};
 	}

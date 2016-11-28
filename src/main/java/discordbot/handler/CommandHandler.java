@@ -93,7 +93,9 @@ public class CommandHandler {
 			commandUsed = command.getCommand();
 			long cooldown = getCommandCooldown(command, author, channel);
 			if (guildId > 0 && commandBlacklist.containsKey(guildId) && commandBlacklist.get(guildId).contains(command.getCommand())) {
-				outMsg = Template.get("command_is_blacklisted", input[0]);
+				if (GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
+					outMsg = Template.get("command_is_blacklisted", input[0]);
+				}
 			} else if (hasRightVisibility(channel, command.getVisibility()) && cooldown <= 0) {
 				String commandOutput;
 				if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
