@@ -51,7 +51,7 @@ public class YoutubeThread extends Thread {
 		infoArgs.add("--max-filesize");
 		infoArgs.add("64m");
 		infoArgs.add("--postprocessor-arg");
-		infoArgs.add("-acodec libmp3lame -ac 2 -ar 48000");
+		infoArgs.add("-acodec libmp3lame -ac 2 -q:a 6");
 		infoArgs.add("--output");
 		infoArgs.add(Config.MUSIC_DIRECTORY + videocode + ".%(ext)s");
 		infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
