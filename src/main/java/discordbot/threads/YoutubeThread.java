@@ -52,8 +52,10 @@ public class YoutubeThread extends Thread {
 		infoArgs.add("64m");
 		infoArgs.add("--postprocessor-arg");
 		infoArgs.add("-acodec libmp3lame -ac 2 -q:a 6");
+		infoArgs.add("--exec");
+		infoArgs.add("mv {} " + Config.MUSIC_DIRECTORY)
 		infoArgs.add("--output");
-		infoArgs.add(Config.MUSIC_DIRECTORY + videocode + ".%(ext)s");
+		infoArgs.add("/tmp/" + videocode + ".%(ext)s");
 		infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
 		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
 		builder.redirectErrorStream(true);
