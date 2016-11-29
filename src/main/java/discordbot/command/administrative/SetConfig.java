@@ -121,7 +121,17 @@ public class SetConfig extends AbstractCommand {
 				if (DefaultGuildSettings.get(args[0]).isReadOnly() && !rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
 					return Template.get("command_config_key_read_only");
 				}
-				if (args.length >= 2 && GuildSettings.get(guild).set(args[0], args[1])) {
+				String newValue = "";
+				if (args.length >= 2) {
+					newValue = args[1];
+					for (int i = 2; i < args.length; i++) {
+						newValue += " " + args[i];
+					}
+					if (newValue.length() > 64) {
+						newValue = newValue.substring(0, 64);
+					}
+				}
+				if (args.length >= 2 && GuildSettings.get(guild).set(args[0], newValue)) {
 					bot.clearChannels(guild);
 					return Template.get("command_config_key_modified");
 				}
