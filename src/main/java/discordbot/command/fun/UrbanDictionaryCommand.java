@@ -39,7 +39,7 @@ public class UrbanDictionaryCommand extends AbstractCommand {
 
 	@Override
 	public boolean isListed() {
-		return false;
+		return true;
 	}
 
 	@Override

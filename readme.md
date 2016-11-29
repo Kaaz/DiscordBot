@@ -36,12 +36,12 @@ Commands | | | | |
 [exit](#exit) | [fml](#fml) | [game](#game) | [guildstats](#guildstats) | [help](#help)
 [importmusic](#importmusic) | [info](#info) | [invite](#invite) | [join](#join) | [joke](#joke)
 [leave](#leave) | [leaveguild](#leaveguild) | [meme](#meme) | [pause](#pause) | [ping](#ping)
-[play](#play) | [playlist](#playlist) | [pm](#pm) | [poec](#poec) | [poeitem](#poeitem)
-[poelab](#poelab) | [prefix](#prefix) | [profile](#profile) | [purge](#purge) | [reboot](#reboot)
-[reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role) | [roll](#roll)
-[rotate](#rotate) | [sendfile](#sendfile) | [skip](#skip) | [slot](#slot) | [stop](#stop)
-[subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template) | [uptime](#uptime)
-[user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume) | 
+[play](#play) | [playlist](#playlist) | [pm](#pm) | [prefix](#prefix) | [purge](#purge)
+[reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role)
+[roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [skip](#skip) | [slot](#slot)
+[stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template)
+[ud](#ud) | [uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version)
+[volume](#volume) | 
 
 ## Games
 
@@ -88,7 +88,7 @@ music_skip_admin_only | false | Only allow admins to use the skip command?<br/><
 music_volume | 10 | sets the default volume of the music player<br/>So the next time the bot connects it starts with this volume<br/><br/>Accepts a value between 0 and 100
 music_vote_percent | 1 | Percentage of users (rounded down) required to skip the currently playing track<br/><br/>eg; when set to 25, and 5 listeners it would require 2 users to vote skip <br/><br/>Accepts a value between 1 and 100
 pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
-show_unknown_commands | false | Show message on nonexistent commands<br/>true -> returns a help message<br/>false -> stays silent
+show_unknown_commands | false | Show message on nonexistent commands and blacklisted commands<br/>true -> returns a help message<br/>false -> stays silent
 use_economy | false | Use the economy feature?<br/>false -> nope!<br/>true -> yep!
 user_time_ranks | false | This setting will require me to have the manage role permission!<br/>Users are given a role based on their time spend in the discord server<br/>If you'd like to use the time based ranks, be sure to check out the other settings first!<br/>Setting:  Use time based ranks?<br/>true  -> yes<br/>false -> no
 user_time_ranks_notify | no | Send a notification whenever a user goes up a rank?<br/>no      -> Don't notify anyone, stay silent!<br/>false   -> Don't notify anyone, stay silent!<br/>private -> send a private message to the user who ranked up<br/>public  -> announce it in a channel<br/>both    -> perform both private and public actions 
@@ -549,42 +549,6 @@ Usable in public and private channels
 ```php
 pm <@user> <message..>
 ```
-### poec
-
-Returns a list of currency on your account
-
-Accessible though: poec
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-poec                   //returns list of currency for default league
-poec token <token>     //sets the session token
-poec league <league>   //currency for league
-```
-### poeitem
-
-Analyzes an item from path of exile.
-
-Accessible though: poeitem
-
-Usable in public and private channels
-### poelab
-
-Attempts to find a description from reddit for the Labyrinth instance.
-
-Accessible though: poelab
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-poelab              //lists for all difficulties
-poelab <difficulty> //only for that difficulty
-```
 ### prefix
 
 Forgot what the prefix is? I got you covered
@@ -598,20 +562,6 @@ Usable in public and private channels
 ```php
 prefix                           //shows the set prefix
 prefix <prefix>                  //sets the prefix to <prefix>
-```
-### profile
-
-Shows your profile in a fancy way
-
-Accessible though: profile, avatar
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-profile
-profile <@user>  //shows the profile of @user
 ```
 ### purge
 
@@ -748,6 +698,7 @@ Usable in public  channels
 skip                  //skips current track
 skip adminonly        //check what skipmode its set on
 skip adminonly toggle //toggle the skipmode
+skip force            //admin-only, force a skip
 ```
 ### slot
 
@@ -847,6 +798,19 @@ Key                Replacement
 %channel-mention%  Mentions channel
 %rand-user%        random user in guild
 %rand-user-online% random ONLINE user in guild
+```
+### ud
+
+A veritable cornucopia of streetwise lingo
+
+Accessible though: ud
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+ud <anything>  //looks up what it means on urban dictionary
 ```
 ### uptime
 
