@@ -10,11 +10,6 @@ public class SettingMusicVotePercent extends AbstractGuildSetting {
 	}
 
 	@Override
-	public boolean isReadOnly() {
-		return true;
-	}
-
-	@Override
 	public String getDefault() {
 		return "1";
 	}

@@ -94,8 +94,6 @@ public class UserCommand extends AbstractCommand {
 			}
 			return sb.toString();
 		}
-
-
 		return Template.get("command_user_not_found");
 	}
 }
