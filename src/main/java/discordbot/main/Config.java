@@ -96,6 +96,15 @@ public class Config {
 	@ConfigurationOption
 	public static String MUSIC_DIRECTORY = "H:/music/";
 
+	//save music on a different location while its being processed?
+	@ConfigurationOption
+	public static boolean MUSIC_USE_CACHE_DIR = true;
+
+	//where the downloading music is placed till its processed
+	@ConfigurationOption
+	public static String MUSIC_CACHE_DIR = "/temp/";
+
+
 	//mysql hostname
 	@ConfigurationOption
 	public static String DB_HOST = "localhost";
