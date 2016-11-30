@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.MaikWezinkhof</groupId>
 	<artifactId>DiscordBot</artifactId>
-	<version>1.8.30</version>
+	<version>1.8.31</version>
 	<packaging>jar</packaging>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -106,7 +106,7 @@
 		<dependency>
 			<groupId>ca.pjer</groupId>
 			<artifactId>chatter-bot-api</artifactId>
-			<version>1.4.2</version>
+			<version>LATEST</version>
 		</dependency>
 		<dependency>
 			<groupId>net.dv8tion</groupId>

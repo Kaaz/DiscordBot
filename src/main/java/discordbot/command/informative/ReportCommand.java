@@ -69,6 +69,7 @@ public class ReportCommand extends AbstractCommand {
 				"Title: " + Config.EOL + title + Config.EOL + Config.EOL +
 				"Message: " + Config.EOL + body
 		);
-		return Template.get("command_report_success");
+		return Template.get("command_report_success") + Config.EOL + Config.EOL +
+				"Note: This is 1-way communication, if you'd like give feedback or need assistance feel free to join my **!discord**";
 	}
 }

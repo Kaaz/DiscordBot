@@ -98,11 +98,11 @@ public class Config {
 
 	//save music on a different location while its being processed?
 	@ConfigurationOption
-	public static boolean MUSIC_USE_CACHE_DIR = true;
+	public static boolean MUSIC_USE_CACHE_DIR = false;
 
 	//where the downloading music is placed till its processed
 	@ConfigurationOption
-	public static String MUSIC_CACHE_DIR = "/temp/";
+	public static String MUSIC_CACHE_DIR = "/tmp/";
 
 
 	//mysql hostname

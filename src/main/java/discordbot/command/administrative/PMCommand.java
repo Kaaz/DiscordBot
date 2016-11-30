@@ -34,7 +34,8 @@ public class PMCommand extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{};
+		return new String[]{
+		};
 	}
 
 	@Override

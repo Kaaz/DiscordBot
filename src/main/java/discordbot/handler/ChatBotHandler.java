@@ -30,6 +30,9 @@ public class ChatBotHandler {
 
 				return new String(botsession.think(input).getBytes("UTF-8"), "UTF-8");
 			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				System.out.println(e.getCause());
+				e.printStackTrace();
 				failedAttempts++;
 			}
 		}
