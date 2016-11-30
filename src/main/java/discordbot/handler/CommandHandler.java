@@ -115,7 +115,7 @@ public class CommandHandler {
 					if (!(channel instanceof PrivateChannel)) {
 						CCommandLog.saveLog(CUser.getCachedId(author.getId(), author.getUsername()),
 								CGuild.getCachedId(((TextChannel) channel).getGuild().getId()),
-								input[0],
+								command.getCommand(),
 								EmojiParser.parseToAliases(usedArguments.toString()).trim());
 					}
 				}

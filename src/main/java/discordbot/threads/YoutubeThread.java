@@ -64,15 +64,12 @@ public class YoutubeThread extends Thread {
 		infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
 		ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
 		builder.redirectErrorStream(true);
-
-//		builder.redirectOutput(ProcessBuilder.Redirect.appendTo(new File("C:/errorfile.txt")));
-		Process process = null;
 		try {
-			process = builder.start();
-			StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(), true);
-			StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(), true);
-			errorGobbler.start();
-			outputGobbler.start();
+			Process process = builder.start();
+//			StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(), true);
+//			StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(), true);
+//			errorGobbler.start();
+//			outputGobbler.start();
 			process.waitFor(10, TimeUnit.MINUTES);
 			process.destroy();
 		} catch (IOException | InterruptedException e) {
@@ -130,6 +127,54 @@ public class YoutubeThread extends Thread {
 			return;
 		}
 		queue.offer(new YoutubeTask(youtubeCode, youtubeTitle, message, callback));
+	}
+
+	private static class StreamGobbler extends Thread {
+		private InputStream is;
+		private StringBuilder output;
+		private volatile boolean completed; // mark volatile to guarantee a thread safety
+
+		public StreamGobbler(InputStream is, boolean readStream) {
+			this.is = is;
+			this.output = (readStream ? new StringBuilder(256) : null);
+		}
+
+		public void run() {
+			completed = false;
+			try {
+				String NL = System.getProperty("line.separator", "\r\n");
+
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr);
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (output != null)
+						System.out.println(line + NL);
+				}
+			} catch (IOException ex) {
+				// ex.printStackTrace();
+			}
+			completed = true;
+		}
+
+		/**
+		 * Get inputstream buffer or null if stream
+		 * was not consumed.
+		 *
+		 * @return
+		 */
+		public String getOutput() {
+			return (output != null ? output.toString() : null);
+		}
+
+		/**
+		 * Is input stream completed.
+		 *
+		 * @return
+		 */
+		public boolean isCompleted() {
+			return completed;
+		}
 	}
 
 	private class YoutubeTask {
@@ -202,54 +247,6 @@ public class YoutubeThread extends Thread {
 			} finally {
 				unRegisterProgress(task.getCode());
 			}
-		}
-	}
-
-	private static class StreamGobbler extends Thread {
-		private InputStream is;
-		private StringBuilder output;
-		private volatile boolean completed; // mark volatile to guarantee a thread safety
-
-		public StreamGobbler(InputStream is, boolean readStream) {
-			this.is = is;
-			this.output = (readStream ? new StringBuilder(256) : null);
-		}
-
-		public void run() {
-			completed = false;
-			try {
-				String NL = System.getProperty("line.separator", "\r\n");
-
-				InputStreamReader isr = new InputStreamReader(is);
-				BufferedReader br = new BufferedReader(isr);
-				String line;
-				while ((line = br.readLine()) != null) {
-					if (output != null)
-						System.out.println(line + NL);
-				}
-			} catch (IOException ex) {
-				// ex.printStackTrace();
-			}
-			completed = true;
-		}
-
-		/**
-		 * Get inputstream buffer or null if stream
-		 * was not consumed.
-		 *
-		 * @return
-		 */
-		public String getOutput() {
-			return (output != null ? output.toString() : null);
-		}
-
-		/**
-		 * Is input stream completed.
-		 *
-		 * @return
-		 */
-		public boolean isCompleted() {
-			return completed;
 		}
 	}
 }
