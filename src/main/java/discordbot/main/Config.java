@@ -14,14 +14,20 @@ public class Config {
 	public static final int GUILD_MIN_USERS = 5;
 	//the default time to delete messages after milliseconds
 	public static long DELETE_MESSAGES_AFTER = 120000;
+
 	//bot enabled? must be set to true in order to run
 	@ConfigurationOption
 	public static boolean BOT_ENABLED = false;
+
+	//token for discord.bots.pw
 	@ConfigurationOption
 	public static String BOT_TOKEN_BOTS_DISCORD_PW = "token-here";
 
+	//toggle sending stats to discord.bots.pw
 	@ConfigurationOption
 	public static boolean BOT_STATS_DISCORD_PW_ENABLED = false;
+
+	//the website of the bot
 	@ConfigurationOption
 	public static String BOT_WEBSITE = "emily-bot.pw";
 	@ConfigurationOption
@@ -75,14 +81,6 @@ public class Config {
 	//Reply to non existing commands?
 	@ConfigurationOption
 	public static boolean BOT_COMMAND_SHOW_UNKNOWN = false;
-
-	//location of the soundcloud jar
-	@ConfigurationOption
-	public static String MUSIC_DOWNLOAD_SOUNDCLOUD_EXE = "H:/";
-
-	//token used to connect to soundcloud
-	@ConfigurationOption
-	public static String MUSIC_DOWNLOAD_SOUNDCLOUD_API_TOKEN = "some-token";
 
 	//location of youtubedl.exe
 	@ConfigurationOption
