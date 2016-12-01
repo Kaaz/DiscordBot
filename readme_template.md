@@ -89,9 +89,13 @@ Move this file over to a location wherever you want to start the bot from.
 You can launch the bot with the following command:
 `java -jar <jarfilename>`  
 
-The first time It will generate an application.cfg file and exit.  
-You'll have to edit the config file and add in your token, database configuration, etc.  
+The first time It will generate an application.cfg file and exit.
+You'll have to edit the config file and add in your token, database configuration, etc.
 
+You will also have to get [youtube-dl](https://rg3.github.io/youtube-dl/download.html) and [ffmpeg](https://ffmpeg.zeranoe.com/builds/)
+
+The Config setting `youtubedl_exe` has to point to the youtube-dl executable.
+For ffmpeg, the binaries have to be either in the same directory as the bot.jar or be included in in the system path somewhere.
 
 
 

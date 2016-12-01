@@ -66,10 +66,12 @@ public class YoutubeThread extends Thread {
 		builder.redirectErrorStream(true);
 		try {
 			Process process = builder.start();
-//			StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(), true);
-//			StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(), true);
-//			errorGobbler.start();
-//			outputGobbler.start();
+			if (Config.YOUTUBEDL_DEBUG_PROCESS) {
+				StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream());
+				StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream());
+				errorGobbler.start();
+				outputGobbler.start();
+			}
 			process.waitFor(10, TimeUnit.MINUTES);
 			process.destroy();
 		} catch (IOException | InterruptedException e) {
@@ -131,40 +133,25 @@ public class YoutubeThread extends Thread {
 
 	private static class StreamGobbler extends Thread {
 		private InputStream is;
-		private StringBuilder output;
 		private volatile boolean completed; // mark volatile to guarantee a thread safety
 
-		public StreamGobbler(InputStream is, boolean readStream) {
+		public StreamGobbler(InputStream is) {
 			this.is = is;
-			this.output = (readStream ? new StringBuilder(256) : null);
 		}
 
 		public void run() {
 			completed = false;
 			try {
-				String NL = System.getProperty("line.separator", "\r\n");
-
 				InputStreamReader isr = new InputStreamReader(is);
 				BufferedReader br = new BufferedReader(isr);
 				String line;
 				while ((line = br.readLine()) != null) {
-					if (output != null)
-						System.out.println(line + NL);
+					System.out.println(line);
 				}
 			} catch (IOException ex) {
 				// ex.printStackTrace();
 			}
 			completed = true;
-		}
-
-		/**
-		 * Get inputstream buffer or null if stream
-		 * was not consumed.
-		 *
-		 * @return
-		 */
-		public String getOutput() {
-			return (output != null ? output.toString() : null);
 		}
 
 		/**

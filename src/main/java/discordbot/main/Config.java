@@ -82,9 +82,14 @@ public class Config {
 	@ConfigurationOption
 	public static boolean BOT_COMMAND_SHOW_UNKNOWN = false;
 
+	//shows console output from the youtube-dl process
+	@ConfigurationOption
+	public static boolean YOUTUBEDL_DEBUG_PROCESS = false;
+
 	//location of youtubedl.exe
 	@ConfigurationOption
 	public static String YOUTUBEDL_EXE = "H:/youtube-dl.exe";
+
 
 	//folder with the binary files required for youtubedl
 	@ConfigurationOption
