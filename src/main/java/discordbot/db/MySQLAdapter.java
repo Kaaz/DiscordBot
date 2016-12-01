@@ -37,7 +37,7 @@ public class MySQLAdapter {
 			dataSource.setCharacterEncoding("utf-8");
 			return dataSource.getConnection();
 		} catch (SQLException e) {
-			DiscordBot.LOGGER.error("Can't connect to the database! Make sure the database settings are corrent and the database server is running");
+			DiscordBot.LOGGER.error("Can't connect to the database! Make sure the database settings are corrent and the database server is running AND the database `" + DB_NAME + "` exists");
 			Launcher.stop(ExitCode.SHITTY_CONFIG);
 		}
 		return null;

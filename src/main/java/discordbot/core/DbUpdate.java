@@ -2,7 +2,6 @@ package discordbot.core;
 
 import discordbot.db.IDbVersion;
 import discordbot.db.MySQLAdapter;
-import discordbot.main.Launcher;
 import org.reflections.Reflections;
 
 import java.sql.DatabaseMetaData;
@@ -38,12 +37,9 @@ public class DbUpdate {
 	}
 
 	public boolean updateToCurrent() {
+		int currentVersion = -1;
 		try {
-			int currentVersion = getCurrentVersion();
-			if (currentVersion == -1) {
-				System.out.println("Run the /sql/create.sql file on the database");
-				Launcher.stop(ExitCode.GENERIC_ERROR);
-			}
+			currentVersion = getCurrentVersion();
 			if (currentVersion == highestVersion) {
 				return true;
 			}
@@ -59,6 +55,7 @@ public class DbUpdate {
 			}
 
 		} catch (SQLException e) {
+			System.out.println("Db version: " + currentVersion);
 			e.printStackTrace();
 		}
 		return false;
@@ -96,6 +93,9 @@ public class DbUpdate {
 	}
 
 	private void saveDbVersion(int version) throws SQLException {
+		if (version < 1) {
+			return;
+		}
 		adapter.insert("INSERT INTO bot_meta(meta_name, meta_value) VALUES (?,?) ON DUPLICATE KEY UPDATE meta_value = ? ", "db_version", version, version);
 	}
 }
