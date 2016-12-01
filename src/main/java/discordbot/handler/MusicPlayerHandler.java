@@ -220,11 +220,10 @@ public class MusicPlayerHandler {
 		skipVotes.clear();
 		currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000L;
 		OMusic record;
-		File f = null;
 		final String messageType = GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class);
 		AudioTrackInfo info = player.getPlayingTrack().getInfo();
 		if (info != null) {
-			f = new File(info.identifier);
+			File f = new File(info.identifier);
 			record = CMusic.findByFileName(f.getAbsolutePath());
 			if (record.id > 0) {
 				record.lastplaydate = System.currentTimeMillis() / 1000L;

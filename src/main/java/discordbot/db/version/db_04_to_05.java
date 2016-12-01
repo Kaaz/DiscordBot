@@ -19,7 +19,7 @@ public class db_04_to_05 implements IDbVersion {
 	@Override
 	public String[] getExecutes() {
 		return new String[]{
-				"CREATE TABLE discord.reply_pattern ( " +
+				"CREATE TABLE reply_pattern ( " +
 						" id INT PRIMARY KEY AUTO_INCREMENT, " +
 						" guild_id INT, " +
 						" user_id INT, " +
