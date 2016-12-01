@@ -7,6 +7,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.role.RoleRankings;
+import discordbot.util.Misc;
 import net.dv8tion.jda.entities.*;
 
 import java.util.List;
@@ -15,38 +16,46 @@ import java.util.List;
  * !role
  * manages roles
  */
-public class RoleCommand extends AbstractCommand {
-	public RoleCommand() {
+public class RoleAdminCommand extends AbstractCommand {
+	public RoleAdminCommand() {
 		super();
 	}
 
 	@Override
 	public String getDescription() {
-		return "Management of roles";
+		return "Management of roles & general permissions " + Config.EOL +
+				"You can give users the ability to self-assign roles. " + Config.EOL +
+				"Users can get/remove their own roles with the `getrole` command ";
 	}
 
 	@Override
 	public String getCommand() {
-		return "role";
+		return "roleadmin";
 	}
 
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"role                             //lists roles",
-				"role list                        //lists roles",
-				"role cleanup                     //cleans up the roles from the time-based rankings",
-				"role setup                       //creates the roles for the time-based rankings",
-				"role bind BOT_ROLE <discordrole> //binds a discordrole to a botrole",
-				"role add @user <role>            //adds role to user",
-				"role remove @user <role>         //remove role from user",
+				"You can specify which roles are self-assignable by users with the following commands: ",
+				"",
+				"roleadmin self                   //check what roles are self-assignable",
+				"roleadmin self add <role>        //add a role to the list of assignable roles",
+				"roleadmin self remove <role>     //remove a role from the list of assignable roles",
+				"",
+				"",
+				"roleadmin                        //lists roles",
+				"roleadmin cleanup                //cleans up the roles from the time-based rankings",
+				"roleadmin setup                  //creates the roles for the time-based rankings",
+//				"roleadmin bind BOT_ROLE <discordrole> //binds a discordrole to a botrole",
+//				"roleadmin add @user <role>            //adds role to user",
+//				"roleadmin remove @user <role>         //remove role from user",
 		};
 	}
 
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"roles"
+				"ra"
 		};
 	}
 
@@ -73,7 +82,27 @@ public class RoleCommand extends AbstractCommand {
 			}
 			return out;
 		}
-		switch (args[0]) {
+		switch (args[0].toLowerCase()) {
+			case "self":
+				if (args.length == 1) {
+					return "self roles overview";
+				}
+				if (args.length < 3) {
+					return Template.get("command_invalid_use");
+
+				}
+				String roleName = Misc.joinStrings(args, 2);
+				if (roleName.length() > 1) {
+					return "Role name: `" + roleName + "`";
+				}
+				switch (args[1].toLowerCase()) {
+					case "add":
+					case "+":
+						return "adding";
+					case "remove":
+					case "-":
+						return "removing";
+				}
 			case "cleanup":
 				RoleRankings.cleanUpRoles(guild, bot.client.getSelfInfo());
 				return "Removed all the time-based roles";

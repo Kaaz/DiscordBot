@@ -90,11 +90,6 @@ public class Config {
 	@ConfigurationOption
 	public static String YOUTUBEDL_EXE = "H:/youtube-dl.exe";
 
-
-	//folder with the binary files required for youtubedl
-	@ConfigurationOption
-	public static String YOUTUBEDL_BIN = "H:/music/bin/";
-
 	//directory where all the music is stored
 	@ConfigurationOption
 	public static String MUSIC_DIRECTORY = "H:/music/";

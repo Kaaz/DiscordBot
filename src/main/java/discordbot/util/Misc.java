@@ -231,4 +231,22 @@ public class Misc {
 		}
 		return result;
 	}
+
+	/**
+	 * Joins an array of strings together to 1 starting at position x
+	 *
+	 * @param strings    the strings to join
+	 * @param startIndex the index to start at
+	 * @return a joined string
+	 */
+	public static String joinStrings(String[] strings, int startIndex) {
+		String ret = "";
+		if (startIndex <= strings.length) {
+			ret = strings[startIndex];
+			for (int i = startIndex + 1; i < strings.length; i++) {
+				ret += " " + strings[i];
+			}
+		}
+		return ret;
+	}
 }

@@ -110,7 +110,6 @@ public class YoutubeThread extends Thread {
 					task = queue.take();
 					executor.execute(new YTWorkerWorker(task.getCode(), task));
 					counter.incrementAndGet();
-					sleep(1_000L);
 				} catch (InterruptedException e) {
 					CBotEvent.insert(OBotEvent.Level.FATAL, ":octagonal_sign:", ":musical_note:", "yt worker broke " + e.getMessage());
 				}
@@ -133,14 +132,12 @@ public class YoutubeThread extends Thread {
 
 	private static class StreamGobbler extends Thread {
 		private InputStream is;
-		private volatile boolean completed; // mark volatile to guarantee a thread safety
 
 		public StreamGobbler(InputStream is) {
 			this.is = is;
 		}
 
 		public void run() {
-			completed = false;
 			try {
 				InputStreamReader isr = new InputStreamReader(is);
 				BufferedReader br = new BufferedReader(isr);
@@ -151,16 +148,6 @@ public class YoutubeThread extends Thread {
 			} catch (IOException ex) {
 				// ex.printStackTrace();
 			}
-			completed = true;
-		}
-
-		/**
-		 * Is input stream completed.
-		 *
-		 * @return
-		 */
-		public boolean isCompleted() {
-			return completed;
 		}
 	}
 
