@@ -8,7 +8,6 @@ import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.handler.*;
 import discordbot.role.RoleRankings;
 import discordbot.util.DisUtil;
-import discordbot.util.TimeUtil;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.Permission;
@@ -18,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.util.Date;
 import java.util.Map;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
@@ -94,7 +92,7 @@ public class DiscordBot {
 			}
 			logChannels.put(guild, channel);
 		}
-		out.sendAsyncMessage(logChannels.get(guild), String.format("\u231A`[%s]` %s %s", TimeUtil.timeFormat.format(new Date()), catagory, message));
+		out.sendAsyncMessage(logChannels.get(guild), String.format("%s %s", catagory, message));
 	}
 
 	public int getShardId() {
