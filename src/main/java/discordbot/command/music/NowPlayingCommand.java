@@ -228,6 +228,7 @@ public class NowPlayingCommand extends AbstractCommand {
 						public void run() {
 							if (!player.isUpdateChannelTitle() || !player.canTogglePause()) {
 								player.setUpdateChannelTitle(false);
+								musicChannel.getManager().setTopic("");
 								this.cancel();
 								return;
 							}
