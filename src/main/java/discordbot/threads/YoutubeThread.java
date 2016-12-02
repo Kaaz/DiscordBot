@@ -25,8 +25,8 @@ import java.util.function.Consumer;
 public class YoutubeThread extends Thread {
 	private final HashSet<String> itemsInProgress = new HashSet<>();
 	private final AtomicInteger counter = new AtomicInteger();
-	ExecutorService executor = Executors.newFixedThreadPool(3);
-	private LinkedBlockingQueue<YoutubeTask> queue = new LinkedBlockingQueue<>();
+	private final ExecutorService executor = Executors.newFixedThreadPool(3);
+	private final LinkedBlockingQueue<YoutubeTask> queue = new LinkedBlockingQueue<>();
 	private volatile boolean shutdownMode = false;
 
 	public YoutubeThread() throws InterruptedException {

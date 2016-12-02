@@ -2,6 +2,7 @@ package discordbot.command.economy;
 
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;
+import discordbot.util.Emojibet;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -41,6 +42,6 @@ public class CookieCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		return "Here have a \uD83C\uDF6A!";
+		return "Here have a " + Emojibet.COOKIE + "!";
 	}
 }

@@ -20,6 +20,7 @@ public class Emojibet {
 	public static String NEXT_TRACK = "\u23ED";
 	public static String THUMBS_UP = "\uD83D\uDC4D";
 	public static String THUMBS_DOWN = "\uD83D\uDC4E";
+	public static String COOKIE = "\uD83C\uDF6A";
 
 
 	static {

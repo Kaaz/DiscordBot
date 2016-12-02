@@ -275,4 +275,21 @@ public class DisUtil {
 	public static boolean hasPermission(User user, Guild guild, Permission permission) {
 		return PermissionUtil.checkPermission(guild, user, permission);
 	}
+
+	/**
+	 * attempts to find a role within a guild
+	 *
+	 * @param guild    the guild to search in
+	 * @param roleName the role name to search for
+	 * @return role or null
+	 */
+	public static Role findRole(Guild guild, String roleName) {
+		List<Role> roles = guild.getRoles();
+		for (Role role : roles) {
+			if (role.getName().equalsIgnoreCase(roleName)) {
+				return role;
+			}
+		}
+		return null;
+	}
 }
