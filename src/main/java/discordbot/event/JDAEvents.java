@@ -161,7 +161,6 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		super.onGuildMessageReceived(event);
 		discordBot.handleMessage(event.getGuild(), event.getChannel(), event.getAuthor(), event.getMessage());
 	}
 

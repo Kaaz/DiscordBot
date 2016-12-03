@@ -236,7 +236,7 @@ public class DiscordBot {
 	}
 
 	public void handleMessage(Guild guild, TextChannel channel, User author, Message message) {
-		if (!isReady || author.isBot()) {
+		if (!isReady || author == null || author.isBot()) {
 			return;
 		}
 
