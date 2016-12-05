@@ -265,10 +265,6 @@ public class DiscordBot {
 		}
 	}
 
-	public float getVolume(Guild guild) {
-		return MusicPlayerHandler.getFor(guild, this).getVolume();
-	}
-
 	public BotContainer getContainer() {
 		return container;
 	}
