@@ -57,7 +57,7 @@ public class StopCommand extends AbstractCommand {
 			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
-		if (userRank.equals(SimpleRank.BOT_ADMIN)) {
+		if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			player.leave();
 			return Template.get("command_stop_success");
 		}
