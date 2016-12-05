@@ -57,7 +57,7 @@ public class Volume extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		if (args.length > 0) {
-			if (GuildSettings.get(((TextChannel) channel).getGuild()).getFor(channel, SettingAdminVolume.class).equals("true") && bot.security.getSimpleRank(author).isAtLeast(SimpleRank.GUILD_ADMIN)){
+			if (GuildSettings.getFor(channel, SettingAdminVolume.class).equals("true") && bot.security.getSimpleRank(author).isAtLeast(SimpleRank.GUILD_ADMIN)) {
 				return Template.get("command_volume_invalid_permissions");
 			}
 			int volume;
