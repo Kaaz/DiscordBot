@@ -61,8 +61,7 @@ public class PlayCommand extends AbstractCommand {
 		return new String[]{
 				"play <youtubelink>    //download and plays song",
 				"play <part of title>  //shows search results",
-				"play                  //just start playing something",
-				"play role <role>      //you need this role in order to play music"
+				"play                  //just start playing something"
 		};
 	}
 
@@ -96,20 +95,20 @@ public class PlayCommand extends AbstractCommand {
 		if (!PermissionUtil.checkPermission(txt, bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
 			return "";
 		}
-		MusicPlayerHandler mph = MusicPlayerHandler.getFor(guild, bot);
+		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 		if (!isInVoiceWith(guild, author)) {
 			if (guild.getVoiceStatusOfUser(author).getChannel() == null) {
 				return "you are not in a voicechannel";
 			}
 			try {
-				if (mph.isConnected()) {
+				if (player.isConnected()) {
 					if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 						return Template.get("music_not_same_voicechannel");
 					}
-					mph.leave();
+					player.leave();
 					Thread.sleep(2000L);// ¯\_(ツ)_/¯
 				}
-				bot.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
+				player.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
 				Thread.sleep(2000L);// ¯\_(ツ)_/¯
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -118,7 +117,6 @@ public class PlayCommand extends AbstractCommand {
 		} else if (MusicPlayerHandler.getFor(guild, bot).getUsersInVoiceChannel().size() == 0) {
 			return Template.get("music_no_users_in_channel");
 		}
-		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 		if (args.length > 0) {
 			final String videoTitle;
 			String videoCode = YTUtil.extractCodeFromUrl(args[0]);

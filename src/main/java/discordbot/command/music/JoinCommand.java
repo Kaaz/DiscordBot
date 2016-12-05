@@ -2,6 +2,7 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
+import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
@@ -14,8 +15,8 @@ import net.dv8tion.jda.entities.VoiceChannel;
  * !joinme
  * make the bot join the channel of the user
  */
-public class Join extends AbstractCommand {
-	public Join() {
+public class JoinCommand extends AbstractCommand {
+	public JoinCommand() {
 		super();
 	}
 
@@ -50,15 +51,16 @@ public class Join extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		TextChannel chan = (TextChannel) channel;
+		MusicPlayerHandler player = MusicPlayerHandler.getFor(chan.getGuild(), bot);
 		if (args.length == 0) {
 			VoiceChannel voiceChannel = chan.getGuild().getVoiceStatusOfUser(author).getChannel();
 			if (voiceChannel == null) {
 				return Template.get("command_join_cantfindyou");
 			}
-			if (bot.isConnectedTo(voiceChannel)) {
+			if (player.isConnectedTo(voiceChannel)) {
 				return Template.get("command_join_already_there");
 			}
-			bot.connectTo(voiceChannel);
+			player.connectTo(voiceChannel);
 			return Template.get("command_join_joinedyou");
 		} else {
 			String channelname = Misc.concat(args);
@@ -70,11 +72,11 @@ public class Join extends AbstractCommand {
 				}
 			}
 			if (targetChannel != null) {
-				if (bot.isConnectedTo(targetChannel)) {
+				if (player.isConnectedTo(targetChannel)) {
 					return Template.get("command_join_already_there");
 				}
-				bot.leaveVoice(chan.getGuild());
-				bot.connectTo(targetChannel);
+				player.leave();
+				player.connectTo(targetChannel);
 //					return Template.get("command_join_nopermssiontojoin");
 				return Template.get("command_join_joined");
 			}

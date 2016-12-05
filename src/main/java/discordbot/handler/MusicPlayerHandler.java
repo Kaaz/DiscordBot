@@ -277,12 +277,14 @@ public class MusicPlayerHandler {
 	}
 
 	public boolean isConnectedTo(VoiceChannel channel) {
-		return channel.equals(guild.getAudioManager().getConnectedChannel());
+		return channel != null && channel.equals(guild.getAudioManager().getConnectedChannel());
 	}
 
 	public synchronized void connectTo(VoiceChannel channel) {
 		if (!isConnectedTo(channel)) {
-			if (guild.getAudioManager().getQueuedAudioConnection() == null) {
+			if (guild.getAudioManager().getConnectedChannel() != null) {
+				guild.getAudioManager().moveAudioConnection(channel);
+			} else if (guild.getAudioManager().getQueuedAudioConnection() == null) {
 				guild.getAudioManager().openAudioConnection(channel);
 			}
 		}

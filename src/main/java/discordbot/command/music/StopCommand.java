@@ -17,8 +17,8 @@ import net.dv8tion.jda.entities.User;
  * !stop
  * make the bot stop playing music
  */
-public class Stop extends AbstractCommand {
-	public Stop() {
+public class StopCommand extends AbstractCommand {
+	public StopCommand() {
 		super();
 	}
 
@@ -44,7 +44,9 @@ public class Stop extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[0];
+		return new String[]{
+				"leave"
+		};
 	}
 
 	@Override
@@ -55,6 +57,10 @@ public class Stop extends AbstractCommand {
 			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
+		if (userRank.equals(SimpleRank.BOT_ADMIN)) {
+			player.leave();
+			return Template.get("command_stop_success");
+		}
 		if (!player.isPlaying()) {
 			return Template.get("command_currentlyplaying_nosong");
 		}
@@ -62,8 +68,7 @@ public class Stop extends AbstractCommand {
 			if (!player.canUseVoiceCommands(author, userRank)) {
 				return Template.get("music_not_same_voicechannel");
 			}
-			MusicPlayerHandler.getFor(guild, bot).stopMusic();
-			bot.leaveVoice(guild);
+			player.leave();
 			return Template.get("command_stop_success");
 		}
 		return Template.get("command_currentlyplaying_nosong");

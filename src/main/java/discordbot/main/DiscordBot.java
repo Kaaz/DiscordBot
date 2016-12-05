@@ -269,18 +269,6 @@ public class DiscordBot {
 		return MusicPlayerHandler.getFor(guild, this).getVolume();
 	}
 
-	public void connectTo(VoiceChannel channel) {
-		MusicPlayerHandler.getFor(channel.getGuild(), this).connectTo(channel);
-	}
-
-	public boolean isConnectedTo(VoiceChannel channel) {
-		return MusicPlayerHandler.getFor(channel.getGuild(), this).isConnectedTo(channel);
-	}
-
-	public boolean leaveVoice(Guild guild) {
-		return MusicPlayerHandler.getFor(guild, this).leave();
-	}
-
 	public BotContainer getContainer() {
 		return container;
 	}
