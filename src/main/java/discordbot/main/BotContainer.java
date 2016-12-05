@@ -141,6 +141,9 @@ public class BotContainer {
 			DiscordBot bot = getBotFor(radio.guildId);
 			Guild guild = bot.client.getGuildById(radio.guildId);
 			VoiceChannel vc = null;
+			if(guild == null){
+				continue;
+			}
 			for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
 				if (voiceChannel.getId().equals(radio.channelId)) {
 					vc = voiceChannel;
