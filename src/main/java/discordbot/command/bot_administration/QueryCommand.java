@@ -6,6 +6,7 @@ import discordbot.db.WebDb;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
+import discordbot.util.DebugUtil;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
@@ -60,7 +61,7 @@ public class QueryCommand extends AbstractCommand {
 		if (!query.startsWith("select")) {
 			return "statements **must** start with select";
 		}
-		query += " LIMIT 0, 15";
+		query += " LIMIT 0, 1000";
 		List<String> header = new ArrayList<>();
 		List<List<String>> table = new ArrayList<>();
 		try (ResultSet r = WebDb.get().select(query)) {
@@ -78,7 +79,13 @@ public class QueryCommand extends AbstractCommand {
 				table.add(row);
 			}
 			r.getStatement().close();
-			return Misc.makeAsciiTable(header, table, null);
+			String output = Misc.makeAsciiTable(header, table, null);
+			if (output.length() < 2000) {
+				return output;
+			} else {
+				DebugUtil.handleDebug(channel, query + Config.EOL + Config.EOL + output);
+				return "";
+			}
 		} catch (SQLException e) {
 			System.out.println("ERORRRROR");
 			return "error in query! " + e.getMessage() + Config.EOL + e.getSQLState();
