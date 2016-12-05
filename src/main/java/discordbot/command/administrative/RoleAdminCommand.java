@@ -47,7 +47,6 @@ public class RoleAdminCommand extends AbstractCommand {
 				"roleadmin self add <role>                      //add a role to the list of assignable roles",
 				"roleadmin self remove <role>                   //remove a role from the list of assignable roles",
 //				"roleadmin self describe <role> <description>   //add a description to what this role does",
-
 				"",
 				"",
 				"roleadmin                        //lists roles",
@@ -109,12 +108,13 @@ public class RoleAdminCommand extends AbstractCommand {
 					case "add":
 					case "+":
 						CGuildRoleAssignable.insertOrUpdate(CGuild.getCachedId(guild.getId()), role.getId(), role.getName());
-						return "adding";
+						return Template.get("command_role_admin_adding", role.getName());
 					case "remove":
 					case "-":
 						CGuildRoleAssignable.delete(CGuild.getCachedId(guild.getId()), role.getId());
-						return "removing";
+						return Template.get("command_role_admin_removing", role.getName());
 					case "describe":
+						return Template.get("not_implemented_yet");
 				}
 			case "cleanup":
 				RoleRankings.cleanUpRoles(guild, bot.client.getSelfInfo());
