@@ -2,11 +2,13 @@ package discordbot.command.music;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
+import discordbot.guildsettings.defaults.SettingAdminVolume;
 import discordbot.guildsettings.music.SettingMusicVolume;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
@@ -55,6 +57,9 @@ public class Volume extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
 		if (args.length > 0) {
+			if (GuildSettings.get(((TextChannel) channel).getGuild()).getFor(channel, SettingAdminVolume.class).equals("true") && bot.security.getSimpleRank(author).isAtLeast(SimpleRank.GUILD_ADMIN)){
+				return Template.get("command_volume_invalid_permissions");
+			}
 			int volume;
 			try {
 				volume = Integer.parseInt(args[0]);
