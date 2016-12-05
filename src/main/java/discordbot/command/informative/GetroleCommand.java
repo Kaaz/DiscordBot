@@ -106,6 +106,6 @@ public class GetroleCommand extends AbstractCommand {
 			return Template.get("command_getrole_not_removed");
 		}
 		bot.out.removeRole(author, role);
-		return Template.get("command_getrole_removed");
+		return Template.get("command_getrole_removed", role.getName());
 	}
 }
