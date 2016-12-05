@@ -23,10 +23,10 @@ import java.util.List;
  * !info
  * some general information about the bot
  */
-public class Info extends AbstractCommand implements ICommandCooldown {
+public class InfoCommand extends AbstractCommand implements ICommandCooldown {
 	private Trello trello;
 
-	public Info() {
+	public InfoCommand() {
 		super();
 		trello = new TrelloImpl(Config.TRELLO_API_KEY, Config.TRELLO_TOKEN);
 	}

@@ -33,11 +33,11 @@ Commands | | | | |
 --- | --- | ---| ---| ---
 [8ball](#8ball) | [autoreply](#autoreply) | [blackjack](#blackjack) | [catfact](#catfact) | [changename](#changename)
 [command](#command) | [config](#config) | [consolecomm](#consolecomm) | [current](#current) | [exec](#exec)
-[exit](#exit) | [fml](#fml) | [game](#game) | [guildstats](#guildstats) | [help](#help)
-[importmusic](#importmusic) | [info](#info) | [invite](#invite) | [join](#join) | [joke](#joke)
-[leave](#leave) | [leaveguild](#leaveguild) | [meme](#meme) | [pause](#pause) | [ping](#ping)
+[exit](#exit) | [fml](#fml) | [game](#game) | [getrole](#getrole) | [guildstats](#guildstats)
+[help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite) | [join](#join)
+[joke](#joke) | [leaveguild](#leaveguild) | [meme](#meme) | [pause](#pause) | [ping](#ping)
 [play](#play) | [playlist](#playlist) | [pm](#pm) | [prefix](#prefix) | [purge](#purge)
-[reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report) | [role](#role)
+[reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report) | [roleadmin](#roleadmin)
 [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [skip](#skip) | [slot](#slot)
 [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template)
 [ud](#ud) | [uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version)
@@ -86,6 +86,7 @@ music_role_requirement | none | In order to use music commands you need this rol
 music_show_listeners | false | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
 music_skip_admin_only | false | Only allow admins to use the skip command?<br/><br/>true<br/>Only admins have permission to use the skip command<br/><br/>false<br/>Everyone can use the skip command
 music_volume | 10 | sets the default volume of the music player<br/>So the next time the bot connects it starts with this volume<br/><br/>Accepts a value between 0 and 100
+music_volume_admin | false | Require a guild admin to change the volume<br/><br/>false -> allow all users to change the bot's volume<br/>true -> only allow guild admins to change the bot's volume
 music_vote_percent | 1 | Percentage of users (rounded down) required to skip the currently playing track<br/><br/>eg; when set to 25, and 5 listeners it would require 2 users to vote skip <br/><br/>Accepts a value between 1 and 100
 pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
 show_unknown_commands | false | Show message on nonexistent commands and blacklisted commands<br/>true -> returns a help message<br/>false -> stays silent
@@ -357,6 +358,21 @@ game list                 //to see a list games
 game <@user> <gamecode>   //play a game against @user
 game cancel               //cancel an active game!
 ```
+### getrole
+
+allows users to request a role
+
+Accessible though: getrole
+
+Usable in public  channels
+
+#### Usage
+
+```php
+list                //see what roles are available
+remove <rolename>   //removes the <rolename> from you
+<rolename>          //assign the <rolename> to you 
+```
 ### guildstats
 
 shows some statistics
@@ -443,13 +459,6 @@ An attempt to be funny
 Accessible though: joke
 
 Usable in public and private channels
-### leave
-
-Leaves the voicechannel
-
-Accessible though: leave
-
-Usable in public  channels
 ### leaveguild
 
 leaves guild :(
@@ -508,7 +517,6 @@ Usable in public  channels
 play <youtubelink>    //download and plays song
 play <part of title>  //shows search results
 play                  //just start playing something
-play role <role>      //you need this role in order to play music
 ```
 ### playlist
 
@@ -632,24 +640,29 @@ Usable in private channels
 ```php
 report <subject> | <message..>
 ```
-### role
+### roleadmin
 
-Management of roles
+Management of roles & general permissions 
+You can give users the ability to self-assign roles. 
+Users can get/remove their own roles with the `getrole` command 
 
-Accessible though: role, roles
+Accessible though: roleadmin, ra
 
 Usable in public  channels
 
 #### Usage
 
 ```php
-role                             //lists roles
-role list                        //lists roles
-role cleanup                     //cleans up the roles from the time-based rankings
-role setup                       //creates the roles for the time-based rankings
-role bind BOT_ROLE <discordrole> //binds a discordrole to a botrole
-role add @user <role>            //adds role to user
-role remove @user <role>         //remove role from user
+You can specify which roles are self-assignable by users with the following commands: 
+
+roleadmin self                                 //check what roles are self-assignable
+roleadmin self add <role>                      //add a role to the list of assignable roles
+roleadmin self remove <role>                   //remove a role from the list of assignable roles
+
+
+roleadmin                        //lists roles
+roleadmin cleanup                //cleans up the roles from the time-based rankings
+roleadmin setup                  //creates the roles for the time-based rankings
 ```
 ### roll
 
@@ -723,7 +736,7 @@ slot info //info about payout
 
 stops playing music
 
-Accessible though: stop
+Accessible though: stop, leave
 
 Usable in public  channels
 ### subscribe

@@ -23,8 +23,8 @@ import java.util.HashMap;
  * !help
  * help function
  */
-public class Help extends AbstractCommand {
-	public Help() {
+public class HelpCommand extends AbstractCommand {
+	public HelpCommand() {
 		super();
 	}
 

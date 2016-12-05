@@ -43,10 +43,10 @@ public class RoleAdminCommand extends AbstractCommand {
 		return new String[]{
 				"You can specify which roles are self-assignable by users with the following commands: ",
 				"",
-				"roleadmin self                   //check what roles are self-assignable",
-				"roleadmin self add <role>        //add a role to the list of assignable roles",
-				"roleadmin self remove <role>     //remove a role from the list of assignable roles",
-				"roleadmin self describe <role>   //add a description to what this role does",
+				"roleadmin self                                 //check what roles are self-assignable",
+				"roleadmin self add <role>                      //add a role to the list of assignable roles",
+				"roleadmin self remove <role>                   //remove a role from the list of assignable roles",
+//				"roleadmin self describe <role> <description>   //add a description to what this role does",
 
 				"",
 				"",

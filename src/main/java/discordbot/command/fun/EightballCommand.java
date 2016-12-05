@@ -9,7 +9,7 @@ import net.dv8tion.jda.entities.User;
  * !8ball
  * gives you a random cat fact
  */
-public class Eightball extends AbstractCommand {
+public class EightballCommand extends AbstractCommand {
 	private final String[] a = {
 			"As I see it, yes",
 			"Better not tell you now",
@@ -33,7 +33,7 @@ public class Eightball extends AbstractCommand {
 			"You are doomed",
 			"You can't handle the truth"};
 
-	public Eightball() {
+	public EightballCommand() {
 		super();
 	}
 

@@ -11,10 +11,10 @@ import net.dv8tion.jda.entities.User;
 /**
  * !emojify
  */
-public class Emojify extends AbstractCommand {
+public class EmojifyCommand extends AbstractCommand {
 	public static final int MAX_SIZE = 200;
 
-	public Emojify() {
+	public EmojifyCommand() {
 		super();
 	}
 

@@ -20,8 +20,8 @@ import java.util.Random;
  * !joke
  * gives you a random chuck norris joke with chuck norris replaced by <@user>
  */
-public class Joke extends AbstractCommand {
-	public Joke() {
+public class JokeCommand extends AbstractCommand {
+	public JokeCommand() {
 		super();
 	}
 

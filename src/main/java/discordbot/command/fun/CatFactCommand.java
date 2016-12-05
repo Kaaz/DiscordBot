@@ -18,8 +18,8 @@ import java.net.URLConnection;
  * !catfact
  * gives you a random cat fact
  */
-public class Cats extends AbstractCommand {
-	public Cats() {
+public class CatFactCommand extends AbstractCommand {
+	public CatFactCommand() {
 		super();
 	}
 

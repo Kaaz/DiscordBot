@@ -13,8 +13,8 @@ import net.dv8tion.jda.entities.User;
  * !say
  * make the bot say something
  */
-public class Say extends AbstractCommand {
-	public Say() {
+public class SayCommand extends AbstractCommand {
+	public SayCommand() {
 		super();
 	}
 

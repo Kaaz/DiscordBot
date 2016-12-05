@@ -15,7 +15,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 public class OutgoingContentHandler {
-	private final static long DELETE_INTERVAL = 500L;
 	private final DiscordBot botInstance;
 	private final RoleModifier roleThread;
 
@@ -27,8 +26,7 @@ public class OutgoingContentHandler {
 	/**
 	 * @param channel  channel to send to
 	 * @param content  the message
-	 * @param callback
-	 * @return IMessage or null
+	 * @param callback callback to execute after the message is sent
 	 */
 	public void sendAsyncMessage(MessageChannel channel, String content, Consumer<Message> callback) {
 		channel.sendMessageAsync(content.substring(0, Math.min(1999, content.length())), callback);
@@ -153,7 +151,7 @@ public class OutgoingContentHandler {
 						}
 						roleToModify.getRole().getGuild().getManager().update();
 					}
-					Thread.sleep(1000L);
+					sleep(2_000L);
 				}
 			} catch (InterruptedException ignored) {
 			} finally {

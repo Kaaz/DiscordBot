@@ -10,8 +10,8 @@ import net.dv8tion.jda.entities.User;
  * !invite
  * Instructions on how to invite the bot to a discord server
  */
-public class Invite extends AbstractCommand {
-	public Invite() {
+public class InviteCommand extends AbstractCommand {
+	public InviteCommand() {
 		super();
 	}
 
