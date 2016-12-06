@@ -253,13 +253,8 @@ public class MusicPlayerHandler {
 				GuildSettings.get(guild).set(SettingMusicPlayingMessage.class, "off");
 				return;
 			}
-			String msg = "[`" + DisUtil.getCommandPrefix(guild) + "pl` " + playlist.title + "] ";
-			if (record.artist != null && record.title != null && !record.artist.trim().isEmpty() && !record.title.trim().isEmpty()) {
-				msg += "\uD83C\uDFB6 " + record.artist + " - " + record.title;
-			} else {
-				msg += "\uD83C\uDFB6 " + record.youtubeTitle;
-			}
-			final long deleteAfter = currentSongLength * 1000L;
+			String msg = "[`" + DisUtil.getCommandPrefix(guild) + "pl` " + playlist.title + "] \uD83C\uDFB6 " + record.youtubeTitle;
+			final long deleteAfter = Math.min(Math.max(currentSongLength * 1000L, 60_000L), 7200_000L);
 			bot.getMusicChannel(guild).sendMessageAsync(msg, message -> {
 				if (messageType.equals("clear")) {
 					bot.timer.schedule(
@@ -270,7 +265,7 @@ public class MusicPlayerHandler {
 										message.deleteMessage();
 									}
 								}
-							}, Math.max(deleteAfter, 60_000L)
+							}, deleteAfter
 					);
 				}
 			});
@@ -423,15 +418,19 @@ public class MusicPlayerHandler {
 	}
 
 	public synchronized boolean addToQueue(String filename, User user) {
-		File mp3file = new File(filename);
-		if (!mp3file.exists()) {//check in config directory
-			bot.out.sendErrorToMe(new Exception("NoMusicFile"), "filename: ", mp3file.getAbsolutePath(), "plz fix", "I want music", bot);
+		File musicFile = new File(filename);
+		if (!musicFile.exists()) {//check in config directory
+			bot.out.sendErrorToMe(new Exception("NoMusicFile"), "filename: ", musicFile.getAbsolutePath(), "plz fix", "I want music", bot);
 			return false;
 		}
-		OMusic record = CMusic.findByFileName(mp3file.getAbsolutePath());
+		OMusic record = CMusic.findByYoutubeId(musicFile.getName().substring(0, musicFile.getName().lastIndexOf(".")));
 		if (record.id == 0) {
-			bot.out.sendErrorToMe(new Exception("No record for file"), "filename: ", mp3file.getAbsolutePath(), "plz fix", "I want music", bot);
+			bot.out.sendErrorToMe(new Exception("No record for file"), "filename: ", musicFile.getAbsolutePath(), "plz fix", "I want music", bot);
 			return false;
+		}
+		if (!record.filename.equals(musicFile.getAbsolutePath())) {
+			record.filename = musicFile.getAbsolutePath();
+			CMusic.update(record);
 		}
 		if (!playlist.isGlobalList() && user != null) {
 			if (playlist.isGuildList() && guild.isMember(user)) {

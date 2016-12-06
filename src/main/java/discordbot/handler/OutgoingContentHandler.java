@@ -9,6 +9,7 @@ import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.exceptions.RateLimitedException;
 
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -39,7 +40,15 @@ public class OutgoingContentHandler {
 					@Override
 					public void run() {
 						if (message != null) {
-							message.deleteMessage();
+							try {
+								message.deleteMessage();
+							} catch (RateLimitedException e) {
+								try {
+									wait(100L + e.getTimeout());
+									message.deleteMessage();
+								} catch (Exception ignored) {
+								}
+							}
 						}
 					}
 				}, Config.DELETE_MESSAGES_AFTER);

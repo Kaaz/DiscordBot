@@ -175,8 +175,13 @@ public class PlayCommand extends AbstractCommand {
 	}
 
 	private String handleFile(MusicPlayerHandler player, DiscordBot bot, TextChannel channel, User invoker, String videoCode, String videoTitle, boolean useTemplates) {
-
-		final File filecheck = new File(YTUtil.getOutputPath(videoCode));
+		OMusic record = CMusic.findByYoutubeId(videoCode);
+		final File filecheck;
+		if (record.id > 0 && record.fileExists == 1) {
+			filecheck = new File(record.filename);
+		} else {
+			filecheck = new File(YTUtil.getOutputPath(videoCode));
+		}
 		boolean isInProgress = bot.getContainer().isInProgress(videoCode);
 		if (!filecheck.exists() && !isInProgress) {
 			final String finalVideoCode = videoCode;
