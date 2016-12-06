@@ -2,7 +2,7 @@ package discordbot.main;
 
 import com.mashape.unirest.http.Unirest;
 import discordbot.db.controllers.CGuild;
-import discordbot.event.JDAEvents;
+import discordbot.event.JDAReadyEvent;
 import discordbot.guildsettings.defaults.*;
 import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.handler.*;
@@ -41,6 +41,7 @@ public class DiscordBot {
 	private volatile boolean isReady = false;
 	private int shardId;
 	private BotContainer container;
+	private JDAReadyEvent readyEvent;
 
 	public DiscordBot(int shardId, int numShards) throws LoginException, InterruptedException {
 		registerHandlers();
@@ -50,10 +51,10 @@ public class DiscordBot {
 		if (numShards > 1) {
 			builder.useSharding(shardId, numShards);
 		}
+		readyEvent = new JDAReadyEvent(this);
 		builder.setBulkDeleteSplittingEnabled(false);
-		builder.addListener(new JDAEvents(this));
+		builder.addListener(new JDAReadyEvent(this));
 		builder.setEnableShutdownHook(false);
-
 		client = builder.buildAsync();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 	}
@@ -150,6 +151,8 @@ public class DiscordBot {
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds(), client);
 		this.isReady = ready;
+		this.client.removeEventListener(readyEvent);
+		readyEvent = null;
 		sendStatsToDiscordPw();
 		container.allShardsReady();
 	}
@@ -224,7 +227,6 @@ public class DiscordBot {
 	public void addStreamToQueue(String url, Guild guild) {
 		MusicPlayerHandler.getFor(guild, this).addStream(url);
 		MusicPlayerHandler.getFor(guild, this).startPlaying();
-
 	}
 
 	public void handlePrivateMessage(PrivateChannel channel, User author, Message message) {

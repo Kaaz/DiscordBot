@@ -173,12 +173,6 @@ public class JDAEvents extends ListenerAdapter {
 	}
 
 	@Override
-	public void onReady(ReadyEvent event) {
-		discordBot.markReady(true);
-		System.out.println("[event] Bot is ready!");
-	}
-
-	@Override
 	public void onGuildMemberBan(GuildMemberBanEvent event) {
 		discordBot.logGuildEvent(event.getGuild(), "\uD83D\uDED1", "**" + event.getUser().getUsername() + "#" + event.getUser().getDiscriminator() + "** has been banned");
 	}

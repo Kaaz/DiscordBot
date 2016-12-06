@@ -7,6 +7,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import discordbot.core.ExitCode;
 import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.model.OBotPlayingOn;
+import discordbot.event.JDAEvents;
 import discordbot.handler.*;
 import discordbot.threads.YoutubeThread;
 import net.dv8tion.jda.entities.Guild;
@@ -38,7 +39,7 @@ public class BotContainer {
 
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException {
 		youtubeThread = new YoutubeThread();
-		this.numShards = 1 + ((numGuilds + 1000) / 2000);
+		this.numShards = getRecommendedShards();
 		shards = new DiscordBot[numShards];
 		initHandlers();
 		initShards();
@@ -138,6 +139,10 @@ public class BotContainer {
 	 * After the bot is ready to go; reconnect to the voicechannels and start playing where it left off
 	 */
 	private void onAllShardsReady() {
+		for (DiscordBot shard : shards) {
+			shard.client.addEventListener(new JDAEvents(shard));
+		}
+
 		List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
 		for (OBotPlayingOn radio : radios) {
 			DiscordBot bot = getBotFor(radio.guildId);
