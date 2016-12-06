@@ -48,7 +48,7 @@ public class YoutubeThread extends Thread {
 			infoArgs.add("-v");
 		}
 		infoArgs.add("--audio-format");
-		infoArgs.add("best");
+		infoArgs.add("opus");
 		infoArgs.add("--prefer-ffmpeg");
 		infoArgs.add("--hls-prefer-ffmpeg");
 		infoArgs.add("--max-filesize");
