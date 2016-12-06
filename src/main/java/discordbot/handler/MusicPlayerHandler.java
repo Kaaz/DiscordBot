@@ -202,7 +202,7 @@ public class MusicPlayerHandler {
 				@Override
 				public void loadFailed(FriendlyException exception) {
 					bot.out.sendMessageToCreator("file:" + absolutePath);
-					trackToAdd.banned = 1; //keep them from the global playlist
+					trackToAdd.fileExists = 0;
 					CMusic.update(trackToAdd);
 					new File(absolutePath).delete();
 					if (finalKeepGoing) {
