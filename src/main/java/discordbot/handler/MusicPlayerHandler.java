@@ -165,11 +165,8 @@ public class MusicPlayerHandler {
 		if (scheduler.queue.isEmpty()) {
 			if (queue.isEmpty()) {
 				if ("false".equals(GuildSettings.get(guild).getOrDefault(SettingMusicQueueOnly.class))) {
-					String filename = getRandomSong();
 					keepGoing = true;
-					if (filename != null) {
-						addToQueue(filename, null);
-					} else {
+					if (!playRandomSong()) {
 						player.destroy();
 						bot.getMusicChannel(guild).sendMessageAsync("Stopped playing because the playlist is empty", null);
 						leave();
@@ -202,7 +199,7 @@ public class MusicPlayerHandler {
 
 				@Override
 				public void loadFailed(FriendlyException exception) {
-					bot.out.sendMessageToCreator("file:" + absolutePath + Config.EOL+"Message: "+ exception.getMessage());
+					bot.out.sendMessageToCreator("file:" + absolutePath + Config.EOL + "Message: " + exception.getMessage());
 					trackToAdd.fileExists = 0;
 					CMusic.update(trackToAdd);
 					new File(absolutePath).delete();
@@ -362,9 +359,9 @@ public class MusicPlayerHandler {
 	}
 
 	/**
-	 * retreives a random .mp3 file from the music directory
+	 * retreives a random file from the music directory
 	 *
-	 * @return filename
+	 * @return filename OR null when the music table is empty
 	 */
 	private String getRandomSong() {
 		ArrayList<String> potentialSongs = new ArrayList<>();
@@ -385,20 +382,27 @@ public class MusicPlayerHandler {
 			e.printStackTrace();
 			bot.out.sendErrorToMe(e, bot);
 		}
+		if (potentialSongs.isEmpty()) {
+			return null;
+		}
 		return potentialSongs.get(rng.nextInt(potentialSongs.size()));
 	}
 
 	/**
 	 * Adds a random song from the music directory to the queue
+	 * if a track fails, try the next one
 	 *
 	 * @return successfully started playing
 	 */
 	public synchronized boolean playRandomSong() {
-		String randomSong = getRandomSong();
-		if (randomSong != null) {
-			return addToQueue(randomSong, null);
+		while (true) {
+			String randomSong = getRandomSong();
+			if (randomSong != null) {
+				if (addToQueue(randomSong, null)) {
+					return true;
+				}
+			} else return false;
 		}
-		return false;
 	}
 
 	public synchronized boolean isPlaying() {
@@ -420,13 +424,15 @@ public class MusicPlayerHandler {
 
 	public synchronized boolean addToQueue(String filename, User user) {
 		File musicFile = new File(filename);
-		if (!musicFile.exists()) {//check in config directory
-			bot.out.sendErrorToMe(new Exception("NoMusicFile"), "filename: ", musicFile.getAbsolutePath(), "plz fix", "I want music", bot);
-			return false;
-		}
 		OMusic record = CMusic.findByYoutubeId(musicFile.getName().substring(0, musicFile.getName().lastIndexOf(".")));
 		if (record.id == 0) {
 			bot.out.sendErrorToMe(new Exception("No record for file"), "filename: ", musicFile.getAbsolutePath(), "plz fix", "I want music", bot);
+			return false;
+		}
+		if (!musicFile.exists()) {//check in config directory
+			record.fileExists = 0;
+			CMusic.update(record);
+			bot.out.sendErrorToMe(new Exception("NoMusicFile"), "filename: ", musicFile.getAbsolutePath(), "plz fix", "I want music", bot);
 			return false;
 		}
 		if (!record.filename.equals(musicFile.getAbsolutePath())) {

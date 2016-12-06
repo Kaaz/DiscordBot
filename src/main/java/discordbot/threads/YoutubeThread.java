@@ -48,13 +48,15 @@ public class YoutubeThread extends Thread {
 			infoArgs.add("-v");
 		}
 		infoArgs.add("--audio-format");
-		infoArgs.add("mp3");
+		infoArgs.add("best");
 		infoArgs.add("--prefer-ffmpeg");
 		infoArgs.add("--hls-prefer-ffmpeg");
 		infoArgs.add("--max-filesize");
 		infoArgs.add("64m");
-		infoArgs.add("--postprocessor-arg");
-		infoArgs.add("-acodec libmp3lame -ac 2 -q:a 6");
+		infoArgs.add("--recode-video");
+		infoArgs.add("mkv");
+//		infoArgs.add("--postprocessor-arg");
+//		infoArgs.add("-b:a 128k");
 		if (Config.MUSIC_USE_CACHE_DIR) {
 			infoArgs.add("--exec");
 			infoArgs.add("mv {} " + Config.MUSIC_DIRECTORY);
