@@ -181,7 +181,7 @@ public class PlayCommand extends AbstractCommand {
 		if (!filecheck.exists() && !isInProgress) {
 			final String finalVideoCode = videoCode;
 			bot.out.sendAsyncMessage(channel, Template.get("music_downloading_in_queue", videoTitle), message -> {
-				bot.getContainer().downloadRequest(finalVideoCode, videoTitle, message, message1 -> {
+				bot.getContainer().downloadRequest(finalVideoCode, videoTitle, message, msg -> {
 					try {
 						if (filecheck.exists()) {
 							String path = filecheck.toPath().toRealPath().toString();
@@ -193,14 +193,18 @@ public class PlayCommand extends AbstractCommand {
 							rec.fileExists = 1;
 							rec.lastManualPlaydate = System.currentTimeMillis() / 1000L;
 							CMusic.update(rec);
-							message1.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
+							if (msg != null) {
+								msg.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
+							}
 							player.addToQueue(path, invoker);
 						} else {
-							message1.updateMessageAsync("Download failed, the song is likely too long or region locked!", null);
+							if (msg != null) {
+								msg.updateMessageAsync("Download failed, the song is likely too long or region locked!", null);
+							}
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
-						message1.updateMessageAsync(Template.get("music_file_error"), null);
+						msg.updateMessageAsync(Template.get("music_file_error"), null);
 					}
 				});
 			});

@@ -92,6 +92,7 @@ public class MusicPlayerHandler {
 
 	public static void removeGuild(Guild guild) {
 		if (playerInstances.containsKey(guild)) {
+			playerInstances.get(guild).leave();
 			playerInstances.remove(guild);
 		}
 	}
