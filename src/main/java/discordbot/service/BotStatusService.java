@@ -63,7 +63,7 @@ public class BotStatusService extends AbstractService {
 
 	@Override
 	public boolean shouldIRun() {
-		return !bot.getShards()[0].statusLocked;
+		return !bot.isStatusLocked();
 	}
 
 	@Override

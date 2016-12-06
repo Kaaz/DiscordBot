@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -29,6 +30,7 @@ public class BotContainer {
 	private final int numShards;
 	private final DiscordBot[] shards;
 	private final YoutubeThread youtubeThread;
+	private final AtomicBoolean statusLocked = new AtomicBoolean(false);
 	private volatile AtomicInteger numGuilds;
 	private volatile boolean allShardsReady = false;
 	private volatile boolean terminationRequested = false;
@@ -141,7 +143,7 @@ public class BotContainer {
 			DiscordBot bot = getBotFor(radio.guildId);
 			Guild guild = bot.client.getGuildById(radio.guildId);
 			VoiceChannel vc = null;
-			if(guild == null){
+			if (guild == null) {
 				continue;
 			}
 			for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
@@ -226,5 +228,24 @@ public class BotContainer {
 
 	public synchronized boolean isInProgress(String videoCode) {
 		return youtubeThread.isInProgress(videoCode);
+	}
+
+	/**
+	 * Check if the bot's status is locked
+	 * If its locked, the bot will not change its status
+	 *
+	 * @return locked?
+	 */
+	public boolean isStatusLocked() {
+		return statusLocked.get();
+	}
+
+	/**
+	 * Lock/unlock the bot's status
+	 *
+	 * @param locked lock?
+	 */
+	public void setStatusLocked(boolean locked) {
+		statusLocked.set(locked);
 	}
 }
