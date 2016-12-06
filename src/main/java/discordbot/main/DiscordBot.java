@@ -50,6 +50,7 @@ public class DiscordBot {
 		if (numShards > 1) {
 			builder.useSharding(shardId, numShards);
 		}
+		builder.setBulkDeleteSplittingEnabled(false);
 		builder.addListener(new JDAEvents(this));
 		builder.setEnableShutdownHook(false);
 
