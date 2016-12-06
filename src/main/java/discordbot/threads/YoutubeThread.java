@@ -39,19 +39,24 @@ public class YoutubeThread extends Thread {
 	 * @param videocode youtube video id
 	 * @return success or not
 	 */
-	public static boolean downloadFromYoutubeAsMp3(String videocode) {
+	public static boolean downloadFileFromYoutube(String videocode) {
 		List<String> infoArgs = new LinkedList<>();
 		infoArgs.add(Config.YOUTUBEDL_EXE);
 		infoArgs.add("--no-check-certificate");
-		infoArgs.add("-x"); //audio only
-		infoArgs.add("--prefer-ffmpeg");
+		infoArgs.add("-x");
+		if (Config.YOUTUBEDL_DEBUG_PROCESS) {
+			infoArgs.add("-v");
+		}
 		infoArgs.add("--audio-format");
-		infoArgs.add("mp3");
+		infoArgs.add("best");
+		infoArgs.add("--prefer-ffmpeg");
 		infoArgs.add("--hls-prefer-ffmpeg");
 		infoArgs.add("--max-filesize");
 		infoArgs.add("64m");
-		infoArgs.add("--postprocessor-arg");
-		infoArgs.add("-acodec libmp3lame -ac 2 -q:a 6");
+		infoArgs.add("--recode-video");
+		infoArgs.add("mkv");
+//		infoArgs.add("--postprocessor-arg");
+//		infoArgs.add("-b:a 128k");
 		if (Config.MUSIC_USE_CACHE_DIR) {
 			infoArgs.add("--exec");
 			infoArgs.add("mv {} " + Config.MUSIC_DIRECTORY);
@@ -211,7 +216,7 @@ public class YoutubeThread extends Thread {
 				final File fileCheck = new File(YTUtil.getOutputPath(task.getCode()));
 				if (!fileCheck.exists()) {
 					task.getMessage().updateMessageAsync(Template.get("music_downloading_hang_on"), null);
-					downloadFromYoutubeAsMp3(task.getCode());
+					downloadFileFromYoutube(task.getCode());
 				}
 				if (task.getCallback() != null) {
 					task.getCallback().accept(task.getMessage());
