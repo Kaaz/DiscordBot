@@ -14,7 +14,7 @@ public class JDAReadyEvent extends ListenerAdapter {
 
 	@Override
 	public void onReady(ReadyEvent event) {
-		discordBot.markReady(true);
+		discordBot.markReady();
 		System.out.println("[event] Bot is ready!");
 	}
 }

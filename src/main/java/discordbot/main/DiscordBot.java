@@ -35,7 +35,6 @@ public class DiscordBot {
 	public ChatBotHandler chatBotHandler = null;
 	public SecurityHandler security = null;
 	public OutgoingContentHandler out = null;
-	public boolean statusLocked = false;
 	private AutoReplyHandler autoReplyhandler;
 	private GameHandler gameHandler = null;
 	private volatile boolean isReady = false;
@@ -141,16 +140,14 @@ public class DiscordBot {
 	}
 
 	/**
-	 * Bot will start working once its marked ready
-	 *
-	 * @param ready ready to get started
+	 * Mark the shard as ready, the bot will start working once all shards are marked as ready
 	 */
-	public void markReady(boolean ready) {
+	public void markReady() {
 		loadConfiguration();
 		mentionMe = "<@" + this.client.getSelfInfo().getId() + ">";
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds(), client);
-		this.isReady = ready;
+		this.isReady = true;
 		this.client.removeEventListener(readyEvent);
 		readyEvent = null;
 		sendStatsToDiscordPw();
@@ -217,7 +214,7 @@ public class DiscordBot {
 	}
 
 	public boolean setUserName(String newName) {
-		if (isReady && !getUserName().equals(newName)) {
+		if (!getUserName().equals(newName)) {
 			client.getAccountManager().setUsername(newName).update();
 			return true;
 		}
@@ -239,7 +236,7 @@ public class DiscordBot {
 	}
 
 	public void handleMessage(Guild guild, TextChannel channel, User author, Message message) {
-		if (!isReady || author == null || author.isBot()) {
+		if (author == null || author.isBot()) {
 			return;
 		}
 
