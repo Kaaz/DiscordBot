@@ -20,6 +20,7 @@ import discordbot.db.model.OMusic;
 import discordbot.db.model.OPlaylist;
 import discordbot.guildsettings.music.*;
 import discordbot.handler.audio.AudioPlayerSendHandler;
+import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.permission.SimpleRank;
@@ -201,7 +202,7 @@ public class MusicPlayerHandler {
 
 				@Override
 				public void loadFailed(FriendlyException exception) {
-					bot.out.sendMessageToCreator("file:" + absolutePath);
+					bot.out.sendMessageToCreator("file:" + absolutePath + Config.EOL+"Message: "+ exception.getMessage());
 					trackToAdd.fileExists = 0;
 					CMusic.update(trackToAdd);
 					new File(absolutePath).delete();
