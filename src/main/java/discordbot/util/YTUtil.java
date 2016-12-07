@@ -83,6 +83,6 @@ public class YTUtil {
 
 
 	public static String getOutputPath(String videoCode) {
-		return Config.MUSIC_DIRECTORY + videoCode + ".mkv";
+		return Config.MUSIC_DIRECTORY + videoCode + ".opus";
 	}
 }
