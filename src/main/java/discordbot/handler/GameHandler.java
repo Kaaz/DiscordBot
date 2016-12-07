@@ -18,7 +18,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameHandler {
-
+	//amount of invalid input attempts before auto-leaving playmode
+	private static final int GAMEMODE_LEAVE_AFTER = 2;
 	private static final String COMMAND_NAME = "game";
 	private static final Map<String, Class<? extends AbstractGame>> gameClassMap = new HashMap<>();
 	private static final Map<String, AbstractGame> gameInfoMap = new HashMap<>();
@@ -26,7 +27,7 @@ public class GameHandler {
 	private final DiscordBot bot;
 	private Map<String, AbstractGame> playerGames = new ConcurrentHashMap<>();
 	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
-	private Map<String, String> usersInPlayMode = new ConcurrentHashMap<>();
+	private Map<String, PlayData> usersInPlayMode = new ConcurrentHashMap<>();
 
 	public GameHandler(DiscordBot bot) {
 		this.bot = bot;
@@ -52,11 +53,11 @@ public class GameHandler {
 	}
 
 	private boolean isInPlayMode(User user, TextChannel channel) {
-		return usersInPlayMode.containsKey(user.getId()) && usersInPlayMode.get(user.getId()).equals(channel.getId());
+		return usersInPlayMode.containsKey(user.getId()) && usersInPlayMode.get(user.getId()).getChannelId().equals(channel.getId());
 	}
 
 	private void enterPlayMode(TextChannel channel, User player) {
-		usersInPlayMode.put(player.getId(), channel.getId());
+		usersInPlayMode.put(player.getId(), new PlayData(player.getId(), channel.getId()));
 	}
 
 	private boolean leavePlayMode(User player) {
@@ -257,7 +258,18 @@ public class GameHandler {
 				return "BEEP BOOP CONTACT KAAZ THIS SHIT IS ON FIRE **game.getGameTurnInstance()** failed somehow";
 			}
 			if (!gameTurnInstance.parseInput(input)) {
+				if (isInPlayMode(player, channel)) {
+					if (usersInPlayMode.get(player.getId()).failedAttempts >= GAMEMODE_LEAVE_AFTER) {
+						leavePlayMode(player);
+						return Template.get("playmode_leaving_mode");
+					}
+					usersInPlayMode.get(player.getId()).failedAttempts++;
+				}
 				return game.toString() + Config.EOL + ":exclamation: " + gameTurnInstance.getInputErrorMessage();
+			} else {
+				if (isInPlayMode(player, channel)) {
+					usersInPlayMode.get(player.getId()).failedAttempts = 0;
+				}
 			}
 			gameTurnInstance.setCommandPrefix(DisUtil.getCommandPrefix(channel));
 			if (!game.isValidMove(player, gameTurnInstance)) {
@@ -309,5 +321,24 @@ public class GameHandler {
 			return true;
 		}
 		return false;
+	}
+
+	private class PlayData {
+		String userId;
+		int failedAttempts = 0;
+		private String channelId;
+
+		PlayData(String userId, String channelId) {
+			this.userId = userId;
+			this.setChannelId(channelId);
+		}
+
+		public String getChannelId() {
+			return channelId;
+		}
+
+		public void setChannelId(String channelId) {
+			this.channelId = channelId;
+		}
 	}
 }

@@ -7,16 +7,16 @@ import java.util.*;
 
 public class Misc {
 	private static final String[] numberToEmote = {
-			"\u0030",
-			"\u0031",
-			"\u0032",
-			"\u0033",
-			"\u0034",
-			"\u0035",
-			"\u0036",
-			"\u0037:",
-			"\u0038",
-			"\u0039",
+			"\u0030\u20E3",
+			"\u0031\u20E3",
+			"\u0032\u20E3",
+			"\u0033\u20E3",
+			"\u0034\u20E3",
+			"\u0035\u20E3",
+			"\u0036\u20E3",
+			"\u0037\u20E3",
+			"\u0038\u20E3",
+			"\u0039\u20E3",
 			"\uD83D\uDD1F"
 	};
 
