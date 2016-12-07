@@ -206,11 +206,13 @@ public class GameHandler {
 	}
 
 	private String showList(TextChannel channel) {
+		String prefix = DisUtil.getCommandPrefix(channel);
 		return "A list of all available games" + Config.EOL +
-				getFormattedGameList() +
-				"to start one type `" + DisUtil.getCommandPrefix(channel) + COMMAND_NAME + " <@user> <gamecode>`" + Config.EOL +
-				"You can enter *gamemode* by typing `" + DisUtil.getCommandPrefix(channel) + COMMAND_NAME + " enter` " + Config.EOL +
-				"This makes it so that you don't have to prefix your messages with `" + DisUtil.getCommandPrefix(channel) + COMMAND_NAME + "`";
+				getFormattedGameList() + Config.EOL +
+				"To start a game you can type `" + prefix + COMMAND_NAME + " <@user> <gamecode>`" + Config.EOL + Config.EOL +
+				"To stop a game type `" + prefix + COMMAND_NAME + " cancel`" + Config.EOL + Config.EOL +
+				"You can enter *gamemode* by typing `" + prefix + COMMAND_NAME + " enter` " + Config.EOL +
+				"This makes it so that you don't have to prefix your messages with `" + prefix + COMMAND_NAME + "`";
 	}
 
 	public String executeGameMove(String[] args, User player, TextChannel channel) {
