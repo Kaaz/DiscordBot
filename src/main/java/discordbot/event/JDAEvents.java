@@ -26,7 +26,6 @@ import net.dv8tion.jda.MessageHistory;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.*;
 import net.dv8tion.jda.events.DisconnectEvent;
-import net.dv8tion.jda.events.ReadyEvent;
 import net.dv8tion.jda.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.events.guild.member.GuildMemberBanEvent;

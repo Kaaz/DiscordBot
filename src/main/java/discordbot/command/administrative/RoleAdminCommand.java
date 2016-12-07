@@ -30,6 +30,12 @@ public class RoleAdminCommand extends AbstractCommand {
 	public String getDescription() {
 		return "Management of roles & general permissions " + Config.EOL +
 				"You can give users the ability to self-assign roles. " + Config.EOL +
+				"" + Config.EOL +
+				"Note: " + Config.EOL+
+				"self-assignable roles are not created by emily!" + Config.EOL +
+				"To add an assignable role, you'll first have to add that role though discord." + Config.EOL +
+				"" + Config.EOL +
+				"" + Config.EOL +
 				"Users can get/remove their own roles with the `getrole` command ";
 	}
 
@@ -44,8 +50,8 @@ public class RoleAdminCommand extends AbstractCommand {
 				"You can specify which roles are self-assignable by users with the following commands: ",
 				"",
 				"roleadmin self                                 //check what roles are self-assignable",
-				"roleadmin self add <role>                      //add a role to the list of assignable roles",
-				"roleadmin self remove <role>                   //remove a role from the list of assignable roles",
+				"roleadmin self add <rolename>                  //add a role to the list of assignable roles",
+				"roleadmin self remove <rolename>               //remove a role from the list of assignable roles",
 //				"roleadmin self describe <role> <description>   //add a description to what this role does",
 				"",
 				"",
