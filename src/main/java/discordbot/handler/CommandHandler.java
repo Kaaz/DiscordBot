@@ -39,7 +39,7 @@ public class CommandHandler {
 	private static final HashMap<String, AbstractCommand> commandsAlias = new HashMap<>();
 	private static final Map<String, String> customCommands = new ConcurrentHashMap<>();
 	private static final Map<Integer, Map<String, String>> guildCommands = new ConcurrentHashMap<>();
-	private static final Map<Integer, HashSet<String>> commandBlacklist = new ConcurrentHashMap<>();
+	private static final Map<Integer, Map<String, Map<String, Boolean>>> commandBlacklist = new ConcurrentHashMap<>();
 
 	/**
 	 * checks if the the message in channel is a command
@@ -92,7 +92,7 @@ public class CommandHandler {
 			AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
 			commandUsed = command.getCommand();
 			long cooldown = getCommandCooldown(command, author, channel);
-			if (guildId > 0 && commandBlacklist.containsKey(guildId) && commandBlacklist.get(guildId).contains(command.getCommand())) {
+			if (isBlacklisted(guildId, channel.getId(), command.getCommand())) {
 				commandSuccess = false;
 				if (GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
 					outMsg = Template.get("command_is_blacklisted", input[0]);
@@ -222,6 +222,28 @@ public class CommandHandler {
 			return cooldown.lastTime + cd.getCooldownDuration() - now;
 		}
 		return 0;
+	}
+
+	public static boolean isBlacklisted(int guildId, String channelId, String commandName) {
+		if (guildId == 0) {
+			return false;
+		}
+		if (!commandBlacklist.containsKey(guildId)) {
+			return false;
+		}
+		if (commandBlacklist.get(guildId).containsKey(channelId)) {
+			if (commandBlacklist.get(guildId).get(channelId).containsKey(commandName)) {
+				return commandBlacklist.get(guildId).get(channelId).get(commandName);
+			}
+			return false;
+		}
+		if (commandBlacklist.get(guildId).containsKey("0")) {
+			if (commandBlacklist.get(guildId).get("0").containsKey(commandName)) {
+				return commandBlacklist.get(guildId).get("0").get(commandName);
+			}
+			return false;
+		}
+		return false;
 	}
 
 	/**
@@ -420,15 +442,19 @@ public class CommandHandler {
 
 	/**
 	 * (re-)loads the guild-specific blacklisted commands
+	 * Map<Integer, Map<String, HashSet<String>>>
 	 */
 	private static void reloadBlackList() {
 		commandBlacklist.clear();
 		List<OBlacklistCommand> blacklisted = CBlacklistCommand.getAllBlacklisted();
 		for (OBlacklistCommand item : blacklisted) {
 			if (!commandBlacklist.containsKey(item.guildId)) {
-				commandBlacklist.put(item.guildId, new HashSet<>());
+				commandBlacklist.put(item.guildId, new HashMap<>());
 			}
-			commandBlacklist.get(item.guildId).add(item.command);
+			if (!commandBlacklist.get(item.guildId).containsKey(item.channelId)) {
+				commandBlacklist.get(item.guildId).put(item.channelId, new HashMap<>());
+			}
+			commandBlacklist.get(item.guildId).get(item.channelId).put(item.command, item.blacklisted);
 		}
 	}
 
@@ -441,11 +467,14 @@ public class CommandHandler {
 		if (commandBlacklist.containsKey(guildId)) {
 			commandBlacklist.get(guildId).clear();
 		} else {
-			commandBlacklist.put(guildId, new HashSet<>());
+			commandBlacklist.put(guildId, new HashMap<>());
 		}
 		List<OBlacklistCommand> blacklisted = CBlacklistCommand.getBlacklistedFor(guildId);
 		for (OBlacklistCommand item : blacklisted) {
-			commandBlacklist.get(item.guildId).add(item.command);
+			if (!commandBlacklist.get(item.guildId).containsKey(item.channelId)) {
+				commandBlacklist.get(item.guildId).put(item.channelId, new HashMap<>());
+			}
+			commandBlacklist.get(item.guildId).get(item.channelId).put(item.command, item.blacklisted);
 		}
 	}
 }

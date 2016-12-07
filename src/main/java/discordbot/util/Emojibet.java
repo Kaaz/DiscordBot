@@ -22,6 +22,7 @@ public class Emojibet {
 	public static String THUMBS_DOWN = "\uD83D\uDC4E";
 	public static String COOKIE = "\uD83C\uDF6A";
 	public static String NO_ENTRY = "\uD83D\uDEAB";
+	public static String OKE_SIGN = "\u2705";
 
 
 	static {

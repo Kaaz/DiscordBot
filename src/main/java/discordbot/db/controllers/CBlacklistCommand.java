@@ -19,19 +19,33 @@ public class CBlacklistCommand {
 		record.guildId = resultset.getInt("guild_id");
 		record.command = resultset.getString("command");
 		record.channelId = resultset.getString("channel_id");
+		record.blacklisted = 1 == resultset.getInt("enabled");
 		return record;
 	}
 
 	/**
 	 * checks if a command is blacklisted, returns null if its not blacklisted
 	 *
-	 * @param guildId the guild to check it for
-	 * @param command the command to check
+	 * @param guildId   the guild to check it for
+	 * @param command   the command to check
+	 * @param channelId the command to check
 	 * @return OBlacklistCommand || null
 	 */
+	public static OBlacklistCommand find(int guildId, String command, String channelId) {
+		OBlacklistCommand ret = null;
+		try (ResultSet rs = WebDb.get().select("SELECT * FROM blacklist_commands WHERE guild_id = ? AND command = ? AND channel_id = ? ORDER BY command,channel_id", guildId, command, channelId)) {
+			while (rs.next()) {
+				ret = fillRecord(rs);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ret;
+	}
+
 	public static OBlacklistCommand find(int guildId, String command) {
 		OBlacklistCommand ret = null;
-		try (ResultSet rs = WebDb.get().select("SELECT * FROM blacklist_commands WHERE guild_id = ? AND command = ?", guildId, command)) {
+		try (ResultSet rs = WebDb.get().select("SELECT * FROM blacklist_commands WHERE guild_id = ? AND command = ? ORDER BY command,channel_id", guildId, command)) {
 			while (rs.next()) {
 				ret = fillRecord(rs);
 			}
@@ -82,9 +96,33 @@ public class CBlacklistCommand {
 	 * @param guildId internal guild id
 	 * @param command command name
 	 */
-	public static void delete(int guildId, String command) {
+	public static void deleteCommandOverrides(int guildId, String command) {
 		try {
 			WebDb.get().query("DELETE FROM blacklist_commands WHERE guild_id = ? AND command = ?", guildId, command);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void deleteOverridesInChannel(int guildId, String channelId) {
+		try {
+			WebDb.get().query("DELETE FROM blacklist_commands WHERE guild_id = ? AND channel_id = ?", guildId, channelId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void deleteAllOverrides(int guildId) {
+		try {
+			WebDb.get().query("DELETE FROM blacklist_commands WHERE guild_id = ? AND channel_id NOT LIKE '0'", guildId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void deleteGuild(int guildId) {
+		try {
+			WebDb.get().query("DELETE FROM blacklist_commands WHERE guild_id = ? ", guildId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -105,6 +143,7 @@ public class CBlacklistCommand {
 		}
 	}
 
+
 	/**
 	 * Insert/updates a guild-wide command blacklist
 	 *
@@ -112,7 +151,7 @@ public class CBlacklistCommand {
 	 * @param command        command name
 	 */
 	public static void insertOrUpdate(String discordGuildId, String command) {
-		insertOrUpdate(CGuild.getCachedId(discordGuildId), command, "0");
+		insertOrUpdate(CGuild.getCachedId(discordGuildId), command, "0", true);
 	}
 
 	/**
@@ -123,7 +162,7 @@ public class CBlacklistCommand {
 	 * @param channel        discord channel id
 	 */
 	public static void insertOrUpdate(String discordGuildId, String command, String channel) {
-		insertOrUpdate(CGuild.getCachedId(discordGuildId), command, channel);
+		insertOrUpdate(CGuild.getCachedId(discordGuildId), command, channel, true);
 	}
 
 	/**
@@ -133,12 +172,12 @@ public class CBlacklistCommand {
 	 * @param command command name
 	 * @param channel discord channel id
 	 */
-	public static void insertOrUpdate(int guildId, String command, String channel) {
+	public static void insertOrUpdate(int guildId, String command, String channel, boolean blacklisted) {
 		try {
 			WebDb.get().insert(
-					"INSERT INTO blacklist_commands(guild_id, command, channel_id) " +
-							"VALUES (?,?,?) ON DUPLICATE KEY UPDATE  guild_id = guild_id",
-					guildId, command, channel);
+					"INSERT INTO blacklist_commands(guild_id, command, channel_id,enabled) " +
+							"VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE  enabled = VALUES(enabled)",
+					guildId, command, channel, blacklisted ? 1 : 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
