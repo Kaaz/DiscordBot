@@ -171,6 +171,12 @@ public class GameHandler {
 		}
 		String userId = DisUtil.mentionToId(theMention);
 		User targetUser = bot.client.getUserById(userId);
+		if (targetUser.isBot()) {
+			return Template.get("playmode_not_vs_bots");
+		}
+		if (targetUser.equals(player)) {
+			return Template.get("playmode_not_vs_self");
+		}
 		if (isInAGame(targetUser.getId())) {
 			AbstractGame otherGame = getGame(targetUser.getId());
 			if (otherGame != null && otherGame.waitingForPlayer()) {
