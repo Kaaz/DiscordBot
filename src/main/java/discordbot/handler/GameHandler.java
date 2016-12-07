@@ -6,6 +6,7 @@ import discordbot.games.GameTurn;
 import discordbot.guildsettings.defaults.SettingGameModule;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.TextChannel;
@@ -174,7 +175,7 @@ public class GameHandler {
 		if (targetUser.isBot()) {
 			return Template.get("playmode_not_vs_bots");
 		}
-		if (targetUser.equals(player)) {
+		if (targetUser.equals(player) && !bot.security.getSimpleRank(player).isAtLeast(SimpleRank.CREATOR)) {
 			return Template.get("playmode_not_vs_self");
 		}
 		if (isInAGame(targetUser.getId())) {
