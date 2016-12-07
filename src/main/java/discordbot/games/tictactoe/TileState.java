@@ -1,9 +1,9 @@
 package discordbot.games.tictactoe;
 
 public enum TileState {
-	X(":x:"),
-	O(":o:"),
-	FREE(":grey_question:");
+	X("\u274C"),
+	O("\u2B55"),
+	FREE("\u2754");
 
 	private final String emoticon;
 

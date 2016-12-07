@@ -3,6 +3,7 @@ package discordbot.games.connect4;
 import discordbot.games.AbstractGame;
 import discordbot.games.GameState;
 import discordbot.main.Config;
+import discordbot.util.Emojibet;
 import discordbot.util.Misc;
 import net.dv8tion.jda.entities.User;
 
@@ -114,7 +115,7 @@ public class ConnectFourGame extends AbstractGame<Connect4Turn> {
 			if (board.canPlaceInColumn(i)) {
 				ret += Misc.numberToEmote(i + 1);
 			} else {
-				ret += ":no_entry_sign:";
+				ret += Emojibet.NO_ENTRY;
 			}
 		}
 		ret += Config.EOL + Config.EOL;
@@ -122,7 +123,7 @@ public class ConnectFourGame extends AbstractGame<Connect4Turn> {
 			ret += board.intToPlayer(0) + " = " + getPlayer(0).getUsername() + Config.EOL;
 			ret += board.intToPlayer(1) + " = " + getPlayer(1).getUsername() + Config.EOL;
 			ret += "It's the turn of " + getActivePlayer().getAsMention() + Config.EOL;
-			ret += "to play type **" + getLastPrefix() +"game <columnnumber>**";
+			ret += "to play type **" + getLastPrefix() + "game <columnnumber>**";
 		}
 		if (getGameState().equals(GameState.OVER)) {
 			if (getWinnerIndex() == getTotalPlayers()) {

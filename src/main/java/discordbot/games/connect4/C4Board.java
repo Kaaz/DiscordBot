@@ -39,11 +39,11 @@ public class C4Board {
 	public String intToPlayer(int playerIndex) {
 		switch (playerIndex) {
 			case 0:
-				return ":red_circle:";
+				return "\uD83D\uDD34";
 			case 1:
-				return ":large_blue_circle:";
+				return "\uD83D\uDD35";
 			default:
-				return ":white_circle:";
+				return "\u26AA";
 		}
 	}
 

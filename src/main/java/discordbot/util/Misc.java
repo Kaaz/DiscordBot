@@ -7,17 +7,17 @@ import java.util.*;
 
 public class Misc {
 	private static final String[] numberToEmote = {
-			":zero:",
-			":one:",
-			":two:",
-			":three:",
-			":four:",
-			":five:",
-			":six:",
-			":seven:",
-			":eight:",
-			":nine:",
-			":ten:"
+			"\u0030",
+			"\u0031",
+			"\u0032",
+			"\u0033",
+			"\u0034",
+			"\u0035",
+			"\u0036",
+			"\u0037:",
+			"\u0038",
+			"\u0039",
+			"\uD83D\uDD1F"
 	};
 
 	/**
