@@ -85,7 +85,8 @@ public class BotStatusService extends AbstractService {
 			}
 		}
 		if (roll <= 15) {
-			bot.client.getAccountManager().setGame("@" + bot.client.getSelfInfo().getUsername() + " help or !help for help");
+			String username = bot.client.getSelfInfo().getUsername();
+			bot.client.getAccountManager().setGame("@" + username + " help || @" + username + " invite");
 			return;
 		}
 		bot.client.getAccountManager().setGame(statusList[new Random().nextInt(statusList.length)]);
