@@ -31,17 +31,17 @@ Current list of all available commands. See below for a more detailed list
 
 Commands | | | | |
 --- | --- | ---| ---| ---
-[8ball](#8ball) | [autoreply](#autoreply) | [blackjack](#blackjack) | [catfact](#catfact) | [changename](#changename)
-[command](#command) | [config](#config) | [consolecomm](#consolecomm) | [current](#current) | [exec](#exec)
-[exit](#exit) | [fml](#fml) | [game](#game) | [getrole](#getrole) | [guildstats](#guildstats)
-[help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite) | [join](#join)
-[joke](#joke) | [leaveguild](#leaveguild) | [meme](#meme) | [pause](#pause) | [ping](#ping)
-[play](#play) | [playlist](#playlist) | [pm](#pm) | [prefix](#prefix) | [purge](#purge)
-[reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report) | [roleadmin](#roleadmin)
-[roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [skip](#skip) | [slot](#slot)
-[stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [template](#template)
-[ud](#ud) | [uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version)
-[volume](#volume) | 
+[8ball](#8ball) | [autoreply](#autoreply) | [blackjack](#blackjack) | [blacklist](#blacklist) | [botstatus](#botstatus)
+[catfact](#catfact) | [changename](#changename) | [command](#command) | [config](#config) | [consolecomm](#consolecomm)
+[current](#current) | [exec](#exec) | [exit](#exit) | [fml](#fml) | [game](#game)
+[getrole](#getrole) | [guildstats](#guildstats) | [help](#help) | [importmusic](#importmusic) | [info](#info)
+[invite](#invite) | [join](#join) | [joke](#joke) | [leaveguild](#leaveguild) | [meme](#meme)
+[pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
+[prefix](#prefix) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload)
+[report](#report) | [roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile)
+[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
+[tag](#tag) | [template](#template) | [ud](#ud) | [uptime](#uptime) | [user](#user)
+[userrank](#userrank) | [version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -218,6 +218,37 @@ Usable in public and private channels
 blackjack        //check status
 blackjack hit    //hits
 blackjack stand  //stands
+```
+### blacklist
+
+blacklist commands, so that they can't be used
+
+Accessible though: blacklist, bl, wl, whitelist
+
+Usable in public  channels
+
+#### Usage
+
+```php
+bl command <command> [enable/disable]      //enables or disables commands
+
+example:
+bl command meme disable                    //this disabled the meme command
+```
+### botstatus
+
+Set the game I'm currently playing
+
+Accessible though: botstatus
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+botstatus reset                      //unlocks the status
+botstatus game <game>                //changes the playing game to <game>
+botstatus stream <username> <game>   //streaming twitch.tv/<username> playing <game>
 ```
 ### catfact
 
@@ -644,6 +675,12 @@ report <subject> | <message..>
 
 Management of roles & general permissions 
 You can give users the ability to self-assign roles. 
+
+Note: 
+self-assignable roles are not created by emily!
+To add an assignable role, you'll first have to add that role though discord.
+
+
 Users can get/remove their own roles with the `getrole` command 
 
 Accessible though: roleadmin, ra
@@ -656,8 +693,8 @@ Usable in public  channels
 You can specify which roles are self-assignable by users with the following commands: 
 
 roleadmin self                                 //check what roles are self-assignable
-roleadmin self add <role>                      //add a role to the list of assignable roles
-roleadmin self remove <role>                   //remove a role from the list of assignable roles
+roleadmin self add <rolename>                  //add a role to the list of assignable roles
+roleadmin self remove <rolename>               //remove a role from the list of assignable roles
 
 
 roleadmin                        //lists roles
