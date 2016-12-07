@@ -112,7 +112,7 @@ public class CommandAdminCommand extends AbstractCommand {
 				if (args.length >= 3) {
 					boolean disable = args[2].equalsIgnoreCase("disable");
 					if (disable) {
-						CBlacklistCommand.insertOrUpdate(guildId, command.getCommand());
+						CBlacklistCommand.insertOrUpdate(guildId, command.getCommand(), "0");
 						CommandHandler.reloadBlackListFor(guildId);
 						return Template.get("command_blacklist_command_disabled", command.getCommand());
 					}
