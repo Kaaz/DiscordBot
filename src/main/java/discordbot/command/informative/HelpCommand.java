@@ -70,7 +70,7 @@ public class HelpCommand extends AbstractCommand {
 				for (String alias : c.getAliases()) {
 					aliases.add(commandPrefix + alias);
 				}
-				ret += ":keyboard: **Accessible though:** " + Config.EOL +
+				ret += ":keyboard: **Accessible through:** " + Config.EOL +
 						Misc.makeTable(aliases, 16, 3);
 				ret += ":notepad_spiral: **Description:** " + Config.EOL +
 						Misc.makeTable(c.getDescription());

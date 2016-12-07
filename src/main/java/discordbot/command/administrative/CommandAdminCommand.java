@@ -21,15 +21,15 @@ import java.util.stream.Collectors;
 /**
  * !blacklist/whitelist
  */
-public class BlacklistCommand extends AbstractCommand {
-	public BlacklistCommand() {
+public class CommandAdminCommand extends AbstractCommand {
+	public CommandAdminCommand() {
 		super();
 	}
 
 	@Override
 	public String getDescription() {
-		return
-				"blacklist commands, so that they can't be used";
+		return "Commands can be enabled/disabled through this command." + Config.EOL +
+				"A channel specific setting will always override the guild setting";
 	}
 
 	@Override
@@ -44,23 +44,28 @@ public class BlacklistCommand extends AbstractCommand {
 
 	@Override
 	public String getCommand() {
-		return "blacklist";
+		return "commandadmin";
 	}
 
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"bl command <command> [enable/disable]      //enables or disables commands",
+				"ca <command> [enable/disable]               //enables/disables commands in the whole guild",
+				"ca <command> [enable/disable] [#channel]    //enables/disables commands in a channel. This overrides the above",
+				"ca reset [#channel]                         //resets the overrides for a channel",
+				"ca resetchannels                            //resets the overrides for all channels",
+				"ca reset yesimsure                          //enables all commands + resets overrides",
 				"",
-				"example:",
-				"bl command meme disable                    //this disabled the meme command"
+				"examples:",
+				"ca meme disable                             //this disabled the meme command",
+				"ca meme enable #spam                        //overrides and meme is enabled in #spam"
 		};
 	}
 
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"bl", "wl", "whitelist"
+				"ca"
 		};
 	}
 
@@ -115,7 +120,6 @@ public class BlacklistCommand extends AbstractCommand {
 					CommandHandler.reloadBlackListFor(guildId);
 					return Template.get("command_blacklist_command_enabled", command.getCommand());
 				}
-
 				return String.format("Do stuff with the `%s` command", command.getCommand());
 		}
 		return Template.get("command_invalid_use");
