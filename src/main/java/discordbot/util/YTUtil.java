@@ -1,12 +1,20 @@
 package discordbot.util;
 
+import discordbot.db.controllers.CMusic;
+import discordbot.db.model.OMusic;
 import discordbot.main.Config;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.json.JSONObject;
+import sun.misc.IOUtils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +48,7 @@ public class YTUtil {
 
 	/**
 	 * Extracts the playlistcode from a yt url
+	 *
 	 * @param url the url
 	 * @return playlistcode || null if not found
 	 */
@@ -84,5 +93,39 @@ public class YTUtil {
 
 	public static String getOutputPath(String videoCode) {
 		return Config.MUSIC_DIRECTORY + videoCode + ".opus";
+	}
+
+	public static boolean getTrackDuration(OMusic record) {
+		if (record.fileExists == 0 || record.duration > 0) {
+			return false;
+		}
+		Process ffprobeProcess = null;
+		try {
+			ffprobeProcess = new ProcessBuilder().command(Arrays.asList(
+					"ffprobe",
+					"-show_format",
+					"-print_format", "json",
+					"-loglevel", "0",
+					"-i", record.filename
+			)).start();
+			InputStream ffprobeStream = ffprobeProcess.getInputStream();
+			byte[] infoData = IOUtils.readFully(ffprobeStream, -1, false);
+			ffprobeProcess.waitFor(30, TimeUnit.SECONDS);
+			if (infoData != null && infoData.length > 0) {
+				JSONObject json = new JSONObject(new String(infoData)).getJSONObject("format");
+				int duration = (int) json.optDouble("duration", 0);
+				if (duration != 0) {
+					record.duration = duration;
+					CMusic.update(record);
+					return true;
+				}
+			}
+		} catch (IOException | InterruptedException ignored) {
+		} finally {
+			if (ffprobeProcess != null) {
+				ffprobeProcess.destroyForcibly();
+			}
+		}
+		return false;
 	}
 }

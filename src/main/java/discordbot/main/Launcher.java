@@ -53,11 +53,7 @@ public class Launcher {
 		Launcher.init();
 		if (Config.BOT_ENABLED) {
 			consoleInputThread = new ConsoleInputThread();
-			Runtime.getRuntime().addShutdownHook(new Thread() {
-				public void run() {
-					Launcher.shutdownHook();
-				}
-			});
+			Runtime.getRuntime().addShutdownHook(new Thread(Launcher::shutdownHook));
 			try {
 				botContainer = new BotContainer((CGuild.getActiveGuildCount()));
 				Thread serviceHandler = new ServiceHandlerThread(botContainer);
@@ -102,7 +98,7 @@ public class Launcher {
 	/**
 	 * shutdown hook, closing connections
 	 */
-	public static void shutdownHook() {
+	private static void shutdownHook() {
 		if (botContainer != null) {
 			for (DiscordBot discordBot : botContainer.getShards()) {
 				for (Guild guild : discordBot.client.getGuilds()) {

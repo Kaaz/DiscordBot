@@ -25,6 +25,7 @@ import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
+import discordbot.util.YTUtil;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
@@ -225,10 +226,13 @@ public class MusicPlayerHandler {
 			File f = new File(info.identifier);
 			record = CMusic.findByFileName(f.getAbsolutePath());
 			if (record.id > 0) {
+				if (record.duration == 0) {
+					YTUtil.getTrackDuration(record);
+				}
 				record.lastplaydate = System.currentTimeMillis() / 1000L;
 				CMusic.update(record);
 				currentlyPlaying = record.id;
-				currentSongLength = info.length / 1000L;
+				currentSongLength = record.duration;
 				CMusicLog.insert(CGuild.getCachedId(guild.getId()), record.id, 0);
 				if (!playlist.isGlobalList()) {
 					CPlaylist.updateLastPlayed(playlist.id, record.id);
