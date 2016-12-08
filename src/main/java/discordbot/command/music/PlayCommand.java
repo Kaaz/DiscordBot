@@ -108,6 +108,9 @@ public class PlayCommand extends AbstractCommand {
 					player.leave();
 					Thread.sleep(2000L);// ¯\_(ツ)_/¯
 				}
+				if (!PermissionUtil.checkPermission(guild.getVoiceStatusOfUser(author).getChannel(), bot.client.getSelfInfo(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
+					return Template.get("music_join_no_permission");
+				}
 				player.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
 				Thread.sleep(2000L);// ¯\_(ツ)_/¯
 			} catch (Exception e) {

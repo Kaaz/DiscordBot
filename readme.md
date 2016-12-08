@@ -31,8 +31,8 @@ Current list of all available commands. See below for a more detailed list
 
 Commands | | | | |
 --- | --- | ---| ---| ---
-[8ball](#8ball) | [autoreply](#autoreply) | [blackjack](#blackjack) | [blacklist](#blacklist) | [botstatus](#botstatus)
-[catfact](#catfact) | [changename](#changename) | [command](#command) | [config](#config) | [consolecomm](#consolecomm)
+[8ball](#8ball) | [autoreply](#autoreply) | [blackjack](#blackjack) | [botstatus](#botstatus) | [catfact](#catfact)
+[changename](#changename) | [command](#command) | [commandadmin](#commandadmin) | [config](#config) | [consolecomm](#consolecomm)
 [current](#current) | [exec](#exec) | [exit](#exit) | [fml](#fml) | [game](#game)
 [getrole](#getrole) | [guildstats](#guildstats) | [help](#help) | [importmusic](#importmusic) | [info](#info)
 [invite](#invite) | [join](#join) | [joke](#joke) | [leaveguild](#leaveguild) | [meme](#meme)
@@ -219,22 +219,6 @@ blackjack        //check status
 blackjack hit    //hits
 blackjack stand  //stands
 ```
-### blacklist
-
-blacklist commands, so that they can't be used
-
-Accessible though: blacklist, bl, wl, whitelist
-
-Usable in public  channels
-
-#### Usage
-
-```php
-bl command <command> [enable/disable]      //enables or disables commands
-
-example:
-bl command meme disable                    //this disabled the meme command
-```
 ### botstatus
 
 Set the game I'm currently playing
@@ -298,6 +282,29 @@ Usable in public  channels
 command add <command> <action>  //adds a command
 command delete <command>        //deletes a command
 command                         //shows a list of existing custom commands
+```
+### commandadmin
+
+Commands can be enabled/disabled through this command.
+A channel specific setting will always override the guild setting
+
+Accessible though: commandadmin, ca
+
+Usable in public  channels
+
+#### Usage
+
+```php
+ca <command> [enable/disable]               //enables/disables commands in the whole guild
+ca <command> [enable/disable] [#channel]    //enables/disables commands in a channel. This overrides the above
+ca resetchannel [#channel]                  //resets the overrides for a channel
+ca command [command]                        //resets the overrides for a channel
+ca resetallchannels                         //resets the overrides for all channels
+ca reset yesimsure                          //enables all commands + resets overrides
+
+examples:
+ca meme disable                             //this disabled the meme command
+ca meme enable #spam                        //overrides and meme is enabled in #spam
 ```
 ### config
 

@@ -32,6 +32,7 @@ public class DiscordBot {
 	public JDA client;
 	public Timer timer = new Timer();
 	public String mentionMe;
+	public String mentionMeAlias;
 	public ChatBotHandler chatBotHandler = null;
 	public SecurityHandler security = null;
 	public OutgoingContentHandler out = null;
@@ -145,6 +146,7 @@ public class DiscordBot {
 	public void markReady() {
 		loadConfiguration();
 		mentionMe = "<@" + this.client.getSelfInfo().getId() + ">";
+		mentionMeAlias = "<@!" + this.client.getSelfInfo().getId() + ">";
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds(), client);
 		this.isReady = true;
@@ -227,7 +229,7 @@ public class DiscordBot {
 	}
 
 	public void handlePrivateMessage(PrivateChannel channel, User author, Message message) {
-		if (CommandHandler.isCommand(null, message.getRawContent(), mentionMe)) {
+		if (CommandHandler.isCommand(null, message.getRawContent(), mentionMe, mentionMeAlias)) {
 			CommandHandler.process(this, channel, author, message.getRawContent());
 		} else {
 			channel.sendTyping();
@@ -239,7 +241,6 @@ public class DiscordBot {
 		if (author == null || author.isBot()) {
 			return;
 		}
-
 		GuildSettings settings = GuildSettings.get(guild);
 		if (settings.getOrDefault(SettingActiveChannels.class).equals("mine") &&
 				!channel.getName().equalsIgnoreCase(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
@@ -249,7 +250,7 @@ public class DiscordBot {
 			gameHandler.execute(author, channel, message.getRawContent());
 			return;
 		}
-		if (CommandHandler.isCommand(channel, message.getRawContent(), mentionMe)) {
+		if (CommandHandler.isCommand(channel, message.getRawContent(), mentionMe, mentionMeAlias)) {
 			CommandHandler.process(this, channel, author, message.getRawContent());
 			return;
 		}

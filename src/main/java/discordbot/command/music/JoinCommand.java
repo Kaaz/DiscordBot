@@ -6,10 +6,12 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
+import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.entities.VoiceChannel;
+import net.dv8tion.jda.utils.PermissionUtil;
 
 /**
  * !joinme
@@ -59,6 +61,9 @@ public class JoinCommand extends AbstractCommand {
 			}
 			if (player.isConnectedTo(voiceChannel)) {
 				return Template.get("command_join_already_there");
+			}
+			if (!PermissionUtil.checkPermission(voiceChannel, bot.client.getSelfInfo(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
+				return Template.get("music_join_no_permission");
 			}
 			player.connectTo(voiceChannel);
 			return Template.get("command_join_joinedyou");

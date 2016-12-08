@@ -44,13 +44,14 @@ public class CommandHandler {
 	/**
 	 * checks if the the message in channel is a command
 	 *
-	 * @param channel   the channel the message came from
-	 * @param msg       the message
-	 * @param mentionMe the user mention string
+	 * @param channel        the channel the message came from
+	 * @param msg            the message
+	 * @param mentionMe      the user mention string
+	 * @param mentionMeAlias the nickname
 	 * @return whether or not the message is a command
 	 */
-	public static boolean isCommand(TextChannel channel, String msg, String mentionMe) {
-		return msg.startsWith(DisUtil.getCommandPrefix(channel)) || msg.startsWith(mentionMe);
+	public static boolean isCommand(TextChannel channel, String msg, String mentionMe, String mentionMeAlias) {
+		return msg.startsWith(DisUtil.getCommandPrefix(channel)) || msg.startsWith(mentionMe) || msg.startsWith(mentionMeAlias);
 	}
 
 	public static void removeGuild(int guildId) {
@@ -77,7 +78,11 @@ public class CommandHandler {
 		if (inputMessage.startsWith(bot.mentionMe)) {
 			inputMessage = inputMessage.replace(bot.mentionMe, "").trim();
 			startedWithMention = true;
+		} else if (inputMessage.startsWith(bot.mentionMeAlias)) {
+			inputMessage = inputMessage.replace(bot.mentionMeAlias, "").trim();
+			startedWithMention = true;
 		}
+
 		if (channel instanceof TextChannel) {
 			guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());
 			if (!((TextChannel) channel).checkPermission(bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
