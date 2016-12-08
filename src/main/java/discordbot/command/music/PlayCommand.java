@@ -191,12 +191,12 @@ public class PlayCommand extends AbstractCommand {
 			bot.out.sendAsyncMessage(channel, Template.get("music_downloading_in_queue", videoTitle), message -> {
 				bot.getContainer().downloadRequest(finalVideoCode, videoTitle, message, msg -> {
 					try {
-						if (filecheck.exists()) {
-							String path = filecheck.toPath().toRealPath().toString();
+						File targetFile = new File(YTUtil.getOutputPath(videoCode));
+						if (targetFile.exists()) {
 							OMusic rec = CMusic.findByYoutubeId(finalVideoCode);
 							rec.youtubeTitle = (!videoTitle.isEmpty() && !videoTitle.equals(finalVideoCode)) ? videoTitle : EmojiParser.parseToAliases(YTUtil.getTitleFromPage(finalVideoCode));
 							rec.youtubecode = finalVideoCode;
-							rec.filename = path;
+							rec.filename = targetFile.toPath().toRealPath().toString();
 							rec.playCount += 1;
 							rec.fileExists = 1;
 							rec.lastManualPlaydate = System.currentTimeMillis() / 1000L;
@@ -204,7 +204,7 @@ public class PlayCommand extends AbstractCommand {
 							if (msg != null) {
 								msg.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
 							}
-							player.addToQueue(path, invoker);
+							player.addToQueue(targetFile.toPath().toRealPath().toString(), invoker);
 						} else {
 							if (msg != null) {
 								msg.updateMessageAsync("Download failed, the song is likely too long or region locked!", null);
@@ -212,7 +212,9 @@ public class PlayCommand extends AbstractCommand {
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
-						msg.updateMessageAsync(Template.get("music_file_error"), null);
+						if (msg != null) {
+							msg.updateMessageAsync(Template.get("music_file_error"), null);
+						}
 					}
 				});
 			});
