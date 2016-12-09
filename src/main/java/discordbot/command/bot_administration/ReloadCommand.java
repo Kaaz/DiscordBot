@@ -1,18 +1,21 @@
 package discordbot.command.bot_administration;
 
+import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
+import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
 /**
  * !reload
  * reloads config
  */
-public class Reload extends AbstractCommand {
-	public Reload() {
+public class ReloadCommand extends AbstractCommand {
+	public ReloadCommand() {
 		super();
 	}
 
@@ -37,11 +40,23 @@ public class Reload extends AbstractCommand {
 	}
 
 	@Override
+	public CommandVisibility getVisibility() {
+		return CommandVisibility.PUBLIC;
+	}
+
+	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
-			return Template.get("no_permission");
+		Guild guild = ((TextChannel) channel).getGuild();
+		SimpleRank rank = bot.security.getSimpleRank(author, channel);
+		if (rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+			bot.loadConfiguration();
+			return Template.get("command_reload_success");
 		}
-		bot.loadConfiguration();
-		return Template.get("command_reload_success");
+		if (rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+			bot.clearChannels(guild);
+			bot.loadGuild(guild);
+			return Template.get("command_reload_success");
+		}
+		return Template.get("no_permission");
 	}
 }
