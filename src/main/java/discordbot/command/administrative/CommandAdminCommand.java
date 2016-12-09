@@ -34,7 +34,7 @@ public class CommandAdminCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean isBlacklistable() {
+	public boolean canBeDisabled() {
 		return false;
 	}
 
@@ -158,7 +158,7 @@ public class CommandAdminCommand extends AbstractCommand {
 		if (command == null) {
 			return Template.get("command_blacklist_command_not_found", args[0]);
 		}
-		if (!command.isBlacklistable()) {
+		if (!command.canBeDisabled()) {
 			return Template.get("command_blacklist_not_blacklistable", args[0]);
 		}
 		if (!args[1].equals("enable") && !args[1].equals("disable")) {

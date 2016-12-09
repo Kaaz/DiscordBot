@@ -32,7 +32,7 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
 	}
 
 	@Override
-	public boolean isBlacklistable() {
+	public boolean canBeDisabled() {
 		return false;
 	}
 

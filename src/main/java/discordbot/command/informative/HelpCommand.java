@@ -34,7 +34,7 @@ public class HelpCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean isBlacklistable() {
+	public boolean canBeDisabled() {
 		return false;
 	}
 

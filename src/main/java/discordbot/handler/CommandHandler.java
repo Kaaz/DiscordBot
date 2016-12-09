@@ -97,7 +97,7 @@ public class CommandHandler {
 			AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
 			commandUsed = command.getCommand();
 			long cooldown = getCommandCooldown(command, author, channel);
-			if (isBlacklisted(guildId, channel.getId(), command.getCommand())) {
+			if (command.canBeDisabled() && isDisabled(guildId, channel.getId(), command.getCommand())) {
 				commandSuccess = false;
 				if (GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
 					outMsg = Template.get("command_is_blacklisted", input[0]);
@@ -229,7 +229,7 @@ public class CommandHandler {
 		return 0;
 	}
 
-	public static boolean isBlacklisted(int guildId, String channelId, String commandName) {
+	public static boolean isDisabled(int guildId, String channelId, String commandName) {
 		if (guildId == 0) {
 			return false;
 		}

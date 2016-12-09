@@ -79,7 +79,7 @@ public abstract class AbstractCommand {
 	 *
 	 * @return can be blacklisted?
 	 */
-	public boolean isBlacklistable() {
+	public boolean canBeDisabled() {
 		return true;
 	}
 
