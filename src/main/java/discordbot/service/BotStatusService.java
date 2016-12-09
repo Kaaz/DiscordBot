@@ -73,23 +73,25 @@ public class BotStatusService extends AbstractService {
 	@Override
 	public void run() {
 		int roll = rng.nextInt(100);
-		DiscordBot bot = this.bot.getShards()[0];
-		TextChannel channel = bot.client.getTextChannelById(Config.BOT_CHANNEL_ID);
-		if (channel != null && roll <= 5) {
-			List<InviteUtil.AdvancedInvite> invites = channel.getInvites();
+		String statusText = "Something";
+		TextChannel inviteChannel = bot.getBotFor(Config.BOT_GUILD_ID).client.getTextChannelById(Config.BOT_CHANNEL_ID);
+		if (inviteChannel != null && roll <= 5) {
+			List<InviteUtil.AdvancedInvite> invites = inviteChannel.getInvites();
 			if (invites.size() > 0) {
-				bot.client.getAccountManager().setGame("Feedback @ https://discord.gg/" + invites.get(0).getCode());
-				return;
+				statusText = "Feedback @ https://discord.gg/" + invites.get(0).getCode();
 			} else {
-				bot.out.sendPrivateMessage(bot.client.getUserById(Config.CREATOR_ID), ":exclamation: I am out of invites for `" + channel.getName() + "` Click here to make more :D " + channel.getAsMention());
+				bot.getBotFor(Config.BOT_GUILD_ID).out.sendMessageToCreator(":exclamation: I am out of invites for `" + inviteChannel.getName() + "` Click here to make more :D " + inviteChannel.getAsMention());
 			}
+		} else if (roll <= 15) {
+			String username = bot.getShards()[0].client.getSelfInfo().getUsername();
+			statusText = "@" + username + " help || @" + username + " invite";
+		} else {
+			statusText = statusList[new Random().nextInt(statusList.length)];
 		}
-		if (roll <= 15) {
-			String username = bot.client.getSelfInfo().getUsername();
-			bot.client.getAccountManager().setGame("@" + username + " help || @" + username + " invite");
-			return;
+
+		for (DiscordBot shard : bot.getShards()) {
+			shard.client.getAccountManager().setGame(statusText);
 		}
-		bot.client.getAccountManager().setGame(statusList[new Random().nextInt(statusList.length)]);
 	}
 
 	@Override
