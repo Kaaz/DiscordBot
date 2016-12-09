@@ -1,7 +1,6 @@
 package discordbot.event;
 
 import com.vdurmont.emoji.EmojiParser;
-import discordbot.core.ExitCode;
 import discordbot.db.controllers.CBotEvent;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CGuildMember;
@@ -26,6 +25,7 @@ import net.dv8tion.jda.MessageHistory;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.*;
 import net.dv8tion.jda.events.DisconnectEvent;
+import net.dv8tion.jda.events.ReconnectedEvent;
 import net.dv8tion.jda.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.events.guild.member.GuildMemberBanEvent;
@@ -40,6 +40,7 @@ import net.dv8tion.jda.events.voice.VoiceLeaveEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 
@@ -51,6 +52,7 @@ public class JDAEvents extends ListenerAdapter {
 			"225168913808228352",
 			"180818466847064065"
 	};
+	private volatile List<VoiceChannel> disconnectedAudioConnections = new ArrayList<>();
 	private DiscordBot discordBot;
 
 	public JDAEvents(DiscordBot bot) {
@@ -59,7 +61,26 @@ public class JDAEvents extends ListenerAdapter {
 
 	public void onDisconnect(DisconnectEvent event) {
 		DiscordBot.LOGGER.info("[event] DISCONNECTED! ");
-		Launcher.stop(ExitCode.DISCONNECTED);
+		disconnectedAudioConnections = event.getDisconnectedAudioConnections();
+//		Launcher.stop(ExitCode.DISCONNECTED);
+	}
+
+	@Override
+	public void onReconnect(ReconnectedEvent event) {
+		for (VoiceChannel connection : disconnectedAudioConnections) {
+			connection.getGuild();
+			Guild guild = discordBot.client.getGuildById(connection.getGuild().getId());
+			if (guild == null) {
+				continue;
+			}
+			VoiceChannel newVoiceChannel = discordBot.client.getVoiceChannelById(connection.getId());
+			if (newVoiceChannel == null) {
+				continue;
+			}
+			guild.getAudioManager().closeAudioConnection();
+			guild.getAudioManager().openAudioConnection(newVoiceChannel);
+			MusicPlayerHandler.getFor(guild, discordBot).reconnect();
+		}
 	}
 
 	public void onGuildJoin(GuildJoinEvent event) {

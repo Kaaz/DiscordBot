@@ -51,9 +51,8 @@ public class MusicPlayerHandler {
 	private final AudioPlayer player;
 	private final TrackScheduler scheduler;
 	private final HashSet<User> skipVotes;
-
+	private final AudioPlayerSendHandler audioPlayerSendHandler;
 	private volatile boolean inRepeatMode = false;
-
 	private volatile int currentlyPlaying = 0;
 	private volatile long currentSongLength = 0;
 	private volatile long pauseStart = 0;
@@ -72,7 +71,8 @@ public class MusicPlayerHandler {
 		player = playerManager.createPlayer();
 		scheduler = new TrackScheduler(player);
 		player.addListener(scheduler);
-		guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
+		audioPlayerSendHandler = new AudioPlayerSendHandler(player);
+		guild.getAudioManager().setSendingHandler(audioPlayerSendHandler);
 		player.setVolume(Integer.parseInt(GuildSettings.get(guild).getOrDefault(SettingMusicVolume.class)));
 		playerInstances.put(guild, this);
 		int savedPlaylist = Integer.parseInt(GuildSettings.get(guild).getOrDefault(SettingMusicLastPlaylist.class));
@@ -105,6 +105,10 @@ public class MusicPlayerHandler {
 		} else {
 			return new MusicPlayerHandler(guild, bot);
 		}
+	}
+
+	public void reconnect() {
+		guild.getAudioManager().setSendingHandler(audioPlayerSendHandler);
 	}
 
 	/**
