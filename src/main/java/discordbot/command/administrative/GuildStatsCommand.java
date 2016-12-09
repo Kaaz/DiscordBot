@@ -164,7 +164,7 @@ public class GuildStatsCommand extends AbstractCommand {
 			int activeVoice = 0;
 			int requests = shard.client.getResponseTotal();
 			for (Guild guild : shard.client.getGuilds()) {
-				if (bot.client.getAudioManager(guild).isConnected()) {
+				if (shard.client.getAudioManager(guild).isConnected()) {
 					activeVoice++;
 				}
 			}
