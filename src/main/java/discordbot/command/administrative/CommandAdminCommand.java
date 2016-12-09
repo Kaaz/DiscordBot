@@ -11,6 +11,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
+import discordbot.util.Emojibet;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
@@ -88,22 +89,38 @@ public class CommandAdminCommand extends AbstractCommand {
 			if (blacklist.isEmpty()) {
 				return Template.get("command_blacklist_command_empty");
 			}
-			StringBuilder ret = new StringBuilder().append("The following commands are blacklisted: ").append(Config.EOL).append(Config.EOL);
+			StringBuilder ret = new StringBuilder().append("The following commands are restricted: ").append(Config.EOL).append(Config.EOL);
 			String lastCommand = blacklist.get(0).command;
+			boolean guildwide = false;
+			boolean firstSubItem = true;
 			for (OBlacklistCommand item : blacklist) {
+				String icon = item.blacklisted ? Emojibet.NO_ENTRY : Emojibet.OKE_SIGN;
+				String cmdStatus = item.blacklisted ? "disabled" : "enabled";
 				if (!lastCommand.equals(item.command)) {
 					lastCommand = item.command;
-					ret.append(Config.EOL);
+					ret.append(Config.EOL).append(Config.EOL);
+					guildwide = false;
+					firstSubItem = true;
 				}
-				String cmdStatus = item.blacklisted ? "disabled" : "enabled";
 				if (item.channelId.equals("0")) {
-					ret.append(item.command).append(" is ").append(cmdStatus).append(" globally!").append(Config.EOL);
+					ret.append(icon).append(" `").append(item.command).append("` is ").append(cmdStatus).append(" guild-wide!").append(Config.EOL);
+					guildwide = true;
 				} else {
 					TextChannel tmp = bot.client.getTextChannelById(item.channelId);
 					if (tmp == null) {
 						continue;
 					}
-					ret.append(item.command).append(" is ").append(cmdStatus).append(" in ").append(tmp.getAsMention()).append(Config.EOL);
+					if (!guildwide && firstSubItem) {
+						ret.append("`").append(item.command).append("` is ").append(cmdStatus).append(" in: ");
+					}
+					if (!firstSubItem) {
+						ret.append(" | ");
+					}
+					if (firstSubItem && guildwide) {
+						ret.append("Except in: ");
+					}
+					firstSubItem = false;
+					ret.append(tmp.getAsMention()).append(" ").append(icon);
 				}
 			}
 			return ret.toString();
