@@ -172,10 +172,15 @@ public class DiscordBot {
 	 *
 	 * @param guild the guild to clear for
 	 */
-	public void clearChannels(Guild guild) {
+	public synchronized void clearChannels(Guild guild) {
 		defaultChannels.remove(guild);
 		musicChannels.remove(guild);
 		logChannels.remove(guild);
+	}
+	public synchronized void clearChannels(){
+		defaultChannels.clear();
+		musicChannels.clear();
+		logChannels.clear();
 	}
 
 	/**

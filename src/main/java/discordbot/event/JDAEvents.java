@@ -81,6 +81,7 @@ public class JDAEvents extends ListenerAdapter {
 			guild.getAudioManager().openAudioConnection(newVoiceChannel);
 			MusicPlayerHandler.getFor(guild, discordBot).reconnect();
 		}
+		discordBot.clearChannels();
 		disconnectedAudioConnections.clear();
 	}
 

@@ -97,6 +97,10 @@ public class YTSearch {
 		return urls;
 	}
 
+	public void resetCache() {
+		cache.clear();
+	}
+
 	public class SimpleResult {
 		private final String code;
 		private final String title;
