@@ -2,7 +2,7 @@ package discordbot.command.music;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import com.vdurmont.emoji.EmojiParser;
-import discordbot.command.ICommandCleanup2;
+import discordbot.command.ICommandCleanup;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CMusic;
@@ -33,7 +33,7 @@ import java.util.List;
  * plays a youtube link
  * yea.. play is probably not a good name at the moment
  */
-public class PlayCommand extends AbstractCommand implements ICommandCleanup2 {
+public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 	private static final int MAX_PLAYLIST_SIZE = 40;
 	private YTSearch ytSearch;
 
