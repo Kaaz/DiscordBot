@@ -1,6 +1,6 @@
 package discordbot.service;
 
-import discordbot.command.ICommandCleanup;
+import discordbot.command.ICommandCleanup2;
 import discordbot.core.AbstractCommand;
 import discordbot.core.AbstractService;
 import discordbot.handler.CommandHandler;
@@ -40,8 +40,8 @@ public class BotCleanupService extends AbstractService {
 	@Override
 	public void run() {
 		for (AbstractCommand abstractCommand : CommandHandler.getCommandObjects()) {
-			if (abstractCommand instanceof ICommandCleanup) {
-				((ICommandCleanup) abstractCommand).cleanup();
+			if (abstractCommand instanceof ICommandCleanup2) {
+				((ICommandCleanup2) abstractCommand).cleanup();
 			}
 		}
 		for (DiscordBot shard : bot.getShards()) {
