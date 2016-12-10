@@ -55,10 +55,6 @@ public class YoutubeThread extends Thread {
 		infoArgs.add("--hls-prefer-ffmpeg");
 		infoArgs.add("--max-filesize");
 		infoArgs.add("64m");
-//		infoArgs.add("--recode-video");
-//		infoArgs.add("mkv");
-//		infoArgs.add("--postprocessor-arg");
-//		infoArgs.add("-b:a 128k");
 		if (Config.MUSIC_USE_CACHE_DIR) {
 			infoArgs.add("--exec");
 			infoArgs.add("mv {} " + Config.MUSIC_DIRECTORY);

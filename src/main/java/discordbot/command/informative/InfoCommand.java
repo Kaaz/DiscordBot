@@ -89,15 +89,24 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
 					break;
 			}
 		}
+		channel.sendTyping();
 		String onlineFor = TimeUtil.getRelativeTime(bot.startupTimeStamp, false);
 		String response = bot.chatBotHandler.chat("What are you?");
+		String purpose = bot.chatBotHandler.chat("What is your purpose?");
 		String prefix = DisUtil.getCommandPrefix(channel);
 		if (response.isEmpty()) {
 			response = "I'm batman";
 		}
-		return "What am I? *" + response + "* " + Config.EOL +
-				"Currently active on " + bot.client.getGuilds().size() + " guilds and the last time I restarted was  " + onlineFor + "." + Config.EOL +
-				"Running version `" + Launcher.getVersion().toString() + "` and there are " + CommandHandler.getCommands().length + " commands I can perform type **" + prefix + "help** for a full list" + Config.EOL +
+		if (purpose.isEmpty()) {
+			purpose = "I don't know";
+		}
+		return "\u2139 > Info  " + Config.EOL + Config.EOL +
+				"*" + bot.chatBotHandler.chat("information") + "* " + Config.EOL + Config.EOL +
+				"**What am I?** *" + response + "* " + Config.EOL +
+				"**My purpose?** *" + purpose + "* " + Config.EOL + Config.EOL +
+				"The last time I restarted was  " + onlineFor + "." + Config.EOL +
+				"Running version `" + Launcher.getVersion().toString() + "` and there are " + CommandHandler.getCommands().length + " commands I can perform." + Config.EOL + Config.EOL +
+				"Type **" + prefix + "help** to see what I'll allow you to do" + Config.EOL + Config.EOL +
 				"If I can't help you out, you can always try your luck in my __" + prefix + "discord__";
 	}
 
