@@ -9,7 +9,10 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  * !skip
@@ -53,19 +56,6 @@ public class SkipTrack extends AbstractCommand {
 		};
 	}
 
-	private boolean isInVoiceWith(Guild guild, User author) {
-		VoiceChannel channel = guild.getMember(author).getVoiceState().getChannel();
-		if (channel == null) {
-			return false;
-		}
-		for (Member user : channel.getMembers()) {
-			if (user.getUser().getId().equals(guild.getJDA().getSelfUser().getId())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
@@ -81,7 +71,7 @@ public class SkipTrack extends AbstractCommand {
 		if (!player.isPlaying()) {
 			return Template.get("command_currentlyplaying_nosong");
 		}
-		if (!isInVoiceWith(guild, author)) {
+		if (!player.isInVoiceWith(guild, author)) {
 			return Template.get("music_not_same_voicechannel");
 		}
 		if (args.length >= 1) {

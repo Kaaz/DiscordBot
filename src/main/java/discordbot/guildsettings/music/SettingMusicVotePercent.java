@@ -11,7 +11,7 @@ public class SettingMusicVotePercent extends AbstractGuildSetting {
 
 	@Override
 	public String getDefault() {
-		return "1";
+		return "40";
 	}
 
 	@Override

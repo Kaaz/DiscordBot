@@ -105,6 +105,19 @@ public class MusicPlayerHandler {
 		}
 	}
 
+	public boolean isInVoiceWith(Guild guild, User author) {
+		VoiceChannel channel = guild.getMember(author).getVoiceState().getChannel();
+		if (channel == null) {
+			return false;
+		}
+		for (Member user : channel.getMembers()) {
+			if (user.getUser().getId().equals(guild.getJDA().getSelfUser().getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void reconnect() {
 		guild.getAudioManager().setSendingHandler(audioPlayerSendHandler);
 	}
@@ -274,7 +287,7 @@ public class MusicPlayerHandler {
 				}
 				if (PermissionUtil.checkPermission(message.getTextChannel(), guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION)) {
 					bot.musicReactionHandler.clearGuild(guild.getId());
-					message.addReaction(Emojibet.STAR).queue();
+//					message.addReaction(Emojibet.STAR).queue();
 					message.addReaction(Emojibet.NEXT_TRACK).queue();
 					bot.musicReactionHandler.addMessage(guild.getId(), message.getId());
 				}

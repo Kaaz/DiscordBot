@@ -1,6 +1,7 @@
 package discordbot.handler;
 
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.Emojibet;
 import net.dv8tion.jda.core.entities.MessageReaction;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -42,7 +43,7 @@ public class MusicReactionHandler {
 		}
 	}
 
-	public synchronized void handle(String messageId, TextChannel channel, User user, MessageReaction.ReactionEmote emote, boolean isAdding) {
+	public synchronized void handle(String messageId, TextChannel channel, User invoker, MessageReaction.ReactionEmote emote, boolean isAdding) {
 		System.out.println("HANDLING");
 		String guildId = channel.getGuild().getId();
 		if (!isListening(guildId, messageId)) {
@@ -52,10 +53,20 @@ public class MusicReactionHandler {
 		if (!Emojibet.NEXT_TRACK.equals(emote.getName())) {
 			return;
 		}
+		SimpleRank rank = discordBot.security.getSimpleRank(invoker, channel);
+		if (!GuildSettings.get(channel.getGuild()).canUseMusicCommands(invoker, rank)) {
+			return;
+		}
+		if (!player.isPlaying()) {
+			return;
+		}
+		if (!player.isInVoiceWith(channel.getGuild(), invoker)) {
+			return;
+		}
 		if (isAdding) {
-			player.voteSkip(user);
+			player.voteSkip(invoker);
 		} else {
-			player.unregisterVoteSkip(user);
+			player.unregisterVoteSkip(invoker);
 		}
 		if (player.getVoteCount() >= player.getRequiredVotes()) {
 			clearGuild(guildId);
