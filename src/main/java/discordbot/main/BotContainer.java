@@ -41,6 +41,7 @@ public class BotContainer {
 		youtubeThread = new YoutubeThread();
 		this.numShards = getRecommendedShards();
 		shards = new DiscordBot[numShards];
+		Thread.sleep(10_000L);
 		initHandlers();
 		initShards();
 		this.numGuilds = new AtomicInteger(numGuilds);
