@@ -6,12 +6,12 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.entities.VoiceChannel;
-import net.dv8tion.jda.utils.PermissionUtil;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 /**
  * !joinme
@@ -55,14 +55,14 @@ public class JoinCommand extends AbstractCommand {
 		TextChannel chan = (TextChannel) channel;
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(chan.getGuild(), bot);
 		if (args.length == 0) {
-			VoiceChannel voiceChannel = chan.getGuild().getVoiceStatusOfUser(author).getChannel();
+			VoiceChannel voiceChannel = chan.getGuild().getMember(author).getVoiceState().getChannel();
 			if (voiceChannel == null) {
 				return Template.get("command_join_cantfindyou");
 			}
 			if (player.isConnectedTo(voiceChannel)) {
 				return Template.get("command_join_already_there");
 			}
-			if (!PermissionUtil.checkPermission(voiceChannel, bot.client.getSelfInfo(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
+			if (!PermissionUtil.checkPermission(voiceChannel, voiceChannel.getGuild().getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
 				return Template.get("music_join_no_permission");
 			}
 			player.connectTo(voiceChannel);

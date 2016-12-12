@@ -7,8 +7,8 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.modules.minecraft.ServerListPing17;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

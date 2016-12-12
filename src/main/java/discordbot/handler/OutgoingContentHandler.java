@@ -5,11 +5,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.Role;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.entities.*;
 
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -30,25 +26,17 @@ public class OutgoingContentHandler {
 	 * @param callback callback to execute after the message is sent
 	 */
 	public void sendAsyncMessage(MessageChannel channel, String content, Consumer<Message> callback) {
-		channel.sendMessageAsync(content.substring(0, Math.min(1999, content.length())), callback);
+		channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue(callback);
 	}
 
 	public void sendAsyncMessage(MessageChannel channel, String content) {
-		channel.sendMessageAsync(content.substring(0, Math.min(1999, content.length())), (message) -> {
+		channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue((message) -> {
 			if (botInstance.shouldCleanUpMessages(channel)) {
 				botInstance.timer.schedule(new TimerTask() {
 					@Override
 					public void run() {
 						if (message != null) {
-							try {
-								message.deleteMessage();
-							} catch (RateLimitedException e) {
-								try {
-									wait(100L + e.getTimeout());
-									message.deleteMessage();
-								} catch (Exception ignored) {
-								}
-							}
+							message.deleteMessage().queue();
 						}
 					}
 				}, Config.DELETE_MESSAGES_AFTER);
@@ -57,7 +45,7 @@ public class OutgoingContentHandler {
 	}
 
 	public void editAsync(Message message, String content, Consumer<Message> callback) {
-		message.updateMessageAsync(content.substring(0, Math.min(1999, content.length())), callback);
+		message.editMessage(content.substring(0, Math.min(1999, content.length()))).queue(callback);
 	}
 
 	/**
@@ -136,7 +124,7 @@ public class OutgoingContentHandler {
 	 * @param message the message
 	 */
 	public void sendPrivateMessage(User target, String message) {
-		target.getPrivateChannel().sendMessageAsync(message, null);
+		target.getPrivateChannel().sendMessage(message).queue();
 	}
 
 
@@ -153,12 +141,13 @@ public class OutgoingContentHandler {
 				while (!Launcher.isBeingKilled) {
 					final RoleModifyTask roleToModify = itemsToDelete.take();
 					if (roleToModify != null) {
+						Guild guild = roleToModify.getRole().getGuild();
+						Member member = guild.getMember(roleToModify.getUser());
 						if (roleToModify.isAdd()) {
-							roleToModify.getRole().getGuild().getManager().addRoleToUser(roleToModify.getUser(), roleToModify.getRole());
+							guild.getController().addRolesToMember(member, roleToModify.getRole()).queue();
 						} else {
-							roleToModify.getRole().getGuild().getManager().removeRoleFromUser(roleToModify.getUser(), roleToModify.getRole());
+							guild.getController().removeRolesFromMember(member, roleToModify.getRole()).queue();
 						}
-						roleToModify.getRole().getGuild().getManager().update();
 					}
 					sleep(2_000L);
 				}

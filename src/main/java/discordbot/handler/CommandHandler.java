@@ -17,11 +17,10 @@ import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.PrivateChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.PrivateChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
@@ -85,7 +84,7 @@ public class CommandHandler {
 
 		if (channel instanceof TextChannel) {
 			guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());
-			if (!((TextChannel) channel).checkPermission(bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+			if (!((TextChannel) channel).canTalk()) {
 				return;
 			}
 		}
@@ -118,7 +117,7 @@ public class CommandHandler {
 						usedArguments.append(arg).append(" ");
 					}
 					if (!(channel instanceof PrivateChannel)) {
-						CCommandLog.saveLog(CUser.getCachedId(author.getId(), author.getUsername()),
+						CCommandLog.saveLog(CUser.getCachedId(author.getId(), author.getName()),
 								CGuild.getCachedId(((TextChannel) channel).getGuild().getId()),
 								command.getCommand(),
 								EmojiParser.parseToAliases(usedArguments.toString()).trim());
@@ -158,7 +157,7 @@ public class CommandHandler {
 						"input", incomingMessage,
 						"user-id", author.getId(),
 						"command", commandUsed,
-						"user-name", author.getUsername(),
+						"user-name", author.getName(),
 						"guild-id", tc.getGuild().getId(),
 						"guild-name", tc.getGuild().getName(),
 						"response", outMsg);
@@ -167,7 +166,7 @@ public class CommandHandler {
 						"input", incomingMessage,
 						"user-id", author.getId(),
 						"command", commandUsed,
-						"user-name", author.getUsername(),
+						"user-name", author.getName(),
 						"response", outMsg);
 			}
 			CUser.registerCommandUse(CUser.getCachedId(author.getId()));
@@ -203,7 +202,7 @@ public class CommandHandler {
 					break;
 				case GUILD:
 					if (channel instanceof PrivateChannel) {
-						CBotEvent.insert(OBotEvent.Level.WARN, ":warning:", ":keyboard:", String.format("`%s` issued the `%s` Command with guild-scale cooldown in private channel!", author.getUsername(), command.getCommand()));
+						CBotEvent.insert(OBotEvent.Level.WARN, ":warning:", ":keyboard:", String.format("`%s` issued the `%s` Command with guild-scale cooldown in private channel!", author.getName(), command.getCommand()));
 					}
 					targetId = ((TextChannel) channel).getGuild().getId();
 					break;

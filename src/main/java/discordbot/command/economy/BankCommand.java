@@ -5,8 +5,8 @@ import discordbot.db.model.OBank;
 import discordbot.db.controllers.CBanks;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 
 public class BankCommand extends AbstractCommand {
 	public BankCommand() {

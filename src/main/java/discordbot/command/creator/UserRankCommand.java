@@ -14,9 +14,10 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,7 +82,12 @@ public class UserRankCommand extends AbstractCommand {
 			} else if (args[0].matches("^i\\d+$")) {
 				user = bot.client.getUserById(CUser.getCachedDiscordId(Integer.parseInt(args[0].substring(1))));
 			} else {
-				user = DisUtil.findUserIn((TextChannel) channel, args[0]);
+				Member member = DisUtil.findUserIn((TextChannel) channel, args[0]);
+				if (member != null) {
+					user = member.getUser();
+				} else {
+					user = null;
+				}
 			}
 			if (user == null) {
 				return Template.get("cant_find_user", args[0]);
@@ -91,30 +97,30 @@ public class UserRankCommand extends AbstractCommand {
 			if (args.length == 1) {
 				OUserRank userRank = CUserRank.findBy(user.getId());
 				if (userRank.rankId == 0 && !targetSimpleRank.isAtLeast(SimpleRank.CREATOR)) {
-					return Template.get("command_userrank_no_rank", user.getUsername());
+					return Template.get("command_userrank_no_rank", user.getName());
 				} else if (targetSimpleRank.isAtLeast(SimpleRank.CREATOR)) {
-					return Template.get("command_userrank_rank", user.getUsername(), "creator");
+					return Template.get("command_userrank_rank", user.getName(), "creator");
 				} else {
-					return Template.get("command_userrank_rank", user.getUsername(), CRank.findById(userRank.rankId).codeName);
+					return Template.get("command_userrank_rank", user.getName(), CRank.findById(userRank.rankId).codeName);
 				}
 			} else if (args.length == 2 && !args[1].equals("perm")) {
 				ORank newRank = CRank.findBy(args[1]);
 				if (newRank.id == 0) {
 					return Template.get("command_userrank_rank_not_exists", args[1]);
 				}
-				OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId(), user.getUsername()));
+				OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId(), user.getName()));
 				userRank.rankId = newRank.id;
 				CUserRank.insertOrUpdate(userRank);
-				return Template.get("command_userrank_rank", user.getUsername(), newRank.codeName);
+				return Template.get("command_userrank_rank", user.getName(), newRank.codeName);
 			}
 
 			if (args[1].equals("perm")) {
 
 				if (args.length < 4) {
 					if (dbUser.getPermission().isEmpty()) {
-						return "No permissions set for " + user.getUsername();
+						return "No permissions set for " + user.getName();
 					}
-					return "Permissions for " + user.getUsername() + Config.EOL +
+					return "Permissions for " + user.getName() + Config.EOL +
 							tableFor(dbUser.getPermission());
 				}
 				boolean adding = true;
@@ -133,11 +139,11 @@ public class UserRankCommand extends AbstractCommand {
 					if (adding) {
 						dbUser.addPermission(node);
 						CUser.update(dbUser);
-						return String.format(":+1: adding `%s` to %s", node.toString(), user.getUsername());
+						return String.format(":+1: adding `%s` to %s", node.toString(), user.getName());
 					}
 					dbUser.removePermission(node);
 					CUser.update(dbUser);
-					return String.format(":+1: removed `%s` from %s", node.toString(), user.getUsername());
+					return String.format(":+1: removed `%s` from %s", node.toString(), user.getName());
 				} catch (Exception e) {
 					return "Invalid permission node";
 				}

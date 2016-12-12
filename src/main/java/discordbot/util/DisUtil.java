@@ -6,18 +6,17 @@ import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingUseEconomy;
 import discordbot.handler.GuildSettings;
 import discordbot.main.Config;
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.OnlineStatus;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.*;
-import net.dv8tion.jda.utils.PermissionUtil;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.OnlineStatus;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Utilities for discord objects
@@ -51,7 +50,7 @@ public class DisUtil {
 	 */
 	public static TextChannel findFirstWriteableChannel(JDA client, Guild guild) {
 		for (TextChannel channel : guild.getTextChannels()) {
-			if (channel.checkPermission(client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+			if (channel.canTalk()) {
 				return channel;
 			}
 		}
@@ -109,15 +108,15 @@ public class DisUtil {
 		}
 		String output = input.replace("\\%", "\u0013");
 		output = output
-				.replace("%user%", user.getUsername())
+				.replace("%user%", user.getName())
 				.replace("%user-mention%", user.getAsMention())
 				.replace("%user-id%", user.getId())
-				.replace("%nick%", ((guild == null || guild.getNicknameForUser(user) == null) ? user.getUsername() : guild.getNicknameForUser(user)))
+				.replace("%nick%", guild != null ? guild.getMember(user).getEffectiveName() : user.getName())
 				.replace("%discrim%", user.getDiscriminator())
 				.replace("%guild%", (guild == null) ? "Private" : guild.getName())
 				.replace("%guild-id%", (guild == null) ? "0" : guild.getId())
-				.replace("%guild-users%", (guild == null) ? "0" : guild.getUsers().size() + "")
-				.replace("%channel%", (guild == null) ? "Private" : ((TextChannel) channel).getName())
+				.replace("%guild-users%", (guild == null) ? "0" : guild.getMembers().size() + "")
+				.replace("%channel%", (guild == null) ? "Private" : channel.getName())
 				.replace("%channel-id%", (guild == null) ? "0" : channel.getId())
 				.replace("%channel-mention%", (guild == null) ? "Private" : ((TextChannel) channel).getAsMention());
 		if (guild == null) {
@@ -134,16 +133,16 @@ public class DisUtil {
 		Random rng = new Random();
 		while ((ind = output.indexOf("%rand-user%")) != -1) {
 			output = output.substring(0, ind) +
-					guild.getUsers().get(rng.nextInt(guild.getUsers().size())).getUsername()
+					guild.getMembers().get(rng.nextInt(guild.getMembers().size())).getEffectiveName()
 					+ output.substring(ind + 11);
 		}
 
 		if (output.contains("%rand-user-online%")) {
-			List<User> onlines = new ArrayList<>();
-			guild.getUsers().stream().filter((u) -> (u.getOnlineStatus().equals(OnlineStatus.ONLINE))).forEach(onlines::add);
+			List<Member> onlines = new ArrayList<>();
+			guild.getMembers().stream().filter((u) -> (u.getOnlineStatus().equals(OnlineStatus.ONLINE))).forEach(onlines::add);
 			while ((ind = output.indexOf("%rand-user-online%")) != -1)
 				output = output.substring(0, ind) +
-						onlines.get(rng.nextInt(onlines.size())).getUsername()
+						onlines.get(rng.nextInt(onlines.size())).getEffectiveName()
 						+ output.substring(ind + 18);
 		}
 		return output.replace("\u0013", "%");
@@ -156,15 +155,15 @@ public class DisUtil {
 	 * @param searchText the name to look for
 	 * @return IUser | null
 	 */
-	public static User findUserIn(TextChannel channel, String searchText) {
-		List<User> users = channel.getUsers();
-		List<User> potential = new ArrayList<>();
+	public static Member findUserIn(TextChannel channel, String searchText) {
+		List<Member> users = channel.getMembers();
+		List<Member> potential = new ArrayList<>();
 		int smallestDiffIndex = 0, smallestDiff = -1;
-		for (User u : users) {
-			if (u.getUsername().equalsIgnoreCase(searchText)) {
+		for (Member u : users) {
+			String nick = u.getEffectiveName();
+			if (nick.equalsIgnoreCase(searchText)) {
 				return u;
 			}
-			String nick = channel.getGuild().getEffectiveNameForUser(u);
 			if (nick.toLowerCase().contains(searchText)) {
 				potential.add(u);
 				int d = Math.abs(nick.length() - searchText.length());
@@ -260,8 +259,8 @@ public class DisUtil {
 	 * @param role  the role to search for
 	 * @return list of user with specified role
 	 */
-	public static List<User> getUsersByRole(Guild guild, Role role) {
-		return guild.getUsers().stream().filter((user) -> guild.getRolesForUser(user).contains(role)).collect(Collectors.toList());
+	public static List<Member> getUsersByRole(Guild guild, Role role) {
+		return guild.getMembersWithRoles(role);
 	}
 
 	/**
@@ -273,7 +272,7 @@ public class DisUtil {
 	 * @return permission found
 	 */
 	public static boolean hasPermission(User user, Guild guild, Permission permission) {
-		return PermissionUtil.checkPermission(guild, user, permission);
+		return PermissionUtil.checkPermission(guild, guild.getMember(user), permission);
 	}
 
 	/**

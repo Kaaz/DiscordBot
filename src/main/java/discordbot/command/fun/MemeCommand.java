@@ -9,10 +9,11 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.Misc;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -66,7 +67,8 @@ public class MemeCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (channel instanceof TextChannel) {
-			if (!((TextChannel) channel).checkPermission(bot.client.getSelfInfo(), Permission.MESSAGE_ATTACH_FILES)) {
+			TextChannel txt = (TextChannel) channel;
+			if (!PermissionUtil.checkPermission(txt, txt.getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
 				return Template.get("permission_missing_attach_files");
 			}
 		}
@@ -116,7 +118,7 @@ public class MemeCommand extends AbstractCommand {
 				memeFile.delete();
 			}
 			ImageIO.write(image, "png", memeFile);
-			channel.sendFileAsync(memeFile, null, message -> memeFile.delete());
+			channel.sendFile(memeFile, null).queue(message -> memeFile.delete());
 		} catch (InterruptedException | ExecutionException | IOException e) {
 			e.printStackTrace();
 			return "No memes for you :(";

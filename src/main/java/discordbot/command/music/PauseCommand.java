@@ -8,7 +8,7 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
-import net.dv8tion.jda.entities.*;
+import net.dv8tion.jda.core.entities.*;
 
 /**
  * !pause
@@ -57,7 +57,7 @@ public class PauseCommand extends AbstractCommand {
 		if (!player.canTogglePause()) {
 			return Template.get("music_state_not_started");
 		}
-		VoiceChannel userVoice = guild.getVoiceStatusOfUser(author).getChannel();
+		VoiceChannel userVoice = guild.getMember(author).getVoiceState().getChannel();
 		if (userVoice == null || !player.isConnectedTo(userVoice)) {
 			return Template.get(channel, "music_not_same_voicechannel");
 		}

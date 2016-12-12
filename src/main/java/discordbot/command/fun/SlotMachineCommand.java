@@ -7,9 +7,9 @@ import discordbot.games.SlotMachine;
 import discordbot.games.slotmachine.Slot;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 import java.util.TimerTask;
 
@@ -78,10 +78,10 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 								} else {
 									gameresult = "Aw you lose, better luck next time!";
 								}
-								message.updateMessageAsync(slotMachine.toString() + Config.EOL + gameresult, null);
+								message.editMessage(slotMachine.toString() + Config.EOL + gameresult).queue();
 								this.cancel();
 							} else {
-								message.updateMessageAsync(slotMachine.toString(), null);
+								message.editMessage(slotMachine.toString()).queue();
 							}
 						} catch (Exception e) {
 							bot.out.sendErrorToMe(e, "slotmachine", author.getId(), "channel", ((TextChannel) channel).getAsMention(), bot);

@@ -11,9 +11,10 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  * !user
@@ -60,23 +61,24 @@ public class UserCommand extends AbstractCommand {
 			OUser dbUser = CUser.findById(Integer.parseInt(args[0].substring(1)));
 			infoUser = bot.client.getUserById(dbUser.discord_id);
 		} else if (channel instanceof TextChannel) {
-			infoUser = DisUtil.findUserIn((TextChannel) channel, args[0]);
+
+			Member member = DisUtil.findUserIn((TextChannel) channel, args[0]);
+			if (member != null) {
+				infoUser = member.getUser();
+			}
 		}
 		if (infoUser != null) {
-			int userId = CUser.getCachedId(infoUser.getId(), infoUser.getUsername());
+			int userId = CUser.getCachedId(infoUser.getId(), infoUser.getName());
 			int guildId = 0;
 			StringBuilder sb = new StringBuilder();
-			String nickname = infoUser.getUsername();
+			String nickname = infoUser.getName();
 			if (channel instanceof TextChannel) {
 				guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());
-				nickname = ((TextChannel) channel).getGuild().getNicknameForUser(infoUser);
-				if (nickname == null) {
-					nickname = infoUser.getUsername();
-				}
+				nickname = ((TextChannel) channel).getGuild().getMember(infoUser).getEffectiveName();
 			}
 			OUser dbUser = CUser.findBy(infoUser.getId());
 			sb.append("Querying for ").append(nickname).append(Config.EOL);
-			sb.append(":bust_in_silhouette: User: ").append(infoUser.getUsername()).append("#").append(infoUser.getDiscriminator()).append(Config.EOL);
+			sb.append(":bust_in_silhouette: User: ").append(infoUser.getName()).append("#").append(infoUser.getDiscriminator()).append(Config.EOL);
 //			sb.append(":date: Account registered at ").append(infoUser.()).append(Config.EOL);
 			sb.append(":id: discord id:").append(infoUser.getId()).append(Config.EOL);
 			sb.append(":keyboard: Commands used:").append(dbUser.commandsUsed).append(Config.EOL);

@@ -22,11 +22,8 @@ import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Emojibet;
 import discordbot.util.Misc;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,7 +148,7 @@ public class NowPlayingCommand extends AbstractCommand {
 							"The track I'm playing now is: " + song.youtubeTitle + Config.EOL +
 									"You can find it here: https://www.youtube.com/watch?v=" + song.youtubecode
 					);
-					return Template.get(channel, "private_message_sent", guild.getEffectiveNameForUser(author));
+					return Template.get(channel, "private_message_sent", guild.getMember(author).getEffectiveName());
 				case "clear":
 					boolean adminOnly = "true".equals(GuildSettings.getFor(channel, SettingMusicClearAdminOnly.class));
 					if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && args.length > 2 && args[1].equals("admin") && args[2].equalsIgnoreCase("toggle")) {
@@ -177,10 +174,10 @@ public class NowPlayingCommand extends AbstractCommand {
 		ret += getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL;
 
 		if (GuildSettings.get(guild).getOrDefault(SettingMusicShowListeners.class).equals("true")) {
-			List<User> userList = musicHandler.getUsersInVoiceChannel();
+			List<Member> userList = musicHandler.getUsersInVoiceChannel();
 			if (userList.size() > 0) {
 				ret += "\uD83C\uDFA7  Listeners" + Config.EOL;
-				ArrayList<String> displayList = userList.stream().map(User::getUsername).collect(Collectors.toCollection(ArrayList::new));
+				ArrayList<String> displayList = userList.stream().map(Member::getEffectiveName).collect(Collectors.toCollection(ArrayList::new));
 				ret += Misc.makeTable(displayList);
 			}
 		}
@@ -196,7 +193,7 @@ public class NowPlayingCommand extends AbstractCommand {
 
 		}
 		if (args.length == 1 && args[0].equals("update")) {
-			channel.sendMessageAsync(ret, message -> {
+			channel.sendMessage(ret).queue(message -> {
 				bot.timer.scheduleAtFixedRate(new TimerTask() {
 					@Override
 					public void run() {
@@ -204,10 +201,9 @@ public class NowPlayingCommand extends AbstractCommand {
 							this.cancel();
 							return;
 						}
-						message.updateMessageAsync(
-								(player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + Config.EOL +
-										getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL
-								, null);
+						message.editMessage((player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + Config.EOL +
+								getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL
+						).queue();
 					}
 				}, 10000L, 10000L);
 			});
@@ -220,8 +216,8 @@ public class NowPlayingCommand extends AbstractCommand {
 				player.setUpdateChannelTitle(false);
 				return Template.get("music_channel_autotitle_stop");
 			} else {
-				TextChannel musicChannel = (TextChannel) channel;//bot.getMusicChannel(guild);
-				if (musicChannel.checkPermission(bot.client.getSelfInfo(), Permission.MANAGE_CHANNEL)) {
+				TextChannel musicChannel = (TextChannel) channel;
+				if (musicChannel.getPermissionOverride(guild.getSelfMember()).getAllowed().contains(Permission.MANAGE_CHANNEL)) {
 					player.setUpdateChannelTitle(true);
 					bot.timer.scheduleAtFixedRate(new TimerTask() {
 						@Override
@@ -237,7 +233,7 @@ public class NowPlayingCommand extends AbstractCommand {
 									(player.isInRepeatMode() ? "\uD83D\uDD02 " : "") +
 											getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) +
 											(song.id > 0 ? "\uD83C\uDFB6 " + song.youtubeTitle : "")
-							).update();
+							).queue();
 						}
 					}, 10000L, 10000L);
 					return Template.get("music_channel_autotitle_start");

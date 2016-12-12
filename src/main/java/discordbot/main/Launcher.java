@@ -13,9 +13,9 @@ import discordbot.threads.ConsoleInputThread;
 import discordbot.threads.GrayLogThread;
 import discordbot.threads.ServiceHandlerThread;
 import discordbot.util.YTUtil;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.managers.AudioManager;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.managers.AudioManager;
 
 import java.io.File;
 import java.io.IOException;

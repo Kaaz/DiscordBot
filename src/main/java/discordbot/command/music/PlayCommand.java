@@ -2,8 +2,8 @@ package discordbot.command.music;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import com.vdurmont.emoji.EmojiParser;
-import discordbot.command.ICommandCleanup;
 import discordbot.command.CommandVisibility;
+import discordbot.command.ICommandCleanup;
 import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CMusic;
 import discordbot.db.controllers.CPlaylist;
@@ -20,9 +20,9 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.YTSearch;
 import discordbot.util.YTUtil;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.*;
-import net.dv8tion.jda.utils.PermissionUtil;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,12 +77,12 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 	}
 
 	private boolean isInVoiceWith(Guild guild, User author) {
-		VoiceChannel channel = guild.getVoiceStatusOfUser(author).getChannel();
+		VoiceChannel channel = guild.getMember(author).getVoiceState().getChannel();
 		if (channel == null) {
 			return false;
 		}
-		for (User user : channel.getUsers()) {
-			if (user.getId().equals(guild.getJDA().getSelfInfo().getId())) {
+		for (Member user : channel.getMembers()) {
+			if (user.getUser().getId().equals(guild.getJDA().getSelfUser().getId())) {
 				return true;
 			}
 		}
@@ -98,12 +98,12 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
 
-		if (!PermissionUtil.checkPermission(txt, bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+		if (!PermissionUtil.checkPermission(txt, guild.getSelfMember(), Permission.MESSAGE_WRITE)) {
 			return "";
 		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 		if (!isInVoiceWith(guild, author)) {
-			if (guild.getVoiceStatusOfUser(author).getChannel() == null) {
+			if (guild.getMember(author).getVoiceState().getChannel() == null) {
 				return "you are not in a voicechannel";
 			}
 			try {
@@ -114,10 +114,10 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 					player.leave();
 					Thread.sleep(2000L);// ¯\_(ツ)_/¯
 				}
-				if (!PermissionUtil.checkPermission(guild.getVoiceStatusOfUser(author).getChannel(), bot.client.getSelfInfo(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
+				if (!PermissionUtil.checkPermission(guild.getMember(author).getVoiceState().getChannel(), guild.getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
 					return Template.get("music_join_no_permission");
 				}
-				player.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
+				player.connectTo(guild.getMember(author).getVoiceState().getChannel());
 				Thread.sleep(2000L);// ¯\_(ツ)_/¯
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -208,18 +208,18 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 							rec.lastManualPlaydate = System.currentTimeMillis() / 1000L;
 							CMusic.update(rec);
 							if (msg != null) {
-								msg.updateMessageAsync(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue", null);
+								msg.editMessage(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue").queue();
 							}
 							player.addToQueue(targetFile.toPath().toRealPath().toString(), invoker);
 						} else {
 							if (msg != null) {
-								msg.updateMessageAsync("Download failed, the song is likely too long or region locked!", null);
+								msg.editMessage("Download failed, the song is likely too long or region locked!").queue();
 							}
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
 						if (msg != null) {
-							msg.updateMessageAsync(Template.get("music_file_error"), null);
+							msg.editMessage(Template.get("music_file_error")).queue();
 						}
 					}
 				});

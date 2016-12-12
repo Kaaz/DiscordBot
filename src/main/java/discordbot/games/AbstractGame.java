@@ -1,7 +1,7 @@
 package discordbot.games;
 
 import discordbot.main.Config;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.User;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;

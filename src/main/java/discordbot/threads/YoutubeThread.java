@@ -6,7 +6,7 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.Launcher;
 import discordbot.util.YTUtil;
-import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.core.entities.Message;
 
 import java.io.*;
 import java.util.HashSet;
@@ -207,13 +207,13 @@ public class YoutubeThread extends Thread {
 					return;
 				}
 				if (isInProgress(task.getCode())) {
-					task.getMessage().updateMessageAsync(Template.get("music_downloading_in_progress", task.getTitle()), null);
+					task.getMessage().editMessage(Template.get("music_downloading_in_progress", task.getTitle())).queue();
 					return;
 				}
 				registerProgress(task.getCode());
 				final File fileCheck = new File(YTUtil.getOutputPath(task.getCode()));
 				if (!fileCheck.exists()) {
-					task.getMessage().updateMessageAsync(Template.get("music_downloading_hang_on"), null);
+					task.getMessage().editMessage(Template.get("music_downloading_hang_on")).queue();
 					downloadFileFromYoutube(task.getCode());
 				}
 				if (task.getCallback() != null) {

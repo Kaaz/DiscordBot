@@ -9,7 +9,7 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
-import net.dv8tion.jda.entities.*;
+import net.dv8tion.jda.core.entities.*;
 
 /**
  * !skip
@@ -54,12 +54,12 @@ public class SkipTrack extends AbstractCommand {
 	}
 
 	private boolean isInVoiceWith(Guild guild, User author) {
-		VoiceChannel channel = guild.getVoiceStatusOfUser(author).getChannel();
+		VoiceChannel channel = guild.getMember(author).getVoiceState().getChannel();
 		if (channel == null) {
 			return false;
 		}
-		for (User user : channel.getUsers()) {
-			if (user.getId().equals(guild.getJDA().getSelfInfo().getId())) {
+		for (Member user : channel.getMembers()) {
+			if (user.getUser().getId().equals(guild.getJDA().getSelfUser().getId())) {
 				return true;
 			}
 		}

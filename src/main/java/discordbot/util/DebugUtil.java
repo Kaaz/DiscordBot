@@ -2,7 +2,7 @@ package discordbot.util;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.MessageChannel;
 
 public class DebugUtil {
 	/**
@@ -12,12 +12,12 @@ public class DebugUtil {
 	 * @param output  the output to upload
 	 */
 	public static void handleDebug(MessageChannel channel, String output) {
-		channel.sendMessageAsync("One moment, uploading results: ", message -> {
+		channel.sendMessage("One moment, uploading results: ").queue(message -> {
 			String result = DebugUtil.sendToHastebin(output);
 			if (result == null) {
-				message.updateMessageAsync("Uploading failed!", null);
+				message.editMessage("Uploading failed!").queue();
 			} else {
-				message.updateMessageAsync("Here you go: " + result, null);
+				message.editMessage("Here you go: " + result).queue();
 			}
 		});
 

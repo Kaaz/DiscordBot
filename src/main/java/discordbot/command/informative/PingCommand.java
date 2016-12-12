@@ -2,8 +2,8 @@ package discordbot.command.informative;
 
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  * !ping
@@ -36,7 +36,8 @@ public class PingCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		long now = System.currentTimeMillis();
-		bot.out.sendAsyncMessage(channel, ":outbox_tray: checking ping", message -> message.updateMessageAsync(":inbox_tray: ping is " + (System.currentTimeMillis() - now) + "ms", null));
+		bot.out.sendAsyncMessage(channel, ":outbox_tray: checking ping", message ->
+				message.editMessage(":inbox_tray: ping is " + (System.currentTimeMillis() - now) + "ms").queue());
 		return "";
 	}
 }

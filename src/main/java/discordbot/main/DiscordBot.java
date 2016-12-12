@@ -8,10 +8,11 @@ import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.handler.*;
 import discordbot.role.RoleRankings;
 import discordbot.util.DisUtil;
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.JDABuilder;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.*;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +44,9 @@ public class DiscordBot {
 	private BotContainer container;
 	private JDAReadyEvent readyEvent;
 
-	public DiscordBot(int shardId, int numShards) throws LoginException, InterruptedException {
+	public DiscordBot(int shardId, int numShards) throws LoginException, InterruptedException, RateLimitedException {
 		registerHandlers();
-		JDABuilder builder = new JDABuilder().setBotToken(Config.BOT_TOKEN);
+		JDABuilder builder = new JDABuilder(AccountType.BOT).setToken(Config.BOT_TOKEN);
 		this.shardId = shardId;
 		this.totShards = numShards;
 		if (numShards > 1) {
@@ -70,7 +71,7 @@ public class DiscordBot {
 		String myChannel = GuildSettings.getFor(channel, SettingBotChannel.class);
 		if ("yes".equals(cleanupMethod)) {
 			return true;
-		} else if ("nonstandard".equals(cleanupMethod) && !((TextChannel) channel).getName().equalsIgnoreCase(myChannel)) {
+		} else if ("nonstandard".equals(cleanupMethod) && !channel.getName().equalsIgnoreCase(myChannel)) {
 			return true;
 		}
 		return false;
@@ -83,7 +84,7 @@ public class DiscordBot {
 		}
 		if (!logChannels.containsKey(guild)) {
 			TextChannel channel = DisUtil.findChannel(guild, channelName);
-			if (channel == null || !channel.checkPermission(client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+			if (channel == null || !channel.canTalk()) {
 				GuildSettings.get(guild).set(SettingLoggingChannel.class, "false");
 				if (channel == null) {
 					out.sendAsyncMessage(getDefaultChannel(guild), Template.get("guild_logchannel_not_found", channelName));
@@ -115,7 +116,7 @@ public class DiscordBot {
 	public TextChannel getDefaultChannel(Guild guild) {
 		if (!defaultChannels.containsKey(guild)) {
 			TextChannel defaultChannel = DisUtil.findChannel(guild, GuildSettings.get(guild).getOrDefault(SettingBotChannel.class));
-			if (defaultChannel == null || !defaultChannel.checkPermission(client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+			if (defaultChannel == null || !defaultChannel.canTalk()) {
 				defaultChannel = DisUtil.findFirstWriteableChannel(client, guild);
 			}
 			defaultChannels.put(guild, defaultChannel);
@@ -145,8 +146,8 @@ public class DiscordBot {
 	 */
 	public void markReady() {
 		loadConfiguration();
-		mentionMe = "<@" + this.client.getSelfInfo().getId() + ">";
-		mentionMeAlias = "<@!" + this.client.getSelfInfo().getId() + ">";
+		mentionMe = "<@" + this.client.getSelfUser().getId() + ">";
+		mentionMeAlias = "<@!" + this.client.getSelfUser().getId() + ">";
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds(), client);
 		this.isReady = true;
@@ -177,7 +178,8 @@ public class DiscordBot {
 		musicChannels.remove(guild);
 		logChannels.remove(guild);
 	}
-	public synchronized void clearChannels(){
+
+	public synchronized void clearChannels() {
 		defaultChannels.clear();
 		musicChannels.clear();
 		logChannels.clear();
@@ -217,12 +219,12 @@ public class DiscordBot {
 	}
 
 	public String getUserName() {
-		return client.getSelfInfo().getUsername();
+		return client.getSelfUser().getName();
 	}
 
 	public boolean setUserName(String newName) {
 		if (!getUserName().equals(newName)) {
-			client.getAccountManager().setUsername(newName).update();
+			client.getSelfUser().getManager().setName(newName).queue();
 			return true;
 		}
 		return false;
@@ -289,7 +291,7 @@ public class DiscordBot {
 			data.put("shard_id", shardId);
 			data.put("shard_count", totShards);
 		}
-		Unirest.post("https://bots.discord.pw/api/bots/" + client.getSelfInfo().getId() + "/stats")
+		Unirest.post("https://bots.discord.pw/api/bots/" + client.getSelfUser().getId() + "/stats")
 				.header("Authorization", Config.BOT_TOKEN_BOTS_DISCORD_PW)
 				.header("Content-Type", "application/json")
 				.body(data.toString())

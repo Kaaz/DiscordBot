@@ -4,8 +4,8 @@ import com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;
 import discordbot.modules.pathofexile.ItemAnalyzer;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  * !poeitem

@@ -4,9 +4,9 @@ import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CReplyPattern;
 import discordbot.db.model.OReplyPattern;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.entities.PrivateChannel;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.PrivateChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.Arrays;
 import java.util.List;

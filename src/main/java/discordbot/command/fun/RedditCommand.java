@@ -8,9 +8,9 @@ import discordbot.modules.reddit.RedditScraper;
 import discordbot.modules.reddit.pojo.Image;
 import discordbot.modules.reddit.pojo.ImagePreview;
 import discordbot.modules.reddit.pojo.Post;
-import net.dv8tion.jda.MessageBuilder;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.imageio.ImageIO;
@@ -94,7 +94,7 @@ public class RedditCommand extends AbstractCommand {
 				try (InputStream in = new URL(StringEscapeUtils.unescapeHtml4(image.source.url)).openStream()) {
 					File outputfile = new File("tmp_" + channel.getId() + ".jpg");
 					ImageIO.write(ImageIO.read(in), "jpg", outputfile);
-					channel.sendFileAsync(outputfile, new MessageBuilder().appendString(post.data.title).build(), message -> outputfile.delete());
+					channel.sendFile(outputfile, new MessageBuilder().append(post.data.title).build()).queue(message -> outputfile.delete());
 					return "";
 				} catch (IOException e) {
 					e.printStackTrace();

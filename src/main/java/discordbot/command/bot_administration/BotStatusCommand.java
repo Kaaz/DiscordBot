@@ -6,8 +6,9 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.Emojibet;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  * !botstatus
@@ -60,14 +61,14 @@ public class BotStatusCommand extends AbstractCommand {
 					if (args.length < 2) {
 						return Template.get("command_invalid_use");
 					}
-					bot.client.getAccountManager().setGame(Misc.joinStrings(args, 1));
+					bot.client.getPresence().setGame(Game.of(Misc.joinStrings(args, 1)));
 					break;
 				case "stream":
 					if (args.length < 3) {
 						return Template.get("command_invalid_use");
 					}
 					try {
-						bot.client.getAccountManager().setStreaming(Misc.joinStrings(args, 2), "http://www.twitch.tv/" + args[1]);
+						bot.client.getPresence().setGame(Game.of(Misc.joinStrings(args, 2), "http://www.twitch.tv/" + args[1]));
 					} catch (Exception e) {
 						return Emojibet.THUMBS_DOWN + " " + e.getMessage();
 					}
@@ -80,7 +81,6 @@ public class BotStatusCommand extends AbstractCommand {
 				Thread.sleep(5_000L);
 			} catch (InterruptedException ignored) {
 			}
-			bot.client.getAccountManager().update();
 			return Emojibet.THUMBS_UP;
 		}
 		return Template.get("command_invalid_use");

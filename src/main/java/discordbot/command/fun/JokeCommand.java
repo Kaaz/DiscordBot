@@ -6,8 +6,8 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.CommandHandler;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.BufferedReader;
@@ -52,12 +52,12 @@ public class JokeCommand extends AbstractCommand {
 			if (new Random().nextInt(100) < 80) {
 				joketxt = CommandHandler.getCommand("reddit").execute(bot, new String[]{"jokes"}, channel, author);
 			} else {
-				joketxt = getJokeFromWeb(author.getUsername());
+				joketxt = getJokeFromWeb(author.getName());
 			}
 			if (joketxt != null) {
-				message.updateMessageAsync(StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getUsername(), "<@" + author.getId() + ">")), null);
+				message.editMessage(StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getId() + ">"))).queue();
 			} else {
-				message.updateMessageAsync(Template.get("command_joke_not_today"), null);
+				message.editMessage(Template.get("command_joke_not_today")).queue();
 			}
 		});
 		return "";

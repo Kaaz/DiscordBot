@@ -7,7 +7,7 @@ import discordbot.db.model.QActiveSubscriptions;
 import discordbot.db.controllers.*;
 import discordbot.main.BotContainer;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

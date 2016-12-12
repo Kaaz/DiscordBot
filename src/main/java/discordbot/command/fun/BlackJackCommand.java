@@ -6,8 +6,8 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 
 import java.util.Map;
 import java.util.TimerTask;
@@ -79,7 +79,7 @@ public class BlackJackCommand extends AbstractCommand {
 							public void run() {
 								try {
 									boolean didHit = playerGames.get(author.getId()).dealerHit();
-									message.updateMessageAsync(playerGames.get(author.getId()).toString(), null);
+									message.editMessage(playerGames.get(author.getId()).toString()).queue();
 
 									if (!didHit) {
 										playerGames.remove(author.getId());

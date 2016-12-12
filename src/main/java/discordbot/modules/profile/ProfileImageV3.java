@@ -4,7 +4,7 @@ import discordbot.db.controllers.CUser;
 import discordbot.db.model.OUser;
 import discordbot.main.Launcher;
 import discordbot.util.GfxUtil;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.User;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -23,11 +23,11 @@ public class ProfileImageV3 extends ProfileImage {
 	public File getProfileImage() throws IOException {
 		Random rng = new Random(Long.parseLong(getUser().getId()));
 		int fontSize;
-		if (getUser().getUsername().length() <= 4) {
+		if (getUser().getName().length() <= 4) {
 			fontSize = 32;
-		} else if (getUser().getUsername().length() < 12) {
+		} else if (getUser().getName().length() < 12) {
 			fontSize = 22;
-		} else if (getUser().getUsername().length() < 25) {
+		} else if (getUser().getName().length() < 25) {
 			fontSize = 18;
 		} else {
 			fontSize = 14;
@@ -57,8 +57,8 @@ public class ProfileImageV3 extends ProfileImage {
 		g.drawImage(backgroundImage, 0, 0, 320, 265, 0, 0, 320, 265, null);
 		g.drawImage(xpProgressBar, 137, 133, 317 - (int) ((181D / 100D) * (100D - xpPercent)), 148, 0, 0, 175, 15, null);
 
-		GfxUtil.addCenterShadow(getUser().getUsername(), defaultFont, 222, 71 + (fontSize / 2), g, Color.black);
-		GfxUtil.addCenterText(getUser().getUsername(), defaultFont, 222, 71 + (fontSize / 2), g, Color.white);
+		GfxUtil.addCenterShadow(getUser().getName(), defaultFont, 222, 71 + (fontSize / 2), g, Color.black);
+		GfxUtil.addCenterText(getUser().getName(), defaultFont, 222, 71 + (fontSize / 2), g, Color.white);
 		GfxUtil.addRightText("made by Emily", creditFont, 318, 199, g, new Color(0x3A3A38));
 		GfxUtil.addCenterShadow("" + xpPercent + "%", creditFont, 218, 145, g, Color.black);
 		GfxUtil.addCenterText("" + xpPercent + "%", creditFont, 218, 145, g, new Color(0xf37000));//% xp

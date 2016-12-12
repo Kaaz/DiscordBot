@@ -5,8 +5,8 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 
 public class ReportCommand extends AbstractCommand {
 	public ReportCommand() {
@@ -65,7 +65,7 @@ public class ReportCommand extends AbstractCommand {
 			return Template.get("command_report_message_too_short");
 		}
 		bot.out.sendPrivateMessage(bot.client.getUserById(Config.CREATOR_ID), "new :e_mail: Report coming in!" + Config.EOL + Config.EOL +
-				":bust_in_silhouette: user:  " + author.getUsername() + " ( " + author.getAsMention() + " )" + Config.EOL +
+				":bust_in_silhouette: user:  " + author.getName() + " ( " + author.getAsMention() + " )" + Config.EOL +
 				"Title: " + Config.EOL + title + Config.EOL + Config.EOL +
 				"Message: " + Config.EOL + body
 		);

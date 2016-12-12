@@ -9,7 +9,7 @@ import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.music.SettingMusicRole;
 import discordbot.permission.SimpleRank;
-import net.dv8tion.jda.entities.*;
+import net.dv8tion.jda.core.entities.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,7 +34,7 @@ public class GuildSettings {
 		if (record.id == 0) {
 			record.name = EmojiParser.parseToAliases(guild.getName());
 			record.discord_id = guild.getId();
-			record.owner = CUser.getCachedId(guild.getOwnerId(), guild.getOwner().getUsername());
+			record.owner = CUser.getCachedId(guild.getOwner().getUser().getId(), guild.getOwner().getUser().getName());
 			CGuild.insert(record);
 		}
 		this.id = record.id;
@@ -171,7 +171,7 @@ public class GuildSettings {
 		boolean roleFound = true;
 		if (!"none".equals(requiredRole) && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			roleFound = false;
-			List<Role> roles = guild.getRolesForUser(user);
+			List<Role> roles = guild.getMember(user).getRoles();
 			for (Role role : roles) {
 				if (role.getName().equalsIgnoreCase(requiredRole)) {
 					roleFound = true;

@@ -2,7 +2,7 @@ package discordbot.modules.profile;
 
 import discordbot.main.Launcher;
 import discordbot.util.GfxUtil;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.User;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -35,7 +35,7 @@ public class ProfileImageV1 extends ProfileImage {
 		g.drawImage(profileImg, 66, 30, 197, 155, 0, 0, profileImg.getWidth(), profileImg.getHeight(), null);
 		g.drawImage(backgroundImage, 0, 0, 645, 265, 0, 0, 645, 265, null);
 
-		GfxUtil.addCenterText(getUser().getUsername(), defaultFont, 125, 200, g, Color.black);
+		GfxUtil.addCenterText(getUser().getName(), defaultFont, 125, 200, g, Color.black);
 		GfxUtil.addText("made by Emily", creditFont, 506, 260, g, new Color(0xFFE7FA));
 
 		File file = new File("profile_v1_" + getUser().getId() + ".png");

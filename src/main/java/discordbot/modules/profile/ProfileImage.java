@@ -1,7 +1,7 @@
 package discordbot.modules.profile;
 
 import discordbot.main.Launcher;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.User;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

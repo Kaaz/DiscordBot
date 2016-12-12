@@ -10,10 +10,11 @@ import discordbot.db.model.OBotPlayingOn;
 import discordbot.event.JDAEvents;
 import discordbot.handler.*;
 import discordbot.threads.YoutubeThread;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.entities.VoiceChannel;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ public class BotContainer {
 	private volatile boolean terminationRequested = false;
 	private volatile ExitCode rebootReason = ExitCode.UNKNOWN;
 
-	public BotContainer(int numGuilds) throws LoginException, InterruptedException {
+	public BotContainer(int numGuilds) throws LoginException, InterruptedException, RateLimitedException {
 		youtubeThread = new YoutubeThread();
 		this.numShards = getRecommendedShards();
 		shards = new DiscordBot[numShards];
@@ -128,7 +129,7 @@ public class BotContainer {
 	 * @throws LoginException       can't log in
 	 * @throws InterruptedException ¯\_(ツ)_/¯
 	 */
-	private void initShards() throws LoginException, InterruptedException {
+	private void initShards() throws LoginException, InterruptedException, RateLimitedException {
 		for (int i = 0; i < shards.length; i++) {
 			shards[i] = new DiscordBot(i, shards.length);
 			shards[i].setContainer(this);
@@ -159,8 +160,8 @@ public class BotContainer {
 			}
 			if (vc != null) {
 				boolean hasUsers = false;
-				for (User user : vc.getUsers()) {
-					if (!user.isBot()) {
+				for (Member user : vc.getMembers()) {
+					if (!user.getUser().isBot()) {
 						hasUsers = true;
 						break;
 					}

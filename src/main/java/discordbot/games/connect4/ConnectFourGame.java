@@ -5,7 +5,7 @@ import discordbot.games.GameState;
 import discordbot.main.Config;
 import discordbot.util.Emojibet;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  * Created on 9-9-2016
@@ -120,8 +120,8 @@ public class ConnectFourGame extends AbstractGame<Connect4Turn> {
 		}
 		ret += Config.EOL + Config.EOL;
 		if (getGameState().equals(GameState.IN_PROGRESS) || getGameState().equals(GameState.READY)) {
-			ret += board.intToPlayer(0) + " = " + getPlayer(0).getUsername() + Config.EOL;
-			ret += board.intToPlayer(1) + " = " + getPlayer(1).getUsername() + Config.EOL;
+			ret += board.intToPlayer(0) + " = " + getPlayer(0).getName() + Config.EOL;
+			ret += board.intToPlayer(1) + " = " + getPlayer(1).getName() + Config.EOL;
 			ret += "It's the turn of " + getActivePlayer().getAsMention() + Config.EOL;
 			ret += "to play type **" + getLastPrefix() + "game <columnnumber>**";
 		}

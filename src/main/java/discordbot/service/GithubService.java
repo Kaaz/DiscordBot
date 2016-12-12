@@ -9,7 +9,7 @@ import discordbot.modules.github.GitHub;
 import discordbot.modules.github.GithubConstants;
 import discordbot.modules.github.pojo.RepositoryCommit;
 import discordbot.util.TimeUtil;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.text.ParseException;
 import java.util.ArrayList;

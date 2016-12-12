@@ -3,7 +3,7 @@ package discordbot.games.gameofsticks;
 import discordbot.games.AbstractGame;
 import discordbot.games.GameState;
 import discordbot.main.Config;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  * Created on 9-9-2016

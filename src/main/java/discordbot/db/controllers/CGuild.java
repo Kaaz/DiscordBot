@@ -3,8 +3,8 @@ package discordbot.db.controllers;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
 import discordbot.db.model.OGuild;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

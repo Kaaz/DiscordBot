@@ -3,8 +3,8 @@ package discordbot.command.economy;
 import discordbot.core.AbstractCommand;
 import discordbot.main.DiscordBot;
 import discordbot.util.Emojibet;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 
 public class CookieCommand extends AbstractCommand {
 	public CookieCommand() {

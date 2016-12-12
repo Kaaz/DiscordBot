@@ -6,8 +6,8 @@ import discordbot.db.model.OBotEvent;
 import discordbot.main.BotContainer;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -56,7 +56,7 @@ public class BotMetaEventsService extends AbstractService {
 			int voiceChannels = shard.client.getVoiceChannels().size();
 			int activeVoice = 0;
 			for (Guild guild : shard.client.getGuilds()) {
-				if (shard.client.getAudioManager(guild).isConnected()) {
+				if (guild.getAudioManager().isConnected()) {
 					activeVoice++;
 				}
 			}
@@ -80,7 +80,7 @@ public class BotMetaEventsService extends AbstractService {
 		for (OBotEvent event : events) {
 			String output = String.format(":watch: `%s` %s %s %s", dateFormat.format(event.createdOn), event.group, event.subGroup, event.data);
 			for (TextChannel channel : subscribedChannels) {
-				channel.sendMessageAsync(output, null);
+				channel.sendMessage(output).queue();
 			}
 			lastId = event.id;
 		}

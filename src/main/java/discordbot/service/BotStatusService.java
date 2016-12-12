@@ -4,10 +4,9 @@ import discordbot.core.AbstractService;
 import discordbot.main.BotContainer;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.utils.InviteUtil;
+import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -76,21 +75,21 @@ public class BotStatusService extends AbstractService {
 		String statusText = "Something";
 		TextChannel inviteChannel = bot.getBotFor(Config.BOT_GUILD_ID).client.getTextChannelById(Config.BOT_CHANNEL_ID);
 		if (inviteChannel != null && roll <= 5) {
-			List<InviteUtil.AdvancedInvite> invites = inviteChannel.getInvites();
-			if (invites.size() > 0) {
-				statusText = "Feedback @ https://discord.gg/" + invites.get(0).getCode();
-			} else {
-				bot.getBotFor(Config.BOT_GUILD_ID).out.sendMessageToCreator(":exclamation: I am out of invites for `" + inviteChannel.getName() + "` Click here to make more :D " + inviteChannel.getAsMention());
-			}
+//			List<InviteUtil.AdvancedInvite> invites = inviteChannel.getInvites();
+//			if (invites.size() > 0) {
+			statusText = "Feedback @ https://discord.gg/eaywDDt";// + invites.get(0).getCode();
+//			} else {
+//				bot.getBotFor(Config.BOT_GUILD_ID).out.sendMessageToCreator(":exclamation: I am out of invites for `" + inviteChannel.getName() + "` Click here to make more :D " + inviteChannel.getAsMention());
+//			}
 		} else if (roll <= 15) {
-			String username = bot.getShards()[0].client.getSelfInfo().getUsername();
+			String username = bot.getShards()[0].client.getSelfUser().getName();
 			statusText = "@" + username + " help || @" + username + " invite";
 		} else {
 			statusText = statusList[new Random().nextInt(statusList.length)];
 		}
 
 		for (DiscordBot shard : bot.getShards()) {
-			shard.client.getAccountManager().setGame(statusText);
+			shard.client.getPresence().setGame(Game.of(statusText));
 		}
 	}
 

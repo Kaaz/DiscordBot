@@ -10,9 +10,9 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.*;
-import net.dv8tion.jda.utils.PermissionUtil;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.List;
 
@@ -59,7 +59,7 @@ public class GetroleCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		Guild guild = ((TextChannel) channel).getGuild();
-		if (!PermissionUtil.checkPermission(guild, bot.client.getSelfInfo(), Permission.MANAGE_ROLES)) {
+		if (!PermissionUtil.checkPermission(guild, guild.getSelfMember(), Permission.MANAGE_ROLES)) {
 			return Template.get("permission_missing_manage_roles");
 		}
 		if (args.length == 0 || args[0].equalsIgnoreCase("list")) {
@@ -97,12 +97,12 @@ public class GetroleCommand extends AbstractCommand {
 		}
 		if (isAdding) {
 			bot.out.addRole(author, role);
-			if (guild.getRolesForUser(author).contains(role)) {
+			if (guild.getMember(author).getRoles().contains(role)) {
 				return Template.get("command_getrole_not_assigned", role.getName());
 			}
 			return Template.get("command_getrole_assigned", role.getName());
 		}
-		if (!guild.getRolesForUser(author).contains(role)) {
+		if (!guild.getMember(author).getRoles().contains(role)) {
 			return Template.get("command_getrole_not_removed");
 		}
 		bot.out.removeRole(author, role);

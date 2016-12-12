@@ -13,10 +13,10 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.Misc;
 import discordbot.util.TimeUtil;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,7 +98,7 @@ public class AutoReplyCommand extends AbstractCommand {
 			if (args[0].equals("create")) {
 				if (replyPattern.id == 0) {
 					replyPattern.tag = args[1];
-					replyPattern.userId = CUser.getCachedId(author.getId(), author.getUsername());
+					replyPattern.userId = CUser.getCachedId(author.getId(), author.getName());
 					replyPattern.guildId = rank.isAtLeast(SimpleRank.CREATOR) ? 0 : CGuild.getCachedId(guild.getId());
 					replyPattern.cooldown = TimeUnit.MINUTES.toMillis(1);
 					CReplyPattern.insert(replyPattern);

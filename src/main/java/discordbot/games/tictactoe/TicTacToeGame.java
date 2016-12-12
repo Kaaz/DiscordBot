@@ -4,7 +4,7 @@ import discordbot.games.AbstractGame;
 import discordbot.games.GameState;
 import discordbot.main.Config;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.User;
 
 public class TicTacToeGame extends AbstractGame<TicGameTurn> {
 	private static final int TILES_ON_BOARD = 9;
@@ -97,8 +97,8 @@ public class TicTacToeGame extends AbstractGame<TicGameTurn> {
 			game.append("Waiting for another player!").append(Config.EOL);
 		}
 		if (getGameState().equals(GameState.IN_PROGRESS) || getGameState().equals(GameState.READY)) {
-			game.append(TileState.X.getEmoticon()).append(" = ").append(getPlayer(0).getUsername()).append(Config.EOL);
-			game.append(TileState.O.getEmoticon()).append(" = ").append(getPlayer(1).getUsername()).append(Config.EOL);
+			game.append(TileState.X.getEmoticon()).append(" = ").append(getPlayer(0).getName()).append(Config.EOL);
+			game.append(TileState.O.getEmoticon()).append(" = ").append(getPlayer(1).getName()).append(Config.EOL);
 			game.append("It's the turn of ").append(getActivePlayer().getAsMention()).append(Config.EOL);
 			game.append("to play type **").append(getLastPrefix()).append("game <number>**");
 		}

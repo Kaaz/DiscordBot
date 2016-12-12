@@ -1,7 +1,7 @@
 package discordbot.threads;
 
 import discordbot.main.Launcher;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class ConsoleInputThread extends Thread {
 				String input = br.readLine();
 				System.out.println("your input was: `" + input + "`");
 				if (textChannel != null) {
-					textChannel.sendMessageAsync("\u2328  " + input, null);
+					textChannel.sendMessage("\u2328  " + input).queue();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

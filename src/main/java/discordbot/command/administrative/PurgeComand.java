@@ -6,12 +6,9 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.utils.PermissionUtil;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,13 +61,14 @@ public class PurgeComand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		boolean hasManageMessages = PermissionUtil.checkPermission((TextChannel) channel, bot.client.getSelfInfo(), Permission.MESSAGE_MANAGE);
+		Guild guild = ((TextChannel) channel).getGuild();
+		boolean hasManageMessages = PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_MANAGE);
 		List<Message> messagesToDelete = new ArrayList<>();
-		User toDeleteFrom = null;
+		Member toDeleteFrom = null;
 		int deleteLimit = 100;
 		boolean deleteAll = true;
 		SimpleRank rank = bot.security.getSimpleRank(author, channel);
-		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && !bot.client.getSelfInfo().equals(author)) {
+		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && !bot.client.getSelfUser().equals(author)) {
 			return Template.get("no_permission");
 		}
 		if (args.length >= 1) {
@@ -79,27 +77,28 @@ public class PurgeComand extends AbstractCommand {
 					Template.get("permission_missing_manage_messages");
 				}
 				String cmdPrefix = DisUtil.getCommandPrefix(channel);
-				List<Message> retrieve = channel.getHistory().retrieve(200);
-				for (Message message : retrieve) {
-					if (message.isPinned()) {
-						continue;
+				channel.getHistory().retrievePast(200).queue(messages -> {
+					for (Message message : messages) {
+						if (message.isPinned()) {
+							continue;
+						}
+						if ((message.getRawContent().startsWith(cmdPrefix) && hasManageMessages)
+								|| (message.getAuthor() == null || message.getAuthor().getId().equals(bot.client.getSelfUser().getId()))) {
+							messagesToDelete.add(message);
+						}
 					}
-					if ((message.getRawContent().startsWith(cmdPrefix) && hasManageMessages)
-							|| (message.getAuthor() == null || message.getAuthor().getId().equals(bot.client.getSelfInfo().getId()))) {
-						messagesToDelete.add(message);
-					}
-				}
-				deleteBulk(bot, (TextChannel) channel, hasManageMessages, messagesToDelete);
+					deleteBulk(bot, (TextChannel) channel, hasManageMessages, messagesToDelete);
+				});
 				return "";
 			}
 			deleteAll = false;
 			if (DisUtil.isUserMention(args[0])) {
-				toDeleteFrom = bot.client.getUserById(DisUtil.mentionToId(args[0]));
+				toDeleteFrom = guild.getMember(bot.client.getUserById(DisUtil.mentionToId(args[0])));
 				if (args.length >= 2 && args[1].matches("^\\d+$")) {
 					deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
 				}
 			} else if (args[0].toLowerCase().equals("emily")) {
-				toDeleteFrom = bot.client.getSelfInfo();
+				toDeleteFrom = guild.getSelfMember();
 			} else if (args[0].matches("^\\d+$")) {
 				deleteAll = true;
 				deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[0])) + 1;
@@ -110,30 +109,35 @@ public class PurgeComand extends AbstractCommand {
 				}
 			}
 		}
-		if (toDeleteFrom != null && !hasManageMessages && !bot.client.getSelfInfo().equals(toDeleteFrom)) {
+		if (toDeleteFrom != null && !hasManageMessages && !bot.client.getSelfUser().equals(toDeleteFrom)) {
 			return Template.get("permission_missing_manage_messages");
 		}
 		if (author.equals(toDeleteFrom)) {
 			deleteLimit++;//exclude the command itself from the limit
 		}
-		int deletedCount = 0;
-		List<Message> retrieve = channel.getHistory().retrieve(100);
-		for (Message msg : retrieve) {
-			if (deletedCount == deleteLimit) {
-				break;
+		int finalDeleteLimit = deleteLimit;
+		boolean finalDeleteAll = deleteAll;
+		Member finalToDeleteFrom = toDeleteFrom;
+		channel.getHistory().retrievePast(100).queue(messages -> {
+			int deletedCount = 0;
+			for (Message msg : messages) {
+				if (deletedCount == finalDeleteLimit) {
+					break;
+				}
+				if (msg.isPinned()) {
+					continue;
+				}
+				if (finalDeleteAll && (hasManageMessages || (msg.getAuthor() != null && msg.getAuthor().getId().equals(bot.client.getSelfUser().getId())))) {
+					deletedCount++;
+					messagesToDelete.add(msg);
+				} else if (!finalDeleteAll && finalToDeleteFrom != null && msg.getAuthor() != null && msg.getAuthor().getId().equals(finalToDeleteFrom.getUser().getId())) {
+					deletedCount++;
+					messagesToDelete.add(msg);
+				}
 			}
-			if (msg.isPinned()) {
-				continue;
-			}
-			if (deleteAll && (hasManageMessages || (msg.getAuthor() != null && msg.getAuthor().getId().equals(bot.client.getSelfInfo().getId())))) {
-				deletedCount++;
-				messagesToDelete.add(msg);
-			} else if (!deleteAll && toDeleteFrom != null && msg.getAuthor() != null && msg.getAuthor().getId().equals(toDeleteFrom.getId())) {
-				deletedCount++;
-				messagesToDelete.add(msg);
-			}
-		}
-		deleteBulk(bot, (TextChannel) channel, hasManageMessages, messagesToDelete);
+			deleteBulk(bot, (TextChannel) channel, hasManageMessages, messagesToDelete);
+
+		});
 		return "";
 	}
 

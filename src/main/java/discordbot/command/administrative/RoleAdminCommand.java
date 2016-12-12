@@ -11,9 +11,9 @@ import discordbot.permission.SimpleRank;
 import discordbot.role.RoleRankings;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.*;
-import net.dv8tion.jda.utils.PermissionUtil;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class RoleAdminCommand extends AbstractCommand {
 		return "Management of roles & general permissions " + Config.EOL +
 				"You can give users the ability to self-assign roles. " + Config.EOL +
 				"" + Config.EOL +
-				"Note: " + Config.EOL+
+				"Note: " + Config.EOL +
 				"self-assignable roles are not created by emily!" + Config.EOL +
 				"To add an assignable role, you'll first have to add that role though discord." + Config.EOL +
 				"" + Config.EOL +
@@ -96,7 +96,7 @@ public class RoleAdminCommand extends AbstractCommand {
 		}
 		switch (args[0].toLowerCase()) {
 			case "self":
-				if (!PermissionUtil.checkPermission(guild, bot.client.getSelfInfo(), Permission.MANAGE_ROLES)) {
+				if (!PermissionUtil.checkPermission(guild, guild.getSelfMember(), Permission.MANAGE_ROLES)) {
 					return Template.get("permission_missing_manage_roles");
 				}
 				if (args.length == 1) {
@@ -123,10 +123,10 @@ public class RoleAdminCommand extends AbstractCommand {
 						return Template.get("not_implemented_yet");
 				}
 			case "cleanup":
-				RoleRankings.cleanUpRoles(guild, bot.client.getSelfInfo());
+				RoleRankings.cleanUpRoles(guild, bot.client.getSelfUser());
 				return "Removed all the time-based roles";
 			case "setup":
-				if (RoleRankings.canModifyRoles(guild, bot.client.getSelfInfo())) {
+				if (RoleRankings.canModifyRoles(guild, bot.client.getSelfUser())) {
 					RoleRankings.fixForServer(guild);
 					return "Set up all the required roles :smile:";
 				}

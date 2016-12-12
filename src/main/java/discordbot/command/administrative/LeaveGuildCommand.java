@@ -5,10 +5,10 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  * leaves the guild
@@ -67,8 +67,10 @@ public class LeaveGuildCommand extends AbstractCommand {
 			shouldLeave = true;
 		}
 		if (shouldLeave) {
-			bot.out.sendAsyncMessage(bot.getDefaultChannel(guild), "This is goodbye :wave:", null);
-			guild.getManager().leave();
+			Guild finalGuild = guild;
+			bot.out.sendAsyncMessage(bot.getDefaultChannel(guild), "This is goodbye :wave:", message -> {
+				finalGuild.leave();
+			});
 			return ":+1:";
 		}
 		return ":face_palm: I expected you to know how to use it";

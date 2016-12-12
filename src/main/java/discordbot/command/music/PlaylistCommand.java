@@ -19,10 +19,10 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -335,7 +335,7 @@ public class PlaylistCommand extends AbstractCommand {
 							OMusic record = CMusic.findById(Integer.parseInt(args[1]));
 							if (record.id > 0) {
 								if (player.canUseVoiceCommands(author, userRank)) {
-									player.connectTo(guild.getVoiceStatusOfUser(author).getChannel());
+									player.connectTo(guild.getMember(author).getVoiceState().getChannel());
 									player.addToQueue(record.filename, author);
 									return Template.get("music_added_to_queue", record.youtubeTitle);
 								}
@@ -377,8 +377,8 @@ public class PlaylistCommand extends AbstractCommand {
 		String title;
 		switch (search.toLowerCase()) {
 			case "mine":
-				title = user.getUsername() + "'s list";
-				userId = CUser.getCachedId(user.getId(), user.getUsername());
+				title = user.getName() + "'s list";
+				userId = CUser.getCachedId(user.getId(), user.getName());
 				playlist = CPlaylist.findBy(userId);
 				break;
 			case "guild":

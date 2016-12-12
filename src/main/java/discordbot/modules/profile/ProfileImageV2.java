@@ -2,7 +2,7 @@ package discordbot.modules.profile;
 
 import discordbot.main.Launcher;
 import discordbot.util.GfxUtil;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.User;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -24,10 +24,10 @@ public class ProfileImageV2 extends ProfileImage {
 
 	public File getProfileImage() throws IOException {
 		int fontsize = 28;
-		if (getUser().getUsername().length() <= 4) {
+		if (getUser().getName().length() <= 4) {
 			fontsize = 32;
 		}
-		if (getUser().getUsername().length() > 8) {
+		if (getUser().getName().length() > 8) {
 			fontsize = 22;
 		}
 		Font defaultFont = new Font("Forte", Font.BOLD + Font.ITALIC, fontsize);
@@ -46,8 +46,8 @@ public class ProfileImageV2 extends ProfileImage {
 		g.drawImage(profileImg, 18, 33, 141, 159, 0, 0, profileImg.getWidth(), profileImg.getHeight(), null);
 		g.drawImage(backgroundImage, 0, 0, 320, 265, 0, 0, 320, 265, null);
 
-		GfxUtil.addCenterShadow(getUser().getUsername(), defaultFont, 222, 71 + (fontsize / 2), g, Color.black);
-		GfxUtil.addCenterText(getUser().getUsername(), defaultFont, 222, 71 + (fontsize / 2), g, Color.white);
+		GfxUtil.addCenterShadow(getUser().getName(), defaultFont, 222, 71 + (fontsize / 2), g, Color.black);
+		GfxUtil.addCenterText(getUser().getName(), defaultFont, 222, 71 + (fontsize / 2), g, Color.white);
 		GfxUtil.addRightText("made by Emily", creditFont, 318, 199, g, new Color(0x3A3A38));
 
 		GfxUtil.addText("" + rng.nextInt(1000), score, 173, 118, g, new Color(0xffff00));//rewards

@@ -5,8 +5,8 @@ import com.google.gson.JsonParser;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.BufferedReader;

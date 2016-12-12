@@ -26,12 +26,9 @@ import discordbot.main.Launcher;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.YTUtil;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.entities.VoiceChannel;
-import net.dv8tion.jda.entities.VoiceStatus;
-import net.dv8tion.jda.utils.PermissionUtil;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -117,13 +114,13 @@ public class MusicPlayerHandler {
 	 * @return bool
 	 */
 	public boolean canUseVoiceCommands(User user, SimpleRank rank) {
-		if (PermissionUtil.checkPermission(guild, user, Permission.ADMINISTRATOR)) {
+		if (PermissionUtil.checkPermission(guild, guild.getMember(user), Permission.ADMINISTRATOR)) {
 			return true;
 		}
 		if (!GuildSettings.get(guild).canUseMusicCommands(user, rank)) {
 			return false;
 		}
-		VoiceStatus voiceStatus = guild.getVoiceStatusOfUser(user);
+		GuildVoiceState voiceStatus = guild.getMember(user).getVoiceState();
 		if (voiceStatus == null) {
 			return false;
 		}
@@ -173,7 +170,7 @@ public class MusicPlayerHandler {
 					keepGoing = true;
 					if (!playRandomSong()) {
 						player.destroy();
-						bot.getMusicChannel(guild).sendMessageAsync("Stopped playing because the playlist is empty", null);
+						bot.getMusicChannel(guild).sendMessage("Stopped playing because the playlist is empty").queue();
 						leave();
 						return;
 					}
@@ -246,22 +243,22 @@ public class MusicPlayerHandler {
 			record = new OMusic();
 		}
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingMusicChannelTitle.class))) {
-			if (bot.getMusicChannel(guild) != null && bot.getMusicChannel(guild).checkPermission(bot.client.getSelfInfo(), Permission.MANAGE_CHANNEL)) {
+			if (bot.getMusicChannel(guild) != null && PermissionUtil.checkPermission(bot.getMusicChannel(guild), guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
 				if (!isUpdateChannelTitle()) {
-					bot.getMusicChannel(guild).getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).update();
+					bot.getMusicChannel(guild).getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).queue();
 				}
 			} else {
 				GuildSettings.get(guild).set(SettingMusicChannelTitle.class, "false");
 			}
 		}
 		if (!messageType.equals("off") && record.id > 0) {
-			if (!bot.getMusicChannel(guild).checkPermission(bot.client.getSelfInfo(), Permission.MESSAGE_WRITE)) {
+			if (!bot.getMusicChannel(guild).canTalk()) {
 				GuildSettings.get(guild).set(SettingMusicPlayingMessage.class, "off");
 				return;
 			}
 			String msg = "[`" + DisUtil.getCommandPrefix(guild) + "pl` " + playlist.title + "] \uD83C\uDFB6 " + record.youtubeTitle;
 			final long deleteAfter = Math.min(Math.max(currentSongLength * 1000L, 60_000L), 7200_000L);
-			bot.getMusicChannel(guild).sendMessageAsync(msg, message -> {
+			bot.getMusicChannel(guild).sendMessage(msg).queue(message -> {
 				if (messageType.equals("clear")) {
 					bot.timer.schedule(
 							new TimerTask() {
@@ -284,11 +281,7 @@ public class MusicPlayerHandler {
 
 	public synchronized void connectTo(VoiceChannel channel) {
 		if (!isConnectedTo(channel)) {
-			if (guild.getAudioManager().getConnectedChannel() != null) {
-				guild.getAudioManager().moveAudioConnection(channel);
-			} else if (guild.getAudioManager().getQueuedAudioConnection() == null) {
-				guild.getAudioManager().openAudioConnection(channel);
-			}
+			guild.getAudioManager().openAudioConnection(channel);
 		}
 	}
 
@@ -451,7 +444,7 @@ public class MusicPlayerHandler {
 			if (playlist.isGuildList() && guild.isMember(user)) {
 				switch (playlist.getEditType()) {
 					case PRIVATE_AUTO:
-						if (!PermissionUtil.checkPermission(guild, user, Permission.ADMINISTRATOR)) {
+						if (!PermissionUtil.checkPermission(guild, guild.getMember(user), Permission.ADMINISTRATOR)) {
 							break;
 						}
 					case PUBLIC_AUTO:
@@ -474,12 +467,12 @@ public class MusicPlayerHandler {
 		player.setVolume(volume);
 	}
 
-	public List<User> getUsersInVoiceChannel() {
-		ArrayList<User> userList = new ArrayList<>();
+	public List<Member> getUsersInVoiceChannel() {
+		ArrayList<Member> userList = new ArrayList<>();
 		VoiceChannel currentChannel = guild.getAudioManager().getConnectedChannel();
 		if (currentChannel != null) {
-			List<User> connectedUsers = currentChannel.getUsers();
-			userList.addAll(connectedUsers.stream().filter(user -> !user.isBot()).collect(Collectors.toList()));
+			List<Member> connectedUsers = currentChannel.getMembers();
+			userList.addAll(connectedUsers.stream().filter(user -> !user.getUser().isBot()).collect(Collectors.toList()));
 		}
 		return userList;
 	}

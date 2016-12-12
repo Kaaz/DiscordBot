@@ -7,8 +7,8 @@ import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.*;
 import discordbot.util.UpdateUtil;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;

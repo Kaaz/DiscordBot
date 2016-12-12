@@ -1,8 +1,8 @@
 package discordbot.event;
 
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.events.ReadyEvent;
-import net.dv8tion.jda.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class JDAReadyEvent extends ListenerAdapter {
 	private DiscordBot discordBot;
