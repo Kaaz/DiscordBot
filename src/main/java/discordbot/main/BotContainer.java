@@ -7,7 +7,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import discordbot.core.ExitCode;
 import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.model.OBotPlayingOn;
-import discordbot.event.JDAEvents;
 import discordbot.handler.*;
 import discordbot.threads.YoutubeThread;
 import net.dv8tion.jda.core.entities.Guild;
@@ -140,10 +139,6 @@ public class BotContainer {
 	 * After the bot is ready to go; reconnect to the voicechannels and start playing where it left off
 	 */
 	private void onAllShardsReady() {
-		for (DiscordBot shard : shards) {
-			shard.client.addEventListener(new JDAEvents(shard));
-		}
-
 		List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
 		for (OBotPlayingOn radio : radios) {
 			DiscordBot bot = getBotFor(radio.guildId);
@@ -169,7 +164,9 @@ public class BotContainer {
 				if (hasUsers) {
 					MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
 					player.connectTo(vc);
-					player.playRandomSong();
+					if (!player.isPlaying()) {
+						player.playRandomSong();
+					}
 				}
 			}
 		}
@@ -195,7 +192,7 @@ public class BotContainer {
 			return allShardsReady;
 		}
 		for (DiscordBot shard : shards) {
-			if (!shard.isReady()) {
+			if (shard == null || !shard.isReady()) {
 				return false;
 			}
 		}

@@ -2,6 +2,7 @@ package discordbot.main;
 
 import com.mashape.unirest.http.Unirest;
 import discordbot.db.controllers.CGuild;
+import discordbot.event.JDAEvents;
 import discordbot.event.JDAReadyEvent;
 import discordbot.guildsettings.defaults.*;
 import discordbot.guildsettings.music.SettingMusicChannel;
@@ -37,9 +38,9 @@ public class DiscordBot {
 	public ChatBotHandler chatBotHandler = null;
 	public SecurityHandler security = null;
 	public OutgoingContentHandler out = null;
+	public MusicReactionHandler musicReactionHandler = null;
 	private AutoReplyHandler autoReplyhandler;
 	private GameHandler gameHandler = null;
-	public MusicReactionHandler musicReactionHandler = null;
 	private volatile boolean isReady = false;
 	private int shardId;
 	private BotContainer container;
@@ -55,7 +56,7 @@ public class DiscordBot {
 		}
 		readyEvent = new JDAReadyEvent(this);
 		builder.setBulkDeleteSplittingEnabled(false);
-		builder.addListener(new JDAReadyEvent(this));
+		builder.addListener(readyEvent);
 		builder.setEnableShutdownHook(false);
 		client = builder.buildAsync();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
@@ -151,9 +152,10 @@ public class DiscordBot {
 		mentionMeAlias = "<@!" + this.client.getSelfUser().getId() + ">";
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds(), client);
-		this.isReady = true;
-		this.client.removeEventListener(readyEvent);
+		isReady = true;
+		client.removeEventListener(readyEvent);
 		readyEvent = null;
+		client.addEventListener(new JDAEvents(this));
 		sendStatsToDiscordPw();
 		container.allShardsReady();
 	}
