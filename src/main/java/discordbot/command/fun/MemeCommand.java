@@ -77,7 +77,9 @@ public class MemeCommand extends AbstractCommand {
 		}
 		if (args.length == 0) {
 			return Template.get("command_invalid_usage") + Config.EOL +
-					msg + Misc.makeTable(new ArrayList<>(memeTypes));
+					msg + Misc.makeTable(new ArrayList<>(memeTypes)) + Config.EOL +
+					"Example:" + Config.EOL +
+					"meme sohappy If I could use this meme || I would be so happy";
 		}
 		switch (args[0].toLowerCase()) {
 			case "type":
