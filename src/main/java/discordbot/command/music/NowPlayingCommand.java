@@ -203,7 +203,7 @@ public class NowPlayingCommand extends AbstractCommand {
 						}
 						message.editMessage((player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + Config.EOL +
 								getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL
-						).queue();
+						).queue(null, throwable -> cancel());
 					}
 				}, 10000L, 10000L);
 			});

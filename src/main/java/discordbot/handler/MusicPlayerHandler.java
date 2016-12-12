@@ -492,7 +492,7 @@ public class MusicPlayerHandler {
 		VoiceChannel currentChannel = guild.getAudioManager().getConnectedChannel();
 		if (currentChannel != null) {
 			List<Member> connectedUsers = currentChannel.getMembers();
-			userList.addAll(connectedUsers.stream().filter(user -> !user.getUser().isBot()).collect(Collectors.toList()));
+			userList.addAll(connectedUsers.stream().filter(user -> !user.getUser().isBot() && !user.getVoiceState().isSelfMuted()).collect(Collectors.toList()));
 		}
 		return userList;
 	}
