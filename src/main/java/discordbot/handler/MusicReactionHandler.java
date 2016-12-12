@@ -44,7 +44,6 @@ public class MusicReactionHandler {
 	}
 
 	public synchronized void handle(String messageId, TextChannel channel, User invoker, MessageReaction.ReactionEmote emote, boolean isAdding) {
-		System.out.println("HANDLING");
 		String guildId = channel.getGuild().getId();
 		if (!isListening(guildId, messageId)) {
 			return;

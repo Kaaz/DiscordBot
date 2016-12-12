@@ -161,7 +161,7 @@ public class PurgeComand extends AbstractCommand {
 					if (messagesToDelete.size() - index < 2) {
 						messagesToDelete.get(index).deleteMessage().queue();
 					} else {
-						channel.deleteMessages(messagesToDelete.subList(index, Math.min(index + BULK_DELETE_MAX, messagesToDelete.size())));
+						channel.deleteMessages(messagesToDelete.subList(index, Math.min(index + BULK_DELETE_MAX, messagesToDelete.size()))).queue();
 					}
 					try {
 						Thread.sleep(2000L);
