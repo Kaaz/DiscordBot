@@ -77,7 +77,7 @@ public class PurgeComand extends AbstractCommand {
 					Template.get("permission_missing_manage_messages");
 				}
 				String cmdPrefix = DisUtil.getCommandPrefix(channel);
-				channel.getHistory().retrievePast(200).queue(messages -> {
+				channel.getHistory().retrievePast(100).queue(messages -> {
 					for (Message message : messages) {
 						if (message.isPinned()) {
 							continue;

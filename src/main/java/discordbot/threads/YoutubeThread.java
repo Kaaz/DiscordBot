@@ -108,6 +108,7 @@ public class YoutubeThread extends Thread {
 	public void run() {
 		try {
 			YoutubeTask task;
+
 			while (!shutdownMode && !Launcher.isBeingKilled) {
 				try {
 					task = queue.take();
