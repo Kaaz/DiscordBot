@@ -276,7 +276,7 @@ public class MusicPlayerHandler {
 
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.setThumbnail("https://i.ytimg.com/vi/" + record.youtubecode + "/0.jpg");
-			embed.setTitle("\uD83C\uDFB6 " + record.youtubeTitle + ")");
+			embed.setTitle("\uD83C\uDFB6 " + record.youtubeTitle);
 			embed.setDescription("[source](https://www.youtube.com/watch?v=" + record.youtubecode + ")");
 			embed.addField("duration", Misc.getDurationString(record.duration), true);
 			embed.addField(DisUtil.getCommandPrefix(guild) + "Playlist", playlist.title, true);
