@@ -7,8 +7,8 @@ import discordbot.main.Launcher;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.entities.*;
 
-import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class OutgoingContentHandler {
@@ -32,14 +32,11 @@ public class OutgoingContentHandler {
 	public void sendAsyncMessage(MessageChannel channel, String content) {
 		channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue((message) -> {
 			if (botInstance.shouldCleanUpMessages(channel)) {
-				botInstance.timer.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						if (message != null) {
-							message.deleteMessage().queue();
-						}
+				botInstance.schedule(() -> {
+					if (message != null) {
+						message.deleteMessage().queue();
 					}
-				}, Config.DELETE_MESSAGES_AFTER);
+				}, Config.DELETE_MESSAGES_AFTER, TimeUnit.MILLISECONDS);
 			}
 		});
 	}

@@ -39,6 +39,7 @@ import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class MusicPlayerHandler {
@@ -274,16 +275,12 @@ public class MusicPlayerHandler {
 			final long deleteAfter = Math.min(Math.max(currentSongLength * 1000L, 60_000L), 7200_000L);
 			bot.getMusicChannel(guild).sendMessage(msg).queue(message -> {
 				if (messageType.equals("clear")) {
-					bot.timer.schedule(
-							new TimerTask() {
-								@Override
-								public void run() {
-									if (message != null) {
-										message.deleteMessage().queue();
-									}
+					bot.schedule(() -> {
+								if (message != null) {
+									message.deleteMessage().queue();
 								}
-							}, deleteAfter
-					);
+							}
+							, deleteAfter, TimeUnit.MILLISECONDS);
 				}
 				if (PermissionUtil.checkPermission(message.getTextChannel(), guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION)) {
 					bot.musicReactionHandler.clearGuild(guild.getId());

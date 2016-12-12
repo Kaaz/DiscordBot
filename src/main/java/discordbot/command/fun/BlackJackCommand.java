@@ -10,8 +10,8 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
 import java.util.Map;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
 
 /**
  * !BlackJack
@@ -71,27 +71,19 @@ public class BlackJackCommand extends AbstractCommand {
 			return "";
 		} else if (args[0].equalsIgnoreCase("stand")) {
 			if (playerGames.containsKey(author.getId())) {
+				final Future<?>[] f = {null};
 				if (!playerGames.get(author.getId()).playerIsStanding()) {
 					bot.out.sendAsyncMessage(channel, playerGames.get(author.getId()).toString(), message -> {
 						playerGames.get(author.getId()).stand();
-						bot.timer.scheduleAtFixedRate(new TimerTask() {
-							@Override
-							public void run() {
-								try {
-									boolean didHit = playerGames.get(author.getId()).dealerHit();
-									message.editMessage(playerGames.get(author.getId()).toString()).queue();
+						f[0] = bot.scheduleRepeat(() -> {
+							boolean didHit = playerGames.get(author.getId()).dealerHit();
+							message.editMessage(playerGames.get(author.getId()).toString()).queue();
 
-									if (!didHit) {
-										playerGames.remove(author.getId());
-										this.cancel();
-									}
-								} catch (Exception e) {
-									bot.out.sendErrorToMe(e, "blackjackgame", author.getId(), bot);
-									this.cancel();
-									playerGames.remove(author.getId());
-								}
+							if (!didHit) {
+								playerGames.remove(author.getId());
+								f[0].cancel(false);
 							}
-						}, 1000L, DEALER_TURN_INTERVAL);
+						}, DEALER_TURN_INTERVAL, DEALER_TURN_INTERVAL);
 					});
 				}
 				return "";

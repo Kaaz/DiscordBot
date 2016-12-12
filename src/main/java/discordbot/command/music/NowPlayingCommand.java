@@ -24,10 +24,11 @@ import discordbot.util.Emojibet;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimerTask;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -194,18 +195,18 @@ public class NowPlayingCommand extends AbstractCommand {
 		}
 		if (args.length == 1 && args[0].equals("update")) {
 			channel.sendMessage(ret).queue(message -> {
-				bot.timer.scheduleAtFixedRate(new TimerTask() {
-					@Override
-					public void run() {
-						if (player.getCurrentlyPlaying() != song.id) {
-							this.cancel();
-							return;
-						}
-						message.editMessage((player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + Config.EOL +
-								getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL
-						).queue(null, throwable -> cancel());
-					}
-				}, 10000L, 10000L);
+				final Future<?>[] f = {null};
+				bot.scheduleRepeat(
+						() -> {
+							if (player.getCurrentlyPlaying() != song.id) {
+								f[0].cancel(false);
+								return;
+							}
+							message.editMessage((player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + Config.EOL +
+									getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL
+							).queue(null, throwable -> f[0].cancel(false));
+						}, 10_000L, 10_000L
+				);
 			});
 			return "";
 		} else if (args.length >= 1 && args[0].equals("updatetitle")) {
@@ -217,25 +218,23 @@ public class NowPlayingCommand extends AbstractCommand {
 				return Template.get("music_channel_autotitle_stop");
 			} else {
 				TextChannel musicChannel = (TextChannel) channel;
-				if (musicChannel.getPermissionOverride(guild.getSelfMember()).getAllowed().contains(Permission.MANAGE_CHANNEL)) {
+				if (PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
 					player.setUpdateChannelTitle(true);
-					bot.timer.scheduleAtFixedRate(new TimerTask() {
-						@Override
-						public void run() {
-							if (!player.isUpdateChannelTitle() || !player.canTogglePause()) {
-								player.setUpdateChannelTitle(false);
-								musicChannel.getManager().setTopic("");
-								this.cancel();
-								return;
-							}
-							OMusic song = CMusic.findById(player.getCurrentlyPlaying());
-							musicChannel.getManager().setTopic(
-									(player.isInRepeatMode() ? "\uD83D\uDD02 " : "") +
-											getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) +
-											(song.id > 0 ? "\uD83C\uDFB6 " + song.youtubeTitle : "")
-							).queue();
+					final Future<?>[] f = {null};
+					bot.scheduleRepeat(() -> {
+						if (!player.isUpdateChannelTitle() || !player.canTogglePause()) {
+							player.setUpdateChannelTitle(false);
+							musicChannel.getManager().setTopic("");
+							f[0].cancel(false);
+							return;
 						}
-					}, 10000L, 10000L);
+						OMusic nowPlaying = CMusic.findById(player.getCurrentlyPlaying());
+						musicChannel.getManager().setTopic(
+								(player.isInRepeatMode() ? "\uD83D\uDD02 " : "") +
+										getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) +
+										(nowPlaying.id > 0 ? "\uD83C\uDFB6 " + nowPlaying.youtubeTitle : "")
+						).queue();
+					}, 10_000L, 10_000L);
 					return Template.get("music_channel_autotitle_start");
 				}
 				return Template.get("permission_missing_manage_channel");

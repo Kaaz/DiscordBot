@@ -11,7 +11,7 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 
-import java.util.TimerTask;
+import java.util.concurrent.Future;
 
 /**
  * Created on 23-8-2016
@@ -63,30 +63,28 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 		if (args.length == 0 || args.length >= 1 && args[0].equals("play")) {
 			final SlotMachine slotMachine = new SlotMachine();
 			bot.out.sendAsyncMessage(channel, slotMachine.toString(), message -> {
-				bot.timer.scheduleAtFixedRate(new TimerTask() {
-					@Override
-					public void run() {
-						try {
-							if (slotMachine.gameInProgress()) {
-								slotMachine.spin();
-							}
-							String gameresult;
-							if (!slotMachine.gameInProgress()) {
-								Slot slot = slotMachine.winSlot();
-								if (slot != null) {
-									gameresult = "You rolled 3 **" + slot.getName() + "** and won **" + slot.getTriplePayout() + "**";
-								} else {
-									gameresult = "Aw you lose, better luck next time!";
-								}
-								message.editMessage(slotMachine.toString() + Config.EOL + gameresult).queue();
-								this.cancel();
-							} else {
-								message.editMessage(slotMachine.toString()).queue();
-							}
-						} catch (Exception e) {
-							bot.out.sendErrorToMe(e, "slotmachine", author.getId(), "channel", ((TextChannel) channel).getAsMention(), bot);
-							this.cancel();
+				final Future<?>[] f = {null};
+				f[0] = bot.scheduleRepeat(() -> {
+					try {
+						if (slotMachine.gameInProgress()) {
+							slotMachine.spin();
 						}
+						String gameresult;
+						if (!slotMachine.gameInProgress()) {
+							Slot slot = slotMachine.winSlot();
+							if (slot != null) {
+								gameresult = "You rolled 3 **" + slot.getName() + "** and won **" + slot.getTriplePayout() + "**";
+							} else {
+								gameresult = "Aw you lose, better luck next time!";
+							}
+							message.editMessage(slotMachine.toString() + Config.EOL + gameresult).queue();
+							f[0].cancel(false);
+						} else {
+							message.editMessage(slotMachine.toString()).queue();
+						}
+					} catch (Exception e) {
+						bot.out.sendErrorToMe(e, "slotmachine", author.getId(), "channel", ((TextChannel) channel).getAsMention(), bot);
+						f[0].cancel(false);
 					}
 				}, 1000L, SPIN_INTERVAL);
 			});

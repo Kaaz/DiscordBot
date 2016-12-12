@@ -20,8 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.util.Map;
-import java.util.Timer;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 public class DiscordBot {
 
@@ -32,7 +31,7 @@ public class DiscordBot {
 	private final Map<Guild, TextChannel> logChannels = new ConcurrentHashMap<>();
 	private final int totShards;
 	public JDA client;
-	public Timer timer = new Timer();
+	private final ScheduledExecutorService scheduler;
 	public String mentionMe;
 	public String mentionMeAlias;
 	public ChatBotHandler chatBotHandler = null;
@@ -47,6 +46,7 @@ public class DiscordBot {
 	private JDAReadyEvent readyEvent;
 
 	public DiscordBot(int shardId, int numShards) throws LoginException, InterruptedException, RateLimitedException {
+		scheduler = Executors.newScheduledThreadPool(3);
 		registerHandlers();
 		JDABuilder builder = new JDABuilder(AccountType.BOT).setToken(Config.BOT_TOKEN);
 		this.shardId = shardId;
@@ -60,6 +60,28 @@ public class DiscordBot {
 		builder.setEnableShutdownHook(false);
 		client = builder.buildAsync();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
+	}
+
+	/**
+	 * Schedule the a task somewhere in the future
+	 *
+	 * @param task     the task
+	 * @param delay    the delay
+	 * @param timeUnit unit type of delay
+	 */
+	public void schedule(Runnable task, Long delay, TimeUnit timeUnit) {
+		scheduler.schedule(task, delay, timeUnit);
+	}
+
+	/**
+	 * schedule a repeating task
+	 *
+	 * @param task        the taks
+	 * @param startDelay  delay before starting the first iteration
+	 * @param repeatDelay delay between consecutive executions
+	 */
+	public ScheduledFuture<?> scheduleRepeat(Runnable task, long startDelay, long repeatDelay) {
+		return scheduler.scheduleWithFixedDelay(task, startDelay, repeatDelay, TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -217,7 +239,6 @@ public class DiscordBot {
 		security = new SecurityHandler();
 		gameHandler = new GameHandler(this);
 		out = new OutgoingContentHandler(this);
-		timer = new Timer();
 		musicReactionHandler = new MusicReactionHandler(this);
 		autoReplyhandler = new AutoReplyHandler(this);
 	}

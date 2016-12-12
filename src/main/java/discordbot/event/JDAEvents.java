@@ -44,7 +44,7 @@ import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.sql.Timestamp;
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 12-10-2016
@@ -242,14 +242,12 @@ public class JDAEvents extends ListenerAdapter {
 			defaultChannel.sendMessage(
 					Template.getWithTags(defaultChannel, firstTime ? "welcome_new_user" : "welcome_back_user", user)).queue(
 					message ->
-							discordBot.timer.schedule(new TimerTask() {
-								@Override
-								public void run() {
-									if (message != null) {
-										message.deleteMessage().queue();
-									}
-								}
-							}, Config.DELETE_MESSAGES_AFTER * 5)
+							discordBot.schedule(() -> {
+										if (message != null) {
+											message.deleteMessage().queue();
+										}
+									}, Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS
+							)
 			);
 		}
 
@@ -277,14 +275,13 @@ public class JDAEvents extends ListenerAdapter {
 			defaultChannel.sendMessage(
 					Template.getWithTags(defaultChannel, "message_user_leaves", user)).queue(
 					message ->
-							discordBot.timer.schedule(new TimerTask() {
-								@Override
-								public void run() {
-									if (message != null) {
-										message.deleteMessage().queue();
-									}
-								}
-							}, Config.DELETE_MESSAGES_AFTER * 5)
+							discordBot.schedule(() -> {
+										if (message != null) {
+											message.deleteMessage().queue();
+										}
+									}, Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS
+							)
+
 			);
 		}
 		Launcher.log("user leaves guild", "guild", "member-leave",

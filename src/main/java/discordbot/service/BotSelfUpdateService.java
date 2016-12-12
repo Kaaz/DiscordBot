@@ -10,7 +10,6 @@ import discordbot.util.UpdateUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,19 +47,15 @@ public class BotSelfUpdateService extends AbstractService {
 		ProgramVersion latestVersion = UpdateUtil.getLatestVersion();
 		DiscordBot firstShard = bot.getShards()[0];
 		if (latestVersion.isHigherThan(Launcher.getVersion()) || bot.isTerminationRequested()) {
-			firstShard.timer.schedule(
-					new TimerTask() {
-						@Override
-						public void run() {
-							if (latestVersion.isHigherThan(Launcher.getVersion())) {
-								Launcher.stop(ExitCode.UPDATE);
-							} else if (bot.isTerminationRequested()) {
-								Launcher.stop(bot.getRebootReason());
-							} else {
-								Launcher.stop(ExitCode.NEED_MORE_SHARDS);
-							}
-						}
-					}, TimeUnit.MINUTES.toMillis(1));
+			firstShard.schedule(() -> {
+				if (latestVersion.isHigherThan(Launcher.getVersion())) {
+					Launcher.stop(ExitCode.UPDATE);
+				} else if (bot.isTerminationRequested()) {
+					Launcher.stop(bot.getRebootReason());
+				} else {
+					Launcher.stop(ExitCode.NEED_MORE_SHARDS);
+				}
+			}, 1L, TimeUnit.MINUTES);
 			usersHaveBeenWarned = true;
 			String message = Template.get("announce_reboot");
 			if (latestVersion.isHigherThan(Launcher.getVersion())) {
@@ -97,6 +92,7 @@ public class BotSelfUpdateService extends AbstractService {
 				}
 			}
 		}
+
 	}
 
 	@Override
