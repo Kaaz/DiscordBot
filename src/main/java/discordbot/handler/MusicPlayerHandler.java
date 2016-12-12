@@ -25,6 +25,7 @@ import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
+import discordbot.util.Emojibet;
 import discordbot.util.YTUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -265,11 +266,17 @@ public class MusicPlayerHandler {
 								@Override
 								public void run() {
 									if (message != null) {
-										message.deleteMessage();
+										message.deleteMessage().queue();
 									}
 								}
 							}, deleteAfter
 					);
+				}
+				if (PermissionUtil.checkPermission(message.getTextChannel(), guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION)) {
+					bot.musicReactionHandler.clearGuild(guild.getId());
+					message.addReaction(Emojibet.STAR).queue();
+					message.addReaction(Emojibet.NEXT_TRACK).queue();
+					bot.musicReactionHandler.addMessage(guild.getId(), message.getId());
 				}
 			});
 		}

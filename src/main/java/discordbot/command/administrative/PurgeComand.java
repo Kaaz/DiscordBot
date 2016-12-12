@@ -159,7 +159,7 @@ public class PurgeComand extends AbstractCommand {
 				messagesToDelete.add(message);
 				for (int index = 0; index < messagesToDelete.size(); index += BULK_DELETE_MAX) {
 					if (messagesToDelete.size() - index < 2) {
-						messagesToDelete.get(index).deleteMessage();
+						messagesToDelete.get(index).deleteMessage().queue();
 					} else {
 						channel.deleteMessages(messagesToDelete.subList(index, Math.min(index + BULK_DELETE_MAX, messagesToDelete.size())));
 					}
@@ -173,7 +173,7 @@ public class PurgeComand extends AbstractCommand {
 			bot.out.sendAsyncMessage(channel, Template.get("permission_missing_manage_messages"), message -> {
 				messagesToDelete.add(message);
 				for (Message toDelete : messagesToDelete) {
-					toDelete.deleteMessage();
+					toDelete.deleteMessage().queue();
 					try {
 						Thread.sleep(500L);
 					} catch (Exception ignored) {

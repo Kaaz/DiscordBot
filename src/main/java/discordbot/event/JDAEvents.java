@@ -37,6 +37,9 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.react.GenericMessageReactionEvent;
+import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -164,6 +167,31 @@ public class JDAEvents extends ListenerAdapter {
 	}
 
 	@Override
+	public void onMessageReactionAdd(MessageReactionAddEvent event) {
+		handleReaction(event, true);
+	}
+
+	@Override
+	public void onMessageReactionRemove(MessageReactionRemoveEvent event) {
+		handleReaction(event, false);
+	}
+
+	private void handleReaction(GenericMessageReactionEvent e, boolean adding) {
+		if (e.getUser().isBot()) {
+			return;
+		}
+		if (!(e.getChannel() instanceof TextChannel)) {
+			return;
+		}
+		discordBot.musicReactionHandler.handle(e.getMessageId(), (TextChannel) e.getChannel(), e.getUser(), e.getReaction().getEmote(), adding);
+//		e.getUser();
+//		e.getReaction();
+//		e.getMessageId();
+//		e.getChannel();
+
+	}
+
+	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		discordBot.handleMessage(event.getGuild(), event.getChannel(), event.getAuthor(), event.getMessage());
 	}
@@ -218,12 +246,13 @@ public class JDAEvents extends ListenerAdapter {
 								@Override
 								public void run() {
 									if (message != null) {
-										message.deleteMessage();
+										message.deleteMessage().queue();
 									}
 								}
 							}, Config.DELETE_MESSAGES_AFTER * 5)
 			);
 		}
+
 		Launcher.log("user joins guild", "guild", "member-join",
 				"guild-id", guild.getId(),
 				"guild-name", guild.getName(),
@@ -252,7 +281,7 @@ public class JDAEvents extends ListenerAdapter {
 								@Override
 								public void run() {
 									if (message != null) {
-										message.deleteMessage();
+										message.deleteMessage().queue();
 									}
 								}
 							}, Config.DELETE_MESSAGES_AFTER * 5)

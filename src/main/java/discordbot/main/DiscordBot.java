@@ -39,6 +39,7 @@ public class DiscordBot {
 	public OutgoingContentHandler out = null;
 	private AutoReplyHandler autoReplyhandler;
 	private GameHandler gameHandler = null;
+	public MusicReactionHandler musicReactionHandler = null;
 	private volatile boolean isReady = false;
 	private int shardId;
 	private BotContainer container;
@@ -215,6 +216,7 @@ public class DiscordBot {
 		gameHandler = new GameHandler(this);
 		out = new OutgoingContentHandler(this);
 		timer = new Timer();
+		musicReactionHandler = new MusicReactionHandler(this);
 		autoReplyhandler = new AutoReplyHandler(this);
 	}
 
