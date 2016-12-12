@@ -124,7 +124,7 @@ public class OutgoingContentHandler {
 	 * @param message the message
 	 */
 	public void sendPrivateMessage(User target, String message) {
-		target.getPrivateChannel().sendMessage(message).queue();
+		target.openPrivateChannel().queue(c -> c.sendMessage(message).queue());
 	}
 
 
