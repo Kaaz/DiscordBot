@@ -25,12 +25,13 @@ import java.util.function.Consumer;
 public class YoutubeThread extends Thread {
 	private final HashSet<String> itemsInProgress = new HashSet<>();
 	private final AtomicInteger counter = new AtomicInteger();
-	private final ExecutorService executor = Executors.newFixedThreadPool(3);
+	private final ExecutorService executor;
 	private final LinkedBlockingQueue<YoutubeTask> queue = new LinkedBlockingQueue<>();
 	private volatile boolean shutdownMode = false;
 
 	public YoutubeThread() throws InterruptedException {
 		super("yt-to-mp3");
+		executor = Executors.newFixedThreadPool(3);
 	}
 
 	/**

@@ -75,7 +75,7 @@ public class SecurityHandler {
 
 		int bots = 0;
 		int users = 0;
-		if (MiscUtil.getCreationTime(guild.getOwner()).isBefore(OffsetDateTime.now().minusDays(Config.GUILD_OWNER_MIN_ACCOUNT_AGE))) {
+		if (MiscUtil.getCreationTime(guild.getOwner().getUser()).isBefore(OffsetDateTime.now().minusDays(Config.GUILD_OWNER_MIN_ACCOUNT_AGE))) {
 			return GuildCheckResult.OWNER_TOO_NEW;
 		}
 		for (Member user : guild.getMembers()) {

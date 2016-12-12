@@ -26,7 +26,7 @@ public class OutgoingContentHandler {
 	 * @param callback callback to execute after the message is sent
 	 */
 	public void sendAsyncMessage(MessageChannel channel, String content, Consumer<Message> callback) {
-		channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue(callback);
+		channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue(callback, throwable -> callback.accept(null));
 	}
 
 	public void sendAsyncMessage(MessageChannel channel, String content) {
