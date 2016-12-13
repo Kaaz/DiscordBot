@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +85,7 @@ public class AutoReplyHandler {
 
 	public void reload() {
 		List<OReplyPattern> all = CReplyPattern.getAll();
-		replies = new AutoReply[all.size()];
+		List<AutoReply> list = new ArrayList<>();
 		int index = 0;
 		for (OReplyPattern reply : all) {
 			AutoReply ar = new AutoReply();
@@ -96,8 +97,10 @@ public class AutoReplyHandler {
 			ar.cooldown = reply.cooldown;
 			ar.reply = reply.reply;
 			ar.guildId = reply.guildId;
+			list.add(ar);
 			replies[index++] = ar;
 		}
+		replies = list.toArray(new AutoReply[list.size()]);
 	}
 
 	private class AutoReply {

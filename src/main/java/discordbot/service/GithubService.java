@@ -13,7 +13,6 @@ import java.awt.*;
 import java.text.ParseException;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * check for news on github
@@ -80,7 +79,7 @@ public class GithubService extends AbstractService {
 				if (commitCount >= MAX_COMMITS_PER_POST) {
 					break;
 				}
-				commitMap.put(commit.getSha(), message + message + message + message);
+				commitMap.put(commit.getSha(), message);
 			}
 		}
 		if (commitCount > 0) {
