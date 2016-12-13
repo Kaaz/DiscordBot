@@ -36,8 +36,7 @@ public class GithubService extends AbstractService {
 
 	@Override
 	public long getDelayBetweenRuns() {
-		return 60_000;
-//		return 900_000;
+		return 900_000;
 	}
 
 	@Override

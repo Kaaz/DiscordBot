@@ -120,7 +120,7 @@ public class AutoReplyCommand extends AbstractCommand {
 				case "delete":
 				case "remove":
 				case "del":
-					if (rank.isAtLeast(SimpleRank.CREATOR) || (rank.isAtLeast(SimpleRank.GUILD_ADMIN) && CGuild.getCachedId(guild.getId()) == replyPattern.id)) {
+					if (rank.isAtLeast(SimpleRank.CREATOR) || (rank.isAtLeast(SimpleRank.GUILD_ADMIN) && CGuild.getCachedId(guild.getId()) == replyPattern.guildId)) {
 						CReplyPattern.delete(replyPattern);
 						bot.reloadAutoReplies();
 					}

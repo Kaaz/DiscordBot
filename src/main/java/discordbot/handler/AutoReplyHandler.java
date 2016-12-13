@@ -88,6 +88,9 @@ public class AutoReplyHandler {
 		int index = 0;
 		for (OReplyPattern reply : all) {
 			AutoReply ar = new AutoReply();
+			if (reply.pattern == null || reply.pattern.length() < 5) {
+				continue;
+			}
 			ar.pattern = Pattern.compile(reply.pattern, Pattern.DOTALL + Pattern.CASE_INSENSITIVE);
 			ar.tag = reply.tag;
 			ar.cooldown = reply.cooldown;
