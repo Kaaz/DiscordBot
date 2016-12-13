@@ -98,7 +98,6 @@ public class AutoReplyHandler {
 			ar.reply = reply.reply;
 			ar.guildId = reply.guildId;
 			list.add(ar);
-			replies[index++] = ar;
 		}
 		replies = list.toArray(new AutoReply[list.size()]);
 	}
