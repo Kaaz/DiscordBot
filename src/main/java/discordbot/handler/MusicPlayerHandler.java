@@ -40,6 +40,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class MusicPlayerHandler {
@@ -280,7 +281,7 @@ public class MusicPlayerHandler {
 				return;
 			}
 			final long deleteAfter = Math.min(Math.max(currentSongLength * 1000L, 60_000L), 7200_000L);
-			bot.getMusicChannel(guild).sendMessage(MusicUtil.nowPlayingMessage(this, record)).queue(message -> {
+			Consumer<Message> callback = (message) -> {
 				if (messageType.equals("clear")) {
 					bot.schedule(() -> {
 								if (message != null) {
@@ -291,14 +292,19 @@ public class MusicPlayerHandler {
 				}
 				if (PermissionUtil.checkPermission(message.getTextChannel(), guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION)) {
 					bot.musicReactionHandler.clearGuild(guild.getId());
-//					message.addReaction(Emojibet.STAR).queue();
 					message.addReaction(Emojibet.NEXT_TRACK).queue();
 					if (aListenerIsAtLeast(SimpleRank.BOT_ADMIN)) {
 						message.addReaction(Emojibet.NO_ENTRY).queue();
 					}
 					bot.musicReactionHandler.addMessage(guild.getId(), message.getId());
 				}
-			});
+			};
+
+			if (!PermissionUtil.checkPermission(bot.getMusicChannel(guild), guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
+				bot.getMusicChannel(guild).sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).queue();
+			} else {
+				bot.getMusicChannel(guild).sendMessage(MusicUtil.nowPlayingMessage(this, record)).queue();
+			}
 		}
 	}
 

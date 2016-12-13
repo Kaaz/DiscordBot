@@ -62,8 +62,7 @@ public class MusicUtil {
 	}
 
 	public static String nowPlayingMessageNoEmbed(MusicPlayerHandler player, OMusic record) {
-
-		return "";
+		return "[`" + DisUtil.getCommandPrefix(player.getGuild()) + "pl` " + player.getPlaylist().title + "] \uD83C\uDFB6 " + record.youtubeTitle;
 	}
 
 
