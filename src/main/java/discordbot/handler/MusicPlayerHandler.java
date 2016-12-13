@@ -24,11 +24,9 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.permission.SimpleRank;
-import discordbot.util.DisUtil;
 import discordbot.util.Emojibet;
-import discordbot.util.Misc;
+import discordbot.util.MusicUtil;
 import discordbot.util.YTUtil;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.utils.PermissionUtil;
@@ -106,6 +104,14 @@ public class MusicPlayerHandler {
 		} else {
 			return new MusicPlayerHandler(guild, bot);
 		}
+	}
+
+	public OPlaylist getPlaylist() {
+		return playlist;
+	}
+
+	public Guild getGuild() {
+		return guild;
 	}
 
 	public boolean isInVoiceWith(Guild guild, User author) {
@@ -273,41 +279,8 @@ public class MusicPlayerHandler {
 				GuildSettings.get(guild).set(SettingMusicPlayingMessage.class, "off");
 				return;
 			}
-
-			EmbedBuilder embed = new EmbedBuilder();
-			embed.setThumbnail("https://i.ytimg.com/vi/" + record.youtubecode + "/0.jpg");
-			embed.setTitle("\uD83C\uDFB6 " + record.youtubeTitle);
-			embed.setDescription("[source](https://www.youtube.com/watch?v=" + record.youtubecode + ")");
-			embed.addField("duration", Misc.getDurationString(record.duration), true);
-			embed.addField(DisUtil.getCommandPrefix(guild) + "Playlist", playlist.title, true);
-			List<OMusic> queue = getQueue();
-			int show = 3;
-			if (!queue.isEmpty()) {
-				String x = "";
-				for (int i = 0; i < Math.min(show, queue.size()); i++) {
-					x += queue.get(i).youtubeTitle + Config.EOL;
-				}
-				if (queue.size() > show) {
-					x += ".. and **" + (queue.size() - 3) + "** more";
-				}
-				embed.addField("Next up", x, true);
-			}
-			String optionsField = "";
-			if (getRequiredVotes() != 1) {
-				optionsField += "Skips req.: " + getRequiredVotes() + Config.EOL;
-			}
-			String requiredRole = GuildSettings.get(guild).getOrDefault(SettingMusicRole.class);
-			if (!requiredRole.equals("none")) {
-				optionsField += "Role req.: " + requiredRole + Config.EOL;
-			}
-			if (GuildSettings.get(guild).getOrDefault(SettingMusicQueueOnly.class).equals("false")) {
-				optionsField += "Random after queue";
-			} else {
-				optionsField += "Stop after queue";
-			}
-			embed.addField("Options:", optionsField, true);
 			final long deleteAfter = Math.min(Math.max(currentSongLength * 1000L, 60_000L), 7200_000L);
-			bot.getMusicChannel(guild).sendMessage(embed.build()).queue(message -> {
+			bot.getMusicChannel(guild).sendMessage(MusicUtil.nowPlayingMessage(this, record)).queue(message -> {
 				if (messageType.equals("clear")) {
 					bot.schedule(() -> {
 								if (message != null) {
@@ -320,6 +293,9 @@ public class MusicPlayerHandler {
 					bot.musicReactionHandler.clearGuild(guild.getId());
 //					message.addReaction(Emojibet.STAR).queue();
 					message.addReaction(Emojibet.NEXT_TRACK).queue();
+					if (aListenerIsAtLeast(SimpleRank.BOT_ADMIN)) {
+						message.addReaction(Emojibet.NO_ENTRY).queue();
+					}
 					bot.musicReactionHandler.addMessage(guild.getId(), message.getId());
 				}
 			});
@@ -523,9 +499,30 @@ public class MusicPlayerHandler {
 		VoiceChannel currentChannel = guild.getAudioManager().getConnectedChannel();
 		if (currentChannel != null) {
 			List<Member> connectedUsers = currentChannel.getMembers();
-			userList.addAll(connectedUsers.stream().filter(user -> !user.getUser().isBot() && !user.getVoiceState().isSelfDeafened()).collect(Collectors.toList()));
+			userList.addAll(connectedUsers.stream().filter(user -> !user.getUser().isBot() && !user.getVoiceState().isDeafened()).collect(Collectors.toList()));
 		}
 		return userList;
+	}
+
+	/**
+	 * Is there a listener of at least this rank?
+	 *
+	 * @param rank the rank to be
+	 * @return found a user?
+	 */
+	public boolean aListenerIsAtLeast(SimpleRank rank) {
+		VoiceChannel currentChannel = guild.getAudioManager().getConnectedChannel();
+		if (currentChannel != null) {
+			for (Member member : currentChannel.getMembers()) {
+				if (member.getVoiceState().isDeafened() || member.getUser().isBot()) {
+					continue;
+				}
+				if (bot.security.getSimpleRank(member.getUser()).isAtLeast(rank)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**

@@ -1,7 +1,15 @@
 package discordbot.util;
 
+import discordbot.db.model.OMusic;
+import discordbot.guildsettings.music.SettingMusicQueueOnly;
+import discordbot.guildsettings.music.SettingMusicRole;
+import discordbot.handler.GuildSettings;
+import discordbot.handler.MusicPlayerHandler;
+import discordbot.main.Config;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageEmbed;
+
+import java.util.List;
 
 public class MusicUtil {
 	private final static String BLOCK_INACTIVE = "\u25AC";
@@ -11,12 +19,49 @@ public class MusicUtil {
 	private final static float SOUND_TRESHHOLD = 0.4F;
 	private final static int BLOCK_PARTS = 10;
 
-	public static MessageEmbed nowPlayingMessage() {
-
-		return new EmbedBuilder().build();
+	/**
+	 * Returns a fancy now playing message
+	 *
+	 * @param player the musicplayer
+	 * @param record the record playing
+	 * @return an embedded message
+	 */
+	public static MessageEmbed nowPlayingMessage(MusicPlayerHandler player, OMusic record) {
+		EmbedBuilder embed = new EmbedBuilder();
+		embed.setThumbnail("https://i.ytimg.com/vi/" + record.youtubecode + "/0.jpg");
+		embed.setTitle("\uD83C\uDFB6 " + record.youtubeTitle);
+		embed.setDescription("[source](https://www.youtube.com/watch?v=" + record.youtubecode + ") | `" + DisUtil.getCommandPrefix(player.getGuild()) + "pl` - " + player.getPlaylist().title);
+		embed.addField("duration", Misc.getDurationString(record.duration), true);
+		String optionsField = "";
+		if (player.getRequiredVotes() != 1) {
+			optionsField += "Skips req.: " + player.getRequiredVotes() + Config.EOL;
+		}
+		String requiredRole = GuildSettings.get(player.getGuild()).getOrDefault(SettingMusicRole.class);
+		if (!requiredRole.equals("none")) {
+			optionsField += "Role req.: " + requiredRole + Config.EOL;
+		}
+		if (GuildSettings.get(player.getGuild()).getOrDefault(SettingMusicQueueOnly.class).equals("false")) {
+			optionsField += "Random after queue";
+		} else {
+			optionsField += "Stop after queue";
+		}
+		embed.addField("Options:", optionsField, true);
+		List<OMusic> queue = player.getQueue();
+		int show = 3;
+		if (!queue.isEmpty()) {
+			String x = "";
+			for (int i = 0; i < Math.min(show, queue.size()); i++) {
+				x += queue.get(i).youtubeTitle + Config.EOL;
+			}
+			if (queue.size() > show) {
+				x += ".. and **" + (queue.size() - 3) + "** more";
+			}
+			embed.addField("Next up", x, true);
+		}
+		return embed.build();
 	}
 
-	public static String nowPlayingMessageNoEmbed() {
+	public static String nowPlayingMessageNoEmbed(MusicPlayerHandler player, OMusic record) {
 
 		return "";
 	}

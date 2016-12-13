@@ -1,5 +1,7 @@
 package discordbot.handler;
 
+import discordbot.db.controllers.CMusic;
+import discordbot.db.model.OMusic;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.Emojibet;
@@ -49,9 +51,6 @@ public class MusicReactionHandler {
 			return;
 		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(channel.getGuild(), discordBot);
-		if (!Emojibet.NEXT_TRACK.equals(emote.getName())) {
-			return;
-		}
 		SimpleRank rank = discordBot.security.getSimpleRank(invoker, channel);
 		if (!GuildSettings.get(channel.getGuild()).canUseMusicCommands(invoker, rank)) {
 			return;
@@ -62,14 +61,36 @@ public class MusicReactionHandler {
 		if (!player.isInVoiceWith(channel.getGuild(), invoker)) {
 			return;
 		}
+
+		if (Emojibet.NEXT_TRACK.equals(emote.getName())) {
+			handleVoteSkip(player, channel, invoker, rank, isAdding);
+		} else if (Emojibet.NO_ENTRY.equals(emote.getName())) {
+			handleBanTrack(player, channel, invoker, rank, isAdding);
+		}
+	}
+
+	private void handleBanTrack(MusicPlayerHandler player, TextChannel channel, User invoker, SimpleRank rank, boolean isAdding) {
+		if (!isAdding || !rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+			return;
+		}
+		OMusic song = CMusic.findById(player.getCurrentlyPlaying());
+		if (song.id > 0) {
+			song.banned = 1;
+			CMusic.update(song);
+			player.forceSkip();
+		}
+	}
+
+	private void handleVoteSkip(MusicPlayerHandler player, TextChannel channel, User invoker, SimpleRank rank, boolean isAdding) {
 		if (isAdding) {
 			player.voteSkip(invoker);
 		} else {
 			player.unregisterVoteSkip(invoker);
 		}
 		if (player.getVoteCount() >= player.getRequiredVotes()) {
-			clearGuild(guildId);
+			clearGuild(channel.getGuild().getId());
 			player.forceSkip();
 		}
+
 	}
 }
