@@ -47,6 +47,8 @@ public class DbUpdate {
 			while (hasUpgrade) {
 				IDbVersion dbVersion = versionMap.get(currentVersion);
 				for (String query : dbVersion.getExecutes()) {
+					System.out.println("EXECUTING::");
+					System.out.println(query);
 					adapter.insert(query);
 				}
 				currentVersion = dbVersion.getToVersion();
