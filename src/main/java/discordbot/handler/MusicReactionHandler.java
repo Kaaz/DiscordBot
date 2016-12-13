@@ -91,6 +91,5 @@ public class MusicReactionHandler {
 			clearGuild(channel.getGuild().getId());
 			player.forceSkip();
 		}
-
 	}
 }

@@ -1,12 +1,13 @@
 package discordbot.core;
 
+import discordbot.db.controllers.*;
 import discordbot.db.model.OChannel;
 import discordbot.db.model.OServiceVariable;
 import discordbot.db.model.OSubscription;
 import discordbot.db.model.QActiveSubscriptions;
-import discordbot.db.controllers.*;
 import discordbot.main.BotContainer;
 import discordbot.main.DiscordBot;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.ArrayList;
@@ -50,6 +51,10 @@ public abstract class AbstractService {
 			}
 		}
 		return channels;
+	}
+
+	protected void sendTo(TextChannel channel, MessageEmbed message) {
+		channel.sendMessage(message).queue();
 	}
 
 	protected void sendTo(TextChannel channel, String message) {
