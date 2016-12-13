@@ -21,10 +21,7 @@ import discordbot.main.DiscordBot;
 import discordbot.main.GuildCheckResult;
 import discordbot.main.Launcher;
 import discordbot.role.RoleRankings;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.DisconnectEvent;
 import net.dv8tion.jda.core.events.ReconnectedEvent;
 import net.dv8tion.jda.core.events.guild.GuildBanEvent;
@@ -35,6 +32,7 @@ import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.GenericMessageReactionEvent;
@@ -184,11 +182,6 @@ public class JDAEvents extends ListenerAdapter {
 			return;
 		}
 		discordBot.musicReactionHandler.handle(e.getMessageId(), (TextChannel) e.getChannel(), e.getUser(), e.getReaction().getEmote(), adding);
-//		e.getUser();
-//		e.getReaction();
-//		e.getMessageId();
-//		e.getChannel();
-
 	}
 
 	@Override
@@ -319,31 +312,40 @@ public class JDAEvents extends ListenerAdapter {
 	}
 
 	@Override
+	public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
+		checkLeaving(event.getGuild(), event.getChannelLeft(), event.getMember().getUser());
+	}
+
+	@Override
 	public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
-		if (event.getMember().getUser().isBot()) {
+		checkLeaving(event.getGuild(), event.getChannelLeft(), event.getMember().getUser());
+	}
+
+	private void checkLeaving(Guild guild, VoiceChannel channel, User user) {
+		if (user.isBot()) {
 			return;
 		}
-		MusicPlayerHandler player = MusicPlayerHandler.getFor(event.getGuild(), discordBot);
+		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, discordBot);
 		if (!player.isConnected()) {
 			return;
 		}
-		if (!player.isConnectedTo(event.getChannelLeft())) {
+		if (!player.isConnectedTo(channel)) {
 			return;
 		}
-		player.unregisterVoteSkip(event.getMember().getUser());
+		player.unregisterVoteSkip(user);
 		if (player.getVoteCount() >= player.getRequiredVotes()) {
 			player.forceSkip();
 		}
-		for (Member user : event.getGuild().getAudioManager().getConnectedChannel().getMembers()) {
-			if (!user.getUser().isBot()) {
+		for (Member member : guild.getAudioManager().getConnectedChannel().getMembers()) {
+			if (!member.getUser().isBot()) {
 				return;
 			}
 		}
 		player.leave();
-		String autoChannel = GuildSettings.get(event.getGuild()).getOrDefault(SettingMusicAutoVoiceChannel.class);
-		if (!"false".equalsIgnoreCase(autoChannel) && event.getChannelLeft().getName().equalsIgnoreCase(autoChannel)) {
+		String autoChannel = GuildSettings.get(guild).getOrDefault(SettingMusicAutoVoiceChannel.class);
+		if (!"false".equalsIgnoreCase(autoChannel) && channel.getName().equalsIgnoreCase(autoChannel)) {
 			return;
 		}
-		discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(event.getGuild()), Template.get("music_no_one_listens_i_leave"));
+		discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(guild), Template.get("music_no_one_listens_i_leave"));
 	}
 }
