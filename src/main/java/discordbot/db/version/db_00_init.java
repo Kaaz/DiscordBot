@@ -23,8 +23,8 @@ public class db_00_init implements IDbVersion {
 				"CREATE TABLE IF NOT EXISTS `banks`( " +
 						"`id`INT(11) NOT NULL AUTO_INCREMENT, " +
 						"`user`INT(11) NOT NULL, " +
-						"`current_balance`INT(11) DEFAULT NULL, " +
-						"`created_on`TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00', " +
+						"`current_balance` INT(11) DEFAULT NULL, " +
+						"`created_on` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00', " +
 						"PRIMARY KEY(`id`) ) " +
 						"ENGINE = InnoDB " +
 						"DEFAULT CHARSET = latin1 " +
