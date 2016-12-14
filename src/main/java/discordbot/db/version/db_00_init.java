@@ -24,7 +24,7 @@ public class db_00_init implements IDbVersion {
 						"`id`INT(11) NOT NULL AUTO_INCREMENT, " +
 						"`user`INT(11) NOT NULL, " +
 						"`current_balance` INT(11) DEFAULT NULL, " +
-						"`created_on` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00', " +
+						"`created_on` TIMESTAMP NULL DEFAULT '0000-00-00 00:00:00', " +
 						"PRIMARY KEY(`id`) ) " +
 						"ENGINE = InnoDB " +
 						"DEFAULT CHARSET = latin1 " +
@@ -35,7 +35,7 @@ public class db_00_init implements IDbVersion {
 						"  `bank`             INT(11)   NOT NULL,\n" +
 						"  `amount`           INT(11)   NOT NULL,\n" +
 						"  `reason`           VARCHAR(255)       DEFAULT NULL,\n" +
-						"  `reservation_time` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',\n" +
+						"  `reservation_time` TIMESTAMP NULL DEFAULT '0000-00-00 00:00:00',\n" +
 						"  PRIMARY KEY (`id`) )\n" +
 						"  ENGINE = InnoDB\n" +
 						"  DEFAULT CHARSET = latin1",
@@ -44,7 +44,7 @@ public class db_00_init implements IDbVersion {
 						"  `id`               INT(11)   NOT NULL AUTO_INCREMENT,\n" +
 						"  `bank_from`        INT(11)   NOT NULL,\n" +
 						"  `bank_to`          INT(11)   NOT NULL,\n" +
-						"  `transaction_date` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',\n" +
+						"  `transaction_date` TIMESTAMP NULL DEFAULT '0000-00-00 00:00:00',\n" +
 						"  `description`      VARCHAR(255)       DEFAULT NULL,\n" +
 						"  PRIMARY KEY (`id`)\n" +
 						")\n" +
@@ -91,7 +91,7 @@ public class db_00_init implements IDbVersion {
 						"  `guild`        INT(11)              DEFAULT NULL,\n" +
 						"  `command`      VARCHAR(64) NOT NULL,\n" +
 						"  `args`         TEXT,\n" +
-						"  `execute_date` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
+						"  `execute_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,\n" +
 						"  PRIMARY KEY (`id`)\n" +
 						")\n" +
 						"  ENGINE = InnoDB\n" +
@@ -101,7 +101,7 @@ public class db_00_init implements IDbVersion {
 				"CREATE TABLE IF NOT EXISTS `guild_member` (\n" +
 						"  `guild_id`  INT(11)   NOT NULL,\n" +
 						"  `user_id`   INT(11)   NOT NULL,\n" +
-						"  `join_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
+						"  `join_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,\n" +
 						"  PRIMARY KEY (`guild_id`, `user_id`)\n" +
 						")\n" +
 						"  ENGINE = InnoDB\n" +
