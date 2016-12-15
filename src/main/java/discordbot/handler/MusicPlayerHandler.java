@@ -290,8 +290,8 @@ public class MusicPlayerHandler {
 							}
 							, deleteAfter, TimeUnit.MILLISECONDS);
 				}
+				bot.musicReactionHandler.clearGuild(guild.getId());
 				if (PermissionUtil.checkPermission(message.getTextChannel(), guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION)) {
-					bot.musicReactionHandler.clearGuild(guild.getId());
 					message.addReaction(Emojibet.NEXT_TRACK).queue();
 					if (aListenerIsAtLeast(SimpleRank.BOT_ADMIN)) {
 						message.addReaction(Emojibet.NO_ENTRY).queue();
@@ -301,9 +301,9 @@ public class MusicPlayerHandler {
 			};
 
 			if (!PermissionUtil.checkPermission(bot.getMusicChannel(guild), guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-				bot.getMusicChannel(guild).sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).queue();
+				bot.getMusicChannel(guild).sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).queue(callback);
 			} else {
-				bot.getMusicChannel(guild).sendMessage(MusicUtil.nowPlayingMessage(this, record)).queue();
+				bot.getMusicChannel(guild).sendMessage(MusicUtil.nowPlayingMessage(this, record)).queue(callback);
 			}
 		}
 	}
