@@ -116,8 +116,8 @@ public class CommandHandler {
 					for (String arg : args) {
 						usedArguments.append(arg).append(" ");
 					}
-					if (!(channel instanceof PrivateChannel)) {
-						CCommandLog.saveLog(CUser.getCachedId(author.getId(), author.getName()),
+					if (channel instanceof TextChannel) {
+						CCommandLog.saveLog(CUser.getCachedId(author.getId(), EmojiParser.parseToAliases(author.getName())),
 								CGuild.getCachedId(((TextChannel) channel).getGuild().getId()),
 								command.getCommand(),
 								EmojiParser.parseToAliases(usedArguments.toString()).trim());
