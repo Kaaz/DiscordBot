@@ -11,8 +11,11 @@ import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.awt.*;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * check for news on github

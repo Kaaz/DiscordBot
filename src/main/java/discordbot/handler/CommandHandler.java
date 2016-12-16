@@ -6,7 +6,12 @@ import discordbot.command.CommandVisibility;
 import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
 import discordbot.db.WebDb;
-import discordbot.db.controllers.*;
+import discordbot.db.controllers.CBlacklistCommand;
+import discordbot.db.controllers.CBotEvent;
+import discordbot.db.controllers.CCommandCooldown;
+import discordbot.db.controllers.CCommandLog;
+import discordbot.db.controllers.CGuild;
+import discordbot.db.controllers.CUser;
 import discordbot.db.model.OBlacklistCommand;
 import discordbot.db.model.OBotEvent;
 import discordbot.db.model.OCommandCooldown;
@@ -26,7 +31,11 @@ import org.reflections.Reflections;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**

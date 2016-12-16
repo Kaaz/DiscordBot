@@ -1,6 +1,11 @@
 package discordbot.modules.reddit;
 
-import com.google.gson.*;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import discordbot.modules.reddit.pojo.CommentData;
 import discordbot.modules.reddit.pojo.InitialDataComment;
 
