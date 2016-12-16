@@ -136,7 +136,7 @@ public class JDAEvents extends ListenerAdapter {
 				discordBot.out.sendPrivateMessage(owner, message);
 			}
 			if (guildCheck.equals(GuildCheckResult.BOT_GUILD)) {
-				guild.leave();
+				guild.leave().queue();
 			}
 			server.active = 1;
 		}
