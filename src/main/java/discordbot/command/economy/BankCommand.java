@@ -1,8 +1,8 @@
 package discordbot.command.economy;
 
 import discordbot.core.AbstractCommand;
-import discordbot.db.model.OBank;
 import discordbot.db.controllers.CBanks;
+import discordbot.db.model.OBank;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.core.entities.MessageChannel;

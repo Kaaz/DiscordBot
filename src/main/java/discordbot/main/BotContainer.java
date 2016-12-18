@@ -7,7 +7,11 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import discordbot.core.ExitCode;
 import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.model.OBotPlayingOn;
-import discordbot.handler.*;
+import discordbot.handler.CommandHandler;
+import discordbot.handler.GameHandler;
+import discordbot.handler.MusicPlayerHandler;
+import discordbot.handler.SecurityHandler;
+import discordbot.handler.Template;
 import discordbot.threads.YoutubeThread;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -32,18 +36,18 @@ public class BotContainer {
 	private final DiscordBot[] shards;
 	private final YoutubeThread youtubeThread;
 	private final AtomicBoolean statusLocked = new AtomicBoolean(false);
-	private volatile AtomicInteger numGuilds;
+	private final AtomicInteger numGuilds;
 	private volatile boolean allShardsReady = false;
 	private volatile boolean terminationRequested = false;
 	private volatile ExitCode rebootReason = ExitCode.UNKNOWN;
 
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException, RateLimitedException {
+		this.numGuilds = new AtomicInteger(numGuilds);
 		youtubeThread = new YoutubeThread();
 		this.numShards = getRecommendedShards();
 		shards = new DiscordBot[numShards];
 		initHandlers();
 		initShards();
-		this.numGuilds = new AtomicInteger(numGuilds);
 	}
 
 	/**

@@ -50,7 +50,7 @@ public class ExecCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
-			return Template.get(channel,"command_no_permission");
+			return Template.get(channel, "command_no_permission");
 		}
 		if (args.length == 0) {
 			return ":face_palm: I expected you to know how to use it";

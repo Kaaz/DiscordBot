@@ -1,6 +1,10 @@
 package discordbot.core;
 
-import discordbot.db.controllers.*;
+import discordbot.db.controllers.CChannels;
+import discordbot.db.controllers.CGuild;
+import discordbot.db.controllers.CServiceVariables;
+import discordbot.db.controllers.CServices;
+import discordbot.db.controllers.CSubscriptions;
 import discordbot.db.model.OChannel;
 import discordbot.db.model.OServiceVariable;
 import discordbot.db.model.OSubscription;

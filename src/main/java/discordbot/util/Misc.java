@@ -3,7 +3,13 @@ package discordbot.util;
 import com.google.common.base.Strings;
 import discordbot.main.Config;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.StringJoiner;
 
 public class Misc {
 	private static final String[] numberToEmote = {

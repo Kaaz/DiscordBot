@@ -4,7 +4,11 @@ package discordbot.modules.reddit;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import discordbot.modules.reddit.pojo.*;
+import discordbot.modules.reddit.pojo.Comment;
+import discordbot.modules.reddit.pojo.CommentData;
+import discordbot.modules.reddit.pojo.InitialData;
+import discordbot.modules.reddit.pojo.InitialDataComment;
+import discordbot.modules.reddit.pojo.Post;
 import discordbot.util.HttpHelper;
 
 import java.util.ArrayList;

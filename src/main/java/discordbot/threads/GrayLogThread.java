@@ -2,7 +2,11 @@ package discordbot.threads;
 
 import discordbot.main.Config;
 import discordbot.main.Launcher;
-import org.graylog2.gelfclient.*;
+import org.graylog2.gelfclient.GelfConfiguration;
+import org.graylog2.gelfclient.GelfMessage;
+import org.graylog2.gelfclient.GelfMessageBuilder;
+import org.graylog2.gelfclient.GelfMessageLevel;
+import org.graylog2.gelfclient.GelfTransports;
 import org.graylog2.gelfclient.transport.GelfTransport;
 
 import java.net.InetSocketAddress;

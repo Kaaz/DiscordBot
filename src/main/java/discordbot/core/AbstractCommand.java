@@ -5,8 +5,6 @@ import discordbot.command.CommandVisibility;
 import discordbot.main.DiscordBot;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
 
 public abstract class AbstractCommand {
 

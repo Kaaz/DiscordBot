@@ -21,7 +21,11 @@ import discordbot.main.DiscordBot;
 import discordbot.main.GuildCheckResult;
 import discordbot.main.Launcher;
 import discordbot.role.RoleRankings;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.DisconnectEvent;
 import net.dv8tion.jda.core.events.ReconnectedEvent;
 import net.dv8tion.jda.core.events.guild.GuildBanEvent;
@@ -132,7 +136,7 @@ public class JDAEvents extends ListenerAdapter {
 				discordBot.out.sendPrivateMessage(owner, message);
 			}
 			if (guildCheck.equals(GuildCheckResult.BOT_GUILD)) {
-				guild.leave();
+				guild.leave().queue();
 			}
 			server.active = 1;
 		}

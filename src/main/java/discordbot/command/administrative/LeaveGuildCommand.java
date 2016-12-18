@@ -69,9 +69,9 @@ public class LeaveGuildCommand extends AbstractCommand {
 		if (shouldLeave) {
 			Guild finalGuild = guild;
 			bot.out.sendAsyncMessage(bot.getDefaultChannel(guild), "This is goodbye :wave:", message -> {
-				finalGuild.leave();
+				finalGuild.leave().queue();
 			});
-			return ":+1:";
+			return "";
 		}
 		return ":face_palm: I expected you to know how to use it";
 	}
