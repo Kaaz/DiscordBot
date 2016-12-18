@@ -3,7 +3,6 @@ package discordbot.main;
 import com.mashape.unirest.http.Unirest;
 import discordbot.db.controllers.CGuild;
 import discordbot.event.JDAEvents;
-import discordbot.event.JDAReadyEvent;
 import discordbot.guildsettings.defaults.*;
 import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.handler.*;
@@ -43,9 +42,8 @@ public class DiscordBot {
 	private volatile boolean isReady = false;
 	private int shardId;
 	private BotContainer container;
-	private JDAReadyEvent readyEvent;
 
-	public DiscordBot(int shardId, int numShards) throws LoginException, InterruptedException, RateLimitedException {
+	public DiscordBot(int shardId, int numShards, BotContainer container) throws LoginException, InterruptedException, RateLimitedException {
 		scheduler = Executors.newScheduledThreadPool(3);
 		registerHandlers();
 		JDABuilder builder = new JDABuilder(AccountType.BOT).setToken(Config.BOT_TOKEN);
@@ -54,13 +52,12 @@ public class DiscordBot {
 		if (numShards > 1) {
 			builder.useSharding(shardId, numShards);
 		}
-		readyEvent = new JDAReadyEvent(this);
 		builder.setBulkDeleteSplittingEnabled(false);
-		builder.addListener(readyEvent);
 		builder.setEnableShutdownHook(false);
 //		client = builder.buildAsync();
 		client = builder.buildBlocking();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
+		setContainer(container);
 		markReady();
 	}
 
@@ -177,8 +174,6 @@ public class DiscordBot {
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds(), client);
 		isReady = true;
-		client.removeEventListener(readyEvent);
-		readyEvent = null;
 		client.addEventListener(new JDAEvents(this));
 		sendStatsToDiscordPw();
 		container.allShardsReady();
