@@ -314,7 +314,9 @@ public class MusicPlayerHandler {
 
 	public synchronized void connectTo(VoiceChannel channel) {
 		if (!isConnectedTo(channel)) {
+			if (!guild.getAudioManager().isConnected()) {
 //			guild.getAudioManager().setSelfDeafened(true);
+			}
 			guild.getAudioManager().openAudioConnection(channel);
 		}
 	}

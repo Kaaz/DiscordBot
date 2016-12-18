@@ -21,11 +21,7 @@ import discordbot.main.DiscordBot;
 import discordbot.main.GuildCheckResult;
 import discordbot.main.Launcher;
 import discordbot.role.RoleRankings;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.DisconnectEvent;
 import net.dv8tion.jda.core.events.ReconnectedEvent;
 import net.dv8tion.jda.core.events.guild.GuildBanEvent;
@@ -65,6 +61,7 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onReconnect(ReconnectedEvent event) {
+		discordBot.markReady();
 		discordBot.clearChannels();
 	}
 
@@ -155,7 +152,7 @@ public class JDAEvents extends ListenerAdapter {
 		discordBot.sendStatsToDiscordPw();
 		Launcher.log("bot leaves guild", "bot", "guild-leave",
 				"guild-id", guild.getId(),
-					"guild-name", guild.getName());
+				"guild-name", guild.getName());
 		CBotEvent.insert(":house_abandoned:", ":fire:",
 				String.format(":id: %s | :hash: %s | %s",
 						guild.getId(),
