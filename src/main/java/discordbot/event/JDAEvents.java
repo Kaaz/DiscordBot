@@ -52,10 +52,6 @@ import java.util.concurrent.TimeUnit;
  * Created on 12-10-2016
  */
 public class JDAEvents extends ListenerAdapter {
-	final private String[] specialGuilds = new String[]{
-			"225168913808228352",
-			"180818466847064065"
-	};
 	private DiscordBot discordBot;
 
 	public JDAEvents(DiscordBot bot) {
