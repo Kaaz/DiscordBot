@@ -22,6 +22,7 @@ import discordbot.handler.SecurityHandler;
 import discordbot.handler.Template;
 import discordbot.role.RoleRankings;
 import discordbot.util.DisUtil;
+import discordbot.util.Emojibet;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -297,6 +298,10 @@ public class DiscordBot {
 		GuildSettings settings = GuildSettings.get(guild);
 		if (settings.getOrDefault(SettingActiveChannels.class).equals("mine") &&
 				!channel.getName().equalsIgnoreCase(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
+			if (message.getRawContent().equals(mentionMe + " reset yesimsure") || message.getRawContent().equals(mentionMeAlias + " reset yesimsure")) {
+				channel.sendMessage(Emojibet.THUMBS_UP).queue();
+				GuildSettings.get(guild).set(SettingActiveChannels.class, "all");
+			}
 			return;
 		}
 		if (gameHandler.isGameInput(channel, author, message.getRawContent().toLowerCase())) {
