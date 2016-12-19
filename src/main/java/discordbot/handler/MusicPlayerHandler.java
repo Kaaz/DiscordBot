@@ -337,14 +337,18 @@ public class MusicPlayerHandler {
 	}
 
 	public boolean isConnected() {
-		return bot.client.getGuildById(guildId).getAudioManager().getConnectedChannel() != null;
+		Guild guildById = bot.client.getGuildById(guildId);
+		return guildById != null && guildById.getAudioManager().getConnectedChannel() != null;
 	}
 
 	public boolean leave() {
 		if (isConnected()) {
 			stopMusic();
 		}
-		bot.client.getGuildById(guildId).getAudioManager().closeAudioConnection();
+		Guild guild = bot.client.getGuildById(guildId);
+		if (guild != null) {
+			guild.getAudioManager().closeAudioConnection();
+		}
 		return true;
 	}
 
