@@ -32,8 +32,13 @@ public class RoleRankings {
 	private static final ArrayList<MemberShipRole> roles = new ArrayList<>();
 	private static final Set<String> roleNames = new HashSet<>();
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoleRankings.class);
+	private volatile static boolean initialized = false;
 
 	public static void init() {
+		if (initialized) {
+			return;
+		}
+		initialized = true;
 		//this may or may not be based on the ph scale
 		roles.add(new MemberShipRole("Spectator", new Color(0xA700FF), 0));
 		roles.add(new MemberShipRole("Outsider", new Color(0x8E00F9), TimeUnit.HOURS.toMillis(1L)));
@@ -174,15 +179,14 @@ public class RoleRankings {
 	 * Attempts to fix create the membership roles for all guilds
 	 *
 	 * @param guilds   the guilds to fix the roles for
-	 * @param instance the bot instance
 	 */
-	public static void fixRoles(List<Guild> guilds, JDA instance) {
+	public static void fixRoles(List<Guild> guilds) {
 		for (Guild guild : guilds) {
 			if (GuildSettings.get(guild) != null) {
 				if (!"true".equals(GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanks.class))) {
 					continue;
 				}
-				if (canModifyRoles(guild, instance.getSelfUser())) {
+				if (canModifyRoles(guild, guild.getJDA().getSelfUser())) {
 					fixForServer(guild);
 				}
 			}
