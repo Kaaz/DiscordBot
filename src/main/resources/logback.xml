@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration scan="true">
-	<logger name="org.eclipse.jetty" level="OFF"/>
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+			<onMatch>ACCEPT</onMatch>
+		</filter>
 	</appender>
-	<root level="WARN">
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>logs/bot.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+		</filter>
+	</appender>
+	<root>
 		<appender-ref ref="CONSOLE"/>
-		<!-- Uncomment the next line to also log to a file -->
-		<!-- <appender-ref ref="FILE"/> -->
+		<appender-ref ref="FILE"/>
 	</root>
 </configuration>

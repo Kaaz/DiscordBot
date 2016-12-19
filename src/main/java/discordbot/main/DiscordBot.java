@@ -82,6 +82,7 @@ public class DiscordBot {
 		builder.addListener(readyEvent);
 		builder.setEnableShutdownHook(false);
 		client = builder.buildAsync();
+		LOGGER.info("iets met info :)");
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 	}
 

@@ -13,10 +13,7 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.SecurityHandler;
 import discordbot.handler.Template;
 import discordbot.threads.YoutubeThread;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,39 +141,39 @@ public class BotContainer {
 	 * After the bot is ready to go; reconnect to the voicechannels and start playing where it left off
 	 */
 	private void onAllShardsReady() {
-		List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
-		for (OBotPlayingOn radio : radios) {
-			DiscordBot bot = getBotFor(radio.guildId);
-			Guild guild = bot.client.getGuildById(radio.guildId);
-			VoiceChannel vc = null;
-			if (guild == null) {
-				continue;
-			}
-			for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
-				if (voiceChannel.getId().equals(radio.channelId)) {
-					vc = voiceChannel;
-					break;
-				}
-			}
-			if (vc != null) {
-				boolean hasUsers = false;
-				for (Member user : vc.getMembers()) {
-					if (!user.getUser().isBot()) {
-						hasUsers = true;
-						break;
-					}
-				}
-				if (hasUsers) {
-					MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
-					player.connectTo(vc);
-					if (!player.isPlaying()) {
-						player.playRandomSong();
-					}
-				}
-			}
-		}
-		CBotPlayingOn.deleteAll();
 		youtubeThread.start();
+//		List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
+//		for (OBotPlayingOn radio : radios) {
+//			DiscordBot bot = getBotFor(radio.guildId);
+//			Guild guild = bot.client.getGuildById(radio.guildId);
+//			VoiceChannel vc = null;
+//			if (guild == null) {
+//				continue;
+//			}
+//			for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
+//				if (voiceChannel.getId().equals(radio.channelId)) {
+//					vc = voiceChannel;
+//					break;
+//				}
+//			}
+//			if (vc != null) {
+//				boolean hasUsers = false;
+//				for (Member user : vc.getMembers()) {
+//					if (!user.getUser().isBot()) {
+//						hasUsers = true;
+//						break;
+//					}
+//				}
+//				if (hasUsers) {
+//					MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
+//					player.connectTo(vc);
+//					if (!player.isPlaying()) {
+//						player.playRandomSong();
+//					}
+//				}
+//			}
+//		}
+		CBotPlayingOn.deleteAll();
 	}
 
 	private void initHandlers() {
