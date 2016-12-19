@@ -35,6 +35,7 @@ public class GuildSettings {
 		if (record.id == 0) {
 			record.name = guild;
 			record.discord_id = guild;
+			record.owner = 1;
 			CGuild.insert(record);
 		}
 		this.guildId = guild;
