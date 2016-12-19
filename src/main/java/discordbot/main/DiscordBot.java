@@ -193,14 +193,13 @@ public class DiscordBot {
 	public void markReady() {
 		if (!isReady) {
 			client.addEventListener(new JDAEvents(this));
+			sendStatsToDiscordPw();
 		}
 		isReady = true;
 		loadConfiguration();
 		mentionMe = "<@" + this.client.getSelfUser().getId() + ">";
 		mentionMeAlias = "<@!" + this.client.getSelfUser().getId() + ">";
-		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds());
-		sendStatsToDiscordPw();
 		container.allShardsReady();
 	}
 

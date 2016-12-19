@@ -11,6 +11,7 @@ import discordbot.handler.GameHandler;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.SecurityHandler;
 import discordbot.handler.Template;
+import discordbot.role.RoleRankings;
 import discordbot.threads.YoutubeThread;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
@@ -39,7 +40,7 @@ public class BotContainer {
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException, RateLimitedException {
 		this.numGuilds = new AtomicInteger(numGuilds);
 		youtubeThread = new YoutubeThread();
-		this.numShards = getRecommendedShards();
+		this.numShards = 8;//getRecommendedShards();
 		shards = new DiscordBot[numShards];
 		initHandlers();
 		initShards();
@@ -129,6 +130,7 @@ public class BotContainer {
 	 */
 	private void initShards() throws LoginException, InterruptedException, RateLimitedException {
 		for (int i = 0; i < shards.length; i++) {
+			LOGGER.info("Starting shard #{} of {}", i, shards.length);
 			shards[i] = new DiscordBot(i, shards.length, this);
 			Thread.sleep(5_000L);
 		}
@@ -179,6 +181,7 @@ public class BotContainer {
 		SecurityHandler.initialize();
 		Template.initialize();
 		MusicPlayerHandler.init();
+		RoleRankings.init();
 	}
 
 	/**
