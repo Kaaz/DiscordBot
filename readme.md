@@ -31,17 +31,18 @@ Current list of all available commands. See below for a more detailed list
 
 Commands | | | | |
 --- | --- | ---| ---| ---
-[8ball](#8ball) | [autoreply](#autoreply) | [blackjack](#blackjack) | [botstatus](#botstatus) | [catfact](#catfact)
-[changename](#changename) | [command](#command) | [commandadmin](#commandadmin) | [config](#config) | [consolecomm](#consolecomm)
-[current](#current) | [exec](#exec) | [exit](#exit) | [fml](#fml) | [game](#game)
-[getrole](#getrole) | [guildstats](#guildstats) | [help](#help) | [importmusic](#importmusic) | [info](#info)
-[invite](#invite) | [join](#join) | [joke](#joke) | [leaveguild](#leaveguild) | [meme](#meme)
+[8ball](#8ball) | [blackjack](#blackjack) | [botstatus](#botstatus) | [catfact](#catfact) | [changename](#changename)
+[command](#command) | [commandadmin](#commandadmin) | [config](#config) | [consolecomm](#consolecomm) | [current](#current)
+[exec](#exec) | [exit](#exit) | [fml](#fml) | [game](#game) | [getrole](#getrole)
+[guildstats](#guildstats) | [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite)
+[join](#join) | [joke](#joke) | [leaveguild](#leaveguild) | [meme](#meme) | [music](#music)
 [pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
-[prefix](#prefix) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload)
-[report](#report) | [roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile)
-[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
-[tag](#tag) | [template](#template) | [ud](#ud) | [uptime](#uptime) | [user](#user)
-[userrank](#userrank) | [version](#version) | [volume](#volume) | 
+[poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll) | [prefix](#prefix)
+[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
+[roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [skip](#skip)
+[slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag)
+[template](#template) | [ud](#ud) | [uptime](#uptime) | [user](#user) | [userrank](#userrank)
+[version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -66,7 +67,7 @@ Key | Default | Description |
 --- | --- | ---|
 auto_reply | false | use the auto reply feature?<br/>Looks for patterns in messages and replies to them (with a cooldown)<br/>true -> enable auto replying to matched messages<br/>true -> disable auto replying
 bot_channel | general | Channel where the bots default output goes to
-bot_debug_templates | true | Show which templates are being used on places.<br/><br/>valid values: <br/>true       -> Shows the keyphrases being used <br/>false      -> Shows normal text <br/><br/>for instance if you don't have permission to access a command:<br/><br/>setting this to true would show:<br/>no_permission<br/><br/>false would show:<br/>You don't have permission to use that!
+bot_debug_templates | false | Show which templates are being used on places.<br/><br/>valid values: <br/>true       -> Shows the keyphrases being used <br/>false      -> Shows normal text <br/><br/>for instance if you don't have permission to access a command:<br/><br/>setting this to true would show:<br/>no_permission<br/><br/>false would show:<br/>You don't have permission to use that!
 bot_listen | all | What channels to listen to? (all;mine)<br/>all -> responds to all channels<br/>mine -> only responds to messages in configured channel
 bot_logging_channel | false | The channel where the logging of events happens. Such as users joining/leaving <br/><br/>Setting this to 'false' will disable it (without the quotes)<br/><br/>To enable it, set this setting to match the channel name where you want the logging to happen<br/>If you specify an invalid channel, this setting will disable itself
 bot_update_warning | playing | Show a warning that there is an update and that the bot will be updating soon.<br/>always  -> always show the message in the bot's configured default channel<br/>playing -> only announce when the bot is playing music and in the bot's configured music channel<br/>off     -> don't announce when the bot is going down for an update
@@ -86,8 +87,8 @@ music_role_requirement | none | In order to use music commands you need this rol
 music_show_listeners | false | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
 music_skip_admin_only | false | Only allow admins to use the skip command?<br/><br/>true<br/>Only admins have permission to use the skip command<br/><br/>false<br/>Everyone can use the skip command
 music_volume | 10 | sets the default volume of the music player<br/>So the next time the bot connects it starts with this volume<br/><br/>Accepts a value between 0 and 100
-music_volume_admin | false | Require a guild admin to change the volume<br/><br/>false -> allow all users to change the bot's volume<br/>true -> only allow guild admins to change the bot's volume
-music_vote_percent | 1 | Percentage of users (rounded down) required to skip the currently playing track<br/><br/>eg; when set to 25, and 5 listeners it would require 2 users to vote skip <br/><br/>Accepts a value between 1 and 100
+music_volume_admin | false | Require a guild admin to change the volume<br/><br/>true -> only allow guild admins to change the bot's volume<br/>false -> allow all users to change the bot's volume
+music_vote_percent | 40 | Percentage of users (rounded down) required to skip the currently playing track<br/><br/>eg; when set to 25, and 5 listeners it would require 2 users to vote skip <br/><br/>Accepts a value between 1 and 100
 pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
 show_unknown_commands | false | Show message on nonexistent commands and blacklisted commands<br/>true -> returns a help message<br/>false -> stays silent
 use_economy | false | Use the economy feature?<br/>false -> nope!<br/>true -> yep!
@@ -184,26 +185,6 @@ See what the magic 8ball has to say
 Accessible though: 8ball
 
 Usable in public and private channels
-### autoreply
-
-regular expression Patterns where the bot auto-replies to. 
-
-Accessible though: autoreply, ar
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-ar create <tagname>      //creates tag
-ar regex <tag> <value>     //edit the regex of a tag
-ar response <tag> <value>  //change the response of a reply
-ar tag <tag> <value>       //change the tag of a reply
-ar cd <tag> <value>        //change the cooldown (millis) of a reply
-ar guild <tag> <guildid>   //guild of a tag, 0 for global
-ar test <tag> <text>       //test for a match
-ar delete <tag>            //deletes a tag
-```
 ### blackjack
 
 play a game of blackjack!
@@ -527,6 +508,19 @@ meme <type> <toptext> || <bottomtext>   //make the meme!
 example: 
 meme sohappy If I could use this meme || I would be so happy
 ```
+### music
+
+gets and sets the music-related settings
+
+Accessible though: music
+
+Usable in public  channels
+
+#### Usage
+
+```php
+music                   //shows music configuration
+```
 ### pause
 
 pauses the music or resumes it if its paused
@@ -545,7 +539,7 @@ Usable in public and private channels
 
 Plays a song from youtube
 
-Accessible though: play, music, p, m
+Accessible though: play, p
 
 Usable in public  channels
 
@@ -598,6 +592,58 @@ Usable in public and private channels
 
 ```php
 pm <@user> <message..>
+```
+### poec
+
+Returns a list of currency on your account
+
+Accessible though: poec
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+poec                   //returns list of currency for default league
+poec token <token>     //sets the session token
+poec league <league>   //currency for league
+```
+### poeitem
+
+Analyzes an item from path of exile.
+
+Accessible though: poeitem
+
+Usable in public and private channels
+### poelab
+
+Attempts to find a description from reddit for the Labyrinth instance.
+
+Accessible though: poelab
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+poelab              //lists for all difficulties
+poelab <difficulty> //only for that difficulty
+```
+### poll
+
+Strawpoll: propose a question and choices for the chat to vote on
+
+Accessible though: poll
+
+Usable in public  channels
+
+#### Usage
+
+```php
+poll          //status of active poll 
+poll create <question> ;<option1>;<option2>;<etc.>   (max 8)
+              //creates a poll for the duration
+poll 1-9      //vote on the options
 ```
 ### prefix
 
@@ -664,7 +710,7 @@ reloads the configuration
 
 Accessible though: reload
 
-Usable in public and private channels
+Usable in public  channels
 ### report
 
 Report bugs/abuse/incidents

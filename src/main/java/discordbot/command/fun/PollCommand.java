@@ -14,7 +14,6 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 public class PollCommand extends AbstractCommand {
-	private static final int MAX_DURATION_IN_MINUTES = 30;
 
 	public PollCommand() {
 		super();
@@ -22,7 +21,7 @@ public class PollCommand extends AbstractCommand {
 
 	@Override
 	public boolean isListed() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -78,7 +77,7 @@ public class PollCommand extends AbstractCommand {
 				return Template.get("command_poll_question_too_short");
 			}
 			String outtext = "A poll has been created by " + author.getName() + Config.EOL + Config.EOL;
-			outtext += "**"+split[0].trim() +"**"+ Config.EOL + Config.EOL;
+			outtext += "**" + split[0].trim() + "**" + Config.EOL + Config.EOL;
 			final int answers = Math.min(8, split.length);
 			for (int i = 1; i < answers; i++) {
 				outtext += Misc.numberToEmote(i) + " " + split[i].trim() + Config.EOL + Config.EOL;
