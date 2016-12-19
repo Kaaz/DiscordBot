@@ -6,7 +6,6 @@ import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanksPrefix;
 import discordbot.handler.GuildSettings;
 import discordbot.main.DiscordBot;
-import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
@@ -178,7 +177,7 @@ public class RoleRankings {
 	/**
 	 * Attempts to fix create the membership roles for all guilds
 	 *
-	 * @param guilds   the guilds to fix the roles for
+	 * @param guilds the guilds to fix the roles for
 	 */
 	public static void fixRoles(List<Guild> guilds) {
 		for (Guild guild : guilds) {

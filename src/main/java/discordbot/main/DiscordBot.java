@@ -53,8 +53,8 @@ public class DiscordBot {
 	private final Map<Guild, TextChannel> musicChannels = new ConcurrentHashMap<>();
 	private final Map<Guild, TextChannel> logChannels = new ConcurrentHashMap<>();
 	private final int totShards;
-	public JDA client;
 	private final ScheduledExecutorService scheduler;
+	public JDA client;
 	public String mentionMe;
 	public String mentionMeAlias;
 	public ChatBotHandler chatBotHandler = null;
@@ -192,10 +192,11 @@ public class DiscordBot {
 	 * Mark the shard as ready, the bot will start working once all shards are marked as ready
 	 */
 	public void markReady() {
-		if (!isReady) {
-			client.addEventListener(new JDAEvents(this));
-			sendStatsToDiscordPw();
+		if (isReady) {
+			return;
 		}
+		client.addEventListener(new JDAEvents(this));
+		sendStatsToDiscordPw();
 		isReady = true;
 		loadConfiguration();
 		mentionMe = "<@" + this.client.getSelfUser().getId() + ">";
