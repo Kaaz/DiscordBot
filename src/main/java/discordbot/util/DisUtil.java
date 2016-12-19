@@ -252,8 +252,12 @@ public class DisUtil {
 	}
 
 	public static String getCommandPrefix(Guild guild) {
-		if (guild != null) {
-			return GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
+		return getCommandPrefix(guild.getId());
+	}
+
+	public static String getCommandPrefix(String guildId) {
+		if (guildId != null) {
+			return GuildSettings.get(guildId).getOrDefault(SettingCommandPrefix.class);
 		}
 		return Config.BOT_COMMAND_PREFIX;
 	}

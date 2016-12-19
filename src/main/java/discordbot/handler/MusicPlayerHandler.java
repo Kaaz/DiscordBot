@@ -60,13 +60,13 @@ import java.util.stream.Collectors;
 
 public class MusicPlayerHandler {
 	private final static DefaultAudioPlayerManager playerManager = new DefaultAudioPlayerManager();
-	private final static Map<Guild, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
-	private final Guild guild;
+	private final static Map<String, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
 	private final DiscordBot bot;
 	private final AudioPlayer player;
 	private final TrackScheduler scheduler;
 	private final HashSet<User> skipVotes;
 	private final AudioPlayerSendHandler audioPlayerSendHandler;
+	private final String guildId;
 	private volatile boolean inRepeatMode = false;
 	private volatile int currentlyPlaying = 0;
 	private volatile long currentSongLength = 0;
@@ -78,16 +78,16 @@ public class MusicPlayerHandler {
 	private Random rng;
 	private volatile LinkedList<OMusic> queue;
 
-	private MusicPlayerHandler(Guild guild, DiscordBot bot) {
+	private MusicPlayerHandler(String guild, DiscordBot bot) {
 		queue = new LinkedList<>();
-		this.guild = guild;
 		this.bot = bot;
+		this.guildId = guild;
 		rng = new Random();
 		player = playerManager.createPlayer();
 		scheduler = new TrackScheduler(player);
 		player.addListener(scheduler);
 		audioPlayerSendHandler = new AudioPlayerSendHandler(player);
-		guild.getAudioManager().setSendingHandler(audioPlayerSendHandler);
+		bot.client.getGuildById(guild).getAudioManager().setSendingHandler(audioPlayerSendHandler);
 		player.setVolume(Integer.parseInt(GuildSettings.get(guild).getOrDefault(SettingMusicVolume.class)));
 		playerInstances.put(guild, this);
 		int savedPlaylist = Integer.parseInt(GuildSettings.get(guild).getOrDefault(SettingMusicLastPlaylist.class));
@@ -108,17 +108,17 @@ public class MusicPlayerHandler {
 	}
 
 	public static void removeGuild(Guild guild) {
-		if (playerInstances.containsKey(guild)) {
-			playerInstances.get(guild).leave();
-			playerInstances.remove(guild);
+		if (playerInstances.containsKey(guild.getId())) {
+			playerInstances.get(guild.getId()).leave();
+			playerInstances.remove(guild.getId());
 		}
 	}
 
 	public static MusicPlayerHandler getFor(Guild guild, DiscordBot bot) {
-		if (playerInstances.containsKey(guild)) {
-			return playerInstances.get(guild);
+		if (playerInstances.containsKey(guild.getId())) {
+			return playerInstances.get(guild.getId());
 		} else {
-			return new MusicPlayerHandler(guild, bot);
+			return new MusicPlayerHandler(guild.getId(), bot);
 		}
 	}
 
@@ -126,8 +126,8 @@ public class MusicPlayerHandler {
 		return playlist;
 	}
 
-	public Guild getGuild() {
-		return guild;
+	public String getGuild() {
+		return guildId;
 	}
 
 	public boolean isInVoiceWith(Guild guild, User author) {
@@ -143,16 +143,13 @@ public class MusicPlayerHandler {
 		return false;
 	}
 
-	public void reconnect() {
-		guild.getAudioManager().setSendingHandler(audioPlayerSendHandler);
-	}
-
 	/**
 	 * Check if a user meets the requirements to use the music commands
 	 *
 	 * @return bool
 	 */
 	public boolean canUseVoiceCommands(User user, SimpleRank rank) {
+		Guild guild = user.getJDA().getGuildById(guildId);
 		if (PermissionUtil.checkPermission(guild, guild.getMember(user), Permission.ADMINISTRATOR)) {
 			return true;
 		}
@@ -196,7 +193,7 @@ public class MusicPlayerHandler {
 		playlist = CPlaylist.findById(id);
 		if (activePlayListId != playlist.id) {
 			activePlayListId = playlist.id;
-			GuildSettings.get(guild).set(SettingMusicLastPlaylist.class, "" + id);
+			GuildSettings.get(guildId).set(SettingMusicLastPlaylist.class, "" + id);
 		}
 	}
 
@@ -205,11 +202,11 @@ public class MusicPlayerHandler {
 		boolean keepGoing = false;
 		if (scheduler.queue.isEmpty()) {
 			if (queue.isEmpty()) {
-				if ("false".equals(GuildSettings.get(guild).getOrDefault(SettingMusicQueueOnly.class))) {
+				if ("false".equals(GuildSettings.get(guildId).getOrDefault(SettingMusicQueueOnly.class))) {
 					keepGoing = true;
 					if (!playRandomSong()) {
 						player.destroy();
-						bot.getMusicChannel(guild).sendMessage("Stopped playing because the playlist is empty").queue();
+						bot.getMusicChannel(guildId).sendMessage("Stopped playing because the playlist is empty").queue();
 						leave();
 						return;
 					}
@@ -260,7 +257,7 @@ public class MusicPlayerHandler {
 		skipVotes.clear();
 		currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000L;
 		OMusic record;
-		final String messageType = GuildSettings.get(guild).getOrDefault(SettingMusicPlayingMessage.class);
+		final String messageType = GuildSettings.get(guildId).getOrDefault(SettingMusicPlayingMessage.class);
 		AudioTrackInfo info = player.getPlayingTrack().getInfo();
 		if (info != null) {
 			File f = new File(info.identifier);
@@ -273,7 +270,7 @@ public class MusicPlayerHandler {
 				CMusic.update(record);
 				currentlyPlaying = record.id;
 				currentSongLength = record.duration;
-				CMusicLog.insert(CGuild.getCachedId(guild.getId()), record.id, 0);
+				CMusicLog.insert(CGuild.getCachedId(guildId), record.id, 0);
 				if (!playlist.isGlobalList()) {
 					CPlaylist.updateLastPlayed(playlist.id, record.id);
 				}
@@ -281,18 +278,19 @@ public class MusicPlayerHandler {
 		} else {
 			record = new OMusic();
 		}
-		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingMusicChannelTitle.class))) {
-			if (bot.getMusicChannel(guild) != null && PermissionUtil.checkPermission(bot.getMusicChannel(guild), guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
+		if ("true".equals(GuildSettings.get(guildId).getOrDefault(SettingMusicChannelTitle.class))) {
+			Guild guild = bot.client.getGuildById(guildId);
+			if (bot.getMusicChannel(guildId) != null && PermissionUtil.checkPermission(bot.getMusicChannel(guildId), guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
 				if (!isUpdateChannelTitle()) {
-					bot.getMusicChannel(guild).getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).queue();
+					bot.getMusicChannel(guildId).getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).queue();
 				}
 			} else {
-				GuildSettings.get(guild).set(SettingMusicChannelTitle.class, "false");
+				GuildSettings.get(guildId).set(SettingMusicChannelTitle.class, "false");
 			}
 		}
 		if (!messageType.equals("off") && record.id > 0) {
-			if (!bot.getMusicChannel(guild).canTalk()) {
-				GuildSettings.get(guild).set(SettingMusicPlayingMessage.class, "off");
+			if (!bot.getMusicChannel(guildId).canTalk()) {
+				GuildSettings.get(guildId).set(SettingMusicPlayingMessage.class, "off");
 				return;
 			}
 			final long deleteAfter = Math.min(Math.max(currentSongLength * 1000L, 60_000L), 7200_000L);
@@ -305,46 +303,48 @@ public class MusicPlayerHandler {
 							}
 							, deleteAfter, TimeUnit.MILLISECONDS);
 				}
-				bot.musicReactionHandler.clearGuild(guild.getId());
+				bot.musicReactionHandler.clearGuild(guildId);
+				Guild guild = bot.client.getGuildById(guildId);
 				if (PermissionUtil.checkPermission(message.getTextChannel(), guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION)) {
 					message.addReaction(Emojibet.NEXT_TRACK).queue();
 					if (aListenerIsAtLeast(SimpleRank.BOT_ADMIN)) {
 						message.addReaction(Emojibet.NO_ENTRY).queue();
 					}
-					bot.musicReactionHandler.addMessage(guild.getId(), message.getId());
+					bot.musicReactionHandler.addMessage(guildId, message.getId());
 				}
 			};
-
-			if (!PermissionUtil.checkPermission(bot.getMusicChannel(guild), guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-				bot.getMusicChannel(guild).sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).queue(callback);
+			Guild guild = bot.client.getGuildById(guildId);
+			if (!PermissionUtil.checkPermission(bot.getMusicChannel(guildId), guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
+				bot.getMusicChannel(guildId).sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).queue(callback);
 			} else {
-				bot.getMusicChannel(guild).sendMessage(MusicUtil.nowPlayingMessage(this, record)).queue(callback);
+				bot.getMusicChannel(guildId).sendMessage(MusicUtil.nowPlayingMessage(this, record)).queue(callback);
 			}
 		}
 	}
 
 	public boolean isConnectedTo(VoiceChannel channel) {
-		return channel != null && channel.equals(guild.getAudioManager().getConnectedChannel());
+		return channel != null && channel.equals(channel.getJDA().getGuildById(guildId).getAudioManager().getConnectedChannel());
 	}
 
 	public synchronized void connectTo(VoiceChannel channel) {
 		if (!isConnectedTo(channel)) {
+			Guild guild = channel.getJDA().getGuildById(guildId);
 			if (!guild.getAudioManager().isConnected()) {
-//			guild.getAudioManager().setSelfDeafened(true);
+				guild.getAudioManager().setSelfDeafened(true);
 			}
 			guild.getAudioManager().openAudioConnection(channel);
 		}
 	}
 
 	public boolean isConnected() {
-		return guild.getAudioManager().getConnectedChannel() != null;
+		return bot.client.getGuildById(guildId).getAudioManager().getConnectedChannel() != null;
 	}
 
 	public boolean leave() {
 		if (isConnected()) {
 			stopMusic();
 		}
-		guild.getAudioManager().closeAudioConnection();
+		bot.client.getGuildById(guildId).getAudioManager().closeAudioConnection();
 		return true;
 	}
 
@@ -400,7 +400,7 @@ public class MusicPlayerHandler {
 	 * @return required votes
 	 */
 	public synchronized int getRequiredVotes() {
-		return Math.max(1, (int) (Double.parseDouble(GuildSettings.get(guild).getOrDefault(SettingMusicVotePercent.class)) / 100D * (double) getUsersInVoiceChannel().size()));
+		return Math.max(1, (int) (Double.parseDouble(GuildSettings.get(guildId).getOrDefault(SettingMusicVotePercent.class)) / 100D * (double) getUsersInVoiceChannel().size()));
 	}
 
 	/**
@@ -469,8 +469,7 @@ public class MusicPlayerHandler {
 				scheduler.skipTrack();
 			}
 			Launcher.log("Start playing", "music", "start",
-					"guild-id", guild.getId(),
-					"guild-name", guild.getName());
+					"guild-id", guildId);
 		}
 	}
 
@@ -492,6 +491,7 @@ public class MusicPlayerHandler {
 			CMusic.update(record);
 		}
 		if (!playlist.isGlobalList() && user != null) {
+			Guild guild = user.getJDA().getGuildById(guildId);
 			if (playlist.isGuildList() && guild.isMember(user)) {
 				switch (playlist.getEditType()) {
 					case PRIVATE_AUTO:
@@ -520,7 +520,7 @@ public class MusicPlayerHandler {
 
 	public List<Member> getUsersInVoiceChannel() {
 		ArrayList<Member> userList = new ArrayList<>();
-		VoiceChannel currentChannel = guild.getAudioManager().getConnectedChannel();
+		VoiceChannel currentChannel = bot.client.getGuildById(guildId).getAudioManager().getConnectedChannel();
 		if (currentChannel != null) {
 			List<Member> connectedUsers = currentChannel.getMembers();
 			userList.addAll(connectedUsers.stream().filter(user -> !user.getUser().isBot() && !user.getVoiceState().isDeafened()).collect(Collectors.toList()));
@@ -535,7 +535,7 @@ public class MusicPlayerHandler {
 	 * @return found a user?
 	 */
 	public boolean aListenerIsAtLeast(SimpleRank rank) {
-		VoiceChannel currentChannel = guild.getAudioManager().getConnectedChannel();
+		VoiceChannel currentChannel = bot.client.getGuildById(guildId).getAudioManager().getConnectedChannel();
 		if (currentChannel != null) {
 			for (Member member : currentChannel.getMembers()) {
 				if (member.getVoiceState().isDeafened() || member.getUser().isBot()) {
@@ -582,8 +582,7 @@ public class MusicPlayerHandler {
 		currentlyPlaying = 0;
 		player.destroy();
 		Launcher.log("Stop playing", "music", "stop",
-				"guild-id", guild.getId(),
-				"guild-name", guild.getName());
+				"guild-id", guildId);
 	}
 
 	public List<OMusic> getQueue() {

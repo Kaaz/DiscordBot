@@ -65,7 +65,7 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onReconnect(ReconnectedEvent event) {
-//		discordBot.markReady();
+		discordBot.reconnect();
 	}
 
 	public void onGuildJoin(GuildJoinEvent event) {

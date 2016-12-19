@@ -49,12 +49,12 @@ public class DiscordBot {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 	public final long startupTimeStamp;
-	private final Map<Guild, TextChannel> defaultChannels = new ConcurrentHashMap<>();
-	private final Map<Guild, TextChannel> musicChannels = new ConcurrentHashMap<>();
-	private final Map<Guild, TextChannel> logChannels = new ConcurrentHashMap<>();
+	private final Map<String, TextChannel> defaultChannels = new ConcurrentHashMap<>();
+	private final Map<String, TextChannel> musicChannels = new ConcurrentHashMap<>();
+	private final Map<String, TextChannel> logChannels = new ConcurrentHashMap<>();
 	private final int totShards;
 	private final ScheduledExecutorService scheduler;
-	public JDA client;
+	public volatile JDA client;
 	public String mentionMe;
 	public String mentionMeAlias;
 	public ChatBotHandler chatBotHandler = null;
@@ -78,7 +78,6 @@ public class DiscordBot {
 		}
 		builder.setBulkDeleteSplittingEnabled(false);
 		builder.setEnableShutdownHook(false);
-//		client = builder.buildAsync();
 		client = builder.buildBlocking();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 		setContainer(container);
@@ -129,7 +128,7 @@ public class DiscordBot {
 		if (channelName.equals("false")) {
 			return;
 		}
-		if (!logChannels.containsKey(guild)) {
+		if (!logChannels.containsKey(guild.getId())) {
 			TextChannel channel = DisUtil.findChannel(guild, channelName);
 			if (channel == null || !channel.canTalk()) {
 				GuildSettings.get(guild).set(SettingLoggingChannel.class, "false");
@@ -140,9 +139,9 @@ public class DiscordBot {
 				}
 				return;
 			}
-			logChannels.put(guild, channel);
+			logChannels.put(guild.getId(), channel);
 		}
-		out.sendAsyncMessage(logChannels.get(guild), String.format("%s %s", catagory, message));
+		out.sendAsyncMessage(logChannels.get(guild.getId()), String.format("%s %s", catagory, message));
 	}
 
 	public int getShardId() {
@@ -161,14 +160,14 @@ public class DiscordBot {
 	 * @return default chat channel
 	 */
 	public TextChannel getDefaultChannel(Guild guild) {
-		if (!defaultChannels.containsKey(guild)) {
+		if (!defaultChannels.containsKey(guild.getId())) {
 			TextChannel defaultChannel = DisUtil.findChannel(guild, GuildSettings.get(guild).getOrDefault(SettingBotChannel.class));
 			if (defaultChannel == null || !defaultChannel.canTalk()) {
 				defaultChannel = DisUtil.findFirstWriteableChannel(client, guild);
 			}
-			defaultChannels.put(guild, defaultChannel);
+			defaultChannels.put(guild.getId(), defaultChannel);
 		}
-		return defaultChannels.get(guild);
+		return defaultChannels.get(guild.getId());
 	}
 
 	/**
@@ -177,15 +176,24 @@ public class DiscordBot {
 	 * @param guild guild
 	 * @return default music channel
 	 */
-	public TextChannel getMusicChannel(Guild guild) {
-		if (!musicChannels.containsKey(guild)) {
+	public synchronized TextChannel getMusicChannel(Guild guild) {
+		return getMusicChannel(guild.getId());
+	}
+
+	public synchronized TextChannel getMusicChannel(String guildId) {
+		Guild guild = client.getGuildById(guildId);
+		if (!musicChannels.containsKey(guild.getId())) {
 			TextChannel channel = DisUtil.findChannel(guild, GuildSettings.get(guild).getOrDefault(SettingMusicChannel.class));
 			if (channel == null) {
 				channel = getDefaultChannel(guild);
 			}
-			musicChannels.put(guild, channel);
+			musicChannels.put(guild.getId(), channel);
 		}
-		return musicChannels.get(guild);
+		return musicChannels.get(guild.getId());
+	}
+
+	public synchronized void reconnect() {
+		loadConfiguration();
 	}
 
 	/**
@@ -222,9 +230,9 @@ public class DiscordBot {
 	 * @param guild the guild to clear for
 	 */
 	public synchronized void clearChannels(Guild guild) {
-		defaultChannels.remove(guild);
-		musicChannels.remove(guild);
-		logChannels.remove(guild);
+		defaultChannels.remove(guild.getId());
+		musicChannels.remove(guild.getId());
+		logChannels.remove(guild.getId());
 	}
 
 	public synchronized void clearChannels() {
@@ -239,8 +247,8 @@ public class DiscordBot {
 	 * @param guild the guild to clear
 	 */
 	public void clearGuildData(Guild guild) {
-		defaultChannels.remove(guild);
-		musicChannels.remove(guild);
+		defaultChannels.remove(guild.getId());
+		musicChannels.remove(guild.getId());
 		GuildSettings.remove(guild);
 		Template.removeGuild(CGuild.getCachedId(guild.getId()));
 		autoReplyhandler.removeGuild(guild.getId());
