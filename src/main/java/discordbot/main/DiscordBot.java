@@ -123,7 +123,7 @@ public class DiscordBot {
 		return false;
 	}
 
-	public void logGuildEvent(Guild guild, String catagory, String message) {
+	public void logGuildEvent(Guild guild, String category, String message) {
 		String channelName = GuildSettings.get(guild).getOrDefault(SettingLoggingChannel.class);
 		if (channelName.equals("false")) {
 			return;
@@ -141,7 +141,7 @@ public class DiscordBot {
 			}
 			logChannels.put(guild.getId(), channel);
 		}
-		out.sendAsyncMessage(logChannels.get(guild.getId()), String.format("%s %s", catagory, message));
+		out.sendAsyncMessage(logChannels.get(guild.getId()), String.format("%s %s", category, message));
 	}
 
 	public int getShardId() {
@@ -304,12 +304,12 @@ public class DiscordBot {
 		if (author == null || author.isBot()) {
 			return;
 		}
-		GuildSettings settings = GuildSettings.get(guild);
+		GuildSettings settings = GuildSettings.get(guild.getId());
 		if (settings.getOrDefault(SettingActiveChannels.class).equals("mine") &&
-				!channel.getName().equalsIgnoreCase(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
+				!channel.getName().equalsIgnoreCase(settings.getOrDefault(SettingBotChannel.class))) {
 			if (message.getRawContent().equals(mentionMe + " reset yesimsure") || message.getRawContent().equals(mentionMeAlias + " reset yesimsure")) {
 				channel.sendMessage(Emojibet.THUMBS_UP).queue();
-				GuildSettings.get(guild).set(SettingActiveChannels.class, "all");
+				settings.set(SettingActiveChannels.class, "all");
 			}
 			return;
 		}
