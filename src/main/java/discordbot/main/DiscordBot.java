@@ -191,13 +191,15 @@ public class DiscordBot {
 	 * Mark the shard as ready, the bot will start working once all shards are marked as ready
 	 */
 	public void markReady() {
+		if (!isReady) {
+			client.addEventListener(new JDAEvents(this));
+		}
+		isReady = true;
 		loadConfiguration();
 		mentionMe = "<@" + this.client.getSelfUser().getId() + ">";
 		mentionMeAlias = "<@!" + this.client.getSelfUser().getId() + ">";
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds());
-		isReady = true;
-		client.addEventListener(new JDAEvents(this));
 		sendStatsToDiscordPw();
 		container.allShardsReady();
 	}
