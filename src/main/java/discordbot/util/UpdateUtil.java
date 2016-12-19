@@ -13,7 +13,7 @@ public class UpdateUtil {
 	private static final Pattern versionPattern = Pattern.compile("<version>([0-9]+\\.[0-9]+\\.[0-9]+)</version>");
 
 	public static ProgramVersion getLatestVersion() {
-		String request = HttpHelper.doRequest("https://raw.githubusercontent.com/MaikWezinkhof/DiscordBot/master/pom.xml");
+		String request = HttpHelper.doRequest("https://raw.githubusercontent.com/Kaaz/DiscordBot/master/pom.xml");
 		Matcher matcher = versionPattern.matcher(request);
 		if (matcher.find()) {
 			return ProgramVersion.fromString(matcher.group(1));
