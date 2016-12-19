@@ -72,6 +72,9 @@ public class GuildStatsCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		int tracksProcessing = bot.getContainer().downloadsProcessing();
+		if(!bot.getContainer().allShardsReady()){
+			return "Not fully loaded yet!";
+		}
 		if (args.length == 0) {
 			return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + Config.EOL +
 					getTotalTable(bot, false);
