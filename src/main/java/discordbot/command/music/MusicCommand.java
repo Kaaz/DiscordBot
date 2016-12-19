@@ -56,8 +56,8 @@ public class MusicCommand extends AbstractCommand {
 	public String[] getUsage() {
 		return new String[]{
 				"music                   //shows music configuration",
-				"music <pause/unpause>   //pause or resume music",
-				"music              //shows music configuration",
+//				"music <pause/unpause>   //pause or resume music",
+//				"music                   //shows music configuration",
 		};
 	}
 
@@ -69,7 +69,6 @@ public class MusicCommand extends AbstractCommand {
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"vol"
 		};
 	}
 

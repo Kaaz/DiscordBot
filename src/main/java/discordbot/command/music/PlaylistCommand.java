@@ -110,7 +110,7 @@ public class PlaylistCommand extends AbstractCommand {
 		}
 		if (args.length == 0) {
 			if (playlist.isGlobalList()) {
-				return Template.get(channel, "music_playlist_using", playlist.title);
+				return Template.get(channel, "music_playlist_using", playlist.title) + " See `" + DisUtil.getCommandPrefix(channel) + "pl help` for more info";
 			}
 			return Template.get(channel, "music_playlist_using", playlist.title) +
 					"Settings " + makeSettingsTable(playlist) +
