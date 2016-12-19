@@ -3,35 +3,15 @@ package discordbot.main;
 import com.mashape.unirest.http.Unirest;
 import discordbot.db.controllers.CGuild;
 import discordbot.event.JDAEvents;
-import discordbot.event.JDAReadyEvent;
-import discordbot.guildsettings.defaults.SettingActiveChannels;
-import discordbot.guildsettings.defaults.SettingAutoReplyModule;
-import discordbot.guildsettings.defaults.SettingBotChannel;
-import discordbot.guildsettings.defaults.SettingCleanupMessages;
-import discordbot.guildsettings.defaults.SettingEnableChatBot;
-import discordbot.guildsettings.defaults.SettingLoggingChannel;
+import discordbot.guildsettings.defaults.*;
 import discordbot.guildsettings.music.SettingMusicChannel;
-import discordbot.handler.AutoReplyHandler;
-import discordbot.handler.ChatBotHandler;
-import discordbot.handler.CommandHandler;
-import discordbot.handler.GameHandler;
-import discordbot.handler.GuildSettings;
-import discordbot.handler.MusicPlayerHandler;
-import discordbot.handler.MusicReactionHandler;
-import discordbot.handler.OutgoingContentHandler;
-import discordbot.handler.SecurityHandler;
-import discordbot.handler.Template;
+import discordbot.handler.*;
 import discordbot.role.RoleRankings;
 import discordbot.util.DisUtil;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.PrivateChannel;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -39,11 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class DiscordBot {
 
@@ -66,9 +42,8 @@ public class DiscordBot {
 	private volatile boolean isReady = false;
 	private int shardId;
 	private BotContainer container;
-	private JDAReadyEvent readyEvent;
 
-	public DiscordBot(int shardId, int numShards) throws LoginException, InterruptedException, RateLimitedException {
+	public DiscordBot(int shardId, int numShards, BotContainer container) throws LoginException, InterruptedException, RateLimitedException {
 		scheduler = Executors.newScheduledThreadPool(3);
 		registerHandlers();
 		JDABuilder builder = new JDABuilder(AccountType.BOT).setToken(Config.BOT_TOKEN);
@@ -77,13 +52,13 @@ public class DiscordBot {
 		if (numShards > 1) {
 			builder.useSharding(shardId, numShards);
 		}
-		readyEvent = new JDAReadyEvent(this);
 		builder.setBulkDeleteSplittingEnabled(false);
-		builder.addListener(readyEvent);
 		builder.setEnableShutdownHook(false);
-		client = builder.buildAsync();
-		LOGGER.info("iets met info :)");
+//		client = builder.buildAsync();
+		client = builder.buildBlocking();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
+		setContainer(container);
+		markReady();
 	}
 
 	/**
@@ -199,8 +174,6 @@ public class DiscordBot {
 		RoleRankings.init();
 		RoleRankings.fixRoles(this.client.getGuilds(), client);
 		isReady = true;
-		client.removeEventListener(readyEvent);
-		readyEvent = null;
 		client.addEventListener(new JDAEvents(this));
 		sendStatsToDiscordPw();
 		container.allShardsReady();

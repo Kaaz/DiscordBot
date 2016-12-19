@@ -7,11 +7,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import discordbot.core.ExitCode;
 import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.model.OBotPlayingOn;
-import discordbot.handler.CommandHandler;
-import discordbot.handler.GameHandler;
-import discordbot.handler.MusicPlayerHandler;
-import discordbot.handler.SecurityHandler;
-import discordbot.handler.Template;
+import discordbot.handler.*;
 import discordbot.threads.YoutubeThread;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
@@ -131,9 +127,8 @@ public class BotContainer {
 	 */
 	private void initShards() throws LoginException, InterruptedException, RateLimitedException {
 		for (int i = 0; i < shards.length; i++) {
-			shards[i] = new DiscordBot(i, shards.length);
-			shards[i].setContainer(this);
-			Thread.sleep(10_000L);
+			shards[i] = new DiscordBot(i, shards.length, this);
+			Thread.sleep(5_000L);
 		}
 	}
 

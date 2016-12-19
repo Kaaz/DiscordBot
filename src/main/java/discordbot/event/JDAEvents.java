@@ -21,11 +21,7 @@ import discordbot.main.DiscordBot;
 import discordbot.main.GuildCheckResult;
 import discordbot.main.Launcher;
 import discordbot.role.RoleRankings;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.DisconnectEvent;
 import net.dv8tion.jda.core.events.ReconnectedEvent;
 import net.dv8tion.jda.core.events.guild.GuildBanEvent;
@@ -52,10 +48,6 @@ import java.util.concurrent.TimeUnit;
  * Created on 12-10-2016
  */
 public class JDAEvents extends ListenerAdapter {
-	final private String[] specialGuilds = new String[]{
-			"225168913808228352",
-			"180818466847064065"
-	};
 	private DiscordBot discordBot;
 
 	public JDAEvents(DiscordBot bot) {
@@ -69,6 +61,7 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onReconnect(ReconnectedEvent event) {
+		discordBot.markReady();
 		discordBot.clearChannels();
 	}
 
@@ -156,16 +149,16 @@ public class JDAEvents extends ListenerAdapter {
 		if (server.isBanned()) {
 			return;
 		}
+		discordBot.sendStatsToDiscordPw();
+		Launcher.log("bot leaves guild", "bot", "guild-leave",
+				"guild-id", guild.getId(),
+				"guild-name", guild.getName());
 		CBotEvent.insert(":house_abandoned:", ":fire:",
 				String.format(":id: %s | :hash: %s | %s",
 						guild.getId(),
 						server.id,
 						EmojiParser.parseToAliases(guild.getName())
 				));
-		Launcher.log("bot leaves guild", "bot", "guild-leave",
-				"guild-id", guild.getId(),
-				"guild-name", guild.getName());
-		discordBot.sendStatsToDiscordPw();
 	}
 
 	@Override

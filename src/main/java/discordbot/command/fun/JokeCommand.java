@@ -55,9 +55,9 @@ public class JokeCommand extends AbstractCommand {
 				joketxt = getJokeFromWeb(author.getName());
 			}
 			if (joketxt != null) {
-				message.editMessage(StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getId() + ">"))).queue();
+				bot.out.editAsync(message,StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getId() + ">")),null);
 			} else {
-				message.editMessage(Template.get("command_joke_not_today")).queue();
+				bot.out.editAsync(message,Template.get("command_joke_not_today"),null);
 			}
 		});
 		return "";
