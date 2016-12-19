@@ -3,6 +3,7 @@ package discordbot.command.administrative;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CGuild;
+import discordbot.db.model.OGuild;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
@@ -66,13 +67,16 @@ public class SetConfig extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		Guild guild;
+		Guild guild = null;
 		SimpleRank rank = bot.security.getSimpleRank(author, channel);
 		if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1 && (args[0].matches("^\\d{10,}$") || args[0].matches("i\\d+"))) {
 			if (args[0].matches("i\\d+")) {
-				guild = bot.client.getGuildById(CGuild.findById(Integer.parseInt(args[0].substring(1))).discord_id);
+				OGuild rec = CGuild.findById(Integer.parseInt(args[0].substring(1)));
+				if (rec.id > 0) {
+					guild = bot.getContainer().getBotFor(rec.discord_id).client.getGuildById(rec.discord_id);
+				}
 			} else {
-				guild = bot.client.getGuildById(args[0]);
+				guild = bot.getContainer().getBotFor(args[0]).client.getGuildById(args[0]);
 			}
 			if (guild == null) {
 				return Template.get("command_config_cant_find_guild");
@@ -85,9 +89,9 @@ public class SetConfig extends AbstractCommand {
 		if (rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			if (args.length > 0 && args[0].equalsIgnoreCase("reset")) {
 				if (args.length > 1 && args[1].equalsIgnoreCase("yesimsure")) {
+					GuildSettings.get(guild).reset();
 					return Template.get(channel, "command_config_reset_success");
 				}
-				GuildSettings.get(guild).reset();
 				return Template.get(channel, "command_config_reset_warning");
 			}
 			if (args.length == 0) {
@@ -141,7 +145,7 @@ public class SetConfig extends AbstractCommand {
 							"You can reset by typing `@" + bot.client.getSelfUser().getName() + " reset yesimsure`").queue();
 				}
 				if (args.length >= 2 && GuildSettings.get(guild).set(args[0], newValue)) {
-					bot.clearChannels(guild);
+					bot.getContainer().getBotFor(guild.getId()).clearChannels(guild);
 					return Template.get("command_config_key_modified");
 				}
 				String tblContent = "";
