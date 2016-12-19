@@ -5,7 +5,7 @@ import discordbot.guildsettings.AbstractGuildSetting;
 /**
  * Made by nija123098 on 12/4/2016
  */
-public class SettingAdminVolume extends AbstractGuildSetting {
+public class SettingMusicAdminVolume extends AbstractGuildSetting {
 	@Override
 	public String getKey() {
 		return "music_volume_admin";
@@ -20,8 +20,8 @@ public class SettingAdminVolume extends AbstractGuildSetting {
 	public String[] getDescription() {
 		return new String[]{"Require a guild admin to change the volume",
 				"",
-				"false -> allow all users to change the bot's volume",
-				"true -> only allow guild admins to change the bot's volume"};
+				"true -> only allow guild admins to change the bot's volume",
+				"false -> allow all users to change the bot's volume"};
 	}
 
 	@Override

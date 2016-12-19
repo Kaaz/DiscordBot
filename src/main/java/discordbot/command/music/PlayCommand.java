@@ -78,7 +78,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{"music", "p", "m"};
+		return new String[]{"p"};
 	}
 
 	private boolean isInVoiceWith(Guild guild, User author) {

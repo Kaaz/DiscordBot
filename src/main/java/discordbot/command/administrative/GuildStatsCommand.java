@@ -72,7 +72,7 @@ public class GuildStatsCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		int tracksProcessing = bot.getContainer().downloadsProcessing();
-		if(!bot.getContainer().allShardsReady()){
+		if (!bot.getContainer().allShardsReady()) {
 			return "Not fully loaded yet!";
 		}
 		if (args.length == 0) {
