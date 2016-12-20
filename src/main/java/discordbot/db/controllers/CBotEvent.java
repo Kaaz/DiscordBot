@@ -3,6 +3,7 @@ package discordbot.db.controllers;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
 import discordbot.db.model.OBotEvent;
+import discordbot.main.Launcher;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -77,6 +78,7 @@ public class CBotEvent {
 					new Timestamp(System.currentTimeMillis()), record.logLevel.getId(), record.group, record.subGroup, record.data);
 		} catch (Exception e) {
 			e.printStackTrace();
+			Launcher.logToDiscord(e, "data", record.data);
 		}
 	}
 }

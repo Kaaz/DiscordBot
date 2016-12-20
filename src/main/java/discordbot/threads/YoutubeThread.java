@@ -83,6 +83,7 @@ public class YoutubeThread extends Thread {
 			process.waitFor(10, TimeUnit.MINUTES);
 			process.destroy();
 		} catch (IOException | InterruptedException e) {
+			Launcher.logToDiscord(e);
 			e.printStackTrace();
 			return false;
 		}
@@ -120,6 +121,7 @@ public class YoutubeThread extends Thread {
 					executor.execute(new YTWorkerWorker(task.getCode(), task));
 					counter.incrementAndGet();
 				} catch (InterruptedException e) {
+					Launcher.logToDiscord(e);
 					CBotEvent.insert(OBotEvent.Level.FATAL, ":octagonal_sign:", ":musical_note:", "yt worker broke " + e.getMessage());
 				}
 			}
@@ -165,14 +167,6 @@ public class YoutubeThread extends Thread {
 		private final String title;
 		private final Message message;
 		private final Consumer<Message> callback;
-
-		public YoutubeTask(String code, Message message, Consumer<Message> callback) {
-
-			this.code = code;
-			this.message = message;
-			this.callback = callback;
-			this.title = code;
-		}
 
 		public YoutubeTask(String code, String title, Message message, Consumer<Message> callback) {
 			this.code = code;
@@ -226,6 +220,7 @@ public class YoutubeThread extends Thread {
 					task.getCallback().accept(task.getMessage());
 				}
 			} catch (Exception e) {
+				Launcher.logToDiscord(e, "yt-code", task.getCode());
 				CBotEvent.insert(OBotEvent.Level.WARN, ":octagonal_sign:", ":musical_note:", " ytcode: " + task.getCode() + "  " + e.getMessage());
 			} finally {
 				unRegisterProgress(task.getCode());

@@ -6,6 +6,7 @@ import discordbot.db.controllers.CMusic;
 import discordbot.db.controllers.CPlaylist;
 import discordbot.db.model.OMusic;
 import discordbot.main.BotContainer;
+import discordbot.main.Launcher;
 
 import java.io.File;
 import java.sql.ResultSet;
@@ -65,6 +66,7 @@ public class MusicCleanupService extends AbstractService {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+			Launcher.logToDiscord(e);
 		}
 	}
 

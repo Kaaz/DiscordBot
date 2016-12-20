@@ -44,6 +44,12 @@ public class Launcher {
 		}
 	}
 
+	public static void logToDiscord(Exception e, Object... args) {
+		if (botContainer != null) {
+			botContainer.reportError(e, args);
+		}
+	}
+
 	public static ProgramVersion getVersion() {
 		return version;
 	}

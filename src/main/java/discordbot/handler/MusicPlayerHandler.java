@@ -625,6 +625,7 @@ public class MusicPlayerHandler {
 			try {
 				trackStarted();
 			} catch (IOException e) {
+				Launcher.logToDiscord(e);
 				e.printStackTrace();
 			}
 		}

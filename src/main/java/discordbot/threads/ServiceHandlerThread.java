@@ -50,6 +50,7 @@ public class ServiceHandlerThread extends Thread {
 				}
 				sleep(10_000L);
 			} catch (Exception e) {
+				Launcher.logToDiscord(e);
 				e.printStackTrace();
 			}
 		}
