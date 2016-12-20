@@ -26,6 +26,7 @@ public class Emojibet {
 	public static String OKE_SIGN = "\u2705";
 	public static String SHARD_ICON = "\uD83D\uDC8E";
 
+	public static String ANGER = "\uD83D\uDCA2";
 
 	static {
 		emojis.put("a", "\uD83C\uDDE6");

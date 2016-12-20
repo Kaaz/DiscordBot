@@ -84,8 +84,10 @@ public class BotContainer {
 			return;
 		}
 		String errorMessage = "I've encountered a **" + error.getClass().getName() + "**" + Config.EOL;
-		errorMessage += "Message: " + Config.EOL;
-		errorMessage += error.getLocalizedMessage() + Config.EOL + Config.EOL;
+		if (error.getMessage() != null) {
+			errorMessage += "Message: " + Config.EOL;
+			errorMessage += error.getMessage() + Config.EOL + Config.EOL;
+		}
 		String stack = "";
 		int maxTrace = 8;
 		StackTraceElement[] stackTrace1 = error.getStackTrace();
