@@ -8,6 +8,7 @@ import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.util.DisUtil;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -80,6 +81,8 @@ public class MemeCommand extends AbstractCommand {
 		if (args.length == 0) {
 			return Template.get("command_invalid_usage") + Config.EOL +
 					msg + Misc.makeTable(new ArrayList<>(memeTypes)) + Config.EOL +
+					"Usage:" + Config.EOL +
+					DisUtil.getCommandPrefix(channel) + "meme <type> <toptext> || <bottomtext>Config.EOL+Config.EOL" + Config.EOL + Config.EOL +
 					"Example:" + Config.EOL +
 					"meme sohappy If I could use this meme || I would be so happy";
 		}
