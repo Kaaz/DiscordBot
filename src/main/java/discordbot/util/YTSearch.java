@@ -52,7 +52,7 @@ public class YTSearch {
 			return cache.get(queryName);
 		}
 		List<SimpleResult> results = getResults(query, 1);
-		if (!results.isEmpty()) {
+		if (results != null && !results.isEmpty()) {
 			cache.put(queryName, results.get(0));
 			return results.get(0);
 		}
