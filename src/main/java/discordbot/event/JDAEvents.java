@@ -260,6 +260,9 @@ public class JDAEvents extends ListenerAdapter {
 	@Override
 	public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
 		User user = event.getMember().getUser();
+		if (user.isBot()) {
+			return;
+		}
 		Guild guild = event.getGuild();
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingPMUserEvents.class))) {
 			discordBot.out.sendPrivateMessage(guild.getOwner().getUser(), String.format("[user-event] **%s#%s** left the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()));

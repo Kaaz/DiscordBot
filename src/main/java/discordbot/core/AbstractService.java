@@ -40,7 +40,7 @@ public abstract class AbstractService {
 		List<QActiveSubscriptions> subscriptionsForService = CSubscriptions.getSubscriptionsForService(CServices.getCachedId(getIdentifier()));
 		for (QActiveSubscriptions activeSubscriptions : subscriptionsForService) {
 			OChannel databaseChannel = CChannels.findById(activeSubscriptions.channelId);
-			DiscordBot botInstance = bot.getBotFor(CGuild.getCachedDiscordId(activeSubscriptions.guildId));
+			DiscordBot botInstance = bot.getShardFor(CGuild.getCachedDiscordId(activeSubscriptions.guildId));
 			TextChannel botChannel = botInstance.client.getTextChannelById(databaseChannel.discord_id);
 			if (botChannel != null) {
 				channels.add(botChannel);
@@ -48,7 +48,7 @@ public abstract class AbstractService {
 				OSubscription subscription = CSubscriptions.findBy(databaseChannel.server_id, databaseChannel.id, CServices.getCachedId(getIdentifier()));
 				subscription.subscribed = 0;
 				CSubscriptions.insertOrUpdate(subscription);
-				botInstance.out.sendErrorToMe(new Exception("Subscription channel not found"),
+				botInstance.getContainer().reportError(new Exception("Subscription channel not found"),
 						"result", "Now unsubscribed!",
 						"channelID", databaseChannel.discord_id,
 						"subscription", getIdentifier());
@@ -62,7 +62,7 @@ public abstract class AbstractService {
 	}
 
 	protected void sendTo(TextChannel channel, String message) {
-		this.bot.getBotFor(channel.getGuild().getId()).out.sendAsyncMessage(channel, message, null);
+		this.bot.getShardFor(channel.getGuild().getId()).out.sendAsyncMessage(channel, message, null);
 	}
 
 	/**

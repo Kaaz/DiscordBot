@@ -13,7 +13,10 @@ import discordbot.handler.SecurityHandler;
 import discordbot.handler.Template;
 import discordbot.role.RoleRankings;
 import discordbot.threads.YoutubeThread;
+import discordbot.util.Misc;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +63,54 @@ public class BotContainer {
 	}
 
 	/**
+	 * report an error to the configured error channel
+	 *
+	 * @param error   the Exception
+	 * @param details extra details about the error
+	 */
+
+	public void reportError(Exception error, Object... details) {
+		DiscordBot shard = getShardFor(Config.BOT_GUILD_ID);
+		Guild guild = shard.client.getGuildById(Config.BOT_GUILD_ID);
+		if (guild == null) {
+			LOGGER.warn("Can't find BOT_GUILD_ID " + Config.BOT_GUILD_ID);
+			return;
+		}
+		TextChannel channel = guild.getTextChannelById(Config.BOT_ERROR_CHANNEL_ID);
+		if (channel == null) {
+			LOGGER.warn("Can't find BOT_ERROR_CHANNEL_ID " + Config.BOT_ERROR_CHANNEL_ID);
+			return;
+		}
+		String errorMessage = "I've encountered a **" + error.getClass().getName() + "**" + Config.EOL;
+		errorMessage += "Message: " + Config.EOL;
+		errorMessage += error.getLocalizedMessage() + Config.EOL + Config.EOL;
+		String stack = "";
+		int maxTrace = 8;
+		StackTraceElement[] stackTrace1 = error.getStackTrace();
+		for (int i = 0; i < stackTrace1.length; i++) {
+			StackTraceElement stackTrace = stackTrace1[i];
+			stack += stackTrace.toString() + Config.EOL;
+			if (i > maxTrace) {
+				break;
+			}
+		}
+		if (details.length > 0) {
+			errorMessage += "Extra information: " + Config.EOL;
+			for (int i = 1; i < details.length; i += 2) {
+				if (details[i] != null) {
+					errorMessage += details[i - 1] + " = " + details[i] + Config.EOL;
+				} else if (details[i - 1] != null) {
+					errorMessage += details[i - 1];
+				}
+			}
+			errorMessage += Config.EOL + Config.EOL;
+		}
+		errorMessage += "Accompanied stacktrace: " + Config.EOL + Misc.makeTable(stack) + Config.EOL;
+
+		channel.sendMessage(errorMessage).queue();
+	}
+
+	/**
 	 * update the numguilds so that we can check if we need an extra shard
 	 */
 	public void guildJoined() {
@@ -100,13 +151,13 @@ public class BotContainer {
 	}
 
 	/**
-	 * {@link BotContainer#getBotFor(long)}
+	 * {@link BotContainer#getShardFor(long)}
 	 */
-	public DiscordBot getBotFor(String discordGuildId) {
+	public DiscordBot getShardFor(String discordGuildId) {
 		if (numShards == 1) {
 			return shards[0];
 		}
-		return getBotFor(Long.parseLong(discordGuildId));
+		return getShardFor(Long.parseLong(discordGuildId));
 	}
 
 	/**
@@ -115,7 +166,7 @@ public class BotContainer {
 	 * @param discordGuildId the discord guild id
 	 * @return the instance responsible for the guild
 	 */
-	public DiscordBot getBotFor(long discordGuildId) {
+	public DiscordBot getShardFor(long discordGuildId) {
 		if (numShards == 1) {
 			return shards[0];
 		}
@@ -143,7 +194,7 @@ public class BotContainer {
 		youtubeThread.start();
 //		List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
 //		for (OBotPlayingOn radio : radios) {
-//			DiscordBot bot = getBotFor(radio.guildId);
+//			DiscordBot bot = getShardFor(radio.guildId);
 //			Guild guild = bot.client.getGuildById(radio.guildId);
 //			VoiceChannel vc = null;
 //			if (guild == null) {

@@ -58,6 +58,10 @@ public class Config {
 	@ConfigurationOption
 	public static String BOT_CHANNEL_ID = "225170823898464256";
 
+	//Bot's error channel id
+	@ConfigurationOption
+	public static String BOT_ERROR_CHANNEL_ID = "249646038443491340";
+
 	//token used to login to discord
 	@ConfigurationOption
 	public static String BOT_TOKEN = "mybottokenhere";

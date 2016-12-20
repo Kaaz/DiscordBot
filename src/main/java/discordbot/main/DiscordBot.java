@@ -2,6 +2,7 @@ package discordbot.main;
 
 import com.mashape.unirest.http.Unirest;
 import discordbot.db.controllers.CGuild;
+import discordbot.event.JDAEventManager;
 import discordbot.event.JDAEvents;
 import discordbot.guildsettings.defaults.SettingActiveChannels;
 import discordbot.guildsettings.defaults.SettingAutoReplyModule;
@@ -76,10 +77,12 @@ public class DiscordBot {
 		if (numShards > 1) {
 			builder.useSharding(shardId, numShards);
 		}
+		builder.setEventManager(new JDAEventManager(container));
 		builder.setBulkDeleteSplittingEnabled(false);
 		builder.setEnableShutdownHook(false);
 		client = builder.buildBlocking();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
+		chatBotHandler = new ChatBotHandler();
 		setContainer(container);
 		markReady();
 	}
@@ -213,11 +216,10 @@ public class DiscordBot {
 		container.allShardsReady();
 	}
 
-	public void loadConfiguration() {
+	public synchronized void loadConfiguration() {
 		defaultChannels.clear();
 		musicChannels.clear();
 		logChannels.clear();
-		chatBotHandler = new ChatBotHandler();
 	}
 
 	public void reloadAutoReplies() {

@@ -83,7 +83,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 							message.editMessage(slotMachine.toString()).queue();
 						}
 					} catch (Exception e) {
-						bot.out.sendErrorToMe(e, "slotmachine", author.getId(), "channel", ((TextChannel) channel).getAsMention(), bot);
+						bot.getContainer().reportError(e, "slotmachine", author.getId(), "channel", ((TextChannel) channel).getAsMention(), bot);
 						f[0].cancel(false);
 					}
 				}, 1000L, SPIN_INTERVAL);

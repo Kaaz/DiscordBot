@@ -223,7 +223,7 @@ public class RoleRankings {
 			if (roleList.size() > 0) {
 				bot.out.addRole(user, roleList.get(0));
 			} else {
-				bot.out.sendErrorToMe(new Exception("Role not found"), "guild", guild.getName(), "user", user.getName());
+				bot.getContainer().reportError(new Exception("Role not found"), "guild", guild.getName(), "user", user.getName());
 			}
 		}
 	}

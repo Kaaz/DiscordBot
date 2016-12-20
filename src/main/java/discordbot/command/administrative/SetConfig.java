@@ -73,10 +73,10 @@ public class SetConfig extends AbstractCommand {
 			if (args[0].matches("i\\d+")) {
 				OGuild rec = CGuild.findById(Integer.parseInt(args[0].substring(1)));
 				if (rec.id > 0) {
-					guild = bot.getContainer().getBotFor(rec.discord_id).client.getGuildById(rec.discord_id);
+					guild = bot.getContainer().getShardFor(rec.discord_id).client.getGuildById(rec.discord_id);
 				}
 			} else {
-				guild = bot.getContainer().getBotFor(args[0]).client.getGuildById(args[0]);
+				guild = bot.getContainer().getShardFor(args[0]).client.getGuildById(args[0]);
 			}
 			if (guild == null) {
 				return Template.get("command_config_cant_find_guild");
@@ -145,7 +145,7 @@ public class SetConfig extends AbstractCommand {
 							"You can reset by typing `@" + bot.client.getSelfUser().getName() + " reset yesimsure`").queue();
 				}
 				if (args.length >= 2 && GuildSettings.get(guild).set(args[0], newValue)) {
-					bot.getContainer().getBotFor(guild.getId()).clearChannels(guild);
+					bot.getContainer().getShardFor(guild.getId()).clearChannels(guild);
 					return Template.get("command_config_key_modified");
 				}
 				String tblContent = "";

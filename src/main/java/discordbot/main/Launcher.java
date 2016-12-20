@@ -16,6 +16,7 @@ import discordbot.util.YTUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.managers.AudioManager;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +53,7 @@ public class Launcher {
 		WebDb.init();
 		Launcher.init();
 		if (Config.BOT_ENABLED) {
+			SimpleLog.addFileLog(SimpleLog.Level.DEBUG, new File("./logs/jda.log"));
 			consoleInputThread = new ConsoleInputThread();
 			Runtime.getRuntime().addShutdownHook(new Thread(Launcher::shutdownHook));
 			try {

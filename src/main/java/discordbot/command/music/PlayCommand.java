@@ -243,7 +243,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 			}
 			return "\u25AA " + rec.youtubeTitle;
 		} catch (Exception e) {
-			bot.out.sendErrorToMe(e, "ytcode", videoCode);
+			bot.getContainer().reportError(e, "ytcode", videoCode);
 			return Template.get("music_file_error");
 		}
 	}
