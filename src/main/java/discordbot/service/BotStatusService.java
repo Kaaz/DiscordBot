@@ -57,7 +57,7 @@ public class BotStatusService extends AbstractService {
 
 	@Override
 	public long getDelayBetweenRuns() {
-		return 120_000;
+		return 300_000;
 	}
 
 	@Override
@@ -72,16 +72,11 @@ public class BotStatusService extends AbstractService {
 	@Override
 	public void run() {
 		int roll = rng.nextInt(100);
-		String statusText = "Something";
+		String statusText;
 		TextChannel inviteChannel = bot.getBotFor(Config.BOT_GUILD_ID).client.getTextChannelById(Config.BOT_CHANNEL_ID);
 		if (inviteChannel != null && roll <= 5) {
-//			List<InviteUtil.AdvancedInvite> invites = inviteChannel.getInvites();
-//			if (invites.size() > 0) {
-			statusText = "Feedback @ https://discord.gg/eaywDDt";// + invites.get(0).getCode();
-//			} else {
-//				bot.getBotFor(Config.BOT_GUILD_ID).out.sendMessageToCreator(":exclamation: I am out of invites for `" + inviteChannel.getName() + "` Click here to make more :D " + inviteChannel.getAsMention());
-//			}
-		} else if (roll <= 15) {
+			statusText = "Feedback @ https://discord.gg/eaywDDt";
+		} else if (roll < 25) {
 			String username = bot.getShards()[0].client.getSelfUser().getName();
 			statusText = "@" + username + " help || @" + username + " invite";
 		} else {

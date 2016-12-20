@@ -70,9 +70,6 @@ public class GithubService extends AbstractService {
 			}
 			String message = commit.getCommit().getMessage();
 			committerName = commit.getAuthor().getLogin();
-			if (3026105 == commit.getAuthor().getId()) {
-				committerName = "Kaaz";
-			}
 			committerUrl = "https://github.com/" + commit.getAuthor().getLogin();
 			committerAvatar = commit.getAuthor().getAvatarUrl();
 			if (timestamp > lastKnownCommitTimestamp) {
@@ -87,7 +84,7 @@ public class GithubService extends AbstractService {
 		}
 		if (commitCount > 0) {
 			EmbedBuilder embed = new EmbedBuilder();
-			embed.setColor(new Color(0xB2FF40));
+			embed.setColor(new Color(0x4FA1FF));
 			embed.setAuthor(committerName, committerUrl, committerAvatar);
 			embed.setTitle("Changes to my code");
 			String description = "There have been **" + commitCount + "** commits to my code " + Config.EOL + Config.EOL;
