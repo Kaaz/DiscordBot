@@ -318,6 +318,7 @@ public class JDAEvents extends ListenerAdapter {
 	@Override
 	public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
 		checkLeaving(event.getGuild(), event.getChannelLeft(), event.getMember().getUser());
+		checkLeaving(event.getGuild(), event.getChannelJoined(), event.getMember().getUser());
 	}
 
 	@Override

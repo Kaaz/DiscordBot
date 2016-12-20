@@ -325,11 +325,8 @@ public class MusicPlayerHandler {
 	}
 
 	public synchronized void connectTo(VoiceChannel channel) {
-		if (!isConnectedTo(channel)) {
+		if (channel != null && !isConnectedTo(channel)) {
 			Guild guild = channel.getJDA().getGuildById(guildId);
-			if (!guild.getAudioManager().isConnected()) {
-				guild.getAudioManager().setSelfDeafened(true);
-			}
 			guild.getAudioManager().openAudioConnection(channel);
 		}
 	}
