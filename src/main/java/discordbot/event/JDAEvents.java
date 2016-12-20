@@ -363,6 +363,9 @@ public class JDAEvents extends ListenerAdapter {
 		if (!"false".equalsIgnoreCase(autoChannel) && channel.getName().equalsIgnoreCase(autoChannel)) {
 			return;
 		}
-		discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(guild), Template.get("music_no_one_listens_i_leave"));
+		TextChannel musicChannel = discordBot.getMusicChannel(guild);
+		if (musicChannel != null && musicChannel.canTalk()) {
+			discordBot.out.sendAsyncMessage(musicChannel, Template.get("music_no_one_listens_i_leave"));
+		}
 	}
 }
