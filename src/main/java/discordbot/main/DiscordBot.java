@@ -50,9 +50,9 @@ public class DiscordBot {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 	public final long startupTimeStamp;
-	private final Map<String, TextChannel> defaultChannels = new ConcurrentHashMap<>();
-	private final Map<String, TextChannel> musicChannels = new ConcurrentHashMap<>();
-	private final Map<String, TextChannel> logChannels = new ConcurrentHashMap<>();
+	private final Map<String, String> defaultChannels = new ConcurrentHashMap<>();
+	private final Map<String, String> musicChannels = new ConcurrentHashMap<>();
+	private final Map<String, String> logChannels = new ConcurrentHashMap<>();
 	private final int totShards;
 	private final ScheduledExecutorService scheduler;
 	public volatile JDA client;
@@ -142,9 +142,9 @@ public class DiscordBot {
 				}
 				return;
 			}
-			logChannels.put(guild.getId(), channel);
+			logChannels.put(guild.getId(), channel.getId());
 		}
-		out.sendAsyncMessage(logChannels.get(guild.getId()), String.format("%s %s", category, message));
+		out.sendAsyncMessage(client.getTextChannelById(logChannels.get(guild.getId())), String.format("%s %s", category, message));
 	}
 
 	public int getShardId() {
@@ -162,15 +162,18 @@ public class DiscordBot {
 	 * @param guild the guild to check
 	 * @return default chat channel
 	 */
-	public TextChannel getDefaultChannel(Guild guild) {
+	public synchronized TextChannel getDefaultChannel(Guild guild) {
 		if (!defaultChannels.containsKey(guild.getId())) {
-			TextChannel defaultChannel = DisUtil.findChannel(guild, GuildSettings.get(guild).getOrDefault(SettingBotChannel.class));
+			TextChannel defaultChannel = DisUtil.findChannel(guild, GuildSettings.get(guild.getId()).getOrDefault(SettingBotChannel.class));
 			if (defaultChannel == null || !defaultChannel.canTalk()) {
 				defaultChannel = DisUtil.findFirstWriteableChannel(client, guild);
+				if (defaultChannel == null) {
+					return null;
+				}
 			}
-			defaultChannels.put(guild.getId(), defaultChannel);
+			defaultChannels.put(guild.getId(), defaultChannel.getId());
 		}
-		return defaultChannels.get(guild.getId());
+		return client.getTextChannelById(defaultChannels.get(defaultChannels.get(guild.getId())));
 	}
 
 	/**
@@ -190,9 +193,9 @@ public class DiscordBot {
 			if (channel == null) {
 				channel = getDefaultChannel(guild);
 			}
-			musicChannels.put(guild.getId(), channel);
+			musicChannels.put(guild.getId(), channel.getId());
 		}
-		return musicChannels.get(guild.getId());
+		return client.getTextChannelById(musicChannels.get(guild.getId()));
 	}
 
 	public synchronized void reconnect() {

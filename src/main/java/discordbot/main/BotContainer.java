@@ -13,7 +13,9 @@ import discordbot.handler.SecurityHandler;
 import discordbot.handler.Template;
 import discordbot.role.RoleRankings;
 import discordbot.threads.YoutubeThread;
+import discordbot.util.Emojibet;
 import discordbot.util.Misc;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -108,6 +110,24 @@ public class BotContainer {
 		errorMessage += "Accompanied stacktrace: " + Config.EOL + Misc.makeTable(stack) + Config.EOL;
 
 		channel.sendMessage(errorMessage).queue();
+	}
+
+	public void reportStatus(int shardId, JDA.Status oldStatus, JDA.Status status) {
+		DiscordBot shard = getShardFor(Config.BOT_GUILD_ID);
+		Guild guild = shard.client.getGuildById(Config.BOT_GUILD_ID);
+		if (guild == null) {
+			LOGGER.warn("Can't find BOT_GUILD_ID " + Config.BOT_GUILD_ID);
+			return;
+		}
+		TextChannel channel = guild.getTextChannelById(Config.BOT_STATUS_CHANNEL_ID);
+		if (channel == null) {
+			LOGGER.warn("Can't find BOT_STATUS_CHANNEL_ID " + Config.BOT_STATUS_CHANNEL_ID);
+			return;
+		}
+		if (!status.equals(JDA.Status.SHUTTING_DOWN)) {
+			int length = (int) Math.ceil(Math.log10(shards.length));
+			channel.sendMessage(String.format(Emojibet.SHARD_ICON + " `%0" + length + "d/%0" + length + "d` | ~~%s~~ -> %s", shardId, shards.length, oldStatus.toString(), status.toString())).queue();
+		}
 	}
 
 	/**

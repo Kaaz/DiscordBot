@@ -62,6 +62,10 @@ public class Config {
 	@ConfigurationOption
 	public static String BOT_ERROR_CHANNEL_ID = "249646038443491340";
 
+	//Bot's status update
+	@ConfigurationOption
+	public static String BOT_STATUS_CHANNEL_ID = "260721966430814210";
+
 	//token used to login to discord
 	@ConfigurationOption
 	public static String BOT_TOKEN = "mybottokenhere";

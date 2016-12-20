@@ -39,6 +39,7 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.io.File;
@@ -77,18 +78,21 @@ public class MusicPlayerHandler {
 	private Random rng;
 	private volatile LinkedList<OMusic> queue;
 
-	private MusicPlayerHandler(String guild, DiscordBot bot) {
-		queue = new LinkedList<>();
-		this.bot = bot;
-		this.guildId = guild;
+	private MusicPlayerHandler(Guild guild, DiscordBot bot) {
+
 		rng = new Random();
+		AudioManager guildManager = guild.getAudioManager();
 		player = playerManager.createPlayer();
+		this.bot = bot;
+		this.guildId = guild.getId();
+		guildManager.setSendingHandler(new AudioPlayerSendHandler(player));
+		queue = new LinkedList<>();
 		scheduler = new TrackScheduler(player);
+
 		player.addListener(scheduler);
-		player.setVolume(Integer.parseInt(GuildSettings.get(guild).getOrDefault(SettingMusicVolume.class)));
-		bot.client.getGuildById(guild).getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
-		playerInstances.put(guild, this);
-		int savedPlaylist = Integer.parseInt(GuildSettings.get(guild).getOrDefault(SettingMusicLastPlaylist.class));
+		player.setVolume(Integer.parseInt(GuildSettings.get(guild.getId()).getOrDefault(SettingMusicVolume.class)));
+		playerInstances.put(guild.getId(), this);
+		int savedPlaylist = Integer.parseInt(GuildSettings.get(guild.getId()).getOrDefault(SettingMusicLastPlaylist.class));
 		if (savedPlaylist > 0) {
 			playlist = CPlaylist.findById(savedPlaylist);
 		}
@@ -101,7 +105,6 @@ public class MusicPlayerHandler {
 
 	public static void init() {
 		AudioSourceManagers.registerLocalSource(playerManager);
-		playerManager.setFrameBufferDuration(10);
 		playerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
 	}
 
@@ -116,7 +119,7 @@ public class MusicPlayerHandler {
 		if (playerInstances.containsKey(guild.getId())) {
 			return playerInstances.get(guild.getId());
 		} else {
-			return new MusicPlayerHandler(guild.getId(), bot);
+			return new MusicPlayerHandler(guild, bot);
 		}
 	}
 

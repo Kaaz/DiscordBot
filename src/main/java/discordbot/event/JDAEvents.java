@@ -28,6 +28,8 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.DisconnectEvent;
 import net.dv8tion.jda.core.events.ReconnectedEvent;
+import net.dv8tion.jda.core.events.ResumedEvent;
+import net.dv8tion.jda.core.events.StatusChangeEvent;
 import net.dv8tion.jda.core.events.guild.GuildBanEvent;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
@@ -61,6 +63,16 @@ public class JDAEvents extends ListenerAdapter {
 	public void onDisconnect(DisconnectEvent event) {
 		DiscordBot.LOGGER.info("[event] DISCONNECTED! ");
 //		Launcher.stop(ExitCode.DISCONNECTED);
+	}
+
+	@Override
+	public void onStatusChange(StatusChangeEvent event) {
+		discordBot.getContainer().reportStatus(event.getJDA().getShardInfo().getShardId(), event.getOldStatus(), event.getStatus());
+	}
+
+	@Override
+	public void onResume(ResumedEvent event) {
+		super.onResume(event);
 	}
 
 	@Override

@@ -43,6 +43,7 @@ public class JDAEventManager implements IEventManager {
 				listener.onEvent(event);
 			} catch (Exception e) {
 				container.reportError(e, "JDAEvent", event.getClass().getName());
+				e.printStackTrace();
 			}
 		}
 	}
