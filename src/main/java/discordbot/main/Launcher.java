@@ -9,12 +9,10 @@ import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CMusic;
 import discordbot.db.model.OMusic;
-import discordbot.threads.ConsoleInputThread;
 import discordbot.threads.GrayLogThread;
 import discordbot.threads.ServiceHandlerThread;
 import discordbot.util.YTUtil;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
@@ -27,7 +25,6 @@ public class Launcher {
 	private static GrayLogThread GRAYLOG;
 	private static BotContainer botContainer = null;
 	private static ProgramVersion version = new ProgramVersion(1);
-	private static ConsoleInputThread consoleInputThread;
 
 
 	/**
@@ -60,13 +57,11 @@ public class Launcher {
 		Launcher.init();
 		if (Config.BOT_ENABLED) {
 			SimpleLog.addFileLog(SimpleLog.Level.DEBUG, new File("./logs/jda.log"));
-			consoleInputThread = new ConsoleInputThread();
 			Runtime.getRuntime().addShutdownHook(new Thread(Launcher::shutdownHook));
 			try {
 				botContainer = new BotContainer((CGuild.getActiveGuildCount()));
 				Thread serviceHandler = new ServiceHandlerThread(botContainer);
 				serviceHandler.start();
-				consoleInputThread.start();
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
@@ -119,14 +114,6 @@ public class Launcher {
 			}
 		}
 
-	}
-
-	public static TextChannel getConsoleChannel() {
-		return consoleInputThread.getTextChannel();
-	}
-
-	public static void setConsoleChannel(TextChannel textChannel) {
-		consoleInputThread.setTextChannel(textChannel);
 	}
 
 	/**
