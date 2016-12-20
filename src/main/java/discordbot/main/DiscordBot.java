@@ -193,6 +193,9 @@ public class DiscordBot {
 			if (channel == null) {
 				channel = getDefaultChannel(guild);
 			}
+			if (channel == null) {
+				return null;
+			}
 			musicChannels.put(guild.getId(), channel.getId());
 		}
 		return client.getTextChannelById(musicChannels.get(guild.getId()));
