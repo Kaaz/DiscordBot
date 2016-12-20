@@ -1,9 +1,7 @@
 package discordbot.handler;
 
-import com.vdurmont.emoji.EmojiParser;
 import discordbot.db.WebDb;
 import discordbot.db.controllers.CGuild;
-import discordbot.db.controllers.CUser;
 import discordbot.db.model.OGuild;
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.DefaultGuildSettings;
@@ -25,22 +23,22 @@ import java.util.concurrent.ConcurrentHashMap;
  * Guild specific configurations, such as which channel is for music
  */
 public class GuildSettings {
-	private final static Map<Guild, GuildSettings> settingInstance = new ConcurrentHashMap<>();
+	private final static Map<String, GuildSettings> settingInstance = new ConcurrentHashMap<>();
 	private final Map<String, String> settings;
-	private final Guild guild;
+	private final String guildId;
 	private int id = 0;
 	private boolean initialized = false;
 
-	private GuildSettings(Guild guild) {
+	private GuildSettings(String guild) {
 		this.settings = new ConcurrentHashMap<>();
-		OGuild record = CGuild.findBy(guild.getId());
-		this.guild = guild;
+		OGuild record = CGuild.findBy(guild);
 		if (record.id == 0) {
-			record.name = EmojiParser.parseToAliases(guild.getName());
-			record.discord_id = guild.getId();
-			record.owner = CUser.getCachedId(guild.getOwner().getUser().getId(), guild.getOwner().getUser().getName());
+			record.name = guild;
+			record.discord_id = guild;
+			record.owner = 1;
 			CGuild.insert(record);
 		}
+		this.guildId = guild;
 		this.id = record.id;
 		settingInstance.put(guild, this);
 		loadSettings();
@@ -61,12 +59,16 @@ public class GuildSettings {
 	}
 
 	public static void remove(Guild guild) {
-		if (settingInstance.containsKey(guild)) {
-			settingInstance.remove(guild);
+		if (settingInstance.containsKey(guild.getId())) {
+			settingInstance.remove(guild.getId());
 		}
 	}
 
 	public static GuildSettings get(Guild guild) {
+		return get(guild.getId());
+	}
+
+	public static GuildSettings get(String guild) {
 		if (settingInstance.containsKey(guild)) {
 			return settingInstance.get(guild);
 		} else {
@@ -175,7 +177,7 @@ public class GuildSettings {
 		boolean roleFound = true;
 		if (!"none".equals(requiredRole) && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			roleFound = false;
-			List<Role> roles = guild.getMember(user).getRoles();
+			List<Role> roles = user.getJDA().getGuildById(guildId).getMember(user).getRoles();
 			for (Role role : roles) {
 				if (role.getName().equalsIgnoreCase(requiredRole)) {
 					roleFound = true;

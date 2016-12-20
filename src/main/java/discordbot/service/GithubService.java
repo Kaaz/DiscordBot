@@ -23,7 +23,7 @@ import java.util.Map;
 public class GithubService extends AbstractService {
 
 	private final static int MAX_COMMITS_PER_POST = 10;
-	private final static String gitUser = "MaikWezinkhof";
+	private final static String gitUser = "Kaaz";
 	private final static String gitRepo = "discordbot";
 	private final static String commitUrl = "https://github.com/%s/%s/commit/%s";
 

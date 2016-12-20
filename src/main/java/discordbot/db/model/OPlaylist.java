@@ -30,36 +30,36 @@ public class OPlaylist extends AbstractModel {
 		return visibility;
 	}
 
-	public void setVisibility(Visibility visibility) {
-		this.visibility = visibility;
-	}
-
 	public void setVisibility(int visibilityId) {
 		this.visibility = Visibility.fromId(visibilityId);
+	}
+
+	public void setVisibility(Visibility visibility) {
+		this.visibility = visibility;
 	}
 
 	public EditType getEditType() {
 		return editType;
 	}
 
-	public void setEditType(EditType editType) {
-		this.editType = editType;
-	}
-
 	public void setEditType(int editId) {
 		this.editType = EditType.fromId(editId);
+	}
+
+	public void setEditType(EditType editType) {
+		this.editType = editType;
 	}
 
 	public PlayType getPlayType() {
 		return playType;
 	}
 
-	public void setPlayType(int id) {
-		setPlayType(PlayType.fromId(id));
-	}
-
 	public void setPlayType(PlayType playType) {
 		this.playType = playType;
+	}
+
+	public void setPlayType(int id) {
+		setPlayType(PlayType.fromId(id));
 	}
 
 
