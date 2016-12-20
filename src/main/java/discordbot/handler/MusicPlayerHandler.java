@@ -37,6 +37,7 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.GuildVoiceState;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.managers.AudioManager;
@@ -279,18 +280,19 @@ public class MusicPlayerHandler {
 		} else {
 			record = new OMusic();
 		}
+		TextChannel musicChannel = bot.getMusicChannel(guildId);
 		if ("true".equals(GuildSettings.get(guildId).getOrDefault(SettingMusicChannelTitle.class))) {
 			Guild guild = bot.client.getGuildById(guildId);
-			if (bot.getMusicChannel(guildId) != null && PermissionUtil.checkPermission(bot.getMusicChannel(guildId), guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
+			if (musicChannel != null && PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
 				if (!isUpdateChannelTitle()) {
-					bot.getMusicChannel(guildId).getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).queue();
+					musicChannel.getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).queue();
 				}
 			} else {
 				GuildSettings.get(guildId).set(SettingMusicChannelTitle.class, "false");
 			}
 		}
 		if (!messageType.equals("off") && record.id > 0) {
-			if (!bot.getMusicChannel(guildId).canTalk()) {
+			if (musicChannel == null || !musicChannel.canTalk()) {
 				GuildSettings.get(guildId).set(SettingMusicPlayingMessage.class, "off");
 				return;
 			}
@@ -315,10 +317,10 @@ public class MusicPlayerHandler {
 				}
 			};
 			Guild guild = bot.client.getGuildById(guildId);
-			if (!PermissionUtil.checkPermission(bot.getMusicChannel(guildId), guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-				bot.getMusicChannel(guildId).sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).queue(callback);
+			if (!PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
+				musicChannel.sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).queue(callback);
 			} else {
-				bot.getMusicChannel(guildId).sendMessage(MusicUtil.nowPlayingMessage(this, record)).queue(callback);
+				musicChannel.sendMessage(MusicUtil.nowPlayingMessage(this, record)).queue(callback);
 			}
 		}
 	}
