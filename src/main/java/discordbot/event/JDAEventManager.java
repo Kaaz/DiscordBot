@@ -9,13 +9,17 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class JDAEventManager implements IEventManager {
 	private final BotContainer container;
 	private final CopyOnWriteArrayList<EventListener> listeners = new CopyOnWriteArrayList<>();
+	private final ExecutorService executor;
 
 	public JDAEventManager(BotContainer container) {
 		this.container = container;
+		executor = Executors.newFixedThreadPool(10);
 	}
 
 	@Override
@@ -23,12 +27,14 @@ public class JDAEventManager implements IEventManager {
 		if (!(listener instanceof EventListener)) {
 			throw new IllegalArgumentException("Listener must implement EventListener");
 		}
-		listeners.add(((EventListener) listener));
+		listeners.add((EventListener) listener);
 	}
 
 	@Override
 	public void unregister(Object listener) {
-		listeners.remove(listener);
+		if (listener instanceof EventListener) {
+			listeners.remove(listener);
+		}
 	}
 
 	@Override
@@ -38,13 +44,18 @@ public class JDAEventManager implements IEventManager {
 
 	@Override
 	public void handle(Event event) {
-		for (EventListener listener : listeners) {
-			try {
-				listener.onEvent(event);
-			} catch (Exception e) {
-				container.reportError(e, "JDAEvent", event.getClass().getName());
-				e.printStackTrace();
-			}
+		if (executor.isShutdown()) {
+			return;
 		}
+		executor.submit(() -> {
+			for (EventListener listener : listeners) {
+				try {
+					listener.onEvent(event);
+				} catch (Exception e) {
+					container.reportError(e, "JDAEvent", event.getClass().getName());
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 }

@@ -40,9 +40,9 @@ public class MySQLAdapter {
 			dataSource.setDatabaseName(DB_NAME);
 			dataSource.setZeroDateTimeBehavior("convertToNull");
 			dataSource.setUseUnicode(true);
-			dataSource.setCharacterEncoding("utf-8");
 			return dataSource.getConnection();
 		} catch (SQLException e) {
+			System.out.println(e.getMessage());
 			DiscordBot.LOGGER.error("Can't connect to the database! Make sure the database settings are corrent and the database server is running AND the database `" + DB_NAME + "` exists");
 			Launcher.stop(ExitCode.SHITTY_CONFIG);
 		}

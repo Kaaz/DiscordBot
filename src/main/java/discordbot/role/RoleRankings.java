@@ -204,7 +204,7 @@ public class RoleRankings {
 		boolean hasTargetRole = false;
 		String prefix = RoleRankings.getPrefix(guild);
 		if (membership.joinDate == null) {
-			membership.joinDate = new Timestamp(System.currentTimeMillis());
+			membership.joinDate = new Timestamp(guild.getMember(user).getJoinDate().toInstant().toEpochMilli());
 			CGuildMember.insertOrUpdate(membership);
 		}
 		MemberShipRole targetRole = RoleRankings.getHighestRole(System.currentTimeMillis() - membership.joinDate.getTime());

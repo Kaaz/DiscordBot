@@ -62,7 +62,6 @@ public class JDAEvents extends ListenerAdapter {
 
 	public void onDisconnect(DisconnectEvent event) {
 		DiscordBot.LOGGER.info("[event] DISCONNECTED! ");
-//		Launcher.stop(ExitCode.DISCONNECTED);
 	}
 
 	@Override
@@ -77,7 +76,6 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onReconnect(ReconnectedEvent event) {
-		discordBot.reconnect();
 	}
 
 	public void onGuildJoin(GuildJoinEvent event) {
@@ -245,6 +243,10 @@ public class JDAEvents extends ListenerAdapter {
 		}
 		if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
 			TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
+			if (defaultChannel == null) {
+				GuildSettings.get(guild.getId()).set(SettingWelcomeNewUsers.class, "false");
+				return;
+			}
 			defaultChannel.sendMessage(
 					Template.getWithTags(defaultChannel, firstTime ? "welcome_new_user" : "welcome_back_user", user)).queue(
 					message ->

@@ -2,6 +2,7 @@ package discordbot.db;
 
 import discordbot.main.Config;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class WebDb {
@@ -24,5 +25,11 @@ public class WebDb {
 	public static void init() {
 		connections.clear();
 		connections.put("discord", new MySQLAdapter(Config.DB_HOST, Config.DB_USER, Config.DB_PASS, Config.DB_NAME));
+		try {
+			get().query("set names utf8mb4");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			System.out.println("COULD NOT SET utf8mb4");
+		}
 	}
 }
