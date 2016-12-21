@@ -66,10 +66,7 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onStatusChange(StatusChangeEvent event) {
-		int shardId = 1;
-		if (event.getJDA().getShardInfo() != null) {
-			shardId = event.getJDA().getShardInfo().getShardId();
-		}
+		int shardId = event.getJDA().getShardInfo() != null ? event.getJDA().getShardInfo().getShardId() : 0;
 		discordBot.getContainer().reportStatus(shardId, event.getOldStatus(), event.getStatus());
 	}
 
