@@ -77,7 +77,7 @@ public class GuildStatsCommand extends AbstractCommand {
 		}
 		if (args.length == 0) {
 			return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + Config.EOL +
-					getTotalTable(bot, false);
+					getTotalTable(bot, false) + Config.EOL + "You are on shard # " + bot.getShardId();
 		}
 		SimpleRank userrank = bot.security.getSimpleRank(author, channel);
 		switch (args[0].toLowerCase()) {
