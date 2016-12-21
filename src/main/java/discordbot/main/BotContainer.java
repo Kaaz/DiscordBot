@@ -127,7 +127,7 @@ public class BotContainer {
 			return;
 		}
 		if (!status.equals(JDA.Status.SHUTTING_DOWN)) {
-			int length = (int) Math.ceil(Math.log10(shards.length));
+			int length = 1 + (int) Math.floor(Math.log10(shards.length));
 			channel.sendMessage(String.format(Emojibet.SHARD_ICON + " `%0" + length + "d/%0" + length + "d` | ~~%s~~ -> %s", shardId, shards.length, oldStatus.toString(), status.toString())).queue();
 		}
 	}
