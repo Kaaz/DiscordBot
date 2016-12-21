@@ -24,6 +24,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -111,9 +112,8 @@ public class MemeCommand extends AbstractCommand {
 				topText = memeText[0];
 			}
 		}
-		String totalText = topText + " - ";
-		Future<HttpResponse<String>> response = Unirest.get("https://memegen.link/" + type + "/" + topText + "/" + botText + ".jpg").asStringAsync();
 		try {
+			Future<HttpResponse<String>> response = Unirest.get("https://memegen.link/" + type + "/" + URLEncoder.encode(topText, "UTF-8") + "/" + URLEncoder.encode(botText, "UTF-8") + ".jpg").asStringAsync();
 			HttpResponse<String> theImg = response.get();
 			BufferedImage image = ImageIO.read(theImg.getRawBody());
 			File memeFile = new File("tmp/meme_" + channel.getId() + ".jpg");
