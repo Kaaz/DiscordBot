@@ -53,7 +53,7 @@ public class HelpCommand extends AbstractCommand {
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"?", "halp", "helpme", "h","commands"
+				"?", "halp", "helpme", "h", "commands"
 		};
 	}
 
@@ -92,7 +92,7 @@ public class HelpCommand extends AbstractCommand {
 			for (AbstractCommand command : commandObjects) {
 				if (!command.isListed() || !command.isEnabled() || !userRank.isAtLeast(command.getCommandCategory().getRankRequired())) {
 					continue;
-				}
+				}//
 
 				if (!commandList.containsKey(command.getCommandCategory())) {
 					commandList.put(command.getCommandCategory(), new ArrayList<>());

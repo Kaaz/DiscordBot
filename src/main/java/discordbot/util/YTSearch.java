@@ -38,6 +38,7 @@ public class YTSearch {
 		} catch (IOException ex) {
 			DiscordBot.LOGGER.error("Failed to initialize search: " + ex.toString());
 		}
+
 		search = tmp;
 		if (search != null) {
 			search.setKey(apiKey);
