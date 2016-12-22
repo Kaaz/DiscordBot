@@ -99,16 +99,17 @@ public class OutgoingContentHandler {
 	 * Retrieves the message again before deleting it
 	 * Mostly for delayed deletion
 	 *
-	 * @param message the message to delete
+	 * @param messageToDelete the message to delete
 	 */
-	public void saveDelete(Message message) {
-		if (message != null) {
-			TextChannel channel = message.getJDA().getTextChannelById(message.getChannel().getId());
+	public void saveDelete(Message messageToDelete) {
+		if (messageToDelete != null) {
+			TextChannel channel = messageToDelete.getJDA().getTextChannelById(messageToDelete.getChannel().getId());
 			if (channel != null) {
-				channel.getMessageById(message.getId()).queue(message1 -> {
-					if (message1 != null) {
-						message1.deleteMessage().queue();
+				channel.getMessageById(messageToDelete.getId()).queue(msg -> {
+					if (msg != null) {
+						msg.deleteMessage().queue();
 					}
+				}, throwable -> {
 				});
 			}
 		}
