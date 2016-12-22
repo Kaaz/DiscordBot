@@ -12,8 +12,10 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.Random;
 
 /**
@@ -52,12 +54,15 @@ public class JokeCommand extends AbstractCommand {
 			if (new Random().nextInt(100) < 80) {
 				joketxt = CommandHandler.getCommand("reddit").execute(bot, new String[]{"jokes"}, channel, author);
 			} else {
-				joketxt = getJokeFromWeb(author.getName());
+				try {
+					joketxt = getJokeFromWeb(URLEncoder.encode(author.getName(), "UTF-8"));
+				} catch (UnsupportedEncodingException ignored) {
+				}
 			}
-			if (joketxt != null) {
-				bot.out.editAsync(message, StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getId() + ">")), null);
+			if (joketxt != null && !joketxt.isEmpty()) {
+				bot.out.editAsync(message, StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getId() + ">")));
 			} else {
-				bot.out.editAsync(message, Template.get("command_joke_not_today"), null);
+				bot.out.editAsync(message, Template.get("command_joke_not_today"));
 			}
 		});
 		return "";

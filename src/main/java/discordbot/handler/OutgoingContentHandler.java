@@ -46,8 +46,8 @@ public class OutgoingContentHandler {
 		});
 	}
 
-	public void editAsync(Message message, String content, Consumer<Message> callback) {
-		message.editMessage(content.substring(0, Math.min(1999, content.length()))).queue(callback);
+	public void editAsync(Message message, String content) {
+		message.editMessage(content.substring(0, Math.min(1999, content.length()))).queue();
 	}
 
 	/**
