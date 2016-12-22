@@ -283,17 +283,19 @@ public class JDAEvents extends ListenerAdapter {
 		}
 		if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingWelcomeNewUsers.class))) {
 			TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
-			defaultChannel.sendMessage(
-					Template.getWithTags(defaultChannel, "message_user_leaves", user)).queue(
-					message ->
-							discordBot.schedule(() -> {
-										if (message != null) {
-											message.deleteMessage().queue();
-										}
-									}, Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS
-							)
+			if (defaultChannel != null) {
+				defaultChannel.sendMessage(
+						Template.getWithTags(defaultChannel, "message_user_leaves", user)).queue(
+						message ->
+								discordBot.schedule(() -> {
+											if (message != null) {
+												message.deleteMessage().queue();
+											}
+										}, Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS
+								)
 
-			);
+				);
+			}
 		}
 		Launcher.log("user leaves guild", "guild", "member-leave",
 				"guild-id", guild.getId(),

@@ -92,7 +92,7 @@ public class Config {
 
 	//shows console output from the youtube-dl process
 	@ConfigurationOption
-	public static boolean YOUTUBEDL_DEBUG_PROCESS = false;
+	public static volatile boolean YOUTUBEDL_DEBUG_PROCESS = false;
 
 	//location of youtubedl.exe
 	@ConfigurationOption
