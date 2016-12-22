@@ -73,7 +73,7 @@ public class PurgeComand extends AbstractCommand {
 		int deleteLimit = 100;
 		boolean deleteAll = true;
 		SimpleRank rank = bot.security.getSimpleRank(author, channel);
-		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && !bot.client.getSelfUser().equals(author)) {
+		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && !channel.getJDA().getSelfUser().equals(author)) {
 			return Template.get("no_permission");
 		}
 		if (args.length >= 1) {
@@ -88,7 +88,7 @@ public class PurgeComand extends AbstractCommand {
 							continue;
 						}
 						if ((message.getRawContent().startsWith(cmdPrefix) && hasManageMessages)
-								|| (message.getAuthor() == null || message.getAuthor().getId().equals(bot.client.getSelfUser().getId()))) {
+								|| (message.getAuthor() == null || message.getAuthor().getId().equals(message.getJDA().getSelfUser().getId()))) {
 							messagesToDelete.add(message);
 						}
 					}
@@ -98,7 +98,7 @@ public class PurgeComand extends AbstractCommand {
 			}
 			deleteAll = false;
 			if (DisUtil.isUserMention(args[0])) {
-				toDeleteFrom = guild.getMember(bot.client.getUserById(DisUtil.mentionToId(args[0])));
+				toDeleteFrom = guild.getMember(channel.getJDA().getUserById(DisUtil.mentionToId(args[0])));
 				if (args.length >= 2 && args[1].matches("^\\d+$")) {
 					deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
 				}
@@ -114,7 +114,7 @@ public class PurgeComand extends AbstractCommand {
 				}
 			}
 		}
-		if (toDeleteFrom != null && !hasManageMessages && !bot.client.getSelfUser().equals(toDeleteFrom)) {
+		if (toDeleteFrom != null && !hasManageMessages && !channel.getJDA().getSelfUser().equals(toDeleteFrom)) {
 			return Template.get("permission_missing_manage_messages");
 		}
 		if (author.equals(toDeleteFrom)) {
@@ -132,7 +132,7 @@ public class PurgeComand extends AbstractCommand {
 				if (msg.isPinned()) {
 					continue;
 				}
-				if (finalDeleteAll && (hasManageMessages || (msg.getAuthor() != null && msg.getAuthor().getId().equals(bot.client.getSelfUser().getId())))) {
+				if (finalDeleteAll && (hasManageMessages || (msg.getAuthor() != null && msg.getAuthor().getId().equals(msg.getJDA().getSelfUser().getId())))) {
 					deletedCount++;
 					messagesToDelete.add(msg);
 				} else if (!finalDeleteAll && finalToDeleteFrom != null && msg.getAuthor() != null && msg.getAuthor().getId().equals(finalToDeleteFrom.getUser().getId())) {

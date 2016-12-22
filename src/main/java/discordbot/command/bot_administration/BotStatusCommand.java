@@ -61,14 +61,14 @@ public class BotStatusCommand extends AbstractCommand {
 					if (args.length < 2) {
 						return Template.get("command_invalid_use");
 					}
-					bot.client.getPresence().setGame(Game.of(Misc.joinStrings(args, 1)));
+					channel.getJDA().getPresence().setGame(Game.of(Misc.joinStrings(args, 1)));
 					break;
 				case "stream":
 					if (args.length < 3) {
 						return Template.get("command_invalid_use");
 					}
 					try {
-						bot.client.getPresence().setGame(Game.of(Misc.joinStrings(args, 2), "http://www.twitch.tv/" + args[1]));
+						channel.getJDA().getPresence().setGame(Game.of(Misc.joinStrings(args, 2), "http://www.twitch.tv/" + args[1]));
 					} catch (Exception e) {
 						return Emojibet.THUMBS_DOWN + " " + e.getMessage();
 					}

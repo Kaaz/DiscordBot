@@ -28,7 +28,7 @@ import java.util.function.Consumer;
  */
 public class YoutubeThread extends Thread {
 	private final HashSet<String> itemsInProgress = new HashSet<>();
-	private final AtomicInteger counter = new AtomicInteger();
+	private final AtomicInteger counter = new AtomicInteger(0);
 	private final ExecutorService executor;
 	private final LinkedBlockingQueue<YoutubeTask> queue = new LinkedBlockingQueue<>();
 	private volatile boolean shutdownMode = false;
@@ -80,7 +80,7 @@ public class YoutubeThread extends Thread {
 				errorGobbler.start();
 				outputGobbler.start();
 			}
-			process.waitFor(10, TimeUnit.MINUTES);
+			process.waitFor(5, TimeUnit.MINUTES);
 			process.destroy();
 		} catch (IOException | InterruptedException e) {
 			Launcher.logToDiscord(e);

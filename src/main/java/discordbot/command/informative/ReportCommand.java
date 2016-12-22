@@ -64,7 +64,7 @@ public class ReportCommand extends AbstractCommand {
 		if (body.length() < 20 || title.length() < 3) {
 			return Template.get("command_report_message_too_short");
 		}
-		bot.out.sendPrivateMessage(bot.client.getUserById(Config.CREATOR_ID), "new :e_mail: Report coming in!" + Config.EOL + Config.EOL +
+		bot.out.sendPrivateMessage(channel.getJDA().getUserById(Config.CREATOR_ID), "new :e_mail: Report coming in!" + Config.EOL + Config.EOL +
 				":bust_in_silhouette: user:  " + author.getName() + " ( " + author.getAsMention() + " )" + Config.EOL +
 				"Title: " + Config.EOL + title + Config.EOL + Config.EOL +
 				"Message: " + Config.EOL + body

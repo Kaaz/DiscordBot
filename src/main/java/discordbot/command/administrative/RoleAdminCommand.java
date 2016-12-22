@@ -127,10 +127,10 @@ public class RoleAdminCommand extends AbstractCommand {
 						return Template.get("not_implemented_yet");
 				}
 			case "cleanup":
-				RoleRankings.cleanUpRoles(guild, bot.client.getSelfUser());
+				RoleRankings.cleanUpRoles(guild, channel.getJDA().getSelfUser());
 				return "Removed all the time-based roles";
 			case "setup":
-				if (RoleRankings.canModifyRoles(guild, bot.client.getSelfUser())) {
+				if (RoleRankings.canModifyRoles(guild, channel.getJDA().getSelfUser())) {
 					RoleRankings.fixForServer(guild);
 					return "Set up all the required roles :smile:";
 				}

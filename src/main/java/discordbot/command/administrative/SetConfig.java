@@ -142,7 +142,7 @@ public class SetConfig extends AbstractCommand {
 				}
 				if (args.length >= 2 && args[0].equals("bot_listen") && args[1].equals("mine")) {
 					channel.sendMessage(Emojibet.WARNING + " I will only listen to the configured `bot_channel`. If you rename the channel, you might not be able to access me anymore. " +
-							"You can reset by typing `@" + bot.client.getSelfUser().getName() + " reset yesimsure`").queue();
+							"You can reset by typing `@" + channel.getJDA().getSelfUser().getName() + " reset yesimsure`").queue();
 				}
 				if (args.length >= 2 && GuildSettings.get(guild).set(args[0], newValue)) {
 					bot.getContainer().getShardFor(guild.getId()).clearChannels(guild);

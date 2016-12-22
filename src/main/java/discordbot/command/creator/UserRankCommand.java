@@ -78,9 +78,9 @@ public class UserRankCommand extends AbstractCommand {
 			}
 			User user;
 			if (DisUtil.isUserMention(args[0])) {
-				user = bot.client.getUserById(DisUtil.mentionToId(args[0]));
+				user = channel.getJDA().getUserById(DisUtil.mentionToId(args[0]));
 			} else if (args[0].matches("^i\\d+$")) {
-				user = bot.client.getUserById(CUser.getCachedDiscordId(Integer.parseInt(args[0].substring(1))));
+				user = channel.getJDA().getUserById(CUser.getCachedDiscordId(Integer.parseInt(args[0].substring(1))));
 			} else {
 				Member member = DisUtil.findUserIn((TextChannel) channel, args[0]);
 				if (member != null) {

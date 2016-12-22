@@ -52,7 +52,7 @@ public class ProfileCommand extends AbstractCommand {
 		User user = author;
 		if (args.length > 0) {
 			if (DisUtil.isUserMention(args[0])) {
-				user = bot.client.getUserById(DisUtil.mentionToId(args[0]));
+				user = channel.getJDA().getUserById(DisUtil.mentionToId(args[0]));
 			} else {
 				Member member = DisUtil.findUserIn((TextChannel) channel, Joiner.on(" ").join(args).toLowerCase());
 				if (member != null) {

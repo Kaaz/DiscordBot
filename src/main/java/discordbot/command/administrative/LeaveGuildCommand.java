@@ -49,7 +49,7 @@ public class LeaveGuildCommand extends AbstractCommand {
 			return Template.get("no_permission");
 		}
 		if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1 && args[0].matches("^\\d{10,}$")) {
-			guild = bot.client.getGuildById(args[0]);
+			guild = channel.getJDA().getGuildById(args[0]);
 			if (guild == null) {
 				return Template.get("cant_find_guild");
 			}

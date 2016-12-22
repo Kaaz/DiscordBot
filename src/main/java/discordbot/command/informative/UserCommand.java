@@ -56,10 +56,10 @@ public class UserCommand extends AbstractCommand {
 		if (args.length == 0) {
 			infoUser = author;
 		} else if (DisUtil.isUserMention(args[0])) {
-			infoUser = bot.client.getUserById(DisUtil.mentionToId(args[0]));
+			infoUser = channel.getJDA().getUserById(DisUtil.mentionToId(args[0]));
 		} else if (args[0].matches("i\\d+")) {
 			OUser dbUser = CUser.findById(Integer.parseInt(args[0].substring(1)));
-			infoUser = bot.client.getUserById(dbUser.discord_id);
+			infoUser = channel.getJDA().getUserById(dbUser.discord_id);
 		} else if (channel instanceof TextChannel) {
 
 			Member member = DisUtil.findUserIn((TextChannel) channel, args[0]);

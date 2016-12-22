@@ -106,7 +106,7 @@ public class CommandAdminCommand extends AbstractCommand {
 					ret.append(icon).append(" `").append(item.command).append("` is ").append(cmdStatus).append(" guild-wide!").append(Config.EOL);
 					guildwide = true;
 				} else {
-					TextChannel tmp = bot.client.getTextChannelById(item.channelId);
+					TextChannel tmp = channel.getJDA().getTextChannelById(item.channelId);
 					if (tmp == null) {
 						continue;
 					}
@@ -131,7 +131,7 @@ public class CommandAdminCommand extends AbstractCommand {
 					return Template.get("command_invalid_use");
 				}
 				String channelId = DisUtil.mentionToId(args[1]);
-				TextChannel c = bot.client.getTextChannelById(channelId);
+				TextChannel c = channel.getJDA().getTextChannelById(channelId);
 				if (c == null) {
 					return Template.get("command_invalid_use");
 				}
@@ -171,7 +171,7 @@ public class CommandAdminCommand extends AbstractCommand {
 				return Template.get("command_invalid_use");
 			}
 			channelId = DisUtil.mentionToId(args[2]);
-			TextChannel c = bot.client.getTextChannelById(channelId);
+			TextChannel c = channel.getJDA().getTextChannelById(channelId);
 			if (c == null) {
 				return Template.get("command_invalid_use");
 			}
