@@ -4,6 +4,7 @@ import discordbot.handler.discord.RoleModifyTask;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -104,7 +106,7 @@ public class OutgoingContentHandler {
 	public void saveDelete(Message messageToDelete) {
 		if (messageToDelete != null) {
 			TextChannel channel = messageToDelete.getJDA().getTextChannelById(messageToDelete.getChannel().getId());
-			if (channel != null) {
+			if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_HISTORY)) {
 				channel.getMessageById(messageToDelete.getId()).queue(msg -> {
 					if (msg != null) {
 						msg.deleteMessage().queue();

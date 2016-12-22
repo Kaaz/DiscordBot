@@ -9,8 +9,10 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.Launcher;
 import discordbot.util.YTUtil;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -236,7 +238,7 @@ public class YoutubeThread extends Thread {
 				}
 				if (task.getCallback() != null) {
 					TextChannel channel = task.getMessage().getJDA().getTextChannelById(task.getMessage().getChannel().getId());
-					if (channel != null) {
+					if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_HISTORY)) {
 						channel.getMessageById(task.getMessage().getId()).queue(
 								message -> task.getCallback().accept(message),
 								throwable -> task.getCallback().accept(null));
