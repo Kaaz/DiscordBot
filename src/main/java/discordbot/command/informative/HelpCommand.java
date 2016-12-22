@@ -53,7 +53,7 @@ public class HelpCommand extends AbstractCommand {
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"?", "halp", "helpme", "h"
+				"?", "halp", "helpme", "h","commands"
 		};
 	}
 
