@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -92,6 +93,26 @@ public class OutgoingContentHandler {
 	 */
 	public void sendPrivateMessage(User target, String message) {
 		target.openPrivateChannel().queue(c -> c.sendMessage(message).queue());
+	}
+
+	/**
+	 * Retrieves the message again before deleting it
+	 * Mostly for delayed deletion
+	 *
+	 * @param message the message to delete
+	 */
+	public void saveDelete(Message message) {
+		if (message != null) {
+			TextChannel channel = message.getJDA().getTextChannelById(message.getChannel().getId());
+			if (channel != null) {
+				channel.getMessageById(message.getId()).queue(message1 -> {
+					if (message1 != null) {
+						message1.deleteMessage().queue();
+					}
+				});
+			}
+		}
+
 	}
 
 

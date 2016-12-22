@@ -204,16 +204,8 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 					try {
 						File targetFile = new File(YTUtil.getOutputPath(videoCode));
 						if (targetFile.exists()) {
-							OMusic rec = CMusic.findByYoutubeId(finalVideoCode);
-							rec.youtubeTitle = (!videoTitle.isEmpty() && !videoTitle.equals(finalVideoCode)) ? EmojiParser.parseToAliases(videoTitle) : EmojiParser.parseToAliases(YTUtil.getTitleFromPage(finalVideoCode));
-							rec.youtubecode = finalVideoCode;
-							rec.filename = targetFile.toPath().toRealPath().toString();
-							rec.playCount += 1;
-							rec.fileExists = 1;
-							rec.lastManualPlaydate = System.currentTimeMillis() / 1000L;
-							CMusic.update(rec);
 							if (msg != null) {
-								msg.editMessage(":notes: Found *" + rec.youtubeTitle + "* And added it to the queue").queue();
+								msg.editMessage(":notes: Found *" + videoTitle + "* And added it to the queue").queue();
 							}
 							player.addToQueue(targetFile.toPath().toRealPath().toString(), invoker);
 						} else {

@@ -1,12 +1,16 @@
 package discordbot.threads;
 
+import com.vdurmont.emoji.EmojiParser;
 import discordbot.db.controllers.CBotEvent;
+import discordbot.db.controllers.CMusic;
 import discordbot.db.model.OBotEvent;
+import discordbot.db.model.OMusic;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.Launcher;
 import discordbot.util.YTUtil;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -206,18 +210,39 @@ public class YoutubeThread extends Thread {
 				if (shutdownMode) {
 					return;
 				}
+
 				if (isInProgress(task.getCode())) {
-					task.getMessage().editMessage(Template.get("music_downloading_in_progress", task.getTitle())).queue();
+					task.getMessage().getJDA().getTextChannelById(task.getMessage().getChannel().getId()).getMessageById(task.getMessage().getId()).queue(
+							message -> message.editMessage(Template.get("music_downloading_in_progress", task.getTitle()))
+					);
 					return;
 				}
 				registerProgress(task.getCode());
+
 				final File fileCheck = new File(YTUtil.getOutputPath(task.getCode()));
 				if (!fileCheck.exists()) {
 					task.getMessage().editMessage(Template.get("music_downloading_hang_on")).queue();
 					downloadFileFromYoutube(task.getCode());
 				}
+				if (fileCheck.exists()) {
+					OMusic rec = CMusic.findByYoutubeId(task.getCode());
+					rec.youtubeTitle = (!task.getTitle().isEmpty() && !task.getTitle().equals(task.getCode())) ? EmojiParser.parseToAliases(task.getTitle()) : EmojiParser.parseToAliases(YTUtil.getTitleFromPage(task.getCode()));
+					rec.youtubecode = task.getCode();
+					rec.filename = fileCheck.toPath().toRealPath().toString();
+					rec.playCount += 1;
+					rec.fileExists = 1;
+					rec.lastManualPlaydate = System.currentTimeMillis() / 1000L;
+					CMusic.update(rec);
+				}
 				if (task.getCallback() != null) {
-					task.getCallback().accept(task.getMessage());
+					TextChannel channel = task.getMessage().getJDA().getTextChannelById(task.getMessage().getChannel().getId());
+					if (channel != null) {
+						channel.getMessageById(task.getMessage().getId()).queue(
+								message -> task.getCallback().accept(message),
+								throwable -> task.getCallback().accept(null));
+					} else {
+						task.getCallback().accept(null);
+					}
 				}
 			} catch (Exception e) {
 				Launcher.logToDiscord(e, "yt-code", task.getCode());

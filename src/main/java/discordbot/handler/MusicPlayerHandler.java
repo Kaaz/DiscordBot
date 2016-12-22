@@ -299,12 +299,7 @@ public class MusicPlayerHandler {
 			final long deleteAfter = Math.min(Math.max(currentSongLength * 1000L, 60_000L), 7200_000L);
 			Consumer<Message> callback = (message) -> {
 				if (messageType.equals("clear")) {
-					bot.schedule(() -> {
-								if (message != null) {
-									message.deleteMessage().queue();
-								}
-							}
-							, deleteAfter, TimeUnit.MILLISECONDS);
+					bot.schedule(() -> bot.out.saveDelete(message), deleteAfter, TimeUnit.MILLISECONDS);
 				}
 				bot.musicReactionHandler.clearGuild(guildId);
 				Guild guild = bot.client.getGuildById(guildId);
