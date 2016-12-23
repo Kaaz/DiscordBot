@@ -80,6 +80,9 @@ public class JoinCommand extends AbstractCommand {
 				if (player.isConnectedTo(targetChannel)) {
 					return Template.get("command_join_already_there");
 				}
+				if (!PermissionUtil.checkPermission(targetChannel, targetChannel.getGuild().getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
+					return Template.get("music_join_no_permission");
+				}
 				player.leave();
 				player.connectTo(targetChannel);
 //					return Template.get("command_join_nopermssiontojoin");
