@@ -249,13 +249,7 @@ public class JDAEvents extends ListenerAdapter {
 			}
 			defaultChannel.sendMessage(
 					Template.getWithTags(defaultChannel, firstTime ? "welcome_new_user" : "welcome_back_user", user)).queue(
-					message ->
-							discordBot.schedule(() -> {
-										if (message != null) {
-											message.deleteMessage().queue();
-										}
-									}, Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS
-							)
+					message -> discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS)
 			);
 		}
 
@@ -286,14 +280,7 @@ public class JDAEvents extends ListenerAdapter {
 			if (defaultChannel != null) {
 				defaultChannel.sendMessage(
 						Template.getWithTags(defaultChannel, "message_user_leaves", user)).queue(
-						message ->
-								discordBot.schedule(() -> {
-											if (message != null) {
-												message.deleteMessage().queue();
-											}
-										}, Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS
-								)
-
+						message -> discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS)
 				);
 			}
 		}
