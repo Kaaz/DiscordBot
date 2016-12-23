@@ -7,6 +7,7 @@ import java.util.Map;
 public class Emojibet {
 	private static final Map<String, String> emojis = new HashMap<>();
 	private static final String UNKNOWN = " ";
+	public static final String ID = "\uD83C\uDD94";
 	public static String GUILD_JOIN = "\uD83C\uDFE0";
 	public static String GUILD_LEAVE = "\uD83C\uDFDA";
 	public static String ERROR = "\uD83D\uDED1";
