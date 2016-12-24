@@ -32,6 +32,7 @@ import discordbot.permission.SimpleRank;
 import discordbot.util.Emojibet;
 import discordbot.util.MusicUtil;
 import discordbot.util.YTUtil;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.GuildVoiceState;
@@ -315,7 +316,7 @@ public class MusicPlayerHandler {
 			if (!PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
 				musicChannel.sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).queue(callback);
 			} else {
-				musicChannel.sendMessage(MusicUtil.nowPlayingMessage(this, record)).queue(callback);
+				musicChannel.sendMessage(MusicUtil.nowPlayingMessage(this, record, guild.getMemberById(record.requestedBy))).queue(callback);
 			}
 		}
 	}
@@ -489,6 +490,9 @@ public class MusicPlayerHandler {
 			record.filename = musicFile.getAbsolutePath();
 			CMusic.update(record);
 		}
+		if (user != null) {
+			record.requestedBy = user.getId();
+		}
 		if (!playlist.isGlobalList() && user != null) {
 			Guild guild = user.getJDA().getGuildById(guildId);
 			if (playlist.isGuildList() && guild.isMember(user)) {
@@ -602,6 +606,10 @@ public class MusicPlayerHandler {
 
 	public void setUpdateChannelTitle(boolean updateChannelTitle) {
 		this.updateChannelTitle = updateChannelTitle;
+	}
+
+	public JDA getJDA() {
+		return bot.client;
 	}
 
 

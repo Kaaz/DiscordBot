@@ -15,4 +15,5 @@ public class OMusic extends AbstractModel {
 	public long lastManualPlaydate = 0L;
 	public int fileExists = 1;
 	public int duration = 0;
+	public String requestedBy = "";
 }

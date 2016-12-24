@@ -7,6 +7,7 @@ import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.main.Config;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
 import java.util.List;
@@ -24,9 +25,10 @@ public class MusicUtil {
 	 *
 	 * @param player the musicplayer
 	 * @param record the record playing
+	 * @param member
 	 * @return an embedded message
 	 */
-	public static MessageEmbed nowPlayingMessage(MusicPlayerHandler player, OMusic record) {
+	public static MessageEmbed nowPlayingMessage(MusicPlayerHandler player, OMusic record, Member member) {
 		EmbedBuilder embed = new EmbedBuilder();
 		embed.setThumbnail("https://i.ytimg.com/vi/" + record.youtubecode + "/0.jpg");
 		embed.setTitle("\uD83C\uDFB6 " + record.youtubeTitle);
@@ -57,6 +59,9 @@ public class MusicUtil {
 				x += ".. and **" + (queue.size() - 3) + "** more";
 			}
 			embed.addField("Next up", x, true);
+		}
+		if (member != null) {
+			embed.setFooter("requested by " + member.getEffectiveName(), member.getUser().getAvatarUrl());
 		}
 		return embed.build();
 	}
