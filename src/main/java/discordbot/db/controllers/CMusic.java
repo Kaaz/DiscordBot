@@ -90,7 +90,7 @@ public class CMusic {
 							"title = ?,artist = ?, lastplaydate = ?, banned = ?, play_count = ?, last_manual_playdate = ?, " +
 							"file_exists = ?, duration = ? " +
 							"WHERE id = ? ",
-					record.youtubecode, record.filename, record.youtubeTitle.substring(0, Math.min(100, record.youtubeTitle.length())),
+					record.youtubecode, record.filename, record.youtubeTitle,
 					record.title, record.artist, record.lastplaydate, record.banned, record.playCount, record.lastManualPlaydate,
 					record.fileExists, record.duration, record.id
 			);

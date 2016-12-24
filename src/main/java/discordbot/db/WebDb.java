@@ -26,7 +26,7 @@ public class WebDb {
 		connections.clear();
 		connections.put("discord", new MySQLAdapter(Config.DB_HOST, Config.DB_USER, Config.DB_PASS, Config.DB_NAME));
 		try {
-			get().query("set names utf8mb4");
+			get().query("SET NAMES utf8mb4");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			System.out.println("COULD NOT SET utf8mb4");

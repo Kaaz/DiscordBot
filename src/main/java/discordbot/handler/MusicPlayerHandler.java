@@ -25,6 +25,7 @@ import discordbot.guildsettings.music.SettingMusicQueueOnly;
 import discordbot.guildsettings.music.SettingMusicVolume;
 import discordbot.guildsettings.music.SettingMusicVotePercent;
 import discordbot.handler.audio.AudioPlayerSendHandler;
+import discordbot.handler.audio.QueuedAudioTrack;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
@@ -226,7 +227,7 @@ public class MusicPlayerHandler {
 			playerManager.loadItemOrdered(player, absolutePath, new AudioLoadResultHandler() {
 				@Override
 				public void trackLoaded(AudioTrack track) {
-					scheduler.queue(track);
+					scheduler.queue(new QueuedAudioTrack(trackToAdd.requestedBy, track));
 					startPlaying();
 				}
 
@@ -316,7 +317,7 @@ public class MusicPlayerHandler {
 			if (!PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
 				musicChannel.sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).queue(callback);
 			} else {
-				musicChannel.sendMessage(MusicUtil.nowPlayingMessage(this, record, guild.getMemberById(record.requestedBy))).queue(callback);
+				musicChannel.sendMessage(MusicUtil.nowPlayingMessage(this, record, guild.getMemberById(scheduler.getLastRequester()))).queue(callback);
 			}
 		}
 	}
@@ -615,17 +616,25 @@ public class MusicPlayerHandler {
 
 	public class TrackScheduler extends AudioEventAdapter {
 		private final AudioPlayer player;
-		private final BlockingQueue<AudioTrack> queue;
+		private final BlockingQueue<QueuedAudioTrack> queue;
+		private volatile String lastRequester = "";
 
 		public TrackScheduler(AudioPlayer player) {
 			this.player = player;
 			this.queue = new LinkedBlockingQueue<>();
 		}
 
-		public void queue(AudioTrack track) {
-			if (!player.startTrack(track, true)) {
+		public void queue(QueuedAudioTrack track) {
+			if (lastRequester.isEmpty() && queue.isEmpty()) {
+				lastRequester = track.getUserId();
+			}
+			if (!player.startTrack(track.getTrack(), true)) {
 				queue.offer(track);
 			}
+		}
+
+		public synchronized String getLastRequester() {
+			return lastRequester;
 		}
 
 		@Override
@@ -645,9 +654,10 @@ public class MusicPlayerHandler {
 				return;
 			}
 			player.stopTrack();
-			AudioTrack poll = queue.poll();
+			QueuedAudioTrack poll = queue.poll();
 			if (poll != null) {
-				player.startTrack(poll, false);
+				lastRequester = poll.getUserId();
+				player.startTrack(poll.getTrack(), false);
 			}
 		}
 
