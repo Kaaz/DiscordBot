@@ -60,7 +60,9 @@ public class GithubService extends AbstractService {
 		String committerName = "??";
 		String committerAvatar = "";
 		String committerUrl = "";
-
+		if (changesSinceHash == null || changesSinceHash.length == 0) {
+			return;
+		}
 		for (int i = changesSinceHash.length - 1; i >= 0; i--) {
 			RepositoryCommit commit = changesSinceHash[i];
 			Long timestamp = 0L;

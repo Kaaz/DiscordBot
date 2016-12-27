@@ -11,6 +11,7 @@ import discordbot.db.model.OSubscription;
 import discordbot.db.model.QActiveSubscriptions;
 import discordbot.main.BotContainer;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
 
@@ -79,7 +80,11 @@ public abstract class AbstractService {
 				return;
 			}
 			beforeRun();
-			run();
+			try {
+				run();
+			} catch (Exception e) {
+				Launcher.logToDiscord(e, "service", getIdentifier());
+			}
 			afterRun();
 			saveData("abs_last_service_run", now);
 			cachedLastRun = now;
@@ -153,7 +158,7 @@ public abstract class AbstractService {
 	/**
 	 * the actual logic of the service
 	 */
-	public abstract void run();
+	public abstract void run() throws Exception;
 
 	/**
 	 * called after run(), can be used to clean up things if needed
