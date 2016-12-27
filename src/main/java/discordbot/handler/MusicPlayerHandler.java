@@ -625,7 +625,7 @@ public class MusicPlayerHandler {
 		}
 
 		public void queue(QueuedAudioTrack track) {
-			if (lastRequester.isEmpty() && queue.isEmpty()) {
+			if (queue.isEmpty()) {
 				lastRequester = track.getUserId();
 			}
 			if (!player.startTrack(track.getTrack(), true)) {
@@ -648,7 +648,7 @@ public class MusicPlayerHandler {
 		}
 
 		public void skipTrack() {
-			trackEnded();//yes it ended, go away
+			trackEnded();
 			if (isInRepeatMode() && player.getPlayingTrack() != null) {
 				player.startTrack(player.getPlayingTrack().makeClone(), false);
 				return;
