@@ -102,6 +102,9 @@ public class Config {
 	@ConfigurationOption
 	public static String MUSIC_DIRECTORY = "H:/music/";
 
+	@ConfigurationOption
+	public static int MUSIC_MAX_PLAYLIST_SIZE = 50;
+
 	//save music on a different location while its being processed?
 	@ConfigurationOption
 	public static boolean MUSIC_USE_CACHE_DIR = false;
@@ -182,5 +185,6 @@ public class Config {
 	public static String TRELLO_TOKEN = "token-here";
 
 	public static String EOL = System.getProperty("line.separator");
+	@ConfigurationOption
 	public static String CREATOR_ID = "97433066384928768";
 }

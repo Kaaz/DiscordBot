@@ -39,7 +39,6 @@ import java.util.List;
  * yea.. play is probably not a good name at the moment
  */
 public class PlayCommand extends AbstractCommand implements ICommandCleanup {
-	private static final int MAX_PLAYLIST_SIZE = 40;
 	private YTSearch ytSearch;
 
 	public PlayCommand() {
@@ -141,8 +140,8 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 					String output = "Added the following items to the playlist: " + Config.EOL;
 					int playCount = 0;
 					for (YTSearch.SimpleResult track : items) {
-						if (playCount++ == MAX_PLAYLIST_SIZE) {
-							output += "Maximum of **" + MAX_PLAYLIST_SIZE + "** items in the playlist!";
+						if (playCount++ == Config.MUSIC_MAX_PLAYLIST_SIZE) {
+							output += "Maximum of **" + Config.MUSIC_MAX_PLAYLIST_SIZE + "** items in the playlist!";
 							break;
 						}
 						String out = handleFile(player, bot, (TextChannel) channel, author, track.getCode(), track.getTitle(), false);
