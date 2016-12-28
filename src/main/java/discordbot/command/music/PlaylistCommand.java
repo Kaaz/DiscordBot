@@ -369,8 +369,8 @@ public class PlaylistCommand extends AbstractCommand {
 				}
 				return true;
 			case PRIVATE:
-				if (playlist.isGuildList() && playlist.guildId != CGuild.getCachedId(channel.getGuild().getId()) && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-					return false;
+				if (playlist.isGuildList() && playlist.guildId == CGuild.getCachedId(channel.getGuild().getId()) && userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+					return true;
 				} else if (playlist.isPersonal()) {
 					return CUser.getCachedId(invoker.getId()) == playlist.ownerId;
 				}
