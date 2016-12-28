@@ -224,7 +224,7 @@ public class NowPlayingCommand extends AbstractCommand {
 					bot.scheduleRepeat(() -> {
 						if (!player.isUpdateChannelTitle() || !player.canTogglePause()) {
 							player.setUpdateChannelTitle(false);
-							musicChannel.getManager().setTopic("");
+							musicChannel.getManager().setTopic("").queue();
 							f[0].cancel(false);
 							return;
 						}
