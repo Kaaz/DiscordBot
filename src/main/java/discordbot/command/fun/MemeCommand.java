@@ -98,7 +98,9 @@ public class MemeCommand extends AbstractCommand {
 		String type = args[0].toLowerCase();
 		if (!memeTypes.contains(type)) {
 			return Template.get("command_meme_invalid_type") +
-					msg + Misc.makeTable(new ArrayList<>(memeTypes));
+					msg + Misc.makeTable(new ArrayList<>(memeTypes)) + Config.EOL + Config.EOL +
+					"Example:" + Config.EOL +
+					"meme sohappy If I could use this meme || I would be so happy";
 		}
 		String topText = "-";
 		String botText = "-";
