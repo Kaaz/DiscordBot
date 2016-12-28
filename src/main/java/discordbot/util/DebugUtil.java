@@ -44,6 +44,6 @@ public class DebugUtil {
 	 * @return key how to find it
 	 */
 	private static String handleHastebin(String message) throws UnirestException {
-		return Unirest.post("http://hastebin.com/documents").body(message).asJson().getBody().getObject().getString("key");
+		return Unirest.post("https://hastebin.com/documents").body(message).asJson().getBody().getObject().getString("key");
 	}
 }

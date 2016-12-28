@@ -159,22 +159,22 @@ public class Misc {
 			}
 		}
 		sb.append("```").append(Config.EOL);
-		String formatLine = "┃";
+		String formatLine = "|";
 		for (int width : widths) {
-			formatLine += " %-" + width + "s ┃";
+			formatLine += " %-" + width + "s |";
 		}
 		formatLine += Config.EOL;
-		sb.append(appendSeparatorLine("┏", "┳", "┓", padding, widths));
+		sb.append(appendSeparatorLine("+", "+", "+", padding, widths));
 		sb.append(String.format(formatLine, headers.toArray()));
-		sb.append(appendSeparatorLine("┣", "╋", "┫", padding, widths));
+		sb.append(appendSeparatorLine("+", "+", "+", padding, widths));
 		for (List<String> row : table) {
 			sb.append(String.format(formatLine, row.toArray()));
 		}
 		if (footer != null) {
-			sb.append(appendSeparatorLine("┣", "╋", "┫", padding, widths));
+			sb.append(appendSeparatorLine("+", "+", "+", padding, widths));
 			sb.append(String.format(formatLine, footer.toArray()));
 		}
-		sb.append(appendSeparatorLine("┗", "┻", "┛", padding, widths));
+		sb.append(appendSeparatorLine("+", "+", "+", padding, widths));
 		sb.append("```");
 		return sb.toString();
 	}
@@ -195,9 +195,9 @@ public class Misc {
 		for (int size : sizes) {
 			if (first) {
 				first = false;
-				ret.append(left).append(Strings.repeat("━", size + padding * 2));
+				ret.append(left).append(Strings.repeat("-", size + padding * 2));
 			} else {
-				ret.append(middle).append(Strings.repeat("━", size + padding * 2));
+				ret.append(middle).append(Strings.repeat("-", size + padding * 2));
 			}
 		}
 		return ret.append(right).append(Config.EOL).toString();
