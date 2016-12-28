@@ -79,7 +79,6 @@ public class UserCommand extends AbstractCommand {
 			OUser dbUser = CUser.findBy(infoUser.getId());
 			sb.append("Querying for ").append(nickname).append(Config.EOL);
 			sb.append(":bust_in_silhouette: User: ").append(infoUser.getName()).append("#").append(infoUser.getDiscriminator()).append(Config.EOL);
-//			sb.append(":date: Account registered at ").append(infoUser.()).append(Config.EOL);
 			sb.append(":id: discord id:").append(infoUser.getId()).append(Config.EOL);
 			sb.append(":keyboard: Commands used:").append(dbUser.commandsUsed).append(Config.EOL);
 			if (guildId > 0) {
@@ -89,7 +88,7 @@ public class UserCommand extends AbstractCommand {
 				}
 			}
 			if (infoUser.getAvatarUrl() != null) {
-				sb.append(":frame_photo: Avatar: ").append("<").append(infoUser.getAvatarUrl()).append(">").append(Config.EOL);
+				sb.append(":frame_photo: Avatar: <").append(infoUser.getAvatarUrl()).append(">").append(Config.EOL);
 			}
 			if (infoUser.isBot()) {
 				sb.append(":robot: This user is a bot (or pretends to be)");
