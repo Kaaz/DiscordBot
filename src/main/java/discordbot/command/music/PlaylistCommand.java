@@ -113,8 +113,6 @@ public class PlaylistCommand extends AbstractCommand {
 					"Settings " + makeSettingsTable(playlist) +
 					"To add the currently playing music to the playlist use `" + DisUtil.getCommandPrefix(channel) + "pl add`, check out `" + DisUtil.getCommandPrefix(channel) + "help pl` for more info";
 		}
-		boolean isAdding = false;
-		boolean removeAll = false;
 		OPlaylist newlist = null;
 		switch (args[0].toLowerCase()) {
 			case "mine":

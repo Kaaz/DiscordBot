@@ -16,6 +16,7 @@ import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CMusic;
 import discordbot.db.controllers.CMusicLog;
 import discordbot.db.controllers.CPlaylist;
+import discordbot.db.controllers.CUser;
 import discordbot.db.model.OMusic;
 import discordbot.db.model.OPlaylist;
 import discordbot.guildsettings.music.SettingMusicChannelTitle;
@@ -506,6 +507,15 @@ public class MusicPlayerHandler {
 						CPlaylist.addToPlayList(playlist.id, record.id);
 					default:
 						break;
+				}
+			} else if (playlist.isPersonal()) {
+				switch (playlist.getEditType()) {
+					case PRIVATE_AUTO:
+						if (playlist.ownerId != CUser.getCachedId(user.getId())) {
+							break;
+						}
+					case PUBLIC_AUTO:
+						CPlaylist.addToPlayList(playlist.id, record.id);
 				}
 			}
 		}
