@@ -52,7 +52,7 @@ public class PlaylistCommand extends AbstractCommand {
 	public String[] getUsage() {
 		return new String[]{
 				"-- using playlists ",
-//				"playlist mine                        //use your playlist",
+				"playlist mine                        //use your playlist",
 				"playlist guild                       //use the guild's playlist",
 				"playlist global                      //use the global playlist",
 				"playlist settings                    //check the settings for the active playlist",
@@ -101,12 +101,9 @@ public class PlaylistCommand extends AbstractCommand {
 		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
 			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
-		int listId = player.getActivePLaylistId();
-		OPlaylist playlist;
-		if (listId > 0) {
-			playlist = CPlaylist.findById(listId);
-		} else {
-			playlist = new OPlaylist();
+		OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
+		if (playlist.id == 0) {
+			return "";
 		}
 		if (args.length == 0) {
 			if (playlist.isGlobalList()) {
@@ -115,259 +112,274 @@ public class PlaylistCommand extends AbstractCommand {
 			return Template.get(channel, "music_playlist_using", playlist.title) +
 					"Settings " + makeSettingsTable(playlist) +
 					"To add the currently playing music to the playlist use `" + DisUtil.getCommandPrefix(channel) + "pl add`, check out `" + DisUtil.getCommandPrefix(channel) + "help pl` for more info";
-		} else {
-			if (args.length >= 1) {
-				boolean isAdding = false;
-				boolean removeAll = false;
-				switch (args[0].toLowerCase()) {
-					case "mine":
-//						playlist = findPlaylist("mine", author, guild);
-//						player.setActivePlayListId(playlist.id);
-//						return Template.get(channel, "music_playlist_changed", playlist.title);
-						return "Only global and guild lists for now, sorry!";
-					case "guild":
-						if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-							return Template.get(channel, "no_permission");
-						}
-						playlist = findPlaylist("guild", author, guild);
-						player.setActivePlayListId(playlist.id);
-						return Template.get(channel, "music_playlist_changed", playlist.title);
-					case "global":
-						if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-							return Template.get(channel, "no_permission");
-						}
-						playlist = findPlaylist("global", author, guild);
-						player.setActivePlayListId(playlist.id);
-						return Template.get(channel, "music_playlist_changed", playlist.title);
-					case "add":
-					case "+":
-						isAdding = true;
-					case "removeall":
-						removeAll = true;
-					case "remove":
-					case "del":
-					case "-":
-						if (args.length > 1 && (args[1].equals("guild") || args[1].equals("g"))) {
-							playlist = CPlaylist.findBy(0, CGuild.getCachedId(guild.getId()));
-						} else if (args.length > 1 && args[1].matches("^\\d+$")) {
-							musicRec = CMusic.findById(Integer.parseInt(args[1]));
-							nowPlayingId = musicRec.id;
-						}
-						if (playlist.isGlobalList()) {
-							return Template.get(channel, "playlist_global_readonly");
-						}
-						if (playlist.isPersonal()) {
-							return "Personal lists aren't implemented yet, sorry!";
-						}
+		}
+		boolean isAdding = false;
+		boolean removeAll = false;
+		OPlaylist newlist = null;
+		switch (args[0].toLowerCase()) {
+			case "mine":
+				newlist = findPlaylist("mine", author, guild);
+				break;
+			case "guild":
+				newlist = findPlaylist("guild", author, guild);
+				break;
+			case "global":
+				newlist = findPlaylist("global", author, guild);
+				break;
+		}
+		if (newlist != null) {
+			player.setActivePlayListId(playlist.id);
+			return Template.get(channel, "music_playlist_changed", newlist.title);
+		}
 
-						if (nowPlayingId == 0) {
-							return Template.get(channel, "command_currentlyplaying_nosong");
-						}
-						switch (playlist.getEditType()) {
-							case PRIVATE_AUTO:
-								if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-									return Template.get(channel, "no_permission");
-								}
-							case PUBLIC_AUTO:
-								if (isAdding) {
-									CPlaylist.addToPlayList(playlist.id, nowPlayingId);
-									return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle, playlist.title);
-								} else if (removeAll) {
-									if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-										CPlaylist.resetPlaylist(playlist.id);
-										return Template.get(channel, "playlist_music_removed_all", playlist.title);
-									}
-									return Template.get(channel, "no_permission");
-								} else {
-									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
-									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
-								}
-							case PUBLIC_FULL:
-								if (!isAdding) {
-									if (removeAll) {
-										if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-											CPlaylist.resetPlaylist(playlist.id);
-											return Template.get(channel, "playlist_music_removed_all", playlist.title);
-										}
-										return Template.get(channel, "no_permission");
-									}
-									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
-									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
-								}
-							case PUBLIC_ADD:
-								if (!isAdding) {
-									if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-										if (removeAll) {
-											CPlaylist.resetPlaylist(playlist.id);
-											return Template.get(channel, "playlist_music_removed_all", playlist.title);
-										}
-										CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
-										return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
-									}
-									return Template.get(channel, "no_permission");
-								}
-								if (CPlaylist.isInPlaylist(playlist.id, nowPlayingId)) {
-									return Template.get(channel, "playlist_music_already_added", musicRec.youtubeTitle, playlist.title);
-								}
-								CPlaylist.addToPlayList(playlist.id, nowPlayingId);
-								return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle, playlist.title);
-							case PRIVATE:
-								if (playlist.isGuildList() && playlist.guildId != CGuild.getCachedId(guild.getId())) {
-									return Template.get(channel, "no_permission");
-								}
-								if (!isAdding) {
-									if (removeAll) {
-										if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-											CPlaylist.resetPlaylist(playlist.id);
-											return Template.get(channel, "playlist_music_removed_all", playlist.title);
-										}
-										return Template.get(channel, "no_permission");
-									}
-									CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
-									return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
-								} else {
-									if (CPlaylist.isInPlaylist(playlist.id, nowPlayingId)) {
-										return Template.get(channel, "playlist_music_already_added", musicRec.youtubeTitle, playlist.title);
-									}
-									CPlaylist.addToPlayList(playlist.id, nowPlayingId);
-									return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle, playlist.title);
-								}
-						}
-					case "list":
-					case "music":
-						if (playlist.isGlobalList()) {
-							return Template.get(channel, "playlist_global_readonly");
-						}
-						int currentPage = 0;
-						int itemsPerPage = 20;
-						int totalTracks = CPlaylist.getMusicCount(playlist.id);
-						int maxPage = 1 + totalTracks / itemsPerPage;
-						if (args.length >= 2) {
-							if (args[1].matches("^\\d+$")) {
-								currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage - 1);
-							}
-						}
-						List<OMusic> items = CPlaylist.getMusic(playlist.id, itemsPerPage, currentPage * itemsPerPage);
-						if (items.isEmpty()) {
-							return "The playlist is empty.";
-						}
-						String playlistTable = Config.EOL;
-						for (OMusic item : items) {
-							playlistTable += String.format(":hash: `%6s` \uD83D\uDD39 %s" + Config.EOL, item.id, item.youtubeTitle);
-						}
-						return String.format("Music in the playlist: %s" + Config.EOL, playlist.title) +
-								playlistTable + Config.EOL +
-								String.format("Showing [page %s/%s] (in total: %s items)", currentPage + 1, maxPage, totalTracks) + Config.EOL + Config.EOL +
-								"_You can use the `#` to remove an item from the playlist._" + Config.EOL + Config.EOL +
-								"_Example:_ `" + DisUtil.getCommandPrefix(channel) + "pl del 123`";
-
-					default:
-						break;
+		switch (args[0].toLowerCase()) {
+			case "add":
+			case "+":
+				if (nowPlayingId == 0) {
+					return Template.get(channel, "command_currentlyplaying_nosong");
 				}
-			}
-			if (args.length < 1 || (args.length > 0 && args[0].equals("settings"))) {
-				return makeSettingsTable(playlist);
-			} else {
+				if (canAddTracks(playlist, (TextChannel) channel, author, userRank)) {
+					if (CPlaylist.isInPlaylist(playlist.id, nowPlayingId)) {
+						return Template.get(channel, "playlist_music_already_added", musicRec.youtubeTitle, playlist.title);
+					}
+					CPlaylist.addToPlayList(playlist.id, nowPlayingId);
+					return Template.get(channel, "playlist_music_added", musicRec.youtubeTitle, playlist.title);
+				}
+				return Template.get(channel, "no_permission");
+			case "removeall":
+				if (isPlaylistAdmin(playlist, (TextChannel) channel, author, userRank)) {
+					CPlaylist.resetPlaylist(playlist.id);
+					return Template.get(channel, "playlist_music_removed_all", playlist.title);
+				}
+				return Template.get(channel, "no_permission");
+			case "remove":
+			case "del":
+			case "-":
+				if (args.length > 1 && (args[1].equals("guild") || args[1].equals("g"))) {
+					playlist = CPlaylist.findBy(0, CGuild.getCachedId(guild.getId()));
+				} else if (args.length > 1 && args[1].matches("^\\d+$")) {
+					musicRec = CMusic.findById(Integer.parseInt(args[1]));
+					nowPlayingId = musicRec.id;
+				}
+				if (!canRemoveTracks(playlist, (TextChannel) channel, author, userRank)) {
+					return Template.get(channel, "no_permission");
+				}
+				CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
+				return Template.get(channel, "playlist_music_removed", musicRec.youtubeTitle, playlist.title);
+			case "list":
+			case "music":
 				if (playlist.isGlobalList()) {
 					return Template.get(channel, "playlist_global_readonly");
 				}
-				if (playlist.isPersonal()) {
-					return "Personal playlists are not fully done yet, sorry!";
+				int currentPage = 0;
+				int itemsPerPage = 20;
+				int totalTracks = CPlaylist.getMusicCount(playlist.id);
+				int maxPage = 1 + totalTracks / itemsPerPage;
+				if (args.length >= 2) {
+					if (args[1].matches("^\\d+$")) {
+						currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage - 1);
+					}
 				}
-				switch (args[0].toLowerCase()) {
-					case "title":
-						if (args.length == 1 || !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-							return Template.get(channel, "command_playlist_title", playlist.title);
+				List<OMusic> items = CPlaylist.getMusic(playlist.id, itemsPerPage, currentPage * itemsPerPage);
+				if (items.isEmpty()) {
+					return "The playlist is empty.";
+				}
+				String playlistTable = Config.EOL;
+				for (OMusic item : items) {
+					playlistTable += String.format(":hash: `%6s` \uD83D\uDD39 %s" + Config.EOL, item.id, item.youtubeTitle);
+				}
+				return String.format("Music in the playlist: %s" + Config.EOL, playlist.title) +
+						playlistTable + Config.EOL +
+						String.format("Showing [page %s/%s] (in total: %s items)", currentPage + 1, maxPage, totalTracks) + Config.EOL + Config.EOL +
+						"_You can use the `#` to remove an item from the playlist._" + Config.EOL + Config.EOL +
+						"_Example:_ `" + DisUtil.getCommandPrefix(channel) + "pl del 123`";
+
+			default:
+				break;
+		}
+
+		if (args.length < 1 || (args.length > 0 && args[0].equals("settings"))) {
+			return makeSettingsTable(playlist);
+		} else {
+			if (playlist.isGlobalList()) {
+				return Template.get(channel, "playlist_global_readonly");
+			}
+			if (playlist.isPersonal()) {
+				return "Personal playlists are not fully done yet, sorry!";
+			}
+			switch (args[0].toLowerCase()) {
+				case "title":
+					if (args.length == 1 || !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+						return Template.get(channel, "command_playlist_title", playlist.title);
+					}
+					playlist.title = EmojiParser.parseToAliases(Joiner.on(" ").join(Arrays.copyOfRange(args, 1, args.length)));
+					CPlaylist.update(playlist);
+					player.setActivePlayListId(playlist.id);
+					return Template.get(channel, "playlist_title_updated", playlist.title);
+				case "edit-type":
+				case "edittype":
+				case "edit":
+					if (args.length == 1 || !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+						List<List<String>> tbl = new ArrayList<>();
+						for (OPlaylist.EditType editType : OPlaylist.EditType.values()) {
+							if (editType.getId() < 1) continue;
+							tbl.add(Arrays.asList((editType == playlist.getEditType() ? "*" : " ") + editType.getId(), editType.toString(), editType.getDescription()));
 						}
-						playlist.title = EmojiParser.parseToAliases(Joiner.on(" ").join(Arrays.copyOfRange(args, 1, args.length)));
+						return "the edit-type of the playlist. A `*` indicates the selected option" + Config.EOL +
+								Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
+								"Private in a guild context refers to users with admin privileges";
+					}
+					if (args.length > 1 && args[1].matches("^\\d+$")) {
+						OPlaylist.EditType editType = OPlaylist.EditType.fromId(Integer.parseInt(args[1]));
+						if (editType.equals(OPlaylist.EditType.UNKNOWN)) {
+							Template.get(channel, "playlist_setting_invalid", args[1], "edittype");
+						}
+						playlist.setEditType(editType);
 						CPlaylist.update(playlist);
 						player.setActivePlayListId(playlist.id);
-						return Template.get(channel, "playlist_title_updated", playlist.title);
-					case "edit-type":
-					case "edittype":
-					case "edit":
-						if (args.length == 1 || !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-							List<List<String>> tbl = new ArrayList<>();
-							for (OPlaylist.EditType editType : OPlaylist.EditType.values()) {
-								if (editType.getId() < 1) continue;
-								tbl.add(Arrays.asList((editType == playlist.getEditType() ? "*" : " ") + editType.getId(), editType.toString(), editType.getDescription()));
+						return Template.get(channel, "playlist_setting_updated", "edittype", args[1]);
+					}
+					return Template.get(channel, "playlist_setting_not_numeric", "edittype");
+				case "vis":
+				case "visibility":
+					if (args.length == 1 || !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+						List<List<String>> tbl = new ArrayList<>();
+						for (OPlaylist.Visibility visibility : OPlaylist.Visibility.values()) {
+							if (visibility.getId() < 1) continue;
+							tbl.add(Arrays.asList((visibility == playlist.getVisibility() ? "*" : " ") + visibility.getId(), visibility.toString(), visibility.getDescription()));
+						}
+						return "the visibility-type of the playlist. A `*` indicates the selected option" + Config.EOL +
+								Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
+								"Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
+					}
+					if (args.length > 1 && args[1].matches("^\\d+$")) {
+						OPlaylist.Visibility visibility = OPlaylist.Visibility.fromId(Integer.parseInt(args[1]));
+						if (visibility.equals(OPlaylist.Visibility.UNKNOWN)) {
+							Template.get(channel, "playlist_setting_invalid", args[1], "visibility");
+						}
+						playlist.setVisibility(visibility);
+						CPlaylist.update(playlist);
+						player.setActivePlayListId(playlist.id);
+						return Template.get(channel, "playlist_setting_updated", "visibility", args[1]);
+					}
+					return Template.get("playlist_setting_not_numeric", "visibility");
+				case "play":
+					if (args.length > 1 && args[1].matches("^\\d+$")) {
+						OMusic record = CMusic.findById(Integer.parseInt(args[1]));
+						if (record.id > 0) {
+							if (player.canUseVoiceCommands(author, userRank)) {
+								player.connectTo(guild.getMember(author).getVoiceState().getChannel());
+								player.addToQueue(record.filename, author);
+								return Template.get("music_added_to_queue", record.youtubeTitle);
 							}
-							return "the edit-type of the playlist. A `*` indicates the selected option" + Config.EOL +
-									Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
-									"Private in a guild context refers to users with admin privileges";
 						}
-						if (args.length > 1 && args[1].matches("^\\d+$")) {
-							OPlaylist.EditType editType = OPlaylist.EditType.fromId(Integer.parseInt(args[1]));
-							if (editType.equals(OPlaylist.EditType.UNKNOWN)) {
-								Template.get(channel, "playlist_setting_invalid", args[1], "edittype");
-							}
-							playlist.setEditType(editType);
-							CPlaylist.update(playlist);
-							player.setActivePlayListId(playlist.id);
-							return Template.get(channel, "playlist_setting_updated", "edittype", args[1]);
+						return Template.get("music_not_added_to_queue", args[1]);
+					}
+					return Template.get("command_invalid_use");
+				case "playtype":
+				case "play-type":
+					if (args.length == 1) {
+						List<List<String>> tbl = new ArrayList<>();
+						for (OPlaylist.PlayType playType : OPlaylist.PlayType.values()) {
+							if (playType.getId() < 1) continue;
+							tbl.add(Arrays.asList((playType == playlist.getPlayType() ? "*" : " ") + playType.getId(), playType.toString(), playType.getDescription()));
 						}
-						return Template.get(channel, "playlist_setting_not_numeric", "edittype");
-					case "vis":
-					case "visibility":
-						if (args.length == 1 || !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-							List<List<String>> tbl = new ArrayList<>();
-							for (OPlaylist.Visibility visibility : OPlaylist.Visibility.values()) {
-								if (visibility.getId() < 1) continue;
-								tbl.add(Arrays.asList((visibility == playlist.getVisibility() ? "*" : " ") + visibility.getId(), visibility.toString(), visibility.getDescription()));
-							}
-							return "the visibility-type of the playlist. A `*` indicates the selected option" + Config.EOL +
-									Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
-									"Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
-						}
-						if (args.length > 1 && args[1].matches("^\\d+$")) {
-							OPlaylist.Visibility visibility = OPlaylist.Visibility.fromId(Integer.parseInt(args[1]));
-							if (visibility.equals(OPlaylist.Visibility.UNKNOWN)) {
-								Template.get(channel, "playlist_setting_invalid", args[1], "visibility");
-							}
-							playlist.setVisibility(visibility);
-							CPlaylist.update(playlist);
-							player.setActivePlayListId(playlist.id);
-							return Template.get(channel, "playlist_setting_updated", "visibility", args[1]);
-						}
-						return Template.get("playlist_setting_not_numeric", "visibility");
-					case "play":
-						if (args.length > 1 && args[1].matches("^\\d+$")) {
-							OMusic record = CMusic.findById(Integer.parseInt(args[1]));
-							if (record.id > 0) {
-								if (player.canUseVoiceCommands(author, userRank)) {
-									player.connectTo(guild.getMember(author).getVoiceState().getChannel());
-									player.addToQueue(record.filename, author);
-									return Template.get("music_added_to_queue", record.youtubeTitle);
-								}
-							}
-							return Template.get("music_not_added_to_queue", args[1]);
-						}
-						return Template.get("command_invalid_use");
-					case "playtype":
-					case "play-type":
-						if (args.length == 1) {
-							List<List<String>> tbl = new ArrayList<>();
-							for (OPlaylist.PlayType playType : OPlaylist.PlayType.values()) {
-								if (playType.getId() < 1) continue;
-								tbl.add(Arrays.asList((playType == playlist.getPlayType() ? "*" : " ") + playType.getId(), playType.toString(), playType.getDescription()));
-							}
-							return "the play-type of the playlist. A `*` indicates the selected option" + Config.EOL +
-									Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
-									"Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
-						}
-						if (args.length > 1 && args[1].matches("^\\d+$")) {
-							OPlaylist.PlayType playType = OPlaylist.PlayType.fromId(Integer.parseInt(args[1]));
-							playlist.setPlayType(playType);
-							CPlaylist.update(playlist);
-							player.setActivePlayListId(playlist.id);
-							return Template.get(channel, "playlist_setting_updated", "play-type", args[1]);
-						}
-						return Template.get("playlist_setting_not_numeric", "play-type");
+						return "the play-type of the playlist. A `*` indicates the selected option" + Config.EOL +
+								Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
+								"Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
+					}
+					if (args.length > 1 && args[1].matches("^\\d+$")) {
+						OPlaylist.PlayType playType = OPlaylist.PlayType.fromId(Integer.parseInt(args[1]));
+						playlist.setPlayType(playType);
+						CPlaylist.update(playlist);
+						player.setActivePlayListId(playlist.id);
+						return Template.get(channel, "playlist_setting_updated", "play-type", args[1]);
+					}
+					return Template.get("playlist_setting_not_numeric", "play-type");
 
-				}
 			}
 		}
 		return Template.get("command_invalid_use");
+	}
+
+	/**
+	 * @see PlaylistCommand#canEditPlaylist(OPlaylist, TextChannel, User, SimpleRank, boolean)
+	 */
+	private boolean canAddTracks(OPlaylist playlist, TextChannel channel, User invoker, SimpleRank userRank) {
+		return canEditPlaylist(playlist, channel, invoker, userRank, true);
+	}
+
+	/**
+	 * @see PlaylistCommand#canEditPlaylist(OPlaylist, TextChannel, User, SimpleRank, boolean)
+	 */
+	private boolean canRemoveTracks(OPlaylist playlist, TextChannel channel, User invoker, SimpleRank userRank) {
+		return canEditPlaylist(playlist, channel, invoker, userRank, false);
+	}
+
+	/**
+	 * Check if a user has admin privilege on a playlist
+	 *
+	 * @param playlist
+	 * @param channel
+	 * @param invoker
+	 * @param userRank
+	 * @return
+	 */
+	private boolean isPlaylistAdmin(OPlaylist playlist, TextChannel channel, User invoker, SimpleRank userRank) {
+		if (playlist.isGlobalList() && userRank.isAtLeast(SimpleRank.CREATOR)) {
+			return false;
+		}
+		if (playlist.isGuildList()) {
+			return userRank.isAtLeast(SimpleRank.GUILD_ADMIN);
+		}
+		if (playlist.isPersonal()) {
+			return CUser.getCachedId(invoker.getId()) == playlist.ownerId;
+		}
+		return userRank.isAtLeast(SimpleRank.CREATOR);
+	}
+
+	/**
+	 * can an invoker add/remove tracks?
+	 *
+	 * @param playlist the playlist to check
+	 * @param channel  the channel where its invoked
+	 * @param invoker  the user who invoked
+	 * @param userRank rank of the user
+	 * @param isAdding adding or removing? false for removing
+	 * @return can the user add/remove tracks?
+	 */
+	private boolean canEditPlaylist(OPlaylist playlist, TextChannel channel, User invoker, SimpleRank userRank, boolean isAdding) {
+		switch (playlist.getEditType()) {
+			case PUBLIC_AUTO:
+			case PUBLIC_FULL:
+				return true;
+			case PRIVATE_AUTO:
+				if (playlist.isGuildList()) {
+					if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+						return false;
+					}
+				} else if (playlist.isPersonal()) {
+					return CUser.getCachedId(invoker.getId()) == playlist.ownerId;
+				}
+			case PUBLIC_ADD:
+				if (!isAdding) {
+					if (playlist.isGuildList()) {
+						return userRank.isAtLeast(SimpleRank.GUILD_ADMIN);
+					} else if (playlist.isPersonal()) {
+						return CUser.getCachedId(invoker.getId()) == playlist.ownerId;
+					}
+					return false;
+				}
+				return true;
+			case PRIVATE:
+				if (playlist.isGuildList() && playlist.guildId != CGuild.getCachedId(channel.getGuild().getId()) && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+					return false;
+				} else if (playlist.isPersonal()) {
+					return CUser.getCachedId(invoker.getId()) == playlist.ownerId;
+				}
+				return false;
+		}
+		return false;
 	}
 
 	private OPlaylist findPlaylist(String search, User user, Guild guild) {
