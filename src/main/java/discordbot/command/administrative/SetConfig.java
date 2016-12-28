@@ -2,14 +2,13 @@ package discordbot.command.administrative;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
-import discordbot.db.controllers.CGuild;
-import discordbot.db.model.OGuild;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
+import discordbot.util.DisUtil;
 import discordbot.util.Emojibet;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.entities.Guild;
@@ -67,17 +66,10 @@ public class SetConfig extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		Guild guild = null;
+		Guild guild;
 		SimpleRank rank = bot.security.getSimpleRank(author, channel);
-		if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1 && (args[0].matches("^\\d{10,}$") || args[0].matches("i\\d+"))) {
-			if (args[0].matches("i\\d+")) {
-				OGuild rec = CGuild.findById(Integer.parseInt(args[0].substring(1)));
-				if (rec.id > 0) {
-					guild = bot.getContainer().getShardFor(rec.discord_id).client.getGuildById(rec.discord_id);
-				}
-			} else {
-				guild = bot.getContainer().getShardFor(args[0]).client.getGuildById(args[0]);
-			}
+		if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1 && DisUtil.matchesGuildSearch(args[0])) {
+			guild = DisUtil.findGuildBy(args[0], bot.getContainer());
 			if (guild == null) {
 				return Template.get("command_config_cant_find_guild");
 			}

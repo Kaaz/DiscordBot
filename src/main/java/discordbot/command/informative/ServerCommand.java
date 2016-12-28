@@ -9,7 +9,9 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
+import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
+import discordbot.util.Emojibet;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.Permission;
@@ -62,12 +64,21 @@ public class ServerCommand extends AbstractCommand {
 		if (!PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
 			return Template.get("permission_missing_embed");
 		}
+		if (bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.BOT_ADMIN) && args.length > 0 && DisUtil.matchesGuildSearch(args[0])) {
+			guild = DisUtil.findGuildBy(args[0], bot.getContainer());
+			if (guild == null) {
+				return Template.get("command_config_cant_find_guild");
+			}
+		}
 		EmbedBuilder b = new EmbedBuilder();
 		b.setAuthor(guild.getName(), guild.getIconUrl(), guild.getIconUrl());
 		b.setThumbnail(guild.getIconUrl());
+
 		b.setDescription(
 				"Discord-id `" + guild.getId() + "`" + Config.EOL +
-						"On shard `" + bot.getShardId() + "`" + Config.EOL
+						"On shard `" + bot.getShardId() + "`" + Config.EOL +
+						(PermissionUtil.checkPermission(guild, guild.getSelfMember(), Permission.ADMINISTRATOR)
+								? Emojibet.POLICE + " Administrator" : "")
 		);
 		ImmutableSet<OnlineStatus> onlineStatus = Sets.immutableEnumSet(OnlineStatus.ONLINE, OnlineStatus.IDLE, OnlineStatus.DO_NOT_DISTURB);
 		long online = guild.getMembers().stream().filter(member -> onlineStatus.contains(member.getOnlineStatus())).count();
@@ -85,7 +96,6 @@ public class ServerCommand extends AbstractCommand {
 
 	private Color getAverageColor(String url) {
 		try {
-			//
 			BufferedImage img = ImageIO.read(Unirest.get(url).asBinary().getRawBody());
 			int x0 = 0;
 			int y0 = 0;

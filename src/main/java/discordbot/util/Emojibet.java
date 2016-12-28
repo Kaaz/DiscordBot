@@ -26,6 +26,7 @@ public class Emojibet {
 	public static String NO_ENTRY = "\uD83D\uDEAB";
 	public static String OKE_SIGN = "\u2705";
 	public static String SHARD_ICON = "\uD83D\uDC8E";
+	public static String POLICE = "\uD83D\uDE94";
 
 	public static String ANGER = "\uD83D\uDCA2";
 	public static String EYES = "\uD83D\uDC40";

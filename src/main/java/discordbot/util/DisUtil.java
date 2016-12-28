@@ -1,10 +1,13 @@
 package discordbot.util;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
+import discordbot.db.controllers.CGuild;
+import discordbot.db.model.OGuild;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.guildsettings.defaults.SettingCommandPrefix;
 import discordbot.guildsettings.defaults.SettingUseEconomy;
 import discordbot.handler.GuildSettings;
+import discordbot.main.BotContainer;
 import discordbot.main.Config;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.OnlineStatus;
@@ -61,6 +64,38 @@ public class DisUtil {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Search for a guild
+	 *
+	 * @param searchArg text to look for
+	 *                  with i-prefix searches for internal guild-id
+	 *                  if it consists of at least 10 decimals, it will assume its a discord-id
+	 * @param container the container to look in
+	 * @return Guild || null
+	 */
+	public static Guild findGuildBy(String searchArg, BotContainer container) {
+		if (searchArg.matches("i\\d+")) {
+			OGuild rec = CGuild.findById(Integer.parseInt(searchArg.substring(1)));
+			if (rec.id > 0) {
+				return container.getShardFor(rec.discord_id).client.getGuildById(rec.discord_id);
+			}
+		} else if (searchArg.matches("^\\d{10,}$")) {
+			return container.getShardFor(searchArg).client.getGuildById(searchArg);
+		}
+		return null;
+	}
+
+	/**
+	 * Helper for {@link DisUtil#findGuildBy(String, BotContainer)}
+	 * validates if the input could be converted to a guild
+	 *
+	 * @param searchArg text to validate
+	 * @return is valid input?
+	 */
+	public static boolean matchesGuildSearch(String searchArg) {
+		return searchArg != null && (searchArg.matches("i\\d+") || searchArg.matches("^\\d{10,}$"));
 	}
 
 	/**
