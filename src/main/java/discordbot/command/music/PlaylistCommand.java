@@ -223,6 +223,7 @@ public class PlaylistCommand extends AbstractCommand {
 					}
 					return "the edit-type of the playlist. A `*` indicates the selected option" + Config.EOL +
 							Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
+							"To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl edit 3` sets it to PUBLIC_ADD " + Config.EOL + Config.EOL +
 							"Private in a guild context refers to users with admin privileges";
 				}
 				if (args.length > 1 && args[1].matches("^\\d+$")) {
@@ -246,6 +247,7 @@ public class PlaylistCommand extends AbstractCommand {
 					}
 					return "the visibility-type of the playlist. A `*` indicates the selected option" + Config.EOL +
 							Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
+							"To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl vis 3` sets it to GUILD " + Config.EOL + Config.EOL +
 							"Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
 				}
 				if (args.length > 1 && args[1].matches("^\\d+$")) {

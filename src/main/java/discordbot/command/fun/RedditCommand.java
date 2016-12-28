@@ -9,8 +9,11 @@ import discordbot.modules.reddit.pojo.Image;
 import discordbot.modules.reddit.pojo.ImagePreview;
 import discordbot.modules.reddit.pojo.Post;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.imageio.ImageIO;
@@ -94,6 +97,10 @@ public class RedditCommand extends AbstractCommand {
 		}
 		ImagePreview preview = post.data.getPreview();
 		if (preview.images.size() > 0) {
+			TextChannel tc = (TextChannel) channel;
+			if (!PermissionUtil.checkPermission(tc, tc.getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
+				return Template.get("permission_missing_attach_files");
+			}
 			for (Image image : preview.images) {
 				try (InputStream in = new URL(StringEscapeUtils.unescapeHtml4(image.source.url)).openStream()) {
 					File outputfile = new File("tmp_" + channel.getId() + ".jpg");
