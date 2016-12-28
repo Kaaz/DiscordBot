@@ -171,6 +171,9 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 			}
 		} else {
 			if (player.isPlaying()) {
+				if (player.isPaused()) {
+					player.togglePause();
+				}
 				return "";
 			}
 			if (player.playRandomSong()) {
