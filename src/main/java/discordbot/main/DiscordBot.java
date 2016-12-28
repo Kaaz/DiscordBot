@@ -228,6 +228,7 @@ public class DiscordBot {
 		defaultChannels.clear();
 		musicChannels.clear();
 		logChannels.clear();
+		SecurityHandler.initialize();
 	}
 
 	public void reloadAutoReplies() {

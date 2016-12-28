@@ -8,6 +8,7 @@ import discordbot.db.controllers.CUserRank;
 import discordbot.db.model.ORank;
 import discordbot.db.model.OUser;
 import discordbot.db.model.OUserRank;
+import discordbot.handler.SecurityHandler;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -111,6 +112,7 @@ public class UserRankCommand extends AbstractCommand {
 				OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId(), user.getName()));
 				userRank.rankId = newRank.id;
 				CUserRank.insertOrUpdate(userRank);
+				SecurityHandler.initialize();
 				return Template.get("command_userrank_rank", user.getName(), newRank.codeName);
 			}
 
