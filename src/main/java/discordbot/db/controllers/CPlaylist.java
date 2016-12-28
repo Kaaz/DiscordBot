@@ -21,7 +21,7 @@ public class CPlaylist {
 	public static OPlaylist findBy(int userId) {
 		OPlaylist s = new OPlaylist();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, title, owner_id, guild_id, visibility_level, edit_type, create_date  " +
+				"SELECT id, title, owner_id, guild_id, visibility_level, play_type, edit_type, create_date  " +
 						"FROM playlist " +
 						"WHERE owner_id = ? ", userId)) {
 			if (rs.next()) {
