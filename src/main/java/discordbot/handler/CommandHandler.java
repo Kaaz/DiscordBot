@@ -237,7 +237,7 @@ public class CommandHandler {
 		return 0;
 	}
 
-	public static boolean isDisabled(int guildId, String channelId, String commandName) {
+	private static boolean isDisabled(int guildId, String channelId, String commandName) {
 		if (guildId == 0) {
 			return false;
 		}

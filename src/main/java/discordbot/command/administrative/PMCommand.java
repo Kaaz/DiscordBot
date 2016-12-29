@@ -5,7 +5,9 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 
 /**
@@ -41,24 +43,29 @@ public class PMCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		SimpleRank rank = bot.security.getSimpleRank(author, channel);
-		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+		if (!rank.isAtLeast(SimpleRank.USER)) {
 			return Template.get("command_no_permission");
 		}
 		if (args.length > 1) {
+
+			User targetUser = null;
 			if (DisUtil.isUserMention(args[0])) {
-				User targetUser = channel.getJDA().getUserById(DisUtil.mentionToId(args[0]));
-				if (targetUser != null) {
-					String message = "";
-					for (int i = 1; i < args.length; i++) {
-						message += " " + args[i];
-					}
-					bot.out.sendPrivateMessage(targetUser, "You got a message from " + author.getAsMention() + ": " + message);
-					return Template.get("command_pm_success");
-				} else {
-					return Template.get("command_pm_cant_find_user");
-				}
+				targetUser = channel.getJDA().getUserById(DisUtil.mentionToId(args[0]));
 			} else {
-				return Template.get("command_pm_not_a_user");
+				Member member = DisUtil.findUserIn((TextChannel) channel, args[0]);
+				if (member != null) {
+					targetUser = member.getUser();
+				}
+			}
+			if (targetUser != null) {
+				String message = "";
+				for (int i = 1; i < args.length; i++) {
+					message += " " + args[i];
+				}
+				bot.out.sendPrivateMessage(targetUser, "You got a message from " + author.getAsMention() + ": " + message);
+				return Template.get("command_pm_success");
+			} else {
+				return Template.get("command_pm_cant_find_user");
 			}
 		}
 		return Template.get("command_invalid_use");

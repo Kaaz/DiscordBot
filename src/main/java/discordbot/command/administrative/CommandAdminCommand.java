@@ -12,12 +12,13 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Emojibet;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * !disable/enable commands per guild/channel
@@ -30,7 +31,8 @@ public class CommandAdminCommand extends AbstractCommand {
 	@Override
 	public String getDescription() {
 		return "Commands can be enabled/disabled through this command." + Config.EOL +
-				"A channel specific setting will always override the guild setting";
+				"A channel specific setting will always override the guild setting" + Config.EOL + Config.EOL +
+				"You can also give/deny permission to roles to use certain commands";
 	}
 
 	@Override
@@ -53,10 +55,17 @@ public class CommandAdminCommand extends AbstractCommand {
 		return new String[]{
 				"ca <command> [enable/disable]               //enables/disables commands in the whole guild",
 				"ca <command> [enable/disable] [#channel]    //enables/disables commands in a channel. This overrides the above",
+				"",
 				"ca resetchannel [#channel]                  //resets the overrides for a channel",
-				"ca command [command]                        //resets the overrides for a channel",
 				"ca resetallchannels                         //resets the overrides for all channels",
 				"ca reset yesimsure                          //enables all commands + resets overrides",
+				"",
+				"//Allow roles to use certain commands, or not. The channel tag is optional!",
+				"ca role allow <role> <command> [#channel]   //Allows a role to use a command it otherwise couldn't ",
+				"ca role deny <role> <command> [#channel]    //Denies the use of a command it otherwise could ",
+				"ca role remove <role> <command> [#channel]  //Removes the override command from the role",
+				"ca role [#channel]                          //Overview of role overrides",
+				"ca role reset @role                         //Resets a role",
 				"",
 				"examples:",
 				"ca meme disable                             //this disabled the meme command",
@@ -79,12 +88,13 @@ public class CommandAdminCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		SimpleRank rank = bot.security.getSimpleRank(author, channel);
+		TextChannel textChannel = (TextChannel) channel;
+		Guild guild = textChannel.getGuild();
 		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			return Template.get("no_permission");
 		}
 		int guildId = CGuild.getCachedId(channel);
 		if (args.length == 0) {
-			TreeMap<String, List<String>> map = new TreeMap<>();
 			List<OBlacklistCommand> blacklist = CBlacklistCommand.getBlacklistedFor(guildId);
 			if (blacklist.isEmpty()) {
 				return Template.get("command_blacklist_command_empty");
@@ -150,6 +160,33 @@ public class CommandAdminCommand extends AbstractCommand {
 				CommandHandler.reloadBlackListFor(guildId);
 				return Template.get("command_blacklist_reset");
 
+		}
+		if (args[0].equals("role")) {
+			if (args.length < 2) {
+				return Template.get("not_implemented_yet");
+			}
+			if (args.length < 4) {
+				return Template.get("command_invalid_use");
+			}
+			String type = args[1];
+			String roleName = args[2];
+			String commandName = args[3];
+			//ca role allow @role command
+			Role role = DisUtil.findRole(guild, roleName);
+			AbstractCommand cmd = CommandHandler.getCommand(commandName.toLowerCase());
+			if (cmd == null) {
+				return Template.get("command_blacklist_command_not_found", commandName);
+			}
+			if (!cmd.canBeDisabled()) {
+				return Template.get("command_blacklist_not_blacklistable", cmd.getCommand());
+			}
+
+			if (role == null) {
+				return "role not found";
+			}
+			channel.sendMessage(String.format("Role: %s (%s)", role.getName(), role.getId())).queue();
+			channel.sendMessage(String.format("cmd: %s (%s)", role.getName(), role.getId())).queue();
+			return "Action = " + type;
 		}
 		if (args.length < 2) {
 			return Template.get("command_invalid_use");
