@@ -11,10 +11,13 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+
+import java.sql.Timestamp;
 
 /**
  * !user
@@ -82,10 +85,14 @@ public class UserCommand extends AbstractCommand {
 			sb.append(":id: discord id:").append(infoUser.getId()).append(Config.EOL);
 			sb.append(":keyboard: Commands used:").append(dbUser.commandsUsed).append(Config.EOL);
 			if (guildId > 0) {
+				Guild guild = ((TextChannel) channel).getGuild();
 				OGuildMember member = CGuildMember.findBy(guildId, userId);
-				if (member.joinDate != null) {
-					sb.append(":date: joined: ").append(TimeUtil.getRelativeTime(member.joinDate.getTime() / 1000L, false, true)).append(Config.EOL);
+				if (member.joinDate == null) {
+					member.joinDate = new Timestamp(guild.getMember(infoUser).getJoinDate().toInstant().toEpochMilli());
+					CGuildMember.insertOrUpdate(member);
 				}
+				sb.append(":date: joined: ").append(TimeUtil.getRelativeTime(member.joinDate.getTime() / 1000L, false, true)).append(Config.EOL);
+
 			}
 			if (infoUser.getAvatarUrl() != null) {
 				sb.append(":frame_photo: Avatar: <").append(infoUser.getAvatarUrl()).append(">").append(Config.EOL);
