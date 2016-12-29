@@ -1,9 +1,10 @@
 package discordbot.guildsettings.music;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.VoiceChannelSettingType;
 
 
-public class SettingMusicAutoVoiceChannel extends AbstractGuildSetting {
+public class SettingMusicAutoVoiceChannel extends AbstractGuildSetting<VoiceChannelSettingType> {
 	@Override
 	public String getKey() {
 		return "music_channel_auto";

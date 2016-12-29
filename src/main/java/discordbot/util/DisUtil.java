@@ -19,6 +19,7 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.ArrayList;
@@ -44,6 +45,22 @@ public class DisUtil {
 	 */
 	public static TextChannel findChannel(Guild guild, String channelName) {
 		for (TextChannel channel : guild.getTextChannels()) {
+			if (channel.getName().equalsIgnoreCase(channelName)) {
+				return channel;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * find a voice channel by name
+	 *
+	 * @param guild       the guild to search in
+	 * @param channelName the channel to search for
+	 * @return VoiceChannel || null
+	 */
+	public static VoiceChannel findVoiceChannel(Guild guild, String channelName) {
+		for (VoiceChannel channel : guild.getVoiceChannels()) {
 			if (channel.getName().equalsIgnoreCase(channelName)) {
 				return channel;
 			}

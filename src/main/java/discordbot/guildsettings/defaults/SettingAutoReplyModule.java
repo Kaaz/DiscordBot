@@ -1,9 +1,16 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.BooleanSettingType;
 
 
-public class SettingAutoReplyModule extends AbstractGuildSetting {
+public class SettingAutoReplyModule extends AbstractGuildSetting<BooleanSettingType> {
+
+	@Override
+	protected BooleanSettingType getSettingsType() {
+		return new BooleanSettingType();
+	}
+
 	@Override
 	public String getKey() {
 		return "auto_reply";
@@ -20,12 +27,7 @@ public class SettingAutoReplyModule extends AbstractGuildSetting {
 				"use the auto reply feature?",
 				"Looks for patterns in messages and replies to them (with a cooldown)",
 				"true -> enable auto replying to matched messages",
-				"true -> disable auto replying",
+				"false -> disable auto replying",
 		};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && (input.equals("true") || input.equals("false"));
 	}
 }

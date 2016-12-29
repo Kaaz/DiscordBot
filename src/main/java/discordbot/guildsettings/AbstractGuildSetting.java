@@ -1,6 +1,15 @@
 package discordbot.guildsettings;
 
-abstract public class AbstractGuildSetting {
+import net.dv8tion.jda.core.entities.Guild;
+
+abstract public class AbstractGuildSetting<T extends IGuildSettingType> {
+	final private T type;
+
+	public AbstractGuildSetting() {
+		type = getSettingsType();
+	}
+
+	protected abstract T getSettingsType();
 
 	/**
 	 * key for the configuration
@@ -37,7 +46,21 @@ abstract public class AbstractGuildSetting {
 	 * Checks if the value is a valid setting
 	 *
 	 * @param input value to check
-	 * @return wheneter it is a valid value
+	 * @return is it a valid value
 	 */
-	public abstract boolean isValidValue(String input);
+	public boolean isValidValue(Guild guild, String input) {
+		return type.validate(guild, input);
+	}
+
+	public String getValue(Guild guild, String input) {
+		return type.fromInput(guild, input);
+	}
+
+	public String toDisplay(Guild guild, String value) {
+		return type.toDisplay(guild, value);
+	}
+
+	public String getSettingType() {
+		return type.typeName();
+	}
 }

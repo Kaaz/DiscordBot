@@ -1,10 +1,16 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.BooleanSettingType;
 import discordbot.main.Config;
 
 
-public class SettingBotShowTemplates extends AbstractGuildSetting {
+public class SettingBotShowTemplates extends AbstractGuildSetting<BooleanSettingType> {
+	@Override
+	protected BooleanSettingType getSettingsType() {
+		return new BooleanSettingType();
+	}
+
 	@Override
 	public String getKey() {
 		return "bot_debug_templates";
@@ -37,10 +43,5 @@ public class SettingBotShowTemplates extends AbstractGuildSetting {
 				"false would show:",
 				"You don't have permission to use that!",
 		};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false"));
 	}
 }

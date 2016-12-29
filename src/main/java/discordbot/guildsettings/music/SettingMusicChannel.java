@@ -1,9 +1,16 @@
 package discordbot.guildsettings.music;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.TextChannelSettingType;
 
 
-public class SettingMusicChannel extends AbstractGuildSetting {
+public class SettingMusicChannel extends AbstractGuildSetting<TextChannelSettingType> {
+
+	@Override
+	protected TextChannelSettingType getSettingsType() {
+		return new TextChannelSettingType();
+	}
+
 	@Override
 	public String getKey() {
 		return "music_channel";
@@ -17,10 +24,5 @@ public class SettingMusicChannel extends AbstractGuildSetting {
 	@Override
 	public String[] getDescription() {
 		return new String[]{"Channel where the bots music-related output goes to"};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return true;
 	}
 }

@@ -36,8 +36,7 @@ public class PMCommand extends AbstractCommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{
-		};
+		return new String[]{};
 	}
 
 	@Override
@@ -47,7 +46,6 @@ public class PMCommand extends AbstractCommand {
 			return Template.get("command_no_permission");
 		}
 		if (args.length > 1) {
-
 			User targetUser = null;
 			if (DisUtil.isUserMention(args[0])) {
 				targetUser = channel.getJDA().getUserById(DisUtil.mentionToId(args[0]));
