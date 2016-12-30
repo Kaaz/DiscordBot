@@ -1,11 +1,17 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.BooleanSettingType;
 
 /**
  * Made by nija123098 on 12/4/2016
  */
-public class SettingMusicAdminVolume extends AbstractGuildSetting {
+public class SettingMusicAdminVolume extends AbstractGuildSetting<BooleanSettingType> {
+	@Override
+	protected BooleanSettingType getSettingsType() {
+		return new BooleanSettingType();
+	}
+
 	@Override
 	public String getKey() {
 		return "music_volume_admin";
@@ -22,15 +28,5 @@ public class SettingMusicAdminVolume extends AbstractGuildSetting {
 				"",
 				"true -> only allow guild admins to change the bot's volume",
 				"false -> allow all users to change the bot's volume"};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		try {
-			Boolean.parseBoolean(input);
-			return true;
-		} catch (Exception ignored) {
-			return false;
-		}
 	}
 }

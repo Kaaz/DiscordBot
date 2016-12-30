@@ -1,9 +1,15 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.BooleanSettingType;
 
 
-public class SettingRoleTimeRanks extends AbstractGuildSetting {
+public class SettingRoleTimeRanks extends AbstractGuildSetting<BooleanSettingType> {
+	@Override
+	protected BooleanSettingType getSettingsType() {
+		return new BooleanSettingType();
+	}
+
 	@Override
 	public String getKey() {
 		return "user_time_ranks";
@@ -23,10 +29,5 @@ public class SettingRoleTimeRanks extends AbstractGuildSetting {
 				"Setting:  Use time based ranks?",
 				"true  -> yes",
 				"false -> no"};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && (input.equals("true") || input.equals("false"));
 	}
 }

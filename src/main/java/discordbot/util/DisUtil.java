@@ -34,7 +34,8 @@ import java.util.regex.Pattern;
 public class DisUtil {
 	private static final Pattern mentionUserPattern = Pattern.compile("<@!?([0-9]{4,})>");
 	private static final Pattern channelPattern = Pattern.compile("<#!?([0-9]{4,})>");
-	private static final Pattern anyMention = Pattern.compile("<[@#]!?([0-9]{4,})>");
+	private static final Pattern rolePattern = Pattern.compile("<#&([0-9]{4,})>");
+	private static final Pattern anyMention = Pattern.compile("<[@#][&!]?([0-9]{4,})>");
 
 	/**
 	 * find a text channel by name
@@ -116,13 +117,17 @@ public class DisUtil {
 	}
 
 	/**
-	 * Checks if the string contains a mention for a user
+	 * Checks if the string contains a mention for a role
 	 *
 	 * @param input string to check for mentions
 	 * @return found a mention
 	 */
 	public static boolean isUserMention(String input) {
 		return mentionUserPattern.matcher(input).find();
+	}
+
+	public static boolean isRoleMention(String input) {
+		return rolePattern.matcher(input).find();
 	}
 
 	/**
@@ -353,4 +358,6 @@ public class DisUtil {
 		}
 		return null;
 	}
+
+
 }

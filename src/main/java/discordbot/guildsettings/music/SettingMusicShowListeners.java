@@ -1,9 +1,15 @@
 package discordbot.guildsettings.music;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.BooleanSettingType;
 
 
-public class SettingMusicShowListeners extends AbstractGuildSetting {
+public class SettingMusicShowListeners extends AbstractGuildSetting<BooleanSettingType> {
+	@Override
+	protected BooleanSettingType getSettingsType() {
+		return new BooleanSettingType();
+	}
+
 	@Override
 	public String getKey() {
 		return "music_show_listeners";
@@ -21,10 +27,5 @@ public class SettingMusicShowListeners extends AbstractGuildSetting {
 				"true  -> List all the people who are currently listening to music",
 				"false -> Don't show listeners"
 		};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && (input.equals("true") || input.equals("false"));
 	}
 }

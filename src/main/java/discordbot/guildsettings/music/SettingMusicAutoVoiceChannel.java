@@ -6,6 +6,11 @@ import discordbot.guildsettings.types.VoiceChannelSettingType;
 
 public class SettingMusicAutoVoiceChannel extends AbstractGuildSetting<VoiceChannelSettingType> {
 	@Override
+	protected VoiceChannelSettingType getSettingsType() {
+		return new VoiceChannelSettingType(true);
+	}
+
+	@Override
 	public String getKey() {
 		return "music_channel_auto";
 	}
@@ -30,10 +35,5 @@ public class SettingMusicAutoVoiceChannel extends AbstractGuildSetting<VoiceChan
 				"* If the configured channel does not exist, this setting will be turned off",
 				"* If I'm already connected to a different voice-channel I won't use this setting"
 		};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return true;
 	}
 }

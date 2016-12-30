@@ -1,9 +1,15 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.BooleanSettingType;
 
 
-public class SettingGameModule extends AbstractGuildSetting {
+public class SettingGameModule extends AbstractGuildSetting<BooleanSettingType> {
+	@Override
+	protected BooleanSettingType getSettingsType() {
+		return new BooleanSettingType();
+	}
+
 	@Override
 	public String getKey() {
 		return "module_games";
@@ -17,10 +23,5 @@ public class SettingGameModule extends AbstractGuildSetting {
 	@Override
 	public String[] getDescription() {
 		return new String[]{"Let people play games against each other"};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && (input.equals("true") || input.equals("false"));
 	}
 }

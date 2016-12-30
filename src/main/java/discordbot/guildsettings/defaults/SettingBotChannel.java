@@ -7,7 +7,7 @@ import discordbot.guildsettings.types.TextChannelSettingType;
 public class SettingBotChannel extends AbstractGuildSetting<TextChannelSettingType> {
 	@Override
 	protected TextChannelSettingType getSettingsType() {
-		return new TextChannelSettingType();
+		return new TextChannelSettingType(false);
 	}
 
 	@Override

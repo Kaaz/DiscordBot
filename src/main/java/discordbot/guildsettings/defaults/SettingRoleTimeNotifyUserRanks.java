@@ -1,9 +1,15 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.EnumSettingType;
 
 
-public class SettingRoleTimeNotifyUserRanks extends AbstractGuildSetting {
+public class SettingRoleTimeNotifyUserRanks extends AbstractGuildSetting<EnumSettingType> {
+	@Override
+	protected EnumSettingType getSettingsType() {
+		return new EnumSettingType("no", "false", "private", "public", "both");
+	}
+
 	@Override
 	public String getKey() {
 		return "user_time_ranks_notify";
@@ -28,10 +34,5 @@ public class SettingRoleTimeNotifyUserRanks extends AbstractGuildSetting {
 				"private -> send a private message to the user who ranked up",
 				"public  -> announce it in a channel",
 				"both    -> perform both private and public actions "};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && (input.equals("no") || input.equals("false") || input.equals("private") || input.equals("public") || input.equals("both"));
 	}
 }

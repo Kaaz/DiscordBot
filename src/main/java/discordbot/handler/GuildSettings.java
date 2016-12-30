@@ -175,7 +175,7 @@ public class GuildSettings {
 	public boolean canUseMusicCommands(User user, SimpleRank userRank) {
 		String requiredRole = getOrDefault(SettingMusicRole.class);
 		boolean roleFound = true;
-		if (!"none".equals(requiredRole) && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+		if (!"false".equals(requiredRole) && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			roleFound = false;
 			List<Role> roles = user.getJDA().getGuildById(guildId).getMember(user).getRoles();
 			for (Role role : roles) {

@@ -1,9 +1,15 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.StringLengthSettingType;
 
 
-public class SettingRoleTimeRanksPrefix extends AbstractGuildSetting {
+public class SettingRoleTimeRanksPrefix extends AbstractGuildSetting<StringLengthSettingType> {
+	@Override
+	protected StringLengthSettingType getSettingsType() {
+		return new StringLengthSettingType(3, 8);
+	}
+
 	@Override
 	public String getKey() {
 		return "user_time_ranks_prefix";
@@ -22,10 +28,5 @@ public class SettingRoleTimeRanksPrefix extends AbstractGuildSetting {
 				"If you'd like to use the time based ranks make sure to set this first!",
 				"",
 				"The prefix can be between 3 and 8 in length"};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && input.length() >= 3 && input.length() <= 8;
 	}
 }

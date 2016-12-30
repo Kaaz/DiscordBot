@@ -1,9 +1,15 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.BooleanSettingType;
 
 
-public class SettingPMUserEvents extends AbstractGuildSetting {
+public class SettingPMUserEvents extends AbstractGuildSetting<BooleanSettingType> {
+	@Override
+	protected BooleanSettingType getSettingsType() {
+		return new BooleanSettingType();
+	}
+
 	@Override
 	public String getKey() {
 		return "pm_user_events";
@@ -19,10 +25,5 @@ public class SettingPMUserEvents extends AbstractGuildSetting {
 		return new String[]{"Send a private message to owner when something happens to a user?",
 				"true  -> sends a private message to guild-owner",
 				"false -> does absolutely nothing"};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && (input.equals("true") || input.equals("false"));
 	}
 }

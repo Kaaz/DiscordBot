@@ -3,19 +3,20 @@ package discordbot.guildsettings.types;
 import discordbot.guildsettings.IGuildSettingType;
 import net.dv8tion.jda.core.entities.Guild;
 
-import java.util.Collections;
-import java.util.HashSet;
-
 /**
- * enum settings type
- * the setting has to be in the list
+ * string-length settings type
+ * the setting has to be between min, and max (including)
  */
-public class EnumSettingType implements IGuildSettingType {
-	private final HashSet<String> options;
+public class StringLengthSettingType implements IGuildSettingType {
+	private final int min, max;
 
-	public EnumSettingType(String... values) {
-		options = new HashSet<>();
-		Collections.addAll(options, values);
+	/**
+	 * @param min minimum length
+	 * @param max maximum length (including)
+	 */
+	public StringLengthSettingType(int min, int max) {
+		this.min = min;
+		this.max = max;
 	}
 
 	@Override
@@ -25,7 +26,7 @@ public class EnumSettingType implements IGuildSettingType {
 
 	@Override
 	public boolean validate(Guild guild, String value) {
-		return value != null && options.contains(value.toLowerCase());
+		return value != null && value.length() >= min && value.length() <= max;
 	}
 
 	@Override

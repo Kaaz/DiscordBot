@@ -1,9 +1,15 @@
 package discordbot.guildsettings.music;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.BooleanSettingType;
 
 
-public class SettingMusicClearAdminOnly extends AbstractGuildSetting {
+public class SettingMusicClearAdminOnly extends AbstractGuildSetting<BooleanSettingType> {
+	@Override
+	protected BooleanSettingType getSettingsType() {
+		return new BooleanSettingType();
+	}
+
 	@Override
 	public String getKey() {
 		return "music_clear_admin_only";
@@ -24,10 +30,5 @@ public class SettingMusicClearAdminOnly extends AbstractGuildSetting {
 				"false",
 				"Everyone can clear the queue",
 		};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && (input.equals("true") || input.equals("false"));
 	}
 }

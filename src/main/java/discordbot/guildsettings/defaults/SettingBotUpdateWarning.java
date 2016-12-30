@@ -1,14 +1,16 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
-import discordbot.guildsettings.types.BooleanSettingType;
+import discordbot.guildsettings.types.EnumSettingType;
 
 
-public class SettingBotUpdateWarning extends AbstractGuildSetting<BooleanSettingType> {
+public class SettingBotUpdateWarning extends AbstractGuildSetting<EnumSettingType> {
+
 	@Override
-	protected BooleanSettingType getSettingsType() {
-		return new BooleanSettingType();
+	protected EnumSettingType getSettingsType() {
+		return new EnumSettingType("always", "playing", "off");
 	}
+
 
 	@Override
 	public String getKey() {

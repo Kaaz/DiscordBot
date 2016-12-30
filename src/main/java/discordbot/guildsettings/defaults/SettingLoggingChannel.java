@@ -1,9 +1,15 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.TextChannelSettingType;
 
 
-public class SettingLoggingChannel extends AbstractGuildSetting {
+public class SettingLoggingChannel extends AbstractGuildSetting<TextChannelSettingType> {
+	@Override
+	protected TextChannelSettingType getSettingsType() {
+		return new TextChannelSettingType(true);
+	}
+
 	@Override
 	public String getKey() {
 		return "bot_logging_channel";
@@ -23,10 +29,5 @@ public class SettingLoggingChannel extends AbstractGuildSetting {
 				"To enable it, set this setting to match the channel name where you want the logging to happen",
 				"If you specify an invalid channel, this setting will disable itself"
 		};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && input.length() > 1;
 	}
 }

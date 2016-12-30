@@ -1,9 +1,15 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.BooleanSettingType;
 
 
-public class SettingUseEconomy extends AbstractGuildSetting {
+public class SettingUseEconomy extends AbstractGuildSetting<BooleanSettingType> {
+	@Override
+	protected BooleanSettingType getSettingsType() {
+		return new BooleanSettingType();
+	}
+
 	@Override
 	public String getKey() {
 		return "use_economy";
@@ -19,10 +25,5 @@ public class SettingUseEconomy extends AbstractGuildSetting {
 		return new String[]{"Use the economy feature?",
 				"false -> nope!",
 				"true -> yep!"};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && (input.equals("true") || input.equals("false"));
 	}
 }

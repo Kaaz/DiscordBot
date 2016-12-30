@@ -4,22 +4,29 @@ import discordbot.guildsettings.IGuildSettingType;
 import discordbot.util.DisUtil;
 import discordbot.util.Emojibet;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.entities.Role;
 
 /**
- * VoiceChannel settings type
- * the value has to be a real voice-channel in a guild + will be saved as the channel id
+ * TextChannel settings type
+ * the value has to be a real channel in a guild + will be saved as the channel id
  */
-public class VoiceChannelSettingType implements IGuildSettingType {
+public class RoleSettingType implements IGuildSettingType {
+
 	private final boolean allowNull;
 
-	public VoiceChannelSettingType(boolean allowNull) {
+	/**
+	 * Allow a null/false value?
+	 *
+	 * @param allowNull true if it can be null
+	 */
+	public RoleSettingType(boolean allowNull) {
 
 		this.allowNull = allowNull;
 	}
+
 	@Override
 	public String typeName() {
-		return "voice-channel";
+		return "discord-role";
 	}
 
 	@Override
@@ -27,10 +34,10 @@ public class VoiceChannelSettingType implements IGuildSettingType {
 		if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
 			return true;
 		}
-		if (DisUtil.isChannelMention(value)) {
-			return guild.getVoiceChannelById(DisUtil.mentionToId(value)) != null;
+		if (DisUtil.isRoleMention(value)) {
+			return guild.getRoleById(DisUtil.mentionToId(value)) != null;
 		}
-		return DisUtil.findVoiceChannel(guild, value) != null;
+		return DisUtil.findRole(guild, value) != null;
 	}
 
 	@Override
@@ -38,22 +45,22 @@ public class VoiceChannelSettingType implements IGuildSettingType {
 		if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
 			return "";
 		}
-		if (DisUtil.isChannelMention(value)) {
-			VoiceChannel channel = guild.getVoiceChannelById(DisUtil.mentionToId(value));
-			if (channel != null) {
-				return channel.getId();
+		if (DisUtil.isRoleMention(value)) {
+			Role role = guild.getRoleById(DisUtil.mentionToId(value));
+			if (role != null) {
+				return role.getId();
 			}
 		}
-		VoiceChannel channel = DisUtil.findVoiceChannel(guild, value);
-		if (channel != null) {
-			return channel.getId();
+		Role role = DisUtil.findRole(guild, value);
+		if (role != null) {
+			return role.getId();
 		}
 		return "";
 	}
 
 	@Override
 	public String toDisplay(Guild guild, String value) {
-		VoiceChannel channel = guild.getVoiceChannelById(value);
+		Role channel = guild.getRoleById(value);
 		if (channel != null) {
 			return channel.getName();
 		}

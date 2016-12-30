@@ -6,7 +6,24 @@ import discordbot.util.Emojibet;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+/**
+ * TextChannel settings type
+ * the value has to be a real channel in a guild + will be saved as the channel id
+ */
 public class TextChannelSettingType implements IGuildSettingType {
+
+	private final boolean allowNull;
+
+	/**
+	 * Allow a null/false value?
+	 *
+	 * @param allowNull true if it can be null
+	 */
+	public TextChannelSettingType(boolean allowNull) {
+
+		this.allowNull = allowNull;
+	}
+
 	@Override
 	public String typeName() {
 		return "text-channel";
@@ -14,6 +31,9 @@ public class TextChannelSettingType implements IGuildSettingType {
 
 	@Override
 	public boolean validate(Guild guild, String value) {
+		if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
+			return true;
+		}
 		if (DisUtil.isChannelMention(value)) {
 			return guild.getTextChannelById(DisUtil.mentionToId(value)) != null;
 		}
@@ -22,6 +42,9 @@ public class TextChannelSettingType implements IGuildSettingType {
 
 	@Override
 	public String fromInput(Guild guild, String value) {
+		if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
+			return "";
+		}
 		if (DisUtil.isChannelMention(value)) {
 			TextChannel textChannel = guild.getTextChannelById(DisUtil.mentionToId(value));
 			if (textChannel != null) {

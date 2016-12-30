@@ -1,9 +1,15 @@
 package discordbot.guildsettings.music;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.NumberBetweenSettingType;
 
 
-public class SettingMusicVotePercent extends AbstractGuildSetting {
+public class SettingMusicVotePercent extends AbstractGuildSetting<NumberBetweenSettingType> {
+	@Override
+	protected NumberBetweenSettingType getSettingsType() {
+		return new NumberBetweenSettingType(0, 100);
+	}
+
 	@Override
 	public String getKey() {
 		return "music_vote_percent";
@@ -23,17 +29,5 @@ public class SettingMusicVotePercent extends AbstractGuildSetting {
 				"",
 				"Accepts a value between 1 and 100",
 		};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		try {
-			int vol = Integer.parseInt(input);
-			if (vol >= 0 && vol <= 100) {
-				return true;
-			}
-		} catch (Exception ignored) {
-		}
-		return false;
 	}
 }

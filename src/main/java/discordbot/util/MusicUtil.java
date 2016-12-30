@@ -39,7 +39,7 @@ public class MusicUtil {
 			optionsField += "Skips req.: " + player.getRequiredVotes() + Config.EOL;
 		}
 		String requiredRole = GuildSettings.get(player.getGuild()).getOrDefault(SettingMusicRole.class);
-		if (!requiredRole.equals("none")) {
+		if (!requiredRole.equals("false")) {
 			optionsField += "Role req.: " + requiredRole + Config.EOL;
 		}
 		if (GuildSettings.get(player.getGuild()).getOrDefault(SettingMusicQueueOnly.class).equals("false")) {

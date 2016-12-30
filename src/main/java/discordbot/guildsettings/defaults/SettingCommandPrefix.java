@@ -1,10 +1,16 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.StringLengthSettingType;
 import discordbot.main.Config;
 
 
-public class SettingCommandPrefix extends AbstractGuildSetting {
+public class SettingCommandPrefix extends AbstractGuildSetting<StringLengthSettingType> {
+	@Override
+	protected StringLengthSettingType getSettingsType() {
+		return new StringLengthSettingType(1, 4);
+	}
+
 	@Override
 	public String getKey() {
 		return "command_prefix";
@@ -17,11 +23,6 @@ public class SettingCommandPrefix extends AbstractGuildSetting {
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"Prefix for commands (between 1 and 3 characters)"};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && input.length() > 0 && input.length() <= 3;
+		return new String[]{"Prefix for commands (between 1 and 4 characters)"};
 	}
 }

@@ -4,6 +4,10 @@ import discordbot.guildsettings.IGuildSettingType;
 import discordbot.util.Emojibet;
 import net.dv8tion.jda.core.entities.Guild;
 
+/**
+ * boolean settings type
+ * yes/no
+ */
 public class BooleanSettingType implements IGuildSettingType {
 	@Override
 	public String typeName() {

@@ -1,9 +1,15 @@
 package discordbot.guildsettings.defaults;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.BooleanSettingType;
 
 
-public class SettingWelcomeNewUsers extends AbstractGuildSetting {
+public class SettingWelcomeNewUsers extends AbstractGuildSetting<BooleanSettingType> {
+	@Override
+	protected BooleanSettingType getSettingsType() {
+		return new BooleanSettingType();
+	}
+
 	@Override
 	public String getKey() {
 		return "welcome_new_users";
@@ -32,10 +38,5 @@ public class SettingWelcomeNewUsers extends AbstractGuildSetting {
 				"",
 				"If multiple templates are set a random one will be chosen",
 				"See the template command for more details"};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && (input.equals("true") || input.equals("false"));
 	}
 }

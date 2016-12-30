@@ -8,7 +8,7 @@ public class SettingMusicChannel extends AbstractGuildSetting<TextChannelSetting
 
 	@Override
 	protected TextChannelSettingType getSettingsType() {
-		return new TextChannelSettingType();
+		return new TextChannelSettingType(false);
 	}
 
 	@Override

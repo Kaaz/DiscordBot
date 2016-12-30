@@ -1,9 +1,15 @@
 package discordbot.guildsettings.music;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.EnumSettingType;
 
 
-public class SettingMusicChannelTitle extends AbstractGuildSetting {
+public class SettingMusicChannelTitle extends AbstractGuildSetting<EnumSettingType> {
+	@Override
+	protected EnumSettingType getSettingsType() {
+		return new EnumSettingType("auto", "true", "false");
+	}
+
 	@Override
 	public String getKey() {
 		return "music_channel_title";
@@ -23,10 +29,5 @@ public class SettingMusicChannelTitle extends AbstractGuildSetting {
 				"true  -> yes change the topic at the beginning of every song",
 				"false -> leave the channel topic title alone!",
 		};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && (input.equals("auto") || input.equals("true") || input.equals("false"));
 	}
 }

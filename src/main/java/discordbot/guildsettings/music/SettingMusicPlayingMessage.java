@@ -1,9 +1,15 @@
 package discordbot.guildsettings.music;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.EnumSettingType;
 
 
-public class SettingMusicPlayingMessage extends AbstractGuildSetting {
+public class SettingMusicPlayingMessage extends AbstractGuildSetting<EnumSettingType> {
+	@Override
+	protected EnumSettingType getSettingsType() {
+		return new EnumSettingType("clear", "normal", "off");
+	}
+
 	@Override
 	public String getKey() {
 		return "music_playing_message";
@@ -21,10 +27,5 @@ public class SettingMusicPlayingMessage extends AbstractGuildSetting {
 				"normal -> send the message and just leave it be",
 				"off    -> don't send now playing messages",
 		};
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
-		return input != null && (input.equals("clear") || input.equals("normal") || input.equals("off"));
 	}
 }

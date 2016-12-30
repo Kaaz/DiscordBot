@@ -1,9 +1,15 @@
 package discordbot.guildsettings.music;
 
 import discordbot.guildsettings.AbstractGuildSetting;
+import discordbot.guildsettings.types.NoSettingType;
 
 
-public class SettingMusicLastPlaylist extends AbstractGuildSetting {
+public class SettingMusicLastPlaylist extends AbstractGuildSetting<NoSettingType> {
+	@Override
+	protected NoSettingType getSettingsType() {
+		return new NoSettingType();
+	}
+
 	@Override
 	public String getKey() {
 		return "music_playlist_id";
@@ -23,11 +29,6 @@ public class SettingMusicLastPlaylist extends AbstractGuildSetting {
 
 	@Override
 	public boolean isReadOnly() {
-		return true;
-	}
-
-	@Override
-	public boolean isValidValue(String input) {
 		return true;
 	}
 }
