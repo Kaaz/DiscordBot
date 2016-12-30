@@ -131,6 +131,10 @@ public class GuildSettings {
 		return new String[]{};
 	}
 
+	public String getDisplayValue(Guild guild, String key) {
+		return DefaultGuildSettings.get(key).toDisplay(guild, getOrDefault(key));
+	}
+
 	public boolean set(Guild guild, Class<? extends AbstractGuildSetting> settingClass, String value) {
 		return set(guild, DefaultGuildSettings.getKey(settingClass), value);
 	}

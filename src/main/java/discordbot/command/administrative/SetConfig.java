@@ -11,15 +11,17 @@ import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Emojibet;
 import discordbot.util.Misc;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -78,7 +80,7 @@ public class SetConfig extends AbstractCommand {
 			guild = ((TextChannel) channel).getGuild();
 		}
 
-		if (rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			return Template.get("command_config_no_permission");
 		}
 		if (args.length > 0 && args[0].equalsIgnoreCase("reset")) {
@@ -89,36 +91,42 @@ public class SetConfig extends AbstractCommand {
 			return Template.get(channel, "command_config_reset_warning");
 		}
 		if (args.length == 0) {
+			EmbedBuilder b = new EmbedBuilder();
 			Map<String, String> settings = GuildSettings.get(guild).getSettings();
 			ArrayList<String> keys = new ArrayList<>(settings.keySet());
 			Collections.sort(keys);
 			String ret = "Current Settings for " + guild.getName() + Config.EOL + Config.EOL;
-			ret += ":information_source: Settings indicated with a `*` are different from the default value";
-			List<List<String>> data = new ArrayList<>();
+			ret += ":information_source: Settings indicated with a `*` are different from the default value" + Config.EOL + Config.EOL;
+			String cfgFormat = "`\u200B%-24s:`  %s" + Config.EOL;
 			for (String key : keys) {
 				if (DefaultGuildSettings.get(key).isReadOnly()) {
 					if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
 						continue;
 					}
 				}
-				List<String> row = new ArrayList<>();
-				String indicator = "";
-				if (rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-					indicator = DefaultGuildSettings.get(key).isReadOnly() ? "r" : " ";
+				String indicator = "  ";
+				if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && DefaultGuildSettings.get(key).isReadOnly()) {
+					indicator = "r ";
+				} else if (!settings.get(key).equals(DefaultGuildSettings.getDefault(key))) {
+					indicator = "* ";
 				}
-				indicator += settings.get(key).equals(DefaultGuildSettings.getDefault(key)) ? " " : "*";
-				row.add(indicator + key);
-				row.add(settings.get(key));
-				row.add(DefaultGuildSettings.getDefault(key));
-				data.add(row);
+				ret += String.format(cfgFormat, indicator + key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key));
+				b.addField(key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key), true);
 			}
-			List<String> headers = new ArrayList<>();
-			Collections.addAll(headers, "Setting name", "Current", "Default");
-			ret += Misc.makeAsciiTable(headers,
-					data, null);
+			String commandPrefix = DisUtil.getCommandPrefix(guild);
+			b.setDescription(String.format("To see more details about a setting:" + Config.EOL +
+					"`%1$scfg settingname`" + Config.EOL + Config.EOL +
+					"To change a setting:" + Config.EOL +
+					"`%1$scfg settingname value`" + Config.EOL + Config.EOL +
+					"Example: " + Config.EOL +
+					"`%1$scfg music_vote_percent 10`", commandPrefix));
+			b.setTitle("Current Settings for " + guild.getName());
+			if (PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
+				channel.sendMessage(b.build()).queue();
+				return "";
+			}
 			return ret;
 		}
-
 		if (!DefaultGuildSettings.isValidKey(args[0])) {
 			return Template.get("command_config_key_not_exists");
 		}
