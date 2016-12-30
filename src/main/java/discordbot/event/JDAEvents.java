@@ -312,7 +312,7 @@ public class JDAEvents extends ListenerAdapter {
 		if ("false".equalsIgnoreCase(autoChannel)) {
 			return;
 		}
-		if (event.getChannelJoined().getName().equalsIgnoreCase(autoChannel)) {
+		if (event.getChannelJoined().getId().equals(autoChannel) || event.getChannelJoined().getName().equalsIgnoreCase(autoChannel)) {
 			player.connectTo(event.getChannelJoined());
 			player.playRandomSong();
 		}
