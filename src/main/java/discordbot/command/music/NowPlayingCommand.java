@@ -153,7 +153,7 @@ public class NowPlayingCommand extends AbstractCommand {
 				case "clear":
 					boolean adminOnly = "true".equals(GuildSettings.getFor(channel, SettingMusicClearAdminOnly.class));
 					if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && args.length > 2 && args[1].equals("admin") && args[2].equalsIgnoreCase("toggle")) {
-						GuildSettings.get(guild).set(SettingMusicClearAdminOnly.class, adminOnly ? "false" : "true");
+						GuildSettings.get(guild).set(guild, SettingMusicClearAdminOnly.class, adminOnly ? "false" : "true");
 						adminOnly = !adminOnly;
 					} else if ((userRank.isAtLeast(SimpleRank.GUILD_ADMIN) || !adminOnly) && args.length == 1) {
 						player.clearQueue();

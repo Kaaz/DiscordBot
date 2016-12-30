@@ -198,7 +198,7 @@ public class MusicPlayerHandler {
 		playlist = CPlaylist.findById(id);
 		if (activePlayListId != playlist.id) {
 			activePlayListId = playlist.id;
-			GuildSettings.get(guildId).set(SettingMusicLastPlaylist.class, "" + id);
+			GuildSettings.get(guildId).set(null, SettingMusicLastPlaylist.class, "" + id);
 		}
 	}
 
@@ -291,12 +291,12 @@ public class MusicPlayerHandler {
 					musicChannel.getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).queue();
 				}
 			} else {
-				GuildSettings.get(guildId).set(SettingMusicChannelTitle.class, "false");
+				GuildSettings.get(guildId).set(null, SettingMusicChannelTitle.class, "false");
 			}
 		}
 		if (!messageType.equals("off") && record.id > 0) {
 			if (musicChannel == null || !musicChannel.canTalk()) {
-				GuildSettings.get(guildId).set(SettingMusicPlayingMessage.class, "off");
+				GuildSettings.get(guildId).set(null, SettingMusicPlayingMessage.class, "off");
 				return;
 			}
 			final long deleteAfter = Math.min(Math.max(currentSongLength * 1000L, 60_000L), 7200_000L);

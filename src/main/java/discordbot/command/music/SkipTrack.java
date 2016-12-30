@@ -88,7 +88,7 @@ public class SkipTrack extends AbstractCommand {
 				case "admin":
 				case "adminonly":
 					if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && args.length > 1 && args[1].equalsIgnoreCase("toggle")) {
-						GuildSettings.get(guild).set(SettingMusicSkipAdminOnly.class, adminOnly ? "false" : "true");
+						GuildSettings.get(guild).set(guild, SettingMusicSkipAdminOnly.class, adminOnly ? "false" : "true");
 						adminOnly = !adminOnly;
 					}
 					return Template.get("music_skip_mode", adminOnly ? "admin-only" : "normal");

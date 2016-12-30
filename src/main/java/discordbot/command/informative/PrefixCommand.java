@@ -47,7 +47,7 @@ public class PrefixCommand extends AbstractCommand {
 		if (args.length > 0 && rank.isAtLeast(SimpleRank.GUILD_ADMIN) && channel instanceof TextChannel) {
 			TextChannel text = (TextChannel) channel;
 			GuildSettings guildSettings = GuildSettings.get(text.getGuild());
-			if (guildSettings.set(SettingCommandPrefix.class, args[0])) {
+			if (guildSettings.set(text.getGuild(), SettingCommandPrefix.class, args[0])) {
 				return Template.get(channel, "command_prefix_saved", args[0]);
 			}
 			return Template.get(channel, "command_prefix_invalid",

@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
  * Created on 12-10-2016
  */
 public class JDAEvents extends ListenerAdapter {
-	private DiscordBot discordBot;
+	private final DiscordBot discordBot;
 
 	public JDAEvents(DiscordBot bot) {
 		this.discordBot = bot;
@@ -244,7 +244,7 @@ public class JDAEvents extends ListenerAdapter {
 		if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
 			TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
 			if (defaultChannel == null) {
-				GuildSettings.get(guild.getId()).set(SettingWelcomeNewUsers.class, "false");
+				GuildSettings.get(guild.getId()).set(guild, SettingWelcomeNewUsers.class, "false");
 				return;
 			}
 			defaultChannel.sendMessage(

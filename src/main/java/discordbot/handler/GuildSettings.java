@@ -131,18 +131,17 @@ public class GuildSettings {
 		return new String[]{};
 	}
 
-	public boolean set(Class<? extends AbstractGuildSetting> settingClass, String value) {
-		return set(DefaultGuildSettings.getKey(settingClass), value);
+	public boolean set(Guild guild, Class<? extends AbstractGuildSetting> settingClass, String value) {
+		return set(guild, DefaultGuildSettings.getKey(settingClass), value);
 	}
 
-	public boolean set(String key, String value) {
-		if (DefaultGuildSettings.isValidKey(key) &&
-				DefaultGuildSettings.get(key).isValidValue(value)
-				) {
+	public boolean set(Guild guild, String key, String value) {
+		if (DefaultGuildSettings.isValidKey(key) && DefaultGuildSettings.get(key).isValidValue(guild, value)) {
 			try {
+				String dbValue = DefaultGuildSettings.get(key).getValue(guild, value);
 				WebDb.get().insert("INSERT INTO guild_settings (guild, name, config) VALUES(?, ?, ?) " +
-						"ON DUPLICATE KEY UPDATE config=?", id, key, value, value);
-				settings.put(key, value);
+						"ON DUPLICATE KEY UPDATE config=?", id, key, dbValue, dbValue);
+				settings.put(key, dbValue);
 				return true;
 			} catch (SQLException e) {
 				e.printStackTrace();

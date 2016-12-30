@@ -66,7 +66,7 @@ public class VolumeCommand extends AbstractCommand {
 				volume = Integer.parseInt(args[0]);
 				if (volume > 0 && volume <= 100) {
 					player.setVolume(volume);
-					GuildSettings.get(guild).set(SettingMusicVolume.class, String.valueOf(player.getVolume()));
+					GuildSettings.get(guild).set(guild, SettingMusicVolume.class, String.valueOf(player.getVolume()));
 					return Template.get("command_volume_changed", player.getVolume());
 				}
 			} catch (NumberFormatException ignored) {
