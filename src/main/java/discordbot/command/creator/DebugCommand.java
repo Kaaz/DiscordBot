@@ -43,7 +43,7 @@ public class DebugCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
+		if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.CREATOR)) {
 			return Template.get(channel, "command_no_permission");
 		}
 		if (args.length == 0) {
