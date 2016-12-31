@@ -64,6 +64,12 @@ public class TextChannelSettingType implements IGuildSettingType {
 		if (channel != null) {
 			return channel.getAsMention();
 		}
+		if (!value.isEmpty() && !value.matches("\\d{10,}")) {
+			TextChannel channelByName = DisUtil.findChannel(guild, value);
+			if (channelByName != null) {
+				return channelByName.getAsMention();
+			}
+		}
 		return Emojibet.NO_ENTRY;
 	}
 }

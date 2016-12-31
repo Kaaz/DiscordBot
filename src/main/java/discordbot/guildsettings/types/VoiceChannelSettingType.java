@@ -17,6 +17,7 @@ public class VoiceChannelSettingType implements IGuildSettingType {
 
 		this.allowNull = allowNull;
 	}
+
 	@Override
 	public String typeName() {
 		return "voice-channel";
@@ -56,6 +57,12 @@ public class VoiceChannelSettingType implements IGuildSettingType {
 		VoiceChannel channel = guild.getVoiceChannelById(value);
 		if (channel != null) {
 			return channel.getName();
+		}
+		if (!value.isEmpty() && !value.matches("\\d{10,}")) {
+			VoiceChannel channelByName = DisUtil.findVoiceChannel(guild, value);
+			if (channelByName != null) {
+				return channelByName.getName();
+			}
 		}
 		return Emojibet.NO_ENTRY;
 	}

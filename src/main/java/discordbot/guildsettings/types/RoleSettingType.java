@@ -60,9 +60,15 @@ public class RoleSettingType implements IGuildSettingType {
 
 	@Override
 	public String toDisplay(Guild guild, String value) {
-		Role channel = guild.getRoleById(value);
-		if (channel != null) {
-			return channel.getName();
+		Role role = guild.getRoleById(value);
+		if (role != null) {
+			return role.getName();
+		}
+		if (!value.isEmpty() && !value.matches("\\d{10,}")) {
+			Role roleByName = DisUtil.findRole(guild, value);
+			if (roleByName != null) {
+				return roleByName.getName();
+			}
 		}
 		return Emojibet.NO_ENTRY;
 	}
