@@ -18,12 +18,15 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  * !user
  * shows some info about the user
  */
 public class UserCommand extends AbstractCommand {
+	private final SimpleDateFormat joindateFormat = new SimpleDateFormat("yyyy/MM/dd");
+
 	public UserCommand() {
 		super();
 	}
@@ -91,7 +94,13 @@ public class UserCommand extends AbstractCommand {
 					member.joinDate = new Timestamp(guild.getMember(infoUser).getJoinDate().toInstant().toEpochMilli());
 					CGuildMember.insertOrUpdate(member);
 				}
-				sb.append(":date: joined: ").append(TimeUtil.getRelativeTime(member.joinDate.getTime() / 1000L, false, true)).append(Config.EOL);
+
+				sb.append(":date: joined: ")
+						.append(joindateFormat.format(member.joinDate))
+						.append(" (")
+						.append(TimeUtil.getRelativeTime(member.joinDate.getTime() / 1000L, false, true))
+						.append(")")
+						.append(Config.EOL);
 
 			}
 			if (infoUser.getAvatarUrl() != null) {
