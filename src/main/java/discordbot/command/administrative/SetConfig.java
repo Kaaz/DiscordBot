@@ -98,7 +98,7 @@ public class SetConfig extends AbstractCommand {
 			if (args[0].equals("tags")) {
 				return "The following tags exist for settings: " + Config.EOL + Config.EOL +
 						Joiner.on(", ").join(DefaultGuildSettings.getAllTags()) + Config.EOL + Config.EOL +
-						"`" + DisUtil.getCommandPrefix(channel) + "cfg tagname` to see settings with tagname";
+						"`" + DisUtil.getCommandPrefix(channel) + "cfg tag tagname` to see settings with tagname";
 			}
 			if (args[0].equals("tag") && args.length > 1) {
 				tag = args[1].toLowerCase();
