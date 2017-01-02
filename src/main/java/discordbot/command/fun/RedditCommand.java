@@ -96,7 +96,7 @@ public class RedditCommand extends AbstractCommand {
 			return ":newspaper:" + Config.EOL + post.data.getTitle() + Config.EOL + post.data.getSelftext();
 		}
 		ImagePreview preview = post.data.getPreview();
-		if (preview.images.size() > 0) {
+		if (preview != null && preview.images.size() > 0) {
 			TextChannel tc = (TextChannel) channel;
 			if (!PermissionUtil.checkPermission(tc, tc.getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
 				return Template.get("permission_missing_attach_files");
