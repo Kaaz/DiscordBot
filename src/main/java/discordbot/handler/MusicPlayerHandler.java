@@ -12,6 +12,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import discordbot.db.WebDb;
+import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CMusic;
 import discordbot.db.controllers.CMusicLog;
@@ -113,7 +114,14 @@ public class MusicPlayerHandler {
 	}
 
 	public static void removeGuild(Guild guild) {
+		removeGuild(guild, false);
+	}
+
+	public static void removeGuild(Guild guild, boolean saveStatus) {
 		if (playerInstances.containsKey(guild.getId())) {
+			if (saveStatus && playerInstances.get(guild.getId()).isConnected()) {
+				CBotPlayingOn.insert(guild.getId(), guild.getAudioManager().getConnectedChannel().getId());
+			}
 			playerInstances.get(guild.getId()).leave();
 			playerInstances.remove(guild.getId());
 		}

@@ -186,7 +186,7 @@ public class SetConfig extends AbstractCommand {
 			tblContent += s + Config.EOL;
 		}
 		return "Config help for **" + args[0] + "**" + Config.EOL + Config.EOL +
-				"Current value: \"**" + GuildSettings.get(guild).getOrDefault(args[0]) + "**\"" + Config.EOL +
+				"Current value: \"**" + GuildSettings.get(guild.getId()).getDisplayValue(guild, args[0]) + "**\"" + Config.EOL +
 				"Default value: \"**" + setting.getDefaultValue(args[0]) + "**\"" + Config.EOL + Config.EOL +
 				"Description: " + Config.EOL +
 				Misc.makeTable(tblContent);

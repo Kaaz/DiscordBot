@@ -32,8 +32,10 @@ public class RebootCommand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"reboot         //reboots the system",
-				"reboot update  //reboots the system and updates"
+				"reboot                  //reboots the system",
+				"reboot update           //reboots the system and updates",
+				"reboot shard <id>       //reboots shard",
+				"reboot gshard <guildid> //reboots shard for guild-id",
 		};
 	}
 

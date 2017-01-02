@@ -19,6 +19,9 @@ public class Config {
 	@ConfigurationOption
 	public static boolean BOT_ENABLED = false;
 
+	@ConfigurationOption
+	public static boolean BOT_RESTART_INACTIVE_SHARDS = false;
+
 	//token for discord.bots.pw
 	@ConfigurationOption
 	public static String BOT_TOKEN_BOTS_DISCORD_PW = "token-here";

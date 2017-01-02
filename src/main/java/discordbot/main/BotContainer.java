@@ -6,6 +6,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import discordbot.core.ExitCode;
 import discordbot.db.controllers.CBotPlayingOn;
+import discordbot.db.model.OBotPlayingOn;
 import discordbot.handler.CommandHandler;
 import discordbot.handler.GameHandler;
 import discordbot.handler.MusicPlayerHandler;
@@ -17,15 +18,19 @@ import discordbot.util.Emojibet;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLongArray;
 import java.util.function.Consumer;
 
 /**
@@ -41,14 +46,65 @@ public class BotContainer {
 	private volatile boolean allShardsReady = false;
 	private volatile boolean terminationRequested = false;
 	private volatile ExitCode rebootReason = ExitCode.UNKNOWN;
+	private final AtomicLongArray lastActions;
+
 
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException, RateLimitedException {
 		this.numGuilds = new AtomicInteger(numGuilds);
 		youtubeThread = new YoutubeThread();
-		this.numShards = getRecommendedShards();
+		this.numShards = 3;//getRecommendedShards();
 		shards = new DiscordBot[numShards];
+		lastActions = new AtomicLongArray(numShards);
 		initHandlers();
 		initShards();
+	}
+
+	public synchronized void restartShard(int shardId) {
+		try {
+			for (Guild guild : shards[shardId].client.getGuilds()) {
+				MusicPlayerHandler.removeGuild(guild, true);
+			}
+			shards[shardId].client.shutdownNow(false);
+			Thread.sleep(5_000L);
+			shards[shardId] = new DiscordBot(shardId, shards.length, this);
+			List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
+			for (OBotPlayingOn radio : radios) {
+				if (calcShardId(Long.parseLong(radio.guildId)) != shardId) {
+					continue;
+				}
+				Guild guild = shards[shardId].client.getGuildById(radio.guildId);
+				if (guild != null) {
+					VoiceChannel channel = guild.getVoiceChannelById(radio.channelId);
+					if (channel != null) {
+						boolean hasUsers = false;
+						for (Member user : channel.getMembers()) {
+							if (!user.getUser().isBot()) {
+								hasUsers = true;
+								break;
+							}
+						}
+						if (hasUsers) {
+							MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, shards[shardId]);
+							player.connectTo(channel);
+							if (!player.isPlaying()) {
+								player.playRandomSong();
+							}
+						}
+					}
+				}
+				CBotPlayingOn.deleteGuild(radio.guildId);
+			}
+		} catch (LoginException | InterruptedException | RateLimitedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void setLastAction(int shard, long timestamp) {
+		lastActions.set(shard, timestamp);
+	}
+
+	public long getLastAction(int shard) {
+		return lastActions.get(shard);
 	}
 
 	/**
@@ -192,7 +248,17 @@ public class BotContainer {
 		if (numShards == 1) {
 			return shards[0];
 		}
-		return shards[(int) ((discordGuildId >> 22) % numShards)];
+		return shards[calcShardId(discordGuildId)];
+	}
+
+	/**
+	 * calculate to which shard the guild goes to
+	 *
+	 * @param discordGuildId discord guild id
+	 * @return shard number
+	 */
+	private int calcShardId(long discordGuildId) {
+		return (int) ((discordGuildId >> 22) % numShards);
 	}
 
 	/**
@@ -206,6 +272,9 @@ public class BotContainer {
 			LOGGER.info("Starting shard #{} of {}", i, shards.length);
 			shards[i] = new DiscordBot(i, shards.length, this);
 			Thread.sleep(5_000L);
+		}
+		for (DiscordBot shard : shards) {
+			setLastAction(shard.getShardId(), System.currentTimeMillis());
 		}
 	}
 

@@ -2,12 +2,15 @@ package discordbot.command.creator;
 
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
+import discordbot.main.BotContainer;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.Emojibet;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
+
+import java.util.Date;
 
 /**
  */
@@ -33,7 +36,9 @@ public class DebugCommand extends AbstractCommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[]{};
+		return new String[]{
+				"activity //shows last shard activity"
+		};
 	}
 
 	@Override
@@ -48,6 +53,10 @@ public class DebugCommand extends AbstractCommand {
 		}
 		if (args.length == 0) {
 			return Emojibet.EYES;
+		}
+		switch (args[0].toLowerCase()) {
+			case "activity":
+				return lastShardActivity(bot.getContainer());
 		}
 		boolean value = false;
 		boolean updating = args.length > 1;
@@ -69,5 +78,20 @@ public class DebugCommand extends AbstractCommand {
 			return Emojibet.OKE_SIGN + " " + args[0] + " is set to " + value;
 		}
 		return Emojibet.UNLOCKED + " " + args[0] + " = `" + value + "`";
+	}
+
+	private String lastShardActivity(BotContainer container) {
+		long now = System.currentTimeMillis();
+		String msg = "Last event per shard: " + new Date(now).toString() + "\n\n";
+		String comment = "";
+		for (DiscordBot shard : container.getShards()) {
+			if (shard == null || !shard.isReady()) {
+				msg += "#shard is being reset and is reloading\n";
+				continue;
+			}
+			long lastEventReceived = now - container.getLastAction(shard.getShardId());
+			msg += String.format("#%02d: %s sec ago\n", shard.getShardId(), lastEventReceived / 1000L);
+		}
+		return msg + comment;
 	}
 }

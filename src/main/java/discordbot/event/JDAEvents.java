@@ -27,6 +27,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.DisconnectEvent;
+import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReconnectedEvent;
 import net.dv8tion.jda.core.events.ResumedEvent;
 import net.dv8tion.jda.core.events.StatusChangeEvent;
@@ -76,6 +77,11 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onReconnect(ReconnectedEvent event) {
+	}
+
+	@Override
+	public void onGenericEvent(Event event) {
+		discordBot.getContainer().setLastAction(discordBot.getShardId(), System.currentTimeMillis());
 	}
 
 	public void onGuildJoin(GuildJoinEvent event) {

@@ -87,6 +87,7 @@ public class DiscordBot {
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 		chatBotHandler = new ChatBotHandler();
 		markReady();
+		container.setLastAction(shardId, System.currentTimeMillis());
 	}
 
 	/**

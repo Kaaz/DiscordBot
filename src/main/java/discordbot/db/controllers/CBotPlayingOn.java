@@ -54,6 +54,15 @@ public class CBotPlayingOn {
 		}
 	}
 
+	public static void deleteGuild(String guildId) {
+		try {
+			WebDb.get().query("DELETE FROM bot_playing_on WHERE guild_id = ?", guildId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	public static void deleteAll() {
 		try {
 			WebDb.get().query("DELETE FROM bot_playing_on ");
