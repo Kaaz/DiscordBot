@@ -78,12 +78,11 @@ public class CModerationCase {
 
 	public static MessageEmbed buildCase(OModerationCase modcase) {
 		EmbedBuilder b = new EmbedBuilder();
-		b.setTitle(String.format("case #%s", modcase.id));
+		b.setTitle(String.format("%s | case #%s", modcase.punishment.getKeyword(), modcase.id));
 		b.setColor(modcase.punishment.getColor());
 		b.addField("User", "" + modcase.userId, true);
 		b.addField("Moderator", "" + modcase.moderatorId, true);
 		b.addField("Issued", modcase.createdAt.toString(), true);
-		b.addField("Punishment", modcase.punishment.getKeyword(), true);
 		b.addField("Expires", modcase.expires.toString(), true);
 		b.addField("Reason", modcase.reason, false);
 

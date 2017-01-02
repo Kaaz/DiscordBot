@@ -18,6 +18,11 @@ public class SettingMusicAdminVolume extends AbstractGuildSetting<BooleanSetting
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"music", "volume", "admin"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "false";
 	}

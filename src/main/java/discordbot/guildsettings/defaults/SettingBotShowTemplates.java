@@ -17,6 +17,11 @@ public class SettingBotShowTemplates extends AbstractGuildSetting<BooleanSetting
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"bot", "debug", "template"};
+	}
+
+	@Override
 	public boolean isReadOnly() {
 		return true;
 	}

@@ -16,6 +16,11 @@ public class SettingMusicVolume extends AbstractGuildSetting<NumberBetweenSettin
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"music", "volume"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "10";
 	}

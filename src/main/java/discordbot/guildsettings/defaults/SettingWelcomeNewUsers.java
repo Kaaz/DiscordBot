@@ -16,6 +16,11 @@ public class SettingWelcomeNewUsers extends AbstractGuildSetting<BooleanSettingT
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"bot", "welcome", "user"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "false";
 	}

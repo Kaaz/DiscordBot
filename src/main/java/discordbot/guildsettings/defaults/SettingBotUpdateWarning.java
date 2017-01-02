@@ -18,6 +18,11 @@ public class SettingBotUpdateWarning extends AbstractGuildSetting<EnumSettingTyp
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"bot", "update", "warn"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "playing";
 	}

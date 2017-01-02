@@ -16,6 +16,11 @@ public class SettingRoleTimeRanks extends AbstractGuildSetting<BooleanSettingTyp
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"user", "rank", "auto"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "false";
 	}

@@ -16,6 +16,11 @@ public class SettingRoleTimeRanksPrefix extends AbstractGuildSetting<StringLengt
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"user", "rank", "prefix"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "[rank]";
 	}

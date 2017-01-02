@@ -16,6 +16,11 @@ public class SettingUseEconomy extends AbstractGuildSetting<BooleanSettingType> 
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"bot", "module", "economy"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "false";
 	}

@@ -16,6 +16,11 @@ public class SettingMusicRole extends AbstractGuildSetting<RoleSettingType> {
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"music", "role", "requirement"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "false";
 	}

@@ -16,6 +16,11 @@ public class SettingMusicVotePercent extends AbstractGuildSetting<NumberBetweenS
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"music", "vote", "skip"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "40";
 	}

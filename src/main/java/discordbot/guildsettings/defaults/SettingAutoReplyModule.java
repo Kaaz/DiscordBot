@@ -17,6 +17,11 @@ public class SettingAutoReplyModule extends AbstractGuildSetting<BooleanSettingT
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"bot","reply","auto"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "false";
 	}

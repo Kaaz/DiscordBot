@@ -16,6 +16,11 @@ public class SettingMusicLastPlaylist extends AbstractGuildSetting<NoSettingType
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"music", "playlist"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "0";
 	}

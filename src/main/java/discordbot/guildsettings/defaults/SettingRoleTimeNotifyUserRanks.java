@@ -16,6 +16,11 @@ public class SettingRoleTimeNotifyUserRanks extends AbstractGuildSetting<EnumSet
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"user", "rank", "warn"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "no";
 	}

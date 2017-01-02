@@ -17,6 +17,11 @@ public class SettingCommandPrefix extends AbstractGuildSetting<StringLengthSetti
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"bot", "prefix", "command"};
+	}
+
+	@Override
 	public String getDefault() {
 		return Config.BOT_COMMAND_PREFIX;
 	}

@@ -19,6 +19,13 @@ abstract public class AbstractGuildSetting<T extends IGuildSettingType> {
 	public abstract String getKey();
 
 	/**
+	 * The tags to initialize the setting with
+	 *
+	 * @return array of tags
+	 */
+	public abstract String[] initTags();
+
+	/**
 	 * default value for the config
 	 *
 	 * @return default

@@ -16,6 +16,11 @@ public class SettingMusicChannelTitle extends AbstractGuildSetting<EnumSettingTy
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"music", "channel", "title"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "false";
 	}

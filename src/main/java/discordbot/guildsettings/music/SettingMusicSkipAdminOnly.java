@@ -16,6 +16,11 @@ public class SettingMusicSkipAdminOnly extends AbstractGuildSetting<BooleanSetti
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"music", "skip", "admin"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "false";
 	}

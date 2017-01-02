@@ -16,6 +16,11 @@ public class SettingBotChannel extends AbstractGuildSetting<TextChannelSettingTy
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"bot", "channel"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "general";
 	}

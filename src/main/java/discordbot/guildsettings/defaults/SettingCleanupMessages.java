@@ -17,6 +17,11 @@ public class SettingCleanupMessages extends AbstractGuildSetting<EnumSettingType
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"bot", "cleanup", "messages"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "no";
 	}

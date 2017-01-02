@@ -16,6 +16,11 @@ public class SettingShowUnknownCommands extends AbstractGuildSetting<BooleanSett
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"bot", "command", "unknown"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "false";
 	}

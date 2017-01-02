@@ -16,6 +16,11 @@ public class SettingMusicPlayingMessage extends AbstractGuildSetting<EnumSetting
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"music", "message"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "clear";
 	}

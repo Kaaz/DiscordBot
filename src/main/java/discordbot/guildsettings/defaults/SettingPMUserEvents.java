@@ -16,6 +16,11 @@ public class SettingPMUserEvents extends AbstractGuildSetting<BooleanSettingType
 	}
 
 	@Override
+	public String[] initTags() {
+		return new String[]{"user", "admin", "events"};
+	}
+
+	@Override
 	public String getDefault() {
 		return "false";
 	}
