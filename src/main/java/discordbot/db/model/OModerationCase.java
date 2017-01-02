@@ -15,13 +15,14 @@ public class OModerationCase extends AbstractModel {
 	public Timestamp expires = null;
 	public PunishType punishment = PunishType.KICK;
 	public String reason = "";
+	public int active = 1;
 
 	public void setPunishment(int punishment) {
 		this.punishment = PunishType.fromId(punishment);
 	}
 
 	public enum PunishType {
-		WARN(1, "Warned", "Adds a strike to the user", new Color(0xFFF300)),
+		WARN(1, "Warned", "Adds a strike to the user", new Color(0xA8CF00)),
 		MUTE(2, "Muted", "Actions are restricted", new Color(0xFFF300)),
 		KICK(3, "Kicked", "Kicked from the guild", new Color(0xFF9600)),
 		TMP_BAN(4, "temp-ban", "Kicked from the guild, unable to rejoin for a while", new Color(0xFF4700)),

@@ -2,7 +2,6 @@ package discordbot.db.controllers;
 
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
-import discordbot.db.model.OGuildMember;
 import discordbot.db.model.OModerationCase;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageEmbed;
@@ -11,9 +10,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * data communication with the controllers `guild_member`
+ * data communication with the controllers `moderation_case`
  */
 public class CModerationCase {
+
 
 	public static OModerationCase findById(int caseId) {
 		OModerationCase record = new OModerationCase();
@@ -37,6 +37,7 @@ public class CModerationCase {
 		record.guildId = resultset.getInt("guild_id");
 		record.userId = resultset.getInt("user_id");
 		record.moderatorId = resultset.getInt("moderator");
+		record.active = resultset.getInt("active");
 		record.messageId = resultset.getLong("message");
 		record.reason = resultset.getString("reason");
 		record.createdAt = resultset.getTimestamp("created_at");
@@ -45,12 +46,27 @@ public class CModerationCase {
 		return record;
 	}
 
-	public static void insertOrUpdate(OGuildMember record) {
+	public static void insert(OModerationCase record) {
 		try {
 			WebDb.get().insert(
-					"INSERT INTO guild_member(guild_id, user_id, join_date) " +
-							"VALUES (?,?,?) ON DUPLICATE KEY UPDATE join_date = ?",
-					record.guildId, record.userId, record.joinDate, record.joinDate);
+					"INSERT INTO moderation_case(guild_id, user_id, moderator, message_id, created_at, reason, punishment, expires, active) " +
+							"VALUES (?,?,?,?,?,?,?,?,?)",
+					record.guildId, record.userId, record.moderatorId, record.messageId, record.createdAt, record.reason, record.punishment, record.expires, record.active);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void update(OModerationCase record) {
+		try {
+			WebDb.get().insert(
+					"UPDATE moderation_case SET guild_id = ?, user_id = ?, " +
+							"moderator = ?, message_id = ?, created_at = ?, reason = ?, punishment = ?, " +
+							"expires =?, active = ? " +
+							"WHERE id = ?" +
+							record.guildId, record.userId,
+					record.moderatorId, record.messageId, record.createdAt, record.reason, record.punishment,
+					record.expires, record.active, record.id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
