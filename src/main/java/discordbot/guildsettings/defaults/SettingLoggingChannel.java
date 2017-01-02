@@ -16,7 +16,7 @@ public class SettingLoggingChannel extends AbstractGuildSetting<TextChannelSetti
 	}
 
 	@Override
-	public String[] initTags() {
+	public String[] getTags() {
 		return new String[]{"bot", "logging", "channel"};
 	}
 

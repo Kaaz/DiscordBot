@@ -17,7 +17,7 @@ public class SettingEnableChatBot extends AbstractGuildSetting<BooleanSettingTyp
 	}
 
 	@Override
-	public String[] initTags() {
+	public String[] getTags() {
 		return new String[]{"bot", "chat", "module"};
 	}
 

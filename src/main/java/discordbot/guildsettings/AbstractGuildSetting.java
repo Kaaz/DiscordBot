@@ -2,11 +2,17 @@ package discordbot.guildsettings;
 
 import net.dv8tion.jda.core.entities.Guild;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 abstract public class AbstractGuildSetting<T extends IGuildSettingType> {
 	final private T type;
+	private final HashSet<String> tags;
 
 	public AbstractGuildSetting() {
 		type = getSettingsType();
+		tags = new HashSet<>();
+		tags.addAll(Arrays.asList(getTags()));
 	}
 
 	protected abstract T getSettingsType();
@@ -23,7 +29,11 @@ abstract public class AbstractGuildSetting<T extends IGuildSettingType> {
 	 *
 	 * @return array of tags
 	 */
-	public abstract String[] initTags();
+	public abstract String[] getTags();
+
+	public boolean hasTag(String tagNFame) {
+		return tags.contains(tagNFame);
+	}
 
 	/**
 	 * default value for the config

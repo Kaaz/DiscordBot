@@ -16,7 +16,7 @@ public class SettingMusicAutoVoiceChannel extends AbstractGuildSetting<VoiceChan
 	}
 
 	@Override
-	public String[] initTags() {
+	public String[] getTags() {
 		return new String[]{"music", "channel", "auto"};
 	}
 

@@ -17,7 +17,7 @@ public class SettingBotShowTemplates extends AbstractGuildSetting<BooleanSetting
 	}
 
 	@Override
-	public String[] initTags() {
+	public String[] getTags() {
 		return new String[]{"bot", "debug", "template"};
 	}
 

@@ -17,7 +17,7 @@ public class SettingMusicChannel extends AbstractGuildSetting<TextChannelSetting
 	}
 
 	@Override
-	public String[] initTags() {
+	public String[] getTags() {
 		return new String[]{"bot", "music", "channel"};
 	}
 

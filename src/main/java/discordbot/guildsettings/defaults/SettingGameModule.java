@@ -16,7 +16,7 @@ public class SettingGameModule extends AbstractGuildSetting<BooleanSettingType> 
 	}
 
 	@Override
-	public String[] initTags() {
+	public String[] getTags() {
 		return new String[]{"bot", "module", "games"};
 	}
 

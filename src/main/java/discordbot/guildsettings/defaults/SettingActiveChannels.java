@@ -17,7 +17,7 @@ public class SettingActiveChannels extends AbstractGuildSetting<EnumSettingType>
 	}
 
 	@Override
-	public String[] initTags() {
+	public String[] getTags() {
 		return new String[]{"bot","listen"};
 	}
 

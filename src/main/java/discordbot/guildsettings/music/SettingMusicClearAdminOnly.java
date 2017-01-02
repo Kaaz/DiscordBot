@@ -16,7 +16,7 @@ public class SettingMusicClearAdminOnly extends AbstractGuildSetting<BooleanSett
 	}
 
 	@Override
-	public String[] initTags() {
+	public String[] getTags() {
 		return new String[]{"music", "admin", "clear"};
 	}
 

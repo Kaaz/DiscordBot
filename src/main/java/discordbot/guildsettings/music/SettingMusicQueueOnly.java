@@ -16,7 +16,7 @@ public class SettingMusicQueueOnly extends AbstractGuildSetting<BooleanSettingTy
 	}
 
 	@Override
-	public String[] initTags() {
+	public String[] getTags() {
 		return new String[]{"music", "queue", "random"};
 	}
 

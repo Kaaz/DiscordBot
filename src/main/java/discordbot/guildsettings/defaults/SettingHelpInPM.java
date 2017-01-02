@@ -16,7 +16,7 @@ public class SettingHelpInPM extends AbstractGuildSetting<BooleanSettingType> {
 	}
 
 	@Override
-	public String[] initTags() {
+	public String[] getTags() {
 		return new String[]{"bot", "help", "pm","command"};
 	}
 

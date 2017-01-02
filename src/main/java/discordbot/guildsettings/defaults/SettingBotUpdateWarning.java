@@ -18,7 +18,7 @@ public class SettingBotUpdateWarning extends AbstractGuildSetting<EnumSettingTyp
 	}
 
 	@Override
-	public String[] initTags() {
+	public String[] getTags() {
 		return new String[]{"bot", "update", "warn"};
 	}
 

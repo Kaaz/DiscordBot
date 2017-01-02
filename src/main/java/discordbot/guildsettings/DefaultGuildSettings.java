@@ -9,10 +9,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class DefaultGuildSettings {
 	private final static Map<String, AbstractGuildSetting> defaultSettings = new HashMap<>();
 	private final static Map<Class<? extends AbstractGuildSetting>, String> classNameToKey = new HashMap<>();
+	private static final TreeSet<String> tags = new TreeSet<>();
 	private static boolean initialized = false;
 
 	static {
@@ -23,6 +25,10 @@ public class DefaultGuildSettings {
 			System.out.println(e.toString());
 			Launcher.stop(ExitCode.GENERIC_ERROR);
 		}
+	}
+
+	public static TreeSet<String> getAllTags() {
+		return new TreeSet<>(tags);
 	}
 
 	public static Map<String, AbstractGuildSetting> getDefaults() {
@@ -57,12 +63,17 @@ public class DefaultGuildSettings {
 		Set<Class<? extends AbstractGuildSetting>> classes = reflections.getSubTypesOf(AbstractGuildSetting.class);
 		for (Class<? extends AbstractGuildSetting> settingClass : classes) {
 			try {
-				AbstractGuildSetting settingObject = settingClass.getConstructor().newInstance();
-				if (!defaultSettings.containsKey(settingObject.getKey())) {
-					defaultSettings.put(settingObject.getKey(), settingObject);
-					classNameToKey.put(settingClass, settingObject.getKey());
+				AbstractGuildSetting setting = settingClass.getConstructor().newInstance();
+				if (!defaultSettings.containsKey(setting.getKey())) {
+					defaultSettings.put(setting.getKey(), setting);
+					classNameToKey.put(settingClass, setting.getKey());
+					for (String tag : setting.getTags()) {
+						if (!tags.contains(tag)) {
+							tags.add(tag);
+						}
+					}
 				} else {
-					throw new DefaultSettingAlreadyExistsException(settingObject.getKey());
+					throw new DefaultSettingAlreadyExistsException(setting.getKey());
 				}
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				e.printStackTrace();

@@ -16,7 +16,7 @@ public class SettingMusicShowListeners extends AbstractGuildSetting<BooleanSetti
 	}
 
 	@Override
-	public String[] initTags() {
+	public String[] getTags() {
 		return new String[]{"music", "show", "listeners"};
 	}
 

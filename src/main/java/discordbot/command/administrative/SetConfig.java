@@ -1,5 +1,6 @@
 package discordbot.command.administrative;
 
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.guildsettings.DefaultGuildSettings;
@@ -47,6 +48,8 @@ public class SetConfig extends AbstractCommand {
 	public String[] getUsage() {
 		return new String[]{
 				"config                    //overview",
+				"config tags               //see what tags exist",
+				"config tag <tagname>      //show settings with tagname",
 				"config <property>         //check details of property",
 				"config <property> <value> //sets property",
 				"",
@@ -90,19 +93,37 @@ public class SetConfig extends AbstractCommand {
 			}
 			return Template.get(channel, "command_config_reset_warning");
 		}
-		if (args.length == 0) {
+		String tag = null;
+		if (args.length > 0) {
+			if (args[0].equals("tags")) {
+				return "The following tags exist for settings: " + Config.EOL + Config.EOL +
+						Joiner.on(", ").join(DefaultGuildSettings.getAllTags()) + Config.EOL + Config.EOL +
+						"`" + DisUtil.getCommandPrefix(channel) + "cfg tagname` to see settings with tagname";
+			}
+			if (args[0].equals("tag") && args.length > 1) {
+				tag = args[1].toLowerCase();
+			}
+		}
+		if (args.length == 0 || tag != null) {
 			EmbedBuilder b = new EmbedBuilder();
 			Map<String, String> settings = GuildSettings.get(guild).getSettings();
 			ArrayList<String> keys = new ArrayList<>(settings.keySet());
 			Collections.sort(keys);
 			String ret = "Current Settings for " + guild.getName() + Config.EOL + Config.EOL;
+			if (tag != null) {
+				ret += "Only showing settings with the tag `" + tag + "`" + Config.EOL;
+			}
 			ret += ":information_source: Settings indicated with a `*` are different from the default value" + Config.EOL + Config.EOL;
 			String cfgFormat = "`\u200B%-24s:`  %s" + Config.EOL;
+			boolean isEmpty = true;
 			for (String key : keys) {
 				if (DefaultGuildSettings.get(key).isReadOnly()) {
 					if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
 						continue;
 					}
+				}
+				if (tag != null && !DefaultGuildSettings.get(key).hasTag(tag)) {
+					continue;
 				}
 				String indicator = "  ";
 				if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && DefaultGuildSettings.get(key).isReadOnly()) {
@@ -112,9 +133,14 @@ public class SetConfig extends AbstractCommand {
 				}
 				ret += String.format(cfgFormat, indicator + key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key));
 				b.addField(key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key), true);
+				isEmpty = false;
+			}
+			if (isEmpty && tag != null) {
+				return "No settings found matching the tag `" + tag + "`";
 			}
 			String commandPrefix = DisUtil.getCommandPrefix(guild);
-			b.setDescription(String.format("To see more details about a setting:" + Config.EOL +
+			b.setDescription(String.format(((tag != null) ? "only showing settings with the tag " + tag + Config.EOL : "") +
+					"To see more details about a setting:" + Config.EOL +
 					"`%1$scfg settingname`" + Config.EOL + Config.EOL +
 					"To change a setting:" + Config.EOL +
 					"`%1$scfg settingname value`" + Config.EOL + Config.EOL +
@@ -127,6 +153,8 @@ public class SetConfig extends AbstractCommand {
 			}
 			return ret;
 		}
+
+
 		if (!DefaultGuildSettings.isValidKey(args[0])) {
 			return Template.get("command_config_key_not_exists");
 		}
