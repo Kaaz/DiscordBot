@@ -64,6 +64,7 @@ public class BotContainer {
 			for (Guild guild : shards[shardId].client.getGuilds()) {
 				MusicPlayerHandler.removeGuild(guild, true);
 			}
+			// Shard x blew up, quick :firetruck:
 			shards[shardId].client.shutdownNow(false);
 			Thread.sleep(5_000L);
 			shards[shardId] = new DiscordBot(shardId, shards.length, this);
@@ -94,6 +95,8 @@ public class BotContainer {
 				}
 				CBotPlayingOn.deleteGuild(radio.guildId);
 			}
+			reportError(String.format("%s! Quick, shard %02d is on %s, where are the %s's? Restarting the shard, off we go %s!",
+					Emojibet.FIRE, shardId, Emojibet.FIRE, Emojibet.FIRE_TRUCK, Emojibet.ROCKET));
 		} catch (LoginException | InterruptedException | RateLimitedException e) {
 			e.printStackTrace();
 		}
@@ -128,17 +131,6 @@ public class BotContainer {
 	 */
 
 	public void reportError(Exception error, Object... details) {
-		DiscordBot shard = getShardFor(Config.BOT_GUILD_ID);
-		Guild guild = shard.client.getGuildById(Config.BOT_GUILD_ID);
-		if (guild == null) {
-			LOGGER.warn("Can't find BOT_GUILD_ID " + Config.BOT_GUILD_ID);
-			return;
-		}
-		TextChannel channel = guild.getTextChannelById(Config.BOT_ERROR_CHANNEL_ID);
-		if (channel == null) {
-			LOGGER.warn("Can't find BOT_ERROR_CHANNEL_ID " + Config.BOT_ERROR_CHANNEL_ID);
-			return;
-		}
 		String errorMessage = "I've encountered a **" + error.getClass().getName() + "**" + Config.EOL;
 		if (error.getMessage() != null) {
 			errorMessage += "Message: " + Config.EOL;
@@ -166,8 +158,22 @@ public class BotContainer {
 			errorMessage += Config.EOL + Config.EOL;
 		}
 		errorMessage += "Accompanied stacktrace: " + Config.EOL + Misc.makeTable(stack) + Config.EOL;
+		reportError(errorMessage);
+	}
 
-		channel.sendMessage(errorMessage).queue();
+	private void reportError(String message) {
+		DiscordBot shard = getShardFor(Config.BOT_GUILD_ID);
+		Guild guild = shard.client.getGuildById(Config.BOT_GUILD_ID);
+		if (guild == null) {
+			LOGGER.warn("Can't find BOT_GUILD_ID " + Config.BOT_GUILD_ID);
+			return;
+		}
+		TextChannel channel = guild.getTextChannelById(Config.BOT_ERROR_CHANNEL_ID);
+		if (channel == null) {
+			LOGGER.warn("Can't find BOT_ERROR_CHANNEL_ID " + Config.BOT_ERROR_CHANNEL_ID);
+			return;
+		}
+		channel.sendMessage(message).queue();
 	}
 
 	public void reportStatus(int shardId, JDA.Status oldStatus, JDA.Status status) {
