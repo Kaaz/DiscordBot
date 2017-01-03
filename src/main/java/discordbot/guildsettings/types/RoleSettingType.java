@@ -43,7 +43,7 @@ public class RoleSettingType implements IGuildSettingType {
 	@Override
 	public String fromInput(Guild guild, String value) {
 		if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
-			return "";
+			return "false";
 		}
 		if (DisUtil.isRoleMention(value)) {
 			Role role = guild.getRoleById(DisUtil.mentionToId(value));
@@ -55,7 +55,7 @@ public class RoleSettingType implements IGuildSettingType {
 		if (role != null) {
 			return role.getId();
 		}
-		return "";
+		return "false";
 	}
 
 	@Override
