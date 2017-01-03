@@ -233,12 +233,12 @@ public class DiscordBot {
 		if (isReady) {
 			return;
 		}
+		mentionMe = "<@" + this.client.getSelfUser().getId() + ">";
+		mentionMeAlias = "<@!" + this.client.getSelfUser().getId() + ">";
+		loadConfiguration();
 		client.addEventListener(new JDAEvents(this));
 		sendStatsToDiscordPw();
 		isReady = true;
-		loadConfiguration();
-		mentionMe = "<@" + this.client.getSelfUser().getId() + ">";
-		mentionMeAlias = "<@!" + this.client.getSelfUser().getId() + ">";
 		RoleRankings.fixRoles(this.client.getGuilds());
 		container.allShardsReady();
 	}
