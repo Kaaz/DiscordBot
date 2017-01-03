@@ -128,6 +128,9 @@ public class RoleRankings {
 			);
 			return;
 		}
+		if (!PermissionUtil.canInteract(guild.getSelfMember(), role)) {
+			return;
+		}
 		if (!role.getName().equals(getFullName(guild, rank))) {
 			role.getManagerUpdatable().getNameField().setValue(getFullName(guild, rank));
 			needsUpdate = true;

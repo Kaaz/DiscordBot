@@ -5,6 +5,7 @@ import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.handler.GuildSettings;
 import discordbot.main.BotContainer;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 import discordbot.role.RoleRankings;
 import net.dv8tion.jda.core.entities.Guild;
 
@@ -46,7 +47,11 @@ public class UserRankingSystemService extends AbstractService {
 			for (Guild guild : guilds) {
 				GuildSettings settings = GuildSettings.get(guild);
 				if (settings != null && "true".equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && RoleRankings.canModifyRoles(guild, discordBot.client.getSelfUser())) {
-					handleGuild(discordBot, guild);
+					try {
+						handleGuild(discordBot, guild);
+					} catch (Exception e) {
+						Launcher.logToDiscord(e, "guild", guild.getId(), "name", guild.getName());
+					}
 				}
 			}
 		}
