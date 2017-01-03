@@ -6,6 +6,7 @@ import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
 import discordbot.guildsettings.defaults.SettingRoleTimeRanksPrefix;
 import discordbot.handler.GuildSettings;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
@@ -181,13 +182,17 @@ public class RoleRankings {
 	 */
 	public static void fixRoles(List<Guild> guilds) {
 		for (Guild guild : guilds) {
-			if (GuildSettings.get(guild) != null) {
-				if (!"true".equals(GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanks.class))) {
-					continue;
+			try {
+				if (GuildSettings.get(guild) != null) {
+					if (!"true".equals(GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanks.class))) {
+						continue;
+					}
+					if (canModifyRoles(guild, guild.getJDA().getSelfUser())) {
+						fixForServer(guild);
+					}
 				}
-				if (canModifyRoles(guild, guild.getJDA().getSelfUser())) {
-					fixForServer(guild);
-				}
+			} catch (Exception e) {
+				Launcher.logToDiscord(e, "guild", guild.getId(), "gname", guild.getName());
 			}
 		}
 	}
