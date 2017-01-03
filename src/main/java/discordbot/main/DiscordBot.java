@@ -322,6 +322,9 @@ public class DiscordBot {
 	}
 
 	public void handlePrivateMessage(PrivateChannel channel, User author, Message message) {
+		if (security.isBanned(author)) {
+			return;
+		}
 		if (CommandHandler.isCommand(null, message.getRawContent(), mentionMe, mentionMeAlias)) {
 			CommandHandler.process(this, channel, author, message.getRawContent());
 		} else {
@@ -332,6 +335,9 @@ public class DiscordBot {
 
 	public void handleMessage(Guild guild, TextChannel channel, User author, Message message) {
 		if (author == null || author.isBot()) {
+			return;
+		}
+		if (security.isBanned(author)) {
 			return;
 		}
 		GuildSettings settings = GuildSettings.get(guild.getId());
