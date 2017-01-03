@@ -64,7 +64,6 @@ public class BotContainer {
 			for (Guild guild : shards[shardId].client.getGuilds()) {
 				MusicPlayerHandler.removeGuild(guild, true);
 			}
-			// Shard x blew up, quick :firetruck:
 			shards[shardId].client.shutdownNow(false);
 			Thread.sleep(5_000L);
 			shards[shardId] = new DiscordBot(shardId, shards.length, this);

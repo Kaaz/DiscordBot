@@ -5,7 +5,6 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -46,15 +45,8 @@ public class PMCommand extends AbstractCommand {
 			return Template.get("command_no_permission");
 		}
 		if (args.length > 1) {
-			User targetUser = null;
-			if (DisUtil.isUserMention(args[0])) {
-				targetUser = channel.getJDA().getUserById(DisUtil.mentionToId(args[0]));
-			} else {
-				Member member = DisUtil.findUserIn((TextChannel) channel, args[0]);
-				if (member != null) {
-					targetUser = member.getUser();
-				}
-			}
+			User targetUser = DisUtil.findUser((TextChannel) channel, args[0]);
+
 			if (targetUser != null) {
 				String message = "";
 				for (int i = 1; i < args.length; i++) {

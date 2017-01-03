@@ -243,6 +243,25 @@ public class DisUtil {
 	}
 
 	/**
+	 * Attempts to find a user from mention, if that fails see {@link DisUtil#findUserIn(TextChannel, String)}
+	 *
+	 * @param channel    the channel context
+	 * @param searchText the search argument
+	 * @return user || null
+	 */
+	public static User findUser(TextChannel channel, String searchText) {
+		if (DisUtil.isUserMention(searchText)) {
+			return channel.getJDA().getUserById(DisUtil.mentionToId(searchText));
+		} else {
+			Member member = DisUtil.findUserIn(channel, searchText);
+			if (member != null) {
+				return member.getUser();
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * @param input string to check for mentions
 	 * @return found a mention
 	 */
