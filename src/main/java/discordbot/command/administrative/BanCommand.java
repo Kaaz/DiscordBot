@@ -1,6 +1,8 @@
 package discordbot.command.administrative;
 
 import discordbot.core.AbstractCommand;
+import discordbot.db.controllers.CUser;
+import discordbot.db.model.OUser;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
@@ -38,6 +40,23 @@ public class BanCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		SimpleRank rank = bot.security.getSimpleRank(author);
+		if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1) {
+			boolean unban = args.length > 1 && args[1].equals("false");
+			OUser user = CUser.findBy(args[0]);
+			user.banned = unban ? 0 : 1;
+
+			if (user.id == 0) {
+				return "User `" + args[0] + "` not found";
+			}
+			CUser.update(user);
+			if (unban) {
+				bot.security.removeUserBan(user.discord_id);
+				return "`" + user.name + "` (`" + user.discord_id + "`) has been globally unbanned";
+			} else {
+				bot.security.addUserBan(user.discord_id);
+				return "`" + user.name + "` (`" + user.discord_id + "`) has been globally banned";
+			}
+		}
 		return Template.get("command_no_permission");
 	}
 }

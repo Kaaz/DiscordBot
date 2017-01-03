@@ -27,6 +27,54 @@ public class Misc {
 	};
 
 	/**
+	 * whether a string can fuzzily considered true
+	 *
+	 * @param text the string
+	 * @return true if it can be considered true
+	 */
+	public static boolean isFuzzyTrue(String text) {
+		if (text == null) {
+			return false;
+		}
+		switch (text.toLowerCase()) {
+			case "yea":
+			case "yes":
+			case "true":
+			case "y":
+			case "t":
+			case "1":
+				return true;
+			default:
+				return false;
+		}
+
+	}
+
+	/**
+	 * whether a string can fuzzily considered true
+	 *
+	 * @param text the string to check
+	 * @return true if it can be considered false
+	 */
+
+	public static boolean isFuzzyFalse(String text) {
+		if (text == null) {
+			return false;
+		}
+		switch (text.toLowerCase()) {
+			case "no":
+			case "false":
+			case "nope":
+			case "n":
+			case "f":
+			case "0":
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
 	 * searches a map by value and returns the key if found otherwise null
 	 *
 	 * @param map   the map to search in

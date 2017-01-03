@@ -33,7 +33,7 @@ public class OutgoingContentHandler {
 	 * @param callback callback to execute after the message is sent
 	 */
 	public void sendAsyncMessage(MessageChannel channel, String content, Consumer<Message> callback) {
-		if (content == null || content.isEmpty()) {
+		if (channel == null || content == null || content.isEmpty()) {
 			return;
 		}
 		channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue(callback, throwable -> callback.accept(null));

@@ -1,4 +1,4 @@
-# DiscordBot
+# Emily - A discord bot
 
 A Java bot for [Discord](https://discordapp.com/) using the [JDA library](https://github.com/DV8FromTheWorld/JDA).
 

@@ -34,7 +34,11 @@ public class StopCommand extends AbstractCommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[]{};
+		return new String[]{
+				"stop          //stops playing and leaves the channel",
+				"stop force    //stops playing and leaves the channel (admin, debug)",
+				"stop afternp  //stops and leaves after the now playing track is over",
+		};
 	}
 
 	@Override
@@ -57,9 +61,11 @@ public class StopCommand extends AbstractCommand {
 			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
 		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
-		if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-			player.leave();
-			return Template.get("command_stop_success");
+		if (args.length > 0) {
+			if (args[0].equals("force") && userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+				player.leave();
+				return Template.get("command_stop_success");
+			}
 		}
 		if (!player.isPlaying()) {
 			return Template.get("command_currentlyplaying_nosong");
@@ -68,7 +74,12 @@ public class StopCommand extends AbstractCommand {
 			if (!player.canUseVoiceCommands(author, userRank)) {
 				return Template.get("music_not_same_voicechannel");
 			}
-			player.leave();
+			if (args.length > 0 && args[0].equals("afternp")) {
+				player.stopAfterTrack(true);
+				return Template.get("command_stop_after_track");
+			} else {
+				player.leave();
+			}
 			return Template.get("command_stop_success");
 		}
 		return Template.get("command_currentlyplaying_nosong");

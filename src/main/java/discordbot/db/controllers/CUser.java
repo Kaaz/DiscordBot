@@ -8,6 +8,7 @@ import discordbot.db.model.OUser;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -144,6 +145,17 @@ public class CUser {
 							"VALUES (?,?,?,?,?)",
 					record.discord_id, record.commandsUsed, record.name, record.banned, record.getEncodedPermissions());
 		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void addBannedUserIds(HashSet<String> bannedUsers) {
+		try (ResultSet rs = WebDb.get().select("SELECT * FROM users WHERE banned = 1")) {
+			while (rs.next()) {
+				bannedUsers.add(rs.getString("discord_id"));
+			}
+			rs.getStatement().close();
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}

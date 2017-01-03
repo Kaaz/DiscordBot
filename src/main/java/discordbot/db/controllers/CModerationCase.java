@@ -3,11 +3,15 @@ package discordbot.db.controllers;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
 import discordbot.db.model.OModerationCase;
+import discordbot.util.DisUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.core.entities.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 /**
  * data communication with the controllers `moderation_case`
@@ -38,7 +42,7 @@ public class CModerationCase {
 		record.userId = resultset.getInt("user_id");
 		record.moderatorId = resultset.getInt("moderator");
 		record.active = resultset.getInt("active");
-		record.messageId = resultset.getLong("message");
+		record.messageId = resultset.getLong("message_id");
 		record.reason = resultset.getString("reason");
 		record.createdAt = resultset.getTimestamp("created_at");
 		record.expires = resultset.getTimestamp("expires");
@@ -46,15 +50,29 @@ public class CModerationCase {
 		return record;
 	}
 
-	public static void insert(OModerationCase record) {
+	public static int insert(Guild guild, User targetUser, User moderator, OModerationCase.PunishType punishType, Timestamp expires) {
+		OModerationCase rec = new OModerationCase();
+		rec.guildId = CGuild.getCachedId(guild.getId());
+		rec.userId = CUser.getCachedId(targetUser.getId());
+		rec.moderatorId = CUser.getCachedId(moderator.getId());
+		rec.punishment = punishType;
+		rec.expires = expires;
+		rec.createdAt = new Timestamp(System.currentTimeMillis());
+		rec.active = 1;
+		rec.messageId = 1;
+		return insert(rec);
+	}
+
+	public static int insert(OModerationCase record) {
 		try {
-			WebDb.get().insert(
+			return WebDb.get().insert(
 					"INSERT INTO moderation_case(guild_id, user_id, moderator, message_id, created_at, reason, punishment, expires, active) " +
 							"VALUES (?,?,?,?,?,?,?,?,?)",
-					record.guildId, record.userId, record.moderatorId, record.messageId, record.createdAt, record.reason, record.punishment, record.expires, record.active);
+					record.guildId, record.userId, record.moderatorId, record.messageId, record.createdAt, record.reason, record.punishment.getId(), record.expires, record.active);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return -1;
 	}
 
 	public static void update(OModerationCase record) {
@@ -65,26 +83,32 @@ public class CModerationCase {
 							"expires =?, active = ? " +
 							"WHERE id = ?" +
 							record.guildId, record.userId,
-					record.moderatorId, record.messageId, record.createdAt, record.reason, record.punishment,
+					record.moderatorId, record.messageId, record.createdAt, record.reason, record.punishment.getId(),
 					record.expires, record.active, record.id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static MessageEmbed buildCase(int caseId) {
-		return buildCase(findById(caseId));
+	public static MessageEmbed buildCase(Guild guild, int caseId) {
+		return buildCase(guild, findById(caseId));
 	}
 
-	public static MessageEmbed buildCase(OModerationCase modcase) {
+	public static MessageEmbed buildCase(Guild guild, OModerationCase modcase) {
 		EmbedBuilder b = new EmbedBuilder();
 		b.setTitle(String.format("%s | case #%s", modcase.punishment.getKeyword(), modcase.id));
 		b.setColor(modcase.punishment.getColor());
-		b.addField("User", "" + modcase.userId, true);
-		b.addField("Moderator", "" + modcase.moderatorId, true);
+		b.addField("User", "" + CUser.getCachedDiscordId(modcase.userId), true);
+		b.addField("Moderator", "" + CUser.getCachedDiscordId(modcase.moderatorId), true);
 		b.addField("Issued", modcase.createdAt.toString(), true);
-		b.addField("Expires", modcase.expires.toString(), true);
-		b.addField("Reason", modcase.reason, false);
+		if (modcase.expires != null) {
+			b.addField("Expires", modcase.expires.toString(), true);
+		}
+		String reason = modcase.reason;
+		if (reason == null || reason.isEmpty()) {
+			reason = "Reason not set! use `" + DisUtil.getCommandPrefix(guild) + "case " + modcase.id + "` to set the reason";
+		}
+		b.addField("Reason", reason, false);
 
 
 		return b.build();

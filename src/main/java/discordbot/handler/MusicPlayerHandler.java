@@ -73,6 +73,7 @@ public class MusicPlayerHandler {
 	private final HashSet<User> skipVotes;
 	private final String guildId;
 	private volatile boolean inRepeatMode = false;
+	private volatile boolean stopAfterTrack = false;
 	private volatile int currentlyPlaying = 0;
 	private volatile long currentSongLength = 0;
 	private volatile long pauseStart = 0;
@@ -215,7 +216,7 @@ public class MusicPlayerHandler {
 		boolean keepGoing = false;
 		if (scheduler.queue.isEmpty()) {
 			if (queue.isEmpty()) {
-				if ("false".equals(GuildSettings.get(guildId).getOrDefault(SettingMusicQueueOnly.class))) {
+				if (!stopAfterTrack && "false".equals(GuildSettings.get(guildId).getOrDefault(SettingMusicQueueOnly.class))) {
 					keepGoing = true;
 					if (!playRandomSong()) {
 						player.destroy();
@@ -224,6 +225,7 @@ public class MusicPlayerHandler {
 						return;
 					}
 				} else {
+					stopAfterTrack = false;
 					leave();
 				}
 			}
@@ -629,6 +631,10 @@ public class MusicPlayerHandler {
 
 	public JDA getJDA() {
 		return bot.client;
+	}
+
+	public synchronized void stopAfterTrack(boolean stopAfter) {
+		this.stopAfterTrack = stopAfter;
 	}
 
 

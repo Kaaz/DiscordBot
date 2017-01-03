@@ -1,4 +1,4 @@
-# DiscordBot
+# Emily - A discord bot
 
 A Java bot for [Discord](https://discordapp.com/) using the [JDA library](https://github.com/DV8FromTheWorld/JDA).
 
@@ -31,18 +31,18 @@ Current list of all available commands. See below for a more detailed list
 
 Commands | | | | |
 --- | --- | ---| ---| ---
-[8ball](#8ball) | [blackjack](#blackjack) | [botstatus](#botstatus) | [catfact](#catfact) | [changename](#changename)
-[command](#command) | [commandadmin](#commandadmin) | [config](#config) | [consolecomm](#consolecomm) | [current](#current)
-[exec](#exec) | [exit](#exit) | [fml](#fml) | [game](#game) | [getrole](#getrole)
-[guildstats](#guildstats) | [help](#help) | [importmusic](#importmusic) | [info](#info) | [invite](#invite)
-[join](#join) | [joke](#joke) | [leaveguild](#leaveguild) | [meme](#meme) | [music](#music)
-[pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
-[poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll) | [prefix](#prefix)
+[8ball](#8ball) | [ban](#ban) | [blackjack](#blackjack) | [botstatus](#botstatus) | [catfact](#catfact)
+[changename](#changename) | [command](#command) | [commandadmin](#commandadmin) | [config](#config) | [current](#current)
+[debug](#debug) | [exec](#exec) | [exit](#exit) | [fml](#fml) | [game](#game)
+[getrole](#getrole) | [guildstats](#guildstats) | [help](#help) | [importmusic](#importmusic) | [info](#info)
+[invite](#invite) | [join](#join) | [joke](#joke) | [kick](#kick) | [leaveguild](#leaveguild)
+[logging](#logging) | [meme](#meme) | [music](#music) | [pause](#pause) | [ping](#ping)
+[play](#play) | [playlist](#playlist) | [pm](#pm) | [poll](#poll) | [prefix](#prefix)
 [purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
-[roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [skip](#skip)
-[slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag)
-[template](#template) | [ud](#ud) | [uptime](#uptime) | [user](#user) | [userrank](#userrank)
-[version](#version) | [volume](#volume) | 
+[roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [server](#server)
+[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
+[tag](#tag) | [template](#template) | [ud](#ud) | [uptime](#uptime) | [user](#user)
+[userrank](#userrank) | [version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -65,15 +65,17 @@ The following settings can be changed per guild:
 
 Key | Default | Description |
 --- | --- | ---|
-auto_reply | false | use the auto reply feature?<br/>Looks for patterns in messages and replies to them (with a cooldown)<br/>true -> enable auto replying to matched messages<br/>true -> disable auto replying
+auto_reply | false | use the auto reply feature?<br/>Looks for patterns in messages and replies to them (with a cooldown)<br/>true -> enable auto replying to matched messages<br/>false -> disable auto replying
 bot_channel | general | Channel where the bots default output goes to
-bot_debug_templates | false | Show which templates are being used on places.<br/><br/>valid values: <br/>true       -> Shows the keyphrases being used <br/>false      -> Shows normal text <br/><br/>for instance if you don't have permission to access a command:<br/><br/>setting this to true would show:<br/>no_permission<br/><br/>false would show:<br/>You don't have permission to use that!
+bot_debug_templates | true | Show which templates are being used on places.<br/><br/>valid values: <br/>true       -> Shows the keyphrases being used <br/>false      -> Shows normal text <br/><br/>for instance if you don't have permission to access a command:<br/><br/>setting this to true would show:<br/>no_permission<br/><br/>false would show:<br/>You don't have permission to use that!
 bot_listen | all | What channels to listen to? (all;mine)<br/>all -> responds to all channels<br/>mine -> only responds to messages in configured channel
 bot_logging_channel | false | The channel where the logging of events happens. Such as users joining/leaving <br/><br/>Setting this to 'false' will disable it (without the quotes)<br/><br/>To enable it, set this setting to match the channel name where you want the logging to happen<br/>If you specify an invalid channel, this setting will disable itself
 bot_update_warning | playing | Show a warning that there is an update and that the bot will be updating soon.<br/>always  -> always show the message in the bot's configured default channel<br/>playing -> only announce when the bot is playing music and in the bot's configured music channel<br/>off     -> don't announce when the bot is going down for an update
 chat_bot_enabled | false | Chat with people
-cleanup_messages | no | Delete messages after a while? (yes;no;nonstandard)<br/>yes -> Always delete messages<br/>no -> Never delete messages<br/>nonstandard -> delete messages outside of bot's default channel
-command_prefix | $ | Prefix for commands (between 1 and 3 characters)
+
+Setting this to true will make it so that it responds to every message in the configured bot_channel
+cleanup_messages | no | Delete messages after a while?<br/>yes         -> Always delete messages<br/>no          -> Never delete messages<br/>nonstandard -> delete messages outside of bot's default channel
+command_prefix | $ | Prefix for commands (between 1 and 4 characters)
 help_in_pm | false | show help in a private message?<br/>true  -> send a message to the user requesting help<br/>false -> output help to the channel where requested
 module_games | true | Let people play games against each other
 music_channel | music | Channel where the bots music-related output goes to
@@ -83,7 +85,7 @@ music_clear_admin_only | true | Only allow admins to clear the music queue?<br/>
 music_playing_message | clear | Clear the now playing message?<br/>clear  -> sends a message and deletes it when the song is over or skipped<br/>normal -> send the message and just leave it be<br/>off    -> don't send now playing messages
 music_playlist_id | 0 | used to store the last used playlist 
 music_queue_only | false | Stop playing music once the queue is empty?<br/><br/>true<br/>once the queue is empty I stop playing music and leave the voice channel<br/><br/>false<br/>If the queue is empty, I'm gonna pick the track.
-music_role_requirement | none | In order to use music commands you need this role!<br/>Setting this value to none will disable the requirement
+music_role_requirement | false | In order to use music commands you need this role!<br/>Setting this value to false will disable the requirement
 music_show_listeners | false | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
 music_skip_admin_only | false | Only allow admins to use the skip command?<br/><br/>true<br/>Only admins have permission to use the skip command<br/><br/>false<br/>Everyone can use the skip command
 music_volume | 10 | sets the default volume of the music player<br/>So the next time the bot connects it starts with this volume<br/><br/>Accepts a value between 0 and 100
@@ -185,6 +187,13 @@ See what the magic 8ball has to say
 Accessible though: 8ball
 
 Usable in public and private channels
+### ban
+
+Ban those nasty humans
+
+Accessible though: ban
+
+Usable in public and private channels
 ### blackjack
 
 play a game of blackjack!
@@ -253,7 +262,7 @@ Key                Replacement
 %rand-user%        random user in guild
 %rand-user-online% random ONLINE user in guild
 
-Accessible though: command, cmd, commands, customcommand
+Accessible though: command, cmd, customcommand
 
 Usable in public  channels
 
@@ -269,6 +278,8 @@ command                         //shows a list of existing custom commands
 Commands can be enabled/disabled through this command.
 A channel specific setting will always override the guild setting
 
+You can also give/deny permission to roles to use certain commands
+
 Accessible though: commandadmin, ca
 
 Usable in public  channels
@@ -278,8 +289,8 @@ Usable in public  channels
 ```php
 ca <command> [enable/disable]               //enables/disables commands in the whole guild
 ca <command> [enable/disable] [#channel]    //enables/disables commands in a channel. This overrides the above
+
 ca resetchannel [#channel]                  //resets the overrides for a channel
-ca command [command]                        //resets the overrides for a channel
 ca resetallchannels                         //resets the overrides for all channels
 ca reset yesimsure                          //enables all commands + resets overrides
 
@@ -299,24 +310,12 @@ Usable in public  channels
 
 ```php
 config                    //overview
+config tags               //see what tags exist
+config tag <tagname>      //show settings with tagname
 config <property>         //check details of property
 config <property> <value> //sets property
 
 config reset yesimsure    //resets the configuration to the default settings
-```
-### consolecomm
-
-Sets the communication channel of the console input
-
-Accessible though: consolecomm
-
-Usable in public  channels
-
-#### Usage
-
-```php
-consolecomm connect     //connects to current channel
-consolecomm disconnect  //disconnects from current
 ```
 ### current
 
@@ -340,6 +339,19 @@ current pm              //sends you a private message with the details
 current clear               //clears everything in the queue
 current clear admin         //check if clear is admin-only
 current clear admin toggle  //switch between admin-only and normal
+```
+### debug
+
+some debugging tools
+
+Accessible though: debug
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+activity //shows last shard activity
 ```
 ### exec
 
@@ -411,7 +423,7 @@ stats users   //graph of when users joined!
 
 An attempt to help out
 
-Accessible though: help, ?, halp, helpme, h
+Accessible though: help, ?, halp, helpme, h, commands
 
 Usable in public and private channels
 
@@ -478,6 +490,13 @@ An attempt to be funny
 Accessible though: joke
 
 Usable in public and private channels
+### kick
+
+kicks a user
+
+Accessible though: kick
+
+Usable in public and private channels
 ### leaveguild
 
 leaves guild :(
@@ -491,6 +510,13 @@ Usable in public and private channels
 ```php
 leaveguild     //leaves the guild
 ```
+### logging
+
+log all the things! Configure how/where/what is being logged
+
+Accessible though: logging, log
+
+Usable in public and private channels
 ### meme
 
 generate a meme!
@@ -562,6 +588,7 @@ Usable in public  channels
 
 ```php
 -- using playlists 
+playlist mine                        //use your playlist
 playlist guild                       //use the guild's playlist
 playlist global                      //use the global playlist
 playlist settings                    //check the settings for the active playlist
@@ -592,42 +619,6 @@ Usable in public and private channels
 
 ```php
 pm <@user> <message..>
-```
-### poec
-
-Returns a list of currency on your account
-
-Accessible though: poec
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-poec                   //returns list of currency for default league
-poec token <token>     //sets the session token
-poec league <league>   //currency for league
-```
-### poeitem
-
-Analyzes an item from path of exile.
-
-Accessible though: poeitem
-
-Usable in public and private channels
-### poelab
-
-Attempts to find a description from reddit for the Labyrinth instance.
-
-Accessible though: poelab
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-poelab              //lists for all difficulties
-poelab <difficulty> //only for that difficulty
 ```
 ### poll
 
@@ -688,8 +679,10 @@ Usable in public and private channels
 #### Usage
 
 ```php
-reboot         //reboots the system
-reboot update  //reboots the system and updates
+reboot                  //reboots the system
+reboot update           //reboots the system and updates
+reboot shard <id>       //reboots shard
+reboot gshard <guildid> //reboots shard for guild-id
 ```
 ### reddit
 
@@ -791,6 +784,13 @@ executes commandline stuff
 Accessible though: sendfile
 
 Usable in public and private channels
+### server
+
+Information about the server
+
+Accessible though: server
+
+Usable in public  channels
 ### skip
 
 skip current track
@@ -829,6 +829,14 @@ stops playing music
 Accessible though: stop, leave
 
 Usable in public  channels
+
+#### Usage
+
+```php
+stop          //stops playing and leaves the channel
+stop force    //stops playing and leaves the channel (admin, debug)
+stop afternp  //stops and leaves after the now playing track is over
+```
 ### subscribe
 
 subscribe the channel to certain events
@@ -937,8 +945,10 @@ Usable in public and private channels
 #### Usage
 
 ```php
-user         //info about you
-user @user   //info about @user
+user                             //info about you
+user @user                       //info about @user
+user @user joindate yyyy-MM-dd   //overrides the join-date of a user
+user @user joindate reset        //restores the original value
 ```
 ### userrank
 
