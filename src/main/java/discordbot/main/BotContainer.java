@@ -118,8 +118,8 @@ public class BotContainer {
 			}
 			CBotPlayingOn.deleteGuild(radio.guildId);
 		}
-		reportError(String.format("%s! Quick, shard %02d is on %s, where are the %s's? Restarting the shard, off we go %s!",
-				Emojibet.FIRE, shardId, Emojibet.FIRE, Emojibet.FIRE_TRUCK, Emojibet.ROCKET));
+		reportError(String.format("Quick, shard `%02d` is on %s, where are the %s'? Restarting the shard, off we go %s!",
+				shardId, Emojibet.FIRE, Emojibet.FIRE_TRUCK, Emojibet.ROCKET));
 	}
 
 	public void setLastAction(int shard, long timestamp) {
