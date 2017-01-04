@@ -13,7 +13,6 @@ import net.dv8tion.jda.core.entities.User;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,9 +85,8 @@ public class QueryCommand extends AbstractCommand {
 				DebugUtil.handleDebug(channel, query + Config.EOL + Config.EOL + output);
 				return "";
 			}
-		} catch (SQLException e) {
-			System.out.println("ERORRRROR");
-			return "error in query! " + e.getMessage() + Config.EOL + e.getSQLState();
+		} catch (Exception e) {
+			return "error in query! " + e.getMessage() + Config.EOL;
 		}
 	}
 }

@@ -29,6 +29,7 @@ import net.dv8tion.jda.core.entities.User;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -435,6 +436,9 @@ public class CommandHandler {
 		Set<Class<? extends AbstractCommand>> classes = reflections.getSubTypesOf(AbstractCommand.class);
 		for (Class<? extends AbstractCommand> s : classes) {
 			try {
+				if (Modifier.isAbstract(s.getModifiers())) {
+					continue;
+				}
 				String packageName = s.getPackage().getName();
 				AbstractCommand c = s.getConstructor().newInstance();
 				c.setCommandCategory(CommandCategory.fromPackage(packageName.substring(packageName.lastIndexOf(".") + 1)));

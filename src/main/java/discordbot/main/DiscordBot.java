@@ -10,6 +10,7 @@ import discordbot.guildsettings.defaults.SettingBotChannel;
 import discordbot.guildsettings.defaults.SettingCleanupMessages;
 import discordbot.guildsettings.defaults.SettingEnableChatBot;
 import discordbot.guildsettings.defaults.SettingLoggingChannel;
+import discordbot.guildsettings.defaults.SettingModlogChannel;
 import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.handler.AutoReplyHandler;
 import discordbot.handler.ChatBotHandler;
@@ -220,6 +221,21 @@ public class DiscordBot {
 			musicChannels.put(guild.getId(), channel.getId());
 		}
 		return client.getTextChannelById(musicChannels.get(guild.getId()));
+	}
+
+	/**
+	 * Retrieves the moderation log of a guild
+	 *
+	 * @param guildId the guild to get the modlog-channel for
+	 * @return channel || null
+	 */
+	public synchronized TextChannel getModlogChannel(String guildId) {
+		Guild guild = client.getGuildById(guildId);
+		String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingModlogChannel.class);
+		if ("false".equals(channelIdentifier)) {
+			return null;
+		}
+		return guild.getTextChannelById(channelIdentifier);
 	}
 
 	public synchronized void reconnect() {

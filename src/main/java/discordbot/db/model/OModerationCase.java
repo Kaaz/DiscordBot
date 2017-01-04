@@ -22,11 +22,11 @@ public class OModerationCase extends AbstractModel {
 	}
 
 	public enum PunishType {
-		WARN(1, "Warned", "Adds a strike to the user", new Color(0xA8CF00)),
-		MUTE(2, "Muted", "Actions are restricted", new Color(0xFFF300)),
-		KICK(3, "Kicked", "Kicked from the guild", new Color(0xFF9600)),
+		WARN(1, "Warn", "Adds a strike to the user", new Color(0xA8CF00)),
+		MUTE(2, "Mute", "Actions are restricted", new Color(0xFFF300)),
+		KICK(3, "Kick", "Kicked from the guild", new Color(0xFF9600)),
 		TMP_BAN(4, "temp-ban", "Kicked from the guild, unable to rejoin for a while", new Color(0xFF4700)),
-		BAN(5, "banned", "permanently banned", new Color(0xB70000));
+		BAN(5, "ban", "permanently banned", new Color(0xB70000));
 
 		private final int id;
 		private final String keyword;

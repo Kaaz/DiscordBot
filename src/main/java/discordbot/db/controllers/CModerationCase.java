@@ -81,8 +81,8 @@ public class CModerationCase {
 					"UPDATE moderation_case SET guild_id = ?, user_id = ?, " +
 							"moderator = ?, message_id = ?, created_at = ?, reason = ?, punishment = ?, " +
 							"expires =?, active = ? " +
-							"WHERE id = ?" +
-							record.guildId, record.userId,
+							"WHERE id = ?",
+					record.guildId, record.userId,
 					record.moderatorId, record.messageId, record.createdAt, record.reason, record.punishment.getId(),
 					record.expires, record.active, record.id);
 		} catch (Exception e) {
@@ -106,7 +106,7 @@ public class CModerationCase {
 		}
 		String reason = modcase.reason;
 		if (reason == null || reason.isEmpty()) {
-			reason = "Reason not set! use `" + DisUtil.getCommandPrefix(guild) + "case " + modcase.id + "` to set the reason";
+			reason = "Reason not set! use `" + DisUtil.getCommandPrefix(guild) + "case reason " + modcase.id + " <message>` to set the reason";
 		}
 		b.addField("Reason", reason, false);
 
