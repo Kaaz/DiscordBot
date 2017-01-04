@@ -47,7 +47,7 @@ public class RoleRankings {
 		roles.add(new MemberShipRole("Prospect", new Color(0x413FE9), TimeUnit.DAYS.toMillis(2L)));
 		roles.add(new MemberShipRole("Friendly", new Color(0x3E69E4), TimeUnit.DAYS.toMillis(4L)));
 		roles.add(new MemberShipRole("Regular", new Color(0x2F74DF), TimeUnit.DAYS.toMillis(7L)));
-		roles.add(new MemberShipRole("Honored", new Color(0x3394DA), TimeUnit.DAYS.toMillis(14L)));
+		roles.add(new MemberShipRole("Honored", new Color(0xFADED), TimeUnit.DAYS.toMillis(14L)));
 		roles.add(new MemberShipRole("Veteran", new Color(0x35B6D4), TimeUnit.DAYS.toMillis(28L)));
 		roles.add(new MemberShipRole("Revered", new Color(0x0DC3CF), TimeUnit.DAYS.toMillis(60L)));
 		roles.add(new MemberShipRole("Herald", new Color(0x0ECAB4), TimeUnit.DAYS.toMillis(90L)));
