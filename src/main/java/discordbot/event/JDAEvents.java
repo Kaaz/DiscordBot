@@ -326,8 +326,12 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
-		checkLeaving(event.getGuild(), event.getChannelLeft(), event.getMember().getUser());
-		onGuildVoiceJoin(new GuildVoiceJoinEvent(event.getJDA(), 0, event.getMember()));
+		if (!event.getMember().equals(event.getGuild().getSelfMember())) {
+			checkLeaving(event.getGuild(), event.getChannelLeft(), event.getMember().getUser());
+			onGuildVoiceJoin(new GuildVoiceJoinEvent(event.getJDA(), 0, event.getMember()));
+		} else {
+			checkLeaving(event.getGuild(), event.getChannelJoined(), event.getMember().getUser());
+		}
 	}
 
 	@Override
@@ -336,7 +340,7 @@ public class JDAEvents extends ListenerAdapter {
 	}
 
 	private void checkLeaving(Guild guild, VoiceChannel channel, User user) {
-		if (user.isBot()) {
+		if (user.isBot() && !user.equals(guild.getSelfMember().getUser())) {
 			return;
 		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, discordBot);

@@ -37,7 +37,7 @@ public class VoiceChannelSettingType implements IGuildSettingType {
 	@Override
 	public String fromInput(Guild guild, String value) {
 		if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
-			return "";
+			return "false";
 		}
 		if (DisUtil.isChannelMention(value)) {
 			VoiceChannel channel = guild.getVoiceChannelById(DisUtil.mentionToId(value));
@@ -49,7 +49,7 @@ public class VoiceChannelSettingType implements IGuildSettingType {
 		if (channel != null) {
 			return channel.getId();
 		}
-		return "";
+		return "false";
 	}
 
 	@Override
