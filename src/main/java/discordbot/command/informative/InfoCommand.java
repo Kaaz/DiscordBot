@@ -109,7 +109,7 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
 				"Type **" + prefix + "help** to see what I'll allow you to do" + Config.EOL + Config.EOL +
 				"For help about a specific command type `" + prefix + "<command> help`" + Config.EOL +
 				"An example: `" + prefix + "skip help` to see what you can do with the skip command." + Config.EOL + Config.EOL +
-				"If I can't help you out, you can always try your luck in my __" + prefix + "discord__";
+				"If you need assistance, want to share your thoughts or want to contribute feel free to join my __" + prefix + "discord__";
 	}
 
 	private String getListFor(String listId, String itemPrefix) {
