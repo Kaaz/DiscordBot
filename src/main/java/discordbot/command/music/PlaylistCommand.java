@@ -52,13 +52,14 @@ public class PlaylistCommand extends AbstractCommand {
 	public String[] getUsage() {
 		return new String[]{
 				"-- using playlists ",
-				"playlist mine                        //use your playlist",
-				"playlist guild                       //use the guild's playlist",
-				"playlist global                      //use the global playlist",
-				"playlist settings                    //check the settings for the active playlist",
-//				"playlist settings <playlistname>     //check the settings for the active playlist",
-				"playlist                             //info about the current playlist",
-				"playlist list <pagenumber>           //Shows the music in the playlist",
+				"playlist mine           //use your default playlist",
+				"playlist mine <code>    //use your playlist with code",
+				"playlist guild          //use the guild's default playlist",
+				"playlist guild <code>   //use the guild's playlist with code",
+				"playlist global         //use the global playlist",
+				"playlist settings       //check the settings for the active playlist",
+				"playlist                //info about the current playlist",
+				"playlist list <page>    //Shows the music in the playlist",
 				"",
 				"-- Adding and removing music from the playlist",
 //				"playlist show <pagenumber>           //shows music in the playlist",
@@ -105,24 +106,30 @@ public class PlaylistCommand extends AbstractCommand {
 		if (playlist.id == 0) {
 			return "";
 		}
+		String cp = DisUtil.getCommandPrefix(channel);
 		if (args.length == 0) {
 			if (playlist.isGlobalList()) {
-				return Template.get(channel, "music_playlist_using", playlist.title) + " See `" + DisUtil.getCommandPrefix(channel) + "pl help` for more info";
+				return Template.get(channel, "music_playlist_using", playlist.title) + " See `" + cp + "pl help` for more info" + Config.EOL +
+						"You can switch to a different playlist with `" + cp + "pl guild` to the guild's list or `" + cp + "pl personal` to your own one";
 			}
 			return Template.get(channel, "music_playlist_using", playlist.title) +
 					"Settings " + makeSettingsTable(playlist) +
 					"To add the currently playing music to the playlist use `" + DisUtil.getCommandPrefix(channel) + "pl add`, check out `" + DisUtil.getCommandPrefix(channel) + "help pl` for more info";
 		}
 		OPlaylist newlist = null;
+
 		switch (args[0].toLowerCase()) {
 			case "mine":
-				newlist = findPlaylist("mine", author, guild);
-				break;
 			case "guild":
-				newlist = findPlaylist("guild", author, guild);
-				break;
 			case "global":
-				newlist = findPlaylist("global", author, guild);
+				String playlistCode = "default";
+				if (args.length > 0) {
+					playlistCode = Misc.joinStrings(args, 1);
+					if (playlistCode.length() > 32) {
+						playlistCode = playlistCode.substring(0, 32);
+					}
+				}
+				newlist = findPlaylist(args[0], playlistCode, author, guild);
 				break;
 		}
 		if (newlist != null) {
@@ -379,20 +386,20 @@ public class PlaylistCommand extends AbstractCommand {
 		return false;
 	}
 
-	private OPlaylist findPlaylist(String search, User user, Guild guild) {
+	private OPlaylist findPlaylist(String search, String code, User user, Guild guild) {
 		int userId;
 		int guildId = CGuild.getCachedId(guild.getId());
 		OPlaylist playlist;
 		String title;
 		switch (search.toLowerCase()) {
 			case "mine":
-				title = user.getName() + "'s list";
+				title = user.getName() + "'s " + code + " list";
 				userId = CUser.getCachedId(user.getId(), user.getName());
-				playlist = CPlaylist.findBy(userId);
+				playlist = CPlaylist.findBy(userId, 0, code);
 				break;
 			case "guild":
-				title = EmojiParser.parseToAliases(guild.getName()) + "'s list";
-				playlist = CPlaylist.findBy(0, guildId);
+				title = EmojiParser.parseToAliases(guild.getName()) + "'s " + code + " list";
+				playlist = CPlaylist.findBy(0, guildId, code);
 				break;
 			case "global":
 			default:
@@ -402,6 +409,7 @@ public class PlaylistCommand extends AbstractCommand {
 		}
 		if (playlist.id == 0) {
 			playlist.title = title;
+			playlist.code = code;
 			CPlaylist.insert(playlist);
 		}
 		return playlist;
@@ -411,6 +419,9 @@ public class PlaylistCommand extends AbstractCommand {
 		List<List<String>> body = new ArrayList<>();
 		String owner = playlist.isGlobalList() ? "Emily" : playlist.isGuildList() ? CGuild.findById(playlist.guildId).name : CUser.findById(playlist.ownerId).name;
 		body.add(Arrays.asList("Title", playlist.title));
+		if (!playlist.isGlobalList()) {
+			body.add(Arrays.asList("code", playlist.code));
+		}
 		body.add(Arrays.asList("Owner", owner));
 		body.add(Arrays.asList("edit-type", playlist.getEditType().getDescription()));
 		body.add(Arrays.asList("play-type", playlist.getPlayType().getDescription()));

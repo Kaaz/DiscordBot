@@ -46,11 +46,15 @@ public class CPlaylist {
 	}
 
 	public static OPlaylist findBy(int userId, int guildId) {
+		return findBy(userId, guildId, "default");
+	}
+
+	public static OPlaylist findBy(int userId, int guildId, String code) {
 		OPlaylist s = new OPlaylist();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, title, owner_id, guild_id,play_type, visibility_level, edit_type, create_date  " +
+				"SELECT *  " +
 						"FROM playlist " +
-						"WHERE owner_id = ? AND guild_id = ?", userId, guildId)) {
+						"WHERE owner_id = ? AND guild_id = ? AND code = ? ", userId, guildId, code)) {
 			if (rs.next()) {
 				s = fillRecord(rs);
 			} else {
@@ -67,7 +71,7 @@ public class CPlaylist {
 	public static OPlaylist findById(int internalId) {
 		OPlaylist s = new OPlaylist();
 		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, play_type,title, owner_id, guild_id, visibility_level, edit_type, create_date  " +
+				"SELECT *  " +
 						"FROM playlist " +
 						"WHERE id = ? ", internalId)) {
 			if (rs.next()) {
@@ -271,6 +275,7 @@ public class CPlaylist {
 		r.title = rs.getString("title");
 		r.ownerId = rs.getInt("owner_id");
 		r.guildId = rs.getInt("guild_id");
+		r.setCode(rs.getString("code"));
 		r.setEditType(rs.getInt("edit_type"));
 		r.setPlayType(rs.getInt("play_type"));
 		r.setVisibility(rs.getInt("visibility_level"));
@@ -283,11 +288,15 @@ public class CPlaylist {
 			insert(record);
 			return;
 		}
+		if (record.hasCodeChanged()) {
+
+		}
 		try {
 			WebDb.get().query(
-					"UPDATE playlist SET title = ?, owner_id = ?, guild_id = ?, visibility_level = ?, edit_type = ?, play_type = ? " +
+					"UPDATE playlist SET title = ?, owner_id = ?, guild_id = ?, visibility_level = ?, edit_type = ?, play_type = ?, code = ? " +
 							"WHERE id = ? ",
-					record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(), record.getPlayType().getId(), record.id
+					record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(),
+					record.getPlayType().getId(), record.code, record.id
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -298,9 +307,10 @@ public class CPlaylist {
 		try {
 			record.createdOn = new Timestamp(System.currentTimeMillis());
 			record.id = WebDb.get().insert(
-					"INSERT INTO playlist(title, owner_id, guild_id, visibility_level, edit_type,play_type, create_date) " +
-							"VALUES (?,?,?,?,?,?,?)",
-					record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(), record.getPlayType().getId(), record.createdOn);
+					"INSERT INTO playlist(title, owner_id, guild_id, visibility_level, edit_type,play_type, create_date,code) " +
+							"VALUES (?,?,?,?,?,?,?,?)",
+					record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(),
+					record.getPlayType().getId(), record.createdOn, record.code);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -295,7 +295,7 @@ public class Misc {
 	 */
 	public static String joinStrings(String[] strings, int startIndex) {
 		String ret = "";
-		if (startIndex <= strings.length) {
+		if (startIndex < strings.length) {
 			ret = strings[startIndex];
 			for (int i = startIndex + 1; i < strings.length; i++) {
 				ret += " " + strings[i];

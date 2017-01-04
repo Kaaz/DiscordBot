@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.Kaaz</groupId>
 	<artifactId>DiscordBot</artifactId>
-	<version>1.9.5</version>
+	<version>1.9.6</version>
 	<packaging>jar</packaging>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>

@@ -13,6 +13,19 @@ public class OPlaylist extends AbstractModel {
 	private Visibility visibility = Visibility.GUILD;
 	private EditType editType = EditType.PUBLIC_AUTO;
 	private PlayType playType = PlayType.SHUFFLE;
+	public String code = "";
+	private String originalCode = "";
+
+	public boolean hasCodeChanged() {
+		return !originalCode.equals(code);
+	}
+
+	public void setCode(String code) {
+		if (!code.isEmpty()) {
+			originalCode = code;
+		}
+		this.code = code;
+	}
 
 	public boolean isGlobalList() {
 		return id > 0 && ownerId == 0 && guildId == 0;
