@@ -35,9 +35,9 @@ public class PingCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		long now = System.currentTimeMillis();
+		long start = System.currentTimeMillis();
 		channel.sendMessage(":outbox_tray: checking ping").queue(
-				message -> message.editMessage(":inbox_tray: ping is " + (System.currentTimeMillis() - now) + "ms").queue()
+				message -> message.editMessage(":inbox_tray: ping is " + (System.currentTimeMillis() - start) + "ms").queue()
 		);
 		return "";
 	}

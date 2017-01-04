@@ -59,46 +59,67 @@ public class BotContainer {
 		initShards();
 	}
 
-	public synchronized void restartShard(int shardId) {
+	/**
+	 * restarts a shard
+	 *
+	 * @param shardId the shard to restart
+	 * @return true if it restarted
+	 */
+	public synchronized boolean tryRestartingShard(int shardId) {
 		try {
-			for (Guild guild : shards[shardId].client.getGuilds()) {
-				MusicPlayerHandler.removeGuild(guild, true);
+			restartShard(shardId);
+		} catch (InterruptedException | LoginException | RateLimitedException e) {
+			BotContainer.LOGGER.error("rebootshard failed", e);
+			Launcher.logToDiscord(e, "shard-restart", "failed", "shard-id", shardId);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * restarts a shard
+	 *
+	 * @param shardId the shard to restart
+	 * @throws InterruptedException
+	 * @throws LoginException
+	 * @throws RateLimitedException
+	 */
+	public synchronized void restartShard(int shardId) throws InterruptedException, LoginException, RateLimitedException {
+		for (Guild guild : shards[shardId].client.getGuilds()) {
+			MusicPlayerHandler.removeGuild(guild, true);
+		}
+		shards[shardId].client.shutdownNow(false);
+		Thread.sleep(5_000L);
+		shards[shardId] = new DiscordBot(shardId, shards.length, this);
+		List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
+		for (OBotPlayingOn radio : radios) {
+			if (calcShardId(Long.parseLong(radio.guildId)) != shardId) {
+				continue;
 			}
-			shards[shardId].client.shutdownNow(false);
-			Thread.sleep(5_000L);
-			shards[shardId] = new DiscordBot(shardId, shards.length, this);
-			List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
-			for (OBotPlayingOn radio : radios) {
-				if (calcShardId(Long.parseLong(radio.guildId)) != shardId) {
-					continue;
-				}
-				Guild guild = shards[shardId].client.getGuildById(radio.guildId);
-				if (guild != null) {
-					VoiceChannel channel = guild.getVoiceChannelById(radio.channelId);
-					if (channel != null) {
-						boolean hasUsers = false;
-						for (Member user : channel.getMembers()) {
-							if (!user.getUser().isBot()) {
-								hasUsers = true;
-								break;
-							}
+			Guild guild = shards[shardId].client.getGuildById(radio.guildId);
+			if (guild != null) {
+				VoiceChannel channel = guild.getVoiceChannelById(radio.channelId);
+				if (channel != null) {
+					boolean hasUsers = false;
+					for (Member user : channel.getMembers()) {
+						if (!user.getUser().isBot()) {
+							hasUsers = true;
+							break;
 						}
-						if (hasUsers) {
-							MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, shards[shardId]);
-							player.connectTo(channel);
-							if (!player.isPlaying()) {
-								player.playRandomSong();
-							}
+					}
+					if (hasUsers) {
+						MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, shards[shardId]);
+						player.connectTo(channel);
+						if (!player.isPlaying()) {
+							player.playRandomSong();
 						}
 					}
 				}
-				CBotPlayingOn.deleteGuild(radio.guildId);
 			}
-			reportError(String.format("%s! Quick, shard %02d is on %s, where are the %s's? Restarting the shard, off we go %s!",
-					Emojibet.FIRE, shardId, Emojibet.FIRE, Emojibet.FIRE_TRUCK, Emojibet.ROCKET));
-		} catch (LoginException | InterruptedException | RateLimitedException e) {
-			e.printStackTrace();
+			CBotPlayingOn.deleteGuild(radio.guildId);
 		}
+		reportError(String.format("%s! Quick, shard %02d is on %s, where are the %s's? Restarting the shard, off we go %s!",
+				Emojibet.FIRE, shardId, Emojibet.FIRE, Emojibet.FIRE_TRUCK, Emojibet.ROCKET));
 	}
 
 	public void setLastAction(int shard, long timestamp) {
@@ -262,7 +283,7 @@ public class BotContainer {
 	 * @param discordGuildId discord guild id
 	 * @return shard number
 	 */
-	private int calcShardId(long discordGuildId) {
+	public int calcShardId(long discordGuildId) {
 		return (int) ((discordGuildId >> 22) % numShards);
 	}
 

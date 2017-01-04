@@ -303,4 +303,12 @@ public class Misc {
 		}
 		return ret;
 	}
+
+	public static int parseInt(String intString, int fallback) {
+		try {
+			return Integer.parseInt(intString);
+		} catch (NumberFormatException e) {
+			return fallback;
+		}
+	}
 }

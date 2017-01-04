@@ -36,13 +36,13 @@ Commands | | | | |
 [debug](#debug) | [exec](#exec) | [exit](#exit) | [fml](#fml) | [game](#game)
 [getrole](#getrole) | [guildstats](#guildstats) | [help](#help) | [importmusic](#importmusic) | [info](#info)
 [invite](#invite) | [join](#join) | [joke](#joke) | [kick](#kick) | [leaveguild](#leaveguild)
-[logging](#logging) | [meme](#meme) | [music](#music) | [pause](#pause) | [ping](#ping)
-[play](#play) | [playlist](#playlist) | [pm](#pm) | [poll](#poll) | [prefix](#prefix)
-[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
-[roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [server](#server)
-[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
-[tag](#tag) | [template](#template) | [ud](#ud) | [uptime](#uptime) | [user](#user)
-[userrank](#userrank) | [version](#version) | [volume](#volume) | 
+[logging](#logging) | [meme](#meme) | [modcase](#modcase) | [music](#music) | [pause](#pause)
+[ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm) | [poll](#poll)
+[prefix](#prefix) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload)
+[report](#report) | [roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile)
+[server](#server) | [skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe)
+[system](#system) | [tag](#tag) | [template](#template) | [ud](#ud) | [uptime](#uptime)
+[user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume) | 
 
 ## Games
 
@@ -496,7 +496,14 @@ kicks a user
 
 Accessible though: kick
 
-Usable in public and private channels
+Usable in public  channels
+
+#### Usage
+
+```php
+kick <user>            //kicks user
+kick <user> <reason..> //kicks user with a reason
+```
 ### leaveguild
 
 leaves guild :(
@@ -533,6 +540,19 @@ meme <type> <toptext> || <bottomtext>   //make the meme!
 
 example: 
 meme sohappy If I could use this meme || I would be so happy
+```
+### modcase
+
+Modcases
+
+Accessible though: modcase, case
+
+Usable in public  channels
+
+#### Usage
+
+```php
+kick <user>            //kicks user
 ```
 ### music
 
@@ -680,9 +700,10 @@ Usable in public and private channels
 
 ```php
 reboot                  //reboots the system
+reboot now              //reboots the system
 reboot update           //reboots the system and updates
 reboot shard <id>       //reboots shard
-reboot gshard <guildid> //reboots shard for guild-id
+reboot shard <guildid>  //reboots shard for guild-id
 ```
 ### reddit
 

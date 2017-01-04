@@ -45,9 +45,20 @@ public class ConnectionCheckerService extends AbstractService {
 			if (shard == null || !shard.isReady()) {
 				continue;
 			}
-			long lastEventReceived = now - bot.getLastAction(shard.getShardId());
+			int shardId = shard.getShardId();
+			long lastEventReceived = now - bot.getLastAction(shardId);
 			if (lastEventReceived > RESTART_AFTER) {
-				bot.restartShard(shard.getShardId());
+
+				boolean restartSuccess = bot.tryRestartingShard(shardId);
+				int limit = 9;
+				while (!restartSuccess && --limit > 0) {
+					try {
+						Thread.sleep(15_000L);
+						restartSuccess = bot.tryRestartingShard(shardId);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	}
