@@ -101,7 +101,16 @@ public class OutgoingContentHandler {
 	 * @param message the message
 	 */
 	public void sendPrivateMessage(User target, String message) {
-		target.openPrivateChannel().queue(c -> c.sendMessage(message).queue());
+		if (target != null && !target.isFake() && message != null && !message.isEmpty()) {
+			target.openPrivateChannel().queue(c -> c.sendMessage(message).queue(
+					null,
+					throwable ->
+							Launcher.logToDiscord(throwable,
+									"user", target.getName() + "#" + target.getDiscriminator(),
+									"message", message
+							)
+			));
+		}
 	}
 
 	/**
@@ -115,14 +124,14 @@ public class OutgoingContentHandler {
 			TextChannel channel = messageToDelete.getJDA().getTextChannelById(messageToDelete.getChannel().getId());
 			if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_HISTORY)) {
 				channel.getMessageById(messageToDelete.getId()).queue(msg -> {
-					if (msg != null) {
-						msg.deleteMessage().queue();
-					}
-				}, throwable -> {
-				});
+							if (msg != null) {
+								msg.deleteMessage().queue();
+							}
+						}, throwable ->
+								Launcher.logToDiscord(throwable, "channel", channel.getId(), "content", messageToDelete.getContent())
+				);
 			}
 		}
-
 	}
 
 
