@@ -36,17 +36,17 @@ public class OutgoingContentHandler {
 		if (channel == null || content == null || content.isEmpty()) {
 			return;
 		}
+		if (callback == null) {
+			sendAsyncMessage(channel, content);
+			return;
+		}
 		channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue(callback, throwable -> callback.accept(null));
 	}
 
 	public void sendAsyncMessage(MessageChannel channel, String content) {
 		channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue((message) -> {
 			if (botInstance.shouldCleanUpMessages(channel)) {
-				botInstance.schedule(() -> {
-					if (message != null) {
-						message.deleteMessage().queue();
-					}
-				}, Config.DELETE_MESSAGES_AFTER, TimeUnit.MILLISECONDS);
+				botInstance.schedule(() -> saveDelete(message), Config.DELETE_MESSAGES_AFTER, TimeUnit.MILLISECONDS);
 			}
 		});
 	}
