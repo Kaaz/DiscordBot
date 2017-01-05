@@ -94,7 +94,6 @@ public class MusicPlayerHandler {
 		guildManager.setSendingHandler(new AudioPlayerSendHandler(player));
 		queue = new LinkedList<>();
 		scheduler = new TrackScheduler(player);
-
 		player.addListener(scheduler);
 		player.setVolume(Integer.parseInt(GuildSettings.get(guild.getId()).getOrDefault(SettingMusicVolume.class)));
 		playerInstances.put(guild.getId(), this);

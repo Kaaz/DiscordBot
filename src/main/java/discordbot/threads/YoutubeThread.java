@@ -127,7 +127,6 @@ public class YoutubeThread extends Thread {
 					counter.incrementAndGet();
 				} catch (InterruptedException e) {
 					Launcher.logToDiscord(e);
-					CBotEvent.insert(OBotEvent.Level.FATAL, ":octagonal_sign:", ":musical_note:", "yt worker broke " + e.getMessage());
 				}
 			}
 		} finally {
@@ -140,7 +139,6 @@ public class YoutubeThread extends Thread {
 
 	public void addToQueue(String youtubeCode, String youtubeTitle, Message message, Consumer<Message> callback) {
 		if (shutdownMode) {
-			CBotEvent.insert(OBotEvent.Level.FATAL, ":octagonal_sign:", ":musical_note:", "Youtube-dl thread is dead!");
 			return;
 		}
 		queue.offer(new YoutubeTask(youtubeCode, youtubeTitle, message, callback));
@@ -247,7 +245,6 @@ public class YoutubeThread extends Thread {
 				}
 			} catch (Exception e) {
 				Launcher.logToDiscord(e, "yt-code", task.getCode());
-				CBotEvent.insert(OBotEvent.Level.WARN, ":octagonal_sign:", ":musical_note:", " ytcode: " + task.getCode() + "  " + e.getMessage());
 			} finally {
 				unRegisterProgress(task.getCode());
 			}
