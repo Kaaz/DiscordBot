@@ -340,7 +340,7 @@ public class JDAEvents extends ListenerAdapter {
 	}
 
 	private void checkLeaving(Guild guild, VoiceChannel channel, User user) {
-		if (user.isBot() && !user.equals(guild.getSelfMember().getUser())) {
+		if (user.isBot() && !user.equals(user.getJDA().getSelfUser())) {
 			return;
 		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, discordBot);
