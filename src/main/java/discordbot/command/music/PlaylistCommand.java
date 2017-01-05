@@ -122,12 +122,15 @@ public class PlaylistCommand extends AbstractCommand {
 			case "mine":
 			case "guild":
 			case "global":
-				String playlistCode = "default";
-				if (args.length > 0) {
+				String playlistCode = null;
+				if (args.length > 1) {
 					playlistCode = Misc.joinStrings(args, 1);
 					if (playlistCode.length() > 32) {
 						playlistCode = playlistCode.substring(0, 32);
 					}
+				}
+				if (playlistCode == null || playlistCode.isEmpty()) {
+					playlistCode = "default";
 				}
 				newlist = findPlaylist(args[0], playlistCode, author, guild);
 				break;
