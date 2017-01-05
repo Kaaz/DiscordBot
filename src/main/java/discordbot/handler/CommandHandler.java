@@ -2,6 +2,7 @@ package discordbot.handler;
 
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandCategory;
+import discordbot.command.CommandReactionListener;
 import discordbot.command.CommandVisibility;
 import discordbot.command.ICommandCooldown;
 import discordbot.command.ICommandReactionListener;
@@ -23,11 +24,12 @@ import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 /**
  * Handles all the commands
@@ -105,7 +106,7 @@ public class CommandHandler {
 		String args[] = new String[input.length - 1];
 		input[0] = DisUtil.filterPrefix(input[0], channel).toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
-		Consumer<Message> callback = null;
+		CommandReactionListener<?> commandReactionListener = null;
 		if (commands.containsKey(input[0]) || commandsAlias.containsKey(input[0])) {
 			AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
 			commandUsed = command.getCommand();
@@ -122,7 +123,7 @@ public class CommandHandler {
 				} else {
 					commandOutput = command.execute(bot, args, channel, author);
 					if (command instanceof ICommandReactionListener) {
-						callback = ((ICommandReactionListener) command).getListenObject().getCallback();
+						commandReactionListener = ((ICommandReactionListener) command).getListenObject();
 					}
 				}
 				if (!commandOutput.isEmpty()) {
@@ -165,8 +166,18 @@ public class CommandHandler {
 			outMsg = Template.get("unknown_command", GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help");
 		}
 		if (!outMsg.isEmpty()) {
+			if (commandReactionListener != null && channel instanceof TextChannel &&
+					PermissionUtil.checkPermission(
+							(TextChannel) channel,
+							((TextChannel) channel).getGuild().getSelfMember(),
+							Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS)) {
+				final CommandReactionListener<?> finalCommandReactionListener = commandReactionListener;
 
-			bot.out.sendAsyncMessage(channel, outMsg, callback);
+				bot.out.sendAsyncMessage(channel, outMsg, message -> bot.commandReactionHandler.addReactionListener(((TextChannel)channel).getGuild().getId(),message, finalCommandReactionListener));
+
+			} else {
+				bot.out.sendAsyncMessage(channel, outMsg);
+			}
 		}
 		if (commandSuccess) {
 			if (channel instanceof TextChannel) {
@@ -189,6 +200,7 @@ public class CommandHandler {
 			}
 			CUser.registerCommandUse(CUser.getCachedId(author.getId()));
 		}
+
 	}
 
 	private static boolean hasRightVisibility(MessageChannel channel, CommandVisibility visibility) {

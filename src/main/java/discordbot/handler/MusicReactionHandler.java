@@ -45,28 +45,30 @@ public class MusicReactionHandler {
 		}
 	}
 
-	public synchronized void handle(String messageId, TextChannel channel, User invoker, MessageReaction.ReactionEmote emote, boolean isAdding) {
+	public synchronized boolean handle(String messageId, TextChannel channel, User invoker, MessageReaction.ReactionEmote emote, boolean isAdding) {
 		String guildId = channel.getGuild().getId();
 		if (!isListening(guildId, messageId)) {
-			return;
+			return false;
 		}
 		MusicPlayerHandler player = MusicPlayerHandler.getFor(channel.getGuild(), discordBot);
 		SimpleRank rank = discordBot.security.getSimpleRank(invoker, channel);
 		if (!GuildSettings.get(channel.getGuild()).canUseMusicCommands(invoker, rank)) {
-			return;
+			return false;
 		}
 		if (!player.isPlaying()) {
-			return;
+			return false;
 		}
 		if (!player.isInVoiceWith(channel.getGuild(), invoker)) {
-			return;
+			return false;
 		}
-
 		if (Emojibet.NEXT_TRACK.equals(emote.getName())) {
 			handleVoteSkip(player, channel, invoker, rank, isAdding);
+			return true;
 		} else if (Emojibet.NO_ENTRY.equals(emote.getName())) {
 			handleBanTrack(player, channel, invoker, rank, isAdding);
+			return true;
 		}
+		return false;
 	}
 
 	private void handleBanTrack(MusicPlayerHandler player, TextChannel channel, User invoker, SimpleRank rank, boolean isAdding) {

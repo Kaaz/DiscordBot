@@ -15,6 +15,7 @@ import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.handler.AutoReplyHandler;
 import discordbot.handler.ChatBotHandler;
 import discordbot.handler.CommandHandler;
+import discordbot.handler.CommandReactionHandler;
 import discordbot.handler.GameHandler;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
@@ -65,6 +66,7 @@ public class DiscordBot {
 	public SecurityHandler security = null;
 	public OutgoingContentHandler out = null;
 	public MusicReactionHandler musicReactionHandler = null;
+	public CommandReactionHandler commandReactionHandler = null;
 	private AutoReplyHandler autoReplyhandler;
 	private GameHandler gameHandler = null;
 	private volatile boolean isReady = false;
@@ -317,6 +319,7 @@ public class DiscordBot {
 		gameHandler = new GameHandler(this);
 		out = new OutgoingContentHandler(this);
 		musicReactionHandler = new MusicReactionHandler(this);
+		commandReactionHandler = new CommandReactionHandler(this);
 		autoReplyhandler = new AutoReplyHandler(this);
 	}
 

@@ -1,19 +1,27 @@
 package discordbot.command;
 
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class CommandReactionListener<DataType> {
 
-	private final HashMap<String, Consumer<Message>> reactions;
+	private final LinkedHashMap<String, Consumer<Message>> reactions;
 	private volatile DataType data;
 
 	public CommandReactionListener(DataType data) {
 		this.data = data;
-		reactions = new HashMap<>();
+		reactions = new LinkedHashMap<>();
+	}
+
+	public boolean hasReaction(String emote) {
+		return reactions.containsKey(emote);
+	}
+
+	public void react(String emote, Message message) {
+		reactions.get(emote).accept(message);
 	}
 
 	public DataType getData() {
@@ -28,12 +36,7 @@ public class CommandReactionListener<DataType> {
 		reactions.put(emoji, consumer);
 	}
 
-	public Consumer<Message> getCallback() {
-		return message -> {
-			if (message.getChannel() instanceof TextChannel) {
-				TextChannel channel = (TextChannel) message.getChannel();
-
-			}
-		};
+	public Set<String> getEmotes() {
+		return reactions.keySet();
 	}
 }

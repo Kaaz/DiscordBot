@@ -16,9 +16,11 @@ import discordbot.util.DisUtil;
 import discordbot.util.Emojibet;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.utils.PermissionUtil;
@@ -33,7 +35,8 @@ import java.util.Map;
  * gets/sets the configuration of the bot
  */
 public class SetConfig extends AbstractCommand implements ICommandReactionListener {
-	public static final int CFG_PER_PAGE = 24;
+//	public static final int CFG_PER_PAGE = 24;
+	public static final int CFG_PER_PAGE = 15;
 
 	public SetConfig() {
 		super();
@@ -111,15 +114,22 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
 			}
 		}
 		if (args.length == 0 || tag != null || args.length > 0 && args[0].equals("page")) {
-			EmbedBuilder b = new EmbedBuilder();
 			Map<String, String> settings = GuildSettings.get(guild).getSettings();
 			ArrayList<String> keys = new ArrayList<>(settings.keySet());
 			Collections.sort(keys);
-			int maxPage = 1 + keys.size() / CFG_PER_PAGE;
 			int activePage = 0;
-			if (args.length > 1 && args[0].equals("page")) {
-				activePage = Math.max(0, Math.min(maxPage - 1, Misc.parseInt(args[1], 0) - 1));
+			int maxPage = 1 + keys.size() / CFG_PER_PAGE;
+
+			if (PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
+				if (args.length > 1 && args[0].equals("page")) {
+					activePage = Math.max(0, Math.min(maxPage - 1, Misc.parseInt(args[1], 0) - 1));
+				}
+				channel.sendMessage(makeEmbedConfig(guild, activePage)).queue(
+						message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getListenObject())
+				);
+				return "";
 			}
+
 			String ret = "Current Settings for " + guild.getName() + Config.EOL + Config.EOL;
 			if (tag != null) {
 				ret += "Only showing settings with the tag `" + tag + "`" + Config.EOL;
@@ -144,22 +154,12 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
 					indicator = "* ";
 				}
 				ret += String.format(cfgFormat, indicator + key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key));
-				b.addField(key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key), true);
 				isEmpty = false;
 			}
 			if (isEmpty && tag != null) {
 				return "No settings found matching the tag `" + tag + "`";
 			}
-			b.setFooter("Page " + (activePage + 1) + " / " + maxPage + " | Press the buttons for other pages | " + DisUtil.getCommandPrefix(channel) + "cfg page <number>", null);
-			String commandPrefix = DisUtil.getCommandPrefix(guild);
-			b.setDescription(String.format(((tag != null) ? "only showing settings with the tag " + tag + Config.EOL : "") +
-					"To see more details about a setting:" + Config.EOL +
-					"`%1$scfg settingname`" + Config.EOL + Config.EOL, commandPrefix));
-			b.setTitle("Current Settings for " + guild.getName());
-			if (PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-				channel.sendMessage(b.build()).queue();
-				return "";
-			}
+
 			return ret;
 		}
 
@@ -201,21 +201,43 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
 				Misc.makeTable(tblContent);
 	}
 
+	private static MessageEmbed makeEmbedConfig(Guild guild, int activePage) {
+		EmbedBuilder b = new EmbedBuilder();
+		Map<String, String> settings = GuildSettings.get(guild).getSettings();
+		ArrayList<String> keys = new ArrayList<>(settings.keySet());
+		Collections.sort(keys);
+		int maxPage = 1 + keys.size() / CFG_PER_PAGE;
+		activePage = Math.max(0, Math.min(maxPage - 1, activePage - 1));
+		for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < activePage * CFG_PER_PAGE + CFG_PER_PAGE; i++) {
+			String key = keys.get(i);
+			if (DefaultGuildSettings.get(key).isReadOnly()) {
+				continue;
+			}
+			b.addField(key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key), true);
+		}
+		String commandPrefix = DisUtil.getCommandPrefix(guild);
+		b.setFooter("Page " + (activePage + 1) + " / " + maxPage + " | Press the buttons for other pages", null);
+		b.setDescription(String.format("To see more details about a setting:" + Config.EOL +
+				"`%1$scfg settingname`" + Config.EOL + Config.EOL, commandPrefix));
+		b.setTitle("Current Settings for " + guild.getName());
+		return b.build();
+	}
+
 	@Override
 	public CommandReactionListener getListenObject() {
 
-		int maxPage = 1 + DefaultGuildSettings.countSettings() / CFG_PER_PAGE;
+		final int maxPage = 1 + DefaultGuildSettings.countSettings() / CFG_PER_PAGE;
 		CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(new PaginationInfo(1, maxPage));
 		listener.registerReaction(Emojibet.PREV_TRACK, o -> {
 			if (listener.getData().previousPage()) {
-				o.editMessage("PAGE " + listener.getData().getCurrentPage());
+				o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(o.getGuild(), listener.getData().getCurrentPage())).build()).queue();
 			}
 		});
 		listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
 			if (listener.getData().nextPage()) {
-				o.editMessage("PAGE " + listener.getData().getCurrentPage());
+				o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(o.getGuild(), listener.getData().getCurrentPage())).build()).queue();
 			}
 		});
-		return null;
+		return listener;
 	}
 }
