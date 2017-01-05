@@ -2,7 +2,7 @@ package discordbot.service;
 
 import discordbot.core.AbstractService;
 import discordbot.core.ExitCode;
-import discordbot.guildsettings.defaults.SettingBotUpdateWarning;
+import discordbot.guildsettings.bot.SettingBotUpdateWarning;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.BotContainer;

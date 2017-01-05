@@ -2,8 +2,8 @@ package discordbot.role;
 
 import discordbot.db.controllers.CGuildMember;
 import discordbot.db.model.OGuildMember;
-import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
-import discordbot.guildsettings.defaults.SettingRoleTimeRanksPrefix;
+import discordbot.guildsettings.bot.SettingRoleTimeRanks;
+import discordbot.guildsettings.bot.SettingRoleTimeRanksPrefix;
 import discordbot.handler.GuildSettings;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;

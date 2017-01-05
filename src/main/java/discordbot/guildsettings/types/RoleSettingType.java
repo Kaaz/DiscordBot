@@ -70,6 +70,6 @@ public class RoleSettingType implements IGuildSettingType {
 				return roleByName.getName();
 			}
 		}
-		return Emojibet.NO_ENTRY;
+		return Emojibet.X;
 	}
 }

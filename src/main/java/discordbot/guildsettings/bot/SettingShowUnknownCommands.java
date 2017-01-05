@@ -1,10 +1,10 @@
-package discordbot.guildsettings.defaults;
+package discordbot.guildsettings.bot;
 
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.types.BooleanSettingType;
 
 
-public class SettingPMUserEvents extends AbstractGuildSetting<BooleanSettingType> {
+public class SettingShowUnknownCommands extends AbstractGuildSetting<BooleanSettingType> {
 	@Override
 	protected BooleanSettingType getSettingsType() {
 		return new BooleanSettingType();
@@ -12,12 +12,12 @@ public class SettingPMUserEvents extends AbstractGuildSetting<BooleanSettingType
 
 	@Override
 	public String getKey() {
-		return "pm_user_events";
+		return "show_unknown_commands";
 	}
 
 	@Override
 	public String[] getTags() {
-		return new String[]{"user", "admin", "events"};
+		return new String[]{"bot", "command", "unknown"};
 	}
 
 	@Override
@@ -27,8 +27,8 @@ public class SettingPMUserEvents extends AbstractGuildSetting<BooleanSettingType
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"Send a private message to owner when something happens to a user?",
-				"true  -> sends a private message to guild-owner",
-				"false -> does absolutely nothing"};
+		return new String[]{"Show message on nonexistent commands and blacklisted commands",
+				"true -> returns a help message",
+				"false -> stays silent"};
 	}
 }

@@ -1,4 +1,4 @@
-package discordbot.guildsettings.defaults;
+package discordbot.guildsettings.bot;
 
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.types.StringLengthSettingType;

@@ -3,7 +3,7 @@ package discordbot.handler;
 import discordbot.games.AbstractGame;
 import discordbot.games.GameState;
 import discordbot.games.GameTurn;
-import discordbot.guildsettings.defaults.SettingGameModule;
+import discordbot.guildsettings.bot.SettingGameModule;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;

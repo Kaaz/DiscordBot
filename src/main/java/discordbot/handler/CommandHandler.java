@@ -4,6 +4,7 @@ import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandCategory;
 import discordbot.command.CommandVisibility;
 import discordbot.command.ICommandCooldown;
+import discordbot.command.ICommandReactionListener;
 import discordbot.core.AbstractCommand;
 import discordbot.db.WebDb;
 import discordbot.db.controllers.CBlacklistCommand;
@@ -15,13 +16,14 @@ import discordbot.db.controllers.CUser;
 import discordbot.db.model.OBlacklistCommand;
 import discordbot.db.model.OBotEvent;
 import discordbot.db.model.OCommandCooldown;
-import discordbot.guildsettings.defaults.SettingCommandPrefix;
-import discordbot.guildsettings.defaults.SettingShowUnknownCommands;
+import discordbot.guildsettings.bot.SettingCommandPrefix;
+import discordbot.guildsettings.bot.SettingShowUnknownCommands;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /**
  * Handles all the commands
@@ -102,6 +105,7 @@ public class CommandHandler {
 		String args[] = new String[input.length - 1];
 		input[0] = DisUtil.filterPrefix(input[0], channel).toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
+		Consumer<Message> callback = null;
 		if (commands.containsKey(input[0]) || commandsAlias.containsKey(input[0])) {
 			AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
 			commandUsed = command.getCommand();
@@ -117,6 +121,9 @@ public class CommandHandler {
 					commandOutput = commands.get("help").execute(bot, new String[]{input[0]}, channel, author);
 				} else {
 					commandOutput = command.execute(bot, args, channel, author);
+					if (command instanceof ICommandReactionListener) {
+						callback = ((ICommandReactionListener) command).getListenObject().getCallback();
+					}
 				}
 				if (!commandOutput.isEmpty()) {
 					outMsg = commandOutput;
@@ -158,7 +165,8 @@ public class CommandHandler {
 			outMsg = Template.get("unknown_command", GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help");
 		}
 		if (!outMsg.isEmpty()) {
-			bot.out.sendAsyncMessage(channel, outMsg);
+
+			bot.out.sendAsyncMessage(channel, outMsg, callback);
 		}
 		if (commandSuccess) {
 			if (channel instanceof TextChannel) {

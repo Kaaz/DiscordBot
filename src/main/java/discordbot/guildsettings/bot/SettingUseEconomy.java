@@ -1,10 +1,10 @@
-package discordbot.guildsettings.defaults;
+package discordbot.guildsettings.bot;
 
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.types.BooleanSettingType;
 
 
-public class SettingGameModule extends AbstractGuildSetting<BooleanSettingType> {
+public class SettingUseEconomy extends AbstractGuildSetting<BooleanSettingType> {
 	@Override
 	protected BooleanSettingType getSettingsType() {
 		return new BooleanSettingType();
@@ -12,21 +12,23 @@ public class SettingGameModule extends AbstractGuildSetting<BooleanSettingType> 
 
 	@Override
 	public String getKey() {
-		return "module_games";
+		return "use_economy";
 	}
 
 	@Override
 	public String[] getTags() {
-		return new String[]{"bot", "module", "games"};
+		return new String[]{"bot", "module", "economy"};
 	}
 
 	@Override
 	public String getDefault() {
-		return "true";
+		return "false";
 	}
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"Let people play games against each other"};
+		return new String[]{"Use the economy feature?",
+				"false -> nope!",
+				"true -> yep!"};
 	}
 }

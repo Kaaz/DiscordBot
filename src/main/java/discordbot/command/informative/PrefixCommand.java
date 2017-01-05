@@ -2,7 +2,7 @@ package discordbot.command.informative;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import discordbot.core.AbstractCommand;
-import discordbot.guildsettings.defaults.SettingCommandPrefix;
+import discordbot.guildsettings.bot.SettingCommandPrefix;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.Config;

@@ -2,8 +2,8 @@ package discordbot.command.informative;
 
 import discordbot.command.CommandCategory;
 import discordbot.core.AbstractCommand;
-import discordbot.guildsettings.defaults.SettingCommandPrefix;
-import discordbot.guildsettings.defaults.SettingHelpInPM;
+import discordbot.guildsettings.bot.SettingCommandPrefix;
+import discordbot.guildsettings.bot.SettingHelpInPM;
 import discordbot.handler.CommandHandler;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;

@@ -64,6 +64,6 @@ public class VoiceChannelSettingType implements IGuildSettingType {
 				return channelByName.getName();
 			}
 		}
-		return Emojibet.NO_ENTRY;
+		return Emojibet.X;
 	}
 }

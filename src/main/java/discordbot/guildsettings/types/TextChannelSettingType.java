@@ -70,6 +70,6 @@ public class TextChannelSettingType implements IGuildSettingType {
 				return channelByName.getAsMention();
 			}
 		}
-		return Emojibet.NO_ENTRY;
+		return Emojibet.X;
 	}
 }

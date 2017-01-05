@@ -1,7 +1,10 @@
 package discordbot.command.administrative;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
+import discordbot.command.CommandReactionListener;
 import discordbot.command.CommandVisibility;
+import discordbot.command.ICommandReactionListener;
+import discordbot.command.PaginationInfo;
 import discordbot.core.AbstractCommand;
 import discordbot.guildsettings.DefaultGuildSettings;
 import discordbot.handler.GuildSettings;
@@ -29,7 +32,9 @@ import java.util.Map;
  * !config
  * gets/sets the configuration of the bot
  */
-public class SetConfig extends AbstractCommand {
+public class SetConfig extends AbstractCommand implements ICommandReactionListener {
+	public static final int CFG_PER_PAGE = 24;
+
 	public SetConfig() {
 		super();
 	}
@@ -48,6 +53,7 @@ public class SetConfig extends AbstractCommand {
 	public String[] getUsage() {
 		return new String[]{
 				"config                    //overview",
+				"config page <number>      //show page <number>",
 				"config tags               //see what tags exist",
 				"config tag <tagname>      //show settings with tagname",
 				"config <property>         //check details of property",
@@ -104,11 +110,16 @@ public class SetConfig extends AbstractCommand {
 				tag = args[1].toLowerCase();
 			}
 		}
-		if (args.length == 0 || tag != null) {
+		if (args.length == 0 || tag != null || args.length > 0 && args[0].equals("page")) {
 			EmbedBuilder b = new EmbedBuilder();
 			Map<String, String> settings = GuildSettings.get(guild).getSettings();
 			ArrayList<String> keys = new ArrayList<>(settings.keySet());
 			Collections.sort(keys);
+			int maxPage = 1 + keys.size() / CFG_PER_PAGE;
+			int activePage = 0;
+			if (args.length > 1 && args[0].equals("page")) {
+				activePage = Math.max(0, Math.min(maxPage - 1, Misc.parseInt(args[1], 0) - 1));
+			}
 			String ret = "Current Settings for " + guild.getName() + Config.EOL + Config.EOL;
 			if (tag != null) {
 				ret += "Only showing settings with the tag `" + tag + "`" + Config.EOL;
@@ -116,7 +127,8 @@ public class SetConfig extends AbstractCommand {
 			ret += ":information_source: Settings indicated with a `*` are different from the default value" + Config.EOL + Config.EOL;
 			String cfgFormat = "`\u200B%-24s:`  %s" + Config.EOL;
 			boolean isEmpty = true;
-			for (String key : keys) {
+			for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < activePage * CFG_PER_PAGE + CFG_PER_PAGE; i++) {
+				String key = keys.get(i);
 				if (DefaultGuildSettings.get(key).isReadOnly()) {
 					if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
 						continue;
@@ -138,14 +150,11 @@ public class SetConfig extends AbstractCommand {
 			if (isEmpty && tag != null) {
 				return "No settings found matching the tag `" + tag + "`";
 			}
+			b.setFooter("Page " + (activePage + 1) + " / " + maxPage + " | Press the buttons for other pages | " + DisUtil.getCommandPrefix(channel) + "cfg page <number>", null);
 			String commandPrefix = DisUtil.getCommandPrefix(guild);
 			b.setDescription(String.format(((tag != null) ? "only showing settings with the tag " + tag + Config.EOL : "") +
 					"To see more details about a setting:" + Config.EOL +
-					"`%1$scfg settingname`" + Config.EOL + Config.EOL +
-					"To change a setting:" + Config.EOL +
-					"`%1$scfg settingname value`" + Config.EOL + Config.EOL +
-					"Example: " + Config.EOL +
-					"`%1$scfg music_vote_percent 10`", commandPrefix));
+					"`%1$scfg settingname`" + Config.EOL + Config.EOL, commandPrefix));
 			b.setTitle("Current Settings for " + guild.getName());
 			if (PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
 				channel.sendMessage(b.build()).queue();
@@ -190,5 +199,23 @@ public class SetConfig extends AbstractCommand {
 				"Default value: \"**" + setting.getDefaultValue(args[0]) + "**\"" + Config.EOL + Config.EOL +
 				"Description: " + Config.EOL +
 				Misc.makeTable(tblContent);
+	}
+
+	@Override
+	public CommandReactionListener getListenObject() {
+
+		int maxPage = 1 + DefaultGuildSettings.countSettings() / CFG_PER_PAGE;
+		CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(new PaginationInfo(1, maxPage));
+		listener.registerReaction(Emojibet.PREV_TRACK, o -> {
+			if (listener.getData().previousPage()) {
+				o.editMessage("PAGE " + listener.getData().getCurrentPage());
+			}
+		});
+		listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
+			if (listener.getData().nextPage()) {
+				o.editMessage("PAGE " + listener.getData().getCurrentPage());
+			}
+		});
+		return null;
 	}
 }

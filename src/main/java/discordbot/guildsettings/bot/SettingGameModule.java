@@ -1,10 +1,10 @@
-package discordbot.guildsettings.defaults;
+package discordbot.guildsettings.bot;
 
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.types.BooleanSettingType;
 
 
-public class SettingShowUnknownCommands extends AbstractGuildSetting<BooleanSettingType> {
+public class SettingGameModule extends AbstractGuildSetting<BooleanSettingType> {
 	@Override
 	protected BooleanSettingType getSettingsType() {
 		return new BooleanSettingType();
@@ -12,23 +12,21 @@ public class SettingShowUnknownCommands extends AbstractGuildSetting<BooleanSett
 
 	@Override
 	public String getKey() {
-		return "show_unknown_commands";
+		return "module_games";
 	}
 
 	@Override
 	public String[] getTags() {
-		return new String[]{"bot", "command", "unknown"};
+		return new String[]{"bot", "module", "games"};
 	}
 
 	@Override
 	public String getDefault() {
-		return "false";
+		return "true";
 	}
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"Show message on nonexistent commands and blacklisted commands",
-				"true -> returns a help message",
-				"false -> stays silent"};
+		return new String[]{"Let people play games against each other"};
 	}
 }

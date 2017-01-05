@@ -1,7 +1,7 @@
 package discordbot.service;
 
 import discordbot.core.AbstractService;
-import discordbot.guildsettings.defaults.SettingRoleTimeRanks;
+import discordbot.guildsettings.bot.SettingRoleTimeRanks;
 import discordbot.handler.GuildSettings;
 import discordbot.main.BotContainer;
 import discordbot.main.DiscordBot;

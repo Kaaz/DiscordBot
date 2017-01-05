@@ -1,10 +1,10 @@
-package discordbot.guildsettings.defaults;
+package discordbot.guildsettings.moderation;
 
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.types.TextChannelSettingType;
 
 
-public class SettingModlogChannel extends AbstractGuildSetting<TextChannelSettingType> {
+public class SettingLoggingChannel extends AbstractGuildSetting<TextChannelSettingType> {
 	@Override
 	protected TextChannelSettingType getSettingsType() {
 		return new TextChannelSettingType(true);
@@ -12,12 +12,12 @@ public class SettingModlogChannel extends AbstractGuildSetting<TextChannelSettin
 
 	@Override
 	public String getKey() {
-		return "bot_modlog_channel";
+		return "bot_logging_channel";
 	}
 
 	@Override
 	public String[] getTags() {
-		return new String[]{"case", "logging", "channel"};
+		return new String[]{"bot", "logging", "channel"};
 	}
 
 	@Override
@@ -27,12 +27,11 @@ public class SettingModlogChannel extends AbstractGuildSetting<TextChannelSettin
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"The channel where mod-logging happens.",
-				"A case will appear if a user has been banned/kicked/warned/muted",
+		return new String[]{"The channel where the logging of events happens. Such as users joining/leaving ",
 				"",
 				"Setting this to 'false' will disable it (without the quotes)",
 				"",
-				"To enable it, set this setting to match the channel name where you want the moderation-cases to go",
+				"To enable it, set this setting to match the channel name where you want the logging to happen",
 				"If you specify an invalid channel, this setting will disable itself"
 		};
 	}

@@ -39,6 +39,10 @@ public class DefaultGuildSettings {
 		return defaultSettings.get(key).getDefault();
 	}
 
+	public static int countSettings() {
+		return defaultSettings.keySet().size();
+	}
+
 	public static AbstractGuildSetting get(String key) {
 		return defaultSettings.get(key);
 	}

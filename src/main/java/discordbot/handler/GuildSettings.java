@@ -131,6 +131,10 @@ public class GuildSettings {
 		return new String[]{};
 	}
 
+	public String getSettingsType(String key) {
+		return DefaultGuildSettings.get(key).getSettingType();
+	}
+
 	public String getDisplayValue(Guild guild, String key) {
 		return DefaultGuildSettings.get(key).toDisplay(guild, getOrDefault(key));
 	}

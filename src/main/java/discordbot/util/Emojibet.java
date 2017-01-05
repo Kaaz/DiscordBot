@@ -32,6 +32,7 @@ public class Emojibet {
 	public static String FIRE_TRUCK = "\uD83D\uDE92";
 	public static String WATER_DROP = "\uD83D\uDCA7";
 	public static String ROCKET = "\uD83D\uDE80";
+	public static String X = "\u274C";
 
 	public static String ANGER = "\uD83D\uDCA2";
 	public static String EYES = "\uD83D\uDC40";

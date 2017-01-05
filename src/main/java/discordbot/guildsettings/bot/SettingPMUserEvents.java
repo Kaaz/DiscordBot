@@ -1,10 +1,10 @@
-package discordbot.guildsettings.defaults;
+package discordbot.guildsettings.bot;
 
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.types.BooleanSettingType;
 
 
-public class SettingUseEconomy extends AbstractGuildSetting<BooleanSettingType> {
+public class SettingPMUserEvents extends AbstractGuildSetting<BooleanSettingType> {
 	@Override
 	protected BooleanSettingType getSettingsType() {
 		return new BooleanSettingType();
@@ -12,12 +12,12 @@ public class SettingUseEconomy extends AbstractGuildSetting<BooleanSettingType> 
 
 	@Override
 	public String getKey() {
-		return "use_economy";
+		return "pm_user_events";
 	}
 
 	@Override
 	public String[] getTags() {
-		return new String[]{"bot", "module", "economy"};
+		return new String[]{"user", "admin", "events"};
 	}
 
 	@Override
@@ -27,8 +27,8 @@ public class SettingUseEconomy extends AbstractGuildSetting<BooleanSettingType> 
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"Use the economy feature?",
-				"false -> nope!",
-				"true -> yep!"};
+		return new String[]{"Send a private message to owner when something happens to a user?",
+				"true  -> sends a private message to guild-owner",
+				"false -> does absolutely nothing"};
 	}
 }

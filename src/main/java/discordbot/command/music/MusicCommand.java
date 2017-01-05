@@ -4,7 +4,7 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CPlaylist;
 import discordbot.db.model.OPlaylist;
-import discordbot.guildsettings.defaults.SettingMusicAdminVolume;
+import discordbot.guildsettings.bot.SettingMusicAdminVolume;
 import discordbot.guildsettings.music.SettingMusicAutoVoiceChannel;
 import discordbot.guildsettings.music.SettingMusicChannel;
 import discordbot.guildsettings.music.SettingMusicClearAdminOnly;

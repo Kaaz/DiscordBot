@@ -87,7 +87,7 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
 					return "The following items are being worked on:" + Config.EOL + getListFor(Config.TRELLO_LIST_IN_PROGRESS, ":construction:");
 				default:
 					break;
-			}
+			}//
 		}
 		channel.sendTyping();
 		String onlineFor = TimeUtil.getRelativeTime(bot.startupTimeStamp, false);
