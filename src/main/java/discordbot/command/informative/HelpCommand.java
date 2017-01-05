@@ -84,38 +84,36 @@ public class HelpCommand extends AbstractCommand {
 				return ret;
 			}
 			return Template.get("command_help_donno");
-		} else {
-			SimpleRank userRank = bot.security.getSimpleRank(author, channel);
-			String ret = "I know the following commands: " + Config.EOL + Config.EOL;
-			HashMap<CommandCategory, ArrayList<String>> commandList = new HashMap<>();
-			AbstractCommand[] commandObjects = CommandHandler.getCommandObjects();
-			for (AbstractCommand command : commandObjects) {
-				if (!command.isListed() || !command.isEnabled() || !userRank.isAtLeast(command.getCommandCategory().getRankRequired())) {
-					continue;
-				}//
-
-				if (!commandList.containsKey(command.getCommandCategory())) {
-					commandList.put(command.getCommandCategory(), new ArrayList<>());
-				}
-
-				commandList.get(command.getCommandCategory()).add(command.getCommand());
-			}
-			commandList.forEach((k, v) -> Collections.sort(v));
-			if (args.length == 1 && args[0].equals("style2")) {
-				ret += styleIndentedTable(commandList);
-			} else if (args.length == 1 && args[0].equals("style3")) {
-				ret += styleOneTable(commandList);
-			} else {
-				ret += styleTablePerCategory(commandList);
-			}
-			if (showHelpInPM) {
-				bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL +
-						":exclamation: In private messages the prefix for commands is **" + Config.BOT_COMMAND_PREFIX + "**");
-				return Template.get("command_help_send_private");
-			} else {
-				return ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL;
-			}
 		}
+		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
+		String ret = "I know the following commands: " + Config.EOL + Config.EOL;
+		HashMap<CommandCategory, ArrayList<String>> commandList = new HashMap<>();
+		AbstractCommand[] commandObjects = CommandHandler.getCommandObjects();
+		for (AbstractCommand command : commandObjects) {
+			if (!command.isListed() || !command.isEnabled() || !userRank.isAtLeast(command.getCommandCategory().getRankRequired())) {
+				continue;
+			}
+			if (!commandList.containsKey(command.getCommandCategory())) {
+				commandList.put(command.getCommandCategory(), new ArrayList<>());
+			}
+			commandList.get(command.getCommandCategory()).add(command.getCommand());
+		}
+		commandList.forEach((k, v) -> Collections.sort(v));
+		if (args.length == 1 && args[0].equals("style2")) {
+			ret += styleIndentedTable(commandList);
+		} else if (args.length == 1 && args[0].equals("style3")) {
+			ret += styleOneTable(commandList);
+		} else {
+			ret += styleTablePerCategory(commandList);
+		}
+		if (showHelpInPM) {
+			bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL +
+					":exclamation: In private messages the prefix for commands is **" + Config.BOT_COMMAND_PREFIX + "**");
+			return Template.get("command_help_send_private");
+		} else {
+			return ret + "for more details about a command use **" + commandPrefix + "help <command>**";
+		}
+
 	}
 
 	private String styleOneTable(HashMap<CommandCategory, ArrayList<String>> map) {

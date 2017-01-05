@@ -76,7 +76,7 @@ public class BotStatusService extends AbstractService {
 		TextChannel inviteChannel = bot.getShardFor(Config.BOT_GUILD_ID).client.getTextChannelById(Config.BOT_CHANNEL_ID);
 		if (inviteChannel != null && roll <= 5) {
 			statusText = "Feedback @ https://discord.gg/eaywDDt";
-		} else if (roll < 25) {
+		} else if (roll < 50) {
 			String username = bot.getShards()[0].client.getSelfUser().getName();
 			statusText = "@" + username + " help || @" + username + " invite";
 		} else {
