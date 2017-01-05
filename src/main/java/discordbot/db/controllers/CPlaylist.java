@@ -37,7 +37,7 @@ public class CPlaylist {
 	}
 
 	public static OPlaylist getGlobalList() {
-		OPlaylist globalList = findBy(0, 0);
+		OPlaylist globalList = findBy(0, 0, "default");
 		if (globalList.id == 0) {
 			globalList.title = "Global";
 			insert(globalList);

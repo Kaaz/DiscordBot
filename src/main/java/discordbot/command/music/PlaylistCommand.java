@@ -104,7 +104,7 @@ public class PlaylistCommand extends AbstractCommand {
 		}
 		OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
 		if (playlist.id == 0) {
-			return "";
+			playlist = CPlaylist.getGlobalList();
 		}
 		String cp = DisUtil.getCommandPrefix(channel);
 		if (args.length == 0) {
