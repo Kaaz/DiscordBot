@@ -150,7 +150,7 @@ public class BotContainer {
 	 * @param details extra details about the error
 	 */
 
-	public void reportError(Exception error, Object... details) {
+	public void reportError(Throwable error, Object... details) {
 		String errorMessage = "I've encountered a **" + error.getClass().getName() + "**" + Config.EOL;
 		if (error.getMessage() != null) {
 			errorMessage += "Message: " + Config.EOL;

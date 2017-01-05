@@ -41,7 +41,7 @@ public class Launcher {
 		}
 	}
 
-	public static void logToDiscord(Exception e, Object... args) {
+	public static void logToDiscord(Throwable e, Object... args) {
 		if (botContainer != null) {
 			botContainer.reportError(e, args);
 		}

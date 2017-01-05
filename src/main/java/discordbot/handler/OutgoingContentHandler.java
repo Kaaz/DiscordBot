@@ -40,7 +40,11 @@ public class OutgoingContentHandler {
 			sendAsyncMessage(channel, content);
 			return;
 		}
-		channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue(callback, throwable -> callback.accept(null));
+		channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue(callback,
+				throwable -> {
+					Launcher.logToDiscord(throwable, "channel", channel.getId(), "content", content);
+					callback.accept(null);
+				});
 	}
 
 	public void sendAsyncMessage(MessageChannel channel, String content) {
@@ -48,7 +52,7 @@ public class OutgoingContentHandler {
 			if (botInstance.shouldCleanUpMessages(channel)) {
 				botInstance.schedule(() -> saveDelete(message), Config.DELETE_MESSAGES_AFTER, TimeUnit.MILLISECONDS);
 			}
-		});
+		}, throwable -> Launcher.logToDiscord(throwable, "channel", channel.getId(), "content", content));
 	}
 
 	public void editAsync(Message message, String content) {
