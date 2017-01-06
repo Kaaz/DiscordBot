@@ -18,6 +18,7 @@ public class Emojibet {
 	public static final String FOOTPRINTS = "\uD83D\uDC3E";
 	public static final String QUESTION_MARK = "\u2753";
 	public static final String BOOK_OPEN = "\uD83D\uDCD6";
+	public static final String DIAMOND_BLUE_SMALL = "\uD83D\uDD39";
 	public static String GUILD_JOIN = "\uD83C\uDFE0";
 	public static String GUILD_LEAVE = "\uD83C\uDFDA";
 	public static String ERROR = "\uD83D\uDED1";

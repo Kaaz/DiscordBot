@@ -156,7 +156,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 				continue;
 			}
 			if (cat.equals(active)) {
-				header += "__**" + Emojibet.THUMBS_RIGHT + " " + cat.getDisplayName() + " " + Emojibet.THUMBS_LEFT + "**__";
+				header += "__**" + Emojibet.DIAMOND_BLUE_SMALL + cat.getDisplayName() + "**__";
 			} else {
 				header += cat.getDisplayName();
 			}
