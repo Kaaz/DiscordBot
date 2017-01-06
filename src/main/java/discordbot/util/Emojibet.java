@@ -17,6 +17,7 @@ public class Emojibet {
 	public static final String SLOT_MACHINE = "\uD83C\uDFB0";
 	public static final String FOOTPRINTS = "\uD83D\uDC3E";
 	public static final String QUESTION_MARK = "\u2753";
+	public static final String BOOK_OPEN = "\uD83D\uDCD6";
 	public static String GUILD_JOIN = "\uD83C\uDFE0";
 	public static String GUILD_LEAVE = "\uD83C\uDFDA";
 	public static String ERROR = "\uD83D\uDED1";
@@ -33,6 +34,8 @@ public class Emojibet {
 	public static String STAR = "\u2B50";
 	public static String THUMBS_UP = "\uD83D\uDC4D";
 	public static String THUMBS_DOWN = "\uD83D\uDC4E";
+	public static String THUMBS_LEFT = "\uD83D\uDC48";
+	public static String THUMBS_RIGHT = "\uD83D\uDC49";//yes thumbs right
 	public static String COOKIE = "\uD83C\uDF6A";
 	public static String NO_ENTRY = "\uD83D\uDEAB";
 	public static String OKE_SIGN = "\u2705";

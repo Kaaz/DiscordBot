@@ -13,6 +13,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
+import discordbot.util.Emojibet;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -98,7 +99,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 			if (PermissionUtil.checkPermission(textChannel, textChannel.getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_ADD_REACTION)) {
 				HashMap<CommandCategory, ArrayList<String>> map = getCommandMap(userRank);
 				CommandCategory cat = CommandCategory.getFirstWithPermission(userRank);
-				channel.sendMessage(writeFancyHeader(cat, map.keySet()) + styleTableCategory(cat, map.get(cat))).queue(
+				channel.sendMessage(writeFancyHeader(cat, map.keySet()) + styleTableCategory(cat, map.get(cat)) + writeFancyFooter(channel)).queue(
 						message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), userRank))
 				);
 				return "";
@@ -155,14 +156,17 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 				continue;
 			}
 			if (cat.equals(active)) {
-				header += "**" + cat.getDisplayName() + "**";
+				header += "__**" + Emojibet.THUMBS_RIGHT + " " + cat.getDisplayName() + " " + Emojibet.THUMBS_LEFT + "**__";
 			} else {
 				header += cat.getDisplayName();
-
 			}
 			header += " | ";
 		}
 		return header + "\n\n";
+	}
+
+	private String writeFancyFooter(MessageChannel channel) {
+		return "for more details about a command use `" + DisUtil.getCommandPrefix(channel) + "help <command>`";
 	}
 
 	@Override
@@ -175,7 +179,8 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 						message -> {
 							message.editMessage(
 									writeFancyHeader(category, map.keySet()) +
-											styleTableCategory(category, map.get(category))).queue();
+											styleTableCategory(category, map.get(category)) +
+											writeFancyFooter(message.getChannel())).queue();
 						});
 			}
 		}

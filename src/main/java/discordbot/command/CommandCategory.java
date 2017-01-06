@@ -4,7 +4,7 @@ import discordbot.permission.SimpleRank;
 import discordbot.util.Emojibet;
 
 public enum CommandCategory {
-	CREATOR("creator", Emojibet.MAN_IN_SUIT, "Bot administration administration", SimpleRank.CREATOR),
+	CREATOR("creator", Emojibet.MAN_IN_SUIT, "Development", SimpleRank.CREATOR),
 	BOT_ADMINISTRATION("bot_administration", Emojibet.MONKEY, "Bot administration", SimpleRank.BOT_ADMIN),
 	ADMINISTRATIVE("administrative", Emojibet.POLICE, "Administration", SimpleRank.GUILD_ADMIN),
 	INFORMATIVE("informative", Emojibet.INFORMATION, "Information"),
