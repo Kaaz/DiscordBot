@@ -200,7 +200,7 @@ public class JDAEvents extends ListenerAdapter {
 		}
 		TextChannel channel = (TextChannel) e.getChannel();
 		if (discordBot.commandReactionHandler.canHandle(channel.getGuild().getId(), e.getMessageId())) {
-			discordBot.commandReactionHandler.handle(channel, e.getMessageId(), e.getReaction());
+			discordBot.commandReactionHandler.handle(channel, e.getMessageId(), e.getUser().getId(), e.getReaction());
 		} else {
 			discordBot.musicReactionHandler.handle(e.getMessageId(), channel, e.getUser(), e.getReaction().getEmote(), adding);
 		}

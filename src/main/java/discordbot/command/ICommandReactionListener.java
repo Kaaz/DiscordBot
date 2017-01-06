@@ -1,6 +1,6 @@
 package discordbot.command;
 
-public interface ICommandReactionListener {
+public interface ICommandReactionListener<T> {
 
-	CommandReactionListener<?> getListenObject();
+	CommandReactionListener<T> getReactionListener(String InvokerUserId, T initialData);
 }

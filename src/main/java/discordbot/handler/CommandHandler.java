@@ -5,7 +5,6 @@ import discordbot.command.CommandCategory;
 import discordbot.command.CommandReactionListener;
 import discordbot.command.CommandVisibility;
 import discordbot.command.ICommandCooldown;
-import discordbot.command.ICommandReactionListener;
 import discordbot.core.AbstractCommand;
 import discordbot.db.WebDb;
 import discordbot.db.controllers.CBlacklistCommand;
@@ -24,12 +23,10 @@ import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.DisUtil;
 import discordbot.util.TimeUtil;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.utils.PermissionUtil;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
@@ -122,9 +119,9 @@ public class CommandHandler {
 					commandOutput = commands.get("help").execute(bot, new String[]{input[0]}, channel, author);
 				} else {
 					commandOutput = command.execute(bot, args, channel, author);
-					if (command instanceof ICommandReactionListener) {
-						commandReactionListener = ((ICommandReactionListener) command).getListenObject();
-					}
+//					if (command instanceof ICommandReactionListener) {
+//						commandReactionListener = ((ICommandReactionListener) command).getReactionListener(null);
+//					}
 				}
 				if (!commandOutput.isEmpty()) {
 					outMsg = commandOutput;
@@ -166,18 +163,18 @@ public class CommandHandler {
 			outMsg = Template.get("unknown_command", GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help");
 		}
 		if (!outMsg.isEmpty()) {
-			if (commandReactionListener != null && channel instanceof TextChannel &&
-					PermissionUtil.checkPermission(
-							(TextChannel) channel,
-							((TextChannel) channel).getGuild().getSelfMember(),
-							Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS)) {
-				final CommandReactionListener<?> finalCommandReactionListener = commandReactionListener;
-
-				bot.out.sendAsyncMessage(channel, outMsg, message -> bot.commandReactionHandler.addReactionListener(((TextChannel)channel).getGuild().getId(),message, finalCommandReactionListener));
-
-			} else {
-				bot.out.sendAsyncMessage(channel, outMsg);
-			}
+//			if (commandReactionListener != null && channel instanceof TextChannel &&
+//					PermissionUtil.checkPermission(
+//							(TextChannel) channel,
+//							((TextChannel) channel).getGuild().getSelfMember(),
+//							Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS)) {
+//				final CommandReactionListener<?> finalCommandReactionListener = commandReactionListener;
+//
+//				bot.out.sendAsyncMessage(channel, outMsg, message -> bot.commandReactionHandler.addReactionListener(((TextChannel)channel).getGuild().getId(),message, finalCommandReactionListener));
+//
+//			} else {
+			bot.out.sendAsyncMessage(channel, outMsg);
+//			}
 		}
 		if (commandSuccess) {
 			if (channel instanceof TextChannel) {

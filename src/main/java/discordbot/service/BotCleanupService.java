@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
  * delete cached stuff, etc.
  */
 public class BotCleanupService extends AbstractService {
+	int runCount = 0;
 
 	public BotCleanupService(BotContainer b) {
 		super(b);
@@ -25,7 +26,7 @@ public class BotCleanupService extends AbstractService {
 
 	@Override
 	public long getDelayBetweenRuns() {
-		return TimeUnit.MINUTES.toMillis(60);
+		return TimeUnit.MINUTES.toMillis(1);
 	}
 
 	@Override
@@ -39,12 +40,26 @@ public class BotCleanupService extends AbstractService {
 
 	@Override
 	public void run() {
+		runCount++;
+		for (DiscordBot shard : bot.getShards()) {
+			if (shard == null || !shard.isReady()) {
+				continue;
+			}
+			shard.commandReactionHandler.cleanCache();
+		}
+		if (runCount < 60) {
+			return;
+		}
+		runCount = 0;
 		for (AbstractCommand abstractCommand : CommandHandler.getCommandObjects()) {
 			if (abstractCommand instanceof ICommandCleanup) {
 				((ICommandCleanup) abstractCommand).cleanup();
 			}
 		}
 		for (DiscordBot shard : bot.getShards()) {
+			if (shard == null || !shard.isReady()) {
+				continue;
+			}
 			shard.clearChannels();
 		}
 

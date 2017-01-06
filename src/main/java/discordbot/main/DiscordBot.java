@@ -297,10 +297,11 @@ public class DiscordBot {
 	public void clearGuildData(Guild guild) {
 		defaultChannels.remove(guild.getId());
 		musicChannels.remove(guild.getId());
-		GuildSettings.remove(guild);
+		GuildSettings.remove(guild.getId());
 		Template.removeGuild(CGuild.getCachedId(guild.getId()));
 		autoReplyhandler.removeGuild(guild.getId());
 		MusicPlayerHandler.removeGuild(guild);
+		commandReactionHandler.removeGuild(guild.getId());
 	}
 
 	/**
@@ -319,7 +320,7 @@ public class DiscordBot {
 		gameHandler = new GameHandler(this);
 		out = new OutgoingContentHandler(this);
 		musicReactionHandler = new MusicReactionHandler(this);
-		commandReactionHandler = new CommandReactionHandler(this);
+		commandReactionHandler = new CommandReactionHandler();
 		autoReplyhandler = new AutoReplyHandler(this);
 	}
 

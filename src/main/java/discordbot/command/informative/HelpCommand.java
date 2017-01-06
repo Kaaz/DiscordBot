@@ -1,6 +1,8 @@
 package discordbot.command.informative;
 
 import discordbot.command.CommandCategory;
+import discordbot.command.CommandReactionListener;
+import discordbot.command.ICommandReactionListener;
 import discordbot.core.AbstractCommand;
 import discordbot.guildsettings.bot.SettingCommandPrefix;
 import discordbot.guildsettings.bot.SettingHelpInPM;
@@ -12,18 +14,22 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * !help
  * help function
  */
-public class HelpCommand extends AbstractCommand {
+public class HelpCommand extends AbstractCommand implements ICommandReactionListener<SimpleRank> {
 	public HelpCommand() {
 		super();
 	}
@@ -61,7 +67,7 @@ public class HelpCommand extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		String commandPrefix = GuildSettings.getFor(channel, SettingCommandPrefix.class);
 		boolean showHelpInPM = GuildSettings.getFor(channel, SettingHelpInPM.class).equals("true");
-		if (args.length > 0 && !args[0].equals("style2") && !args[0].equals("style3")) {
+		if (args.length > 0) {
 			AbstractCommand c = CommandHandler.getCommand(DisUtil.filterPrefix(args[0], channel));
 			if (c != null) {
 				String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + Config.EOL;
@@ -87,7 +93,33 @@ public class HelpCommand extends AbstractCommand {
 		}
 		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
 		String ret = "I know the following commands: " + Config.EOL + Config.EOL;
+		if (channel instanceof TextChannel) {
+			TextChannel textChannel = (TextChannel) channel;
+			if (PermissionUtil.checkPermission(textChannel, textChannel.getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_ADD_REACTION)) {
+				HashMap<CommandCategory, ArrayList<String>> map = getCommandMap(userRank);
+				CommandCategory cat = CommandCategory.getFirstWithPermission(userRank);
+				channel.sendMessage(writeFancyHeader(cat, map.keySet()) + styleTableCategory(cat, map.get(cat))).queue(
+						message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), userRank))
+				);
+				return "";
+			}
+		}
+		ret += styleTablePerCategory(getCommandMap(userRank));
+		if (showHelpInPM) {
+			bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL +
+					":exclamation: In private messages the prefix for commands is **" + Config.BOT_COMMAND_PREFIX + "**");
+			return Template.get("command_help_send_private");
+		} else {
+			return ret + "for more details about a command use **" + commandPrefix + "help <command>**";
+		}
+
+	}
+
+	private HashMap<CommandCategory, ArrayList<String>> getCommandMap(SimpleRank userRank) {
 		HashMap<CommandCategory, ArrayList<String>> commandList = new HashMap<>();
+		if (userRank == null) {
+			userRank = SimpleRank.USER;
+		}
 		AbstractCommand[] commandObjects = CommandHandler.getCommandObjects();
 		for (AbstractCommand command : commandObjects) {
 			if (!command.isListed() || !command.isEnabled() || !userRank.isAtLeast(command.getCommandCategory().getRankRequired())) {
@@ -99,89 +131,54 @@ public class HelpCommand extends AbstractCommand {
 			commandList.get(command.getCommandCategory()).add(command.getCommand());
 		}
 		commandList.forEach((k, v) -> Collections.sort(v));
-		if (args.length == 1 && args[0].equals("style2")) {
-			ret += styleIndentedTable(commandList);
-		} else if (args.length == 1 && args[0].equals("style3")) {
-			ret += styleOneTable(commandList);
-		} else {
-			ret += styleTablePerCategory(commandList);
-		}
-		if (showHelpInPM) {
-			bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL +
-					":exclamation: In private messages the prefix for commands is **" + Config.BOT_COMMAND_PREFIX + "**");
-			return Template.get("command_help_send_private");
-		} else {
-			return ret + "for more details about a command use **" + commandPrefix + "help <command>**";
-		}
-
-	}
-
-	private String styleOneTable(HashMap<CommandCategory, ArrayList<String>> map) {
-		ArrayList<String> list = new ArrayList<>();
-		int columns = 4;
-		int index = 0;
-		for (CommandCategory category : CommandCategory.values()) {
-			if (map.containsKey(category)) {
-				while (index % columns != 0) {
-					index++;
-					list.add("");
-				}
-				list.add(" > " + category.getPackageName());
-				for (int i = 1; i < columns; i++) {
-					list.add("");
-					index++;
-				}
-				index++;
-				for (String cmd : map.get(category)) {
-					list.add(cmd);
-					index++;
-				}
-				for (int i = 0; i < columns; i++) {
-					list.add("");
-					index++;
-				}
-			}
-		}
-		return Misc.makeTable(list, 16, columns);
+		return commandList;
 	}
 
 	private String styleTablePerCategory(HashMap<CommandCategory, ArrayList<String>> map) {
 		String table = "";
 		for (CommandCategory category : CommandCategory.values()) {
 			if (map.containsKey(category)) {
-				table += category.getEmoticon() + " " + category.getDisplayName() + Config.EOL;
-				table += Misc.makeTable(map.get(category));
+				table += styleTableCategory(category, map.get(category));
 			}
 		}
 		return table;
 	}
 
-	private String styleIndentedTable(HashMap<CommandCategory, ArrayList<String>> map) {
-		ArrayList<String> list = new ArrayList<>();
-		int columns = 4;
-		int index = 0;
+	private String styleTableCategory(CommandCategory category, ArrayList<String> commands) {
+		return category.getEmoticon() + " " + category.getDisplayName() + Config.EOL + Misc.makeTable(commands);
+	}
+
+	private String writeFancyHeader(CommandCategory active, Set<CommandCategory> categories) {
+		String header = "Help Overview\n\n| ";
+		for (CommandCategory cat : CommandCategory.values()) {
+			if (!categories.contains(cat)) {
+				continue;
+			}
+			if (cat.equals(active)) {
+				header += "**" + cat.getDisplayName() + "**";
+			} else {
+				header += cat.getDisplayName();
+
+			}
+			header += " | ";
+		}
+		return header + "\n\n";
+	}
+
+	@Override
+	public CommandReactionListener<SimpleRank> getReactionListener(String invokerUserId, SimpleRank rank) {
+		CommandReactionListener<SimpleRank> listener = new CommandReactionListener<>(invokerUserId, rank);
+		HashMap<CommandCategory, ArrayList<String>> map = getCommandMap(rank);
 		for (CommandCategory category : CommandCategory.values()) {
 			if (map.containsKey(category)) {
-				list.add(category.getPackageName());
-				index++;
-				for (int i = 0; i < columns; i++) {
-					list.add("");
-					index++;
-				}
-				for (String cmd : map.get(category)) {
-					if (index % columns == 0) {
-						list.add("");
-						index++;
-					}
-					list.add(cmd);
-					index++;
-				}
-				while (index % columns != 0) {
-					index++;
-					list.add("");
-				}
+				listener.registerReaction(category.getEmoticon(),
+						message -> {
+							message.editMessage(
+									writeFancyHeader(category, map.keySet()) +
+											styleTableCategory(category, map.get(category))).queue();
+						});
 			}
 		}
-		return Misc.makeTable(list, 16, columns);
+		return listener;
 	}
 }

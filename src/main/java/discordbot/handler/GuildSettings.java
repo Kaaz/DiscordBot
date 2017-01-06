@@ -58,9 +58,9 @@ public class GuildSettings {
 		return DefaultGuildSettings.getDefault(settingClass);
 	}
 
-	public static void remove(Guild guild) {
-		if (settingInstance.containsKey(guild.getId())) {
-			settingInstance.remove(guild.getId());
+	public static void remove(String guildId) {
+		if (settingInstance.containsKey(guildId)) {
+			settingInstance.remove(guildId);
 		}
 	}
 

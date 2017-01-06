@@ -28,14 +28,15 @@ import net.dv8tion.jda.core.utils.PermissionUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * !config
  * gets/sets the configuration of the bot
  */
-public class SetConfig extends AbstractCommand implements ICommandReactionListener {
-//	public static final int CFG_PER_PAGE = 24;
+public class SetConfig extends AbstractCommand implements ICommandReactionListener<PaginationInfo> {
 	public static final int CFG_PER_PAGE = 15;
 
 	public SetConfig() {
@@ -118,14 +119,13 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
 			ArrayList<String> keys = new ArrayList<>(settings.keySet());
 			Collections.sort(keys);
 			int activePage = 0;
-			int maxPage = 1 + keys.size() / CFG_PER_PAGE;
-
+			int maxPage = 1 + DefaultGuildSettings.countSettings(false) / CFG_PER_PAGE;
 			if (PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
 				if (args.length > 1 && args[0].equals("page")) {
 					activePage = Math.max(0, Math.min(maxPage - 1, Misc.parseInt(args[1], 0) - 1));
 				}
 				channel.sendMessage(makeEmbedConfig(guild, activePage)).queue(
-						message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getListenObject())
+						message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), null))
 				);
 				return "";
 			}
@@ -203,31 +203,33 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
 
 	private static MessageEmbed makeEmbedConfig(Guild guild, int activePage) {
 		EmbedBuilder b = new EmbedBuilder();
-		Map<String, String> settings = GuildSettings.get(guild).getSettings();
-		ArrayList<String> keys = new ArrayList<>(settings.keySet());
+		List<String> keys = DefaultGuildSettings.getWritableKeys();
 		Collections.sort(keys);
 		int maxPage = 1 + keys.size() / CFG_PER_PAGE;
 		activePage = Math.max(0, Math.min(maxPage - 1, activePage - 1));
-		for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < activePage * CFG_PER_PAGE + CFG_PER_PAGE; i++) {
+		int endIndex = activePage * CFG_PER_PAGE + CFG_PER_PAGE;
+		int elements = 0;
+		for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < endIndex; i++) {
 			String key = keys.get(i);
-			if (DefaultGuildSettings.get(key).isReadOnly()) {
-				continue;
-			}
 			b.addField(key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key), true);
+			elements++;
+		}
+		if (elements % 3 == 2) {
+			b.addBlankField(true);
 		}
 		String commandPrefix = DisUtil.getCommandPrefix(guild);
 		b.setFooter("Page " + (activePage + 1) + " / " + maxPage + " | Press the buttons for other pages", null);
 		b.setDescription(String.format("To see more details about a setting:" + Config.EOL +
 				"`%1$scfg settingname`" + Config.EOL + Config.EOL, commandPrefix));
-		b.setTitle("Current Settings for " + guild.getName());
+		b.setTitle("Current Settings for " + guild.getName() + " [" + (1 + activePage) + " / " + maxPage + "]");
 		return b.build();
 	}
 
 	@Override
-	public CommandReactionListener getListenObject() {
-
-		final int maxPage = 1 + DefaultGuildSettings.countSettings() / CFG_PER_PAGE;
-		CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(new PaginationInfo(1, maxPage));
+	public CommandReactionListener<PaginationInfo> getReactionListener(String invoker, PaginationInfo data) {
+		final int maxPage = 1 + DefaultGuildSettings.countSettings(false) / CFG_PER_PAGE;
+		CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(invoker, new PaginationInfo(1, maxPage));
+		listener.setExpiresIn(TimeUnit.MINUTES, 2);
 		listener.registerReaction(Emojibet.PREV_TRACK, o -> {
 			if (listener.getData().previousPage()) {
 				o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(o.getGuild(), listener.getData().getCurrentPage())).build()).queue();

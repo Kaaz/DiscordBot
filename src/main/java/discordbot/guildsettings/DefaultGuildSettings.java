@@ -6,7 +6,9 @@ import discordbot.main.Launcher;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -40,7 +42,25 @@ public class DefaultGuildSettings {
 	}
 
 	public static int countSettings() {
-		return defaultSettings.keySet().size();
+		return countSettings(true);
+	}
+
+	public static int countSettings(boolean includeReadOnly) {
+		if (includeReadOnly) {
+			return defaultSettings.keySet().size();
+		}
+		return (int) defaultSettings.values().stream().filter(abstractGuildSetting -> !abstractGuildSetting.isReadOnly()).count();
+	}
+
+	public static List<String> getWritableKeys() {
+		ArrayList<String> set = new ArrayList<>();
+		for (Map.Entry<String, AbstractGuildSetting> entry : defaultSettings.entrySet()) {
+			if (entry.getValue().isReadOnly()) {
+				continue;
+			}
+			set.add(entry.getKey());
+		}
+		return set;
 	}
 
 	public static AbstractGuildSetting get(String key) {

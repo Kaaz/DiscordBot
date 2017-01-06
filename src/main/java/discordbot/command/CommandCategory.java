@@ -1,19 +1,20 @@
 package discordbot.command;
 
 import discordbot.permission.SimpleRank;
+import discordbot.util.Emojibet;
 
 public enum CommandCategory {
-	CREATOR("creator", ":man_in_tuxedo:", "Bot administration administration", SimpleRank.CREATOR),
-	BOT_ADMINISTRATION("bot_administration", ":monkey:", "Bot administration", SimpleRank.BOT_ADMIN),
-	ADMINISTRATIVE("administrative", ":oncoming_police_car:", "Administration", SimpleRank.GUILD_ADMIN),
-	INFORMATIVE("informative", ":information_source:", "Information"),
-	MUSIC("music", ":musical_note:", "Music"),
-	ECONOMY("economy", ":moneybag:", "Money"),
-	FUN("fun", ":game_die:", "Fun"),
-	POE("poe", ":currency_exchange:", "Path of exile"),
-	HEARTHSTONE("hearthstone", ":slot_machine:", "Hearthstone"),
-	ADVENTURE("adventure", ":feet:", "Adventure"),
-	UNKNOWN("nopackage", ":question:", "Misc");
+	CREATOR("creator", Emojibet.MAN_IN_SUIT, "Bot administration administration", SimpleRank.CREATOR),
+	BOT_ADMINISTRATION("bot_administration", Emojibet.MONKEY, "Bot administration", SimpleRank.BOT_ADMIN),
+	ADMINISTRATIVE("administrative", Emojibet.POLICE, "Administration", SimpleRank.GUILD_ADMIN),
+	INFORMATIVE("informative", Emojibet.INFORMATION, "Information"),
+	MUSIC("music", Emojibet.MUSIC_NOTE, "Music"),
+	ECONOMY("economy", Emojibet.MONEY_BAG, "Money"),
+	FUN("fun", Emojibet.GAME_DICE, "Fun"),
+	POE("poe", Emojibet.CURRENCY_EXCHANGE, "Path of exile"),
+	HEARTHSTONE("hearthstone", Emojibet.SLOT_MACHINE, "Hearthstone"),
+	ADVENTURE("adventure", Emojibet.FOOTPRINTS, "Adventure"),
+	UNKNOWN("nopackage", Emojibet.QUESTION_MARK, "Misc");
 	private final String packageName;
 	private final String emoticon;
 	private final String displayName;
@@ -25,6 +26,18 @@ public enum CommandCategory {
 		this.emoticon = emoticon;
 		this.displayName = displayName;
 		this.rankRequired = SimpleRank.USER;
+	}
+
+	public static CommandCategory getFirstWithPermission(SimpleRank rank) {
+		if (rank == null) {
+			return INFORMATIVE;
+		}
+		for (CommandCategory category : values()) {
+			if (rank.isAtLeast(category.getRankRequired())) {
+				return category;
+			}
+		}
+		return INFORMATIVE;
 	}
 
 	CommandCategory(String packageName, String emoticon, String displayName, SimpleRank rankRequired) {
