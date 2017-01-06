@@ -176,12 +176,10 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 		for (CommandCategory category : CommandCategory.values()) {
 			if (map.containsKey(category)) {
 				listener.registerReaction(category.getEmoticon(),
-						message -> {
-							message.editMessage(
-									writeFancyHeader(category, map.keySet()) +
-											styleTableCategory(category, map.get(category)) +
-											writeFancyFooter(message.getChannel())).queue();
-						});
+						message -> message.editMessage(
+								writeFancyHeader(category, map.keySet()) +
+										styleTableCategory(category, map.get(category)) +
+										writeFancyFooter(message.getChannel())).queue());
 			}
 		}
 		return listener;
