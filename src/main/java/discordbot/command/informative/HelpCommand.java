@@ -77,12 +77,12 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 				for (String alias : c.getAliases()) {
 					aliases.add(commandPrefix + alias);
 				}
-				ret += ":keyboard: **Accessible through:** " + Config.EOL +
+				ret += Emojibet.KEYBOARD + " **Accessible through:** " + Config.EOL +
 						Misc.makeTable(aliases, 16, 3);
-				ret += ":notepad_spiral: **Description:** " + Config.EOL +
+				ret += Emojibet.NOTEPAD + " **Description:** " + Config.EOL +
 						Misc.makeTable(c.getDescription());
 				if (c.getUsage().length > 0) {
-					ret += ":gear: **Usages**:```php" + Config.EOL;
+					ret += Emojibet.GEAR + " **Usages**:```php" + Config.EOL;
 					for (String line : c.getUsage()) {
 						ret += line + Config.EOL;
 					}
@@ -155,6 +155,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 			if (!categories.contains(cat)) {
 				continue;
 			}
+
 			if (cat.equals(active)) {
 				header += "__**" + Emojibet.DIAMOND_BLUE_SMALL + cat.getDisplayName() + "**__";
 			} else {
