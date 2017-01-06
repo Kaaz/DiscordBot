@@ -250,9 +250,16 @@ public class JDAEvents extends ListenerAdapter {
 		CGuildMember.insertOrUpdate(guildMember);
 
 		if ("true".equals(settings.getOrDefault(SettingPMUserEvents.class))) {
-			discordBot.out.sendPrivateMessage(guild.getOwner().getUser(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()));
+			discordBot.out.sendPrivateMessage(guild.getOwner().getUser(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()),
+					null,
+					throwable -> settings.set(guild, SettingPMUserEvents.class, "false")
+			);
 		}
-		if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
+		if ("true".
+
+				equals(settings.getOrDefault(SettingWelcomeNewUsers.class)))
+
+		{
 			TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
 			if (defaultChannel == null) {
 				GuildSettings.get(guild.getId()).set(guild, SettingWelcomeNewUsers.class, "false");
@@ -270,10 +277,22 @@ public class JDAEvents extends ListenerAdapter {
 				"user-id", user.getId(),
 				"user-name", user.getName());
 
-		if ("true".equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && !user.isBot()) {
+		if ("true".
+
+				equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && !user.isBot())
+
+		{
 			RoleRankings.assignUserRole(discordBot, guild, user);
 		}
-		discordBot.logGuildEvent(guild, "\uD83D\uDC64", "**" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator() + "** joined the guild");
+		discordBot.logGuildEvent(guild, "\uD83D\uDC64", "**" + event.getMember().
+
+				getUser().
+
+				getName() + "#" + event.getMember().
+
+				getUser().
+
+				getDiscriminator() + "** joined the guild");
 	}
 
 	@Override
