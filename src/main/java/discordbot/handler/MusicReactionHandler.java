@@ -1,7 +1,10 @@
 package discordbot.handler;
 
 import discordbot.db.controllers.CMusic;
+import discordbot.db.controllers.CPlaylist;
+import discordbot.db.controllers.CUser;
 import discordbot.db.model.OMusic;
+import discordbot.db.model.OPlaylist;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.Emojibet;
@@ -63,6 +66,19 @@ public class MusicReactionHandler {
 		}
 		if (Emojibet.NEXT_TRACK.equals(emote.getName())) {
 			handleVoteSkip(player, channel, invoker, rank, isAdding);
+			return true;
+		}
+		if (Emojibet.STAR.equals(emote.getName())) {
+			OPlaylist playlist = CPlaylist.findBy(CUser.getCachedId(invoker.getId()), 0);
+			if (playlist.id == 0) {
+				playlist.setEditType(OPlaylist.EditType.PRIVATE_AUTO);
+				CPlaylist.insert(playlist);
+			}
+			if (isAdding) {
+				CPlaylist.addToPlayList(playlist.id, player.getCurrentlyPlaying());
+			} else {
+				CPlaylist.removeFromPlayList(playlist.id, player.getCurrentlyPlaying());
+			}
 			return true;
 		} else if (Emojibet.NO_ENTRY.equals(emote.getName())) {
 			handleBanTrack(player, channel, invoker, rank, isAdding);

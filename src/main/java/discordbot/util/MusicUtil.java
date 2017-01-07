@@ -62,6 +62,8 @@ public class MusicUtil {
 		}
 		if (member != null) {
 			embed.setFooter("requested by " + member.getEffectiveName(), member.getUser().getAvatarUrl());
+		} else {
+			embed.setFooter("You add to your playlist and vote to skip with reactions", null);
 		}
 		return embed.build();
 	}
