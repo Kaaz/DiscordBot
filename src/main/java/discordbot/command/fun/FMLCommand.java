@@ -18,6 +18,7 @@ import java.io.IOException;
  * !fml
  */
 public class FMLCommand extends AbstractCommand {
+
 	public FMLCommand() {
 		super();
 	}
