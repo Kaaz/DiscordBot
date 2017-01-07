@@ -46,6 +46,7 @@ public class FMLCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		try {
+			channel.sendTyping().queue();
 			Document document = Jsoup.connect("http://fmylife.com/random").timeout(5_000).userAgent(Config.USER_AGENT).get();
 			if (document != null) {
 				Elements fmls = document.select("p.block a[href^=/article/]");
