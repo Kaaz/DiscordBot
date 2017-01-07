@@ -53,7 +53,8 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"help            //index of all commands",
+				"help            //shows commands grouped by categories, navigable by reactions ",
+				"help full       //index of all commands, in case you don't have reactions",
 				"help <command>  //usage for that command"};
 	}
 
@@ -68,7 +69,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		String commandPrefix = GuildSettings.getFor(channel, SettingCommandPrefix.class);
 		boolean showHelpInPM = GuildSettings.getFor(channel, SettingHelpInPM.class).equals("true");
-		if (args.length > 0) {
+		if (args.length > 0 && !args[0].equals("full")) {
 			AbstractCommand c = CommandHandler.getCommand(DisUtil.filterPrefix(args[0], channel));
 			if (c != null) {
 				String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + Config.EOL;
@@ -94,12 +95,12 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 		}
 		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
 		String ret = "I know the following commands: " + Config.EOL + Config.EOL;
-		if (channel instanceof TextChannel) {
+		if ((args.length == 0 || !args[0].equals("full")) && channel instanceof TextChannel) {
 			TextChannel textChannel = (TextChannel) channel;
 			if (PermissionUtil.checkPermission(textChannel, textChannel.getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_ADD_REACTION)) {
 				HashMap<CommandCategory, ArrayList<String>> map = getCommandMap(userRank);
 				CommandCategory cat = CommandCategory.getFirstWithPermission(userRank);
-				channel.sendMessage(writeFancyHeader(cat, map.keySet()) + styleTableCategory(cat, map.get(cat)) + writeFancyFooter(channel)).queue(
+				channel.sendMessage(writeFancyHeader(channel, cat, map.keySet()) + styleTableCategory(cat, map.get(cat)) + writeFancyFooter(channel)).queue(
 						message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), userRank))
 				);
 				return "";
@@ -149,8 +150,9 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 		return category.getEmoticon() + " " + category.getDisplayName() + Config.EOL + Misc.makeTable(commands);
 	}
 
-	private String writeFancyHeader(CommandCategory active, Set<CommandCategory> categories) {
-		String header = "Help Overview\n\n| ";
+	private String writeFancyHeader(MessageChannel channel, CommandCategory active, Set<CommandCategory> categories) {
+		String header = "Help Overview  | without reactions use `" + DisUtil.getCommandPrefix(channel) + "help full`\n\n|";
+
 		for (CommandCategory cat : CommandCategory.values()) {
 			if (!categories.contains(cat)) {
 				continue;
@@ -178,7 +180,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 			if (map.containsKey(category)) {
 				listener.registerReaction(category.getEmoticon(),
 						message -> message.editMessage(
-								writeFancyHeader(category, map.keySet()) +
+								writeFancyHeader(message.getChannel(), category, map.keySet()) +
 										styleTableCategory(category, map.get(category)) +
 										writeFancyFooter(message.getChannel())).queue());
 			}
