@@ -22,6 +22,7 @@ public class Emojibet {
 	public static final String KEYBOARD = "\u2328";
 	public static final String NOTEPAD = "\uD83D\uDDD2";
 	public static final String GEAR = "\u2699";
+	public static final String USER = "\uD83D\uDC64";
 	public static String GUILD_JOIN = "\uD83C\uDFE0";
 	public static String GUILD_LEAVE = "\uD83C\uDFDA";
 	public static String ERROR = "\uD83D\uDED1";

@@ -9,6 +9,7 @@ import discordbot.guildsettings.bot.SettingAutoReplyModule;
 import discordbot.guildsettings.bot.SettingBotChannel;
 import discordbot.guildsettings.bot.SettingCleanupMessages;
 import discordbot.guildsettings.bot.SettingEnableChatBot;
+import discordbot.guildsettings.moderation.SettingCommandLoggingChannel;
 import discordbot.guildsettings.moderation.SettingLoggingChannel;
 import discordbot.guildsettings.moderation.SettingModlogChannel;
 import discordbot.guildsettings.music.SettingMusicChannel;
@@ -234,6 +235,20 @@ public class DiscordBot {
 	public synchronized TextChannel getModlogChannel(String guildId) {
 		Guild guild = client.getGuildById(guildId);
 		String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingModlogChannel.class);
+		if ("false".equals(channelIdentifier)) {
+			return null;
+		}
+		return guild.getTextChannelById(channelIdentifier);
+	}
+
+	/**
+	 * Retrieves the moderation log of a guild
+	 *
+	 * @param guild the guild to get the modlog-channel for
+	 * @return channel || null
+	 */
+	public synchronized TextChannel getCommandLogChannel(Guild guild) {
+		String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingCommandLoggingChannel.class);
 		if ("false".equals(channelIdentifier)) {
 			return null;
 		}

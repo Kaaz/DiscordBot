@@ -18,10 +18,12 @@ import discordbot.db.model.OBotEvent;
 import discordbot.db.model.OCommandCooldown;
 import discordbot.guildsettings.bot.SettingCommandPrefix;
 import discordbot.guildsettings.bot.SettingShowUnknownCommands;
+import discordbot.guildsettings.moderation.SettingCommandLoggingChannel;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.util.DisUtil;
+import discordbot.util.Emojibet;
 import discordbot.util.TimeUtil;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
@@ -99,7 +101,7 @@ public class CommandHandler {
 				return;
 			}
 		}
-		String[] input = inputMessage.split("\\s+");
+		String[] input = inputMessage.split("\\s+");// (?:([^\s\"]+)|\"((?:\w+|\\\"|[^\"])+)")
 		String args[] = new String[input.length - 1];
 		input[0] = DisUtil.filterPrefix(input[0], channel).toLowerCase();
 		System.arraycopy(input, 1, args, 0, input.length - 1);
@@ -179,6 +181,17 @@ public class CommandHandler {
 		if (commandSuccess) {
 			if (channel instanceof TextChannel) {
 				TextChannel tc = (TextChannel) channel;
+				TextChannel commandLogChannel = bot.getCommandLogChannel(tc.getGuild());
+				if (commandLogChannel != null) {
+					commandLogChannel.sendMessage(
+							String.format("%s **%s#%s** used %s `%s` in %s",
+									Emojibet.USER, author.getName(), author.getDiscriminator(), Emojibet.KEYBOARD, commandUsed, tc.getAsMention()
+							)
+					).queue(
+							null,
+							throwable -> GuildSettings.get(tc.getGuild()).set(null, SettingCommandLoggingChannel.class, "false")
+					);
+				}
 				Launcher.log("command executed", "bot", "command",
 						"input", incomingMessage,
 						"user-id", author.getId(),
@@ -197,7 +210,6 @@ public class CommandHandler {
 			}
 			CUser.registerCommandUse(CUser.getCachedId(author.getId()));
 		}
-
 	}
 
 	private static boolean hasRightVisibility(MessageChannel channel, CommandVisibility visibility) {

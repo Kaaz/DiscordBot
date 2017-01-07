@@ -4,7 +4,7 @@ import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.types.TextChannelSettingType;
 
 
-public class SettingLoggingChannel extends AbstractGuildSetting<TextChannelSettingType> {
+public class SettingCommandLoggingChannel extends AbstractGuildSetting<TextChannelSettingType> {
 	@Override
 	protected TextChannelSettingType getSettingsType() {
 		return new TextChannelSettingType(true);
@@ -12,12 +12,12 @@ public class SettingLoggingChannel extends AbstractGuildSetting<TextChannelSetti
 
 	@Override
 	public String getKey() {
-		return "bot_logging_channel";
+		return "bot_command_logging_channel";
 	}
 
 	@Override
 	public String[] getTags() {
-		return new String[]{"mod", "logging", "channel"};
+		return new String[]{"command", "logging", "channel", "mod"};
 	}
 
 	@Override
@@ -27,11 +27,16 @@ public class SettingLoggingChannel extends AbstractGuildSetting<TextChannelSetti
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"The channel where the logging of events happens. Such as users joining/leaving ",
+		return new String[]{"The channel command usage will be logged to",
+				"",
+				"Example output:",
+				"Kaaz#9436 has used `say` in #general",
+				"aruments: this is not a test",
+				"output: this is not a test",
 				"",
 				"Setting this to 'false' will disable it (without the quotes)",
 				"",
-				"To enable it, set this setting to match the channel name where you want the logging to happen",
+				"To enable it, set this setting to match the channel name where you want the command logging to happen",
 				"If you specify an invalid channel, this setting will disable itself"
 		};
 	}

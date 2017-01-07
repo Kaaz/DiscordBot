@@ -198,7 +198,8 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
 				"Current value: \"**" + GuildSettings.get(guild.getId()).getDisplayValue(guild, args[0]) + "**\"" + Config.EOL +
 				"Default value: \"**" + setting.getDefaultValue(args[0]) + "**\"" + Config.EOL + Config.EOL +
 				"Description: " + Config.EOL +
-				Misc.makeTable(tblContent);
+				Misc.makeTable(tblContent) +
+				"To set it back to default: `" + DisUtil.getCommandPrefix(channel) + "cfg " + args[0] + " " + setting.getDefaultValue(args[0]) + "`";
 	}
 
 	private static MessageEmbed makeEmbedConfig(Guild guild, int activePage) {
