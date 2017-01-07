@@ -383,7 +383,7 @@ public class DiscordBot {
 			}
 		}
 		if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
-				channel.getName().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
+				channel.getId().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			if (PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_WRITE)) {
 				channel.sendTyping();
 				this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getRawContent()), null);
