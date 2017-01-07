@@ -7,7 +7,8 @@ import net.dv8tion.jda.core.entities.Guild;
 
 /**
  * boolean settings type
- * yes/no
+ * {@link Misc#isFuzzyTrue(String)}   yes
+ * {@link Misc#isFuzzyFalse(String)}  no
  */
 public class BooleanSettingType implements IGuildSettingType {
 	@Override
