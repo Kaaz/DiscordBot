@@ -5,6 +5,7 @@ import discordbot.db.controllers.CPlaylist;
 import discordbot.db.controllers.CUser;
 import discordbot.db.model.OMusic;
 import discordbot.db.model.OPlaylist;
+import discordbot.guildsettings.music.SettingMusicSkipAdminOnly;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.Emojibet;
@@ -100,6 +101,9 @@ public class MusicReactionHandler {
 	}
 
 	private void handleVoteSkip(MusicPlayerHandler player, TextChannel channel, User invoker, SimpleRank rank, boolean isAdding) {
+		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && "true".equals(GuildSettings.getFor(channel, SettingMusicSkipAdminOnly.class))) {
+			return;
+		}
 		if (isAdding) {
 			player.voteSkip(invoker);
 		} else {
