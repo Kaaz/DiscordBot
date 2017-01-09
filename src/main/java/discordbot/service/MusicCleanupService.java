@@ -48,9 +48,8 @@ public class MusicCleanupService extends AbstractService {
 				" FROM music m " +
 				" LEFT JOIN playlist_item pi ON pi.music_id = m.id " +
 				" LEFT JOIN playlist pl ON pl.id = pi.playlist_id " +
-				" LEFT JOIN guilds g ON g.id = pl.id " +
-				" WHERE (g.active = 0 " +
-				"  OR g.id IS NULL) " +
+				" LEFT JOIN guilds g ON g.id = pl.id AND g.active = 1 " +
+				" WHERE g.id IS NULL " +
 				" AND  last_manual_playdate < ? " +
 				" AND m.file_exists = 1 " +
 				" ORDER BY last_manual_playdate DESC", olderThan)) {
