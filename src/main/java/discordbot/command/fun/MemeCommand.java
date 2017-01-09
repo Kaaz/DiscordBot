@@ -48,11 +48,12 @@ public class MemeCommand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"meme type                               //list of all valid types",
-				"meme <type> <toptext> || <bottomtext>   //make the meme!",
+				"meme type                             //list of all valid types",
+				"meme <type> <toptext> | <bottomtext>  //make the meme!",
+				"meme <type> <toptext>                 //with just toptext!",
 				"",
 				"example: ",
-				"meme sohappy If I could use this meme || I would be so happy"
+				"meme sohappy If I could use this meme | I would be so happy"
 		};
 	}
 
@@ -83,9 +84,9 @@ public class MemeCommand extends AbstractCommand {
 			return Template.get("command_invalid_usage") + Config.EOL +
 					msg + Misc.makeTable(new ArrayList<>(memeTypes)) + Config.EOL +
 					"Usage:" + Config.EOL +
-					DisUtil.getCommandPrefix(channel) + "meme <type> <toptext> || <bottomtext>Config.EOL+Config.EOL" + Config.EOL + Config.EOL +
+					DisUtil.getCommandPrefix(channel) + "meme <type> <toptext> | <bottomtext>Config.EOL+Config.EOL" + Config.EOL + Config.EOL +
 					"Example:" + Config.EOL +
-					"meme sohappy If I could use this meme || I would be so happy";
+					"meme sohappy If I could use this meme | I would be so happy";
 		}
 		switch (args[0].toLowerCase()) {
 			case "type":
@@ -100,13 +101,13 @@ public class MemeCommand extends AbstractCommand {
 			return Template.get("command_meme_invalid_type") +
 					msg + Misc.makeTable(new ArrayList<>(memeTypes)) + Config.EOL + Config.EOL +
 					"Example:" + Config.EOL +
-					"meme sohappy If I could use this meme || I would be so happy";
+					"meme sohappy If I could use this meme | I would be so happy";
 		}
 		String topText = "-";
 		String botText = "-";
 
 		if (args.length > 1) {
-			String[] memeText = Joiner.on("-").join(Arrays.copyOfRange(args, 1, args.length)).replaceAll("/", "").split("\\|\\|");
+			String[] memeText = Joiner.on("-").join(Arrays.copyOfRange(args, 1, args.length)).replaceAll("/", "").split("\\|");
 			if (memeText.length > 0) {
 				if (memeText.length > 1) {
 					botText = memeText[1];

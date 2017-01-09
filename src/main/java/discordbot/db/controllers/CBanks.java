@@ -15,7 +15,7 @@ import java.sql.Timestamp;
  */
 public class CBanks {
 
-	//the amount of currency you can claim every x hours
+	//the amount of currency you claim each hour
 	public static final double CURRENCY_PER_HOUR = 0.5D;
 	public static final long SECONDS_PER_CURRENCY = (long) (1 / CURRENCY_PER_HOUR * 3600D);
 	private static volatile OBank BOT_BANK_ACCOUNT = null;
