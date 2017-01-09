@@ -173,9 +173,9 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 	}
 
 	@Override
-	public CommandReactionListener<ReactionData> getReactionListener(String invokerUserId, ReactionData rank) {
-		CommandReactionListener<ReactionData> listener = new CommandReactionListener<>(invokerUserId, rank);
-		HashMap<CommandCategory, ArrayList<String>> map = getCommandMap(rank.getRank());
+	public CommandReactionListener<ReactionData> getReactionListener(String invokerUserId, ReactionData data) {
+		CommandReactionListener<ReactionData> listener = new CommandReactionListener<>(invokerUserId, data);
+		HashMap<CommandCategory, ArrayList<String>> map = getCommandMap(data.getRank());
 		for (CommandCategory category : CommandCategory.values()) {
 			if (map.containsKey(category)) {
 				listener.registerReaction(category.getEmoticon(),

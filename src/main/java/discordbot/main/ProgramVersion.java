@@ -1,5 +1,7 @@
 package discordbot.main;
 
+import discordbot.util.Misc;
+
 /**
  * Created on 22-9-2016
  */
@@ -8,7 +10,7 @@ public class ProgramVersion {
 	private int minorVersion;
 	private int patchVersion;
 
-	private ProgramVersion(int majorVersion, int minorVersion, int patchVersion) {
+	public ProgramVersion(int majorVersion, int minorVersion, int patchVersion) {
 		this.majorVersion = majorVersion;
 		this.minorVersion = minorVersion;
 		this.patchVersion = patchVersion;
@@ -29,11 +31,11 @@ public class ProgramVersion {
 	public static ProgramVersion fromString(String version) {
 		String[] parts = version.split("\\.");
 		if (parts.length == 3) {
-			return new ProgramVersion(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+			return new ProgramVersion(Misc.parseInt(parts[0], 1), Misc.parseInt(parts[0], 0), Misc.parseInt(parts[0], 0));
 		} else if (parts.length == 2) {
-			return new ProgramVersion(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+			return new ProgramVersion(Misc.parseInt(parts[0], 1), Misc.parseInt(parts[0], 0));
 		} else if (parts.length == 1) {
-			return new ProgramVersion(Integer.parseInt(parts[0]));
+			return new ProgramVersion(Misc.parseInt(parts[0], 1));
 		}
 		return new ProgramVersion(1);
 	}
