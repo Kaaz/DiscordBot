@@ -1,11 +1,15 @@
 package discordbot.command.informative;
 
 import discordbot.core.AbstractCommand;
+import discordbot.db.controllers.CBanks;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CGuildMember;
 import discordbot.db.controllers.CUser;
+import discordbot.db.model.OBank;
 import discordbot.db.model.OGuildMember;
 import discordbot.db.model.OUser;
+import discordbot.guildsettings.bot.SettingUseEconomy;
+import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
@@ -111,6 +115,11 @@ public class UserCommand extends AbstractCommand {
 		sb.append(":bust_in_silhouette: User: ").append(infoUser.getName()).append("#").append(infoUser.getDiscriminator()).append(Config.EOL);
 		sb.append(":id: discord id:").append(infoUser.getId()).append(Config.EOL);
 		sb.append(":keyboard: Commands used:").append(dbUser.commandsUsed).append(Config.EOL);
+		if (guildId == 0 || "true".equals(GuildSettings.getFor(channel, SettingUseEconomy.class))) {
+			OBank bankAccount = CBanks.findBy(userId);
+			sb.append(Config.ECONOMY_CURRENCY_ICON).append(" ").append(Config.ECONOMY_CURRENCY_NAMES).append(": ").append(bankAccount.currentBalance).append(Config.EOL);
+		}
+
 		if (guildId > 0) {
 			Guild guild = ((TextChannel) channel).getGuild();
 			OGuildMember member = CGuildMember.findBy(guildId, userId);

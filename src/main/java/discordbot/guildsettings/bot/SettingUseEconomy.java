@@ -12,7 +12,7 @@ public class SettingUseEconomy extends AbstractGuildSetting<BooleanSettingType> 
 
 	@Override
 	public String getKey() {
-		return "use_economy";
+		return "module_economy";
 	}
 
 	@Override

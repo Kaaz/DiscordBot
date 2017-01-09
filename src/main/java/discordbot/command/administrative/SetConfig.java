@@ -206,7 +206,7 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
 		EmbedBuilder b = new EmbedBuilder();
 		List<String> keys = DefaultGuildSettings.getWritableKeys();
 		Collections.sort(keys);
-		int maxPage = 1 + keys.size() / CFG_PER_PAGE;
+		int maxPage = (int) Math.ceil(keys.size() / CFG_PER_PAGE);
 		activePage = Math.max(0, Math.min(maxPage - 1, activePage - 1));
 		int endIndex = activePage * CFG_PER_PAGE + CFG_PER_PAGE;
 		int elements = 0;
