@@ -60,24 +60,24 @@ public class CookieCommand extends AbstractCommand {
 		double now = (System.currentTimeMillis() / 1000D);
 		double time = now - user.lastCurrencyRetrieval;
 		int income = (int) Math.min(time * (CBanks.CURRENCY_PER_HOUR / 3600D), CBanks.CURRENCY_GIVEAWAY_MAX);
-		int lastCurrencyTrevieval = user.lastCurrencyRetrieval;
+		int lastCurrencyRetrieval = user.lastCurrencyRetrieval;
 		if (income == 0) {
 			return String.format("no %s for you yet, try again in %s",
-					Config.ECONOMY_CURRENCY_ICON, TimeUtil.getRelativeTime((long) (now + 1 + CBanks.SECONDS_PER_CURRENCY - (now - lastCurrencyTrevieval)), false, false))
+					Config.ECONOMY_CURRENCY_ICON, TimeUtil.getRelativeTime((long) (now + 1 + CBanks.SECONDS_PER_CURRENCY - (now - lastCurrencyRetrieval)), false, false))
 					+ getFooter();
 		}
 		if (income == CBanks.CURRENCY_GIVEAWAY_MAX) {
-			lastCurrencyTrevieval = (int) now;
+			lastCurrencyRetrieval = (int) now;
 		} else {
-			lastCurrencyTrevieval += income * CBanks.SECONDS_PER_CURRENCY;
+			lastCurrencyRetrieval += income * CBanks.SECONDS_PER_CURRENCY;
 		}
 		if (!CBanks.getBotAccount().transferTo(userAccount, income, "Charity")) {
 			Launcher.logToDiscord(new Exception("BANK_TRANSFER"), "from", "bot", "toAccount", userAccount.id);
 		}
-		user.lastCurrencyRetrieval = lastCurrencyTrevieval;
+		user.lastCurrencyRetrieval = lastCurrencyRetrieval;
 		CUser.update(user);
 		return String.format("you get %s cookies and your time is updated to %s (now=%s)",
-				income, lastCurrencyTrevieval, (int) now) +
+				income, lastCurrencyRetrieval, (int) now) +
 				getFooter();
 	}
 
