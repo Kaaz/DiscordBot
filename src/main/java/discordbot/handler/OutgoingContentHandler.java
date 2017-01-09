@@ -101,14 +101,22 @@ public class OutgoingContentHandler {
 	 * @param message the message
 	 */
 	public void sendPrivateMessage(User target, String message) {
+		sendPrivateMessage(target, message, null, null);
+	}
+
+	public void sendPrivateMessage(User target, String message, final Consumer<Message> onSuccess, final Consumer<Throwable> onFailed) {
 		if (target != null && !target.isFake() && message != null && !message.isEmpty()) {
 			target.openPrivateChannel().queue(c -> c.sendMessage(message).queue(
-					null,
-					throwable ->
-							Launcher.logToDiscord(throwable,
-									"user", target.getName() + "#" + target.getDiscriminator(),
-									"message", message
-							)
+					onSuccess,
+					throwable -> {
+						Launcher.logToDiscord(throwable,
+								"user", target.getName() + "#" + target.getDiscriminator(),
+								"message", message
+						);
+						if (onFailed != null) {
+							onFailed.accept(throwable);
+						}
+					}
 			));
 		}
 	}

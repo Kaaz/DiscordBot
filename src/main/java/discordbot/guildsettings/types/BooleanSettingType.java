@@ -2,11 +2,13 @@ package discordbot.guildsettings.types;
 
 import discordbot.guildsettings.IGuildSettingType;
 import discordbot.util.Emojibet;
+import discordbot.util.Misc;
 import net.dv8tion.jda.core.entities.Guild;
 
 /**
  * boolean settings type
- * yes/no
+ * {@link Misc#isFuzzyTrue(String)}   yes
+ * {@link Misc#isFuzzyFalse(String)}  no
  */
 public class BooleanSettingType implements IGuildSettingType {
 	@Override
@@ -16,12 +18,12 @@ public class BooleanSettingType implements IGuildSettingType {
 
 	@Override
 	public boolean validate(Guild guild, String value) {
-		return value != null && (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false"));
+		return value != null && (Misc.isFuzzyTrue(value) || Misc.isFuzzyFalse(value));
 	}
 
 	@Override
 	public String fromInput(Guild guild, String value) {
-		return "true".equalsIgnoreCase(value) ? "true" : "false";
+		return Misc.isFuzzyTrue(value) ? "true" : "false";
 	}
 
 	@Override

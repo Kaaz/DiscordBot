@@ -3,7 +3,9 @@ package discordbot.util;
 import com.google.common.base.Strings;
 import discordbot.main.Config;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 public class Misc {
+
 	private static final String[] numberToEmote = {
 			"\u0030\u20E3",
 			"\u0031\u20E3",
@@ -25,6 +28,8 @@ public class Misc {
 			"\u0039\u20E3",
 			"\uD83D\uDD1F"
 	};
+	private final static HashSet<String> fuzzyTrue = new HashSet<>(Arrays.asList("yea", "yep", "yes", "true", "ja", "y", "t", "1"));
+	private final static HashSet<String> fuzzyFalse = new HashSet<>(Arrays.asList("no", "false", "nope", "nein", "nee", "n", "f", "0"));
 
 	/**
 	 * whether a string can fuzzily considered true
@@ -36,18 +41,7 @@ public class Misc {
 		if (text == null) {
 			return false;
 		}
-		switch (text.toLowerCase()) {
-			case "yea":
-			case "yes":
-			case "true":
-			case "y":
-			case "t":
-			case "1":
-				return true;
-			default:
-				return false;
-		}
-
+		return fuzzyTrue.contains(text);
 	}
 
 	/**
@@ -56,22 +50,11 @@ public class Misc {
 	 * @param text the string to check
 	 * @return true if it can be considered false
 	 */
-
 	public static boolean isFuzzyFalse(String text) {
 		if (text == null) {
 			return false;
 		}
-		switch (text.toLowerCase()) {
-			case "no":
-			case "false":
-			case "nope":
-			case "n":
-			case "f":
-			case "0":
-				return true;
-			default:
-				return false;
-		}
+		return fuzzyFalse.contains(text);
 	}
 
 	/**

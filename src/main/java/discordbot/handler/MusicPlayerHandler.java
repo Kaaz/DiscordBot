@@ -316,6 +316,7 @@ public class MusicPlayerHandler {
 				bot.musicReactionHandler.clearGuild(guildId);
 				Guild guild = bot.client.getGuildById(guildId);
 				if (PermissionUtil.checkPermission(message.getTextChannel(), guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION)) {
+					message.addReaction(Emojibet.STAR).queue();
 					message.addReaction(Emojibet.NEXT_TRACK).queue();
 					if (aListenerIsAtLeast(SimpleRank.BOT_ADMIN)) {
 						message.addReaction(Emojibet.NO_ENTRY).queue();
@@ -541,12 +542,19 @@ public class MusicPlayerHandler {
 		player.setVolume(volume);
 	}
 
+	/**
+	 * retrieves a list of users who can listen and use voice commands
+	 *
+	 * @return list of users
+	 */
 	public List<Member> getUsersInVoiceChannel() {
 		ArrayList<Member> userList = new ArrayList<>();
 		VoiceChannel currentChannel = bot.client.getGuildById(guildId).getAudioManager().getConnectedChannel();
 		if (currentChannel != null) {
 			List<Member> connectedUsers = currentChannel.getMembers();
-			userList.addAll(connectedUsers.stream().filter(user -> !user.getUser().isBot() && !user.getVoiceState().isDeafened()).collect(Collectors.toList()));
+			userList.addAll(connectedUsers.stream().filter(user -> !user.getUser().isBot() && !user.getVoiceState().isDeafened() &&
+					GuildSettings.get(currentChannel.getGuild()).canUseMusicCommands(user.getUser(), bot.security.getSimpleRankForGuild(user.getUser(), currentChannel.getGuild()))
+			).collect(Collectors.toList()));
 		}
 		return userList;
 	}

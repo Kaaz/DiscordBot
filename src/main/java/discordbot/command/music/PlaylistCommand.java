@@ -413,6 +413,9 @@ public class PlaylistCommand extends AbstractCommand {
 		if (playlist.id == 0) {
 			playlist.title = title;
 			playlist.code = code;
+			if (playlist.isPersonal()) {
+				playlist.setEditType(OPlaylist.EditType.PRIVATE_AUTO);
+			}
 			CPlaylist.insert(playlist);
 		}
 		return playlist;

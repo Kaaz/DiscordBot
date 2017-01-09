@@ -43,7 +43,7 @@ public class TextChannelSettingType implements IGuildSettingType {
 	@Override
 	public String fromInput(Guild guild, String value) {
 		if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
-			return "";
+			return "false";
 		}
 		if (DisUtil.isChannelMention(value)) {
 			TextChannel textChannel = guild.getTextChannelById(DisUtil.mentionToId(value));

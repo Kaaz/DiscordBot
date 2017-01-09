@@ -50,7 +50,7 @@ public class CBotEvent {
 				list.add(fillRecord(rs));
 			}
 			rs.getStatement().close();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return list;

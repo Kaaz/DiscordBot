@@ -95,6 +95,9 @@ public class ServerCommand extends AbstractCommand {
 	}
 
 	private Color getAverageColor(String url) {
+		if (url == null) {
+			return new Color(27, 137, 255);
+		}
 		try {
 			BufferedImage img = ImageIO.read(Unirest.get(url).asBinary().getRawBody());
 			int x0 = 0;

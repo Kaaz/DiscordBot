@@ -28,6 +28,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLongArray;
@@ -47,9 +51,11 @@ public class BotContainer {
 	private volatile boolean terminationRequested = false;
 	private volatile ExitCode rebootReason = ExitCode.UNKNOWN;
 	private final AtomicLongArray lastActions;
+	private final ScheduledExecutorService scheduler;
 
 
 	public BotContainer(int numGuilds) throws LoginException, InterruptedException, RateLimitedException {
+		scheduler = Executors.newScheduledThreadPool(3);
 		this.numGuilds = new AtomicInteger(numGuilds);
 		youtubeThread = new YoutubeThread();
 		this.numShards = getRecommendedShards();
@@ -74,6 +80,28 @@ public class BotContainer {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Schedule the a task somewhere in the future
+	 *
+	 * @param task     the task
+	 * @param delay    the delay
+	 * @param timeUnit unit type of delay
+	 */
+	public void schedule(Runnable task, Long delay, TimeUnit timeUnit) {
+		scheduler.schedule(task, delay, timeUnit);
+	}
+
+	/**
+	 * schedule a repeating task
+	 *
+	 * @param task        the taks
+	 * @param startDelay  delay before starting the first iteration
+	 * @param repeatDelay delay between consecutive executions
+	 */
+	public ScheduledFuture<?> scheduleRepeat(Runnable task, long startDelay, long repeatDelay) {
+		return scheduler.scheduleWithFixedDelay(task, startDelay, repeatDelay, TimeUnit.MILLISECONDS);
 	}
 
 	/**

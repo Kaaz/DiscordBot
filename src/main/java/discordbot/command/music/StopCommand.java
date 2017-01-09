@@ -74,6 +74,9 @@ public class StopCommand extends AbstractCommand {
 			if (!player.canUseVoiceCommands(author, userRank)) {
 				return Template.get("music_not_same_voicechannel");
 			}
+			if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && player.aListenerIsAtLeast(SimpleRank.GUILD_ADMIN)) {
+				return Template.get("music_not_while_admin_listening");
+			}
 			if (args.length > 0 && args[0].equals("afternp")) {
 				player.stopAfterTrack(true);
 				return Template.get("command_stop_after_track");

@@ -10,6 +10,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.main.ProgramVersion;
+import discordbot.util.DisUtil;
 import discordbot.util.UpdateUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -48,10 +49,10 @@ public class BotSelfUpdateService extends AbstractService {
 
 	@Override
 	public void run() {
+		boolean isUpdating = false;
 		ProgramVersion latestVersion = UpdateUtil.getLatestVersion();
-		DiscordBot firstShard = bot.getShards()[0];
 		if (latestVersion.isHigherThan(Launcher.getVersion()) || bot.isTerminationRequested()) {
-			firstShard.schedule(() -> {
+			bot.schedule(() -> {
 				if (latestVersion.isHigherThan(Launcher.getVersion())) {
 					Launcher.stop(ExitCode.UPDATE);
 				} else if (bot.isTerminationRequested()) {
@@ -64,6 +65,7 @@ public class BotSelfUpdateService extends AbstractService {
 			String message = Template.get("announce_reboot");
 			if (latestVersion.isHigherThan(Launcher.getVersion())) {
 				message = Template.get("bot_self_update_restart", Launcher.getVersion().toString(), latestVersion.toString());
+				isUpdating = true;
 			} else if (bot.isTerminationRequested()) {
 				switch (bot.getRebootReason()) {
 					case NEED_MORE_SHARDS:
@@ -82,13 +84,20 @@ public class BotSelfUpdateService extends AbstractService {
 					switch (announce.toLowerCase()) {
 						case "off":
 							continue;
-						case "always":
-							discordBot.out.sendAsyncMessage(discordBot.getDefaultChannel(guild), message, null);
-							break;
 						case "playing":
-							if (guild.getAudioManager().isConnected()) {
-								discordBot.out.sendAsyncMessage(discordBot.getMusicChannel(guild), message, null);
+							if (!guild.getAudioManager().isConnected()) {
+								break;
 							}
+						case "always":
+							String extraContent = "";
+							TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
+							if (defaultChannel == null) {
+								break;
+							}
+							if (isUpdating) {
+								extraContent += Config.EOL + Config.EOL + "You can view the changes with `" + DisUtil.getCommandPrefix(defaultChannel) + "changelog`";
+							}
+							discordBot.out.sendAsyncMessage(defaultChannel, message + extraContent, null);
 							break;
 						default:
 							break;
