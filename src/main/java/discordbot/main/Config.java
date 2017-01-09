@@ -2,6 +2,7 @@ package discordbot.main;
 
 
 import com.wezinkhof.configuration.ConfigurationOption;
+import discordbot.util.Emojibet;
 
 public class Config {
 
@@ -151,11 +152,12 @@ public class Config {
 
 	//name of the currency
 	@ConfigurationOption
-	public static String ECONOMY_CURRENCY_NAME = "";
+	public static String ECONOMY_CURRENCY_NAME = "cookie";
+	public static String ECONOMY_CURRENCY_NAMES = "cookies";
 
 	//emoticon of the currency
 	@ConfigurationOption
-	public static String ECONOMY_CURRENCY_ICON = "";
+	public static String ECONOMY_CURRENCY_ICON = Emojibet.COOKIE;
 
 	//a new user starts with this balance
 	@ConfigurationOption

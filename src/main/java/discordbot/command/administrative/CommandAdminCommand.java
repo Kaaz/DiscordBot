@@ -159,7 +159,6 @@ public class CommandAdminCommand extends AbstractCommand {
 				CBlacklistCommand.deleteGuild(guildId);
 				CommandHandler.reloadBlackListFor(guildId);
 				return Template.get("command_blacklist_reset");
-
 		}
 		if (args[0].equals("role")) {
 			if (args.length < 2) {
