@@ -30,7 +30,7 @@ import java.util.Set;
  * !help
  * help function
  */
-public class HelpCommand extends AbstractCommand implements ICommandReactionListener<SimpleRank> {
+public class HelpCommand extends AbstractCommand implements ICommandReactionListener<HelpCommand.ReactionData> {
 	public HelpCommand() {
 		super();
 	}
@@ -101,7 +101,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 				HashMap<CommandCategory, ArrayList<String>> map = getCommandMap(userRank);
 				CommandCategory cat = CommandCategory.getFirstWithPermission(userRank);
 				channel.sendMessage(writeFancyHeader(channel, cat, map.keySet()) + styleTableCategory(cat, map.get(cat)) + writeFancyFooter(channel)).queue(
-						message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), userRank))
+						message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), new ReactionData(userRank, cat)))
 				);
 				return "";
 			}
@@ -173,18 +173,46 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 	}
 
 	@Override
-	public CommandReactionListener<SimpleRank> getReactionListener(String invokerUserId, SimpleRank rank) {
-		CommandReactionListener<SimpleRank> listener = new CommandReactionListener<>(invokerUserId, rank);
-		HashMap<CommandCategory, ArrayList<String>> map = getCommandMap(rank);
+	public CommandReactionListener<ReactionData> getReactionListener(String invokerUserId, ReactionData rank) {
+		CommandReactionListener<ReactionData> listener = new CommandReactionListener<>(invokerUserId, rank);
+		HashMap<CommandCategory, ArrayList<String>> map = getCommandMap(rank.getRank());
 		for (CommandCategory category : CommandCategory.values()) {
 			if (map.containsKey(category)) {
 				listener.registerReaction(category.getEmoticon(),
-						message -> message.editMessage(
-								writeFancyHeader(message.getChannel(), category, map.keySet()) +
-										styleTableCategory(category, map.get(category)) +
-										writeFancyFooter(message.getChannel())).queue());
+						message -> {
+							if (listener.getData().getActiveCategory().equals(category)) {
+								return;
+							}
+							listener.getData().setActiveCategory(category);
+							message.editMessage(
+									writeFancyHeader(message.getChannel(), category, map.keySet()) +
+											styleTableCategory(category, map.get(category)) +
+											writeFancyFooter(message.getChannel())).queue();
+						});
 			}
 		}
 		return listener;
+	}
+
+	public class ReactionData {
+		final SimpleRank rank;
+		private CommandCategory activeCategory;
+
+		private ReactionData(SimpleRank rank, CommandCategory activeCategory) {
+			this.rank = rank;
+			this.activeCategory = activeCategory;
+		}
+
+		public CommandCategory getActiveCategory() {
+			return activeCategory;
+		}
+
+		public void setActiveCategory(CommandCategory activeCategory) {
+			this.activeCategory = activeCategory;
+		}
+
+		public SimpleRank getRank() {
+			return rank;
+		}
 	}
 }
