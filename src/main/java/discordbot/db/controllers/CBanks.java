@@ -3,6 +3,7 @@ package discordbot.db.controllers;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
 import discordbot.db.model.OBank;
+import discordbot.db.model.OUser;
 import discordbot.main.Config;
 
 import java.sql.ResultSet;
@@ -14,8 +15,24 @@ import java.sql.Timestamp;
  */
 public class CBanks {
 
+	//the amount of currency you can claim every x hours
+	public static final double CURRENCY_PER_HOUR = 0.5D;
+	public static final long SECONDS_PER_CURRENCY = (long) (1 / CURRENCY_PER_HOUR * 3600D);
+	private static volatile OBank BOT_BANK_ACCOUNT = null;
+
+	//the max currency you can get from a claim
+	public static int CURRENCY_GIVEAWAY_MAX = (int) (CURRENCY_PER_HOUR * 24D);
+
+	//after reaching this amount amount, you can't claim anymore
+	public static final long CURRENCY_NO_HELP_AFTER = 10000;
+
+
 	public static OBank findBy(String discordId) {
 		return findBy(CUser.getCachedId(discordId));
+	}
+
+	public static OBank getBotAccount() {
+		return BOT_BANK_ACCOUNT;
 	}
 
 	public static OBank findBy(int userId) {
@@ -52,12 +69,25 @@ public class CBanks {
 			return;
 		}
 		try {
-			bank.currentBalance = Config.ECONOMY_START_BALANCE;
+			if (bank.currentBalance == 0L) {
+				bank.currentBalance = Config.ECONOMY_START_BALANCE;
+			}
 			bank.createdOn = new Timestamp(System.currentTimeMillis());
 			bank.id = WebDb.get().insert(
 					"INSERT INTO banks(user, current_balance, created_on) " +
 							"VALUES (?,?,?)",
 					bank.userId, bank.currentBalance, bank.createdOn);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void updateBalance(int bankId, int relativeAmount) {
+		if (bankId == BOT_BANK_ACCOUNT.id || relativeAmount == 0) {
+			return;
+		}
+		try {
+			WebDb.get().query("UPDATE BANKS SET current_balance = current_balance + ? WHERE id = ?", relativeAmount, bankId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -69,11 +99,23 @@ public class CBanks {
 			return;
 		}
 		try {
-			WebDb.get().insert(
+			WebDb.get().query(
 					"UPDATE  banks SET current_balance = ? WHERE id = ? ",
 					bank.currentBalance, bank.id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void init(String botId, String botName) {
+		OUser user = CUser.findBy(botId);
+		if (user.id == 0 || botId.equals(user.name) || user.name.isEmpty()) {
+			user.name = botName;
+			user.discord_id = botId;
+			CUser.update(user);
+		}
+		BOT_BANK_ACCOUNT = findBy(botId);
+		BOT_BANK_ACCOUNT.currentBalance = Integer.MAX_VALUE;
+		update(BOT_BANK_ACCOUNT);
 	}
 }

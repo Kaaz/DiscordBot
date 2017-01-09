@@ -1,6 +1,7 @@
 package discordbot.main;
 
 import com.mashape.unirest.http.Unirest;
+import discordbot.db.controllers.CBanks;
 import discordbot.db.controllers.CGuild;
 import discordbot.event.JDAEventManager;
 import discordbot.event.JDAEvents;
@@ -429,5 +430,9 @@ public class DiscordBot {
 				.header("Content-Type", "application/json")
 				.body(data.toString())
 				.asJsonAsync();
+	}
+
+	public void initOnce() {
+		CBanks.init(client.getSelfUser().getId(), client.getSelfUser().getName());
 	}
 }

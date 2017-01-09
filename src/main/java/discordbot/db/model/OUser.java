@@ -13,6 +13,7 @@ public class OUser extends AbstractModel {
 
 	private int permissionTotal;
 	private EnumSet<PermissionNode> nodes;
+	public int lastCurrencyRetrieval = 0;
 
 	public OUser() {
 		discord_id = "";

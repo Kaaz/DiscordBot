@@ -325,6 +325,9 @@ public class BotContainer {
 		for (int i = 0; i < shards.length; i++) {
 			LOGGER.info("Starting shard #{} of {}", i, shards.length);
 			shards[i] = new DiscordBot(i, shards.length, this);
+			if (i == 0) {
+				shards[i].initOnce();
+			}
 			Thread.sleep(5_000L);
 		}
 		for (DiscordBot shard : shards) {

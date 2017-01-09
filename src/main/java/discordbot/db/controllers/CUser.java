@@ -94,6 +94,7 @@ public class CUser {
 		s.commandsUsed = rs.getInt("commands_used");
 		s.banned = rs.getInt("banned");
 		s.setPermission(rs.getInt("permission_mask"));
+		s.lastCurrencyRetrieval = rs.getInt("last_currency_retrieval");
 		return s;
 	}
 
@@ -129,9 +130,9 @@ public class CUser {
 		}
 		try {
 			WebDb.get().query(
-					"UPDATE users SET discord_id = ?, name = ?, banned = ?, commands_used = ?, permission_mask = ? " +
+					"UPDATE users SET discord_id = ?, name = ?, banned = ?, commands_used = ?, permission_mask = ?, last_currency_retrieval = ? " +
 							"WHERE id = ? ",
-					record.discord_id, record.name, record.banned, record.commandsUsed, record.getEncodedPermissions(), record.id
+					record.discord_id, record.name, record.banned, record.commandsUsed, record.getEncodedPermissions(), record.lastCurrencyRetrieval, record.id
 			);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -153,6 +153,7 @@ public class Config {
 	//name of the currency
 	@ConfigurationOption
 	public static String ECONOMY_CURRENCY_NAME = "cookie";
+	@ConfigurationOption
 	public static String ECONOMY_CURRENCY_NAMES = "cookies";
 
 	//emoticon of the currency
