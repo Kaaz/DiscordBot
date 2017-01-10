@@ -45,6 +45,7 @@ public class JDAEventManager implements IEventManager {
 	@Override
 	public void handle(Event event) {
 		if (executor.isShutdown()) {
+			container.reportError(new Exception("NO EVENT MANAGER"), "JDAEventManager", "is kill");
 			return;
 		}
 		executor.submit(() -> {

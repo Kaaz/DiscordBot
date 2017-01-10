@@ -74,6 +74,7 @@ public class DiscordBot {
 	private volatile boolean isReady = false;
 	private int shardId;
 	private BotContainer container;
+	private final JDAEventManager eventManager;
 
 	public DiscordBot(int shardId, int numShards, BotContainer container) throws LoginException, InterruptedException, RateLimitedException {
 		scheduler = Executors.newScheduledThreadPool(3);
@@ -81,6 +82,7 @@ public class DiscordBot {
 		this.totShards = numShards;
 		registerHandlers();
 		setContainer(container);
+		eventManager = new JDAEventManager(container);
 		chatBotHandler = new ChatBotHandler();
 		startupTimeStamp = System.currentTimeMillis() / 1000L;
 		restartJDA();
@@ -93,7 +95,7 @@ public class DiscordBot {
 		if (totShards > 1) {
 			builder.useSharding(shardId, totShards);
 		}
-		builder.setEventManager(new JDAEventManager(container));
+		builder.setEventManager(eventManager);
 		builder.setBulkDeleteSplittingEnabled(false);
 		builder.setEnableShutdownHook(false);
 		client = builder.buildBlocking();

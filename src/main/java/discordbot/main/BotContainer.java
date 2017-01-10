@@ -340,37 +340,6 @@ public class BotContainer {
 	 */
 	private void onAllShardsReady() {
 		youtubeThread.start();
-//		List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
-//		for (OBotPlayingOn radio : radios) {
-//			DiscordBot bot = getShardFor(radio.guildId);
-//			Guild guild = bot.client.getGuildById(radio.guildId);
-//			VoiceChannel vc = null;
-//			if (guild == null) {
-//				continue;
-//			}
-//			for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
-//				if (voiceChannel.getId().equals(radio.channelId)) {
-//					vc = voiceChannel;
-//					break;
-//				}
-//			}
-//			if (vc != null) {
-//				boolean hasUsers = false;
-//				for (Member user : vc.getMembers()) {
-//					if (!user.getUser().isBot()) {
-//						hasUsers = true;
-//						break;
-//					}
-//				}
-//				if (hasUsers) {
-//					MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
-//					player.connectTo(vc);
-//					if (!player.isPlaying()) {
-//						player.playRandomSong();
-//					}
-//				}
-//			}
-//		}
 		CBotPlayingOn.deleteAll();
 	}
 

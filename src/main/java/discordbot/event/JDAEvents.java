@@ -72,11 +72,18 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onResume(ResumedEvent event) {
-		super.onResume(event);
+		if (!discordBot.equals(event.getJDA())) {
+			discordBot.client = event.getJDA();
+			discordBot.out.sendMessageToCreator("RESUMED and using a different jda object now");
+		}
 	}
 
 	@Override
 	public void onReconnect(ReconnectedEvent event) {
+		if (!discordBot.equals(event.getJDA())) {
+			discordBot.client = event.getJDA();
+			discordBot.out.sendMessageToCreator("RECONNECTED and using a different jda object now");
+		}
 	}
 
 	@Override
