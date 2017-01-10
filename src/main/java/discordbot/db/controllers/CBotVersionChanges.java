@@ -41,7 +41,7 @@ public class CBotVersionChanges {
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT * " +
 						"FROM bot_version_changes " +
-						"WHERE version = ? ", versionId)) {
+						"WHERE version = ? ORDER BY change_type ASC ", versionId)) {
 			while (rs.next()) {
 				s.add(fillRecord(rs));
 			}
@@ -60,6 +60,14 @@ public class CBotVersionChanges {
 		s.description = rs.getString("description");
 		s.author = rs.getInt("author");
 		return s;
+	}
+
+	public static int insert(int versionId, OBotVersionChange.ChangeType changeType, String description) {
+		OBotVersionChange r = new OBotVersionChange();
+		r.version = versionId;
+		r.changeType = changeType;
+		r.description = description;
+		return insert(r);
 	}
 
 	public static int insert(OBotVersionChange record) {

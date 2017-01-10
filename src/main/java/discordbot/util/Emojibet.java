@@ -55,6 +55,10 @@ public class Emojibet {
 	public static final String ANGER = "\uD83D\uDCA2";
 	public static final String EYES = "\uD83D\uDC40";
 	public static final String SHRUG = "\uD83E\uDD37";
+	public static final String CHECK_BOX = "\u2611";
+	public static final String WRENCH = "\uD83D\uDD27";
+	public static final String BUG = "\uD83D\uDC1B";
+	public static final String BOOT = "\uD83D\uDC62";
 
 	static {
 		emojis.put("a", "\uD83C\uDDE6");

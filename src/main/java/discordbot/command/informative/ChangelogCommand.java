@@ -9,6 +9,7 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.main.ProgramVersion;
+import discordbot.util.DisUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -60,12 +61,12 @@ public class ChangelogCommand extends AbstractCommand {
 		MessageEmbed message = null;
 		ProgramVersion version = Launcher.getVersion();
 		if (args.length == 0) {
-			message = printVersion(version);
+			message = printVersion(channel, version);
 		} else {
 			version = ProgramVersion.fromString(args[0]);
 		}
 		if (message != null) {
-			if (channel instanceof TextChannel && PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
+			if (channel instanceof TextChannel && !PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
 				return Template.get("permission_missing", Permission.MESSAGE_EMBED_LINKS);
 			}
 			channel.sendMessage(message).queue();
@@ -74,7 +75,7 @@ public class ChangelogCommand extends AbstractCommand {
 		return "No changes for version " + version.toString();
 	}
 
-	private MessageEmbed printVersion(ProgramVersion version) {
+	private MessageEmbed printVersion(MessageChannel channel, ProgramVersion version) {
 		EmbedBuilder b = new EmbedBuilder();
 		OBotVersion dbVersion = CBotVersions.findBy(version);
 		if (dbVersion == null || dbVersion.published == 0) {
@@ -89,12 +90,14 @@ public class ChangelogCommand extends AbstractCommand {
 		for (OBotVersionChange change : changes) {
 			if (!change.changeType.equals(lastType)) {
 				lastType = change.changeType;
-				desc += String.format("**%s %s**\n", lastType.getEmoji(), lastType.getTitle());
+				desc += String.format("\n**%s %s**\n", lastType.getEmoji(), lastType.getTitle().toUpperCase());
 			}
-			desc += String.format(" > %s\n", change.description);
+
+			desc += String.format(" • %s\n", change.description);
 		}
 		b.setTitle("Changelog for [" + version.toString() + "]");
 		b.setDescription(desc);
+		b.setFooter(String.format("I'd love to hear your feedback, feel free to join %sdiscord", DisUtil.getCommandPrefix(channel)), channel.getJDA().getSelfUser().getAvatarUrl());
 		return b.build();
 	}
 }

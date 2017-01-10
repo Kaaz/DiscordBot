@@ -1,4 +1,4 @@
-package discordbot.command.administrative;
+package discordbot.command.bot_administration;
 
 import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CUser;
@@ -13,8 +13,8 @@ import net.dv8tion.jda.core.entities.User;
 /**
  * ban a user from a guild
  */
-public class BanCommand extends AbstractCommand {
-	public BanCommand() {
+public class GlobalBanCommand extends AbstractCommand {
+	public GlobalBanCommand() {
 		super();
 	}
 
@@ -25,7 +25,7 @@ public class BanCommand extends AbstractCommand {
 
 	@Override
 	public String getCommand() {
-		return "ban";
+		return "globalban";
 	}
 
 	@Override

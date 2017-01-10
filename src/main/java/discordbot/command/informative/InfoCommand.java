@@ -105,8 +105,8 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
 				"**What am I?** *" + response + "* " + Config.EOL +
 				"**My purpose?** *" + purpose + "* " + Config.EOL + Config.EOL +
 				"The last time I restarted was  " + onlineFor + "." + Config.EOL +
-				"Running version `" + Launcher.getVersion().toString() + "` and there are " + CommandHandler.getCommands().length + " commands I can perform." + Config.EOL + Config.EOL +
-				"Type **" + prefix + "help** to see what I'll allow you to do" + Config.EOL + Config.EOL +
+				"Running version `" + Launcher.getVersion().toString() + "`. You can use `" + prefix + "changelog` to see what changed." + Config.EOL + Config.EOL +
+				"Type **" + prefix + "help** to see what I'll allow you to do. In total there are " + CommandHandler.getCommands().length + " commands I can perform." + Config.EOL + Config.EOL +
 				"For help about a specific command type `" + prefix + "<command> help`" + Config.EOL +
 				"An example: `" + prefix + "skip help` to see what you can do with the skip command." + Config.EOL + Config.EOL +
 				"If you need assistance, want to share your thoughts or want to contribute feel free to join my __" + prefix + "discord__";

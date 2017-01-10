@@ -268,7 +268,7 @@ public class JDAEvents extends ListenerAdapter {
 		if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
 			TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
 			if (defaultChannel == null) {
-				GuildSettings.get(guild.getId()).set(guild, SettingWelcomeNewUsers.class, "false");
+//				GuildSettings.get(guild.getId()).set(guild, SettingWelcomeNewUsers.class, "false");
 				return;
 			}
 			defaultChannel.sendMessage(

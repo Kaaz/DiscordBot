@@ -31,9 +31,9 @@ public class ProgramVersion {
 	public static ProgramVersion fromString(String version) {
 		String[] parts = version.split("\\.");
 		if (parts.length == 3) {
-			return new ProgramVersion(Misc.parseInt(parts[0], 1), Misc.parseInt(parts[0], 0), Misc.parseInt(parts[0], 0));
+			return new ProgramVersion(Misc.parseInt(parts[0], 1), Misc.parseInt(parts[1], 0), Misc.parseInt(parts[2], 0));
 		} else if (parts.length == 2) {
-			return new ProgramVersion(Misc.parseInt(parts[0], 1), Misc.parseInt(parts[0], 0));
+			return new ProgramVersion(Misc.parseInt(parts[0], 1), Misc.parseInt(parts[1], 0));
 		} else if (parts.length == 1) {
 			return new ProgramVersion(Misc.parseInt(parts[0], 1));
 		}
@@ -47,7 +47,7 @@ public class ProgramVersion {
 	 * @return true if this is higher than version
 	 */
 	public boolean isHigherThan(ProgramVersion version) {
-		if (this.getMajorVersion() > version.getMajorVersion()) {
+		if (version == null || this.getMajorVersion() > version.getMajorVersion()) {
 			return true;
 		} else if (this.getMajorVersion() == version.getMajorVersion()) {
 			if (this.getMinorVersion() > version.getMinorVersion()) {
