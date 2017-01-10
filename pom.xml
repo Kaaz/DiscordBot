@@ -168,5 +168,10 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.austinv11</groupId>
+			<artifactId>Discord4j</artifactId>
+			<version>14201d2</version>
+		</dependency>
 	</dependencies>
 </project>

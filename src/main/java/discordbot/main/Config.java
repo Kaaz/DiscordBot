@@ -74,6 +74,10 @@ public class Config {
 	@ConfigurationOption
 	public static String BOT_TOKEN = "mybottokenhere";
 
+	//token used to login to discord by the restart bot
+	@ConfigurationOption
+	public static String RESTART_BOT_TOKEN = "mybottokenhere";
+
 	//prefix for all commands !help etc.
 	@ConfigurationOption
 	public static boolean BOT_CHATTING_ENABLED = true;
