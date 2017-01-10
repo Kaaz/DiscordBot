@@ -77,22 +77,27 @@ public class DiscordBot {
 
 	public DiscordBot(int shardId, int numShards, BotContainer container) throws LoginException, InterruptedException, RateLimitedException {
 		scheduler = Executors.newScheduledThreadPool(3);
-		registerHandlers();
-		JDABuilder builder = new JDABuilder(AccountType.BOT).setToken(Config.BOT_TOKEN);
 		this.shardId = shardId;
 		this.totShards = numShards;
-		if (numShards > 1) {
-			builder.useSharding(shardId, numShards);
-		}
+		registerHandlers();
 		setContainer(container);
+		chatBotHandler = new ChatBotHandler();
+		startupTimeStamp = System.currentTimeMillis() / 1000L;
+		restartJDA();
+		markReady();
+		container.setLastAction(shardId, System.currentTimeMillis());
+	}
+
+	public void restartJDA() throws LoginException, InterruptedException, RateLimitedException {
+		JDABuilder builder = new JDABuilder(AccountType.BOT).setToken(Config.BOT_TOKEN);
+		if (totShards > 1) {
+			builder.useSharding(shardId, totShards);
+		}
 		builder.setEventManager(new JDAEventManager(container));
 		builder.setBulkDeleteSplittingEnabled(false);
 		builder.setEnableShutdownHook(false);
 		client = builder.buildBlocking();
-		startupTimeStamp = System.currentTimeMillis() / 1000L;
-		chatBotHandler = new ChatBotHandler();
-		markReady();
-		container.setLastAction(shardId, System.currentTimeMillis());
+
 	}
 
 	/**

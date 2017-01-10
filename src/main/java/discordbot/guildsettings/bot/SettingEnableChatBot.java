@@ -2,7 +2,6 @@ package discordbot.guildsettings.bot;
 
 import discordbot.guildsettings.AbstractGuildSetting;
 import discordbot.guildsettings.types.BooleanSettingType;
-import discordbot.main.Config;
 
 
 public class SettingEnableChatBot extends AbstractGuildSetting<BooleanSettingType> {
@@ -28,8 +27,8 @@ public class SettingEnableChatBot extends AbstractGuildSetting<BooleanSettingTyp
 
 	@Override
 	public String[] getDescription() {
-		return new String[]{"Chat with people" + Config.EOL +
-				"" + Config.EOL +
+		return new String[]{"Chat with people",
+				"",
 				"Setting this to true will make it so that it responds to every message in the configured bot_channel"
 		};
 	}

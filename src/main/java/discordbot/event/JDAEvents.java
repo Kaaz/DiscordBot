@@ -241,6 +241,9 @@ public class JDAEvents extends ListenerAdapter {
 
 	@Override
 	public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+		if (!event.getJDA().equals(discordBot.client)) {
+			discordBot.client = event.getJDA();
+		}
 		User user = event.getMember().getUser();
 		Guild guild = event.getGuild();
 		GuildSettings settings = GuildSettings.get(guild);

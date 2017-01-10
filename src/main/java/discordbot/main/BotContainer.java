@@ -118,7 +118,7 @@ public class BotContainer {
 		}
 		shards[shardId].client.shutdownNow(false);
 		Thread.sleep(5_000L);
-		shards[shardId] = new DiscordBot(shardId, shards.length, this);
+		shards[shardId].restartJDA();
 		List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
 		for (OBotPlayingOn radio : radios) {
 			if (calcShardId(Long.parseLong(radio.guildId)) != shardId) {

@@ -4,191 +4,144 @@ import discordbot.core.AbstractService;
 import discordbot.main.BotContainer;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
-import discordbot.permission.SimpleRank;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.PrivateChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
-import net.dv8tion.jda.core.requests.RestAction;
+import discordbot.util.Misc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RequestBuffer;
 
-import javax.security.auth.login.LoginException;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Bot restart service, designed so another bot can restart this one if necessary.
+ *
  * @author nija123098
  */
 public class BotRestartService extends AbstractService implements IListener<MessageReceivedEvent> {
-    public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
-    private IDiscordClient client;
-    public BotRestartService(BotContainer b) {
-        super(b);
-        try {
-            client = new ClientBuilder().withToken(Config.RESTART_BOT_TOKEN).login();
-            client.getDispatcher().registerListener(this);
-        }catch (Exception e){
-            LOGGER.error("Error starting Robot Restart Service!", e);
-        }
-    }
-    @Override
-    public String getIdentifier() {
-        return "bot_restart_service";
-    }
-    @Override
-    public long getDelayBetweenRuns() {
-        return TimeUnit.HOURS.toMillis(1);
-    }
-    @Override
-    public boolean shouldIRun() {
-        return true;
-    }
-    @Override
-    public void beforeRun() {
+	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
+	private IDiscordClient client;
+	Pattern shardPattern = Pattern.compile("emily restart shard\\s?(\\d+)");
+	private long lastRestart;
 
-    }
-    @Override
-    public void run() throws Exception {
-        RequestBuffer.request(() -> {
-            try {
-                this.client.logout();
-            } catch (DiscordException e) {
-                e.printStackTrace();
-            }
-        });
-        Thread.sleep(TimeUnit.SECONDS.toMillis(6));
-        RequestBuffer.request(() -> {
-            try {
-                this.client.login();
-            } catch (DiscordException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-    @Override
-    public void afterRun() {
+	public BotRestartService(BotContainer b) {
+		super(b);
+		lastRestart = System.currentTimeMillis();
+		try {
+			client = new ClientBuilder().withToken(Config.BOT_RESTART_TOKEN).login();
+//			client.getDispatcher().registerListener(this);
+		} catch (Exception e) {
+			LOGGER.error("Error starting Robot Restart Service!", e);
+			System.exit(0);
+		}
+	}
 
-    }
-    @Override
-    public void handle(MessageReceivedEvent event) {
-        if (!event.getMessage().getContent().equals("Emily restart please!")){
-            return;
-        }
-        IUser user = event.getMessage().getAuthor();
-        if (this.bot.getShardFor(event.getMessage().getGuild().getID()).security.getSimpleRank(new User() {
-            @Override
-            public String getName() {
-                return user.getName();
-            }
+	@Override
+	public String getIdentifier() {
+		return "bot_restart_service";
+	}
 
-            @Override
-            public String getDiscriminator() {
-                return user.getDiscriminator();
-            }
+	@Override
+	public long getDelayBetweenRuns() {
+		return TimeUnit.MINUTES.toMillis(1);
+	}
 
-            @Override
-            public String getAvatarId() {
-                return user.getAvatar();
-            }
+	@Override
+	public boolean shouldIRun() {
+		return Config.BOT_RESTART_INACTIVE_SHARDS;
+	}
 
-            @Override
-            public String getAvatarUrl() {
-                return user.getAvatarURL();
-            }
+	@Override
+	public void beforeRun() {
 
-            @Override
-            public String getDefaultAvatarId() {
-                return user.getAvatar();
-            }
+	}
 
-            @Override
-            public String getDefaultAvatarUrl() {
-                return user.getAvatarURL();
-            }
+	@Override
+	public void run() throws Exception {
+		if (System.currentTimeMillis() > lastRestart + TimeUnit.MINUTES.toMillis(15)) {
+//			RequestBuffer.request(() -> {
+//				try {
+//					this.client.logout();
+//				} catch (DiscordException e) {
+//					e.printStackTrace();
+//				}
+//			});
+//			Thread.sleep(TimeUnit.SECONDS.toMillis(6));
+//			RequestBuffer.request(() -> {
+//				try {
+//					this.client.login();
+//				} catch (DiscordException e) {
+//					e.printStackTrace();
+//				}
+//			});
+			lastRestart = System.currentTimeMillis();
+		}
 
-            @Override
-            public String getEffectiveAvatarUrl() {
-                return user.getAvatarURL();
-            }
+	}
 
-            @Override
-            public boolean hasPrivateChannel() {
-                return false;
-            }
+	@Override
+	public void afterRun() {
 
-            @Override
-            public RestAction<PrivateChannel> openPrivateChannel() {
-                return new RestAction.EmptyRestAction<PrivateChannel>(this.getPrivateChannel());
-            }
+	}
 
-            @Override
-            public PrivateChannel getPrivateChannel() {
-                return null;
-            }
+	@Override
+	public void handle(MessageReceivedEvent event) {
+		if (client.isReady()) {
+			return;
+		}
+		String msg = event.getMessage().getContent().toLowerCase();
+		IChannel channel = event.getMessage().getChannel();
+		if (!msg.startsWith("emily restart")) {
+			return;
+		}
+		if (!this.bot.getShardFor(event.getMessage().getGuild().getID()).security.isBotAdmin(event.getMessage().getAuthor().getID())) {
+			return;
+		}
+		if (msg.startsWith("emily restart all")) {
+			sendMessage(channel, "restarting all shards");
+			DiscordBot[] discordBots = this.bot.getShards();
+			for (int i = 0; i < discordBots.length; i++) {
+				if (discordBots[i] == null || !discordBots[i].isReady()) {
+					restart(i, false);
+				}
+			}
+		} else {
+			Matcher m = shardPattern.matcher(msg);
+			if (m.find()) {
+				int shardId = Misc.parseInt(m.group(1), -1);
+				if (shardId < 0 || shardId >= bot.getShards().length) {
+					return;
+				}
+				sendMessage(channel, "restarting shard \\#" + shardId);
+				restart(shardId, false);
+			}
+		}
+	}
 
-            @Override
-            public boolean isBot() {
-                return user.isBot();
-            }
+	private void sendMessage(IChannel channel, String message) {
+		RequestBuffer.request(() -> {
+			try {
+				channel.sendMessage(message);
+			} catch (DiscordException | MissingPermissionsException ignored) {
+			}
+		});
+	}
 
-            @Override
-            public JDA getJDA() {
-                return null;
-            }
-
-            @Override
-            public boolean isFake() {
-                return false;
-            }
-
-            @Override
-            public String getAsMention() {
-                return user.mention();
-            }
-
-            @Override
-            public String getId() {
-                return user.getID();
-            }
-        }).isAtLeast(SimpleRank.BOT_ADMIN)){
-            DiscordBot[] discordBots = this.bot.getShards();
-            for (int i = 0; i < discordBots.length; i++) {
-                if (!discordBots[i].isReady()){
-                    restart(i, false);
-                }
-            }
-        }
-    }
-    private void restart(int shardId, boolean retry){
-        try {
-            this.bot.restartShard(shardId);
-        } catch (InterruptedException | LoginException e) {
-            if (retry){
-                LOGGER.error("Error encountered during manual restart of bot!  Already attempted first restart!", e);
-            }else{
-                LOGGER.error("Error encountered during manual restart of bot!  Attempting one more time on shard " + shardId + ".", e);
-                try {
-                    Thread.sleep(TimeUnit.SECONDS.toMillis(6));
-                } catch (InterruptedException ex) {
-                    LOGGER.warn("Thread Exception while attempting to manually restart bot!", ex);
-                }
-                restart(shardId, true);
-            }
-        } catch (RateLimitedException e) {
-            try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(6));
-                restart(shardId, false);
-            } catch (InterruptedException ex) {
-                LOGGER.warn("Thread Exception while attempting to manually restart bot!", ex);
-            }
-        }
-    }
+	private boolean restart(int shardId, boolean retry) {
+		boolean success;
+		int attemptsLeft = 3;
+		do {
+			success = bot.tryRestartingShard(shardId);
+			attemptsLeft--;
+		}
+		while (!success && retry && attemptsLeft > 0);
+		return success;
+	}
 }

@@ -74,9 +74,9 @@ public class Config {
 	@ConfigurationOption
 	public static String BOT_TOKEN = "mybottokenhere";
 
-	//token used to login to discord by the restart bot
+	//token used to login to discord by the restart bot, used when BOT_RESTART_INACTIVE_SHARDS is true
 	@ConfigurationOption
-	public static String RESTART_BOT_TOKEN = "mybottokenhere";
+	public static String BOT_RESTART_TOKEN = "mybottokenhere";
 
 	//prefix for all commands !help etc.
 	@ConfigurationOption

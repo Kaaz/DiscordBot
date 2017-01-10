@@ -139,4 +139,8 @@ public class SecurityHandler {
 		}
 		return SimpleRank.USER;
 	}
+
+	public boolean isBotAdmin(String discordUserId) {
+		return botAdmins.contains(discordUserId);
+	}
 }
