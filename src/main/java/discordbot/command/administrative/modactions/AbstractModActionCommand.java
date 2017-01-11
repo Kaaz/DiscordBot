@@ -26,7 +26,7 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				String.format("%s <user>     //%s user from guild", getPunishType().getKeyword().toLowerCase(), getPunishType().getDescription()),
+				String.format("%s <user>     //%s user from guild", getCommand(), getPunishType().getDescription()),
 		};
 	}
 
