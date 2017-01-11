@@ -12,12 +12,14 @@ import net.dv8tion.jda.core.entities.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  * data communication with the controllers `moderation_case`
  */
 public class CModerationCase {
 
+	private static final SimpleDateFormat banDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	public static OModerationCase findById(int caseId) {
 		OModerationCase record = new OModerationCase();
@@ -40,9 +42,11 @@ public class CModerationCase {
 		record.id = resultset.getInt("id");
 		record.guildId = resultset.getInt("guild_id");
 		record.userId = resultset.getInt("user_id");
+		record.userName = resultset.getString("user_name");
 		record.moderatorId = resultset.getInt("moderator");
+		record.moderatorName = resultset.getString("moderator_name");
 		record.active = resultset.getInt("active");
-		record.messageId = resultset.getLong("message_id");
+		record.messageId = resultset.getString("message_id");
 		record.reason = resultset.getString("reason");
 		record.createdAt = resultset.getTimestamp("created_at");
 		record.expires = resultset.getTimestamp("expires");
@@ -54,21 +58,23 @@ public class CModerationCase {
 		OModerationCase rec = new OModerationCase();
 		rec.guildId = CGuild.getCachedId(guild.getId());
 		rec.userId = CUser.getCachedId(targetUser.getId());
+		rec.userName = targetUser.getName() + "\\#" + targetUser.getDiscriminator();
 		rec.moderatorId = CUser.getCachedId(moderator.getId());
+		rec.moderatorName = moderator.getName() + "\\#" + moderator.getDiscriminator();
 		rec.punishment = punishType;
 		rec.expires = expires;
 		rec.createdAt = new Timestamp(System.currentTimeMillis());
 		rec.active = 1;
-		rec.messageId = 1;
+		rec.messageId = "1";
 		return insert(rec);
 	}
 
 	public static int insert(OModerationCase record) {
 		try {
 			return WebDb.get().insert(
-					"INSERT INTO moderation_case(guild_id, user_id, moderator, message_id, created_at, reason, punishment, expires, active) " +
-							"VALUES (?,?,?,?,?,?,?,?,?)",
-					record.guildId, record.userId, record.moderatorId, record.messageId, record.createdAt, record.reason, record.punishment.getId(), record.expires, record.active);
+					"INSERT INTO moderation_case(guild_id, user_id,user_name, moderator,moderator_name, message_id, created_at, reason, punishment, expires, active) " +
+							"VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+					record.guildId, record.userId, record.userName, record.moderatorId, record.moderatorName, record.messageId, record.createdAt, record.reason, record.punishment.getId(), record.expires, record.active);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -98,9 +104,9 @@ public class CModerationCase {
 		EmbedBuilder b = new EmbedBuilder();
 		b.setTitle(String.format("%s | case #%s", modcase.punishment.getKeyword(), modcase.id));
 		b.setColor(modcase.punishment.getColor());
-		b.addField("User", "" + CUser.getCachedDiscordId(modcase.userId), true);
-		b.addField("Moderator", "" + CUser.getCachedDiscordId(modcase.moderatorId), true);
-		b.addField("Issued", modcase.createdAt.toString(), true);
+		b.addField("User", modcase.userName + "\n" + CUser.getCachedDiscordId(modcase.userId) + "\n", true);
+		b.addField("Moderator", modcase.moderatorName + "\n" + CUser.getCachedDiscordId(modcase.moderatorId), true);
+		b.addField("Issued", banDateFormat.format(modcase.createdAt), true);
 		if (modcase.expires != null) {
 			b.addField("Expires", modcase.expires.toString(), true);
 		}

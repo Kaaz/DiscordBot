@@ -10,12 +10,14 @@ public class OModerationCase extends AbstractModel {
 	public int userId = 0;
 	public int id = 0;
 	public int moderatorId = 0;
-	public long messageId = 0L;
+	public String messageId = "";
 	public Timestamp createdAt = null;
 	public Timestamp expires = null;
 	public PunishType punishment = PunishType.KICK;
 	public String reason = "";
 	public int active = 1;
+	public String moderatorName = "";
+	public String userName = "";
 
 	public void setPunishment(int punishment) {
 		this.punishment = PunishType.fromId(punishment);
@@ -23,10 +25,10 @@ public class OModerationCase extends AbstractModel {
 
 	public enum PunishType {
 		WARN(1, "Warn", "Adds a strike to the user", new Color(0xA8CF00)),
-		MUTE(2, "Mute", "Actions are restricted", new Color(0xFFF300)),
-		KICK(3, "Kick", "Kicked from the guild", new Color(0xFF9600)),
-		TMP_BAN(4, "temp-ban", "Kicked from the guild, unable to rejoin for a while", new Color(0xFF4700)),
-		BAN(5, "ban", "permanently banned", new Color(0xB70000));
+		MUTE(2, "Mute", "Adds the configured muted role to user", new Color(0xFFF300)),
+		KICK(3, "Kick", "Remove user from the guild", new Color(0xFF9600)),
+		TMP_BAN(4, "temp-ban", "Remove user from guild, unable to rejoin for a while", new Color(0xFF4700)),
+		BAN(5, "ban", "Permanently removes user from guild", new Color(0xB70000));
 
 		private final int id;
 		private final String keyword;

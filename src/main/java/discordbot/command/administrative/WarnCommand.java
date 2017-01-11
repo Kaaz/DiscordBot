@@ -2,25 +2,19 @@ package discordbot.command.administrative;
 
 import discordbot.command.administrative.modactions.AbstractModActionCommand;
 import discordbot.db.model.OModerationCase;
-import discordbot.guildsettings.moderation.SettingMuteRole;
-import discordbot.handler.GuildSettings;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
 
-/**
- * command for kicking users from a guild
- */
-public class MuteCommand extends AbstractModActionCommand {
+public class WarnCommand extends AbstractModActionCommand {
 	@Override
 	public String getDescription() {
-		return "Mute a member from your guild";
+		return "Give a user a warning";
 	}
 
 	@Override
 	public String getCommand() {
-		return "mute";
+		return "warn";
 	}
 
 	@Override
@@ -30,21 +24,16 @@ public class MuteCommand extends AbstractModActionCommand {
 
 	@Override
 	protected OModerationCase.PunishType getPunishType() {
-		return OModerationCase.PunishType.MUTE;
+		return OModerationCase.PunishType.WARN;
 	}
 
 	@Override
 	protected Permission getRequiredPermission() {
-		return Permission.MANAGE_ROLES;
+		return Permission.KICK_MEMBERS;
 	}
 
 	@Override
 	protected boolean punish(Guild guild, Member member) {
-		Role role = guild.getRoleById(GuildSettings.get(guild).getOrDefault(SettingMuteRole.class));
-		if (role == null) {
-			return false;
-		}
-		guild.getController().addRolesToMember(member, role).queue();
 		return true;
 	}
 }
