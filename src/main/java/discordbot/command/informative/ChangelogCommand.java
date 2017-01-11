@@ -9,7 +9,9 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
 import discordbot.main.ProgramVersion;
+import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
+import discordbot.util.Emojibet;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -39,6 +41,7 @@ public class ChangelogCommand extends AbstractCommand {
 	public String[] getUsage() {
 		return new String[]{
 				"changelog               //shows changes for the latest version",
+				"changelog next          //shows changes for the latest version",
 				"changelog <version>     //shows changes for that version",
 				"",
 				"example:",
@@ -58,13 +61,16 @@ public class ChangelogCommand extends AbstractCommand {
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		MessageEmbed message = null;
-		ProgramVersion version = Launcher.getVersion();
+		MessageEmbed message;
+		ProgramVersion version;
 		if (args.length == 0) {
-			message = printVersion(channel, version);
+			version = Launcher.getVersion();
+		} else if (args[0].equalsIgnoreCase("next")) {
+			version = CBotVersions.versionAfter(Launcher.getVersion()).getVersion();
 		} else {
 			version = ProgramVersion.fromString(args[0]);
 		}
+		message = printVersion(channel, version, bot.security.getSimpleRank(author, channel));
 		if (message != null) {
 			if (channel instanceof TextChannel && !PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
 				return Template.get("permission_missing", Permission.MESSAGE_EMBED_LINKS);
@@ -75,10 +81,10 @@ public class ChangelogCommand extends AbstractCommand {
 		return "No changes for version " + version.toString();
 	}
 
-	private MessageEmbed printVersion(MessageChannel channel, ProgramVersion version) {
+	private MessageEmbed printVersion(MessageChannel channel, ProgramVersion version, SimpleRank rank) {
 		EmbedBuilder b = new EmbedBuilder();
 		OBotVersion dbVersion = CBotVersions.findBy(version);
-		if (dbVersion == null || dbVersion.published == 0) {
+		if (!rank.isAtLeast(SimpleRank.BOT_ADMIN) && dbVersion.published == 0) {
 			return null;
 		}
 		List<OBotVersionChange> changes = CBotVersionChanges.getChangesFor(dbVersion.id);
@@ -95,7 +101,7 @@ public class ChangelogCommand extends AbstractCommand {
 
 			desc += String.format(" • %s\n", change.description);
 		}
-		b.setTitle("Changelog for [" + version.toString() + "]");
+		b.setTitle("[" + version.toString() + "] Changelog " + (dbVersion.published == 0 ? Emojibet.WARNING + " Still being worked on!" : ""));
 		b.setDescription(desc);
 		b.setFooter(String.format("I'd love to hear your feedback, feel free to join %sdiscord", DisUtil.getCommandPrefix(channel)), channel.getJDA().getSelfUser().getAvatarUrl());
 		return b.build();

@@ -74,7 +74,7 @@ public class JDAEvents extends ListenerAdapter {
 	public void onResume(ResumedEvent event) {
 		if (!discordBot.equals(event.getJDA())) {
 			discordBot.client = event.getJDA();
-			discordBot.out.sendMessageToCreator("RESUMED and using a different jda object now");
+			discordBot.getContainer().reportError(String.format("[RESUMED] \\#%02d with a different JDA", discordBot.getShardId()));
 		}
 	}
 
@@ -82,7 +82,7 @@ public class JDAEvents extends ListenerAdapter {
 	public void onReconnect(ReconnectedEvent event) {
 		if (!discordBot.equals(event.getJDA())) {
 			discordBot.client = event.getJDA();
-			discordBot.out.sendMessageToCreator("RECONNECTED and using a different jda object now");
+			discordBot.getContainer().reportError(String.format("[RECONCT] \\#%02d with a different JDA", discordBot.getShardId()));
 		}
 	}
 
