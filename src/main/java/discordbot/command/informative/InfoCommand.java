@@ -91,8 +91,8 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
 		}
 		channel.sendTyping();
 		String onlineFor = TimeUtil.getRelativeTime(bot.startupTimeStamp, false);
-		String response = bot.chatBotHandler.chat("What are you?");
-		String purpose = bot.chatBotHandler.chat("What is your purpose?");
+		String response = bot.chatBotHandler.chat("emily", "What are you?");
+		String purpose = bot.chatBotHandler.chat("emily", "What is your purpose?");
 		String prefix = DisUtil.getCommandPrefix(channel);
 		if (response.isEmpty()) {
 			response = "I'm batman";
@@ -101,7 +101,7 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
 			purpose = "I don't know";
 		}
 		return "\u2139 > Info  " + Config.EOL + Config.EOL +
-				"*" + bot.chatBotHandler.chat("information") + "* " + Config.EOL + Config.EOL +
+				"*" + bot.chatBotHandler.chat("emily", "information") + "* " + Config.EOL + Config.EOL +
 				"**What am I?** *" + response + "* " + Config.EOL +
 				"**My purpose?** *" + purpose + "* " + Config.EOL + Config.EOL +
 				"The last time I restarted was  " + onlineFor + "." + Config.EOL +

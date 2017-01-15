@@ -372,7 +372,7 @@ public class DiscordBot {
 			CommandHandler.process(this, channel, author, message.getRawContent());
 		} else {
 			channel.sendTyping();
-			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getRawContent()), null);
+			this.out.sendAsyncMessage(channel, this.chatBotHandler.chat("private", message.getRawContent()), null);
 		}
 	}
 
@@ -409,7 +409,7 @@ public class DiscordBot {
 				channel.getId().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
 			if (PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_WRITE)) {
 				channel.sendTyping();
-				this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(message.getRawContent()), null);
+				this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(guild.getId(), message.getRawContent()), null);
 			}
 		}
 	}

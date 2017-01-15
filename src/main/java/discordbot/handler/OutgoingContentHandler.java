@@ -132,12 +132,10 @@ public class OutgoingContentHandler {
 			TextChannel channel = messageToDelete.getJDA().getTextChannelById(messageToDelete.getChannel().getId());
 			if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_HISTORY)) {
 				channel.getMessageById(messageToDelete.getId()).queue(msg -> {
-							if (msg != null) {
-								msg.deleteMessage().queue();
-							}
-						}, throwable ->
-								Launcher.logToDiscord(throwable, "channel", channel.getId(), "content", messageToDelete.getContent())
-				);
+					if (msg != null) {
+						msg.deleteMessage().queue();
+					}
+				});
 			}
 		}
 	}
