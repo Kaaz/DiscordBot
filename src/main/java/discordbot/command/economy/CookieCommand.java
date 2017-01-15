@@ -76,8 +76,7 @@ public class CookieCommand extends AbstractCommand {
 		}
 		user.lastCurrencyRetrieval = lastCurrencyRetrieval;
 		CUser.update(user);
-		return String.format("you get %s cookies and your time is updated to %s (now=%s)",
-				income, lastCurrencyRetrieval, (int) now) +
+		return String.format("you get %s cookies!", income) +
 				getFooter();
 	}
 
