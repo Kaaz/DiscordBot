@@ -8,9 +8,13 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.utils.PermissionUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * command for kicking users from a guild
+ * command for muting users in a guild
  */
 public class MuteCommand extends AbstractModActionCommand {
 	@Override
@@ -44,7 +48,20 @@ public class MuteCommand extends AbstractModActionCommand {
 		if (role == null) {
 			return false;
 		}
-		guild.getController().addRolesToMember(member, role).queue();
+		List<Role> roles = member.getRoles();
+		List<Role> rolesToRemove = new ArrayList<>();
+		for (Role r : roles) {
+			if (r.isManaged()) {
+				continue;
+			}
+			if (!PermissionUtil.canInteract(guild.getSelfMember(), r)) {
+				continue;
+			}
+			rolesToRemove.add(r);
+		}
+		guild.getController().removeRolesFromMember(member, rolesToRemove).queue(aVoid ->
+				guild.getController().addRolesToMember(member, role).queue()
+		);
 		return true;
 	}
 }
