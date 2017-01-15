@@ -25,6 +25,11 @@ public class BetCommand extends AbstractCommand {
 	}
 
 	@Override
+	public boolean isEnabled() {
+		return false;
+	}
+
+	@Override
 	public String[] getUsage() {
 		return new String[]{
 				"bet             //check out what bets there are and where you participate in",
