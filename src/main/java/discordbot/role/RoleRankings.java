@@ -139,10 +139,6 @@ public class RoleRankings {
 			role.getManagerUpdatable().getColorField().setValue(rank.getColor());
 			needsUpdate = true;
 		}
-		if (role.isHoisted() != rank.isHoisted()) {
-			needsUpdate = true;
-			role.getManagerUpdatable().getHoistedField().setValue(rank.isHoisted());
-		}
 		if (needsUpdate) {
 			role.getManagerUpdatable().update().queue();
 		}
