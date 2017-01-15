@@ -4,6 +4,7 @@ import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CModerationCase;
+import discordbot.db.controllers.CUser;
 import discordbot.db.model.OModerationCase;
 import discordbot.guildsettings.moderation.SettingModlogChannel;
 import discordbot.handler.GuildSettings;
@@ -13,6 +14,7 @@ import discordbot.permission.SimpleRank;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -35,7 +37,8 @@ public class CaseCommand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"case reason <id> <message> //sets/modifies the reason of a case"
+				"case reason <id> <message>  //sets/modifies the reason of a case",
+				"case reason last <message> //sets/modified the reason of the last added case by you"
 		};
 	}
 
@@ -62,27 +65,32 @@ public class CaseCommand extends AbstractCommand {
 					if (args.length < 3) {
 						return Template.get("command_invalid_use");
 					}
-
-					return editReason(guild, channel, args[1], Misc.joinStrings(args, 2));
+					return editReason(guild, guild.getMember(author), channel, args[1], Misc.joinStrings(args, 2));
 			}
 		}
 		return Template.get("command_invalid_use");
 	}
 
-	private String editReason(Guild guild, MessageChannel feedbackChannel, String caseId, String reason) {
-		OModerationCase ocase = CModerationCase.findById(Misc.parseInt(caseId, -1));
-		if (ocase.id == 0 || ocase.guildId != CGuild.getCachedId(guild.getId())) {
-			return Template.get("command_case_not_found", ocase.id);
+	private String editReason(Guild guild, Member moderator, MessageChannel feedbackChannel, String caseId, String reason) {
+
+		OModerationCase oCase;
+		if (caseId.equalsIgnoreCase("last")) {
+			oCase = CModerationCase.findLastFor(CGuild.getCachedId(guild.getId()), CUser.getCachedId(moderator.getUser().getId()));
+		} else {
+			oCase = CModerationCase.findById(Misc.parseInt(caseId, -1));
 		}
-		ocase.reason = reason;
-		CModerationCase.update(ocase);
+		if (oCase.id == 0 || oCase.guildId != CGuild.getCachedId(guild.getId())) {
+			return Template.get("command_case_not_found", oCase.id);
+		}
+		oCase.reason = reason;
+		CModerationCase.update(oCase);
 		TextChannel channel = guild.getTextChannelById(GuildSettings.get(guild).getOrDefault(SettingModlogChannel.class));
 		if (channel == null) {
 			return Template.get("guild_channel_modlog_not_found");
 		}
-		channel.getMessageById(ocase.messageId).queue(
+		channel.getMessageById(oCase.messageId).queue(
 				message -> {
-					message.editMessage(new MessageBuilder().setEmbed(CModerationCase.buildCase(guild, ocase)).build()).queue();
+					message.editMessage(new MessageBuilder().setEmbed(CModerationCase.buildCase(guild, oCase)).build()).queue();
 					feedbackChannel.sendMessage(Template.get("command_case_reason_modified")).queue();
 				}
 				, throwable ->

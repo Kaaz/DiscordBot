@@ -37,6 +37,29 @@ public class CModerationCase {
 		return record;
 	}
 
+	/**
+	 * Finds the last case for a moderator within a guild
+	 *
+	 * @param guildId     internal guild id
+	 * @param moderatorId internal user id
+	 * @return case
+	 */
+	public static OModerationCase findLastFor(int guildId, int moderatorId) {
+		OModerationCase record = new OModerationCase();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT *  " +
+						"FROM moderation_case " +
+						"WHERE guild_id = ? AND moderator = ? ORDER BY id DESC LIMIT 1", guildId, moderatorId)) {
+			if (rs.next()) {
+				record = fillRecord(rs);
+			}
+			rs.getStatement().close();
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return record;
+	}
+
 	private static OModerationCase fillRecord(ResultSet resultset) throws SQLException {
 		OModerationCase record = new OModerationCase();
 		record.id = resultset.getInt("id");
