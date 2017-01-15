@@ -26,8 +26,7 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"kick <user>            //kicks user",
-				"kick <user> <reason..> //kicks user with a reason"
+				String.format("%s <user>     //%s user from guild", getCommand(), getPunishType().getDescription()),
 		};
 	}
 
@@ -65,7 +64,7 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
 		if (targetUser.getId().equals(guild.getSelfMember().getUser().getId())) {
 			return Template.get("command_modaction_not_self", getPunishType().getKeyword());
 		}
-		if (!PermissionUtil.canInteract(guild.getSelfMember(), guild.getMember(targetUser))) {
+		if (!PermissionUtil.canInteract(guild.getSelfMember(), guild.getMember(targetUser)) || !punish(guild, guild.getMember(targetUser))) {
 			return Template.get("command_modaction_failed", getPunishType().getKeyword(), targetUser.getName());
 		}
 		int caseId = CModerationCase.insert(guild, targetUser, author, getPunishType(), null);
@@ -74,12 +73,12 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
 			modlogChannel.sendMessage(CModerationCase.buildCase(guild, caseId)).queue(
 					message -> {
 						OModerationCase modcase = CModerationCase.findById(caseId);
-						modcase.messageId = Long.parseLong(message.getId());
+						modcase.messageId = message.getId();
 						CModerationCase.update(modcase);
 					}
 			);
 		}
-//		punish(guild, guild.getMember(targetUser));
+
 		return Template.get("command_modaction_success", getPunishType().getKeyword(), targetUser.getName());
 	}
 }

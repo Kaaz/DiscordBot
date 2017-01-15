@@ -78,7 +78,7 @@ public class JDAEvents extends ListenerAdapter {
 	public void onReconnect(ReconnectedEvent event) {
 		if (!discordBot.equals(event.getJDA())) {
 			discordBot.client = event.getJDA();
-			discordBot.out.sendMessageToCreator("RECONNECTED and using a different jda object now");
+			discordBot.getContainer().reportError(String.format("[RECONCT] \\#%02d with a different JDA", discordBot.getShardId()));
 		}
 	}
 
@@ -112,7 +112,7 @@ public class JDAEvents extends ListenerAdapter {
 			String message = "Thanks for adding me to your guild!" + Config.EOL +
 					"To see what I can do you can type the command `" + cmdPre + "help`." + Config.EOL +
 					"Most of my features are opt-in, which means that you'll have to enable them first. Admins can use `" + cmdPre + "config` to change my settings." + Config.EOL +
-					"Most commands has a help portion which can be accessed by typing help after the command; For instance: `" + cmdPre + "`skip help" +
+					"Most commands has a help portion which can be accessed by typing help after the command; For instance: `" + cmdPre + "skip help` " + Config.EOL + Config.EOL +
 					"If you need help or would like to give feedback, feel free to let me know on either `" + cmdPre + "discord` or `" + cmdPre + "github`";
 			switch (guildCheck) {
 				case TEST_GUILD:

@@ -45,7 +45,7 @@ public class CBotVersions {
 						"WHERE major < ? " +
 						"OR (major = ? AND minor < ?) " +
 						"OR (major = ? AND minor = ? AND patch < ?) " +
-						"ORDER BY major DESC , minor DESC , patch DESC " +
+						"ORDER BY major DESC , minor DESC , patch DESC ",
 						version.getMajorVersion(),
 				version.getMajorVersion(), version.getMinorVersion(),
 				version.getMajorVersion(), version.getMinorVersion(), version.getPatchVersion())) {
@@ -73,8 +73,8 @@ public class CBotVersions {
 						"WHERE major > ? " +
 						"OR (major = ? AND minor > ?) " +
 						"OR (major = ? AND minor = ? AND patch > ?) " +
-						"ORDER BY major ASC , minor ASC , patch ASC " +
-						version.getMajorVersion(),
+						"ORDER BY major ASC , minor ASC , patch ASC ",
+				version.getMajorVersion(),
 				version.getMajorVersion(), version.getMinorVersion(),
 				version.getMajorVersion(), version.getMinorVersion(), version.getPatchVersion())) {
 			if (rs.next()) {

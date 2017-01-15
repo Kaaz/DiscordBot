@@ -209,7 +209,7 @@ public class BotContainer {
 		reportError(errorMessage);
 	}
 
-	private void reportError(String message) {
+	public void reportError(String message) {
 		DiscordBot shard = getShardFor(Config.BOT_GUILD_ID);
 		Guild guild = shard.client.getGuildById(Config.BOT_GUILD_ID);
 		if (guild == null) {
