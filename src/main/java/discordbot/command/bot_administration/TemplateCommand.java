@@ -46,6 +46,7 @@ public class TemplateCommand extends AbstractCommand {
 				"",
 				"There are a few keywords you can utilize in templates. These keywords will be replaced by its value ",
 				"",
+				"for users with botadmin+, use 'template global ...' for global templates",
 				"Key                Replacement",
 				"---                ---",
 				"%user%             Username ",
@@ -75,7 +76,7 @@ public class TemplateCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
-		int guildId = 0;
+		int guildId = CGuild.getCachedId(channel);
 		if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 			return Template.get(channel, "no_permission");
 		}
@@ -83,7 +84,11 @@ public class TemplateCommand extends AbstractCommand {
 			if (!(channel instanceof TextChannel)) {
 				return Template.get(channel, "command_not_for_private");
 			}
-			guildId = CGuild.getCachedId(channel);
+		} else {
+			if (args.length > 1 && args[0].equals("global")) {
+				args = Arrays.copyOfRange(args, 1, args.length);
+				guildId = 0;
+			}
 		}
 		if (args.length == 0) {
 			String usage = ":gear: **Options**:```php" + Config.EOL;
