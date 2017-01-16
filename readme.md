@@ -31,18 +31,20 @@ Current list of all available commands. See below for a more detailed list
 
 Commands | | | | |
 --- | --- | ---| ---| ---
-[8ball](#8ball) | [ban](#ban) | [blackjack](#blackjack) | [botstatus](#botstatus) | [catfact](#catfact)
-[changename](#changename) | [command](#command) | [commandadmin](#commandadmin) | [config](#config) | [current](#current)
-[debug](#debug) | [exec](#exec) | [exit](#exit) | [fml](#fml) | [game](#game)
-[getrole](#getrole) | [guildstats](#guildstats) | [help](#help) | [importmusic](#importmusic) | [info](#info)
+[8ball](#8ball) | [ban](#ban) | [bet](#bet) | [blackjack](#blackjack) | [botstatus](#botstatus)
+[case](#case) | [catfact](#catfact) | [changename](#changename) | [cla](#cla) | [command](#command)
+[commandadmin](#commandadmin) | [config](#config) | [current](#current) | [debug](#debug) | [exec](#exec)
+[exit](#exit) | [fml](#fml) | [game](#game) | [getrole](#getrole) | [gif](#gif)
+[globalban](#globalban) | [guildstats](#guildstats) | [help](#help) | [importmusic](#importmusic) | [info](#info)
 [invite](#invite) | [join](#join) | [joke](#joke) | [kick](#kick) | [leaveguild](#leaveguild)
-[logging](#logging) | [meme](#meme) | [modcase](#modcase) | [music](#music) | [pause](#pause)
-[ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm) | [poll](#poll)
-[prefix](#prefix) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload)
-[report](#report) | [roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile)
-[server](#server) | [skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe)
-[system](#system) | [tag](#tag) | [template](#template) | [ud](#ud) | [uptime](#uptime)
-[user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume) | 
+[logging](#logging) | [meme](#meme) | [modcase](#modcase) | [music](#music) | [mute](#mute)
+[pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
+[poll](#poll) | [prefix](#prefix) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit)
+[reload](#reload) | [report](#report) | [roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate)
+[sendfile](#sendfile) | [server](#server) | [skip](#skip) | [slot](#slot) | [stop](#stop)
+[subscribe](#subscribe) | [system](#system) | [tag](#tag) | [tempban](#tempban) | [template](#template)
+[ud](#ud) | [uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version)
+[volume](#volume) | [warn](#warn) | 
 
 ## Games
 
@@ -67,16 +69,18 @@ Key | Default | Description |
 --- | --- | ---|
 auto_reply | false | use the auto reply feature?<br/>Looks for patterns in messages and replies to them (with a cooldown)<br/>true -> enable auto replying to matched messages<br/>false -> disable auto replying
 bot_channel | general | Channel where the bots default output goes to
+bot_command_logging_channel | false | The channel command usage will be logged to<br/><br/>Example output:<br/>Kaaz#9436 has used `say` in #general<br/>aruments: this is not a test<br/>output: this is not a test<br/><br/>Setting this to 'false' will disable it (without the quotes)<br/><br/>To enable it, set this setting to match the channel name where you want the command logging to happen<br/>If you specify an invalid channel, this setting will disable itself
 bot_debug_templates | true | Show which templates are being used on places.<br/><br/>valid values: <br/>true       -> Shows the keyphrases being used <br/>false      -> Shows normal text <br/><br/>for instance if you don't have permission to access a command:<br/><br/>setting this to true would show:<br/>no_permission<br/><br/>false would show:<br/>You don't have permission to use that!
 bot_listen | all | What channels to listen to? (all;mine)<br/>all -> responds to all channels<br/>mine -> only responds to messages in configured channel
 bot_logging_channel | false | The channel where the logging of events happens. Such as users joining/leaving <br/><br/>Setting this to 'false' will disable it (without the quotes)<br/><br/>To enable it, set this setting to match the channel name where you want the logging to happen<br/>If you specify an invalid channel, this setting will disable itself
+bot_modlog_channel | false | The channel where mod-logging happens.<br/>A case will appear if a user has been banned/kicked/warned/muted<br/><br/>Setting this to 'false' will disable it (without the quotes)<br/><br/>To enable it, set this setting to match the channel name where you want the moderation-cases to go<br/>If you specify an invalid channel, this setting will disable itself
+bot_mute_role | false | This is the role which is applied to those who you use the mute command on<br/><br/>Setting this value to false will disable the role applied with the mute command
 bot_update_warning | playing | Show a warning that there is an update and that the bot will be updating soon.<br/>always  -> always show the message in the bot's configured default channel<br/>playing -> only announce when the bot is playing music and in the bot's configured music channel<br/>off     -> don't announce when the bot is going down for an update
-chat_bot_enabled | false | Chat with people
-
-Setting this to true will make it so that it responds to every message in the configured bot_channel
+chat_bot_enabled | false | Chat with people<br/><br/>Setting this to true will make it so that it responds to every message in the configured bot_channel
 cleanup_messages | no | Delete messages after a while?<br/>yes         -> Always delete messages<br/>no          -> Never delete messages<br/>nonstandard -> delete messages outside of bot's default channel
 command_prefix | $ | Prefix for commands (between 1 and 4 characters)
 help_in_pm | false | show help in a private message?<br/>true  -> send a message to the user requesting help<br/>false -> output help to the channel where requested
+module_economy | false | Use the economy feature?<br/>false -> nope!<br/>true -> yep!
 module_games | true | Let people play games against each other
 music_channel | music | Channel where the bots music-related output goes to
 music_channel_auto | false | The channel where I automatically connect to if a user joins<br/><br/>false:<br/>Not using this setting, wont auto-connect to anything.<br/><br/>setting this to match a voice channel name:<br/>The moment a user connects to the specified channel I connect too and start to play music.<br/><br/>Important to note: <br/>* If the configured channel does not exist, this setting will be turned off<br/>* If I'm already connected to a different voice-channel I won't use this setting
@@ -93,7 +97,6 @@ music_volume_admin | false | Require a guild admin to change the volume<br/><br/
 music_vote_percent | 40 | Percentage of users (rounded down) required to skip the currently playing track<br/><br/>eg; when set to 25, and 5 listeners it would require 2 users to vote skip <br/><br/>Accepts a value between 1 and 100
 pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
 show_unknown_commands | false | Show message on nonexistent commands and blacklisted commands<br/>true -> returns a help message<br/>false -> stays silent
-use_economy | false | Use the economy feature?<br/>false -> nope!<br/>true -> yep!
 user_time_ranks | false | This setting will require me to have the manage role permission!<br/>Users are given a role based on their time spend in the discord server<br/>If you'd like to use the time based ranks, be sure to check out the other settings first!<br/>Setting:  Use time based ranks?<br/>true  -> yes<br/>false -> no
 user_time_ranks_notify | no | Send a notification whenever a user goes up a rank?<br/>no      -> Don't notify anyone, stay silent!<br/>false   -> Don't notify anyone, stay silent!<br/>private -> send a private message to the user who ranked up<br/>public  -> announce it in a channel<br/>both    -> perform both private and public actions 
 user_time_ranks_prefix | [rank] | The prefix of the role name for the time based role ranking<br/>Using this prefix to manage roles so make sure its somewhat unique! Or you'll have to cleanup yourself :)<br/>If you'd like to use the time based ranks make sure to set this first!<br/><br/>The prefix can be between 3 and 8 in length
@@ -189,11 +192,44 @@ Accessible though: 8ball
 Usable in public and private channels
 ### ban
 
-Ban those nasty humans
+bans a member from your guild
 
 Accessible though: ban
 
-Usable in public and private channels
+Usable in public  channels
+
+#### Usage
+
+```php
+ban <user>     //Permanently removes user from guild user from guild
+```
+### bet
+
+allows you to create and participate in bets
+
+Accessible though: bet
+
+Usable in public  channels
+
+#### Usage
+
+```php
+bet                    //check out what bets there are and where you participate in
+bet join               //info for the bet you're about to join
+bet join <youroption>  //join the bet with your selected option
+
+bet create <betamount> <title>      //create a bet OR edit the pending one
+bet option add <description>        //add an option to the bet
+bet option remove <key>             //remove an option
+bet option edit <key> <description> //edits an option
+bet refund <user>                   //refunds the user for the bet
+bet cancel yesimsure                //cancel the bet & refund everyone
+bet start <[1-9][mhd]>              //start now, and leave it open for x time
+bet start <[1-9][mhd]> <[1-9][mhd]> //start with a delay, and leave it open for x time
+
+Example: bet start 10m  //starts the bet now, and lasts for 10 minutes
+Example: bet start 2h 1d //start in 1 hour, lasts for 1 day
+```
 ### blackjack
 
 play a game of blackjack!
@@ -224,6 +260,20 @@ botstatus reset                      //unlocks the status
 botstatus game <game>                //changes the playing game to <game>
 botstatus stream <username> <game>   //streaming twitch.tv/<username> playing <game>
 ```
+### case
+
+Moderate the mod-cases
+
+Accessible though: case
+
+Usable in public  channels
+
+#### Usage
+
+```php
+case reason <id> <message>  //sets/modifies the reason of a case
+case reason last <message> //sets/modified the reason of the last added case by you
+```
 ### catfact
 
 Cat facts!
@@ -238,6 +288,23 @@ Changes my name
 Accessible though: changename
 
 Usable in public and private channels
+### cla
+
+manage the changelog
+
+Accessible though: cla
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+cla <version> <type> <message>     //adds a change to <version> of <type> with <message>
+cla current <type> <message>       //shortcut for current version
+cla next <type> <message>          // ^ next version
+cla types
+cla <version> publish <true/false> //publish the log for version (or not)
+```
 ### command
 
 Add and remove custom commands.
@@ -310,6 +377,7 @@ Usable in public  channels
 
 ```php
 config                    //overview
+config page <number>      //show page <number>
 config tags               //see what tags exist
 config tag <tagname>      //show settings with tagname
 config <property>         //check details of property
@@ -404,6 +472,27 @@ list                //see what roles are available
 remove <rolename>   //removes the <rolename> from you
 <rolename>          //assign the <rolename> to you 
 ```
+### gif
+
+Gifs from giphy
+
+Accessible though: gif
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+gif         //shows random gif
+gif <tags>  //random gif based on tags
+```
+### globalban
+
+Ban those nasty humans
+
+Accessible though: globalban
+
+Usable in public and private channels
 ### guildstats
 
 shows some statistics
@@ -430,7 +519,8 @@ Usable in public and private channels
 #### Usage
 
 ```php
-help            //index of all commands
+help            //shows commands grouped by categories, navigable by reactions 
+help full       //index of all commands, in case you don't have reactions
 help <command>  //usage for that command
 ```
 ### importmusic
@@ -492,7 +582,7 @@ Accessible though: joke
 Usable in public and private channels
 ### kick
 
-kicks a user
+Kicks a member from your guild
 
 Accessible though: kick
 
@@ -501,8 +591,7 @@ Usable in public  channels
 #### Usage
 
 ```php
-kick <user>            //kicks user
-kick <user> <reason..> //kicks user with a reason
+kick <user>     //Remove user from the guild user from guild
 ```
 ### leaveguild
 
@@ -535,11 +624,12 @@ Usable in public and private channels
 #### Usage
 
 ```php
-meme type                               //list of all valid types
-meme <type> <toptext> || <bottomtext>   //make the meme!
+meme type                             //list of all valid types
+meme <type> <toptext> | <bottomtext>  //make the meme!
+meme <type> <toptext>                 //with just toptext!
 
 example: 
-meme sohappy If I could use this meme || I would be so happy
+meme sohappy If I could use this meme | I would be so happy
 ```
 ### modcase
 
@@ -566,6 +656,19 @@ Usable in public  channels
 
 ```php
 music                   //shows music configuration
+```
+### mute
+
+Mute a member from your guild
+
+Accessible though: mute
+
+Usable in public  channels
+
+#### Usage
+
+```php
+mute <user>     //Adds the configured muted role to user user from guild
 ```
 ### pause
 
@@ -608,12 +711,14 @@ Usable in public  channels
 
 ```php
 -- using playlists 
-playlist mine                        //use your playlist
-playlist guild                       //use the guild's playlist
-playlist global                      //use the global playlist
-playlist settings                    //check the settings for the active playlist
-playlist                             //info about the current playlist
-playlist list <pagenumber>           //Shows the music in the playlist
+playlist mine           //use your default playlist
+playlist mine <code>    //use your playlist with code
+playlist guild          //use the guild's default playlist
+playlist guild <code>   //use the guild's playlist with code
+playlist global         //use the global playlist
+playlist settings       //check the settings for the active playlist
+playlist                //info about the current playlist
+playlist list <page>    //Shows the music in the playlist
 
 -- Adding and removing music from the playlist
 playlist add                         //adds the currently playing music
@@ -699,7 +804,6 @@ Usable in public and private channels
 #### Usage
 
 ```php
-reboot                  //reboots the system
 reboot now              //reboots the system
 reboot update           //reboots the system and updates
 reboot shard <id>       //reboots shard
@@ -900,6 +1004,19 @@ tag list             //shows all tags
 tag delete <name>    //deletes tag
 tag <name> <content> //creates the tag
 ```
+### tempban
+
+Bans a user for a while
+
+Accessible though: tempban
+
+Usable in public  channels
+
+#### Usage
+
+```php
+tempban <user>     //Remove user from guild, unable to rejoin for a while user from guild
+```
 ### template
 
 adds/removes templates
@@ -919,6 +1036,7 @@ template remove <keyphrase> <index>   //removes selected template for keyphrase
 
 There are a few keywords you can utilize in templates. These keywords will be replaced by its value 
 
+for users with botadmin+, use 'template global ...' for global templates
 Key                Replacement
 ---                ---
 %user%             Username 
@@ -1013,6 +1131,19 @@ Usable in public  channels
 ```php
 volume              //shows current volume
 volume <1 to 100>   //sets volume
+```
+### warn
+
+Give a user a warning
+
+Accessible though: warn
+
+Usable in public  channels
+
+#### Usage
+
+```php
+warn <user>     //Adds a strike to the user user from guild
 ```
 
 
