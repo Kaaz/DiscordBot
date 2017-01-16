@@ -82,7 +82,7 @@ public class CookieCommand extends AbstractCommand {
 
 	private String getFooter() {
 		return Config.EOL +
-				String.format("You can retrieve a %s every %s minutes, you don't have to retrieve them directly, I'll up to %s %s for you.",
+				String.format("You can retrieve a %s every %s minutes, you don't have to retrieve them directly, I'll save up to %s %s for you.",
 						Config.ECONOMY_CURRENCY_NAME, (int) (CBanks.SECONDS_PER_CURRENCY / 60), CBanks.CURRENCY_GIVEAWAY_MAX, Config.ECONOMY_CURRENCY_NAMES);
 	}
 }

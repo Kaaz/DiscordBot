@@ -10,6 +10,7 @@ import discordbot.modules.reddit.pojo.ImagePreview;
 import discordbot.modules.reddit.pojo.Post;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -97,8 +98,8 @@ public class RedditCommand extends AbstractCommand {
 		}
 		ImagePreview preview = post.data.getPreview();
 		if (preview != null && preview.images.size() > 0) {
-			TextChannel tc = (TextChannel) channel;
-			if (!PermissionUtil.checkPermission(tc, tc.getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
+			if (channel.getType().equals(ChannelType.TEXT) &&
+					!PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
 				return Template.get("permission_missing_attach_files");
 			}
 			for (Image image : preview.images) {
