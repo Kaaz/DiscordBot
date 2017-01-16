@@ -151,7 +151,7 @@ Database:
 execute the sql queries in the /sql/create.sql file
 
 clone the project with git  
-`git clone https://github.com/MaikWezinkhof/DiscordBot /path/to/project`  
+`git clone https://github.com/Kaaz/DiscordBot /path/to/project`  
 Go to the root of the project and install the dependencies using maven  
 `mvn install`  
 Now build the project using maven  
@@ -1157,7 +1157,7 @@ The following settings can be set globally:
 Setting name | default | description
 ---|---|---
 BOT_ENABLED | false | Enables the bot<br/> This must be set to true in order to run the bot
-BOT_AUTO_UPDATE | false | Enable automatic updates. <br/>For this to work you'll have to launch the bot though my other project<br/>https://github.com/MaikWezinkhof/ConfigurationBuilder
+BOT_AUTO_UPDATE | false | Enable automatic updates. <br/>For this to work you'll have to launch the bot though my other project<br/>https://github.com/Kaaz/ConfigurationBuilder
 BOT_NAME | "NovaBot" | the default name of the bot,
 BOT_CHANNEL_ID | "225170823898464256" | Discord channel is of the bot's own channel
 BOT_TOKEN | "mybottokenhere" | token used to login to discord
