@@ -12,13 +12,14 @@ import java.util.List;
 
 public class CBet {
 	public static final int MAX_BET_AMOUNT = 1_000_000;
+	public static final int MIN_BET_OPTIONS = 2;
 
-	public static List<OBet> findForGuild(int id) {
+	public static List<OBet> getActiveBetsForGuild(int id) {
 		List<OBet> ret = new ArrayList<>();
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT *  " +
 						"FROM bets " +
-						"WHERE guild_id = ? ", id)) {
+						"WHERE guild_id = ? AND bet_status = ? ", id, OBet.Status.ACTIVE.getId())) {
 			while (rs.next()) {
 				ret.add(fillRecord(rs));
 			}
@@ -45,6 +46,22 @@ public class CBet {
 		return t;
 	}
 
+	public static OBet getActiveBet(int guildId, int userId) {
+		OBet t = new OBet();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT *  " +
+						"FROM bets " +
+						"WHERE guild_id = ? AND owner_id= ? AND bet_status IN (?,?,?)", guildId, userId,
+				OBet.Status.PREPARING.getId(), OBet.Status.PENDING.getId(), OBet.Status.ACTIVE.getId())) {
+			if (rs.next()) {
+				t = fillRecord(rs);
+			}
+			rs.getStatement().close();
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return t;
+	}
 
 	private static OBet fillRecord(ResultSet rs) throws SQLException {
 		OBet b = new OBet();
@@ -60,10 +77,6 @@ public class CBet {
 	}
 
 	public static void delete(OBet record) {
-		if (record.id == 0) {
-			insert(record);
-			return;
-		}
 		try {
 			WebDb.get().query(
 					"DELETE FROM bets WHERE id = ? ",
@@ -89,11 +102,14 @@ public class CBet {
 			update(record);
 			return;
 		}
+		if (record.createdOn == null) {
+			record.createdOn = new Timestamp(System.currentTimeMillis());
+		}
 		try {
 			record.id = WebDb.get().insert(
-					"INSERT INTO bets(title, owner_id, guild_id, created_on, started_on, ends_at, price) " +
-							"VALUES (?,?,?,?,?,?,?)",
-					record.title, record.ownerId, record.guildId, record.createdOn, record.startedOn, record.endsAt, record.price);
+					"INSERT INTO bets(title, owner_id, guild_id, created_on, started_on, ends_at, price,bet_status) " +
+							"VALUES (?,?,?,?,?,?,?,?)",
+					record.title, record.ownerId, record.guildId, record.createdOn, record.startedOn, record.endsAt, record.price, record.status.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -105,7 +121,6 @@ public class CBet {
 		b.price = price;
 		b.guildId = guildId;
 		b.ownerId = userId;
-		b.createdOn = new Timestamp(System.currentTimeMillis());
 		insert(b);
 	}
 }

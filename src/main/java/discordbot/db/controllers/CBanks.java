@@ -87,7 +87,7 @@ public class CBanks {
 			return;
 		}
 		try {
-			WebDb.get().query("UPDATE BANKS SET current_balance = current_balance + ? WHERE id = ?", relativeAmount, bankId);
+			WebDb.get().query("UPDATE banks SET current_balance = current_balance + ? WHERE id = ?", relativeAmount, bankId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
