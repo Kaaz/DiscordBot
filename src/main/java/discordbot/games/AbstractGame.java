@@ -8,7 +8,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Random;
 
 public abstract class AbstractGame<turnType extends GameTurn> {
-	private GameState gameState;
+	private GameState gameState = GameState.OVER;
 	private User[] players;
 	private int activePlayerIndex = 0;
 	private int winnerIndex = -1;
@@ -24,6 +24,12 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	 * @return codeName of the game
 	 */
 	public abstract String getCodeName();
+
+	public boolean couldAddReactions() {
+		return GameState.READY.equals(gameState) && getReactions().length > 0;
+	}
+
+	public abstract String[] getReactions();
 
 	/**
 	 * a full version of the name, this is used to display

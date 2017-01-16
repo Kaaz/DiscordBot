@@ -48,7 +48,7 @@ public class BetCommand extends AbstractCommand {
 				"bet option edit <key> <description> //edits an option",
 				"bet refund <user>                   //refunds the user for the bet",
 				"bet cancel yesimsure                //cancel the bet & refund everyone",
-				"bet start <[1-9][mhd]>              //start now, and leave it open for x time",
+				"bet start <[1-9][mhd]>              //start with a delay eg. 30m -> 30 minutes",
 				"bet start <[1-9][mhd]> <[1-9][mhd]> //start with a delay, and leave it open for x time",
 				"",
 				"Example: bet start 10m  //starts the bet now, and lasts for 10 minutes",

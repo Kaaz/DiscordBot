@@ -9,6 +9,7 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import org.reflections.Reflections;
@@ -36,6 +37,10 @@ public class GameHandler {
 
 	public GameHandler(DiscordBot bot) {
 		this.bot = bot;
+	}
+
+	public final boolean executeReaction(User player, TextChannel channel, String rawMessage, Message targetMessage) {
+		return false;
 	}
 
 	public synchronized static void initialize() {
@@ -82,7 +87,7 @@ public class GameHandler {
 		return false;
 	}
 
-	public final void execute(User player, TextChannel channel, String rawMessage) {
+	public final void execute(User player, TextChannel channel, String rawMessage, Message targetMessage) {
 		String message = rawMessage.toLowerCase().trim();
 		if (!isInPlayMode(player, channel)) {
 			message = message.replace(DisUtil.getCommandPrefix(channel) + COMMAND_NAME, "").trim();
@@ -112,7 +117,21 @@ public class GameHandler {
 			gameMessage = showList(channel);
 		}
 		if (!gameMessage.isEmpty()) {
-			bot.out.sendAsyncMessage(channel, gameMessage);
+			if (targetMessage != null) {
+				targetMessage.editMessage(gameMessage).queue();
+			} else {
+				if (playerGames.containsKey(player.getId()) && playerGames.get(player.getId()).couldAddReactions()) {
+					bot.out.sendAsyncMessage(channel, gameMessage, msg -> {
+								for (String reaction : playerGames.get(player.getId()).getReactions()) {
+									msg.addReaction(reaction).queue();
+								}
+							}
+					);
+
+				} else {
+					bot.out.sendAsyncMessage(channel, gameMessage);
+				}
+			}
 		}
 	}
 

@@ -32,7 +32,8 @@ public class db_28_to_29 implements IDbVersion {
 						" id INT NOT NULL AUTO_INCREMENT, " +
 						" bet_id INT NOT NULL, " +
 						" description VARCHAR(128), " +
-						" CONSTRAINT bet_options_id_bet_id_pk PRIMARY KEY (id, bet_id) )"
+						" CONSTRAINT bet_options_id_bet_id_pk PRIMARY KEY (id, bet_id) )",
+				"ALTER TABLE bets ADD bet_status INT DEFAULT 0 NOT NULL"
 		};
 	}
 }

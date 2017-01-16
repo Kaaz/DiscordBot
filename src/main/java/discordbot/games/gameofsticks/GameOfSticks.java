@@ -27,6 +27,13 @@ public class GameOfSticks extends AbstractGame<GoSTurn> {
 	}
 
 	@Override
+	public String[] getReactions() {
+		return new String[]{
+				"1", "2", "3"
+		};
+	}
+
+	@Override
 	public String getFullname() {
 		return "Game of sticks";
 	}

@@ -30,6 +30,13 @@ public class ConnectFourGame extends AbstractGame<Connect4Turn> {
 	}
 
 	@Override
+	public String[] getReactions() {
+		return new String[]{
+				"1", "2", "3", "4", "5", "6", "7", "8", "9"
+		};
+	}
+
+	@Override
 	public String getFullname() {
 		return "Connect Four";
 	}

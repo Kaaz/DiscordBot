@@ -40,6 +40,11 @@ public class TicTacToeGame extends AbstractGame<TicGameTurn> {
 	}
 
 	@Override
+	public String[] getReactions() {
+		return new String[0];
+	}
+
+	@Override
 	public String getFullname() {
 		return "Tic tac toe";
 	}

@@ -393,7 +393,7 @@ public class DiscordBot {
 			return;
 		}
 		if (gameHandler.isGameInput(channel, author, message.getRawContent().toLowerCase())) {
-			gameHandler.execute(author, channel, message.getRawContent());
+			gameHandler.execute(author, channel, message.getRawContent(), null);
 			return;
 		}
 		if (CommandHandler.isCommand(channel, message.getRawContent(), mentionMe, mentionMeAlias)) {
