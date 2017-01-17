@@ -19,7 +19,7 @@ public class JDAEventManager implements IEventManager {
 
 	public JDAEventManager(BotContainer container) {
 		this.container = container;
-		executor = Executors.newFixedThreadPool(10);
+		executor = Executors.newCachedThreadPool();
 	}
 
 	@Override
@@ -48,10 +48,11 @@ public class JDAEventManager implements IEventManager {
 			container.reportError(new Exception("NO EVENT MANAGER"), "JDAEventManager", "is kill");
 			return;
 		}
+		final List<Object> cachedListeners = getRegisteredListeners();
 		executor.submit(() -> {
-			for (EventListener listener : listeners) {
+			for (Object listener : cachedListeners) {
 				try {
-					listener.onEvent(event);
+					((EventListener) listener).onEvent(event);
 				} catch (Exception e) {
 					container.reportError(e, "JDAEvent", event.getClass().getName());
 					e.printStackTrace();
