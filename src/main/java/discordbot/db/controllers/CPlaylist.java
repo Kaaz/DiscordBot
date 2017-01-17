@@ -40,6 +40,7 @@ public class CPlaylist {
 		OPlaylist globalList = findBy(0, 0, "default");
 		if (globalList.id == 0) {
 			globalList.title = "Global";
+			globalList.code = "default";
 			insert(globalList);
 		}
 		return globalList;
