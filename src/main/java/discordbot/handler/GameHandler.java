@@ -120,17 +120,17 @@ public class GameHandler {
 			if (targetMessage != null) {
 				targetMessage.editMessage(gameMessage).queue();
 			} else {
-				if (playerGames.containsKey(player.getId()) && playerGames.get(player.getId()).couldAddReactions()) {
-					bot.out.sendAsyncMessage(channel, gameMessage, msg -> {
-								for (String reaction : playerGames.get(player.getId()).getReactions()) {
-									msg.addReaction(reaction).queue();
-								}
-							}
-					);
-
-				} else {
+//				if (playerGames.containsKey(player.getId()) && playerGames.get(player.getId()).couldAddReactions()) {
+//					bot.out.sendAsyncMessage(channel, gameMessage, msg -> {
+//								for (String reaction : playerGames.get(player.getId()).getReactions()) {
+//									msg.addReaction(reaction).queue();
+//								}
+//							}
+//					);
+//
+//				} else {
 					bot.out.sendAsyncMessage(channel, gameMessage);
-				}
+//				}
 			}
 		}
 	}
