@@ -142,9 +142,9 @@ public class CUser {
 	public static void insert(OUser record) {
 		try {
 			record.id = WebDb.get().insert(
-					"INSERT INTO users(discord_id,commands_used, name,banned, permission_mask) " +
-							"VALUES (?,?,?,?,?)",
-					record.discord_id, record.commandsUsed, record.name, record.banned, record.getEncodedPermissions());
+					"INSERT INTO users(discord_id,commands_used, name,banned, permission_mask, last_currency_retrieval) " +
+							"VALUES (?,?,?,?,?,?)",
+					record.discord_id, record.commandsUsed, record.name, record.banned, record.getEncodedPermissions(), System.currentTimeMillis() / 1000L);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
