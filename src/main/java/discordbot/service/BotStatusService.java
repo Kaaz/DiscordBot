@@ -86,7 +86,7 @@ public class BotStatusService extends AbstractService {
 			String fallback = "Feedback @ https://discord.gg/eaywDDt | #%s";
 			inviteChannel.getInvites().queue(invites -> {
 				if (invites != null && !invites.isEmpty()) {
-					setGameOnShards(bot, "Feedback @ https://discord.gg/" + invites.get(0).getCode()+" | %s");
+					setGameOnShards(bot, "Feedback @ https://discord.gg/" + invites.get(0).getCode() + " | %s");
 				} else {
 					setGameOnShards(bot, fallback);
 				}

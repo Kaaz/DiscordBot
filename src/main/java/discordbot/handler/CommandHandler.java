@@ -52,6 +52,7 @@ public class CommandHandler {
 	private static final Map<String, String> customCommands = new ConcurrentHashMap<>();
 	private static final Map<Integer, Map<String, String>> guildCommands = new ConcurrentHashMap<>();
 	private static final Map<Integer, Map<String, Map<String, Boolean>>> commandBlacklist = new ConcurrentHashMap<>();
+	public final static String ALL_COMMANDS = "all-commands";
 
 	/**
 	 * checks if the the message in channel is a command
@@ -278,11 +279,17 @@ public class CommandHandler {
 			if (commandBlacklist.get(guildId).get(channelId).containsKey(commandName)) {
 				return commandBlacklist.get(guildId).get(channelId).get(commandName);
 			}
+			if (commandBlacklist.get(guildId).get(channelId).containsKey(ALL_COMMANDS)) {
+				return commandBlacklist.get(guildId).get(channelId).get(ALL_COMMANDS);
+			}
 			return false;
 		}
 		if (commandBlacklist.get(guildId).containsKey("0")) {
 			if (commandBlacklist.get(guildId).get("0").containsKey(commandName)) {
 				return commandBlacklist.get(guildId).get("0").get(commandName);
+			}
+			if (commandBlacklist.get(guildId).get("0").containsKey(ALL_COMMANDS)) {
+				return commandBlacklist.get(guildId).get("0").get(ALL_COMMANDS);
 			}
 			return false;
 		}

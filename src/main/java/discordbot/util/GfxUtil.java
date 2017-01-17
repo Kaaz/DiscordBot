@@ -39,4 +39,12 @@ public class GfxUtil {
 		g.setColor(color);
 		g.drawString(text, x, y);
 	}
+
+	/**
+	 * @param percentage 0.0 - 1.0
+	 * @return color from green to red
+	 */
+	public static Color getThreatLevel(double percentage) {
+		return Color.getHSBColor((float) (1f - percentage) * .36f, .9f, 0.9f);
+	}
 }

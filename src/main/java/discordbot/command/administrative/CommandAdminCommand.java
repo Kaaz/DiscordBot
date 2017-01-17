@@ -55,6 +55,8 @@ public class CommandAdminCommand extends AbstractCommand {
 		return new String[]{
 				"ca <command> [enable/disable]               //enables/disables commands in the whole guild",
 				"ca <command> [enable/disable] [#channel]    //enables/disables commands in a channel. This overrides the above",
+				"ca all-commands [enable/disable]            //disable/enable all (disable-able commands)",
+				"ca all-commands [enable/disable] [#channel] //disable/enable all commands in that channel",
 				"",
 				"ca resetchannel [#channel]                  //resets the overrides for a channel",
 				"ca resetallchannels                         //resets the overrides for all channels",
@@ -191,11 +193,17 @@ public class CommandAdminCommand extends AbstractCommand {
 			return Template.get("command_invalid_use");
 		}
 		AbstractCommand command = CommandHandler.getCommand(args[0].toLowerCase());
-		if (command == null) {
-			return Template.get("command_blacklist_command_not_found", args[0]);
-		}
-		if (!command.canBeDisabled()) {
-			return Template.get("command_blacklist_not_blacklistable", args[0]);
+		String commandName;
+		if (args[0].equals("all-commands")) {
+			commandName = args[0];
+		} else {
+			if (command == null) {
+				return Template.get("command_blacklist_command_not_found", args[0]);
+			}
+			if (!command.canBeDisabled()) {
+				return Template.get("command_blacklist_not_blacklistable", args[0]);
+			}
+			commandName = command.getCommand();
 		}
 		if (!args[1].equals("enable") && !args[1].equals("disable")) {
 			return Template.get("command_invalid_use");
@@ -213,17 +221,17 @@ public class CommandAdminCommand extends AbstractCommand {
 			}
 		}
 		if (blacklist) {
-			CBlacklistCommand.insertOrUpdate(guildId, command.getCommand(), channelId, true);
+			CBlacklistCommand.insertOrUpdate(guildId, commandName, channelId, true);
 			CommandHandler.reloadBlackListFor(guildId);
-			return Template.get("command_blacklist_command_disabled", command.getCommand());
+			return Template.get("command_blacklist_command_disabled", commandName);
 		} else {
 			if (!channelId.equals("0")) {
-				CBlacklistCommand.insertOrUpdate(guildId, command.getCommand(), channelId, false);
+				CBlacklistCommand.insertOrUpdate(guildId, commandName, channelId, false);
 			} else {
-				CBlacklistCommand.delete(guildId, command.getCommand(), channelId);
+				CBlacklistCommand.delete(guildId, commandName, channelId);
 			}
 			CommandHandler.reloadBlackListFor(guildId);
-			return Template.get("command_blacklist_command_enabled", command.getCommand());
+			return Template.get("command_blacklist_command_enabled", commandName);
 		}
 	}
 }

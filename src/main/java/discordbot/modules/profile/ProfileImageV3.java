@@ -69,6 +69,11 @@ public class ProfileImageV3 extends ProfileImage {
 		GfxUtil.addCenterText("" + health, score, 31, 246, g, new Color(0x5c7e32));//health
 		GfxUtil.addCenterText("" + attack, score, 134, 246, g, new Color(0x5c7e32));//attack
 		GfxUtil.addCenterText("" + defense, score, 237, 246, g, new Color(0x5c7e32));//defense
+//		int w = 3;
+//		for (int i = 0; i <= 100; i++) {
+//			g.setColor(GfxUtil.getThreatLevel(i / 100d));
+//			g.fillRect(i * w, 0, w, 200);
+//		}
 		File file = new File("profile_v3_" + getUser().getId() + ".png");
 		ImageIO.write(result, "png", file);
 		return file;
