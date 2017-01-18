@@ -2,10 +2,12 @@ package discordbot.command.economy;
 
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
+import discordbot.db.controllers.CBanks;
 import discordbot.db.controllers.CBet;
 import discordbot.db.controllers.CBetOption;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CUser;
+import discordbot.db.model.OBank;
 import discordbot.db.model.OBet;
 import discordbot.db.model.OBetOption;
 import discordbot.handler.Template;
@@ -48,11 +50,11 @@ public class BetCommand extends AbstractCommand {
 				"bet option edit <key> <description> //edits an option",
 				"bet refund <user>                   //refunds the user for the bet",
 				"bet cancel yesimsure                //cancel the bet & refund everyone",
-				"bet start <[1-9][mhd]>              //start with a delay eg. 30m -> 30 minutes",
-				"bet start <[1-9][mhd]> <[1-9][mhd]> //start with a delay, and leave it open for x time",
+				"bet open <[1-9][mhd]>               //opens the bet for a limited time",
+				"bet open <[1-9][mhd]> <[1-9][mhd]>  //opens the bet with a delay, and leave it open for x time",
 				"",
-				"Example: bet start 10m  //starts the bet now, and lasts for 10 minutes",
-				"Example: bet start 2h 1d //start in 1 hour, lasts for 1 day",
+				"Example: bet open 10m    //open the bet now, lasts for 10 minutes",
+				"Example: bet start 2h 1d //opens the bet in 2 hours, and keeps it open for 2 days",
 		};
 	}
 
@@ -70,12 +72,13 @@ public class BetCommand extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		TextChannel tc = (TextChannel) channel;
 		Guild guild = tc.getGuild();
+		OBank bank = CBanks.findBy(author.getId());
 		int guildId = CGuild.getCachedId(guild.getId());
 		if (args.length == 0) {
 			String ret = "Bet overview \n\n";
 			List<OBet> activeBets = CBet.getActiveBetsForGuild(guildId);
 			if (activeBets.isEmpty()) {
-				ret = "There are no active bets at the moment";
+				ret = Template.get("command_bet_no_bets");
 			}
 			for (OBet bet : activeBets) {
 				ret += String.format("\\#%d - %s\n", bet.id, bet.title);
@@ -92,8 +95,9 @@ public class BetCommand extends AbstractCommand {
 					return Template.get("command_invalid_use");
 				}
 				int amount = Misc.parseInt(args[1], 0);
-				if (amount <= 0 || amount >= CBet.MAX_BET_AMOUNT) {
-					return "plz between 1 and <" + CBet.MAX_BET_AMOUNT;
+				long maxBetAmount = Math.min(CBet.MAX_BET_AMOUNT, bank.currentBalance);
+				if (amount <= 0 || amount >= maxBetAmount) {
+					return Template.get("command_bet_amount_between", 1, maxBetAmount);
 				}
 				String title = Misc.joinStrings(args, 2);
 				if (title.length() > 128) {
@@ -101,20 +105,19 @@ public class BetCommand extends AbstractCommand {
 				}
 				OBet record = CBet.getActiveBet(guildId, CUser.getCachedId(author.getId()));
 				if (!record.status.equals(OBet.Status.PREPARING)) {
-					return "You can only edit a bet when its in the preparing phase";
+					return Template.get("command_bet_already_preparing");
 				}
-				guild.getManagerUpdatable();
 				record.title = title;
 				record.price = amount;
 				record.guildId = guildId;
 				record.ownerId = CUser.getCachedId(author.getId());
 				CBet.insert(record);
-				return "gg wp, new bet created or updated";
+				return Template.get("command_bet_create_success");
 			case "option":
 			case "options":
 				OBet myBet = CBet.getActiveBet(guildId, CUser.getCachedId(author.getId()));
 				if (!myBet.status.equals(OBet.Status.PREPARING)) {
-					return "You can only edit a bet when its in the preparing phase";
+					return Template.get("command_bet_edit_prepare_only");
 				}
 				if (args.length == 1) {
 					return printWipBet(myBet);
@@ -126,7 +129,7 @@ public class BetCommand extends AbstractCommand {
 					case "edit":
 						OBetOption option = CBetOption.findById(myBet.id, Misc.parseInt(args[2], -1));
 						if (option.id == 0) {
-							return "can't find that option";
+							return Template.get("command_bet_option_not_found");
 						}
 						if (args.length < 4) {
 							return Template.get("command_invalid_use");
@@ -140,7 +143,7 @@ public class BetCommand extends AbstractCommand {
 					case "remove":
 						OBetOption toRemove = CBetOption.findById(myBet.id, Misc.parseInt(args[2], -1));
 						if (toRemove.id == 0) {
-							return "can't find that option";
+							return Template.get("command_bet_option_not_found");
 						}
 						CBetOption.delete(toRemove);
 						return printWipBet(myBet);
