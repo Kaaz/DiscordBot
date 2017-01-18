@@ -7,6 +7,7 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.Emojibet;
+import discordbot.util.Misc;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -61,7 +62,7 @@ public class DebugCommand extends AbstractCommand {
 		boolean value = false;
 		boolean updating = args.length > 1;
 		if (updating) {
-			value = args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("t") || args[1].equalsIgnoreCase("y");
+			value = Misc.isFuzzyTrue(args[1]);
 		}
 		switch (args[0].toLowerCase()) {
 			case "yt":

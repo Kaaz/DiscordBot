@@ -45,6 +45,6 @@ public class GfxUtil {
 	 * @return color from green to red
 	 */
 	public static Color getThreatLevel(double percentage) {
-		return Color.getHSBColor((float) (1f - percentage) * .36f, .9f, 0.9f);
+		return Color.getHSBColor((float) (1f - percentage) * .35f, 1, 1);
 	}
 }

@@ -10,9 +10,14 @@ import java.util.Random;
 public abstract class AbstractGame<turnType extends GameTurn> {
 	private GameState gameState = GameState.OVER;
 	private User[] players;
-	private int activePlayerIndex = 0;
-	private int winnerIndex = -1;
+	private volatile int activePlayerIndex = 0;
+	private volatile int winnerIndex = -1;
 	private String lastPrefix = Config.BOT_COMMAND_PREFIX;
+	private volatile long lastTurnTimestamp = System.currentTimeMillis();
+
+	public long getLastTurnTimestamp() {
+		return lastTurnTimestamp;
+	}
 
 	public String getLastPrefix() {
 		return lastPrefix;
@@ -117,6 +122,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 		}
 		lastPrefix = turnInfo.getCommandPrefix();
 		endTurn();
+		lastTurnTimestamp = System.currentTimeMillis();
 		return true;
 	}
 
@@ -162,7 +168,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	 * @return is it players turn?
 	 */
 	public boolean isTurnOf(User player) {
-		return players[activePlayerIndex].equals(player);
+		return players[activePlayerIndex].getId().equals(player.getId());
 	}
 
 	/**

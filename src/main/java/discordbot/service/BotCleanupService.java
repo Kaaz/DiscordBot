@@ -47,6 +47,7 @@ public class BotCleanupService extends AbstractService {
 			}
 			shard.commandReactionHandler.cleanCache();
 			shard.chatBotHandler.cleanCache();
+			shard.gameHandler.cleanCache();
 		}
 		if (runCount < 60) {
 			return;
