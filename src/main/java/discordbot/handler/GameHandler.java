@@ -74,7 +74,6 @@ public class GameHandler {
 			return false;
 		}
 		final String input = Misc.emoteToNumber(reaction.getEmote().getName());
-		System.out.println(input);
 		channel.getMessageById(messageId).queue(message ->
 				execute(player, (TextChannel) channel, input, message)
 		);
@@ -94,7 +93,6 @@ public class GameHandler {
 				gameClassMap.put(abstractGame.getCodeName(), gameClass);
 				gameInfoMap.put(abstractGame.getCodeName(), abstractGame);
 			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-				System.out.println(e.getMessage());
 				e.printStackTrace();
 			}
 		}
