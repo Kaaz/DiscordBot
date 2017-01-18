@@ -214,6 +214,9 @@ public class DiscordBot {
 
 	public synchronized TextChannel getMusicChannel(String guildId) {
 		Guild guild = client.getGuildById(guildId);
+		if (guild == null) {
+			return null;
+		}
 		if (!musicChannels.containsKey(guild.getId())) {
 			String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingMusicChannel.class);
 			TextChannel channel;

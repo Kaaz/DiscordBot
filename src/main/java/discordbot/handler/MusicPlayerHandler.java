@@ -299,13 +299,10 @@ public class MusicPlayerHandler {
 				if (!isUpdateChannelTitle()) {
 					musicChannel.getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).queue();
 				}
-			} else {
-				GuildSettings.get(guildId).set(null, SettingMusicChannelTitle.class, "false");
 			}
 		}
 		if (!messageType.equals("off") && record.id > 0) {
 			if (musicChannel == null || !musicChannel.canTalk()) {
-				GuildSettings.get(guildId).set(null, SettingMusicPlayingMessage.class, "off");
 				return;
 			}
 			final long deleteAfter = Math.min(Math.max(currentSongLength * 1000L, 60_000L), 7200_000L);
