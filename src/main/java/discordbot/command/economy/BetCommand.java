@@ -30,10 +30,10 @@ public class BetCommand extends AbstractCommand {
 		return "bet";
 	}
 
-//	@Override
-//	public boolean isEnabled() {
-//		return false;
-//	}
+	@Override
+	public boolean isEnabled() {
+		return false;
+	}
 
 	@Override
 	public String[] getUsage() {
