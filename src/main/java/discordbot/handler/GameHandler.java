@@ -9,7 +9,10 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.MessageReaction;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import org.reflections.Reflections;
@@ -18,10 +21,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class GameHandler {
 	//amount of invalid input attempts before auto-leaving playmode
@@ -31,6 +36,7 @@ public class GameHandler {
 	private static final Map<String, AbstractGame> gameInfoMap = new HashMap<>();
 	private static boolean initialized = false;
 	private final DiscordBot bot;
+	private final Map<String, String> reactionMessages = new ConcurrentHashMap<>();
 	private Map<String, AbstractGame> playerGames = new ConcurrentHashMap<>();
 	private Map<String, String> playersToGames = new ConcurrentHashMap<>();
 	private Map<String, PlayData> usersInPlayMode = new ConcurrentHashMap<>();
@@ -39,8 +45,40 @@ public class GameHandler {
 		this.bot = bot;
 	}
 
-	public final boolean executeReaction(User player, TextChannel channel, String rawMessage, Message targetMessage) {
-		return false;
+	public void cleanCache() {
+
+		long maxAge = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(30);
+		Iterator<Map.Entry<String, AbstractGame>> iterator = playerGames.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<String, AbstractGame> game = iterator.next();
+			if (game.getValue().getLastTurnTimestamp() < maxAge) {
+				playerGames.remove(game.getKey());
+				reactionMessages.remove(Misc.getKeyByValue(reactionMessages, game.getKey()));
+				String otherplayer = Misc.getKeyByValue(playersToGames, game.getKey());
+				if (otherplayer != null) {
+					playersToGames.remove(otherplayer);
+				}
+				playersToGames.remove(game.getKey());
+			}
+		}
+	}
+
+	public final boolean executeReaction(User player, MessageChannel channel, MessageReaction reaction, String messageId) {
+		if (!channel.getType().equals(ChannelType.TEXT) || !reactionMessages.containsKey(messageId)) {
+			return false;
+		}
+		if (!isInAGame(player.getId())) {
+			return false;
+		}
+		if (!getGame(player.getId()).isTurnOf(player)) {
+			return false;
+		}
+		final String input = Misc.emoteToNumber(reaction.getEmote().getName());
+		System.out.println(input);
+		channel.getMessageById(messageId).queue(message ->
+				execute(player, (TextChannel) channel, input, message)
+		);
+		return true;
 	}
 
 	public synchronized static void initialize() {
@@ -120,17 +158,19 @@ public class GameHandler {
 			if (targetMessage != null) {
 				targetMessage.editMessage(gameMessage).queue();
 			} else {
-//				if (playerGames.containsKey(player.getId()) && playerGames.get(player.getId()).couldAddReactions()) {
-//					bot.out.sendAsyncMessage(channel, gameMessage, msg -> {
-//								for (String reaction : playerGames.get(player.getId()).getReactions()) {
-//									msg.addReaction(reaction).queue();
-//								}
-//							}
-//					);
-//
-//				} else {
+				if (playerGames.containsKey(player.getId()) && playerGames.get(player.getId()).couldAddReactions()) {
+					bot.out.sendAsyncMessage(channel, gameMessage, msg -> {
+								reactionMessages.put(msg.getId(), player.getId());
+								for (String reaction : playerGames.get(player.getId()).getReactions()) {
+									msg.addReaction(Misc.numberToEmote(Integer.parseInt(reaction))).queue(
+									);
+								}
+							}
+					);
+
+				} else {
 					bot.out.sendAsyncMessage(channel, gameMessage);
-//				}
+				}
 			}
 		}
 	}
@@ -325,6 +365,7 @@ public class GameHandler {
 		String gamekey = Misc.getKeyByValue(playerGames, getGame(playerId));
 		playerGames.remove(gamekey);
 		playersToGames.remove(playerId);
+		reactionMessages.remove(gamekey);
 		String otherplayer = Misc.getKeyByValue(playersToGames, gamekey);
 		if (otherplayer != null) {
 			playersToGames.remove(otherplayer);

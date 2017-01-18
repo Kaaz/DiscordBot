@@ -70,7 +70,7 @@ public class DiscordBot {
 	public MusicReactionHandler musicReactionHandler = null;
 	public CommandReactionHandler commandReactionHandler = null;
 	private AutoReplyHandler autoReplyhandler;
-	private GameHandler gameHandler = null;
+	public GameHandler gameHandler = null;
 	private volatile boolean isReady = false;
 	private int shardId;
 	private BotContainer container;

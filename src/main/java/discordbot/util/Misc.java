@@ -88,6 +88,15 @@ public class Misc {
 		return ":x:";
 	}
 
+	public static String emoteToNumber(String emote) {
+		for (int i = 0; i < numberToEmote.length; i++) {
+			if (numberToEmote[i].equals(emote)) {
+				return "" + i;
+			}
+		}
+		return "0";
+	}
+
 	/**
 	 * @param items items in the controllers
 	 * @return formatted controllers
