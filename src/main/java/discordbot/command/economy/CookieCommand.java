@@ -76,7 +76,7 @@ public class CookieCommand extends AbstractCommand {
 		}
 		user.lastCurrencyRetrieval = lastCurrencyRetrieval;
 		CUser.update(user);
-		return String.format("you get %s cookies!", income) +
+		return String.format("you get %s %s!", income, income == 1 ? Config.ECONOMY_CURRENCY_NAME : Config.ECONOMY_CURRENCY_NAMES) +
 				getFooter();
 	}
 
