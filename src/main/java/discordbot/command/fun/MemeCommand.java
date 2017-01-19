@@ -120,6 +120,7 @@ public class MemeCommand extends AbstractCommand {
 			HttpResponse<String> theImg = response.get();
 			BufferedImage image = ImageIO.read(theImg.getRawBody());
 			File memeFile = new File("tmp/meme_" + channel.getId() + ".jpg");
+			memeFile.getParentFile().mkdirs();
 			if (memeFile.exists()) {
 				memeFile.delete();
 			}

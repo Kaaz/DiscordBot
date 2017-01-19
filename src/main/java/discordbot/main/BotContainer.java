@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -237,6 +238,7 @@ public class BotContainer {
 			return;
 		}
 		if (!status.equals(JDA.Status.SHUTTING_DOWN)) {
+			NumberFormat.getIntegerInstance().setMinimumIntegerDigits(3);
 			int length = 1 + (int) Math.floor(Math.log10(shards.length));
 			channel.sendMessage(String.format(Emojibet.SHARD_ICON + " `%0" + length + "d/%0" + length + "d` | ~~%s~~ -> %s", shardId, shards.length, oldStatus.toString(), status.toString())).queue();
 		}
