@@ -6,6 +6,7 @@ import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
+import discordbot.util.Misc;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -106,7 +107,7 @@ public class PurgeComand extends AbstractCommand {
 				toDeleteFrom = guild.getSelfMember();
 			} else if (args[0].matches("^\\d+$")) {
 				deleteAll = true;
-				deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[0])) + 1;
+				deleteLimit = Math.min(deleteLimit, Misc.parseInt(args[0], deleteLimit)) + 1;
 			} else {
 				toDeleteFrom = DisUtil.findUserIn((TextChannel) channel, args[0]);
 				if (args.length >= 2 && args[1].matches("^\\d+$")) {

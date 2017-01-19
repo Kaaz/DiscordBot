@@ -47,9 +47,10 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"slot      //play",
-				"slot play //play the game",
-				"slot info //info about payout"
+				"slot              //play",
+				"slot play         //play the game",
+				"slot play cookies //play the game for cookies",
+				"slot info         //info about payout"
 		};
 	}
 
