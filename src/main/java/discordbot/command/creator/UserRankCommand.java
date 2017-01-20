@@ -105,15 +105,24 @@ public class UserRankCommand extends AbstractCommand {
 					return Template.get("command_userrank_rank", user.getName(), CRank.findById(userRank.rankId).codeName);
 				}
 			} else if (args.length == 2 && !args[1].equals("perm")) {
-				ORank newRank = CRank.findBy(args[1]);
-				if (newRank.id == 0) {
+				SimpleRank targetRank = SimpleRank.findRank(args[1]);
+				if (targetRank == null) {
 					return Template.get("command_userrank_rank_not_exists", args[1]);
 				}
+				if (!authorRank.isHigherThan(targetRank)) {
+					return Template.get("no_permission");
+				}
+				ORank targetDbRank = CRank.findBy(args[1]);
+				if (targetDbRank.id == 0) {
+					targetDbRank.codeName = targetRank.name();
+					targetDbRank.fullName = targetRank.name().toLowerCase();
+					CRank.insert(targetDbRank);
+				}
 				OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId(), user.getName()));
-				userRank.rankId = newRank.id;
+				userRank.rankId = targetDbRank.id;
 				CUserRank.insertOrUpdate(userRank);
 				SecurityHandler.initialize();
-				return Template.get("command_userrank_rank", user.getName(), newRank.codeName);
+				return Template.get("command_userrank_rank", user.getName(), targetDbRank.codeName);
 			}
 
 			if (args[1].equals("perm")) {

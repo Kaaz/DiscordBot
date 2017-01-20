@@ -43,7 +43,7 @@ public class ExitCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		SimpleRank rank = bot.security.getSimpleRank(author);
-		if (rank.isAtLeast(SimpleRank.CREATOR)) {
+		if (rank.isAtLeast(SimpleRank.SYSTEM_ADMIN)) {
 			bot.out.sendAsyncMessage(channel, "I am being killed :sob: farewell world! :wave: ", message -> {
 				Launcher.stop(ExitCode.STOP);
 			});

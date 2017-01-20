@@ -46,7 +46,7 @@ public class SendFileCommand extends AbstractCommand {
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		SimpleRank rank = bot.security.getSimpleRank(author);
-		if (!rank.isAtLeast(SimpleRank.CREATOR)) {
+		if (!rank.isAtLeast(SimpleRank.SYSTEM_ADMIN)) {
 			return Template.get(channel, "command_no_permission");
 		}
 		if (args.length == 0) {

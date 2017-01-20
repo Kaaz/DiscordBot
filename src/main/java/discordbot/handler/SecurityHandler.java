@@ -31,6 +31,7 @@ public class SecurityHandler {
 	private static HashSet<String> bannedUsers;
 	private static HashSet<String> contributors;
 	private static HashSet<String> botAdmins;
+	private static HashSet<String> SystemAdmins;
 
 	public SecurityHandler() {
 	}
@@ -43,12 +44,13 @@ public class SecurityHandler {
 		List<OGuild> bannedList = CGuild.getBannedGuilds();
 		bannedGuilds.addAll(bannedList.stream().map(guild -> guild.discord_id).collect(Collectors.toList()));
 		CUser.addBannedUserIds(bannedUsers);
-		bannedGuilds.addAll(bannedList.stream().map(guild -> guild.discord_id).collect(Collectors.toList()));
 
 		List<OUserRank> contributor = CUserRank.getUsersWith(CRank.findBy("CONTRIBUTOR").id);
 		List<OUserRank> bot_admin = CUserRank.getUsersWith(CRank.findBy("BOT_ADMIN").id);
+		List<OUserRank> system_admin = CUserRank.getUsersWith(CRank.findBy("SYSTEM_ADMIN").id);
 		contributors.addAll(contributor.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
 		botAdmins.addAll(bot_admin.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
+		SystemAdmins.addAll(system_admin.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
 	}
 
 	public boolean isBanned(User user) {
@@ -125,6 +127,9 @@ public class SecurityHandler {
 		}
 		if (bannedUsers.contains(user.getId())) {
 			return SimpleRank.BANNED_USER;
+		}
+		if (SystemAdmins.contains(user.getId())) {
+			return SimpleRank.SYSTEM_ADMIN;
 		}
 		if (guild != null) {
 			if (guild.getOwner().equals(user)) {
