@@ -38,7 +38,7 @@ public class CookieCommand extends AbstractCommand {
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"candy",
+				"candy","cookies"
 		};
 	}
 
