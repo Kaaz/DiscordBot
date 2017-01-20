@@ -6,10 +6,10 @@ import discordbot.main.Config;
 import discordbot.modules.github.GitHub;
 import discordbot.modules.github.GithubConstants;
 import discordbot.modules.github.pojo.RepositoryCommit;
+import discordbot.util.GfxUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.awt.*;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,11 +86,14 @@ public class GithubService extends AbstractService {
 		}
 		if (commitCount > 0) {
 			EmbedBuilder embed = new EmbedBuilder();
-			embed.setColor(new Color(0x4FA1FF));
+			embed.setColor(GfxUtil.getAverageColor(committerAvatar));
 			embed.setAuthor(committerName, committerUrl, committerAvatar);
-			embed.setTitle("Changes to my code");
-			String description = "There have been **" + commitCount + "** commits to my code " + Config.EOL + Config.EOL;
-			description += "** Hash**          **Description**" + Config.EOL;
+			if (commitCount == 1) {
+				embed.setTitle("There has been a commit to my repository");
+			} else {
+				embed.setTitle(String.format("There have been **%s** commits to my repository", commitCount));
+			}
+			String description = "** Hash**          **Description**" + Config.EOL;
 			int maxCharsPerline = 65;
 			for (Map.Entry<String, String> entry : commitMap.entrySet()) {
 				String cmt = String.format("[`%s`](" + commitUrl + ")", entry.getKey().substring(0, 7), gitUser, gitRepo, entry.getKey());

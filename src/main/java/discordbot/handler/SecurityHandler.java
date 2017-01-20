@@ -41,6 +41,7 @@ public class SecurityHandler {
 		bannedUsers = new HashSet<>();
 		contributors = new HashSet<>();
 		botAdmins = new HashSet<>();
+		SystemAdmins = new HashSet<>();
 		List<OGuild> bannedList = CGuild.getBannedGuilds();
 		bannedGuilds.addAll(bannedList.stream().map(guild -> guild.discord_id).collect(Collectors.toList()));
 		CUser.addBannedUserIds(bannedUsers);
