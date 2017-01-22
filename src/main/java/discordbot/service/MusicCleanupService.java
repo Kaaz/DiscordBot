@@ -43,14 +43,14 @@ public class MusicCleanupService extends AbstractService {
 
 	@Override
 	public void run() {
-		long olderThan = (System.currentTimeMillis() / 1000L) - TimeUnit.DAYS.toSeconds(7);
+		long olderThan = (System.currentTimeMillis() / 1000L) - TimeUnit.DAYS.toSeconds(14);
 		try (ResultSet rs = WebDb.get().select("SELECT m.* " +
 				" FROM music m " +
 				" LEFT JOIN playlist_item pi ON pi.music_id = m.id " +
 				" LEFT JOIN playlist pl ON pl.id = pi.playlist_id " +
 				" LEFT JOIN guilds g ON g.id = pl.id AND g.active = 1 " +
 				" WHERE g.id IS NULL " +
-				" AND  last_manual_playdate < ? " +
+				" AND  m.lastplaydate < ? " +
 				" AND m.file_exists = 1 " +
 				" ORDER BY last_manual_playdate DESC", olderThan)) {
 			while (rs.next()) {
