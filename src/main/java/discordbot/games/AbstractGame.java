@@ -15,6 +15,10 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 	private String lastPrefix = Config.BOT_COMMAND_PREFIX;
 	private volatile long lastTurnTimestamp = System.currentTimeMillis();
 
+	public boolean isListed() {
+		return true;
+	}
+
 	public long getLastTurnTimestamp() {
 		return lastTurnTimestamp;
 	}

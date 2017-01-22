@@ -16,9 +16,15 @@ public class Game2048 extends AbstractGame<Game2048Turn> {
 		reset();
 	}
 
+	@Override
+	public boolean isListed() {
+		return false;
+	}
+
 	public void reset() {
 		super.reset();
 		grid = new Grid(GRID_SIZE);
+		grid.addRandomTwo();
 	}
 
 	@Override
@@ -29,7 +35,7 @@ public class Game2048 extends AbstractGame<Game2048Turn> {
 	@Override
 	public String[] getReactions() {
 		return new String[]{
-				"up", "down", "left", "right"
+				"left", "up", "down", "right"
 		};
 	}
 
@@ -45,23 +51,51 @@ public class Game2048 extends AbstractGame<Game2048Turn> {
 
 	@Override
 	protected boolean isTheGameOver() {
-
-		return false;
+		return !grid.canMove(true) && !grid.canMove(false);
 	}
 
 	@Override
 	public boolean isValidMove(User player, Game2048Turn turnInfo) {
-		return !turnInfo.getDirection().equals(Game2048Direction.UNKNOWN);
+		switch (turnInfo.getDirection()) {
+			case LEFT:
+			case RIGHT:
+				return grid.canMove(true);
+			case UP:
+			case DOWN:
+				return grid.canMove(false);
+			default:
+				return false;
+		}
 	}
 
 	@Override
 	protected void doPlayerMove(User player, Game2048Turn turnInfo) {
-
+		switch (turnInfo.getDirection()) {
+			case LEFT:
+				grid.moveLeft();
+				break;
+			case RIGHT:
+				grid.moveRight();
+				break;
+			case UP:
+				grid.moveUp();
+				break;
+			case DOWN:
+				grid.moveDown();
+				break;
+		}
+		grid.addRandomTwo();
 	}
 
 	@Override
 	public String toString() {
-		String ret = "A 2048 game, score as high as you can!." + Config.EOL;
+		String ret = "A 2048 game, score as high as you can!" + Config.EOL;
+		ret += getPlayer(0).getAsMention() + "'s game\n";
+		ret += "Score: " + grid.getScore() + " \n\n";
+		String format = "`| %4s | %4s | %4s | %4s`\n";
+		for (int i = 0; i < GRID_SIZE; i++) {
+			ret += String.format(format, (Object[]) grid.board[i]);
+		}
 		return ret;
 	}
 }

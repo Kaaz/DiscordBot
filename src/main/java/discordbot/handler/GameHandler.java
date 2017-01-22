@@ -90,6 +90,9 @@ public class GameHandler {
 		for (Class<? extends AbstractGame> gameClass : classes) {
 			try {
 				AbstractGame abstractGame = gameClass.getConstructor().newInstance();
+				if (!abstractGame.isListed()) {
+					continue;
+				}
 				gameClassMap.put(abstractGame.getCodeName(), gameClass);
 				gameInfoMap.put(abstractGame.getCodeName(), abstractGame);
 			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {

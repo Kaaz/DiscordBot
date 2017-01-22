@@ -101,6 +101,11 @@ public class Emojibet {
 		emojis.put("?", "\u2754");
 		emojis.put("!", "\u2755");
 		emojis.put(" ", "\u25AB");
+		emojis.put("up", "\u2B06");
+		emojis.put("down", "\u2B07");
+		emojis.put("left", "\u2B05");
+		emojis.put("right", "\u27A1");
+
 	}
 
 	/**
