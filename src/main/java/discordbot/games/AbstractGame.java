@@ -23,6 +23,10 @@ public abstract class AbstractGame<turnType extends GameTurn> {
 		return lastTurnTimestamp;
 	}
 
+	public void setLastPrefix(String prefix) {
+		this.lastPrefix = prefix;
+	}
+
 	public String getLastPrefix() {
 		return lastPrefix;
 	}

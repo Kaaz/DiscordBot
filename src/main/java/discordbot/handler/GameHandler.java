@@ -232,7 +232,7 @@ public class GameHandler {
 		return Template.get("playmode_not_in_game");
 	}
 
-	private String createGamefromUserMention(User player, String theMention, String gamecode) {
+	private String createGamefromUserMention(TextChannel channel, User player, String theMention, String gamecode) {
 		if (isInAGame(player.getId())) {
 			return Template.get("playmode_already_in_game");
 		}
@@ -248,6 +248,7 @@ public class GameHandler {
 			AbstractGame otherGame = getGame(targetUser.getId());
 			if (otherGame != null && otherGame.waitingForPlayer()) {
 				otherGame.addPlayer(player);
+				otherGame.setLastPrefix(DisUtil.getCommandPrefix(channel));
 				joinGame(player.getId(), targetUser.getId());
 				return Template.get("playmode_joined_target") + Config.EOL + otherGame.toString();
 			}
@@ -264,6 +265,7 @@ public class GameHandler {
 		createGame(player.getId(), newGame);
 		newGame.addPlayer(player);
 		newGame.addPlayer(targetUser);
+		newGame.setLastPrefix(DisUtil.getCommandPrefix(channel));
 		joinGame(targetUser.getId(), player.getId());
 		return newGame.toString();
 	}
@@ -292,11 +294,11 @@ public class GameHandler {
 				return showList(channel);
 			} else if (DisUtil.isUserMention(args[0])) {
 				if (args.length > 1) {
-					return createGamefromUserMention(player, args[0], args[1]);
+					return createGamefromUserMention(channel, player, args[0], args[1]);
 				}
 				return Template.get("playmode_invalid_usage");
 			} else if (args.length > 1 && DisUtil.isUserMention(args[1])) {
-				return createGamefromUserMention(player, args[1], args[0]);
+				return createGamefromUserMention(channel, player, args[1], args[0]);
 			}
 			return playTurn(player, args[0], channel);
 		}
