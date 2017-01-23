@@ -119,7 +119,8 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
 		return "\u2139 > Info  " + Config.EOL + Config.EOL +
 				"*" + bot.chatBotHandler.chat("emily", "information") + "* " + Config.EOL + Config.EOL +
 				"**What am I?** *" + response + "* " + Config.EOL +
-				"**My purpose?** *" + purpose + "* " + Config.EOL + Config.EOL +
+				"**My purpose?** *" + purpose + "* " + Config.EOL +
+				"**Who made me?** *Kaaz*" + Config.EOL + Config.EOL +
 				"The last time I restarted was  " + onlineFor + "." + Config.EOL +
 				"Running version `" + Launcher.getVersion().toString() + "`. You can use `" + prefix + "changelog` to see what changed." + Config.EOL + Config.EOL +
 				"Type **" + prefix + "help** to see what I'll allow you to do. In total there are " + CommandHandler.getCommands().length + " commands I can perform." + Config.EOL + Config.EOL +
