@@ -16,6 +16,7 @@
 
 package discordbot.util;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -25,6 +26,7 @@ import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.main.Launcher;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,6 +109,10 @@ public class YTSearch {
 			searchResponse = search.execute();
 			List<SearchResult> searchResultList = searchResponse.getItems();
 			searchResultList.forEach((sr) -> urls.add(new SimpleResult(sr.getId().getVideoId(), sr.getSnippet().getTitle())));
+		} catch (GoogleJsonResponseException e) {
+			Launcher.logToDiscord(e, "youtube-search-error", "<@" + Config.CREATOR_ID + ">",
+					"code", e.getDetails().getCode(),
+					"message", e.getDetails().getMessage());
 		} catch (IOException ex) {
 			DiscordBot.LOGGER.error("YTSearch failure: " + ex.toString());
 			return null;

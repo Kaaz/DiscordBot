@@ -17,6 +17,8 @@
 package discordbot.command.fun;
 
 import discordbot.command.CommandReactionListener;
+import discordbot.command.CooldownScope;
+import discordbot.command.ICommandCooldown;
 import discordbot.command.ICommandReactionListener;
 import discordbot.core.AbstractCommand;
 import discordbot.games.GameState;
@@ -35,7 +37,7 @@ import net.dv8tion.jda.core.entities.User;
 import java.util.concurrent.TimeUnit;
 
 
-public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandReactionListener<Game2048> {
+public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandReactionListener<Game2048>, ICommandCooldown {
 
 	@Override
 	public String getDescription() {
@@ -82,7 +84,7 @@ public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandR
 	@Override
 	public CommandReactionListener<Game2048> getReactionListener(String invoker, Game2048 game) {
 		CommandReactionListener<Game2048> listener = new CommandReactionListener<>(invoker, game);
-		listener.setExpiresIn(TimeUnit.MINUTES, 10);
+		listener.setExpiresIn(TimeUnit.MINUTES, 5);
 		for (String reaction : game.getReactions()) {
 			listener.registerReaction(Emojibet.getEmojiFor(reaction), message -> {
 				Game2048Turn turn = new Game2048Turn();
@@ -100,5 +102,15 @@ public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandR
 			});
 		}
 		return listener;
+	}
+
+	@Override
+	public long getCooldownDuration() {
+		return 300;
+	}
+
+	@Override
+	public CooldownScope getScope() {
+		return CooldownScope.USER;
 	}
 }
