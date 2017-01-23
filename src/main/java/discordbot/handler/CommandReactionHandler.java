@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 github.com/kaaz
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package discordbot.handler;
 
 import discordbot.command.CommandReactionListener;
@@ -38,9 +54,10 @@ public class CommandReactionHandler {
 	 */
 	public void handle(TextChannel channel, String messageId, String userId, MessageReaction reaction) {
 		CommandReactionListener<?> listener = reactions.get(channel.getGuild().getId()).get(messageId);
-		if (listener.getExpireTimestamp() < System.currentTimeMillis()) {
+		if (!listener.isActive() || listener.getExpiresInTimestamp() < System.currentTimeMillis()) {
 			reactions.get(channel.getGuild().getId()).remove(messageId);
 		} else if (listener.hasReaction(reaction.getEmote().getName()) && listener.getUserId().equals(userId)) {
+			reactions.get(channel.getGuild().getId()).get(messageId).updateLastAction();
 			channel.getMessageById(messageId).queue(message -> listener.react(reaction.getEmote().getName(), message));
 		}
 
@@ -66,10 +83,9 @@ public class CommandReactionHandler {
 	 */
 	public synchronized void cleanCache() {
 		long now = System.currentTimeMillis();
-		Iterator<ConcurrentHashMap<String, CommandReactionListener<?>>> mi = reactions.values().iterator();
 		for (Iterator<Map.Entry<String, ConcurrentHashMap<String, CommandReactionListener<?>>>> iterator = reactions.entrySet().iterator(); iterator.hasNext(); ) {
 			Map.Entry<String, ConcurrentHashMap<String, CommandReactionListener<?>>> mapEntry = iterator.next();
-			mapEntry.getValue().values().removeIf(listener -> listener.getExpireTimestamp() < now);
+			mapEntry.getValue().values().removeIf(listener -> !listener.isActive() || listener.getExpiresInTimestamp() < now);
 			if (mapEntry.getValue().values().isEmpty()) {
 				reactions.remove(mapEntry.getKey());
 			}
