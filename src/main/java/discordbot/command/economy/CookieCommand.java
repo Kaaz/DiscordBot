@@ -21,7 +21,6 @@ import discordbot.db.controllers.CBanks;
 import discordbot.db.controllers.CUser;
 import discordbot.db.model.OBank;
 import discordbot.db.model.OUser;
-import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.Launcher;
@@ -67,7 +66,9 @@ public class CookieCommand extends AbstractCommand {
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		OUser user = CUser.findBy(author.getId());
 		if (user.id == 0) {
-			return Template.get("cant_find_user", author.getName());
+			user.discord_id = author.getId();
+			user.name = author.getName();
+			CUser.insert(user);
 		}
 		OBank userAccount = CBanks.findBy(author.getId());
 		if (userAccount.currentBalance > CBanks.CURRENCY_NO_HELP_AFTER) {
@@ -87,7 +88,7 @@ public class CookieCommand extends AbstractCommand {
 		} else {
 			lastCurrencyRetrieval += income * CBanks.SECONDS_PER_CURRENCY;
 		}
-		if (!CBanks.getBotAccount().transferTo(userAccount, income, "Charity")) {
+		if (!CBanks.getBotAccount().transferTo(userAccount, income, "Fresh from the oven")) {
 			Launcher.logToDiscord(new Exception("BANK_TRANSFER"), "from", "bot", "toAccount", userAccount.id);
 		}
 		user.lastCurrencyRetrieval = lastCurrencyRetrieval;

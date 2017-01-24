@@ -76,6 +76,9 @@ public class Emojibet {
 	public static final String BUG = "\uD83D\uDC1B";
 	public static final String BOOT = "\uD83D\uDC62";
 	public static final String BASKET = "\uD83D\uDDD1";
+	public static final String SPEECH_BALLOON = "\uD83D\uDCAC";
+	public static final String INBOX_TRAY = "\uD83D\uDCE5";
+	public static final String TRIANGLE_RED_DOWN = "\uD83D\uDD3B";
 
 	static {
 		emojis.put("a", "\uD83C\uDDE6");

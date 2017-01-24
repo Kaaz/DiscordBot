@@ -26,8 +26,8 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.util.DisUtil;
+import discordbot.util.Emojibet;
 import discordbot.util.Misc;
-import discordbot.util.TimeUtil;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -101,7 +101,11 @@ public class BankCommand extends AbstractCommand {
 					return Template.get("cant_find_user", args[1]);
 				}
 				OBank targetBank = CBanks.findBy(targetUser.getId());
-				if (bank.transferTo(targetBank, amount, "gift")) {
+				String description = "Gift!";
+				if (args.length > 4) {
+					description = Misc.joinStrings(args, 3);
+				}
+				if (bank.transferTo(targetBank, amount, description)) {
 					return Template.get("bank_transfer_success", targetUser.getName(), amount, amount == 1 ? Config.ECONOMY_CURRENCY_NAME : Config.ECONOMY_CURRENCY_NAMES);
 				}
 				return Template.get("bank_transfer_failed");
@@ -109,12 +113,14 @@ public class BankCommand extends AbstractCommand {
 				List<OBankTransaction> history = CBankTransactions.getHistoryFor(bank.id);
 				String ret = "Your transaction history:\n \n";
 				for (OBankTransaction transaction : history) {
-					ret += String.format("%s `%s` `\u200B%4s` %s %s\n",
-							TimeUtil.formatYMD(transaction.date),
-							transaction.bankFrom == bank.id ? "SEND" : "RECV",
-							transaction.amount,
+					ret += String.format("%s`\u200B%+4d` %s%s `\u200B%24s` %s *%s*\n",
+							transaction.bankFrom == bank.id ? Emojibet.TRIANGLE_RED_DOWN : Emojibet.INBOX_TRAY,
+							transaction.bankFrom == bank.id ? -transaction.amount : transaction.amount,
+							Config.ECONOMY_CURRENCY_ICON,
+							Emojibet.USER,
 							transaction.bankFrom == bank.id ? transaction.userTo : transaction.userFrom,
-							transaction.description);
+							transaction.bankFrom == bank.id ? Emojibet.NOTEPAD : Emojibet.SPEECH_BALLOON,
+							transaction.description.substring(0, Math.min(25, transaction.description.length())));
 				}
 				return ret;
 

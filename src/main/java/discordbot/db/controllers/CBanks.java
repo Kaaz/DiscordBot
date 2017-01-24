@@ -19,7 +19,6 @@ package discordbot.db.controllers;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
 import discordbot.db.model.OBank;
-import discordbot.db.model.OBankTransaction;
 import discordbot.db.model.OUser;
 import discordbot.main.Config;
 
