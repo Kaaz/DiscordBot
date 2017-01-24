@@ -37,7 +37,7 @@ public class TimeUtil {
 	}
 
 	public static String formatYMD(Date date) {
-		return timestamp.format(date);
+		return ymdFormat.format(date);
 	}
 
 	/**

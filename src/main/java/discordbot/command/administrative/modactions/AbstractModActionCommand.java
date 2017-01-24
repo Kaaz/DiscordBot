@@ -71,17 +71,17 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
 			}
 		}
 		if (args.length == 0) {
-			return Template.get("command_modaction_empty", getPunishType().getKeyword());
+			return Template.get("command_modaction_empty", getPunishType().getKeyword().toLowerCase());
 		}
 		User targetUser = DisUtil.findUser(chan, Joiner.on(" ").join(args));
 		if (targetUser == null) {
 			return Template.get("cant_find_user", Joiner.on(" ").join(args));
 		}
 		if (targetUser.getId().equals(guild.getSelfMember().getUser().getId())) {
-			return Template.get("command_modaction_not_self", getPunishType().getKeyword());
+			return Template.get("command_modaction_not_self", getPunishType().getKeyword().toLowerCase());
 		}
 		if (!PermissionUtil.canInteract(guild.getSelfMember(), guild.getMember(targetUser)) || !punish(guild, guild.getMember(targetUser))) {
-			return Template.get("command_modaction_failed", getPunishType().getKeyword(), targetUser.getName());
+			return Template.get("command_modaction_failed", getPunishType().getKeyword().toLowerCase(), targetUser.getName());
 		}
 		int caseId = CModerationCase.insert(guild, targetUser, author, getPunishType(), null);
 		TextChannel modlogChannel = bot.getModlogChannel(guild.getId());
@@ -94,7 +94,6 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
 					}
 			);
 		}
-
-		return Template.get("command_modaction_success", getPunishType().getKeyword(), targetUser.getName());
+		return Template.get("command_modaction_success", getPunishType().getKeyword().toLowerCase(), targetUser.getName());
 	}
 }

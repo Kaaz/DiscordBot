@@ -27,4 +27,6 @@ public class OBankTransaction extends AbstractModel {
 	public Timestamp date = null;
 	public String description = "";
 	public int amount = 0;
+	public String userTo = "";
+	public String userFrom = "";
 }

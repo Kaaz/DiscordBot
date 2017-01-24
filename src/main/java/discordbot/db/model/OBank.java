@@ -35,6 +35,9 @@ public class OBank extends AbstractModel {
 		if (id == 0) {
 			return false;
 		}
+		if (id == target.id) {
+			return false;
+		}
 		if (amount < 1 || currentBalance - amount < 0) {
 			return false;
 		}

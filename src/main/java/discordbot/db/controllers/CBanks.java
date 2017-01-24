@@ -19,6 +19,7 @@ package discordbot.db.controllers;
 import discordbot.core.Logger;
 import discordbot.db.WebDb;
 import discordbot.db.model.OBank;
+import discordbot.db.model.OBankTransaction;
 import discordbot.db.model.OUser;
 import discordbot.main.Config;
 
@@ -41,7 +42,6 @@ public class CBanks {
 
 	//after reaching this amount amount, you can't claim anymore
 	public static final long CURRENCY_NO_HELP_AFTER = 10000;
-
 
 	public static OBank findBy(String discordId) {
 		return findBy(CUser.getCachedId(discordId));
