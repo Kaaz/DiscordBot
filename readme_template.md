@@ -76,12 +76,14 @@ Right, so lets get started. Before starting make sure you at least have the foll
 * [git](https://git-scm.com/)
 * [maven](https://maven.apache.org/)
 
-Also prepare a [MySQL](https://dev.mysql.com/downloads/mysql/) server (either hosted or installed locally).<br>
+Also prepare a [MySQL](https://mariadb.org/) server (either hosted or installed locally).<br/>
 Then continue with the following steps.
 
-1. Importing the Database
+1. Create a database
 
-    Emily uses a MySQL database to store information. Import the `/sql/create.sql` file using a MySQL management tool like [PHPMyAdmin](https://www.phpmyadmin.net/) or [HeidiSQL](http://www.heidisql.com/) to create all mandatory fields and tables automatically.     Due to the myriad amount of hosters and possible configurations it's propbably better to contact your hoster instead of other people in case something goes wrong here.
+    Emily uses a MySQL database to store information. Create a database using the utf8mb4 character set. Emily will create/update the used tables.<br/>
+    To make this easier you can do this using a MySQL management tool like [PHPMyAdmin](https://www.phpmyadmin.net/) or [HeidiSQL](http://www.heidisql.com/).
+         Due to the myriad amount of hosters and possible configurations it's propbably better to contact your hoster instead of other people in case something goes wrong here.
 
 2. Clone the project with git
 
