@@ -81,26 +81,18 @@ public class Grid {
 	}
 
 	public boolean canMove(boolean horizontal) {
-		boolean hasFreeSpace = false;
 		for (int i = 0; i < size; i++) {
-			boolean rowSave = false;
 			int lastVal = -1;
 			for (int j = 0; j < size; j++) {
 				if (board[horizontal ? i : j][horizontal ? j : i] == 0) {
-					rowSave = true;
-					hasFreeSpace = true;
+					return true;
 				} else if (lastVal == board[horizontal ? i : j][horizontal ? j : i]) {
-					hasFreeSpace = true;
-					rowSave = true;
-					break;
+					return true;
 				}
 				lastVal = board[horizontal ? i : j][horizontal ? j : i];
 			}
-			if (!rowSave) {
-				return false;
-			}
 		}
-		return hasFreeSpace;
+		return false;
 	}
 
 	public void moveRight() {
