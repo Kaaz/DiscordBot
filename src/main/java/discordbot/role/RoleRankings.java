@@ -242,8 +242,6 @@ public class RoleRankings {
 			List<Role> roleList = guild.getRolesByName(RoleRankings.getFullName(guild, targetRole), true);
 			if (roleList.size() > 0) {
 				bot.out.addRole(user, roleList.get(0));
-			} else {
-				bot.getContainer().reportError(new Exception("Role not found"), "guild", guild.getName(), "user", user.getName(), "target-role", targetRole.getName());
 			}
 		}
 	}
