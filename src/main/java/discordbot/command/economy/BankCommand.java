@@ -52,9 +52,10 @@ public class BankCommand extends AbstractCommand {
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"bank                       //shows current balance",
-				"bank history               //shows last transactions",
-				"bank send @user <amount>   //sends <amount> to @user ",
+				"bank                                //shows current balance",
+				"bank history                        //shows last transactions",
+				"bank send @user <amount>            //sends <amount> to @user ",
+				"bank send @user <amount> <message>  //sends <amount> to @user with a message",
 		};
 	}
 
