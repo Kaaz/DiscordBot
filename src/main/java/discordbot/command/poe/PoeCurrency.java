@@ -82,7 +82,7 @@ public class PoeCurrency extends AbstractCommand {
 			} else if (args[0].equalsIgnoreCase("league")) {
 				return "not implemented yet sorry boys!";
 			}
-			return Template.get("command_invalid_usage");
+			return Template.get("command_invalid_use");
 		}
 		OPoEToken token = CPoEToken.findBy(author.getId());
 		AuthInfo account = new AuthInfo(token.session_id);

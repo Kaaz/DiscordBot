@@ -109,7 +109,7 @@ public class SkipTrack extends AbstractCommand {
 					}
 					return Template.get("music_skip_mode", adminOnly ? "admin-only" : "normal");
 				default:
-					return Template.get("command_invalid_usage");
+					return Template.get("command_invalid_use");
 			}
 		}
 		if (player.getRequiredVotes() == 1) {

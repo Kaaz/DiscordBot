@@ -97,7 +97,7 @@ public class MemeCommand extends AbstractCommand {
 			loadMemeOptions();
 		}
 		if (args.length == 0) {
-			return Template.get("command_invalid_usage") + Config.EOL +
+			return Template.get("command_invalid_use") + Config.EOL +
 					msg + Misc.makeTable(new ArrayList<>(memeTypes)) + Config.EOL +
 					"Usage:" + Config.EOL +
 					DisUtil.getCommandPrefix(channel) + "meme <type> <toptext> | <bottomtext>Config.EOL+Config.EOL" + Config.EOL + Config.EOL +
