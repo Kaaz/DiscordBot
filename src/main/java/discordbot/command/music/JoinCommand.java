@@ -79,7 +79,7 @@ public class JoinCommand extends AbstractCommand {
 				return Template.get("command_join_already_there");
 			}
 			if (!PermissionUtil.checkPermission(voiceChannel, voiceChannel.getGuild().getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
-				return Template.get("music_join_no_permission");
+				return Template.get("music_join_no_permission", voiceChannel.getName());
 			}
 			player.connectTo(voiceChannel);
 			return Template.get("command_join_joinedyou");
@@ -97,7 +97,7 @@ public class JoinCommand extends AbstractCommand {
 					return Template.get("command_join_already_there");
 				}
 				if (!PermissionUtil.checkPermission(targetChannel, targetChannel.getGuild().getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
-					return Template.get("music_join_no_permission");
+					return Template.get("music_join_no_permission", targetChannel.getName());
 				}
 				player.leave();
 				player.connectTo(targetChannel);

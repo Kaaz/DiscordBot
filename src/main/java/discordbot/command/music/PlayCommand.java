@@ -135,7 +135,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 					Thread.sleep(2000L);// ¯\_(ツ)_/¯
 				}
 				if (!PermissionUtil.checkPermission(guild.getMember(author).getVoiceState().getChannel(), guild.getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
-					return Template.get("music_join_no_permission");
+					return Template.get("music_join_no_permission", guild.getMember(author).getVoiceState().getChannel().getName());
 				}
 				player.connectTo(guild.getMember(author).getVoiceState().getChannel());
 				Thread.sleep(2000L);// ¯\_(ツ)_/¯
