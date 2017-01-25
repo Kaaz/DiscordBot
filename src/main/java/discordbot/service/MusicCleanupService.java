@@ -68,7 +68,7 @@ public class MusicCleanupService extends AbstractService {
 				" WHERE g.id IS NULL " +
 				" AND  m.lastplaydate < ? " +
 				" AND m.file_exists = 1 " +
-				" ORDER BY last_manual_playdate DESC", olderThan)) {
+				" ORDER BY lastplaydate DESC", olderThan)) {
 			while (rs.next()) {
 				OMusic record = CMusic.fillRecord(rs);
 				File file = new File(record.filename);

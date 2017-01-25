@@ -65,37 +65,56 @@ The rankings go according to the table below:
 ## Run the bot yourself
 
 Before we get started I want to note that the development happens mainly on a windows machine, so there might be some unforeseen errors on other operating systems.  
-If you do encounter errors, please let me know so I can fix them.  
+If you do encounter errors, please let me know so I can fix them.
+
+Also note that running the bot requires basic experience with the command line 
+(or your OS's equivalent like CMD/PowerShell on Windows) and the ability to add software to you System's path.
 
 Right, so lets get started. Before starting make sure you at least have the following installed:
 
-* java 8
-* git
-* maven
-* mysql
+* [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [git](https://git-scm.com/)
+* [maven](https://maven.apache.org/)
 
-Database:  
-execute the sql queries in the /sql/create.sql file
+Also prepare a [MySQL](https://mariadb.org/) server (either hosted or installed locally).<br/>
+Then continue with the following steps.
 
-clone the project with git  
-`git clone https://github.com/Kaaz/DiscordBot /path/to/project`  
-Go to the root of the project and install the dependencies using maven  
-`mvn install`  
-Now build the project using maven  
-`mvn clean process-resources compile assembly:single`  
-In the target map there should be a file called Discordbot-VERSION_full.jar (where version is the latest version number)  
-Move this file over to a location wherever you want to start the bot from.  
+1. Create a database
 
-You can launch the bot with the following command:
-`java -jar <jarfilename>`  
+    Emily uses a MySQL database to store information. Create a database using the utf8mb4 character set. Emily will create/update the used tables.<br/>
+    To make this easier you can do this using a MySQL management tool like [PHPMyAdmin](https://www.phpmyadmin.net/) or [HeidiSQL](http://www.heidisql.com/).
+         Due to the myriad amount of hosters and possible configurations it's propbably better to contact your hoster instead of other people in case something goes wrong here.
 
-The first time It will generate an application.cfg file and exit.
-You'll have to edit the config file and add in your token, database configuration, etc.
+2. Clone the project with git
 
-You will also have to get [youtube-dl](https://rg3.github.io/youtube-dl/download.html) and [ffmpeg](https://ffmpeg.zeranoe.com/builds/)
+    ```
+    cd /path/to/your/project/folder
+    git clone https://github.com/Kaaz/DiscordBot.git
+    ```  
 
-The Config setting `youtubedl_exe` has to point to the youtube-dl executable.
-For ffmpeg, the binaries have to be either in the same directory as the bot.jar or be included in in the system path somewhere.
+3. Collect dependencies
+    
+    `cd` into the directory that git just created (should be called `DiscordBot`).<br>
+    Then type `mvn install`. This might take some time so be patient :)
+    
+4. Build Emily
+    
+    Type `mvn clean process-resources compile assembly:single` in the `DiscordBot` folder.
+    In the target map there should be a file called `Discordbot-VERSION_full.jar` (where version is the latest version number).
+    Move this file over to a location wherever you want to start the bot from.
+    
+5. Run
+
+    You can launch the bot with the following command:
+    `java -jar <jarfilename>`
+    On her first launch, Emily will generate an `application.cfg` file and exit.<br>
+    You'll have to edit the config file and add in your token, database configuration, etc.
+
+6. Extras
+
+    If you want to use the musicbot you'll also need to install [youtube-dl](https://rg3.github.io/youtube-dl/download.html) and [ffmpeg](https://ffmpeg.zeranoe.com/builds/).
+    The config setting `youtubedl_exe` has to point to the youtube-dl executable.
+    For ffmpeg, the binaries have to be either in the same directory as the bot.jar or be included in in the    system path somewhere.
 
 
 

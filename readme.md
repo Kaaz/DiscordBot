@@ -31,20 +31,21 @@ Current list of all available commands. See below for a more detailed list
 
 Commands | | | | |
 --- | --- | ---| ---| ---
-[8ball](#8ball) | [ban](#ban) | [bet](#bet) | [blackjack](#blackjack) | [botstatus](#botstatus)
-[case](#case) | [catfact](#catfact) | [changename](#changename) | [cla](#cla) | [command](#command)
-[commandadmin](#commandadmin) | [config](#config) | [current](#current) | [debug](#debug) | [exec](#exec)
+[8ball](#8ball) | [ban](#ban) | [blackjack](#blackjack) | [botstatus](#botstatus) | [case](#case)
+[catfact](#catfact) | [changename](#changename) | [cla](#cla) | [command](#command) | [commandadmin](#commandadmin)
+[config](#config) | [current](#current) | [debug](#debug) | [donate](#donate) | [exec](#exec)
 [exit](#exit) | [fml](#fml) | [game](#game) | [getrole](#getrole) | [gif](#gif)
 [globalban](#globalban) | [guildstats](#guildstats) | [help](#help) | [importmusic](#importmusic) | [info](#info)
 [invite](#invite) | [join](#join) | [joke](#joke) | [kick](#kick) | [leaveguild](#leaveguild)
 [logging](#logging) | [meme](#meme) | [modcase](#modcase) | [music](#music) | [mute](#mute)
 [pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
-[poll](#poll) | [prefix](#prefix) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit)
-[reload](#reload) | [report](#report) | [roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate)
-[sendfile](#sendfile) | [server](#server) | [skip](#skip) | [slot](#slot) | [stop](#stop)
-[subscribe](#subscribe) | [system](#system) | [tag](#tag) | [tempban](#tempban) | [template](#template)
-[ud](#ud) | [uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version)
-[volume](#volume) | [warn](#warn) | 
+[poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll) | [prefix](#prefix)
+[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
+[roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [server](#server)
+[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
+[tag](#tag) | [tempban](#tempban) | [template](#template) | [ud](#ud) | [uptime](#uptime)
+[user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume) | [warn](#warn)
+
 
 ## Games
 
@@ -138,37 +139,56 @@ Consul | 1000 days
 ## Run the bot yourself
 
 Before we get started I want to note that the development happens mainly on a windows machine, so there might be some unforeseen errors on other operating systems.  
-If you do encounter errors, please let me know so I can fix them.  
+If you do encounter errors, please let me know so I can fix them.
+
+Also note that running the bot requires basic experience with the command line 
+(or your OS's equivalent like CMD/PowerShell on Windows) and the ability to add software to you System's path.
 
 Right, so lets get started. Before starting make sure you at least have the following installed:
 
-* java 8
-* git
-* maven
-* mysql
+* [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [git](https://git-scm.com/)
+* [maven](https://maven.apache.org/)
 
-Database:  
-execute the sql queries in the /sql/create.sql file
+Also prepare a [MySQL](https://mariadb.org/) server (either hosted or installed locally).<br/>
+Then continue with the following steps.
 
-clone the project with git  
-`git clone https://github.com/Kaaz/DiscordBot /path/to/project`  
-Go to the root of the project and install the dependencies using maven  
-`mvn install`  
-Now build the project using maven  
-`mvn clean process-resources compile assembly:single`  
-In the target map there should be a file called Discordbot-VERSION_full.jar (where version is the latest version number)  
-Move this file over to a location wherever you want to start the bot from.  
+1. Create a database
 
-You can launch the bot with the following command:
-`java -jar <jarfilename>`  
+    Emily uses a MySQL database to store information. Create a database using the utf8mb4 character set. Emily will create/update the used tables.<br/>
+    To make this easier you can do this using a MySQL management tool like [PHPMyAdmin](https://www.phpmyadmin.net/) or [HeidiSQL](http://www.heidisql.com/).
+         Due to the myriad amount of hosters and possible configurations it's propbably better to contact your hoster instead of other people in case something goes wrong here.
 
-The first time It will generate an application.cfg file and exit.
-You'll have to edit the config file and add in your token, database configuration, etc.
+2. Clone the project with git
 
-You will also have to get [youtube-dl](https://rg3.github.io/youtube-dl/download.html) and [ffmpeg](https://ffmpeg.zeranoe.com/builds/)
+    ```
+    cd /path/to/your/project/folder
+    git clone https://github.com/Kaaz/DiscordBot.git
+    ```  
 
-The Config setting `youtubedl_exe` has to point to the youtube-dl executable.
-For ffmpeg, the binaries have to be either in the same directory as the bot.jar or be included in in the system path somewhere.
+3. Collect dependencies
+    
+    `cd` into the directory that git just created (should be called `DiscordBot`).<br>
+    Then type `mvn install`. This might take some time so be patient :)
+    
+4. Build Emily
+    
+    Type `mvn clean process-resources compile assembly:single` in the `DiscordBot` folder.
+    In the target map there should be a file called `Discordbot-VERSION_full.jar` (where version is the latest version number).
+    Move this file over to a location wherever you want to start the bot from.
+    
+5. Run
+
+    You can launch the bot with the following command:
+    `java -jar <jarfilename>`
+    On her first launch, Emily will generate an `application.cfg` file and exit.<br>
+    You'll have to edit the config file and add in your token, database configuration, etc.
+
+6. Extras
+
+    If you want to use the musicbot you'll also need to install [youtube-dl](https://rg3.github.io/youtube-dl/download.html) and [ffmpeg](https://ffmpeg.zeranoe.com/builds/).
+    The config setting `youtubedl_exe` has to point to the youtube-dl executable.
+    For ffmpeg, the binaries have to be either in the same directory as the bot.jar or be included in in the    system path somewhere.
 
 
 
@@ -202,33 +222,6 @@ Usable in public  channels
 
 ```php
 ban <user>     //Permanently removes user from guild user from guild
-```
-### bet
-
-allows you to create and participate in bets
-
-Accessible though: bet
-
-Usable in public  channels
-
-#### Usage
-
-```php
-bet                    //check out what bets there are and where you participate in
-bet join               //info for the bet you're about to join
-bet join <youroption>  //join the bet with your selected option
-
-bet create <betamount> <title>      //create a bet OR edit the pending one
-bet option add <description>        //add an option to the bet
-bet option remove <key>             //remove an option
-bet option edit <key> <description> //edits an option
-bet refund <user>                   //refunds the user for the bet
-bet cancel yesimsure                //cancel the bet & refund everyone
-bet start <[1-9][mhd]>              //start with a delay eg. 30m -> 30 minutes
-bet start <[1-9][mhd]> <[1-9][mhd]> //start with a delay, and leave it open for x time
-
-Example: bet start 10m  //starts the bet now, and lasts for 10 minutes
-Example: bet start 2h 1d //start in 1 hour, lasts for 1 day
 ```
 ### blackjack
 
@@ -356,6 +349,8 @@ Usable in public  channels
 ```php
 ca <command> [enable/disable]               //enables/disables commands in the whole guild
 ca <command> [enable/disable] [#channel]    //enables/disables commands in a channel. This overrides the above
+ca all-commands [enable/disable]            //disable/enable all (disable-able commands)
+ca all-commands [enable/disable] [#channel] //disable/enable all commands in that channel
 
 ca resetchannel [#channel]                  //resets the overrides for a channel
 ca resetallchannels                         //resets the overrides for all channels
@@ -421,6 +416,13 @@ Usable in public and private channels
 ```php
 activity //shows last shard activity
 ```
+### donate
+
+general info about how to contribute or donate to NovaBot
+
+Accessible though: donate, contribute
+
+Usable in public and private channels
 ### exec
 
 executes commandline stuff
@@ -745,6 +747,42 @@ Usable in public and private channels
 ```php
 pm <@user> <message..>
 ```
+### poec
+
+Returns a list of currency on your account
+
+Accessible though: poec
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+poec                   //returns list of currency for default league
+poec token <token>     //sets the session token
+poec league <league>   //currency for league
+```
+### poeitem
+
+Analyzes an item from path of exile.
+
+Accessible though: poeitem
+
+Usable in public and private channels
+### poelab
+
+Attempts to find a description from reddit for the Labyrinth instance.
+
+Accessible though: poelab
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+poelab              //lists for all difficulties
+poelab <difficulty> //only for that difficulty
+```
 ### poll
 
 Strawpoll: propose a question and choices for the chat to vote on
@@ -943,9 +981,10 @@ Usable in public and private channels
 #### Usage
 
 ```php
-slot      //play
-slot play //play the game
-slot info //info about payout
+slot              //play
+slot play         //play the game
+slot play cookies //play the game for cookies
+slot info         //info about payout
 ```
 ### stop
 
