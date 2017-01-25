@@ -65,12 +65,12 @@ public class RoleRankings {
 		roles.add(new MemberShipRole("Regular", new Color(0x2F74DF), TimeUnit.DAYS.toMillis(7L)));
 		roles.add(new MemberShipRole("Honored", new Color(0xFADED), TimeUnit.DAYS.toMillis(14L)));
 		roles.add(new MemberShipRole("Veteran", new Color(0x35B6D4), TimeUnit.DAYS.toMillis(28L)));
-		roles.add(new MemberShipRole("Revered", new Color(0x0DC3CF), TimeUnit.DAYS.toMillis(60L)));
-		roles.add(new MemberShipRole("Herald", new Color(0x0ECAB4), TimeUnit.DAYS.toMillis(90L)));
-		roles.add(new MemberShipRole("Exalted", new Color(0x0FC490), TimeUnit.DAYS.toMillis(180L), true));
-		roles.add(new MemberShipRole("Beloved", new Color(0x10BF6D), TimeUnit.DAYS.toMillis(365L), true));
-		roles.add(new MemberShipRole("Favorite", new Color(0x11BA4D), TimeUnit.DAYS.toMillis(700L), true));
-		roles.add(new MemberShipRole("Consul", new Color(0x11B52F), TimeUnit.DAYS.toMillis(1000L), true));
+		roles.add(new MemberShipRole("Revered", new Color(0x0DC3CF), TimeUnit.DAYS.toMillis(50L)));
+		roles.add(new MemberShipRole("Herald", new Color(0x0ECAB4), TimeUnit.DAYS.toMillis(75L)));
+		roles.add(new MemberShipRole("Exalted", new Color(0x0FC490), TimeUnit.DAYS.toMillis(125L), true));
+		roles.add(new MemberShipRole("Beloved", new Color(0x10BF6D), TimeUnit.DAYS.toMillis(200L), true));
+		roles.add(new MemberShipRole("Favorite", new Color(0x11BA4D), TimeUnit.DAYS.toMillis(365L), true));
+		roles.add(new MemberShipRole("Consul", new Color(0x11B52F), TimeUnit.DAYS.toMillis(500L), true));
 		for (MemberShipRole role : roles) {
 			roleNames.add(role.getName().toLowerCase());
 		}
