@@ -17,12 +17,12 @@
 package discordbot.games.slotmachine;
 
 public enum Slot {
-	SEVEN("Seven", ":seven:", 50),
-	CROWN("Crown", ":crown:", 15),
-	BELL("Bell", ":bell:", 15),
-	BAR("Bar", ":chocolate_bar:", 10),
-	CHERRY("Cherry", ":cherries:", 10),
-	MELON("Melon", ":melon:", 5);
+	SEVEN("Seven", ":seven:", 100),
+	CROWN("Crown", ":crown:", 50),
+	BELL("Bell", ":bell:", 25),
+	BAR("Bar", ":chocolate_bar:", 20),
+	CHERRY("Cherry", ":cherries:", 15),
+	MELON("Melon", ":melon:", 10);
 
 	private final String name;
 	private final String emote;

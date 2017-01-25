@@ -35,7 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class YTUtil {
-	public final static Pattern yturl = Pattern.compile("^.*(?>(?>youtu.be/)|(?>v/)|(?>/u/\\w/)|(?>embed/)|(?>watch\\?))\\\\??v?=?([^#\\\\&\\?]*)(?>&list=([^#\\\\&\\?]*)?)?.*");
+	public final static Pattern yturl = Pattern.compile("^(?:https?:\\/\\/)?(?:(?:www\\.)?)?(?:youtube\\.com|youtu\\.be)\\/.*?(?:embed|e|v|watch.*?v=)?\\/?([a-z0-9]{10,})?(?:&?index=\\d+)?(?>(?:playlist\\?|&)?list=([^#\\\\&\\?]{12,}))?", Pattern.CASE_INSENSITIVE);
 	private final static Pattern youtubeCode = Pattern.compile("^[A-Za-z0-9_-]{11}$");
 
 	/**
@@ -57,7 +57,9 @@ public class YTUtil {
 	public static String extractCodeFromUrl(String url) {
 		Matcher matcher = yturl.matcher(url);
 		if (matcher.find()) {
-			return matcher.group(1);
+			if (matcher.group(1) != null) {
+				return matcher.group(1);
+			}
 		}
 		return url;
 	}

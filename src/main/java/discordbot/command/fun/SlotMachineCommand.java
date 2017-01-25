@@ -63,9 +63,8 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"slot              //play",
-				"slot play         //play the game",
-				"slot play cookies //play the game for cookies",
+				"slot              //spin the slotmachine",
+				"slot [cookies]    //play for real cookies where [cookies] is the amount of cookies you bet",
 				"slot info         //info about payout"
 		};
 	}
@@ -77,7 +76,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (args.length == 0 || args.length >= 1 && args[0].equals("play")) {
+		if (args.length == 0 || args.length >= 1 && !args[0].equals("info")) {
 			final SlotMachine slotMachine = new SlotMachine();
 			bot.out.sendAsyncMessage(channel, slotMachine.toString(), message -> {
 				final Future<?>[] f = {null};
