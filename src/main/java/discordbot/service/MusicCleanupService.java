@@ -19,7 +19,6 @@ package discordbot.service;
 import discordbot.core.AbstractService;
 import discordbot.db.WebDb;
 import discordbot.db.controllers.CMusic;
-import discordbot.db.controllers.CPlaylist;
 import discordbot.db.model.OMusic;
 import discordbot.main.BotContainer;
 import discordbot.main.Launcher;
@@ -62,11 +61,7 @@ public class MusicCleanupService extends AbstractService {
 		long olderThan = (System.currentTimeMillis() / 1000L) - TimeUnit.DAYS.toSeconds(14);
 		try (ResultSet rs = WebDb.get().select("SELECT m.* " +
 				" FROM music m " +
-				" LEFT JOIN playlist_item pi ON pi.music_id = m.id " +
-				" LEFT JOIN playlist pl ON pl.id = pi.playlist_id " +
-				" LEFT JOIN guilds g ON g.id = pl.id AND g.active = 1 " +
-				" WHERE g.id IS NULL " +
-				" AND  m.lastplaydate < ? " +
+				" WHERE m.lastplaydate < ? " +
 				" AND m.file_exists = 1 " +
 				" ORDER BY lastplaydate DESC", olderThan)) {
 			while (rs.next()) {
@@ -76,7 +71,6 @@ public class MusicCleanupService extends AbstractService {
 					file.delete();
 				}
 				record.fileExists = 0;
-				CPlaylist.deleteTrackFromPlaylists(record.id);
 				CMusic.update(record);
 			}
 		} catch (SQLException e) {
