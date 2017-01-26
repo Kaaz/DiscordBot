@@ -199,6 +199,7 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
 				channel.sendMessage(Emojibet.WARNING + " I will only listen to the configured `bot_channel`. If you rename the channel, you might not be able to access me anymore. " +
 						"You can reset by typing `@" + channel.getJDA().getSelfUser().getName() + " reset yesimsure`").queue();
 			}
+
 			if (GuildSettings.get(guild).set(guild, args[0], newValue)) {
 				bot.getContainer().getShardFor(guild.getId()).clearChannels(guild);
 				return Template.get("command_config_key_modified");

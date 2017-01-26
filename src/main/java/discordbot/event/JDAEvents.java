@@ -222,7 +222,7 @@ public class JDAEvents extends ListenerAdapter {
 			discordBot.commandReactionHandler.handle(channel, e.getMessageId(), e.getUser().getId(), e.getReaction());
 			return;
 		}
-		if(discordBot.gameHandler.executeReaction(e.getUser(),e.getChannel(),e.getReaction(),e.getMessageId()));
+		if (discordBot.gameHandler.executeReaction(e.getUser(), e.getChannel(), e.getReaction(), e.getMessageId())) ;
 		discordBot.musicReactionHandler.handle(e.getMessageId(), channel, e.getUser(), e.getReaction().getEmote(), adding);
 
 	}
@@ -279,18 +279,16 @@ public class JDAEvents extends ListenerAdapter {
 					throwable -> settings.set(guild, SettingPMUserEvents.class, "false")
 			);
 		}
+		discordBot.logGuildEvent(guild, "\uD83D\uDC64", "**" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator() + "** joined the guild");
 		if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
 			TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
-			if (defaultChannel == null) {
-//				GuildSettings.get(guild.getId()).set(guild, SettingWelcomeNewUsers.class, "false");
-				return;
+			if (defaultChannel != null) {
+				defaultChannel.sendMessage(
+						Template.getWithTags(defaultChannel, firstTime ? "welcome_new_user" : "welcome_back_user", user)).queue(
+						message -> discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS)
+				);
 			}
-			defaultChannel.sendMessage(
-					Template.getWithTags(defaultChannel, firstTime ? "welcome_new_user" : "welcome_back_user", user)).queue(
-					message -> discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS)
-			);
 		}
-
 		Launcher.log("user joins guild", "guild", "member-join",
 				"guild-id", guild.getId(),
 				"guild-name", guild.getName(),
@@ -300,7 +298,6 @@ public class JDAEvents extends ListenerAdapter {
 		if ("true".equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && !user.isBot()) {
 			RoleRankings.assignUserRole(discordBot, guild, user);
 		}
-		discordBot.logGuildEvent(guild, "\uD83D\uDC64", "**" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator() + "** joined the guild");
 	}
 
 	@Override
