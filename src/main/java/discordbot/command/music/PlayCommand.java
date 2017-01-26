@@ -59,7 +59,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 
 	public PlayCommand() {
 		super();
-		ytSearch = new YTSearch(Config.GOOGLE_API_KEY[0]);
+		ytSearch = new YTSearch(Config.GOOGLE_API_KEY);
 	}
 
 	@Override
