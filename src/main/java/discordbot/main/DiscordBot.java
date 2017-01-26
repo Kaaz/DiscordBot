@@ -72,7 +72,6 @@ public class DiscordBot {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
 	public final long startupTimeStamp;
-	private final Map<String, String> defaultChannels = new ConcurrentHashMap<>();
 	private final Map<String, String> musicChannels = new ConcurrentHashMap<>();
 	private final Map<String, String> logChannels = new ConcurrentHashMap<>();
 	private final int totShards;
@@ -199,23 +198,17 @@ public class DiscordBot {
 	 * @return default chat channel
 	 */
 	public synchronized TextChannel getDefaultChannel(Guild guild) {
-		if (!defaultChannels.containsKey(guild.getId())) {
-			String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingBotChannel.class);
-			TextChannel defaultChannel;
-			if (channelIdentifier.matches("\\d{12,}")) {
-				defaultChannel = guild.getTextChannelById(channelIdentifier);
-			} else {
-				defaultChannel = DisUtil.findChannel(guild, channelIdentifier);
-			}
-			if (defaultChannel == null || !defaultChannel.canTalk()) {
-				defaultChannel = DisUtil.findFirstWriteableChannel(client, guild);
-				if (defaultChannel == null) {
-					return null;
-				}
-			}
-			defaultChannels.put(guild.getId(), defaultChannel.getId());
+		String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingBotChannel.class);
+		TextChannel defaultChannel;
+		if (channelIdentifier.matches("\\d{12,}")) {
+			defaultChannel = guild.getTextChannelById(channelIdentifier);
+		} else {
+			defaultChannel = DisUtil.findChannel(guild, channelIdentifier);
 		}
-		return client.getTextChannelById(defaultChannels.get(defaultChannels.get(guild.getId())));
+		if (defaultChannel != null) {
+			return defaultChannel;
+		}
+		return DisUtil.findFirstWriteableChannel(client, guild);
 	}
 
 	/**
@@ -304,7 +297,6 @@ public class DiscordBot {
 	}
 
 	public synchronized void loadConfiguration() {
-		defaultChannels.clear();
 		musicChannels.clear();
 		logChannels.clear();
 		SecurityHandler.initialize();
@@ -320,13 +312,11 @@ public class DiscordBot {
 	 * @param guild the guild to clear for
 	 */
 	public synchronized void clearChannels(Guild guild) {
-		defaultChannels.remove(guild.getId());
 		musicChannels.remove(guild.getId());
 		logChannels.remove(guild.getId());
 	}
 
 	public synchronized void clearChannels() {
-		defaultChannels.clear();
 		musicChannels.clear();
 		logChannels.clear();
 	}
@@ -337,7 +327,6 @@ public class DiscordBot {
 	 * @param guild the guild to clear
 	 */
 	public void clearGuildData(Guild guild) {
-		defaultChannels.remove(guild.getId());
 		musicChannels.remove(guild.getId());
 		GuildSettings.remove(guild.getId());
 		Template.removeGuild(CGuild.getCachedId(guild.getId()));

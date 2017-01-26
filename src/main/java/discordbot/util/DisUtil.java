@@ -205,7 +205,7 @@ public class DisUtil {
 				.replace("%user%", user.getName())
 				.replace("%user-mention%", user.getAsMention())
 				.replace("%user-id%", user.getId())
-				.replace("%nick%", guild != null ? guild.isMember(user) ? guild.getMember(user).getEffectiveName() : user.getName() : user.getName())
+				.replace("%nick%", guild != null && guild.isMember(user) ? guild.getMember(user).getEffectiveName() : user.getName())
 				.replace("%discrim%", user.getDiscriminator())
 				.replace("%guild%", (guild == null) ? "Private" : guild.getName())
 				.replace("%guild-id%", (guild == null) ? "0" : guild.getId())
