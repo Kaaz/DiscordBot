@@ -103,7 +103,7 @@ public class BankCommand extends AbstractCommand {
 				}
 				OBank targetBank = CBanks.findBy(targetUser.getId());
 				String description = "Gift!";
-				if (args.length > 4) {
+				if (args.length > 3) {
 					description = Misc.joinStrings(args, 3);
 				}
 				if (bank.transferTo(targetBank, amount, description)) {
