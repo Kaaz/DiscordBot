@@ -17,7 +17,7 @@
 package discordbot.games.slotmachine;
 
 public enum Slot {
-	SEVEN("Seven", ":seven:", 30, 4),
+	SEVEN("Seven", ":seven:", 30, 4, 1),
 	CROWN("Crown", ":crown:", 10),
 	BELL("Bell", ":bell:", 10),
 	BAR("Bar", ":chocolate_bar:", 10),
@@ -62,5 +62,13 @@ public enum Slot {
 	@Override
 	public String toString() {
 		return emote;
+	}
+
+	public int getDoublePayout() {
+		return doublePayout;
+	}
+
+	public int getSinglePayout() {
+		return singlePayout;
 	}
 }

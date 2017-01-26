@@ -42,7 +42,8 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 
 	@Override
 	public long getCooldownDuration() {
-		return 30L;
+//		return 30L;
+		return 1L;
 	}
 
 	@Override
@@ -85,15 +86,15 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 						if (slotMachine.gameInProgress()) {
 							slotMachine.spin();
 						}
-						String gameresult;
+						String gameResult;
 						if (!slotMachine.gameInProgress()) {
-							Slot slot = slotMachine.winSlot();
-							if (slot != null) {
-								gameresult = "You rolled 3 **" + slot.getName() + "** and won **" + slot.getTriplePayout() + "**";
+							int winMulti = slotMachine.getWinMultiplier();
+							if (winMulti < 0) {
+								gameResult = "You rolled " + slotMachine.getWinSlotAmount() + " **" + slotMachine.getWinSlot().getName() + "** and won **" + winMulti + "**";
 							} else {
-								gameresult = "Aw you lose, better luck next time!";
+								gameResult = "Aw you lose, better luck next time!";
 							}
-							message.editMessage(slotMachine.toString() + Config.EOL + gameresult).queue();
+							message.editMessage(slotMachine.toString() + Config.EOL + gameResult).queue();
 							f[0].cancel(false);
 						} else {
 							message.editMessage(slotMachine.toString()).queue();

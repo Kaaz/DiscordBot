@@ -28,6 +28,9 @@ public class SlotMachine {
 	private final int wheels;
 	private final int[] results;
 	private int currentWheel;
+	private Slot winSlot = slotOptions[0];
+	private int winSlotAmount = 0;
+	private int winMultiplier = 0;
 
 	public SlotMachine() {
 		rng = new Random();
@@ -39,22 +42,48 @@ public class SlotMachine {
 	public void spin() {
 		if (currentWheel < wheels) {
 			results[currentWheel] = rng.nextInt(slotOptions.length) + slotOptions.length;
+			if (!gameInProgress()) {
+				calculateWinnings();
+			}
 			currentWheel++;
 		}
 	}
 
-	/**
-	 * Check if all
-	 *
-	 * @return the slot that won or null in case of lost
-	 */
-	public Slot winSlot() {
-		for (int i = 1; i < wheels; i++) {
-			if (results[i] != results[i - 1]) {
-				return null;
+	private void calculateWinnings() {
+		if (results[0] == results[1] && results[1] == results[2]) {
+			winSlot = slotOptions[results[0] % slotOptions.length];
+			winMultiplier = slotOptions[results[0] % slotOptions.length].getTriplePayout();
+			winSlotAmount = 3;
+		} else if (results[0] == results[1]) {
+			winSlot = slotOptions[results[0] % slotOptions.length];
+			winMultiplier = slotOptions[results[0] % slotOptions.length].getDoublePayout();
+			winSlotAmount = 2;
+		} else if (results[1] == results[2]) {
+			winSlot = slotOptions[results[1] % slotOptions.length];
+			winMultiplier = slotOptions[results[1] % slotOptions.length].getDoublePayout();
+			winSlotAmount = 2;
+		} else if (results[0] == results[3]) {
+			winSlot = slotOptions[results[0] % slotOptions.length];
+			winMultiplier = slotOptions[results[0] % slotOptions.length].getDoublePayout();
+			winSlotAmount = 2;
+		} else {
+			for (int result : results) {
+				if (slotOptions[result % slotOptions.length].getSinglePayout() > 0) {
+					winSlot = slotOptions[result % slotOptions.length];
+					winMultiplier = slotOptions[result % slotOptions.length].getDoublePayout();
+					winSlotAmount = 1;
+					break;
+				}
 			}
 		}
-		return slotOptions[results[0] % slotOptions.length];
+	}
+
+	public Slot getWinSlot() {
+		return winSlot;
+	}
+
+	public int getWinMultiplier() {
+		return winMultiplier;
 	}
 
 	public boolean gameInProgress() {
@@ -92,5 +121,9 @@ public class SlotMachine {
 			table += machineLine[i] + "|" + Config.EOL;
 		}
 		return table;
+	}
+
+	public int getWinSlotAmount() {
+		return winSlotAmount;
 	}
 }
