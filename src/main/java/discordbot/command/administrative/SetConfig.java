@@ -136,7 +136,7 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
 			Collections.sort(keys);
 			int activePage = 0;
 			int maxPage = 1 + DefaultGuildSettings.countSettings(false) / CFG_PER_PAGE;
-			if (PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
+			if (PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
 				if (args.length > 1 && args[0].equals("page")) {
 					activePage = Math.max(0, Math.min(maxPage - 1, Misc.parseInt(args[1], 0) - 1));
 				}
