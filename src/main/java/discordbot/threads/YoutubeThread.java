@@ -251,7 +251,7 @@ public class YoutubeThread extends Thread {
 				}
 				if (task.getCallback() != null) {
 					TextChannel channel = task.getMessage().getJDA().getTextChannelById(task.getMessage().getChannel().getId());
-					if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_HISTORY)) {
+					if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY)) {
 						channel.getMessageById(task.getMessage().getId()).queue(
 								message -> task.getCallback().accept(message),
 								throwable -> task.getCallback().accept(null));
