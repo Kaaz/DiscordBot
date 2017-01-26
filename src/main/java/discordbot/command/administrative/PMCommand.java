@@ -63,7 +63,7 @@ public class PMCommand extends AbstractCommand {
 		if (args.length > 1) {
 			User targetUser = DisUtil.findUser((TextChannel) channel, args[0]);
 
-			if (targetUser != null) {
+			if (targetUser != null && !targetUser.getId().equals(channel.getJDA().getSelfUser().getId())) {
 				String message = "";
 				for (int i = 1; i < args.length; i++) {
 					message += " " + args[i];
