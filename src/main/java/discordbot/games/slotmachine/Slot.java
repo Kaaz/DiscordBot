@@ -17,22 +17,34 @@
 package discordbot.games.slotmachine;
 
 public enum Slot {
-	SEVEN("Seven", ":seven:", 100),
-	CROWN("Crown", ":crown:", 50),
-	BELL("Bell", ":bell:", 25),
-	BAR("Bar", ":chocolate_bar:", 20),
-	CHERRY("Cherry", ":cherries:", 15),
+	SEVEN("Seven", ":seven:", 30, 4),
+	CROWN("Crown", ":crown:", 10),
+	BELL("Bell", ":bell:", 10),
+	BAR("Bar", ":chocolate_bar:", 10),
+	CHERRY("Cherry", ":cherries:", 10),
 	MELON("Melon", ":melon:", 10);
 
 	private final String name;
 	private final String emote;
 	private final int triplePayout;
+	private final int doublePayout;
+	private final int singlePayout;
 
 	Slot(String name, String emote, int triplePayout) {
+		this(name, emote, triplePayout, 0, 0);
+	}
+
+	Slot(String name, String emote, int triplePayout, int doublePayout) {
+		this(name, emote, triplePayout, doublePayout, 0);
+	}
+
+	Slot(String name, String emote, int triplePayout, int doublePayout, int singlePayout) {
 
 		this.name = name;
 		this.emote = emote;
 		this.triplePayout = triplePayout;
+		this.doublePayout = doublePayout;
+		this.singlePayout = singlePayout;
 	}
 
 	public int getTriplePayout() {
