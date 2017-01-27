@@ -199,7 +199,7 @@ public class CommandHandler {
 			if (channel instanceof TextChannel) {
 				TextChannel tc = (TextChannel) channel;
 				TextChannel commandLogChannel = bot.getCommandLogChannel(tc.getGuild());
-				if (commandLogChannel != null) {
+				if (commandLogChannel != null && commandLogChannel.canTalk()) {
 					commandLogChannel.sendMessage(
 							String.format("%s **%s#%s** used %s `%s` in %s",
 									Emojibet.USER, author.getName(), author.getDiscriminator(), Emojibet.KEYBOARD, commandUsed, tc.getAsMention()
