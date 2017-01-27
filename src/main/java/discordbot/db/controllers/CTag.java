@@ -86,15 +86,20 @@ public class CTag {
 	}
 
 	public static List<OTag> getTagsFor(String guildDiscordId) {
-		return getTagsFor(CGuild.getCachedId(guildDiscordId));
+		return getTagsFor(guildDiscordId, 0, 25);
 	}
 
-	public static List<OTag> getTagsFor(int guildId) {
+	public static List<OTag> getTagsFor(String guildDiscordId, int offset, int limit) {
+		return getTagsFor(CGuild.getCachedId(guildDiscordId), offset, limit);
+	}
+
+	public static List<OTag> getTagsFor(int guildId, int offset, int limit) {
 		List<OTag> result = new ArrayList<>();
 		try (ResultSet rs = WebDb.get().select(
 				"SELECT *  " +
 						"FROM tags " +
-						"WHERE guild_id = ? ", guildId)) {
+						"WHERE guild_id = ? " +
+						"LIMIT ?,? ", guildId, offset, limit)) {
 			while (rs.next()) {
 				result.add(fillRecord(rs));
 			}

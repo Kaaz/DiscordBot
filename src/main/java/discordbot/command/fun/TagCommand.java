@@ -17,7 +17,10 @@
 package discordbot.command.fun;
 
 import com.vdurmont.emoji.EmojiParser;
+import discordbot.command.CommandReactionListener;
 import discordbot.command.CommandVisibility;
+import discordbot.command.ICommandReactionListener;
+import discordbot.command.PaginationInfo;
 import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CTag;
@@ -27,6 +30,7 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
+import discordbot.util.Emojibet;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -35,12 +39,14 @@ import net.dv8tion.jda.core.entities.User;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
  * !tag
  */
-public class TagCommand extends AbstractCommand {
+public class TagCommand extends AbstractCommand implements ICommandReactionListener<PaginationInfo> {
+	private final int TAGS_PER_PAGE = 25;
 
 	public TagCommand() {
 		super();
@@ -89,7 +95,18 @@ public class TagCommand extends AbstractCommand {
 			if (tags.isEmpty()) {
 				return Template.get("command_tag_no_tags");
 			}
-			return "The following tags exist: " + Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
+			int tagCount = CTag.countTagsOn(CGuild.getCachedId(guild.getId()));
+			if (tagCount <= TAGS_PER_PAGE) {
+				return "The following tags exist: " + Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
+			}
+			int maxPage = (int) Math.ceil((double) CTag.countTagsOn(CGuild.getCachedId(guild.getId())) / (double) TAGS_PER_PAGE);
+			channel.sendMessage(makePage(guild, 1, maxPage)).queue(
+					message -> bot.commandReactionHandler.addReactionListener(
+							((TextChannel) channel).getGuild().getId(), message,
+							getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)))
+			);
+			return "";
+
 		} else if (args[0].equalsIgnoreCase("mine")) {
 			List<OTag> tags = CTag.getTagsFor(guild.getId(), author.getId());
 			if (tags.isEmpty()) {
@@ -136,5 +153,29 @@ public class TagCommand extends AbstractCommand {
 
 		}
 		return Template.get("command_tag_not_set");
+	}
+
+	private String makePage(Guild guild, int activePage, int maxPage) {
+		int offset = (activePage - 1) * TAGS_PER_PAGE;
+		List<OTag> tags = CTag.getTagsFor(guild.getId(), offset, TAGS_PER_PAGE);
+		return String.format("The following tags exist: [page %2d/%2d] ", activePage, maxPage) +
+				Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
+	}
+
+	@Override
+	public CommandReactionListener<PaginationInfo> getReactionListener(String InvokerUserId, PaginationInfo initialData) {
+		CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(InvokerUserId, initialData);
+		listener.setExpiresIn(TimeUnit.MINUTES, 2);
+		listener.registerReaction(Emojibet.PREV_TRACK, o -> {
+			if (listener.getData().previousPage()) {
+				o.editMessage(makePage(o.getGuild(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).queue();
+			}
+		});
+		listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
+			if (listener.getData().nextPage()) {
+				o.editMessage(makePage(o.getGuild(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).queue();
+			}
+		});
+		return listener;
 	}
 }
