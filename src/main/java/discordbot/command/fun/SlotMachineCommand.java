@@ -19,10 +19,14 @@ package discordbot.command.fun;
 import discordbot.command.CooldownScope;
 import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
+import discordbot.db.controllers.CBanks;
+import discordbot.db.model.OBank;
 import discordbot.games.SlotMachine;
 import discordbot.games.slotmachine.Slot;
+import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.util.Misc;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -35,6 +39,7 @@ import java.util.concurrent.Future;
 public class SlotMachineCommand extends AbstractCommand implements ICommandCooldown {
 
 	private final long SPIN_INTERVAL = 2000L;
+	private final int MAX_BET = 25;
 
 	public SlotMachineCommand() {
 		super();
@@ -78,6 +83,19 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 	@Override
 	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 		if (args.length == 0 || args.length >= 1 && !args[0].equals("info")) {
+			final int betAmount;
+			if (args.length > 0 && args[0].matches("\\d+")) {
+				betAmount = Math.min(Misc.parseInt(args[0], 0), MAX_BET);
+			} else {
+				betAmount = 0;
+			}
+			if (betAmount > 0) {
+				OBank bank = CBanks.findBy(author.getId());
+				if (bank.currentBalance < betAmount) {
+					return Template.get("gamble_insufficient_funds", betAmount, Config.ECONOMY_CURRENCY_ICON);
+				}
+				bank.transferTo(CBanks.getBotAccount(), betAmount, "slot machine");
+			}
 			final SlotMachine slotMachine = new SlotMachine();
 			bot.out.sendAsyncMessage(channel, slotMachine.toString(), message -> {
 				final Future<?>[] f = {null};
@@ -89,10 +107,15 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
 						String gameResult;
 						if (!slotMachine.gameInProgress()) {
 							int winMulti = slotMachine.getWinMultiplier();
-							if (winMulti < 0) {
-								gameResult = "You rolled " + slotMachine.getWinSlotAmount() + " **" + slotMachine.getWinSlot().getName() + "** and won **" + winMulti + "**";
+							if (winMulti > 0) {
+								if (betAmount > 0) {
+									gameResult = Template.get("gamble_slot_win", slotMachine.getWinSlotTimes(), slotMachine.getWinSlot().getEmote(), betAmount * winMulti, Config.ECONOMY_CURRENCY_ICON);
+									CBanks.getBotAccount().transferTo(CBanks.findBy(author.getId()), betAmount * winMulti, "slot winnings!");
+								} else {
+									gameResult = "You rolled " + slotMachine.getWinSlotTimes() + " **" + slotMachine.getWinSlot().getEmote() + "** and won **nothing**";
+								}
 							} else {
-								gameResult = "Aw you lose, better luck next time!";
+								gameResult = Template.get("gamble_ai_lose");
 							}
 							message.editMessage(slotMachine.toString() + Config.EOL + gameResult).queue();
 							f[0].cancel(false);

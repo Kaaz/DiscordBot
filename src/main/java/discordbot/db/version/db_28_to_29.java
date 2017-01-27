@@ -20,6 +20,7 @@ import discordbot.db.IDbVersion;
 
 /**
  * more work on economy + introduction of betting
+ * more indexes on tags
  */
 public class db_28_to_29 implements IDbVersion {
 	@Override
@@ -35,6 +36,8 @@ public class db_28_to_29 implements IDbVersion {
 	@Override
 	public String[] getExecutes() {
 		return new String[]{
+				"CREATE INDEX tags_tag_name_guild_id_index ON tags (tag_name, guild_id)",
+				"CREATE INDEX guild_name ON tags (tag_name)",
 				"CREATE TABLE bets ( " +
 						" id INT PRIMARY KEY AUTO_INCREMENT, " +
 						" title VARCHAR(128), " +

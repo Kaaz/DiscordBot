@@ -29,7 +29,7 @@ public class SlotMachine {
 	private final int[] results;
 	private int currentWheel;
 	private Slot winSlot = slotOptions[0];
-	private int winSlotAmount = 0;
+	private int winSlotTimes = 0;
 	private int winMultiplier = 0;
 
 	public SlotMachine() {
@@ -42,10 +42,10 @@ public class SlotMachine {
 	public void spin() {
 		if (currentWheel < wheels) {
 			results[currentWheel] = rng.nextInt(slotOptions.length) + slotOptions.length;
-			if (!gameInProgress()) {
-				calculateWinnings();
-			}
 			currentWheel++;
+		}
+		if (!gameInProgress()) {
+			calculateWinnings();
 		}
 	}
 
@@ -53,25 +53,21 @@ public class SlotMachine {
 		if (results[0] == results[1] && results[1] == results[2]) {
 			winSlot = slotOptions[results[0] % slotOptions.length];
 			winMultiplier = slotOptions[results[0] % slotOptions.length].getTriplePayout();
-			winSlotAmount = 3;
-		} else if (results[0] == results[1]) {
+			winSlotTimes = 3;
+		} else if (results[0] == results[1] || results[0] == results[2] && slotOptions[results[0] % slotOptions.length].getDoublePayout() > 0) {
 			winSlot = slotOptions[results[0] % slotOptions.length];
 			winMultiplier = slotOptions[results[0] % slotOptions.length].getDoublePayout();
-			winSlotAmount = 2;
-		} else if (results[1] == results[2]) {
+			winSlotTimes = 2;
+		} else if (results[1] == results[2] && slotOptions[results[1] % slotOptions.length].getDoublePayout() > 0) {
 			winSlot = slotOptions[results[1] % slotOptions.length];
 			winMultiplier = slotOptions[results[1] % slotOptions.length].getDoublePayout();
-			winSlotAmount = 2;
-		} else if (results[0] == results[3]) {
-			winSlot = slotOptions[results[0] % slotOptions.length];
-			winMultiplier = slotOptions[results[0] % slotOptions.length].getDoublePayout();
-			winSlotAmount = 2;
+			winSlotTimes = 2;
 		} else {
 			for (int result : results) {
 				if (slotOptions[result % slotOptions.length].getSinglePayout() > 0) {
 					winSlot = slotOptions[result % slotOptions.length];
-					winMultiplier = slotOptions[result % slotOptions.length].getDoublePayout();
-					winSlotAmount = 1;
+					winMultiplier = slotOptions[result % slotOptions.length].getSinglePayout();
+					winSlotTimes = 1;
 					break;
 				}
 			}
@@ -123,7 +119,7 @@ public class SlotMachine {
 		return table;
 	}
 
-	public int getWinSlotAmount() {
-		return winSlotAmount;
+	public int getWinSlotTimes() {
+		return winSlotTimes;
 	}
 }
