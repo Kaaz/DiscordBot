@@ -47,6 +47,23 @@ public class CTag {
 		return t;
 	}
 
+	public static int countTagsOn(int guildId) {
+		int tagCount = 0;
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT count(*) AS sum  " +
+						"FROM tags " +
+						"WHERE guild_id = ? ", guildId)) {
+			if (rs.next()) {
+				tagCount = rs.getInt("sum");
+			}
+			rs.getStatement().close();
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return tagCount;
+	}
+
+
 	public static List<OTag> getTagsFor(String guildDiscordId, String userDiscordId) {
 		return getTagsFor(CGuild.getCachedId(guildDiscordId), CUser.getCachedId(userDiscordId));
 	}

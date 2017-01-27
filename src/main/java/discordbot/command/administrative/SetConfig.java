@@ -141,7 +141,8 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
 					activePage = Math.max(0, Math.min(maxPage - 1, Misc.parseInt(args[1], 0) - 1));
 				}
 				channel.sendMessage(makeEmbedConfig(guild, activePage)).queue(
-						message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), null))
+						message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message,
+								getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)))
 				);
 				return "";
 			}
@@ -245,17 +246,17 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
 
 	@Override
 	public CommandReactionListener<PaginationInfo> getReactionListener(String invoker, PaginationInfo data) {
-		final int maxPage = 1 + DefaultGuildSettings.countSettings(false) / CFG_PER_PAGE;
-		CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(invoker, new PaginationInfo(1, maxPage));
+
+		CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(invoker, data);
 		listener.setExpiresIn(TimeUnit.MINUTES, 2);
 		listener.registerReaction(Emojibet.PREV_TRACK, o -> {
 			if (listener.getData().previousPage()) {
-				o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(o.getGuild(), listener.getData().getCurrentPage())).build()).queue();
+				o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).queue();
 			}
 		});
 		listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
 			if (listener.getData().nextPage()) {
-				o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(o.getGuild(), listener.getData().getCurrentPage())).build()).queue();
+				o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).queue();
 			}
 		});
 		return listener;

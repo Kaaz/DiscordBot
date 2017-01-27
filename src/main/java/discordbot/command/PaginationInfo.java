@@ -16,15 +16,19 @@
 
 package discordbot.command;
 
+import net.dv8tion.jda.core.entities.Guild;
+
 public class PaginationInfo {
 
 	private int currentPage = 0;
-	private int maxPage = 1;
+	private final int maxPage;
+	private final Guild guild;
 
-	public PaginationInfo(int currentPage, int maxPage) {
+	public PaginationInfo(int currentPage, int maxPage, Guild guild) {
 
 		this.currentPage = currentPage;
 		this.maxPage = maxPage;
+		this.guild = guild;
 	}
 
 	public boolean previousPage() {
@@ -47,15 +51,15 @@ public class PaginationInfo {
 		return maxPage;
 	}
 
-	public void setMaxPage(int maxPage) {
-		this.maxPage = maxPage;
-	}
-
 	public int getCurrentPage() {
 		return currentPage;
 	}
 
 	public void setCurrentPage(int currentPage) {
 		this.currentPage = currentPage;
+	}
+
+	public Guild getGuild() {
+		return guild;
 	}
 }
