@@ -160,4 +160,31 @@ public class CTag {
 			e.printStackTrace();
 		}
 	}
+
+	public static void deleteTagsBy(int guildId, int userId) {
+		try {
+			WebDb.get().query(
+					"DELETE FROM tags WHERE guild_id = ? AND user_id= ? ",
+					guildId, userId
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static List<OTag> findByUser(int guildId, int userId) {
+		List<OTag> result = new ArrayList<>();
+		try (ResultSet rs = WebDb.get().select(
+				"SELECT *  " +
+						"FROM tags " +
+						"WHERE guild_id = ? AND user_id = ?", guildId, userId)) {
+			while (rs.next()) {
+				result.add(fillRecord(rs));
+			}
+			rs.getStatement().close();
+		} catch (Exception e) {
+			Logger.fatal(e);
+		}
+		return result;
+	}
 }

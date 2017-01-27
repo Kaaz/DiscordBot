@@ -30,8 +30,10 @@ import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
+import discordbot.util.DisUtil;
 import discordbot.util.Emojibet;
 import discordbot.util.Misc;
+import discordbot.util.TimeUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -65,19 +67,22 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
 	@Override
 	public String[] getUsage() {
 		return new String[]{
-				"tag                  //list of tags",
-				"tag <name>           //shows the tag",
-				"tag mine             //shows your tags",
-				"tag list             //shows all tags ",
-				"tag delete <name>    //deletes tag",
-				"tag <name> <content> //creates the tag",
+				"tag                     //list of tags",
+				"tag <name>              //shows the tag",
+				"tag mine                //shows your tags",
+				"tag by <name>           //shows tags created by user",
+				"tag details <tag>       //shows info about tag",
+				"tag list                //shows all tags ",
+				"tag deleteuser <@user>  //deletes tags by user",
+				"tag delete <name>       //deletes tag",
+				"tag <name> <content>    //creates the tag",
 		};
 	}
 
 	@Override
 	public String[] getAliases() {
 		return new String[]{
-				"t"
+				"t", "tags"
 		};
 	}
 
@@ -114,6 +119,38 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
 			}
 			return "You have made the following tags: " + Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
 		}
+		if (args.length == 2 && args[0].equalsIgnoreCase("details")) {
+			OTag tag = CTag.findBy(CGuild.getCachedId(guild.getId()), args[1]);
+			if (tag.id == 0) {
+				return Template.get("command_tag_not_set");
+			}
+			User user = channel.getJDA().getUserById(CUser.getCachedDiscordId(tag.userId));
+			String username = "???";
+			if (user != null) {
+				username = user.getName();
+			}
+			return String.format("The tag `%s` is created on %s by %s", tag.tagname, TimeUtil.formatYMD(tag.created), username);
+
+		}
+		if (args.length == 2 && args[0].equalsIgnoreCase("by")) {
+			User user = DisUtil.findUser((TextChannel) channel, args[1]);
+			if (user == null) {
+				return Template.get("cant_find_user", args[1]);
+			}
+			List<OTag> tags = CTag.findByUser(CGuild.getCachedId(guild.getId()), CUser.getCachedId(user.getId()));
+			return user.getName() + " made the following tags: " + Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
+		}
+		if (args.length > 1 && args[0].equalsIgnoreCase("deleteuser")) {
+			if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+				return Template.get("command_no_permission");
+			}
+			User user = DisUtil.findUser((TextChannel) channel, args[1]);
+			if (user == null) {
+				return Template.get("cant_find_user", args[1]);
+			}
+			CTag.deleteTagsBy(CGuild.getCachedId(guild.getId()), CUser.getCachedId(user.getId()));
+			return Template.get("command_tag_by_user_deleted", user.getName());
+		}
 		if (args.length == 2 && args[0].equalsIgnoreCase("delete")) {
 			OTag tag = CTag.findBy(guild.getId(), args[1]);
 			if (tag.id > 0) {
@@ -124,6 +161,9 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
 				return Template.get("command_tag_delete_success");
 			}
 			return Template.get("command_tag_nothing_to_delete");
+		}
+		if (DisUtil.hasMention(args[0])) {
+			return Template.get("command_tag_no_mention");
 		}
 		OTag tag = CTag.findBy(guild.getId(), args[0]);
 		if (args.length > 1) {

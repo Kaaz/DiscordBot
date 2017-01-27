@@ -26,7 +26,7 @@ public class TimeUtil {
 	private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
 	private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 	private static final SimpleDateFormat timestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-	private static final SimpleDateFormat ymdFormat = new SimpleDateFormat("yyyy/mm/dd");
+	private static final SimpleDateFormat ymdFormat = new SimpleDateFormat("yyyy/MM/dd");
 
 	public static String getTimestampFormat(long time) {
 		try {

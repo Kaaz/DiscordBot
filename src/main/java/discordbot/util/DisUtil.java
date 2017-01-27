@@ -69,6 +69,16 @@ public class DisUtil {
 		return null;
 	}
 
+	/**
+	 * check if a string has any mention
+	 *
+	 * @param search the text to match
+	 * @return contains mention?
+	 */
+	public static boolean hasMention(String search) {
+		return anyMention.matcher(search).matches();
+	}
+
 	public static boolean hasPermission(MessageChannel channel, User user, Permission permission) {
 		if (channel == null) {
 			return false;
