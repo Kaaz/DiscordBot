@@ -188,7 +188,7 @@ public class Config {
 	public static boolean TRELLO_ACTIVE = false;
 
 	@ConfigurationOption
-	public static String GOOGLE_API_KEY = "google-api-key-here";
+	public static String[] GOOGLE_API_KEY = {"google-api-key-here"};
 
 	@ConfigurationOption
 	public static String GIPHY_TOKEN = "dc6zaTOxFJmzC";

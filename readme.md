@@ -128,12 +128,12 @@ Friendly | 4 days
 Regular | 7 days 
 Honored | 14 days 
 Veteran | 28 days 
-Revered | 60 days 
-Herald | 90 days 
-Exalted | 180 days 
-Beloved | 365 days 
-Favorite | 700 days 
-Consul | 1000 days 
+Revered | 50 days 
+Herald | 75 days 
+Exalted | 125 days 
+Beloved | 200 days 
+Favorite | 365 days 
+Consul | 500 days 
 
 
 ## Run the bot yourself
@@ -981,9 +981,8 @@ Usable in public and private channels
 #### Usage
 
 ```php
-slot              //play
-slot play         //play the game
-slot play cookies //play the game for cookies
+slot              //spin the slotmachine
+slot [cookies]    //play for real cookies where [cookies] is the amount of cookies you bet
 slot info         //info about payout
 ```
 ### stop
@@ -1029,19 +1028,22 @@ Usable in public and private channels
 
 Tags!
 
-Accessible though: tag, t
+Accessible though: tag, t, tags
 
 Usable in public  channels
 
 #### Usage
 
 ```php
-tag                  //list of tags
-tag <name>           //shows the tag
-tag mine             //shows your tags
-tag list             //shows all tags 
-tag delete <name>    //deletes tag
-tag <name> <content> //creates the tag
+tag                     //list of tags
+tag <name>              //shows the tag
+tag mine                //shows your tags
+tag by <name>           //shows tags created by user
+tag details <tag>       //shows info about tag
+tag list                //shows all tags 
+tag deleteuser <@user>  //deletes tags by user
+tag delete <name>       //deletes tag
+tag <name> <content>    //creates the tag
 ```
 ### tempban
 

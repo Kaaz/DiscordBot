@@ -59,7 +59,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 
 	public PlayCommand() {
 		super();
-		ytSearch = new YTSearch(Config.GOOGLE_API_KEY);
+		ytSearch = new YTSearch();
 	}
 
 	@Override
@@ -132,13 +132,11 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 						return Template.get("music_not_same_voicechannel");
 					}
 					player.leave();
-					Thread.sleep(2000L);// ¯\_(ツ)_/¯
 				}
 				if (!PermissionUtil.checkPermission(guild.getMember(author).getVoiceState().getChannel(), guild.getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
 					return Template.get("music_join_no_permission", guild.getMember(author).getVoiceState().getChannel().getName());
 				}
 				player.connectTo(guild.getMember(author).getVoiceState().getChannel());
-				Thread.sleep(2000L);// ¯\_(ツ)_/¯
 			} catch (Exception e) {
 				e.printStackTrace();
 				return "Can't connect to you";
@@ -151,6 +149,9 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 			String videoCode = YTUtil.extractCodeFromUrl(args[0]);
 			String playlistCode = YTUtil.getPlayListCode(args[0]);
 			if (playlistCode != null) {
+				if (!ytSearch.hasValidKey()) {
+					return Template.get("music_no_valid_youtube_key");
+				}
 				if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getId()).hasPermission(OUser.PermissionNode.IMPORT_PLAYLIST)) {
 					List<YTSearch.SimpleResult> items = ytSearch.getPlayListItems(playlistCode);
 					String output = "Added the following items to the playlist: " + Config.EOL;
@@ -169,6 +170,9 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 				}
 			}
 			if (!YTUtil.isValidYoutubeCode(videoCode)) {
+				if (!ytSearch.hasValidKey()) {
+					return Template.get("music_no_valid_youtube_key");
+				}
 				YTSearch.SimpleResult results = ytSearch.getResults(Joiner.on(" ").join(args));
 				if (results != null) {
 					videoCode = results.getCode();
