@@ -65,6 +65,11 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 	@Override
 	public void cleanup() {
 		ytSearch.resetCache();
+		if (!ytSearch.hasValidKey()) {
+			for (String key : Config.GOOGLE_API_KEY) {
+				ytSearch.addYoutubeKey(key);
+			}
+		}
 	}
 
 	@Override

@@ -77,6 +77,7 @@ public class YTSearch {
 
 	public synchronized void addYoutubeKey(String key) {
 		keyQueue.add(key);
+		hasValidKey = true;
 	}
 
 	private synchronized boolean setupNextKey() {
