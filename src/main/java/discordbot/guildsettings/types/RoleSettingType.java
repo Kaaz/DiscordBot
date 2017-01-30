@@ -28,64 +28,64 @@ import net.dv8tion.jda.core.entities.Role;
  */
 public class RoleSettingType implements IGuildSettingType {
 
-	private final boolean allowNull;
+    private final boolean allowNull;
 
-	/**
-	 * Allow a null/false value?
-	 *
-	 * @param allowNull true if it can be null
-	 */
-	public RoleSettingType(boolean allowNull) {
+    /**
+     * Allow a null/false value?
+     *
+     * @param allowNull true if it can be null
+     */
+    public RoleSettingType(boolean allowNull) {
 
-		this.allowNull = allowNull;
-	}
+        this.allowNull = allowNull;
+    }
 
-	@Override
-	public String typeName() {
-		return "discord-role";
-	}
+    @Override
+    public String typeName() {
+        return "discord-role";
+    }
 
-	@Override
-	public boolean validate(Guild guild, String value) {
-		if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
-			return true;
-		}
-		if (DisUtil.isRoleMention(value)) {
-			return guild.getRoleById(DisUtil.mentionToId(value)) != null;
-		}
-		return DisUtil.findRole(guild, value) != null;
-	}
+    @Override
+    public boolean validate(Guild guild, String value) {
+        if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
+            return true;
+        }
+        if (DisUtil.isRoleMention(value)) {
+            return guild.getRoleById(DisUtil.mentionToId(value)) != null;
+        }
+        return DisUtil.findRole(guild, value) != null;
+    }
 
-	@Override
-	public String fromInput(Guild guild, String value) {
-		if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
-			return "false";
-		}
-		if (DisUtil.isRoleMention(value)) {
-			Role role = guild.getRoleById(DisUtil.mentionToId(value));
-			if (role != null) {
-				return role.getId();
-			}
-		}
-		Role role = DisUtil.findRole(guild, value);
-		if (role != null) {
-			return role.getId();
-		}
-		return "false";
-	}
+    @Override
+    public String fromInput(Guild guild, String value) {
+        if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
+            return "false";
+        }
+        if (DisUtil.isRoleMention(value)) {
+            Role role = guild.getRoleById(DisUtil.mentionToId(value));
+            if (role != null) {
+                return role.getId();
+            }
+        }
+        Role role = DisUtil.findRole(guild, value);
+        if (role != null) {
+            return role.getId();
+        }
+        return "false";
+    }
 
-	@Override
-	public String toDisplay(Guild guild, String value) {
-		Role role = guild.getRoleById(value);
-		if (role != null) {
-			return role.getName();
-		}
-		if (!value.isEmpty() && !value.matches("\\d{10,}")) {
-			Role roleByName = DisUtil.findRole(guild, value);
-			if (roleByName != null) {
-				return roleByName.getName();
-			}
-		}
-		return Emojibet.X;
-	}
+    @Override
+    public String toDisplay(Guild guild, String value) {
+        Role role = guild.getRoleById(value);
+        if (role != null) {
+            return role.getName();
+        }
+        if (!value.isEmpty() && !value.matches("\\d{10,}")) {
+            Role roleByName = DisUtil.findRole(guild, value);
+            if (roleByName != null) {
+                return roleByName.getName();
+            }
+        }
+        return Emojibet.X;
+    }
 }

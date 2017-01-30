@@ -20,19 +20,19 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 public class QueuedAudioTrack {
 
-	final private String userId;
-	final private AudioTrack track;
+    final private String userId;
+    final private AudioTrack track;
 
-	public QueuedAudioTrack(String userId, AudioTrack track) {
-		this.userId = userId;
-		this.track = track;
-	}
+    public QueuedAudioTrack(String userId, AudioTrack track) {
+        this.userId = userId;
+        this.track = track;
+    }
 
-	public String getUserId() {
-		return userId;
-	}
+    public String getUserId() {
+        return userId;
+    }
 
-	public AudioTrack getTrack() {
-		return track;
-	}
+    public AudioTrack getTrack() {
+        return track;
+    }
 }

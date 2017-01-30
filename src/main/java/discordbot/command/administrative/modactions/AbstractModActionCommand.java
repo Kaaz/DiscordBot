@@ -35,65 +35,65 @@ import net.dv8tion.jda.core.utils.PermissionUtil;
 
 
 abstract public class AbstractModActionCommand extends AbstractCommand {
-	public AbstractModActionCommand() {
-		super();
-	}
+    public AbstractModActionCommand() {
+        super();
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{
-				String.format("%s <user>     //%s user from guild", getCommand(), getPunishType().getDescription()),
-		};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{
+                String.format("%s <user>     //%s user from guild", getCommand(), getPunishType().getDescription()),
+        };
+    }
 
-	protected abstract OModerationCase.PunishType getPunishType();
+    protected abstract OModerationCase.PunishType getPunishType();
 
-	protected abstract Permission getRequiredPermission();
+    protected abstract Permission getRequiredPermission();
 
-	@Override
-	public CommandVisibility getVisibility() {
-		return CommandVisibility.PUBLIC;
-	}
+    @Override
+    public CommandVisibility getVisibility() {
+        return CommandVisibility.PUBLIC;
+    }
 
-	protected abstract boolean punish(Guild guild, Member member);
+    protected abstract boolean punish(Guild guild, Member member);
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		SimpleRank rank = bot.security.getSimpleRank(author);
-		TextChannel chan = (TextChannel) channel;
-		Guild guild = chan.getGuild();
-		if (getRequiredPermission() != null) {
-			if (!PermissionUtil.checkPermission(guild, guild.getMember(author), getRequiredPermission())) {
-				return Template.get("command_no_permission");
-			}
-			if (!PermissionUtil.checkPermission(guild, guild.getSelfMember(), getRequiredPermission())) {
-				return Template.get("permission_missing", getRequiredPermission().name());
-			}
-		}
-		if (args.length == 0) {
-			return Template.get("command_modaction_empty", getPunishType().getKeyword().toLowerCase());
-		}
-		User targetUser = DisUtil.findUser(chan, Joiner.on(" ").join(args));
-		if (targetUser == null) {
-			return Template.get("cant_find_user", Joiner.on(" ").join(args));
-		}
-		if (targetUser.getId().equals(guild.getSelfMember().getUser().getId())) {
-			return Template.get("command_modaction_not_self", getPunishType().getKeyword().toLowerCase());
-		}
-		if (!PermissionUtil.canInteract(guild.getSelfMember(), guild.getMember(targetUser)) || !punish(guild, guild.getMember(targetUser))) {
-			return Template.get("command_modaction_failed", getPunishType().getKeyword().toLowerCase(), targetUser.getName());
-		}
-		int caseId = CModerationCase.insert(guild, targetUser, author, getPunishType(), null);
-		TextChannel modlogChannel = bot.getModlogChannel(guild.getId());
-		if (modlogChannel != null) {
-			modlogChannel.sendMessage(CModerationCase.buildCase(guild, caseId)).queue(
-					message -> {
-						OModerationCase modcase = CModerationCase.findById(caseId);
-						modcase.messageId = message.getId();
-						CModerationCase.update(modcase);
-					}
-			);
-		}
-		return Template.get("command_modaction_success", getPunishType().getKeyword().toLowerCase(), targetUser.getName());
-	}
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        SimpleRank rank = bot.security.getSimpleRank(author);
+        TextChannel chan = (TextChannel) channel;
+        Guild guild = chan.getGuild();
+        if (getRequiredPermission() != null) {
+            if (!PermissionUtil.checkPermission(guild, guild.getMember(author), getRequiredPermission())) {
+                return Template.get("command_no_permission");
+            }
+            if (!PermissionUtil.checkPermission(guild, guild.getSelfMember(), getRequiredPermission())) {
+                return Template.get("permission_missing", getRequiredPermission().name());
+            }
+        }
+        if (args.length == 0) {
+            return Template.get("command_modaction_empty", getPunishType().getKeyword().toLowerCase());
+        }
+        User targetUser = DisUtil.findUser(chan, Joiner.on(" ").join(args));
+        if (targetUser == null) {
+            return Template.get("cant_find_user", Joiner.on(" ").join(args));
+        }
+        if (targetUser.getId().equals(guild.getSelfMember().getUser().getId())) {
+            return Template.get("command_modaction_not_self", getPunishType().getKeyword().toLowerCase());
+        }
+        if (!PermissionUtil.canInteract(guild.getSelfMember(), guild.getMember(targetUser)) || !punish(guild, guild.getMember(targetUser))) {
+            return Template.get("command_modaction_failed", getPunishType().getKeyword().toLowerCase(), targetUser.getName());
+        }
+        int caseId = CModerationCase.insert(guild, targetUser, author, getPunishType(), null);
+        TextChannel modlogChannel = bot.getModlogChannel(guild.getId());
+        if (modlogChannel != null) {
+            modlogChannel.sendMessage(CModerationCase.buildCase(guild, caseId)).queue(
+                    message -> {
+                        OModerationCase modcase = CModerationCase.findById(caseId);
+                        modcase.messageId = message.getId();
+                        CModerationCase.update(modcase);
+                    }
+            );
+        }
+        return Template.get("command_modaction_success", getPunishType().getKeyword().toLowerCase(), targetUser.getName());
+    }
 }

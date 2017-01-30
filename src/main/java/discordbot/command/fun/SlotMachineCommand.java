@@ -38,105 +38,105 @@ import java.util.concurrent.Future;
  */
 public class SlotMachineCommand extends AbstractCommand implements ICommandCooldown {
 
-	private final long SPIN_INTERVAL = 2000L;
-	private final int MAX_BET = 25;
+    private final long SPIN_INTERVAL = 2000L;
+    private final int MAX_BET = 25;
 
-	public SlotMachineCommand() {
-		super();
-	}
+    public SlotMachineCommand() {
+        super();
+    }
 
-	@Override
-	public long getCooldownDuration() {
+    @Override
+    public long getCooldownDuration() {
 //		return 30L;
-		return 1L;
-	}
+        return 1L;
+    }
 
-	@Override
-	public CooldownScope getScope() {
-		return CooldownScope.USER;
-	}
+    @Override
+    public CooldownScope getScope() {
+        return CooldownScope.USER;
+    }
 
-	@Override
-	public String getDescription() {
-		return "Feeling lucky? try the slotmachine! You might just win a hand full of air!";
-	}
+    @Override
+    public String getDescription() {
+        return "Feeling lucky? try the slotmachine! You might just win a hand full of air!";
+    }
 
-	@Override
-	public String getCommand() {
-		return "slot";
-	}
+    @Override
+    public String getCommand() {
+        return "slot";
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{
-				"slot              //spin the slotmachine",
-				"slot [cookies]    //play for real cookies where [cookies] is the amount of cookies you bet",
-				"slot info         //info about payout"
-		};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{
+                "slot              //spin the slotmachine",
+                "slot [cookies]    //play for real cookies where [cookies] is the amount of cookies you bet",
+                "slot info         //info about payout"
+        };
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[]{};
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[]{};
+    }
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (args.length == 0 || args.length >= 1 && !args[0].equals("info")) {
-			final int betAmount;
-			if (args.length > 0 && args[0].matches("\\d+")) {
-				betAmount = Math.min(Misc.parseInt(args[0], 0), MAX_BET);
-			} else {
-				betAmount = 0;
-			}
-			if (betAmount > 0) {
-				OBank bank = CBanks.findBy(author.getId());
-				if (bank.currentBalance < betAmount) {
-					return Template.get("gamble_insufficient_funds", betAmount, Config.ECONOMY_CURRENCY_ICON);
-				}
-				bank.transferTo(CBanks.getBotAccount(), betAmount, "slot machine");
-			}
-			final SlotMachine slotMachine = new SlotMachine();
-			bot.out.sendAsyncMessage(channel, slotMachine.toString(), message -> {
-				final Future<?>[] f = {null};
-				f[0] = bot.scheduleRepeat(() -> {
-					try {
-						if (slotMachine.gameInProgress()) {
-							slotMachine.spin();
-						}
-						String gameResult;
-						if (!slotMachine.gameInProgress()) {
-							int winMulti = slotMachine.getWinMultiplier();
-							if (winMulti > 0) {
-								if (betAmount > 0) {
-									gameResult = Template.get("gamble_slot_win", slotMachine.getWinSlotTimes(), slotMachine.getWinSlot().getEmote(), betAmount * winMulti, Config.ECONOMY_CURRENCY_ICON);
-									CBanks.getBotAccount().transferTo(CBanks.findBy(author.getId()), betAmount * winMulti, "slot winnings!");
-								} else {
-									gameResult = "You rolled " + slotMachine.getWinSlotTimes() + " **" + slotMachine.getWinSlot().getEmote() + "** and won **nothing**";
-								}
-							} else {
-								gameResult = Template.get("gamble_ai_lose");
-							}
-							message.editMessage(slotMachine.toString() + Config.EOL + gameResult).queue();
-							f[0].cancel(false);
-						} else {
-							message.editMessage(slotMachine.toString()).queue();
-						}
-					} catch (Exception e) {
-						bot.getContainer().reportError(e, "slotmachine", author.getId(), "channel", ((TextChannel) channel).getAsMention(), bot);
-						f[0].cancel(false);
-					}
-				}, 1000L, SPIN_INTERVAL);
-			});
-		} else {
-			String ret = "The slotmachine!" + Config.EOL;
-			ret += "payout is as follows: " + Config.EOL;
-			for (Slot s : Slot.values()) {
-				ret += String.format("%1$s %1$s %1$s = %2$s" + Config.EOL, s.getEmote(), s.getTriplePayout());
-			}
-			ret += "type **slot play** to give it a shot!";
-			return ret;
-		}
-		return "";
-	}
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        if (args.length == 0 || args.length >= 1 && !args[0].equals("info")) {
+            final int betAmount;
+            if (args.length > 0 && args[0].matches("\\d+")) {
+                betAmount = Math.min(Misc.parseInt(args[0], 0), MAX_BET);
+            } else {
+                betAmount = 0;
+            }
+            if (betAmount > 0) {
+                OBank bank = CBanks.findBy(author.getId());
+                if (bank.currentBalance < betAmount) {
+                    return Template.get("gamble_insufficient_funds", betAmount, Config.ECONOMY_CURRENCY_ICON);
+                }
+                bank.transferTo(CBanks.getBotAccount(), betAmount, "slot machine");
+            }
+            final SlotMachine slotMachine = new SlotMachine();
+            bot.out.sendAsyncMessage(channel, slotMachine.toString(), message -> {
+                final Future<?>[] f = {null};
+                f[0] = bot.scheduleRepeat(() -> {
+                    try {
+                        if (slotMachine.gameInProgress()) {
+                            slotMachine.spin();
+                        }
+                        String gameResult;
+                        if (!slotMachine.gameInProgress()) {
+                            int winMulti = slotMachine.getWinMultiplier();
+                            if (winMulti > 0) {
+                                if (betAmount > 0) {
+                                    gameResult = Template.get("gamble_slot_win", slotMachine.getWinSlotTimes(), slotMachine.getWinSlot().getEmote(), betAmount * winMulti, Config.ECONOMY_CURRENCY_ICON);
+                                    CBanks.getBotAccount().transferTo(CBanks.findBy(author.getId()), betAmount * winMulti, "slot winnings!");
+                                } else {
+                                    gameResult = "You rolled " + slotMachine.getWinSlotTimes() + " **" + slotMachine.getWinSlot().getEmote() + "** and won **nothing**";
+                                }
+                            } else {
+                                gameResult = Template.get("gamble_ai_lose");
+                            }
+                            message.editMessage(slotMachine.toString() + Config.EOL + gameResult).queue();
+                            f[0].cancel(false);
+                        } else {
+                            message.editMessage(slotMachine.toString()).queue();
+                        }
+                    } catch (Exception e) {
+                        bot.getContainer().reportError(e, "slotmachine", author.getId(), "channel", ((TextChannel) channel).getAsMention(), bot);
+                        f[0].cancel(false);
+                    }
+                }, 1000L, SPIN_INTERVAL);
+            });
+        } else {
+            String ret = "The slotmachine!" + Config.EOL;
+            ret += "payout is as follows: " + Config.EOL;
+            for (Slot s : Slot.values()) {
+                ret += String.format("%1$s %1$s %1$s = %2$s" + Config.EOL, s.getEmote(), s.getTriplePayout());
+            }
+            ret += "type **slot play** to give it a shot!";
+            return ret;
+        }
+        return "";
+    }
 }

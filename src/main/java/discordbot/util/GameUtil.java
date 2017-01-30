@@ -17,14 +17,14 @@
 package discordbot.util;
 
 public class GameUtil {
-	public static final int MULTIPLICATION = 2;
-	public static final int BASE = 3;
+    public static final int MULTIPLICATION = 2;
+    public static final int BASE = 3;
 
-	public static long getXpFor(int level) {
-		return getXpFor(level, MULTIPLICATION, BASE);
-	}
+    public static long getXpFor(int level) {
+        return getXpFor(level, MULTIPLICATION, BASE);
+    }
 
-	public static long getXpFor(int level, int multiIncremental, int multiBase) {
-		return (multiIncremental * level * level) + multiBase * level;
-	}
+    public static long getXpFor(int level, int multiIncremental, int multiBase) {
+        return (multiIncremental * level * level) + multiBase * level;
+    }
 }

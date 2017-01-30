@@ -27,35 +27,35 @@ import net.dv8tion.jda.core.entities.User;
  * command to modify the logging settings of a guild
  */
 public class LoggingCommand extends AbstractCommand {
-	public LoggingCommand() {
-		super();
-	}
+    public LoggingCommand() {
+        super();
+    }
 
-	@Override
-	public String getDescription() {
-		return "log all the things! Configure how/where/what is being logged";
-	}
+    @Override
+    public String getDescription() {
+        return "log all the things! Configure how/where/what is being logged";
+    }
 
-	@Override
-	public String getCommand() {
-		return "logging";
-	}
+    @Override
+    public String getCommand() {
+        return "logging";
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{};
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[]{
-				"log"
-		};
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[]{
+                "log"
+        };
+    }
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		SimpleRank rank = bot.security.getSimpleRank(author);
-		return Template.get("command_no_permission");
-	}
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        SimpleRank rank = bot.security.getSimpleRank(author);
+        return Template.get("command_no_permission");
+    }
 }

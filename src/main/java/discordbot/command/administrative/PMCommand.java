@@ -30,50 +30,50 @@ import net.dv8tion.jda.core.entities.User;
  * make the bot pm someone
  */
 public class PMCommand extends AbstractCommand {
-	public PMCommand() {
-		super();
-	}
+    public PMCommand() {
+        super();
+    }
 
-	@Override
-	public String getDescription() {
-		return "Send a message to user";
-	}
+    @Override
+    public String getDescription() {
+        return "Send a message to user";
+    }
 
-	@Override
-	public String getCommand() {
-		return "pm";
-	}
+    @Override
+    public String getCommand() {
+        return "pm";
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{"pm <@user> <message..>"};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{"pm <@user> <message..>"};
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[]{};
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[]{};
+    }
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		SimpleRank rank = bot.security.getSimpleRank(author, channel);
-		if (!rank.isAtLeast(SimpleRank.USER)) {
-			return Template.get("command_no_permission");
-		}
-		if (args.length > 1) {
-			User targetUser = DisUtil.findUser((TextChannel) channel, args[0]);
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        SimpleRank rank = bot.security.getSimpleRank(author, channel);
+        if (!rank.isAtLeast(SimpleRank.USER)) {
+            return Template.get("command_no_permission");
+        }
+        if (args.length > 1) {
+            User targetUser = DisUtil.findUser((TextChannel) channel, args[0]);
 
-			if (targetUser != null && !targetUser.getId().equals(channel.getJDA().getSelfUser().getId())) {
-				String message = "";
-				for (int i = 1; i < args.length; i++) {
-					message += " " + args[i];
-				}
-				bot.out.sendPrivateMessage(targetUser, "You got a message from " + author.getAsMention() + ": " + message);
-				return Template.get("command_pm_success");
-			} else {
-				return Template.get("command_pm_cant_find_user");
-			}
-		}
-		return Template.get("command_invalid_use");
-	}
+            if (targetUser != null && !targetUser.getId().equals(channel.getJDA().getSelfUser().getId())) {
+                String message = "";
+                for (int i = 1; i < args.length; i++) {
+                    message += " " + args[i];
+                }
+                bot.out.sendPrivateMessage(targetUser, "You got a message from " + author.getAsMention() + ": " + message);
+                return Template.get("command_pm_success");
+            } else {
+                return Template.get("command_pm_cant_find_user");
+            }
+        }
+        return Template.get("command_invalid_use");
+    }
 }

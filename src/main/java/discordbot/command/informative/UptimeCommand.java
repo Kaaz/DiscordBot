@@ -24,32 +24,32 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
 public class UptimeCommand extends AbstractCommand {
-	public UptimeCommand() {
-		super();
-	}
+    public UptimeCommand() {
+        super();
+    }
 
-	@Override
-	public String getDescription() {
-		return "How long am I running for?";
-	}
+    @Override
+    public String getDescription() {
+        return "How long am I running for?";
+    }
 
-	@Override
-	public String getCommand() {
-		return "uptime";
-	}
+    @Override
+    public String getCommand() {
+        return "uptime";
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{};
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[]{};
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[]{};
+    }
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		return Template.get(channel, "command_uptime_upfor", TimeUtil.getRelativeTime(bot.startupTimeStamp, false));
-	}
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        return Template.get(channel, "command_uptime_upfor", TimeUtil.getRelativeTime(bot.startupTimeStamp, false));
+    }
 }

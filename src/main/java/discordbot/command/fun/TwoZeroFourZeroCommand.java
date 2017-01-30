@@ -39,78 +39,78 @@ import java.util.concurrent.TimeUnit;
 
 public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandReactionListener<Game2048>, ICommandCooldown {
 
-	@Override
-	public String getDescription() {
-		return "play a game of 2048";
-	}
+    @Override
+    public String getDescription() {
+        return "play a game of 2048";
+    }
 
-	@Override
-	public String getCommand() {
-		return "2048";
-	}
+    @Override
+    public String getCommand() {
+        return "2048";
+    }
 
-	@Override
-	public boolean isListed() {
-		return false;
-	}
+    @Override
+    public boolean isListed() {
+        return false;
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{
-				"2048       //play the game"
-		};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{
+                "2048       //play the game"
+        };
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[0];
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[0];
+    }
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (!DisUtil.hasPermission(channel, channel.getJDA().getSelfUser(), Permission.MESSAGE_ADD_REACTION)) {
-			return Template.get("permission_missing", Permission.MESSAGE_ADD_REACTION.toString());
-		}
-		Game2048 game = new Game2048();
-		game.addPlayer(author);
-		channel.sendMessage(game.toString()).queue(
-				message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), game))
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        if (!DisUtil.hasPermission(channel, channel.getJDA().getSelfUser(), Permission.MESSAGE_ADD_REACTION)) {
+            return Template.get("permission_missing", Permission.MESSAGE_ADD_REACTION.toString());
+        }
+        Game2048 game = new Game2048();
+        game.addPlayer(author);
+        channel.sendMessage(game.toString()).queue(
+                message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), game))
 
-		);
-		return "";
+        );
+        return "";
 
-	}
+    }
 
-	@Override
-	public CommandReactionListener<Game2048> getReactionListener(String invoker, Game2048 game) {
-		CommandReactionListener<Game2048> listener = new CommandReactionListener<>(invoker, game);
-		listener.setExpiresIn(TimeUnit.MINUTES, 5);
-		for (String reaction : game.getReactions()) {
-			listener.registerReaction(Emojibet.getEmojiFor(reaction), message -> {
-				Game2048Turn turn = new Game2048Turn();
-				turn.parseInput(reaction);
-				if (!game.isValidMove(message.getJDA().getUserById(invoker), turn)) {
-					message.editMessage(game.toString() + Config.EOL + Template.get("playmode_not_a_valid_move")).queue();
-				} else {
-					game.playTurn(message.getJDA().getUserById(invoker), turn);
-					message.editMessage(game.toString()).queue();
-				}
-				if (game.getGameState().equals(GameState.OVER)) {
-					listener.disable();
-					message.clearReactions().queue();
-				}
-			});
-		}
-		return listener;
-	}
+    @Override
+    public CommandReactionListener<Game2048> getReactionListener(String invoker, Game2048 game) {
+        CommandReactionListener<Game2048> listener = new CommandReactionListener<>(invoker, game);
+        listener.setExpiresIn(TimeUnit.MINUTES, 5);
+        for (String reaction : game.getReactions()) {
+            listener.registerReaction(Emojibet.getEmojiFor(reaction), message -> {
+                Game2048Turn turn = new Game2048Turn();
+                turn.parseInput(reaction);
+                if (!game.isValidMove(message.getJDA().getUserById(invoker), turn)) {
+                    message.editMessage(game.toString() + Config.EOL + Template.get("playmode_not_a_valid_move")).queue();
+                } else {
+                    game.playTurn(message.getJDA().getUserById(invoker), turn);
+                    message.editMessage(game.toString()).queue();
+                }
+                if (game.getGameState().equals(GameState.OVER)) {
+                    listener.disable();
+                    message.clearReactions().queue();
+                }
+            });
+        }
+        return listener;
+    }
 
-	@Override
-	public long getCooldownDuration() {
-		return 300;
-	}
+    @Override
+    public long getCooldownDuration() {
+        return 300;
+    }
 
-	@Override
-	public CooldownScope getScope() {
-		return CooldownScope.USER;
-	}
+    @Override
+    public CooldownScope getScope() {
+        return CooldownScope.USER;
+    }
 }

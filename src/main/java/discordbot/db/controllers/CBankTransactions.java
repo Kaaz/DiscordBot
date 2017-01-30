@@ -31,59 +31,59 @@ import java.util.List;
  */
 public class CBankTransactions {
 
-	private static OBankTransaction fillRecord(ResultSet resultset) throws SQLException {
-		OBankTransaction bank = new OBankTransaction();
-		bank.id = resultset.getInt("id");
-		bank.bankFrom = resultset.getInt("bank_from");
-		bank.bankTo = resultset.getInt("bank_to");
-		bank.amount = resultset.getInt("amount");
-		bank.date = resultset.getTimestamp("transaction_date");
-		bank.description = resultset.getString("description");
-		bank.userFrom = resultset.getString("user_from");
-		bank.userTo = resultset.getString("user_to");
-		return bank;
-	}
+    private static OBankTransaction fillRecord(ResultSet resultset) throws SQLException {
+        OBankTransaction bank = new OBankTransaction();
+        bank.id = resultset.getInt("id");
+        bank.bankFrom = resultset.getInt("bank_from");
+        bank.bankTo = resultset.getInt("bank_to");
+        bank.amount = resultset.getInt("amount");
+        bank.date = resultset.getTimestamp("transaction_date");
+        bank.description = resultset.getString("description");
+        bank.userFrom = resultset.getString("user_from");
+        bank.userTo = resultset.getString("user_to");
+        return bank;
+    }
 
-	public static List<OBankTransaction> getHistoryFor(int bankId) {
-		List<OBankTransaction> ret = new ArrayList<>();
-		try (ResultSet rs = WebDb.get().select(
-				"SELECT t.*, uf.name AS user_from, ut.name AS user_to " +
-						"FROM bank_transactions t " +
-						"JOIN banks bf ON bf.id = t.bank_from " +
-						"JOIN users uf ON uf.id = bf.user " +
-						"JOIN banks bt ON bt.id = t.bank_to " +
-						"JOIN users ut ON ut.id = bt.user " +
-						"WHERE t.bank_from  = ?  OR t.bank_to = ? ORDER BY t.id DESC LIMIT 25", bankId, bankId)) {
-			while (rs.next()) {
-				ret.add(fillRecord(rs));
-			}
-			rs.getStatement().close();
-		} catch (Exception e) {
-			Logger.fatal(e);
-		}
-		return ret;
-	}
+    public static List<OBankTransaction> getHistoryFor(int bankId) {
+        List<OBankTransaction> ret = new ArrayList<>();
+        try (ResultSet rs = WebDb.get().select(
+                "SELECT t.*, uf.name AS user_from, ut.name AS user_to " +
+                        "FROM bank_transactions t " +
+                        "JOIN banks bf ON bf.id = t.bank_from " +
+                        "JOIN users uf ON uf.id = bf.user " +
+                        "JOIN banks bt ON bt.id = t.bank_to " +
+                        "JOIN users ut ON ut.id = bt.user " +
+                        "WHERE t.bank_from  = ?  OR t.bank_to = ? ORDER BY t.id DESC LIMIT 25", bankId, bankId)) {
+            while (rs.next()) {
+                ret.add(fillRecord(rs));
+            }
+            rs.getStatement().close();
+        } catch (Exception e) {
+            Logger.fatal(e);
+        }
+        return ret;
+    }
 
-	public static void insert(int bankFrom, int bankTo, int amount, String description) {
-		OBankTransaction rec = new OBankTransaction();
-		rec.bankFrom = bankFrom;
-		rec.bankTo = bankTo;
-		rec.amount = amount;
-		rec.description = description;
-		insert(rec);
-	}
+    public static void insert(int bankFrom, int bankTo, int amount, String description) {
+        OBankTransaction rec = new OBankTransaction();
+        rec.bankFrom = bankFrom;
+        rec.bankTo = bankTo;
+        rec.amount = amount;
+        rec.description = description;
+        insert(rec);
+    }
 
-	public static void insert(OBankTransaction rec) {
-		try {
-			if (rec.date == null) {
-				rec.date = new Timestamp(System.currentTimeMillis());
-			}
-			rec.id = WebDb.get().insert(
-					"INSERT INTO bank_transactions(bank_from, bank_to,transaction_date, amount,description) " +
-							"VALUES (?,?,?,?,?)",
-					rec.bankFrom, rec.bankTo, rec.date, rec.amount, rec.description);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public static void insert(OBankTransaction rec) {
+        try {
+            if (rec.date == null) {
+                rec.date = new Timestamp(System.currentTimeMillis());
+            }
+            rec.id = WebDb.get().insert(
+                    "INSERT INTO bank_transactions(bank_from, bank_to,transaction_date, amount,description) " +
+                            "VALUES (?,?,?,?,?)",
+                    rec.bankFrom, rec.bankTo, rec.date, rec.amount, rec.description);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

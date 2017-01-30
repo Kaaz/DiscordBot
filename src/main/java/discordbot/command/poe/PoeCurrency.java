@@ -43,91 +43,91 @@ import java.util.List;
  * Analyzes an item from path of exile
  */
 public class PoeCurrency extends AbstractCommand {
-	public PoeCurrency() {
-		super();
-	}
+    public PoeCurrency() {
+        super();
+    }
 
-	@Override
-	public String getDescription() {
-		return "Returns a list of currency on your account";
-	}
+    @Override
+    public String getDescription() {
+        return "Returns a list of currency on your account";
+    }
 
-	@Override
-	public String getCommand() {
-		return "poec";
-	}
+    @Override
+    public String getCommand() {
+        return "poec";
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{
-				"poec                   //returns list of currency for default league",
-				"poec token <token>     //sets the session token",
-				"poec league <league>   //currency for league",
-		};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{
+                "poec                   //returns list of currency for default league",
+                "poec token <token>     //sets the session token",
+                "poec league <league>   //currency for league",
+        };
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[]{};
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[]{};
+    }
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (args.length > 1) {
-			if (args[0].equalsIgnoreCase("token")) {
-				OPoEToken token = CPoEToken.findBy(author.getId());
-				token.session_id = args[1];
-				CPoEToken.insertOrUpdate(token);
-				return "Updated your token!";
-			} else if (args[0].equalsIgnoreCase("league")) {
-				return "not implemented yet sorry boys!";
-			}
-			return Template.get("command_invalid_use");
-		}
-		OPoEToken token = CPoEToken.findBy(author.getId());
-		AuthInfo account = new AuthInfo(token.session_id);
-		DataReader reader = new DataReader(account);
-		if (!reader.authenticate()) {
-			return "Your token is not valid :(";
-		}
-		bot.out.sendAsyncMessage(channel, "Fetching data this might take a minute!", null);
-		HashMap<String, Integer> currency = new HashMap<>();
-		int max = 1;
-		for (int i = 0; i < max; i++) {
-			StashTab stashTab = null;
-			try {
-				stashTab = reader.getStashTab(League.ESSENCE.getId(), i);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			if (stashTab != null) {
-				if (max == 1) {
-					max = stashTab.getNumTabs();
-				}
-				System.out.println((i + 1) + " out of " + stashTab.getNumTabs());
-				for (Item item : stashTab.getItems()) {
-					if (item.getTypeLine().toLowerCase().contains("orb")) {
-						Property property = item.getProperty("Stack Size");
-						if (property instanceof MinMaxProperty) {
-							MinMaxProperty p = (MinMaxProperty) property;
-							if (!currency.containsKey(item.getTypeLine())) {
-								currency.put(item.getTypeLine(), 0);
-							}
-							currency.put(item.getTypeLine(), currency.get(item.getTypeLine()) + p.getMinValue());
-						}
-					}
-				}
-			}
-		}
-		String text = "Checking your currency in PoE!" + Config.EOL;
-		List<List<String>> tbl = new ArrayList<>();
-		Misc.sortByValue(currency).forEach((k, v) -> {
-			ArrayList<String> row = new ArrayList<>();
-			row.add(k);
-			row.add(String.valueOf(v));
-			tbl.add(row);
-		});
-		text += Misc.makeAsciiTable(Arrays.asList("Currency", "#"), tbl, null);
-		return text;
-	}
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        if (args.length > 1) {
+            if (args[0].equalsIgnoreCase("token")) {
+                OPoEToken token = CPoEToken.findBy(author.getId());
+                token.session_id = args[1];
+                CPoEToken.insertOrUpdate(token);
+                return "Updated your token!";
+            } else if (args[0].equalsIgnoreCase("league")) {
+                return "not implemented yet sorry boys!";
+            }
+            return Template.get("command_invalid_use");
+        }
+        OPoEToken token = CPoEToken.findBy(author.getId());
+        AuthInfo account = new AuthInfo(token.session_id);
+        DataReader reader = new DataReader(account);
+        if (!reader.authenticate()) {
+            return "Your token is not valid :(";
+        }
+        bot.out.sendAsyncMessage(channel, "Fetching data this might take a minute!", null);
+        HashMap<String, Integer> currency = new HashMap<>();
+        int max = 1;
+        for (int i = 0; i < max; i++) {
+            StashTab stashTab = null;
+            try {
+                stashTab = reader.getStashTab(League.ESSENCE.getId(), i);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (stashTab != null) {
+                if (max == 1) {
+                    max = stashTab.getNumTabs();
+                }
+                System.out.println((i + 1) + " out of " + stashTab.getNumTabs());
+                for (Item item : stashTab.getItems()) {
+                    if (item.getTypeLine().toLowerCase().contains("orb")) {
+                        Property property = item.getProperty("Stack Size");
+                        if (property instanceof MinMaxProperty) {
+                            MinMaxProperty p = (MinMaxProperty) property;
+                            if (!currency.containsKey(item.getTypeLine())) {
+                                currency.put(item.getTypeLine(), 0);
+                            }
+                            currency.put(item.getTypeLine(), currency.get(item.getTypeLine()) + p.getMinValue());
+                        }
+                    }
+                }
+            }
+        }
+        String text = "Checking your currency in PoE!" + Config.EOL;
+        List<List<String>> tbl = new ArrayList<>();
+        Misc.sortByValue(currency).forEach((k, v) -> {
+            ArrayList<String> row = new ArrayList<>();
+            row.add(k);
+            row.add(String.valueOf(v));
+            tbl.add(row);
+        });
+        text += Misc.makeAsciiTable(Arrays.asList("Currency", "#"), tbl, null);
+        return text;
+    }
 }

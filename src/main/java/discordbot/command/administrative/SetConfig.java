@@ -53,212 +53,212 @@ import java.util.concurrent.TimeUnit;
  * gets/sets the configuration of the bot
  */
 public class SetConfig extends AbstractCommand implements ICommandReactionListener<PaginationInfo> {
-	public static final int CFG_PER_PAGE = 15;
+    public static final int CFG_PER_PAGE = 15;
 
-	public SetConfig() {
-		super();
-	}
+    public SetConfig() {
+        super();
+    }
 
-	@Override
-	public String getDescription() {
-		return "Gets/sets the configuration of the bot";
-	}
+    private static MessageEmbed makeEmbedConfig(Guild guild, int activePage) {
+        EmbedBuilder b = new EmbedBuilder();
+        List<String> keys = DefaultGuildSettings.getWritableKeys();
+        Collections.sort(keys);
+        int maxPage = (int) Math.ceil(keys.size() / CFG_PER_PAGE);
+        activePage = Math.max(0, Math.min(maxPage - 1, activePage - 1));
+        int endIndex = activePage * CFG_PER_PAGE + CFG_PER_PAGE;
+        int elements = 0;
+        for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < endIndex; i++) {
+            String key = keys.get(i);
+            b.addField(key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key), true);
+            elements++;
+        }
+        if (elements % 3 == 2) {
+            b.addBlankField(true);
+        }
+        String commandPrefix = DisUtil.getCommandPrefix(guild);
+        b.setFooter("Page " + (activePage + 1) + " / " + maxPage + " | Press the buttons for other pages", null);
+        b.setDescription(String.format("To see more details about a setting:" + Config.EOL +
+                "`%1$scfg settingname`" + Config.EOL + Config.EOL, commandPrefix));
+        b.setTitle("Current Settings for " + guild.getName() + " [" + (1 + activePage) + " / " + maxPage + "]");
+        return b.build();
+    }
 
-	@Override
-	public String getCommand() {
-		return "config";
-	}
+    @Override
+    public String getDescription() {
+        return "Gets/sets the configuration of the bot";
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{
-				"config                    //overview",
-				"config page <number>      //show page <number>",
-				"config tags               //see what tags exist",
-				"config tag <tagname>      //show settings with tagname",
-				"config <property>         //check details of property",
-				"config <property> <value> //sets property",
-				"",
-				"config reset yesimsure    //resets the configuration to the default settings",
-		};
-	}
+    @Override
+    public String getCommand() {
+        return "config";
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[]{
-				"setting", "cfg"
-		};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{
+                "config                    //overview",
+                "config page <number>      //show page <number>",
+                "config tags               //see what tags exist",
+                "config tag <tagname>      //show settings with tagname",
+                "config <property>         //check details of property",
+                "config <property> <value> //sets property",
+                "",
+                "config reset yesimsure    //resets the configuration to the default settings",
+        };
+    }
 
-	@Override
-	public CommandVisibility getVisibility() {
-		return CommandVisibility.PUBLIC;
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[]{
+                "setting", "cfg"
+        };
+    }
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		Guild guild;
-		SimpleRank rank = bot.security.getSimpleRank(author, channel);
-		if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1 && DisUtil.matchesGuildSearch(args[0])) {
-			guild = DisUtil.findGuildBy(args[0], bot.getContainer());
-			if (guild == null) {
-				return Template.get("command_config_cant_find_guild");
-			}
-			args = Arrays.copyOfRange(args, 1, args.length);
-		} else {
-			guild = ((TextChannel) channel).getGuild();
-		}
+    @Override
+    public CommandVisibility getVisibility() {
+        return CommandVisibility.PUBLIC;
+    }
 
-		if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-			return Template.get("command_config_no_permission");
-		}
-		if (args.length > 0 && args[0].equalsIgnoreCase("reset")) {
-			if (args.length > 1 && args[1].equalsIgnoreCase("yesimsure")) {
-				GuildSettings.get(guild).reset();
-				return Template.get(channel, "command_config_reset_success");
-			}
-			return Template.get(channel, "command_config_reset_warning");
-		}
-		String tag = null;
-		if (args.length > 0) {
-			if (args[0].equals("tags")) {
-				return "The following tags exist for settings: " + Config.EOL + Config.EOL +
-						Joiner.on(", ").join(DefaultGuildSettings.getAllTags()) + Config.EOL + Config.EOL +
-						"`" + DisUtil.getCommandPrefix(channel) + "cfg tag tagname` to see settings with tagname";
-			}
-			if (args[0].equals("tag") && args.length > 1) {
-				tag = args[1].toLowerCase();
-			}
-		}
-		if (args.length == 0 || tag != null || args.length > 0 && args[0].equals("page")) {
-			Map<String, String> settings = GuildSettings.get(guild).getSettings();
-			ArrayList<String> keys = new ArrayList<>(settings.keySet());
-			Collections.sort(keys);
-			int activePage = 0;
-			int maxPage = 1 + DefaultGuildSettings.countSettings(false) / CFG_PER_PAGE;
-			if (PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-				if (args.length > 1 && args[0].equals("page")) {
-					activePage = Math.max(0, Math.min(maxPage - 1, Misc.parseInt(args[1], 0) - 1));
-				}
-				channel.sendMessage(makeEmbedConfig(guild, activePage)).queue(
-						message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message,
-								getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)))
-				);
-				return "";
-			}
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        Guild guild;
+        SimpleRank rank = bot.security.getSimpleRank(author, channel);
+        if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1 && DisUtil.matchesGuildSearch(args[0])) {
+            guild = DisUtil.findGuildBy(args[0], bot.getContainer());
+            if (guild == null) {
+                return Template.get("command_config_cant_find_guild");
+            }
+            args = Arrays.copyOfRange(args, 1, args.length);
+        } else {
+            guild = ((TextChannel) channel).getGuild();
+        }
 
-			String ret = "Current Settings for " + guild.getName() + Config.EOL + Config.EOL;
-			if (tag != null) {
-				ret += "Only showing settings with the tag `" + tag + "`" + Config.EOL;
-			}
-			ret += ":information_source: Settings indicated with a `*` are different from the default value" + Config.EOL + Config.EOL;
-			String cfgFormat = "`\u200B%-24s:`  %s" + Config.EOL;
-			boolean isEmpty = true;
-			for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < activePage * CFG_PER_PAGE + CFG_PER_PAGE; i++) {
-				String key = keys.get(i);
-				if (DefaultGuildSettings.get(key).isReadOnly()) {
-					if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-						continue;
-					}
-				}
-				if (tag != null && !DefaultGuildSettings.get(key).hasTag(tag)) {
-					continue;
-				}
-				String indicator = "  ";
-				if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && DefaultGuildSettings.get(key).isReadOnly()) {
-					indicator = "r ";
-				} else if (!settings.get(key).equals(DefaultGuildSettings.getDefault(key))) {
-					indicator = "* ";
-				}
-				ret += String.format(cfgFormat, indicator + key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key));
-				isEmpty = false;
-			}
-			if (isEmpty && tag != null) {
-				return "No settings found matching the tag `" + tag + "`";
-			}
+        if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+            return Template.get("command_config_no_permission");
+        }
+        if (args.length > 0 && args[0].equalsIgnoreCase("reset")) {
+            if (args.length > 1 && args[1].equalsIgnoreCase("yesimsure")) {
+                GuildSettings.get(guild).reset();
+                return Template.get(channel, "command_config_reset_success");
+            }
+            return Template.get(channel, "command_config_reset_warning");
+        }
+        String tag = null;
+        if (args.length > 0) {
+            if (args[0].equals("tags")) {
+                return "The following tags exist for settings: " + Config.EOL + Config.EOL +
+                        Joiner.on(", ").join(DefaultGuildSettings.getAllTags()) + Config.EOL + Config.EOL +
+                        "`" + DisUtil.getCommandPrefix(channel) + "cfg tag tagname` to see settings with tagname";
+            }
+            if (args[0].equals("tag") && args.length > 1) {
+                tag = args[1].toLowerCase();
+            }
+        }
+        if (args.length == 0 || tag != null || args.length > 0 && args[0].equals("page")) {
+            Map<String, String> settings = GuildSettings.get(guild).getSettings();
+            ArrayList<String> keys = new ArrayList<>(settings.keySet());
+            Collections.sort(keys);
+            int activePage = 0;
+            int maxPage = 1 + DefaultGuildSettings.countSettings(false) / CFG_PER_PAGE;
+            if (PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
+                if (args.length > 1 && args[0].equals("page")) {
+                    activePage = Math.max(0, Math.min(maxPage - 1, Misc.parseInt(args[1], 0) - 1));
+                }
+                channel.sendMessage(makeEmbedConfig(guild, activePage)).queue(
+                        message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message,
+                                getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)))
+                );
+                return "";
+            }
 
-			return ret;
-		}
+            String ret = "Current Settings for " + guild.getName() + Config.EOL + Config.EOL;
+            if (tag != null) {
+                ret += "Only showing settings with the tag `" + tag + "`" + Config.EOL;
+            }
+            ret += ":information_source: Settings indicated with a `*` are different from the default value" + Config.EOL + Config.EOL;
+            String cfgFormat = "`\u200B%-24s:`  %s" + Config.EOL;
+            boolean isEmpty = true;
+            for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < activePage * CFG_PER_PAGE + CFG_PER_PAGE; i++) {
+                String key = keys.get(i);
+                if (DefaultGuildSettings.get(key).isReadOnly()) {
+                    if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+                        continue;
+                    }
+                }
+                if (tag != null && !DefaultGuildSettings.get(key).hasTag(tag)) {
+                    continue;
+                }
+                String indicator = "  ";
+                if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && DefaultGuildSettings.get(key).isReadOnly()) {
+                    indicator = "r ";
+                } else if (!settings.get(key).equals(DefaultGuildSettings.getDefault(key))) {
+                    indicator = "* ";
+                }
+                ret += String.format(cfgFormat, indicator + key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key));
+                isEmpty = false;
+            }
+            if (isEmpty && tag != null) {
+                return "No settings found matching the tag `" + tag + "`";
+            }
+
+            return ret;
+        }
 
 
-		if (!DefaultGuildSettings.isValidKey(args[0])) {
-			return Template.get("command_config_key_not_exists");
-		}
-		if (DefaultGuildSettings.get(args[0]).isReadOnly() && !rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-			return Template.get("command_config_key_read_only");
-		}
+        if (!DefaultGuildSettings.isValidKey(args[0])) {
+            return Template.get("command_config_key_not_exists");
+        }
+        if (DefaultGuildSettings.get(args[0]).isReadOnly() && !rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+            return Template.get("command_config_key_read_only");
+        }
 
-		if (args.length >= 2) {
-			String newValue = args[1];
-			for (int i = 2; i < args.length; i++) {
-				newValue += " " + args[i];
-			}
-			if (newValue.length() > 64) {
-				newValue = newValue.substring(0, 64);
-			}
-			if (args[0].equals("bot_listen") && args[1].equals("mine")) {
-				channel.sendMessage(Emojibet.WARNING + " I will only listen to the configured `bot_channel`. If you rename the channel, you might not be able to access me anymore. " +
-						"You can reset by typing `@" + channel.getJDA().getSelfUser().getName() + " reset yesimsure`").queue();
-			}
+        if (args.length >= 2) {
+            String newValue = args[1];
+            for (int i = 2; i < args.length; i++) {
+                newValue += " " + args[i];
+            }
+            if (newValue.length() > 64) {
+                newValue = newValue.substring(0, 64);
+            }
+            if (args[0].equals("bot_listen") && args[1].equals("mine")) {
+                channel.sendMessage(Emojibet.WARNING + " I will only listen to the configured `bot_channel`. If you rename the channel, you might not be able to access me anymore. " +
+                        "You can reset by typing `@" + channel.getJDA().getSelfUser().getName() + " reset yesimsure`").queue();
+            }
 
-			if (GuildSettings.get(guild).set(guild, args[0], newValue)) {
-				bot.getContainer().getShardFor(guild.getId()).clearChannels(guild);
-				return Template.get("command_config_key_modified");
-			}
-		}
+            if (GuildSettings.get(guild).set(guild, args[0], newValue)) {
+                bot.getContainer().getShardFor(guild.getId()).clearChannels(guild);
+                return Template.get("command_config_key_modified");
+            }
+        }
 
-		String tblContent = "";
-		GuildSettings setting = GuildSettings.get(guild);
-		for (String s : setting.getDescription(args[0])) {
-			tblContent += s + Config.EOL;
-		}
-		return "Config help for **" + args[0] + "**" + Config.EOL + Config.EOL +
-				"Current value: \"**" + GuildSettings.get(guild.getId()).getDisplayValue(guild, args[0]) + "**\"" + Config.EOL +
-				"Default value: \"**" + setting.getDefaultValue(args[0]) + "**\"" + Config.EOL + Config.EOL +
-				"Description: " + Config.EOL +
-				Misc.makeTable(tblContent) +
-				"To set it back to default: `" + DisUtil.getCommandPrefix(channel) + "cfg " + args[0] + " " + setting.getDefaultValue(args[0]) + "`";
-	}
+        String tblContent = "";
+        GuildSettings setting = GuildSettings.get(guild);
+        for (String s : setting.getDescription(args[0])) {
+            tblContent += s + Config.EOL;
+        }
+        return "Config help for **" + args[0] + "**" + Config.EOL + Config.EOL +
+                "Current value: \"**" + GuildSettings.get(guild.getId()).getDisplayValue(guild, args[0]) + "**\"" + Config.EOL +
+                "Default value: \"**" + setting.getDefaultValue(args[0]) + "**\"" + Config.EOL + Config.EOL +
+                "Description: " + Config.EOL +
+                Misc.makeTable(tblContent) +
+                "To set it back to default: `" + DisUtil.getCommandPrefix(channel) + "cfg " + args[0] + " " + setting.getDefaultValue(args[0]) + "`";
+    }
 
-	private static MessageEmbed makeEmbedConfig(Guild guild, int activePage) {
-		EmbedBuilder b = new EmbedBuilder();
-		List<String> keys = DefaultGuildSettings.getWritableKeys();
-		Collections.sort(keys);
-		int maxPage = (int) Math.ceil(keys.size() / CFG_PER_PAGE);
-		activePage = Math.max(0, Math.min(maxPage - 1, activePage - 1));
-		int endIndex = activePage * CFG_PER_PAGE + CFG_PER_PAGE;
-		int elements = 0;
-		for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < endIndex; i++) {
-			String key = keys.get(i);
-			b.addField(key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key), true);
-			elements++;
-		}
-		if (elements % 3 == 2) {
-			b.addBlankField(true);
-		}
-		String commandPrefix = DisUtil.getCommandPrefix(guild);
-		b.setFooter("Page " + (activePage + 1) + " / " + maxPage + " | Press the buttons for other pages", null);
-		b.setDescription(String.format("To see more details about a setting:" + Config.EOL +
-				"`%1$scfg settingname`" + Config.EOL + Config.EOL, commandPrefix));
-		b.setTitle("Current Settings for " + guild.getName() + " [" + (1 + activePage) + " / " + maxPage + "]");
-		return b.build();
-	}
+    @Override
+    public CommandReactionListener<PaginationInfo> getReactionListener(String invoker, PaginationInfo data) {
 
-	@Override
-	public CommandReactionListener<PaginationInfo> getReactionListener(String invoker, PaginationInfo data) {
-
-		CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(invoker, data);
-		listener.setExpiresIn(TimeUnit.MINUTES, 2);
-		listener.registerReaction(Emojibet.PREV_TRACK, o -> {
-			if (listener.getData().previousPage()) {
-				o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).queue();
-			}
-		});
-		listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
-			if (listener.getData().nextPage()) {
-				o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).queue();
-			}
-		});
-		return listener;
-	}
+        CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(invoker, data);
+        listener.setExpiresIn(TimeUnit.MINUTES, 2);
+        listener.registerReaction(Emojibet.PREV_TRACK, o -> {
+            if (listener.getData().previousPage()) {
+                o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).queue();
+            }
+        });
+        listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
+            if (listener.getData().nextPage()) {
+                o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).queue();
+            }
+        });
+        return listener;
+    }
 }

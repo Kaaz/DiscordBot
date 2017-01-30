@@ -21,17 +21,17 @@ package discordbot.command;
  */
 public interface ICommandCooldown {
 
-	/**
-	 * gets the cooldown of a command
-	 *
-	 * @return cooldown in seconds
-	 */
-	long getCooldownDuration();
+    /**
+     * gets the cooldown of a command
+     *
+     * @return cooldown in seconds
+     */
+    long getCooldownDuration();
 
-	/**
-	 * cooldown on what scale?
-	 *
-	 * @return scope of the cooldown
-	 */
-	CooldownScope getScope();
+    /**
+     * cooldown on what scale?
+     *
+     * @return scope of the cooldown
+     */
+    CooldownScope getScope();
 }

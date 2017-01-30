@@ -43,126 +43,126 @@ import java.util.stream.Collectors;
  * Manages permissions/bans for discord
  */
 public class SecurityHandler {
-	private static HashSet<String> bannedGuilds;
-	private static HashSet<String> bannedUsers;
-	private static HashSet<String> contributors;
-	private static HashSet<String> botAdmins;
-	private static HashSet<String> SystemAdmins;
+    private static HashSet<String> bannedGuilds;
+    private static HashSet<String> bannedUsers;
+    private static HashSet<String> contributors;
+    private static HashSet<String> botAdmins;
+    private static HashSet<String> SystemAdmins;
 
-	public SecurityHandler() {
-	}
+    public SecurityHandler() {
+    }
 
-	public static synchronized void initialize() {
-		bannedGuilds = new HashSet<>();
-		bannedUsers = new HashSet<>();
-		contributors = new HashSet<>();
-		botAdmins = new HashSet<>();
-		SystemAdmins = new HashSet<>();
-		List<OGuild> bannedList = CGuild.getBannedGuilds();
-		bannedGuilds.addAll(bannedList.stream().map(guild -> guild.discord_id).collect(Collectors.toList()));
-		CUser.addBannedUserIds(bannedUsers);
+    public static synchronized void initialize() {
+        bannedGuilds = new HashSet<>();
+        bannedUsers = new HashSet<>();
+        contributors = new HashSet<>();
+        botAdmins = new HashSet<>();
+        SystemAdmins = new HashSet<>();
+        List<OGuild> bannedList = CGuild.getBannedGuilds();
+        bannedGuilds.addAll(bannedList.stream().map(guild -> guild.discord_id).collect(Collectors.toList()));
+        CUser.addBannedUserIds(bannedUsers);
 
-		List<OUserRank> contributor = CUserRank.getUsersWith(CRank.findBy("CONTRIBUTOR").id);
-		List<OUserRank> bot_admin = CUserRank.getUsersWith(CRank.findBy("BOT_ADMIN").id);
-		List<OUserRank> system_admin = CUserRank.getUsersWith(CRank.findBy("SYSTEM_ADMIN").id);
-		contributors.addAll(contributor.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
-		botAdmins.addAll(bot_admin.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
-		SystemAdmins.addAll(system_admin.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
-	}
+        List<OUserRank> contributor = CUserRank.getUsersWith(CRank.findBy("CONTRIBUTOR").id);
+        List<OUserRank> bot_admin = CUserRank.getUsersWith(CRank.findBy("BOT_ADMIN").id);
+        List<OUserRank> system_admin = CUserRank.getUsersWith(CRank.findBy("SYSTEM_ADMIN").id);
+        contributors.addAll(contributor.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
+        botAdmins.addAll(bot_admin.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
+        SystemAdmins.addAll(system_admin.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
+    }
 
-	public boolean isBanned(User user) {
-		return bannedUsers.contains(user.getId());
-	}
+    public boolean isBanned(User user) {
+        return bannedUsers.contains(user.getId());
+    }
 
-	public synchronized void addUserBan(String discordId) {
-		if (!bannedUsers.contains(discordId)) {
-			bannedUsers.add(discordId);
-		}
-	}
+    public synchronized void addUserBan(String discordId) {
+        if (!bannedUsers.contains(discordId)) {
+            bannedUsers.add(discordId);
+        }
+    }
 
-	public synchronized void removeUserBan(String discordId) {
-		if (bannedUsers.contains(discordId)) {
-			bannedUsers.remove(discordId);
-		}
-	}
+    public synchronized void removeUserBan(String discordId) {
+        if (bannedUsers.contains(discordId)) {
+            bannedUsers.remove(discordId);
+        }
+    }
 
-	public boolean isBanned(Guild guild) {
-		return bannedGuilds.contains(guild.getId());
-	}
+    public boolean isBanned(Guild guild) {
+        return bannedGuilds.contains(guild.getId());
+    }
 
-	public SimpleRank getSimpleRank(User user) {
-		return getSimpleRankForGuild(user, null);
-	}
+    public SimpleRank getSimpleRank(User user) {
+        return getSimpleRankForGuild(user, null);
+    }
 
-	public SimpleRank getSimpleRank(User user, MessageChannel channel) {
-		if (channel instanceof TextChannel) {
-			return getSimpleRankForGuild(user, ((TextChannel) channel).getGuild());
-		}
-		return getSimpleRankForGuild(user, null);
-	}
+    public SimpleRank getSimpleRank(User user, MessageChannel channel) {
+        if (channel instanceof TextChannel) {
+            return getSimpleRankForGuild(user, ((TextChannel) channel).getGuild());
+        }
+        return getSimpleRankForGuild(user, null);
+    }
 
-	/**
-	 * Try and figure out what type of guild it is
-	 *
-	 * @param guild the guild to check
-	 * @return what category the guild is labeled as
-	 */
-	public GuildCheckResult checkGuild(Guild guild) {
+    /**
+     * Try and figure out what type of guild it is
+     *
+     * @param guild the guild to check
+     * @return what category the guild is labeled as
+     */
+    public GuildCheckResult checkGuild(Guild guild) {
 
-		int bots = 0;
-		int users = 0;
-		if (MiscUtil.getCreationTime(guild.getOwner().getUser()).isBefore(OffsetDateTime.now().minusDays(Config.GUILD_OWNER_MIN_ACCOUNT_AGE))) {
-			return GuildCheckResult.OWNER_TOO_NEW;
-		}
-		for (Member user : guild.getMembers()) {
-			if (user.getUser().isBot()) {
-				bots++;
-			}
-			users++;
-		}
-		if ((double) bots / users > Config.GUILD_MAX_USER_BOT_RATIO) {
-			return GuildCheckResult.BOT_GUILD;
-		}
-		if (users < Config.GUILD_MIN_USERS) {
-			return GuildCheckResult.TEST_GUILD;
-		}
-		return GuildCheckResult.OKE;
-	}
+        int bots = 0;
+        int users = 0;
+        if (MiscUtil.getCreationTime(guild.getOwner().getUser()).isBefore(OffsetDateTime.now().minusDays(Config.GUILD_OWNER_MIN_ACCOUNT_AGE))) {
+            return GuildCheckResult.OWNER_TOO_NEW;
+        }
+        for (Member user : guild.getMembers()) {
+            if (user.getUser().isBot()) {
+                bots++;
+            }
+            users++;
+        }
+        if ((double) bots / users > Config.GUILD_MAX_USER_BOT_RATIO) {
+            return GuildCheckResult.BOT_GUILD;
+        }
+        if (users < Config.GUILD_MIN_USERS) {
+            return GuildCheckResult.TEST_GUILD;
+        }
+        return GuildCheckResult.OKE;
+    }
 
-	public SimpleRank getSimpleRankForGuild(User user, Guild guild) {
-		if (user.getId().equals(Config.CREATOR_ID)) {
-			return SimpleRank.CREATOR;
-		}
-		if (guild == null && user.isBot()) {
-			return SimpleRank.BOT;
-		}
-		if (botAdmins.contains(user.getId())) {
-			return SimpleRank.BOT_ADMIN;
-		}
-		if (contributors.contains(user.getId())) {
-			return SimpleRank.CONTRIBUTOR;
-		}
-		if (bannedUsers.contains(user.getId())) {
-			return SimpleRank.BANNED_USER;
-		}
-		if (SystemAdmins.contains(user.getId())) {
-			return SimpleRank.SYSTEM_ADMIN;
-		}
-		if (guild != null) {
-			if (guild.getOwner().equals(user)) {
-				return SimpleRank.GUILD_OWNER;
-			}
-			if (PermissionUtil.checkPermission(guild, guild.getMember(user), Permission.ADMINISTRATOR)) {
-				return SimpleRank.GUILD_ADMIN;
-			}
-			if (user.isBot()) {
-				return SimpleRank.BOT;
-			}
-		}
-		return SimpleRank.USER;
-	}
+    public SimpleRank getSimpleRankForGuild(User user, Guild guild) {
+        if (user.getId().equals(Config.CREATOR_ID)) {
+            return SimpleRank.CREATOR;
+        }
+        if (guild == null && user.isBot()) {
+            return SimpleRank.BOT;
+        }
+        if (botAdmins.contains(user.getId())) {
+            return SimpleRank.BOT_ADMIN;
+        }
+        if (contributors.contains(user.getId())) {
+            return SimpleRank.CONTRIBUTOR;
+        }
+        if (bannedUsers.contains(user.getId())) {
+            return SimpleRank.BANNED_USER;
+        }
+        if (SystemAdmins.contains(user.getId())) {
+            return SimpleRank.SYSTEM_ADMIN;
+        }
+        if (guild != null) {
+            if (guild.getOwner().equals(user)) {
+                return SimpleRank.GUILD_OWNER;
+            }
+            if (PermissionUtil.checkPermission(guild, guild.getMember(user), Permission.ADMINISTRATOR)) {
+                return SimpleRank.GUILD_ADMIN;
+            }
+            if (user.isBot()) {
+                return SimpleRank.BOT;
+            }
+        }
+        return SimpleRank.USER;
+    }
 
-	public boolean isBotAdmin(String discordUserId) {
-		return botAdmins.contains(discordUserId);
-	}
+    public boolean isBotAdmin(String discordUserId) {
+        return botAdmins.contains(discordUserId);
+    }
 }

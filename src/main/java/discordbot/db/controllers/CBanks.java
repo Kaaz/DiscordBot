@@ -31,106 +31,104 @@ import java.sql.Timestamp;
  */
 public class CBanks {
 
-	//the amount of currency you claim each hour
-	public static final double CURRENCY_PER_HOUR = 0.5D;
-	public static final long SECONDS_PER_CURRENCY = (long) (1 / CURRENCY_PER_HOUR * 3600D);
-	private static volatile OBank BOT_BANK_ACCOUNT = null;
+    //the amount of currency you claim each hour
+    public static final double CURRENCY_PER_HOUR = 0.5D;
+    public static final long SECONDS_PER_CURRENCY = (long) (1 / CURRENCY_PER_HOUR * 3600D);
+    //after reaching this amount amount, you can't claim anymore
+    public static final long CURRENCY_NO_HELP_AFTER = 10000;
+    //the max currency you can get from a claim
+    public static int CURRENCY_GIVEAWAY_MAX = (int) (CURRENCY_PER_HOUR * 24D);
+    private static volatile OBank BOT_BANK_ACCOUNT = null;
 
-	//the max currency you can get from a claim
-	public static int CURRENCY_GIVEAWAY_MAX = (int) (CURRENCY_PER_HOUR * 24D);
+    public static OBank findBy(String discordId) {
+        return findBy(CUser.getCachedId(discordId));
+    }
 
-	//after reaching this amount amount, you can't claim anymore
-	public static final long CURRENCY_NO_HELP_AFTER = 10000;
+    public static OBank getBotAccount() {
+        return BOT_BANK_ACCOUNT;
+    }
 
-	public static OBank findBy(String discordId) {
-		return findBy(CUser.getCachedId(discordId));
-	}
+    public static OBank findBy(int userId) {
+        OBank bank = new OBank();
+        try (ResultSet rs = WebDb.get().select(
+                "SELECT id, user, current_balance, created_on  " +
+                        "FROM banks " +
+                        "WHERE user = ? ", userId)) {
+            if (rs.next()) {
+                bank = fillRecord(rs);
+            } else {
+                bank.userId = userId;
+                insert(bank);
+            }
+            rs.getStatement().close();
+        } catch (Exception e) {
+            Logger.fatal(e);
+        }
+        return bank;
+    }
 
-	public static OBank getBotAccount() {
-		return BOT_BANK_ACCOUNT;
-	}
+    private static OBank fillRecord(ResultSet resultset) throws SQLException {
+        OBank bank = new OBank();
+        bank.id = resultset.getInt("id");
+        bank.userId = resultset.getInt("user");
+        bank.currentBalance = resultset.getLong("current_balance");
+        bank.createdOn = resultset.getTimestamp("created_on");
+        return bank;
+    }
 
-	public static OBank findBy(int userId) {
-		OBank bank = new OBank();
-		try (ResultSet rs = WebDb.get().select(
-				"SELECT id, user, current_balance, created_on  " +
-						"FROM banks " +
-						"WHERE user = ? ", userId)) {
-			if (rs.next()) {
-				bank = fillRecord(rs);
-			} else {
-				bank.userId = userId;
-				insert(bank);
-			}
-			rs.getStatement().close();
-		} catch (Exception e) {
-			Logger.fatal(e);
-		}
-		return bank;
-	}
+    public static void insert(OBank bank) {
+        if (bank.id > 0) {
+            update(bank);
+            return;
+        }
+        try {
+            if (bank.currentBalance == 0L) {
+                bank.currentBalance = Config.ECONOMY_START_BALANCE;
+            }
+            bank.createdOn = new Timestamp(System.currentTimeMillis());
+            bank.id = WebDb.get().insert(
+                    "INSERT INTO banks(user, current_balance, created_on) " +
+                            "VALUES (?,?,?)",
+                    bank.userId, bank.currentBalance, bank.createdOn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	private static OBank fillRecord(ResultSet resultset) throws SQLException {
-		OBank bank = new OBank();
-		bank.id = resultset.getInt("id");
-		bank.userId = resultset.getInt("user");
-		bank.currentBalance = resultset.getLong("current_balance");
-		bank.createdOn = resultset.getTimestamp("created_on");
-		return bank;
-	}
+    public static void updateBalance(int bankId, int relativeAmount) {
+        if (bankId == BOT_BANK_ACCOUNT.id || relativeAmount == 0) {
+            return;
+        }
+        try {
+            WebDb.get().query("UPDATE banks SET current_balance = current_balance + ? WHERE id = ?", relativeAmount, bankId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static void insert(OBank bank) {
-		if (bank.id > 0) {
-			update(bank);
-			return;
-		}
-		try {
-			if (bank.currentBalance == 0L) {
-				bank.currentBalance = Config.ECONOMY_START_BALANCE;
-			}
-			bank.createdOn = new Timestamp(System.currentTimeMillis());
-			bank.id = WebDb.get().insert(
-					"INSERT INTO banks(user, current_balance, created_on) " +
-							"VALUES (?,?,?)",
-					bank.userId, bank.currentBalance, bank.createdOn);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public static void update(OBank bank) {
+        if (bank.id == 0) {
+            insert(bank);
+            return;
+        }
+        try {
+            WebDb.get().query(
+                    "UPDATE  banks SET current_balance = ? WHERE id = ? ",
+                    bank.currentBalance, bank.id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static void updateBalance(int bankId, int relativeAmount) {
-		if (bankId == BOT_BANK_ACCOUNT.id || relativeAmount == 0) {
-			return;
-		}
-		try {
-			WebDb.get().query("UPDATE banks SET current_balance = current_balance + ? WHERE id = ?", relativeAmount, bankId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void update(OBank bank) {
-		if (bank.id == 0) {
-			insert(bank);
-			return;
-		}
-		try {
-			WebDb.get().query(
-					"UPDATE  banks SET current_balance = ? WHERE id = ? ",
-					bank.currentBalance, bank.id);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void init(String botId, String botName) {
-		OUser user = CUser.findBy(botId);
-		if (user.id == 0 || botId.equals(user.name) || user.name.isEmpty()) {
-			user.name = botName;
-			user.discord_id = botId;
-			CUser.update(user);
-		}
-		BOT_BANK_ACCOUNT = findBy(botId);
-		BOT_BANK_ACCOUNT.currentBalance = Integer.MAX_VALUE;
-		update(BOT_BANK_ACCOUNT);
-	}
+    public static void init(String botId, String botName) {
+        OUser user = CUser.findBy(botId);
+        if (user.id == 0 || botId.equals(user.name) || user.name.isEmpty()) {
+            user.name = botName;
+            user.discord_id = botId;
+            CUser.update(user);
+        }
+        BOT_BANK_ACCOUNT = findBy(botId);
+        BOT_BANK_ACCOUNT.currentBalance = Integer.MAX_VALUE;
+        update(BOT_BANK_ACCOUNT);
+    }
 }

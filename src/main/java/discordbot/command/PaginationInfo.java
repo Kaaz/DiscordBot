@@ -20,46 +20,46 @@ import net.dv8tion.jda.core.entities.Guild;
 
 public class PaginationInfo {
 
-	private int currentPage = 0;
-	private final int maxPage;
-	private final Guild guild;
+    private final int maxPage;
+    private final Guild guild;
+    private int currentPage = 0;
 
-	public PaginationInfo(int currentPage, int maxPage, Guild guild) {
+    public PaginationInfo(int currentPage, int maxPage, Guild guild) {
 
-		this.currentPage = currentPage;
-		this.maxPage = maxPage;
-		this.guild = guild;
-	}
+        this.currentPage = currentPage;
+        this.maxPage = maxPage;
+        this.guild = guild;
+    }
 
-	public boolean previousPage() {
-		if (currentPage > 1) {
-			currentPage--;
-			return true;
-		}
-		return false;
-	}
+    public boolean previousPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            return true;
+        }
+        return false;
+    }
 
-	public boolean nextPage() {
-		if (currentPage < maxPage) {
-			currentPage++;
-			return true;
-		}
-		return false;
-	}
+    public boolean nextPage() {
+        if (currentPage < maxPage) {
+            currentPage++;
+            return true;
+        }
+        return false;
+    }
 
-	public int getMaxPage() {
-		return maxPage;
-	}
+    public int getMaxPage() {
+        return maxPage;
+    }
 
-	public int getCurrentPage() {
-		return currentPage;
-	}
+    public int getCurrentPage() {
+        return currentPage;
+    }
 
-	public void setCurrentPage(int currentPage) {
-		this.currentPage = currentPage;
-	}
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
 
-	public Guild getGuild() {
-		return guild;
-	}
+    public Guild getGuild() {
+        return guild;
+    }
 }

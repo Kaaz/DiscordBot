@@ -30,48 +30,48 @@ import net.dv8tion.jda.core.entities.User;
  * make the bot say something
  */
 public class SayCommand extends AbstractCommand {
-	public SayCommand() {
-		super();
-	}
+    public SayCommand() {
+        super();
+    }
 
-	@Override
-	public String getDescription() {
-		return "repeats you";
-	}
+    @Override
+    public String getDescription() {
+        return "repeats you";
+    }
 
-	@Override
-	public String getCommand() {
-		return "say";
-	}
+    @Override
+    public String getCommand() {
+        return "say";
+    }
 
-	@Override
-	public boolean isListed() {
-		return false;
-	}
+    @Override
+    public boolean isListed() {
+        return false;
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{"say <anything>"};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{"say <anything>"};
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[]{};
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[]{};
+    }
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		if (args.length > 0) {
-			String output = Joiner.on(" ").join(args);
-			if (DisUtil.isUserMention(output)) {
-				if (bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.GUILD_ADMIN)) {
-					return output;
-				}
-				return Template.get("command_say_contains_mention");
-			}
-			return output;
-		} else {
-			return Template.get("command_say_whatexactly");
-		}
-	}
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        if (args.length > 0) {
+            String output = Joiner.on(" ").join(args);
+            if (DisUtil.isUserMention(output)) {
+                if (bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.GUILD_ADMIN)) {
+                    return output;
+                }
+                return Template.get("command_say_contains_mention");
+            }
+            return output;
+        } else {
+            return Template.get("command_say_whatexactly");
+        }
+    }
 }

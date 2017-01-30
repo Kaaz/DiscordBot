@@ -31,31 +31,31 @@ import java.io.IOException;
  */
 public class ProfileImageV1 extends ProfileImage {
 
-	public ProfileImageV1(User user) {
-		super(user);
-	}
+    public ProfileImageV1(User user) {
+        super(user);
+    }
 
-	public File getProfileImage() throws IOException {
-		Font defaultFont = new Font("Helvetica", Font.BOLD & Font.ITALIC, 36);
-		Font creditFont = new Font("comissans", Font.ITALIC, 20);
-		BufferedImage result = new BufferedImage(
-				645, 265,
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) result.getGraphics();
-		g.setRenderingHint(
-				RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		BufferedImage profileImg = getUserAvatar();
-		BufferedImage backgroundImage = ImageIO.read(Launcher.class.getClassLoader().getResource("profile_bg_test_2.png"));
+    public File getProfileImage() throws IOException {
+        Font defaultFont = new Font("Helvetica", Font.BOLD & Font.ITALIC, 36);
+        Font creditFont = new Font("comissans", Font.ITALIC, 20);
+        BufferedImage result = new BufferedImage(
+                645, 265,
+                BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = (Graphics2D) result.getGraphics();
+        g.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        BufferedImage profileImg = getUserAvatar();
+        BufferedImage backgroundImage = ImageIO.read(Launcher.class.getClassLoader().getResource("profile_bg_test_2.png"));
 
-		g.drawImage(profileImg, 66, 30, 197, 155, 0, 0, profileImg.getWidth(), profileImg.getHeight(), null);
-		g.drawImage(backgroundImage, 0, 0, 645, 265, 0, 0, 645, 265, null);
+        g.drawImage(profileImg, 66, 30, 197, 155, 0, 0, profileImg.getWidth(), profileImg.getHeight(), null);
+        g.drawImage(backgroundImage, 0, 0, 645, 265, 0, 0, 645, 265, null);
 
-		GfxUtil.addCenterText(getUser().getName(), defaultFont, 125, 200, g, Color.black);
-		GfxUtil.addText("made by Emily", creditFont, 506, 260, g, new Color(0xFFE7FA));
+        GfxUtil.addCenterText(getUser().getName(), defaultFont, 125, 200, g, Color.black);
+        GfxUtil.addText("made by Emily", creditFont, 506, 260, g, new Color(0xFFE7FA));
 
-		File file = new File("profile_v1_" + getUser().getId() + ".png");
-		ImageIO.write(result, "png", file);
-		return file;
-	}
+        File file = new File("profile_v1_" + getUser().getId() + ".png");
+        ImageIO.write(result, "png", file);
+        return file;
+    }
 }

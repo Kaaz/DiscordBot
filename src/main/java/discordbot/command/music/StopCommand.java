@@ -34,74 +34,74 @@ import net.dv8tion.jda.core.entities.User;
  * make the bot stop playing music
  */
 public class StopCommand extends AbstractCommand {
-	public StopCommand() {
-		super();
-	}
+    public StopCommand() {
+        super();
+    }
 
-	@Override
-	public String getDescription() {
-		return "stops playing music";
-	}
+    @Override
+    public String getDescription() {
+        return "stops playing music";
+    }
 
-	@Override
-	public String getCommand() {
-		return "stop";
-	}
+    @Override
+    public String getCommand() {
+        return "stop";
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{
-				"stop          //stops playing and leaves the channel",
-				"stop force    //stops playing and leaves the channel (admin, debug)",
-				"stop afternp  //stops and leaves after the now playing track is over",
-		};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{
+                "stop          //stops playing and leaves the channel",
+                "stop force    //stops playing and leaves the channel (admin, debug)",
+                "stop afternp  //stops and leaves after the now playing track is over",
+        };
+    }
 
-	@Override
-	public CommandVisibility getVisibility() {
-		return CommandVisibility.PUBLIC;
-	}
+    @Override
+    public CommandVisibility getVisibility() {
+        return CommandVisibility.PUBLIC;
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[]{
-				"leave"
-		};
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[]{
+                "leave"
+        };
+    }
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		Guild guild = ((TextChannel) channel).getGuild();
-		SimpleRank userRank = bot.security.getSimpleRank(author, channel);
-		if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-			return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
-		}
-		MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
-		if (args.length > 0) {
-			if (args[0].equals("force") && userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-				player.leave();
-				return Template.get("command_stop_success");
-			}
-		}
-		if (!player.isPlaying()) {
-			return Template.get("command_currentlyplaying_nosong");
-		}
-		if (player.isConnected()) {
-			if (!player.canUseVoiceCommands(author, userRank)) {
-				return Template.get("music_not_same_voicechannel");
-			}
-			if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && player.aListenerIsAtLeast(SimpleRank.GUILD_ADMIN)) {
-				return Template.get("music_not_while_admin_listening");
-			}
-			if (args.length > 0 && args[0].equals("afternp")) {
-				player.stopAfterTrack(true);
-				return Template.get("command_stop_after_track");
-			} else {
-				player.leave();
-			}
-			return Template.get("command_stop_success");
-		}
-		return Template.get("command_currentlyplaying_nosong");
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        Guild guild = ((TextChannel) channel).getGuild();
+        SimpleRank userRank = bot.security.getSimpleRank(author, channel);
+        if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
+            return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
+        }
+        MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
+        if (args.length > 0) {
+            if (args[0].equals("force") && userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+                player.leave();
+                return Template.get("command_stop_success");
+            }
+        }
+        if (!player.isPlaying()) {
+            return Template.get("command_currentlyplaying_nosong");
+        }
+        if (player.isConnected()) {
+            if (!player.canUseVoiceCommands(author, userRank)) {
+                return Template.get("music_not_same_voicechannel");
+            }
+            if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && player.aListenerIsAtLeast(SimpleRank.GUILD_ADMIN)) {
+                return Template.get("music_not_while_admin_listening");
+            }
+            if (args.length > 0 && args[0].equals("afternp")) {
+                player.stopAfterTrack(true);
+                return Template.get("command_stop_after_track");
+            } else {
+                player.leave();
+            }
+            return Template.get("command_stop_success");
+        }
+        return Template.get("command_currentlyplaying_nosong");
 
-	}
+    }
 }

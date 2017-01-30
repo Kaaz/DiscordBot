@@ -46,144 +46,144 @@ import java.util.List;
  */
 public class UserRankCommand extends AbstractCommand {
 
-	public UserRankCommand() {
-		super();
-	}
+    public UserRankCommand() {
+        super();
+    }
 
-	@Override
-	public String getDescription() {
-		return "This command is intended for bot admins";
-	}
+    @Override
+    public String getDescription() {
+        return "This command is intended for bot admins";
+    }
 
-	@Override
-	public String getCommand() {
-		return "userrank";
-	}
+    @Override
+    public String getCommand() {
+        return "userrank";
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{
-				"userrank <user>                   //check rank of user",
-				"userrank <user> <rank>            //gives a rank to user",
-				"userrank <user> perm <+/-> <node> //adds/removes permission from user",
-				"userrank permlist                 //lists all permissions",
-		};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{
+                "userrank <user>                   //check rank of user",
+                "userrank <user> <rank>            //gives a rank to user",
+                "userrank <user> perm <+/-> <node> //adds/removes permission from user",
+                "userrank permlist                 //lists all permissions",
+        };
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[]{
-				"ur"
-		};
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[]{
+                "ur"
+        };
+    }
 
-	@Override
-	public CommandVisibility getVisibility() {
-		return CommandVisibility.PUBLIC;
-	}
+    @Override
+    public CommandVisibility getVisibility() {
+        return CommandVisibility.PUBLIC;
+    }
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		SimpleRank authorRank = bot.security.getSimpleRank(author);
-		if (!authorRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-			return Template.get("no_permission");
-		}
-		if (args.length >= 1) {
-			if (args[0].equals("permlist")) {
-				return "Available permissions: " + Config.EOL +
-						tableFor(Arrays.asList(OUser.PermissionNode.values()));
-			}
-			User user;
-			if (DisUtil.isUserMention(args[0])) {
-				user = channel.getJDA().getUserById(DisUtil.mentionToId(args[0]));
-			} else if (args[0].matches("^i\\d+$")) {
-				user = channel.getJDA().getUserById(CUser.getCachedDiscordId(Integer.parseInt(args[0].substring(1))));
-			} else {
-				Member member = DisUtil.findUserIn((TextChannel) channel, args[0]);
-				if (member != null) {
-					user = member.getUser();
-				} else {
-					user = null;
-				}
-			}
-			if (user == null) {
-				return Template.get("cant_find_user", args[0]);
-			}
-			SimpleRank targetSimpleRank = bot.security.getSimpleRank(user);
-			OUser dbUser = CUser.findBy(user.getId());
-			if (args.length == 1) {
-				OUserRank userRank = CUserRank.findBy(user.getId());
-				if (userRank.rankId == 0 && !targetSimpleRank.isAtLeast(SimpleRank.CREATOR)) {
-					return Template.get("command_userrank_no_rank", user.getName());
-				} else if (targetSimpleRank.isAtLeast(SimpleRank.CREATOR)) {
-					return Template.get("command_userrank_rank", user.getName(), "creator");
-				} else {
-					return Template.get("command_userrank_rank", user.getName(), CRank.findById(userRank.rankId).codeName);
-				}
-			} else if (args.length == 2 && !args[1].equals("perm")) {
-				SimpleRank targetRank = SimpleRank.findRank(args[1]);
-				if (targetRank == null) {
-					return Template.get("command_userrank_rank_not_exists", args[1]);
-				}
-				if (!authorRank.isHigherThan(targetRank)) {
-					return Template.get("no_permission");
-				}
-				ORank targetDbRank = CRank.findBy(args[1]);
-				if (targetDbRank.id == 0) {
-					targetDbRank.codeName = targetRank.name();
-					targetDbRank.fullName = targetRank.name().toLowerCase();
-					CRank.insert(targetDbRank);
-				}
-				OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId(), user.getName()));
-				userRank.rankId = targetDbRank.id;
-				CUserRank.insertOrUpdate(userRank);
-				SecurityHandler.initialize();
-				return Template.get("command_userrank_rank", user.getName(), targetDbRank.codeName);
-			}
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        SimpleRank authorRank = bot.security.getSimpleRank(author);
+        if (!authorRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+            return Template.get("no_permission");
+        }
+        if (args.length >= 1) {
+            if (args[0].equals("permlist")) {
+                return "Available permissions: " + Config.EOL +
+                        tableFor(Arrays.asList(OUser.PermissionNode.values()));
+            }
+            User user;
+            if (DisUtil.isUserMention(args[0])) {
+                user = channel.getJDA().getUserById(DisUtil.mentionToId(args[0]));
+            } else if (args[0].matches("^i\\d+$")) {
+                user = channel.getJDA().getUserById(CUser.getCachedDiscordId(Integer.parseInt(args[0].substring(1))));
+            } else {
+                Member member = DisUtil.findUserIn((TextChannel) channel, args[0]);
+                if (member != null) {
+                    user = member.getUser();
+                } else {
+                    user = null;
+                }
+            }
+            if (user == null) {
+                return Template.get("cant_find_user", args[0]);
+            }
+            SimpleRank targetSimpleRank = bot.security.getSimpleRank(user);
+            OUser dbUser = CUser.findBy(user.getId());
+            if (args.length == 1) {
+                OUserRank userRank = CUserRank.findBy(user.getId());
+                if (userRank.rankId == 0 && !targetSimpleRank.isAtLeast(SimpleRank.CREATOR)) {
+                    return Template.get("command_userrank_no_rank", user.getName());
+                } else if (targetSimpleRank.isAtLeast(SimpleRank.CREATOR)) {
+                    return Template.get("command_userrank_rank", user.getName(), "creator");
+                } else {
+                    return Template.get("command_userrank_rank", user.getName(), CRank.findById(userRank.rankId).codeName);
+                }
+            } else if (args.length == 2 && !args[1].equals("perm")) {
+                SimpleRank targetRank = SimpleRank.findRank(args[1]);
+                if (targetRank == null) {
+                    return Template.get("command_userrank_rank_not_exists", args[1]);
+                }
+                if (!authorRank.isHigherThan(targetRank)) {
+                    return Template.get("no_permission");
+                }
+                ORank targetDbRank = CRank.findBy(args[1]);
+                if (targetDbRank.id == 0) {
+                    targetDbRank.codeName = targetRank.name();
+                    targetDbRank.fullName = targetRank.name().toLowerCase();
+                    CRank.insert(targetDbRank);
+                }
+                OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId(), user.getName()));
+                userRank.rankId = targetDbRank.id;
+                CUserRank.insertOrUpdate(userRank);
+                SecurityHandler.initialize();
+                return Template.get("command_userrank_rank", user.getName(), targetDbRank.codeName);
+            }
 
-			if (args[1].equals("perm")) {
+            if (args[1].equals("perm")) {
 
-				if (args.length < 4) {
-					if (dbUser.getPermission().isEmpty()) {
-						return "No permissions set for " + user.getName();
-					}
-					return "Permissions for " + user.getName() + Config.EOL +
-							tableFor(dbUser.getPermission());
-				}
-				boolean adding = true;
-				switch (args[2].toLowerCase()) {
-					case "-":
-					case "del":
-					case "rem":
-					case "min":
-					case "remove":
-					case "delete":
-						adding = false;
-						break;
-				}
-				try {
-					OUser.PermissionNode node = OUser.PermissionNode.valueOf(args[3].toUpperCase());
-					if (adding) {
-						dbUser.addPermission(node);
-						CUser.update(dbUser);
-						return String.format(":+1: adding `%s` to %s", node.toString(), user.getName());
-					}
-					dbUser.removePermission(node);
-					CUser.update(dbUser);
-					return String.format(":+1: removed `%s` from %s", node.toString(), user.getName());
-				} catch (Exception e) {
-					return "Invalid permission node";
-				}
-			}
-		}
-		return Template.get("command_invalid_use");
-	}
+                if (args.length < 4) {
+                    if (dbUser.getPermission().isEmpty()) {
+                        return "No permissions set for " + user.getName();
+                    }
+                    return "Permissions for " + user.getName() + Config.EOL +
+                            tableFor(dbUser.getPermission());
+                }
+                boolean adding = true;
+                switch (args[2].toLowerCase()) {
+                    case "-":
+                    case "del":
+                    case "rem":
+                    case "min":
+                    case "remove":
+                    case "delete":
+                        adding = false;
+                        break;
+                }
+                try {
+                    OUser.PermissionNode node = OUser.PermissionNode.valueOf(args[3].toUpperCase());
+                    if (adding) {
+                        dbUser.addPermission(node);
+                        CUser.update(dbUser);
+                        return String.format(":+1: adding `%s` to %s", node.toString(), user.getName());
+                    }
+                    dbUser.removePermission(node);
+                    CUser.update(dbUser);
+                    return String.format(":+1: removed `%s` from %s", node.toString(), user.getName());
+                } catch (Exception e) {
+                    return "Invalid permission node";
+                }
+            }
+        }
+        return Template.get("command_invalid_use");
+    }
 
-	private String tableFor(Collection<OUser.PermissionNode> nodes) {
-		List<List<String>> tbl = new ArrayList<>();
-		for (OUser.PermissionNode node : nodes) {
-			tbl.add(Arrays.asList(node.toString(), node.getDescription()));
-		}
-		return Misc.makeAsciiTable(Arrays.asList("code", "description"), tbl, null);
-	}
+    private String tableFor(Collection<OUser.PermissionNode> nodes) {
+        List<List<String>> tbl = new ArrayList<>();
+        for (OUser.PermissionNode node : nodes) {
+            tbl.add(Arrays.asList(node.toString(), node.getDescription()));
+        }
+        return Misc.makeAsciiTable(Arrays.asList("code", "description"), tbl, null);
+    }
 }

@@ -33,53 +33,53 @@ import java.util.concurrent.TimeUnit;
  */
 public class MusicCleanupService extends AbstractService {
 
-	public MusicCleanupService(BotContainer b) {
-		super(b);
-	}
+    public MusicCleanupService(BotContainer b) {
+        super(b);
+    }
 
-	@Override
-	public String getIdentifier() {
-		return "music_cleanup_service";
-	}
+    @Override
+    public String getIdentifier() {
+        return "music_cleanup_service";
+    }
 
-	@Override
-	public long getDelayBetweenRuns() {
-		return TimeUnit.DAYS.toMillis(1);
-	}
+    @Override
+    public long getDelayBetweenRuns() {
+        return TimeUnit.DAYS.toMillis(1);
+    }
 
-	@Override
-	public boolean shouldIRun() {
-		return true;
-	}
+    @Override
+    public boolean shouldIRun() {
+        return true;
+    }
 
-	@Override
-	public void beforeRun() {
-	}
+    @Override
+    public void beforeRun() {
+    }
 
-	@Override
-	public void run() {
-		long olderThan = (System.currentTimeMillis() / 1000L) - TimeUnit.DAYS.toSeconds(14);
-		try (ResultSet rs = WebDb.get().select("SELECT m.* " +
-				" FROM music m " +
-				" WHERE m.lastplaydate < ? " +
-				" AND m.file_exists = 1 " +
-				" ORDER BY lastplaydate DESC", olderThan)) {
-			while (rs.next()) {
-				OMusic record = CMusic.fillRecord(rs);
-				File file = new File(record.filename);
-				if (file.exists()) {
-					file.delete();
-				}
-				record.fileExists = 0;
-				CMusic.update(record);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			Launcher.logToDiscord(e);
-		}
-	}
+    @Override
+    public void run() {
+        long olderThan = (System.currentTimeMillis() / 1000L) - TimeUnit.DAYS.toSeconds(14);
+        try (ResultSet rs = WebDb.get().select("SELECT m.* " +
+                " FROM music m " +
+                " WHERE m.lastplaydate < ? " +
+                " AND m.file_exists = 1 " +
+                " ORDER BY lastplaydate DESC", olderThan)) {
+            while (rs.next()) {
+                OMusic record = CMusic.fillRecord(rs);
+                File file = new File(record.filename);
+                if (file.exists()) {
+                    file.delete();
+                }
+                record.fileExists = 0;
+                CMusic.update(record);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Launcher.logToDiscord(e);
+        }
+    }
 
-	@Override
-	public void afterRun() {
-	}
+    @Override
+    public void afterRun() {
+    }
 }

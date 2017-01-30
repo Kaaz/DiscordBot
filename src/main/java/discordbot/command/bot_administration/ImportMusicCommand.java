@@ -31,82 +31,82 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created on 27-9-2016
  */
 public class ImportMusicCommand extends AbstractCommand {
-	private AtomicBoolean isInProgress = new AtomicBoolean(false);
-	private AtomicInteger filesImported = new AtomicInteger(0);
-	private AtomicInteger filesScanned = new AtomicInteger(0);
+    private AtomicBoolean isInProgress = new AtomicBoolean(false);
+    private AtomicInteger filesImported = new AtomicInteger(0);
+    private AtomicInteger filesScanned = new AtomicInteger(0);
 
-	public ImportMusicCommand() {
-		super();
-	}
+    public ImportMusicCommand() {
+        super();
+    }
 
-	@Override
-	public String getDescription() {
-		return "Special command for special use case. Imports music files from a directory. Only imports files with a valid id3v[1-2] tag";
-	}
+    @Override
+    public String getDescription() {
+        return "Special command for special use case. Imports music files from a directory. Only imports files with a valid id3v[1-2] tag";
+    }
 
-	@Override
-	public String getCommand() {
-		return "importmusic";
-	}
+    @Override
+    public String getCommand() {
+        return "importmusic";
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{
-				"importmusic <path/to/music>  //imports a folder"
-		};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{
+                "importmusic <path/to/music>  //imports a folder"
+        };
+    }
 
-	private void reset() {
-		filesImported.set(0);
-		filesScanned.set(0);
-	}
+    private void reset() {
+        filesImported.set(0);
+        filesScanned.set(0);
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[0];
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[0];
+    }
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		SimpleRank rank = bot.security.getSimpleRank(author);
-		if (author.getId().equals("97284813643329536") || rank.isAtLeast(SimpleRank.CREATOR)) {
-			if (isInProgress.get()) {
-				return "currently in progress :D";
-			} else if (args.length > 0) {
-				File file = new File(args[0]);
-				if (!file.isDirectory()) {
-					return "Target is not a directory";
-				}
-				if (!isInProgress.getAndSet(true)) {
-					reset();
-					importDirectory(file);
-					isInProgress.set(false);
-					return String.format("Scanned %s files and imported %s files", filesScanned.toString(), filesImported.toString());
-				}
-			}
-			return ":face_palm: Not how you use it";
-		}
-		return Template.get("command_no_permission");
-	}
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        SimpleRank rank = bot.security.getSimpleRank(author);
+        if (author.getId().equals("97284813643329536") || rank.isAtLeast(SimpleRank.CREATOR)) {
+            if (isInProgress.get()) {
+                return "currently in progress :D";
+            } else if (args.length > 0) {
+                File file = new File(args[0]);
+                if (!file.isDirectory()) {
+                    return "Target is not a directory";
+                }
+                if (!isInProgress.getAndSet(true)) {
+                    reset();
+                    importDirectory(file);
+                    isInProgress.set(false);
+                    return String.format("Scanned %s files and imported %s files", filesScanned.toString(), filesImported.toString());
+                }
+            }
+            return ":face_palm: Not how you use it";
+        }
+        return Template.get("command_no_permission");
+    }
 
-	public void importDirectory(File file) {
-		File[] flist = file.listFiles();
-		if (flist == null) {
-			return;
-		}
-		for (File f : flist) {
-			if (f.isDirectory()) {
-				importDirectory(f);
-			} else {
-				if (importFile(f)) {
-					filesImported.incrementAndGet();
-				}
-				filesScanned.incrementAndGet();
-			}
-		}
-	}
+    public void importDirectory(File file) {
+        File[] flist = file.listFiles();
+        if (flist == null) {
+            return;
+        }
+        for (File f : flist) {
+            if (f.isDirectory()) {
+                importDirectory(f);
+            } else {
+                if (importFile(f)) {
+                    filesImported.incrementAndGet();
+                }
+                filesScanned.incrementAndGet();
+            }
+        }
+    }
 
-	private boolean importFile(File f) {
+    private boolean importFile(File f) {
 //		Mp3File mp3file = null;
 //		OMusic record = TMusic.findByFileName(f.getAbsolutePath());
 //		if (record.id > 0) {
@@ -138,6 +138,6 @@ public class ImportMusicCommand extends AbstractCommand {
 //		record.title = title;
 //		record.filename = f.getAbsolutePath();
 //		TMusic.insert(record);
-		return true;
-	}
+        return true;
+    }
 }

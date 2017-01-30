@@ -21,30 +21,30 @@ import discordbot.guildsettings.types.BooleanSettingType;
 
 
 public class SettingUseEconomy extends AbstractGuildSetting<BooleanSettingType> {
-	@Override
-	protected BooleanSettingType getSettingsType() {
-		return new BooleanSettingType();
-	}
+    @Override
+    protected BooleanSettingType getSettingsType() {
+        return new BooleanSettingType();
+    }
 
-	@Override
-	public String getKey() {
-		return "module_economy";
-	}
+    @Override
+    public String getKey() {
+        return "module_economy";
+    }
 
-	@Override
-	public String[] getTags() {
-		return new String[]{"bot", "module", "economy"};
-	}
+    @Override
+    public String[] getTags() {
+        return new String[]{"bot", "module", "economy"};
+    }
 
-	@Override
-	public String getDefault() {
-		return "false";
-	}
+    @Override
+    public String getDefault() {
+        return "false";
+    }
 
-	@Override
-	public String[] getDescription() {
-		return new String[]{"Use the economy feature?",
-				"false -> nope!",
-				"true -> yep!"};
-	}
+    @Override
+    public String[] getDescription() {
+        return new String[]{"Use the economy feature?",
+                "false -> nope!",
+                "true -> yep!"};
+    }
 }

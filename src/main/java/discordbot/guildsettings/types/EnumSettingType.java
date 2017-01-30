@@ -27,30 +27,30 @@ import java.util.HashSet;
  * the setting has to be in the list
  */
 public class EnumSettingType implements IGuildSettingType {
-	private final HashSet<String> options;
+    private final HashSet<String> options;
 
-	public EnumSettingType(String... values) {
-		options = new HashSet<>();
-		Collections.addAll(options, values);
-	}
+    public EnumSettingType(String... values) {
+        options = new HashSet<>();
+        Collections.addAll(options, values);
+    }
 
-	@Override
-	public String typeName() {
-		return "enum";
-	}
+    @Override
+    public String typeName() {
+        return "enum";
+    }
 
-	@Override
-	public boolean validate(Guild guild, String value) {
-		return value != null && options.contains(value.toLowerCase());
-	}
+    @Override
+    public boolean validate(Guild guild, String value) {
+        return value != null && options.contains(value.toLowerCase());
+    }
 
-	@Override
-	public String fromInput(Guild guild, String value) {
-		return value;
-	}
+    @Override
+    public String fromInput(Guild guild, String value) {
+        return value;
+    }
 
-	@Override
-	public String toDisplay(Guild guild, String value) {
-		return value;
-	}
+    @Override
+    public String toDisplay(Guild guild, String value) {
+        return value;
+    }
 }

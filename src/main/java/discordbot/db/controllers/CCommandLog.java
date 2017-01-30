@@ -26,14 +26,14 @@ import java.sql.Date;
  */
 public class CCommandLog {
 
-	public static void saveLog(int userId, int guildId, String commandUsed, String commandArgs) {
-		try {
-			WebDb.get().insert(
-					"INSERT INTO command_log(user_id, guild, command, args, execute_date) " +
-							"VALUES (?,?,?,?,?)",
-					userId, guildId, commandUsed, commandArgs, new Date(System.currentTimeMillis()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public static void saveLog(int userId, int guildId, String commandUsed, String commandArgs) {
+        try {
+            WebDb.get().insert(
+                    "INSERT INTO command_log(user_id, guild, command, args, execute_date) " +
+                            "VALUES (?,?,?,?,?)",
+                    userId, guildId, commandUsed, commandArgs, new Date(System.currentTimeMillis()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

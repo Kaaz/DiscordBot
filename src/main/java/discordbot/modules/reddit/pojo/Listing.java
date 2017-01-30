@@ -27,16 +27,16 @@ import java.util.List;
  */
 public class Listing {
 
-	@Expose
-	public List<Post> children;
-	@Expose
-	public String modhash;
-	@Expose
-	public String before;
-	@Expose
-	public String after;
+    @Expose
+    public List<Post> children;
+    @Expose
+    public String modhash;
+    @Expose
+    public String before;
+    @Expose
+    public String after;
 
-	public Listing() {
-		this.children = new ArrayList<>();
-	}
+    public Listing() {
+        this.children = new ArrayList<>();
+    }
 }

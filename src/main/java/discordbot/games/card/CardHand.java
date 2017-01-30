@@ -21,25 +21,25 @@ import java.util.List;
 
 public class CardHand {
 
-	protected ArrayList<Card> cardsInHand;
+    protected ArrayList<Card> cardsInHand;
 
-	public CardHand() {
-		reset();
-	}
+    public CardHand() {
+        reset();
+    }
 
-	public void reset() {
-		cardsInHand = new ArrayList<>();
-	}
+    public void reset() {
+        cardsInHand = new ArrayList<>();
+    }
 
-	public void add(Card card) {
-		cardsInHand.add(card);
-	}
+    public void add(Card card) {
+        cardsInHand.add(card);
+    }
 
-	public boolean remove(Card card) {
-		return cardsInHand.remove(card);
-	}
+    public boolean remove(Card card) {
+        return cardsInHand.remove(card);
+    }
 
-	public List<Card> getHand() {
-		return cardsInHand;
-	}
+    public List<Card> getHand() {
+        return cardsInHand;
+    }
 }

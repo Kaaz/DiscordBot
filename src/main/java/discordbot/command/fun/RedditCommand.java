@@ -50,85 +50,85 @@ import java.util.Set;
  */
 public class RedditCommand extends AbstractCommand {
 
-	private static final Set<String> whitelistedDomains = new HashSet<>(Arrays.asList(new String[]{
-			"imgur.com",
-			"i.imgur.com",
-			"i.redd.it",
-			"pbs.twimg.com",
-			"gfycat.com",
-			"file1.answcdn.com",
-			"i.reddituploads.com"
-	}));
+    private static final Set<String> whitelistedDomains = new HashSet<>(Arrays.asList(new String[]{
+            "imgur.com",
+            "i.imgur.com",
+            "i.redd.it",
+            "pbs.twimg.com",
+            "gfycat.com",
+            "file1.answcdn.com",
+            "i.reddituploads.com"
+    }));
 
-	public RedditCommand() {
-		super();
-	}
+    public RedditCommand() {
+        super();
+    }
 
-	@Override
-	public String getDescription() {
-		return "Posts something from reddit";
-	}
+    @Override
+    public String getDescription() {
+        return "Posts something from reddit";
+    }
 
-	@Override
-	public String getCommand() {
-		return "reddit";
-	}
+    @Override
+    public String getCommand() {
+        return "reddit";
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[]{"r <subreddit>"};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[]{"r <subreddit>"};
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[]{
-				"r"
-		};
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[]{
+                "r"
+        };
+    }
 
-	@Override
-	public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-		String subReddit = "funny";
-		if (args.length > 0) {
-			subReddit = args[0];
-		}
-		List<Post> dailyTop = RedditScraper.getDailyTop(subReddit);
-		if (dailyTop.isEmpty()) {
-			return Template.get("command_reddit_sub_not_found");
-		}
-		Random rng = new Random();
-		Post post;
-		do {
-			int index = rng.nextInt(dailyTop.size());
-			post = dailyTop.get(index);
-			dailyTop.remove(index);
-			if (post.data.is_self) {
-				break;
-			}
-			if (whitelistedDomains.contains(post.data.domain)) {
-				break;
-			}
-		} while (dailyTop.size() > 0);
-		if (post.data.is_self) {
-			return ":newspaper:" + Config.EOL + post.data.getTitle() + Config.EOL + post.data.getSelftext();
-		}
-		ImagePreview preview = post.data.getPreview();
-		if (preview != null && preview.images.size() > 0) {
-			if (channel.getType().equals(ChannelType.TEXT) &&
-					!PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
-				return Template.get("permission_missing_attach_files");
-			}
-			for (Image image : preview.images) {
-				try (InputStream in = new URL(StringEscapeUtils.unescapeHtml4(image.source.url)).openStream()) {
-					File outputfile = new File("tmp_" + channel.getId() + ".jpg");
-					ImageIO.write(ImageIO.read(in), "jpg", outputfile);
-					channel.sendFile(outputfile, new MessageBuilder().append(post.data.title).build()).queue(message -> outputfile.delete());
-					return "";
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return Template.get("command_reddit_nothing");
-	}
+    @Override
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+        String subReddit = "funny";
+        if (args.length > 0) {
+            subReddit = args[0];
+        }
+        List<Post> dailyTop = RedditScraper.getDailyTop(subReddit);
+        if (dailyTop.isEmpty()) {
+            return Template.get("command_reddit_sub_not_found");
+        }
+        Random rng = new Random();
+        Post post;
+        do {
+            int index = rng.nextInt(dailyTop.size());
+            post = dailyTop.get(index);
+            dailyTop.remove(index);
+            if (post.data.is_self) {
+                break;
+            }
+            if (whitelistedDomains.contains(post.data.domain)) {
+                break;
+            }
+        } while (dailyTop.size() > 0);
+        if (post.data.is_self) {
+            return ":newspaper:" + Config.EOL + post.data.getTitle() + Config.EOL + post.data.getSelftext();
+        }
+        ImagePreview preview = post.data.getPreview();
+        if (preview != null && preview.images.size() > 0) {
+            if (channel.getType().equals(ChannelType.TEXT) &&
+                    !PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
+                return Template.get("permission_missing_attach_files");
+            }
+            for (Image image : preview.images) {
+                try (InputStream in = new URL(StringEscapeUtils.unescapeHtml4(image.source.url)).openStream()) {
+                    File outputfile = new File("tmp_" + channel.getId() + ".jpg");
+                    ImageIO.write(ImageIO.read(in), "jpg", outputfile);
+                    channel.sendFile(outputfile, new MessageBuilder().append(post.data.title).build()).queue(message -> outputfile.delete());
+                    return "";
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return Template.get("command_reddit_nothing");
+    }
 }

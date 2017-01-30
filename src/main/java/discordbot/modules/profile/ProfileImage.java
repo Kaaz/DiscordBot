@@ -30,26 +30,26 @@ import java.net.URLConnection;
  */
 public abstract class ProfileImage {
 
-	private final User user;
+    private final User user;
 
-	public ProfileImage(User user) {
-		this.user = user;
-	}
+    public ProfileImage(User user) {
+        this.user = user;
+    }
 
-	public BufferedImage getUserAvatar() throws IOException {
+    public BufferedImage getUserAvatar() throws IOException {
 
-		URLConnection connection = new URL(getUser().getAvatarUrl() != null ? getUser().getAvatarUrl() : getUser().getDefaultAvatarUrl()).openConnection();
-		connection.setRequestProperty("User-Agent", "bot emily-bot");
-		BufferedImage profileImg;
-		try {
-			profileImg = ImageIO.read(connection.getInputStream());
-		} catch (Exception ignored) {
-			profileImg = ImageIO.read(Launcher.class.getClassLoader().getResource("default_profile.jpg"));
-		}
-		return profileImg;
-	}
+        URLConnection connection = new URL(getUser().getAvatarUrl() != null ? getUser().getAvatarUrl() : getUser().getDefaultAvatarUrl()).openConnection();
+        connection.setRequestProperty("User-Agent", "bot emily-bot");
+        BufferedImage profileImg;
+        try {
+            profileImg = ImageIO.read(connection.getInputStream());
+        } catch (Exception ignored) {
+            profileImg = ImageIO.read(Launcher.class.getClassLoader().getResource("default_profile.jpg"));
+        }
+        return profileImg;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public User getUser() {
+        return user;
+    }
 }
