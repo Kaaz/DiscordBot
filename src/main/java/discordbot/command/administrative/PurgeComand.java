@@ -19,6 +19,7 @@ package discordbot.command.administrative;
 import discordbot.command.CommandVisibility;
 import discordbot.core.AbstractCommand;
 import discordbot.handler.Template;
+import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
@@ -30,10 +31,13 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.utils.MiscUtil;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * !purge
@@ -64,12 +68,22 @@ public class PurgeComand extends AbstractCommand {
     @Override
     public String[] getUsage() {
         return new String[]{
-                "purge               //deletes up to 100 messages",
-                "purge <limit>       //deletes non-pinned messages",
-                "purge @user         //deletes messages from user",
-                "purge @user <limit> //deletes up to <limit> messages from user",
-                "purge commands      //delete command related messages",
-                "purge emily         //deletes my messages :("
+                "//deletes up to 100 non-pinned messages",
+                "purge",
+                "//deletes <limit> (max 100) non-pinned messages",
+                "purge <limit>",
+                "//deletes <limit> messages from <user>, limit is optional",
+                "purge @user [limit]",
+                "//deletes messages from <user>, user can be part of a user's name",
+                "purge user <user>",
+                "//deletes messages matching <regex>",
+                "purge matches <regex>",
+                "//delete messages NOT matching <regex>",
+                "purge notmatches <regex>",
+                "//delete command related messages",
+                "purge commands",
+                "//deletes bot messages",
+                "purge bot"
         };
     }
 
@@ -84,45 +98,69 @@ public class PurgeComand extends AbstractCommand {
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
         Guild guild = ((TextChannel) channel).getGuild();
-        boolean hasManageMessages = PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_MANAGE);
+        final boolean hasManageMessages = PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_MANAGE);
         List<Message> messagesToDelete = new ArrayList<>();
         Member toDeleteFrom = null;
+        Pattern deletePattern = null;
         int deleteLimit = 100;
-        boolean deleteAll = true;
+        final String cmdPrefix = DisUtil.getCommandPrefix(channel);
+        PurgeStyle style = PurgeStyle.UNKNOWN;
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && !channel.getJDA().getSelfUser().equals(author)) {
             return Template.get("no_permission");
         }
-        if (args.length >= 1) {
-            if (args[0].equals("commands") || args[0].equals("command")) {
-                if (!hasManageMessages) {
-                    Template.get("permission_missing_manage_messages");
-                }
-                String cmdPrefix = DisUtil.getCommandPrefix(channel);
-                channel.getHistory().retrievePast(100).queue(messages -> {
-                    for (Message message : messages) {
-                        if (message.isPinned()) {
-                            continue;
+        if (args.length == 0) {
+            style = PurgeStyle.ALL;
+        }
+        if (args.length > 0) {
+            switch (args[0]) {
+                case "commands":
+                case "command":
+                    style = PurgeStyle.COMMANDS;
+                    break;
+                case "bot":
+                case "bots":
+                case "emily":
+                    style = PurgeStyle.BOTS;
+                    break;
+                case "user":
+                    style = PurgeStyle.AUTHOR;
+                    if (args.length > 1) {
+                        User user = DisUtil.findUser((TextChannel) channel, Misc.joinStrings(args, 1));
+                        if (user != null) {
+                            toDeleteFrom = guild.getMember(user);
                         }
-                        if ((message.getRawContent().startsWith(cmdPrefix) && hasManageMessages)
-                                || (message.getAuthor() == null || message.getAuthor().getId().equals(message.getJDA().getSelfUser().getId()))) {
-                            messagesToDelete.add(message);
+                        if (toDeleteFrom != null && author.getId().equals(toDeleteFrom.getUser().getId())) {
+                            deleteLimit++;//exclude the command itself from the limit
+                        }
+                        if (toDeleteFrom != null && !hasManageMessages && !channel.getJDA().getSelfUser().getId().equals(toDeleteFrom.getUser().getId())) {
+                            return Template.get("permission_missing_manage_messages");
                         }
                     }
-                    deleteBulk(bot, (TextChannel) channel, hasManageMessages, messagesToDelete);
-                });
-                return "";
+                    break;
+                case "matches":
+                    style = PurgeStyle.MATCHES;
+                case "notmatches":
+                    if (style.equals(PurgeStyle.UNKNOWN)) {
+                        style = PurgeStyle.NOTMATCHES;
+                    }
+                    String regex = Misc.joinStrings(args, 1);
+                    try {
+                        deletePattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+                    } catch (PatternSyntaxException exception) {
+                        return Template.get("command_autoreply_regex_invalid") + Config.EOL +
+                                exception.getDescription() + Config.EOL +
+                                Misc.makeTable(exception.getMessage());
+                    }
             }
-            deleteAll = false;
+        }
+        if (style.equals(PurgeStyle.UNKNOWN)) {
             if (DisUtil.isUserMention(args[0])) {
                 toDeleteFrom = guild.getMember(channel.getJDA().getUserById(DisUtil.mentionToId(args[0])));
                 if (args.length >= 2 && args[1].matches("^\\d+$")) {
                     deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
                 }
-            } else if (args[0].toLowerCase().equals("emily")) {
-                toDeleteFrom = guild.getSelfMember();
             } else if (args[0].matches("^\\d+$")) {
-                deleteAll = true;
                 deleteLimit = Math.min(deleteLimit, Misc.parseInt(args[0], deleteLimit)) + 1;
             } else {
                 toDeleteFrom = DisUtil.findUserIn((TextChannel) channel, args[0]);
@@ -131,30 +169,63 @@ public class PurgeComand extends AbstractCommand {
                 }
             }
         }
-        if (toDeleteFrom != null && !hasManageMessages && !channel.getJDA().getSelfUser().equals(toDeleteFrom)) {
-            return Template.get("permission_missing_manage_messages");
-        }
-        if (author.equals(toDeleteFrom)) {
-            deleteLimit++;//exclude the command itself from the limit
-        }
+
         int finalDeleteLimit = deleteLimit;
-        boolean finalDeleteAll = deleteAll;
+        long twoWeeksAgo = ((System.currentTimeMillis() - (14 * 24 * 60 * 60 * 1000)) - MiscUtil.DISCORD_EPOCH) << MiscUtil.TIMESTAMP_OFFSET;
         Member finalToDeleteFrom = toDeleteFrom;
+        PurgeStyle finalStyle = style;
+        Pattern finalDeletePattern = deletePattern;
         channel.getHistory().retrievePast(100).queue(messages -> {
             int deletedCount = 0;
             for (Message msg : messages) {
                 if (deletedCount == finalDeleteLimit) {
                     break;
                 }
-                if (msg.isPinned()) {
+                if (msg.isPinned() || Long.parseLong(msg.getId()) < twoWeeksAgo) {
                     continue;
                 }
-                if (finalDeleteAll && (hasManageMessages || (msg.getAuthor() != null && msg.getAuthor().getId().equals(msg.getJDA().getSelfUser().getId())))) {
-                    deletedCount++;
-                    messagesToDelete.add(msg);
-                } else if (!finalDeleteAll && finalToDeleteFrom != null && msg.getAuthor() != null && msg.getAuthor().getId().equals(finalToDeleteFrom.getUser().getId())) {
-                    deletedCount++;
-                    messagesToDelete.add(msg);
+                switch (finalStyle) {
+                    case ALL:
+                        if ((hasManageMessages
+                                || (msg.getAuthor() != null && msg.getAuthor().getId().equals(msg.getJDA().getSelfUser().getId())))) {
+                            messagesToDelete.add(msg);
+                            deletedCount++;
+                        }
+                        break;
+                    case BOTS:
+                        if ((hasManageMessages && msg.getAuthor() != null && msg.getAuthor().isBot())
+                                || msg.getAuthor() != null && msg.getAuthor().isBot()) {
+                            messagesToDelete.add(msg);
+                            deletedCount++;
+                        }
+                        break;
+                    case AUTHOR:
+                        if (finalToDeleteFrom != null && msg.getAuthor() != null && msg.getAuthor().getId().equals(finalToDeleteFrom.getUser().getId())) {
+                            messagesToDelete.add(msg);
+                            deletedCount++;
+                        }
+                        break;
+                    case COMMANDS:
+                        if ((msg.getRawContent().startsWith(cmdPrefix) && hasManageMessages)
+                                || (msg.getAuthor() == null || msg.getAuthor().getId().equals(msg.getJDA().getSelfUser().getId()))) {
+                            messagesToDelete.add(msg);
+                            deletedCount++;
+                        }
+                        break;
+                    case MATCHES:
+                        if (hasManageMessages && finalDeletePattern.matcher(msg.getRawContent()).find()) {
+                            messagesToDelete.add(msg);
+                            deletedCount++;
+                        }
+                        break;
+                    case NOTMATCHES:
+                        if (hasManageMessages && !finalDeletePattern.matcher(msg.getRawContent()).find()) {
+                            messagesToDelete.add(msg);
+                            deletedCount++;
+                        }
+                        break;
+
+
                 }
             }
             deleteBulk(bot, (TextChannel) channel, hasManageMessages, messagesToDelete);
@@ -203,5 +274,9 @@ public class PurgeComand extends AbstractCommand {
                 }
             });
         }
+    }
+
+    private enum PurgeStyle {
+        UNKNOWN, ALL, BOTS, AUTHOR, MATCHES, NOTMATCHES, COMMANDS
     }
 }
