@@ -54,7 +54,7 @@ public class SlotMachine {
             winSlot = slotOptions[results[0] % slotOptions.length];
             winMultiplier = slotOptions[results[0] % slotOptions.length].getTriplePayout();
             winSlotTimes = 3;
-        } else if (results[0] == results[1] || results[0] == results[2] && slotOptions[results[0] % slotOptions.length].getDoublePayout() > 0) {
+        } else if ((results[0] == results[1] || results[0] == results[2]) && slotOptions[results[0] % slotOptions.length].getDoublePayout() > 0) {
             winSlot = slotOptions[results[0] % slotOptions.length];
             winMultiplier = slotOptions[results[0] % slotOptions.length].getDoublePayout();
             winSlotTimes = 2;
