@@ -39,7 +39,7 @@ import java.util.concurrent.Future;
 public class SlotMachineCommand extends AbstractCommand implements ICommandCooldown {
 
     private final long SPIN_INTERVAL = 2000L;
-    private final int MAX_BET = 25;
+    private final int MAX_BET = 1000;
 
     public SlotMachineCommand() {
         super();

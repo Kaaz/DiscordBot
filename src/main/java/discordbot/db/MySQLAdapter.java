@@ -72,18 +72,11 @@ public class MySQLAdapter {
         return c;
     }
 
-    public ResultSet select(String sql, Object... params) {
+    public ResultSet select(String sql, Object... params) throws SQLException {
         PreparedStatement query = null;
-        try {
-            query = getConnection().prepareStatement(sql);
-            resolveParameters(query, params);
-            return query.executeQuery();
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+        query = getConnection().prepareStatement(sql);
+        resolveParameters(query, params);
+        return query.executeQuery();
     }
 
     public int query(String sql) throws SQLException {

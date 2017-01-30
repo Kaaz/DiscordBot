@@ -114,13 +114,14 @@ public class BankCommand extends AbstractCommand {
                 List<OBankTransaction> history = CBankTransactions.getHistoryFor(bank.id);
                 String ret = "Your transaction history:\n \n";
                 for (OBankTransaction transaction : history) {
-                    ret += String.format("%s`\u200B%+4d` %s%s `\u200B%24s` %s *%s*\n",
-                            transaction.bankFrom == bank.id ? Emojibet.TRIANGLE_RED_DOWN : Emojibet.INBOX_TRAY,
+                    ret += String.format("%s`\u200B%+4d`%s`\u200B%24s`%s%s *%s*\n",
+                            transaction.bankFrom == bank.id ? Emojibet.TRIANGLE_RED_DOWN : ":arrow_up_small:",
+//                            transaction.bankFrom == bank.id ? Emojibet.TRIANGLE_RED_DOWN : Emojibet.INBOX_TRAY,
                             transaction.bankFrom == bank.id ? -transaction.amount : transaction.amount,
                             Config.ECONOMY_CURRENCY_ICON,
-                            Emojibet.USER,
                             transaction.bankFrom == bank.id ? transaction.userTo : transaction.userFrom,
-                            transaction.bankFrom == bank.id ? Emojibet.NOTEPAD : Emojibet.SPEECH_BALLOON,
+                            transaction.bankFrom != bank.id ? ":arrow_left:":":arrow_right:",
+                            transaction.bankFrom != bank.id ? Emojibet.USER : Emojibet.SPEECH_BALLOON,
                             transaction.description.substring(0, Math.min(25, transaction.description.length())));
                 }
                 return ret;
