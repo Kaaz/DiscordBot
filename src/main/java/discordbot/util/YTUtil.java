@@ -36,7 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class YTUtil {
-    public final static Pattern yturl = Pattern.compile("^(?:https?:\\/\\/)?(?:(?:www\\.)?)?(?:youtube\\.com|youtu\\.be)\\/.*?(?:embed|e|v|watch.*?v=)?\\/?([-a-z0-9]{10,})?(?:&?index=\\d+)?(?>(?:playlist\\?|&)?list=([^#\\\\&\\?]{12,}))?", Pattern.CASE_INSENSITIVE);
+    public final static Pattern yturl = Pattern.compile("^(?:https?:\\/\\/)?(?:(?:www\\.)?)?(?:youtube\\.com|youtu\\.be)\\/.*?(?:embed|e|v|watch.*?v=)?\\/?([-_a-z0-9]{10,})?(?:&?index=\\d+)?(?>(?:playlist\\?|&)?list=([^#\\\\&\\?]{12,}))?", Pattern.CASE_INSENSITIVE);
     private final static Pattern youtubeCode = Pattern.compile("^[A-Za-z0-9_-]{11}$");
 
     /**
