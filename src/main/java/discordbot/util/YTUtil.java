@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -108,6 +109,21 @@ public class YTUtil {
 		return StringEscapeUtils.unescapeHtml4(ret);
 	}
 
+	/**
+	 * Time until the next google api reset happens (Midnight PT), or 9am GMT
+	 * @return formatted string, eg. "10 minutes form now"
+	 */
+	public static String nextApiResetTime() {
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.DAY_OF_MONTH, 0);
+		c.set(Calendar.HOUR_OF_DAY, 9);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		return TimeUtil.getRelativeTime(
+				(System.currentTimeMillis() +
+						(c.getTimeInMillis() - System.currentTimeMillis()) % TimeUnit.DAYS.toMillis(1)) / 1000L, false);
+	}
 
 	public static String getOutputPath(String videoCode) {
 		return Config.MUSIC_DIRECTORY + videoCode + ".opus";

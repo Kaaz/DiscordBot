@@ -35,7 +35,7 @@ public class TimeUtil {
 			return "cant figure out (" + time + ")";
 		}
 	}
-
+	
 	public static String formatYMD(Date date) {
 		return ymdFormat.format(date);
 	}
