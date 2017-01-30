@@ -23,12 +23,14 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DebugUtil;
+import discordbot.util.Emojibet;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,8 +103,8 @@ public class QueryCommand extends AbstractCommand {
                 DebugUtil.handleDebug(channel, query + Config.EOL + Config.EOL + output);
                 return "";
             }
-        } catch (Exception e) {
-            return "error in query! " + e.getMessage() + Config.EOL;
+        } catch (SQLException e) {
+            return Emojibet.ERROR + " " + e.getMessage();
         }
     }
 }
