@@ -155,7 +155,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 			String playlistCode = YTUtil.getPlayListCode(args[0]);
 			if (playlistCode != null) {
 				if (!ytSearch.hasValidKey()) {
-					return Template.get("music_no_valid_youtube_key");
+					return Template.get("music_no_valid_youtube_key", YTUtil.nextApiResetTime());
 				}
 				if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getId()).hasPermission(OUser.PermissionNode.IMPORT_PLAYLIST)) {
 					List<YTSearch.SimpleResult> items = ytSearch.getPlayListItems(playlistCode);
@@ -176,7 +176,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 			}
 			if (!YTUtil.isValidYoutubeCode(videoCode)) {
 				if (!ytSearch.hasValidKey()) {
-					return Template.get("music_no_valid_youtube_key");
+					return Template.get("music_no_valid_youtube_key", YTUtil.nextApiResetTime());
 				}
 				YTSearch.SimpleResult results = ytSearch.getResults(Joiner.on(" ").join(args));
 				if (results != null) {

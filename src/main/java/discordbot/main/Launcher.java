@@ -27,6 +27,7 @@ import discordbot.db.controllers.CMusic;
 import discordbot.db.model.OMusic;
 import discordbot.threads.GrayLogThread;
 import discordbot.threads.ServiceHandlerThread;
+import discordbot.util.TimeUtil;
 import discordbot.util.YTUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.managers.AudioManager;
@@ -34,7 +35,9 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class Launcher {
 	public volatile static boolean isBeingKilled = false;
@@ -71,6 +74,8 @@ public class Launcher {
 		new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
 		WebDb.init();
 		Launcher.init();
+		System.exit(3);
+
 		if (Config.BOT_ENABLED) {
 			SimpleLog.addFileLog(SimpleLog.Level.DEBUG, new File("./logs/jda.log"));
 			Runtime.getRuntime().addShutdownHook(new Thread(Launcher::shutdownHook));
