@@ -71,8 +71,6 @@ public class Launcher {
         new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
         WebDb.init();
         Launcher.init();
-        System.exit(3);
-
         if (Config.BOT_ENABLED) {
             SimpleLog.addFileLog(SimpleLog.Level.DEBUG, new File("./logs/jda.log"));
             Runtime.getRuntime().addShutdownHook(new Thread(Launcher::shutdownHook));
