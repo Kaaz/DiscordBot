@@ -30,7 +30,10 @@ import discordbot.main.Launcher;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -42,9 +45,12 @@ public class YTSearch {
 	private final YouTube.Search.List search;
 	private final ConcurrentHashMap<String, SimpleResult> cache = new ConcurrentHashMap<>();
 	private String apikey;
+	private final Queue<String> keyQueue;
+	private volatile boolean hasValidKey = true;
 
-	public YTSearch(String apiKey) {
-		this.apikey = apiKey;
+	public YTSearch() {
+		keyQueue = new LinkedList<>();
+		Collections.addAll(keyQueue, Config.GOOGLE_API_KEY);
 		youtube = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), (HttpRequest request) -> {
 		}).setApplicationName(Config.BOT_NAME).build();
 		YouTube.Search.List tmp = null;
@@ -59,10 +65,32 @@ public class YTSearch {
 
 		search = tmp;
 		if (search != null) {
-			search.setKey(apiKey);
 			search.setType("video");
 			search.setFields("items(id/kind,id/videoId,snippet/title)");
 		}
+		setupNextKey();
+	}
+
+	public boolean hasValidKey() {
+		return hasValidKey;
+	}
+
+	public synchronized void addYoutubeKey(String key) {
+		keyQueue.add(key);
+		hasValidKey = true;
+	}
+
+	private synchronized boolean setupNextKey() {
+		if (keyQueue.size() > 0) {
+			String key = keyQueue.poll();
+			if (key != null) {
+				search.setKey(key);
+				hasValidKey = true;
+				return true;
+			}
+		}
+		hasValidKey = false;
+		return false;
 	}
 
 	public SimpleResult getResults(String query) {
@@ -113,6 +141,11 @@ public class YTSearch {
 			Launcher.logToDiscord(e, "youtube-search-error", "<@" + Config.CREATOR_ID + ">",
 					"code", e.getDetails().getCode(),
 					"message", e.getDetails().getMessage());
+			if (e.getMessage().contains("quotaExceeded") || e.getMessage().contains("keyInvalid")) {
+				if (setupNextKey()) {
+					return getResults(query, numresults);
+				}
+			}
 		} catch (IOException ex) {
 			DiscordBot.LOGGER.error("YTSearch failure: " + ex.toString());
 			return null;

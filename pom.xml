@@ -141,7 +141,7 @@
 		<dependency>
 			<groupId>com.github.Kaaz</groupId>
 			<artifactId>ConfigurationBuilder</artifactId>
-			<version>master-0.3-g64014f7-1</version>
+			<version>954285d7fa</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.Kaaz</groupId>
