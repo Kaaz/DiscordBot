@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.Kaaz</groupId>
 	<artifactId>DiscordBot</artifactId>
-	<version>1.9.10</version>
+	<version>1.9.11</version>
 	<packaging>jar</packaging>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -111,12 +111,12 @@
 		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
-			<version>3.0.BETA2_122</version>
+			<version>3.0.BETA2_123</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sedmelluq</groupId>
 			<artifactId>lavaplayer</artifactId>
-			<version>1.1.41</version>
+			<version>1.1.43</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
