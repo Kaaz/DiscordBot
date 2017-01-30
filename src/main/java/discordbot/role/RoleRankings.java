@@ -139,6 +139,8 @@ public class RoleRankings {
                         manager.getNameField().setValue(getFullName(guild, rank));
                         manager.getColorField().setValue(rank.getColor());
                         manager.getHoistedField().setValue(rank.isHoisted());
+                        manager.getPermissionField().setPermissions(guild.getPublicRole().getPermissions());
+                        manager.getPermissionField().revokePermissions(Permission.MESSAGE_MENTION_EVERYONE);
                         manager.update().queue();
                     }
             );
@@ -154,6 +156,10 @@ public class RoleRankings {
         if (role.getColor() != rank.getColor()) {
             role.getManagerUpdatable().getColorField().setValue(rank.getColor());
             needsUpdate = true;
+        }
+        if (role.getPermissions().contains(Permission.MESSAGE_MENTION_EVERYONE)) {
+            needsUpdate = true;
+            role.getManagerUpdatable().getPermissionField().revokePermissions(Permission.MESSAGE_MENTION_EVERYONE);
         }
         if (needsUpdate) {
             role.getManagerUpdatable().update().queue();
