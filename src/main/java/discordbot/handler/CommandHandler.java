@@ -118,7 +118,7 @@ public class CommandHandler {
                 return;
             }
         }
-        String[] input = inputMessage.split("\\s+");// (?:([^\s\"]+)|\"((?:\w+|\\\"|[^\"])+)")
+        String[] input = inputMessage.split("[^\\S\\r\\n]+");// (?:([^\s\"]+)|\"((?:\w+|\\\"|[^\"])+)")
         String args[] = new String[input.length - 1];
         input[0] = DisUtil.filterPrefix(input[0], channel).toLowerCase();
         System.arraycopy(input, 1, args, 0, input.length - 1);

@@ -170,10 +170,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
             if (tag.id > 0 && tag.userId != CUser.getCachedId(author.getId())) {
                 return Template.get("command_tag_only_creator_can_edit");
             }
-            String output = "";
-            for (int i = 1; i < args.length; i++) {
-                output += " " + args[i];
-            }
+            String output = Misc.joinStrings(args,1);
             output = output.trim();
             if (tag.id == 0) {
                 tag.tagname = args[0];

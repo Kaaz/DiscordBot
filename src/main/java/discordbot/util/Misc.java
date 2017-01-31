@@ -302,14 +302,14 @@ public class Misc {
      * @return a joined string
      */
     public static String joinStrings(String[] strings, int startIndex) {
-        String ret = "";
         if (startIndex < strings.length) {
-            ret = strings[startIndex];
+            String ret = strings[startIndex];
             for (int i = startIndex + 1; i < strings.length; i++) {
                 ret += " " + strings[i];
             }
+            return ret;
         }
-        return ret;
+        return "";
     }
 
     public static int parseInt(String intString, int fallback) {
