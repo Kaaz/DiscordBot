@@ -173,7 +173,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
             String output = Misc.joinStrings(args,1);
             output = output.trim();
             if (tag.id == 0) {
-                tag.tagname = args[0];
+                tag.tagname = args[0].replace(Config.EOL,"").trim();
                 tag.guildId = CGuild.getCachedId(guild.getId());
                 tag.userId = CUser.getCachedId(author.getId(), author.getName());
                 tag.created = new Timestamp(System.currentTimeMillis());
