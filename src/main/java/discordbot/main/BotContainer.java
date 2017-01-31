@@ -261,6 +261,23 @@ public class BotContainer {
     }
 
     /**
+     * sends stats to discordlist.net
+     */
+    public void sendStatsToDiscordlistNet() {
+        if (!Config.BOT_STATS_DISCORDLIST_NET) {
+            return;
+        }
+        int totGuilds = 0;
+        for (DiscordBot shard : shards) {
+            totGuilds += shard.client.getGuilds().size();
+        }
+        Unirest.post("https://bots.discordlist.net/api.php")
+                .field("token", Config.BOT_STATS_DISCORDLIST_NET_TOKEN)
+                .field("servers", totGuilds)
+                .asStringAsync();
+    }
+
+    /**
      * update the numguilds so that we can check if we need an extra shard
      */
     public void guildJoined() {
@@ -359,6 +376,7 @@ public class BotContainer {
     private void onAllShardsReady() {
         youtubeThread.start();
         CBotPlayingOn.deleteAll();
+        sendStatsToDiscordlistNet();
     }
 
     private void initHandlers() {

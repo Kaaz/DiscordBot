@@ -39,13 +39,22 @@ public class Config {
     @ConfigurationOption
     public static boolean BOT_RESTART_INACTIVE_SHARDS = false;
 
-    //token for discord.bots.pw
+    //send stats to discordlist.net?
     @ConfigurationOption
-    public static String BOT_TOKEN_BOTS_DISCORD_PW = "token-here";
+    public static boolean BOT_STATS_DISCORDLIST_NET = false;
+
+    //the token for it
+    @ConfigurationOption
+    public static String BOT_STATS_DISCORDLIST_NET_TOKEN = "";
 
     //toggle sending stats to discord.bots.pw
     @ConfigurationOption
     public static boolean BOT_STATS_DISCORD_PW_ENABLED = false;
+
+    //token for discord.bots.pw
+    @ConfigurationOption
+    public static String BOT_TOKEN_BOTS_DISCORD_PW = "token-here";
+
 
     //the website of the bot
     @ConfigurationOption
