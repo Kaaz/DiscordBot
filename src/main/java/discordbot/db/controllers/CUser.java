@@ -47,9 +47,10 @@ public class CUser {
             OUser user = findBy(discordId);
             if (user.id == 0) {
                 user.discord_id = discordId;
+                user.name = username;
                 insert(user);
             }
-            if (user.name == null || user.name.isEmpty()) {
+            if (user.name == null || user.name.isEmpty() || user.name.equals(username)) {
                 user.name = EmojiParser.parseToAliases(username);
                 update(user);
             }

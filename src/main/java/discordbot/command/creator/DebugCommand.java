@@ -17,6 +17,10 @@
 package discordbot.command.creator;
 
 import discordbot.core.AbstractCommand;
+import discordbot.db.controllers.CGuild;
+import discordbot.db.controllers.CGuildMember;
+import discordbot.db.controllers.CUser;
+import discordbot.db.model.OGuildMember;
 import discordbot.handler.Template;
 import discordbot.main.BotContainer;
 import discordbot.main.Config;
@@ -24,9 +28,12 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.Emojibet;
 import discordbot.util.Misc;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -54,7 +61,8 @@ public class DebugCommand extends AbstractCommand {
     @Override
     public String[] getUsage() {
         return new String[]{
-                "activity //shows last shard activity"
+                "activity //shows last shard activity",
+                "fixusernames, fixrelations, youtube ",
         };
     }
 
@@ -81,6 +89,12 @@ public class DebugCommand extends AbstractCommand {
             value = Misc.isFuzzyTrue(args[1]);
         }
         switch (args[0].toLowerCase()) {
+            case "fixusernames":
+                fixUserNames(bot, channel);
+                return "";
+            case "fixrelations":
+                fixMemberships(bot, channel);
+                return "";
             case "yt":
             case "youtube":
                 if (updating) {
@@ -95,6 +109,83 @@ public class DebugCommand extends AbstractCommand {
             return Emojibet.OKE_SIGN + " " + args[0] + " is set to " + value;
         }
         return Emojibet.UNLOCKED + " " + args[0] + " = `" + value + "`";
+    }
+
+    private void fixUserNames(DiscordBot bot, MessageChannel channel) {
+        DiscordBot[] shards = bot.getContainer().getShards();
+        long tmp = 0;
+        final long updateInterval = 50;
+        for (DiscordBot shard : shards) {
+            tmp += shard.client.getUsers().size();
+        }
+        final long totalUsers = tmp;
+        int length = 1 + (int) Math.floor(Math.log10(totalUsers));
+        String messageFormat = Emojibet.INFORMATION + " Synchronized " + Emojibet.USER + " %0" + length + "d / %0" + length + "d |  %.2f%%";
+        channel.sendMessage(Emojibet.INFORMATION + " Synchronizing names: " + totalUsers + " users").queue(message -> {
+                    long usersCompleted = 0;
+                    for (DiscordBot shard : shards) {
+                        for (User user : shard.client.getUsers()) {
+                            CUser.getCachedId(user.getId(), user.getName());
+                            usersCompleted++;
+                            if (usersCompleted % updateInterval == 0L) {
+                                message.editMessage(String.format(messageFormat, usersCompleted, totalUsers, (double) usersCompleted / (double) totalUsers * 100D)).queue();
+                            }
+                        }
+                    }
+                    if (usersCompleted % updateInterval > 0) {
+                        message.editMessage(String.format(messageFormat, usersCompleted, totalUsers, (double) usersCompleted / (double) totalUsers * 100D)).queue();
+                    }
+                }
+        );
+    }
+
+    private void fixMemberships(DiscordBot bot, MessageChannel channel) {
+        DiscordBot[] shards = bot.getContainer().getShards();
+        long tmpMembers = 0, tmpGuilds = 0;
+        final long updateInterval = 50;
+        for (DiscordBot shard : shards) {
+            tmpGuilds += shard.client.getGuilds().size();
+            for (Guild guild : shard.client.getGuilds()) {
+                tmpMembers += guild.getMembers().size();
+            }
+        }
+        final long totalUsers = tmpMembers;
+        final long totalGuilds = tmpGuilds;
+        int length = 1 + (int) Math.floor(Math.log10(totalUsers));
+        int guildLength = 1 + (int) Math.floor(Math.log10(totalGuilds));
+        String messageFormat = Emojibet.INFORMATION + " Synchronized " +
+                Emojibet.GUILD_JOIN + " %0" + guildLength + "d / %0" + guildLength + "d | "
+                + Emojibet.USER + " %0" + length + "d / %0" + length + "d |  %.2f%%";
+        channel.sendMessage(Emojibet.INFORMATION + " Synchronizing memberships: " + totalUsers + " users").queue(message -> {
+                    long usersCompleted = 0;
+                    long guildsCompleted = 0;
+                    for (DiscordBot shard : shards) {
+                        for (Guild guild : shard.client.getGuilds()) {
+                            for (Member member : guild.getMembers()) {
+                                User guildUser = member.getUser();
+                                int userId = CUser.getCachedId(guildUser.getId(), guildUser.getName());
+                                OGuildMember guildMember = CGuildMember.findBy(CGuild.getCachedId(Long.parseLong(guild.getId())), userId);
+                                guildMember.joinDate = new Timestamp(member.getJoinDate().toInstant().toEpochMilli());
+                                CGuildMember.insertOrUpdate(guildMember);
+                                usersCompleted++;
+                                if (usersCompleted % updateInterval == 0L) {
+                                    message.editMessage(String.format(messageFormat,
+                                            guildsCompleted, totalGuilds,
+                                            usersCompleted, totalUsers,
+                                            (float) usersCompleted / (float) totalUsers * 100F
+                                    )).queue();
+                                }
+                            }
+                            guildsCompleted++;
+                        }
+                    }
+                    message.editMessage(String.format(messageFormat,
+                            guildsCompleted, totalGuilds,
+                            usersCompleted, totalUsers,
+                            (float) usersCompleted / (float) totalUsers * 100F
+                    )).queue();
+                }
+        );
     }
 
     private String lastShardActivity(BotContainer container) {
