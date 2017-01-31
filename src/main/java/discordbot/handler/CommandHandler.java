@@ -18,7 +18,6 @@ package discordbot.handler;
 
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.command.CommandCategory;
-import discordbot.command.CommandReactionListener;
 import discordbot.command.CommandVisibility;
 import discordbot.command.ICommandCooldown;
 import discordbot.core.AbstractCommand;
@@ -118,11 +117,15 @@ public class CommandHandler {
                 return;
             }
         }
-        String[] input = inputMessage.split("[^\\S\\r\\n]+");// (?:([^\s\"]+)|\"((?:\w+|\\\"|[^\"])+)")
-        String args[] = new String[input.length - 1];
+        //ignore the first newline
+        String[] input = inputMessage.split("\\s+", 2);// (?:([^\s\"]+)|\"((?:\w+|\\\"|[^\"])+)")
+        String[] args;
+        if (input.length == 2) {
+            args = input[1].split(" +");
+        } else {
+            args = new String[0];
+        }
         input[0] = DisUtil.filterPrefix(input[0], channel).toLowerCase();
-        System.arraycopy(input, 1, args, 0, input.length - 1);
-        CommandReactionListener<?> commandReactionListener = null;
         if (commands.containsKey(input[0]) || commandsAlias.containsKey(input[0])) {
             AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
             commandUsed = command.getCommand();
@@ -132,15 +135,21 @@ public class CommandHandler {
                 if (GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
                     outMsg = Template.get("command_is_blacklisted", input[0]);
                 }
-            } else if (hasRightVisibility(channel, command.getVisibility()) && cooldown <= 0) {
+            } else if (cooldown > 0) {
+                outMsg = Template.get("command_on_cooldown", TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false));
+
+            } else if (!hasRightVisibility(channel, command.getVisibility())) {
+                if (channel instanceof PrivateChannel) {
+                    outMsg = Template.get("command_not_for_private");
+                } else {
+                    outMsg = Template.get("command_not_for_public");
+                }
+            } else {
                 String commandOutput;
                 if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
                     commandOutput = commands.get("help").execute(bot, new String[]{input[0]}, channel, author);
                 } else {
                     commandOutput = command.execute(bot, args, channel, author);
-//					if (command instanceof ICommandReactionListener) {
-//						commandReactionListener = ((ICommandReactionListener) command).getReactionListener(null);
-//					}
                 }
                 if (!commandOutput.isEmpty()) {
                     outMsg = commandOutput;
@@ -156,14 +165,6 @@ public class CommandHandler {
                                 command.getCommand(),
                                 EmojiParser.parseToAliases(usedArguments.toString()).trim());
                     }
-                }
-            } else if (cooldown > 0) {
-                outMsg = Template.get("command_on_cooldown", TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false));
-            } else if (!hasRightVisibility(channel, command.getVisibility())) {
-                if (channel instanceof PrivateChannel) {
-                    outMsg = Template.get("command_not_for_private");
-                } else {
-                    outMsg = Template.get("command_not_for_public");
                 }
             }
         } else if (customCommands.containsKey(input[0])) {
@@ -182,18 +183,7 @@ public class CommandHandler {
             outMsg = Template.get("unknown_command", GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help");
         }
         if (!outMsg.isEmpty()) {
-//			if (commandReactionListener != null && channel instanceof TextChannel &&
-//					PermissionUtil.checkPermission(
-//							(TextChannel) channel,
-//							((TextChannel) channel).getGuild().getSelfMember(),
-//							Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS)) {
-//				final CommandReactionListener<?> finalCommandReactionListener = commandReactionListener;
-//
-//				bot.out.sendAsyncMessage(channel, outMsg, message -> bot.commandReactionHandler.addReactionListener(((TextChannel)channel).getGuild().getId(),message, finalCommandReactionListener));
-//
-//			} else {
             bot.out.sendAsyncMessage(channel, outMsg);
-//			}
         }
         if (commandSuccess) {
             if (channel instanceof TextChannel) {
