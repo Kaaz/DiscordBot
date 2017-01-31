@@ -110,21 +110,21 @@ public class JDAEvents extends ListenerAdapter {
         user.discord_id = owner.getId();
         user.name = EmojiParser.parseToAliases(owner.getName());
         CUser.update(user);
-        OGuild server = CGuild.findBy(guild.getId());
-        server.discord_id = Long.parseLong(guild.getId());
-        server.name = EmojiParser.parseToAliases(guild.getName());
-        server.owner = user.id;
-        if (server.id == 0) {
-            CGuild.insert(server);
+        OGuild dbGuild = CGuild.findBy(guild.getId());
+        dbGuild.discord_id = Long.parseLong(guild.getId());
+        dbGuild.name = EmojiParser.parseToAliases(guild.getName());
+        dbGuild.owner = user.id;
+        if (dbGuild.id == 0) {
+            CGuild.insert(dbGuild);
         }
-        if (server.isBanned()) {
+        if (dbGuild.isBanned()) {
             guild.leave().queue();
             return;
         }
         discordBot.loadGuild(guild);
         String cmdPre = GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
         GuildCheckResult guildCheck = discordBot.security.checkGuild(guild);
-        if (server.active != 1) {
+        if (dbGuild.active != 1) {
             String message = "Thanks for adding me to your guild!" + Config.EOL +
                     "To see what I can do you can type the command `" + cmdPre + "help`." + Config.EOL +
                     "Most of my features are opt-in, which means that you'll have to enable them first. Admins can use `" + cmdPre + "config` to change my settings." + Config.EOL +
@@ -155,7 +155,7 @@ public class JDAEvents extends ListenerAdapter {
             CBotEvent.insert(":house:", ":white_check_mark:",
                     String.format(":id: %s | :hash: %s | :busts_in_silhouette: %s | %s",
                             guild.getId(),
-                            server.id,
+                            dbGuild.id,
                             guild.getMembers().size(),
                             EmojiParser.parseToAliases(guild.getName())));
             discordBot.getContainer().guildJoined();
@@ -170,12 +170,19 @@ public class JDAEvents extends ListenerAdapter {
             if (guildCheck.equals(GuildCheckResult.BOT_GUILD)) {
                 guild.leave().queue();
             }
-            server.active = 1;
+            dbGuild.active = 1;
         }
-        CGuild.update(server);
+        CGuild.update(dbGuild);
         DiscordBot.LOGGER.info("[event] JOINED SERVER! " + guild.getName());
         discordBot.sendStatsToDiscordPw();
         discordBot.getContainer().sendStatsToDiscordlistNet();
+        for (Member member : event.getGuild().getMembers()) {
+            User guildUser = member.getUser();
+            int userId = CUser.getCachedId(guildUser.getId(), guildUser.getName());
+            OGuildMember guildMember = CGuildMember.findBy(dbGuild.id, userId);
+            guildMember.joinDate = new Timestamp(member.getJoinDate().toInstant().toEpochMilli());
+            CGuildMember.insertOrUpdate(guildMember);
+        }
     }
 
     @Override
