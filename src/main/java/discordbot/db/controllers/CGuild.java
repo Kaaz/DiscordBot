@@ -34,8 +34,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created on 10-8-2016
  */
 public class CGuild {
-    private static Map<String, Integer> guildIdCache = new ConcurrentHashMap<>();
-    private static Map<Integer, String> discordIdCache = new ConcurrentHashMap<>();
+    private static Map<Long, Integer> guildIdCache = new ConcurrentHashMap<>();
+    private static Map<Integer, Long> discordIdCache = new ConcurrentHashMap<>();
 
     /**
      * Retrieves the internal guild id for {@link MessageChannel} channel
@@ -51,11 +51,15 @@ public class CGuild {
     }
 
     public static int getCachedId(String discordId) {
+        return getCachedId(Long.parseLong(discordId));
+    }
+
+    public static int getCachedId(long discordId) {
         if (!guildIdCache.containsKey(discordId)) {
             OGuild server = findBy(discordId);
             if (server.id == 0) {
                 server.discord_id = discordId;
-                server.name = discordId;
+                server.name = Long.toString(discordId);
                 insert(server);
             }
             guildIdCache.put(discordId, server.id);
@@ -71,7 +75,11 @@ public class CGuild {
             }
             discordIdCache.put(id, server.discord_id);
         }
-        return discordIdCache.get(id);
+        return Long.toString(discordIdCache.get(id));
+    }
+
+    public static OGuild findBy(long discordId) {
+        return findBy(String.valueOf(discordId));
     }
 
     public static OGuild findBy(String discordId) {
@@ -168,7 +176,7 @@ public class CGuild {
     private static OGuild loadRecord(ResultSet rs) throws SQLException {
         OGuild s = new OGuild();
         s.id = rs.getInt("id");
-        s.discord_id = rs.getString("discord_id");
+        s.discord_id = rs.getLong("discord_id");
         s.name = rs.getString("name");
         s.owner = rs.getInt("owner");
         s.active = rs.getInt("active");

@@ -66,10 +66,10 @@ public class GlobalBanCommand extends AbstractCommand {
             }
             CUser.update(user);
             if (unban) {
-                bot.security.removeUserBan(user.discord_id);
+                bot.security.removeUserBan(Long.parseLong(user.discord_id));
                 return "`" + user.name + "` (`" + user.discord_id + "`) has been globally unbanned";
             } else {
-                bot.security.addUserBan(user.discord_id);
+                bot.security.addUserBan(Long.parseLong(user.discord_id));
                 return "`" + user.name + "` (`" + user.discord_id + "`) has been globally banned";
             }
         }

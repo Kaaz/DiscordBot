@@ -39,17 +39,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * Guild specific configurations, such as which channel is for music
  */
 public class GuildSettings {
-    private final static Map<String, GuildSettings> settingInstance = new ConcurrentHashMap<>();
+    private final static Map<Long, GuildSettings> settingInstance = new ConcurrentHashMap<>();
     private final Map<String, String> settings;
-    private final String guildId;
+    private final long guildId;
     private int id = 0;
     private boolean initialized = false;
 
-    private GuildSettings(String guild) {
+    private GuildSettings(Long guild) {
         this.settings = new ConcurrentHashMap<>();
         OGuild record = CGuild.findBy(guild);
         if (record.id == 0) {
-            record.name = guild;
+            record.name = String.valueOf(guild);
             record.discord_id = guild;
             record.owner = 1;
             CGuild.insert(record);
@@ -75,16 +75,20 @@ public class GuildSettings {
     }
 
     public static void remove(String guildId) {
-        if (settingInstance.containsKey(guildId)) {
-            settingInstance.remove(guildId);
+        if (settingInstance.containsKey(Long.parseLong(guildId))) {
+            settingInstance.remove(Long.parseLong(guildId));
         }
     }
 
     public static GuildSettings get(Guild guild) {
-        return get(guild.getId());
+        return get(Long.parseLong(guild.getId()));
     }
 
-    public static GuildSettings get(String guild) {
+    public static GuildSettings get(String guildId) {
+        return get(Long.parseLong(guildId));
+    }
+
+    public static GuildSettings get(long guild) {
         if (settingInstance.containsKey(guild)) {
             return settingInstance.get(guild);
         } else {
@@ -107,7 +111,7 @@ public class GuildSettings {
     /**
      * (re-)loads settings for guild
      */
-    public void loadSettings() {
+    private void loadSettings() {
         if (initialized || id <= 0) {
             return;
         }
@@ -200,7 +204,7 @@ public class GuildSettings {
         boolean roleFound = true;
         if (!"false".equals(requiredRole) && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
             roleFound = false;
-            List<Role> roles = user.getJDA().getGuildById(guildId).getMember(user).getRoles();
+            List<Role> roles = user.getJDA().getGuildById(Long.toString(guildId)).getMember(user).getRoles();
             for (Role role : roles) {
                 if (role.getName().equalsIgnoreCase(requiredRole)) {
                     roleFound = true;

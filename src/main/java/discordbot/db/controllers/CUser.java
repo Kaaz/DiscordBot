@@ -166,10 +166,10 @@ public class CUser {
         }
     }
 
-    public static void addBannedUserIds(HashSet<String> bannedUsers) {
+    public static void addBannedUserIds(HashSet<Long> bannedUsers) {
         try (ResultSet rs = WebDb.get().select("SELECT * FROM users WHERE banned = 1")) {
             while (rs.next()) {
-                bannedUsers.add(rs.getString("discord_id"));
+                bannedUsers.add(rs.getLong("discord_id"));
             }
             rs.getStatement().close();
         } catch (SQLException e) {

@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  * Utilities for discord objects
  */
 public class DisUtil {
-    private static final Pattern mentionUserPattern = Pattern.compile("<@!?([0-9]{4,})>");
+    private static final Pattern mentionUserPattern = Pattern.compile("<@!?([0-9]{8,})>");
     private static final Pattern channelPattern = Pattern.compile("<#!?([0-9]{4,})>");
     private static final Pattern rolePattern = Pattern.compile("<@&([0-9]{4,})>");
     private static final Pattern anyMention = Pattern.compile("<[@#][&!]?([0-9]{4,})>");
@@ -138,7 +138,7 @@ public class DisUtil {
         if (searchArg.matches("i\\d+")) {
             OGuild rec = CGuild.findById(Integer.parseInt(searchArg.substring(1)));
             if (rec.id > 0) {
-                return container.getShardFor(rec.discord_id).client.getGuildById(rec.discord_id);
+                return container.getShardFor(rec.discord_id).client.getGuildById(Long.toString(rec.discord_id));
             }
         } else if (searchArg.matches("^\\d{10,}$")) {
             return container.getShardFor(searchArg).client.getGuildById(searchArg);

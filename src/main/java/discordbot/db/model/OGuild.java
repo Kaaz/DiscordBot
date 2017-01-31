@@ -23,7 +23,7 @@ import discordbot.db.AbstractModel;
  */
 public class OGuild extends AbstractModel {
     public int id = 0;
-    public String discord_id = "";
+    public long discord_id = 0L;
     public String name = "";
     public int owner = 0;
     public int active = 0;
