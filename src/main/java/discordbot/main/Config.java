@@ -55,6 +55,9 @@ public class Config {
     @ConfigurationOption
     public static String BOT_TOKEN_BOTS_DISCORD_PW = "token-here";
 
+    @ConfigurationOption
+    public static String TOKEN_RIOT_GAMES = "token-here";
+
 
     //the website of the bot
     @ConfigurationOption
