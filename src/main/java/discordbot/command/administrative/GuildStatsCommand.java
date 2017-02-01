@@ -22,6 +22,7 @@ import discordbot.main.BotContainer;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
+import discordbot.util.DebugUtil;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -75,6 +76,7 @@ public class GuildStatsCommand extends AbstractCommand {
                 "stats         //stats!",
                 "stats mini    //minified!",
                 "stats users   //graph of when users joined!",
+                "stats activity//last activity per shard"
         };
     }
 
@@ -101,7 +103,9 @@ public class GuildStatsCommand extends AbstractCommand {
                 return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + Config.EOL +
                         getTotalTable(bot, true);
             case "music":
-                return getPlayingOn(bot.getContainer(), userrank.isAtLeast(SimpleRank.BOT_ADMIN) || (args.length >= 2 && args[1].equalsIgnoreCase("guilds")));
+                return DebugUtil.sendToHastebin(getPlayingOn(bot.getContainer(), userrank.isAtLeast(SimpleRank.BOT_ADMIN) || (args.length >= 2 && args[1].equalsIgnoreCase("guilds"))));
+            case "activity":
+                return lastShardActivity(bot.getContainer());
             case "users":
                 if (!(channel instanceof TextChannel)) {
                     return Template.get("command_invalid_use");
@@ -218,5 +222,20 @@ public class GuildStatsCommand extends AbstractCommand {
             return Misc.makeAsciiTable(header, body, Arrays.asList("TOTAL", "" + totGuilds, "" + totUsers, "" + totChannels, "" + totVoice, "" + totActiveVoice, String.format("%.2f/s", totRequestPerSec)));
         }
         return Misc.makeAsciiTable(header, body, null);
+    }
+
+    private String lastShardActivity(BotContainer container) {
+        long now = System.currentTimeMillis();
+        String msg = "Last event per shard: " + new Date(now).toString() + "\n\n";
+        String comment = "";
+        for (DiscordBot shard : container.getShards()) {
+            if (shard == null || !shard.isReady()) {
+                msg += "#shard is being reset and is reloading\n";
+                continue;
+            }
+            long lastEventReceived = now - container.getLastAction(shard.getShardId());
+            msg += String.format("#%02d: %s sec ago\n", shard.getShardId(), lastEventReceived / 1000L);
+        }
+        return msg + comment;
     }
 }
