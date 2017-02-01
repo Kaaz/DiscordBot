@@ -74,6 +74,10 @@ public class SecurityHandler {
         systemAdmins.addAll(system_admin.stream().map(oUserRank -> Long.parseLong(CUser.getCachedDiscordId(oUserRank.userId))).collect(Collectors.toList()));
     }
 
+    public boolean isInteractionBot(long userId) {
+        return interactionBots.contains(userId);
+    }
+
     public boolean isBanned(User user) {
         return bannedUsers.contains(Long.parseLong(user.getId()));
     }
@@ -138,6 +142,12 @@ public class SecurityHandler {
         if (user.getId().equals(Config.CREATOR_ID)) {
             return SimpleRank.CREATOR;
         }
+        if (user.isBot()) {
+            if (interactionBots.contains(userId)) {
+                return SimpleRank.INTERACTION_BOT;
+            }
+            return SimpleRank.BOT;
+        }
         if (botAdmins.contains(userId)) {
             return SimpleRank.BOT_ADMIN;
         }
@@ -157,12 +167,6 @@ public class SecurityHandler {
             if (PermissionUtil.checkPermission(guild, guild.getMember(user), Permission.ADMINISTRATOR)) {
                 return SimpleRank.GUILD_ADMIN;
             }
-        }
-        if (user.isBot()) {
-            if (interactionBots.contains(userId)){
-                return SimpleRank.INTERACTION_BOT;
-            }
-            return SimpleRank.BOT;
         }
         return SimpleRank.USER;
     }

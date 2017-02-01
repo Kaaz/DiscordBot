@@ -20,16 +20,21 @@ package discordbot.permission;
  *
  */
 public enum SimpleRank {
-    BANNED_USER(),
-    BOT(),
-    USER(),
-    INTERACTION_BOT(),
-    GUILD_ADMIN(),
-    GUILD_OWNER(),
-    CONTRIBUTOR(),
-    BOT_ADMIN(),
-    SYSTEM_ADMIN(),
-    CREATOR();
+    BANNED_USER("Will be ignored"),
+    BOT("Will be ignored"),
+    USER("Regular user"),
+    INTERACTION_BOT("Bot can interact"),
+    GUILD_ADMIN("Admin in a guild"),
+    GUILD_OWNER("Owner of a guild"),
+    CONTRIBUTOR("Contributor"),
+    BOT_ADMIN("Bot administrator"),
+    SYSTEM_ADMIN("System admin"),
+    CREATOR("Creator");
+    private final String description;
+
+    SimpleRank(String description) {
+        this.description = description;
+    }
 
     /**
      * find a rank by name
@@ -52,5 +57,9 @@ public enum SimpleRank {
 
     public boolean isHigherThan(SimpleRank rank) {
         return this.ordinal() > rank.ordinal();
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

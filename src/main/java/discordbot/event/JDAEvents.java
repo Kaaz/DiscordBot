@@ -220,7 +220,7 @@ public class JDAEvents extends ListenerAdapter {
     }
 
     private void handleReaction(GenericMessageReactionEvent e, boolean adding) {
-        if (e.getUser().isBot()) {
+        if (e.getUser().isBot() && !discordBot.security.isInteractionBot(Long.parseLong(e.getUser().getId()))) {
             return;
         }
         if (!(e.getChannel() instanceof TextChannel)) {

@@ -385,7 +385,7 @@ public class DiscordBot {
     }
 
     public void handleMessage(Guild guild, TextChannel channel, User author, Message message) {
-        if (author == null || author.isBot()) {
+        if (author == null || (author.isBot() && !security.isInteractionBot(Long.parseLong(author.getId())))) {
             return;
         }
         if (security.isBanned(author)) {
@@ -404,7 +404,7 @@ public class DiscordBot {
             gameHandler.execute(author, channel, message.getRawContent(), null);
             return;
         }
-        if (CommandHandler.isCommand(channel, message.getRawContent(), mentionMe, mentionMeAlias)) {
+        if (CommandHandler.isCommand(channel, message.getRawContent().trim(), mentionMe, mentionMeAlias)) {
             CommandHandler.process(this, channel, author, message.getRawContent());
             return;
         }
