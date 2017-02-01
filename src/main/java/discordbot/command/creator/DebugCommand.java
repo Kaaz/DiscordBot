@@ -114,7 +114,7 @@ public class DebugCommand extends AbstractCommand {
     private void fixUserNames(DiscordBot bot, MessageChannel channel) {
         DiscordBot[] shards = bot.getContainer().getShards();
         long tmp = 0;
-        final long updateInterval = 50;
+        final long updateInterval = 2500;
         for (DiscordBot shard : shards) {
             tmp += shard.client.getUsers().size();
         }
@@ -142,7 +142,7 @@ public class DebugCommand extends AbstractCommand {
     private void fixMemberships(DiscordBot bot, MessageChannel channel) {
         DiscordBot[] shards = bot.getContainer().getShards();
         long tmpMembers = 0, tmpGuilds = 0;
-        final long updateInterval = 50;
+        final long updateInterval = 2500;
         for (DiscordBot shard : shards) {
             tmpGuilds += shard.client.getGuilds().size();
             for (Guild guild : shard.client.getGuilds()) {
