@@ -45,7 +45,6 @@ public class YTSearch {
     private final YouTube.Search.List search;
     private final ConcurrentHashMap<String, SimpleResult> cache = new ConcurrentHashMap<>();
     private final Queue<String> keyQueue;
-    private String apikey;
     private volatile boolean hasValidKey = true;
 
     public YTSearch() {
@@ -110,7 +109,6 @@ public class YTSearch {
         List<SimpleResult> playlist = new ArrayList<>();
         try {
             YouTube.PlaylistItems.List playlistRequest = youtube.playlistItems().list("id,contentDetails,snippet");
-            playlistRequest.setKey(apikey);
             playlistRequest.setPlaylistId(playlistCode);
             playlistRequest.setFields("items(contentDetails/videoId,snippet/title,snippet/publishedAt),nextPageToken,pageInfo");
             String nextToken = "";
