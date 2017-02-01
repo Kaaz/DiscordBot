@@ -109,29 +109,29 @@ public class UserRankCommand extends AbstractCommand {
             if (user == null) {
                 return Template.get("cant_find_user", args[0]);
             }
-            SimpleRank targetSimpleRank = bot.security.getSimpleRank(user);
+            SimpleRank targetOldRank = bot.security.getSimpleRank(user);
             OUser dbUser = CUser.findBy(user.getId());
             if (args.length == 1) {
                 OUserRank userRank = CUserRank.findBy(user.getId());
-                if (userRank.rankId == 0 && !targetSimpleRank.isAtLeast(SimpleRank.CREATOR)) {
+                if (userRank.rankId == 0 && !targetOldRank.isAtLeast(SimpleRank.CREATOR)) {
                     return Template.get("command_userrank_no_rank", user.getName());
-                } else if (targetSimpleRank.isAtLeast(SimpleRank.CREATOR)) {
+                } else if (targetOldRank.isAtLeast(SimpleRank.CREATOR)) {
                     return Template.get("command_userrank_rank", user.getName(), "creator");
                 } else {
                     return Template.get("command_userrank_rank", user.getName(), CRank.findById(userRank.rankId).codeName);
                 }
             } else if (args.length == 2 && !args[1].equals("perm")) {
-                SimpleRank targetRank = SimpleRank.findRank(args[1]);
-                if (targetRank == null) {
+                SimpleRank targetNewRank = args[1].equals("none") ? SimpleRank.USER : SimpleRank.findRank(args[1]);
+                if (targetNewRank == null) {
                     return Template.get("command_userrank_rank_not_exists", args[1]);
                 }
-                if (!authorRank.isHigherThan(targetRank)) {
+                if (!authorRank.isHigherThan(targetNewRank) || !authorRank.isHigherThan(targetOldRank)) {
                     return Template.get("no_permission");
                 }
                 ORank targetDbRank = CRank.findBy(args[1]);
                 if (targetDbRank.id == 0) {
-                    targetDbRank.codeName = targetRank.name();
-                    targetDbRank.fullName = targetRank.name().toLowerCase();
+                    targetDbRank.codeName = targetNewRank.name();
+                    targetDbRank.fullName = targetNewRank.name().toLowerCase();
                     CRank.insert(targetDbRank);
                 }
                 OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId(), user.getName()));
