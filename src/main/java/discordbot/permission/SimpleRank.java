@@ -23,6 +23,7 @@ public enum SimpleRank {
     BANNED_USER(),
     BOT(),
     USER(),
+    INTERACTION_BOT(),
     GUILD_ADMIN(),
     GUILD_OWNER(),
     CONTRIBUTOR(),
