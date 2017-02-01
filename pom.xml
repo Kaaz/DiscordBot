@@ -79,6 +79,11 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>com.github.rithms</groupId>
+			<artifactId>riot-api-java</artifactId>
+			<version>master-v3.9.0-g8c63cae-136</version>
+		</dependency>
+		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>1.10.1</version>

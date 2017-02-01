@@ -78,6 +78,9 @@ public class Emojibet {
     public static final String TRIANGLE_RED_DOWN = "\uD83D\uDD3B";
     private static final Map<String, String> emojis = new HashMap<>();
     private static final String UNKNOWN = " ";
+    public static final String DEFENSE = "\uD83D\uDEE1";
+    public static String SWORDS = "\u2694";
+    public static String EXPLOSION = "\uD83D\uDCA5";
 
     static {
         emojis.put("a", "\uD83C\uDDE6");

@@ -47,6 +47,33 @@ public class Misc {
     private final static HashSet<String> fuzzyTrue = new HashSet<>(Arrays.asList("yea", "yep", "yes", "true", "ja", "y", "t", "1"));
     private final static HashSet<String> fuzzyFalse = new HashSet<>(Arrays.asList("no", "false", "nope", "nein", "nee", "n", "f", "0"));
 
+
+    public static String makeProgressbar(int max, int current) {
+        int parts = 8;
+        String bar = "";
+        int activeBLock = Math.min(parts - 1, (int) ((float) current / (float) max * (float) parts));
+        for (int i = 0; i < parts; i++) {
+            if (i == activeBLock) {
+                bar += ":large_orange_diamond:";
+            } else {
+                bar += "▬";
+            }
+        }
+        return bar;
+    }
+
+    public static String makeStackedBar(int max,int bar, String barChar) {
+        String fill = ":wavy_dash:";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bar; i++) {
+            sb.append(barChar);
+        }
+        for (int i = bar; i < max; i++) {
+            sb.append(fill);
+        }
+        return sb.toString();
+    }
+
     /**
      * whether a string can fuzzily considered true
      *
