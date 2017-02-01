@@ -64,7 +64,7 @@ public class SecurityHandler {
         bannedGuilds.addAll(bannedList.stream().map(guild -> guild.discord_id).collect(Collectors.toList()));
         CUser.addBannedUserIds(bannedUsers);
 
-        List<OUserRank> interaction_bots = CUserRank.getUsersWith(CRank.findBy("UNTERACTION_BOT").id);
+        List<OUserRank> interaction_bots = CUserRank.getUsersWith(CRank.findBy("INTERACTION_BOT").id);
         List<OUserRank> contributor = CUserRank.getUsersWith(CRank.findBy("CONTRIBUTOR").id);
         List<OUserRank> bot_admin = CUserRank.getUsersWith(CRank.findBy("BOT_ADMIN").id);
         List<OUserRank> system_admin = CUserRank.getUsersWith(CRank.findBy("SYSTEM_ADMIN").id);
