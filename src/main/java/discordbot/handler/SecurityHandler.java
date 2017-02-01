@@ -45,9 +45,10 @@ import java.util.stream.Collectors;
 public class SecurityHandler {
     private static HashSet<Long> bannedGuilds;
     private static HashSet<Long> bannedUsers;
+    private static HashSet<Long> interactionBots;
     private static HashSet<Long> contributors;
     private static HashSet<Long> botAdmins;
-    private static HashSet<Long> SystemAdmins;
+    private static HashSet<Long> systemAdmins;
 
     public SecurityHandler() {
     }
@@ -55,19 +56,22 @@ public class SecurityHandler {
     public static synchronized void initialize() {
         bannedGuilds = new HashSet<>();
         bannedUsers = new HashSet<>();
+        interactionBots = new HashSet<>();
         contributors = new HashSet<>();
         botAdmins = new HashSet<>();
-        SystemAdmins = new HashSet<>();
+        systemAdmins = new HashSet<>();
         List<OGuild> bannedList = CGuild.getBannedGuilds();
         bannedGuilds.addAll(bannedList.stream().map(guild -> guild.discord_id).collect(Collectors.toList()));
         CUser.addBannedUserIds(bannedUsers);
 
+        List<OUserRank> interaction_bots = CUserRank.getUsersWith(CRank.findBy("UNTERACTION_BOT").id);
         List<OUserRank> contributor = CUserRank.getUsersWith(CRank.findBy("CONTRIBUTOR").id);
         List<OUserRank> bot_admin = CUserRank.getUsersWith(CRank.findBy("BOT_ADMIN").id);
         List<OUserRank> system_admin = CUserRank.getUsersWith(CRank.findBy("SYSTEM_ADMIN").id);
         contributors.addAll(contributor.stream().map(oUserRank -> Long.parseLong(CUser.getCachedDiscordId(oUserRank.userId))).collect(Collectors.toList()));
+        interactionBots.addAll(interaction_bots.stream().map(oUserRank -> Long.parseLong(CUser.getCachedDiscordId(oUserRank.userId))).collect(Collectors.toList()));
         botAdmins.addAll(bot_admin.stream().map(oUserRank -> Long.parseLong(CUser.getCachedDiscordId(oUserRank.userId))).collect(Collectors.toList()));
-        SystemAdmins.addAll(system_admin.stream().map(oUserRank -> Long.parseLong(CUser.getCachedDiscordId(oUserRank.userId))).collect(Collectors.toList()));
+        systemAdmins.addAll(system_admin.stream().map(oUserRank -> Long.parseLong(CUser.getCachedDiscordId(oUserRank.userId))).collect(Collectors.toList()));
     }
 
     public boolean isBanned(User user) {
@@ -134,9 +138,6 @@ public class SecurityHandler {
         if (user.getId().equals(Config.CREATOR_ID)) {
             return SimpleRank.CREATOR;
         }
-        if (guild == null && user.isBot()) {
-            return SimpleRank.BOT;
-        }
         if (botAdmins.contains(userId)) {
             return SimpleRank.BOT_ADMIN;
         }
@@ -146,7 +147,7 @@ public class SecurityHandler {
         if (bannedUsers.contains(userId)) {
             return SimpleRank.BANNED_USER;
         }
-        if (SystemAdmins.contains(userId)) {
+        if (systemAdmins.contains(userId)) {
             return SimpleRank.SYSTEM_ADMIN;
         }
         if (guild != null) {
@@ -156,9 +157,12 @@ public class SecurityHandler {
             if (PermissionUtil.checkPermission(guild, guild.getMember(user), Permission.ADMINISTRATOR)) {
                 return SimpleRank.GUILD_ADMIN;
             }
-            if (user.isBot()) {
-                return SimpleRank.BOT;
+        }
+        if (user.isBot()) {
+            if (interactionBots.contains(userId)){
+                return SimpleRank.INTERACTION_BOT;
             }
+            return SimpleRank.BOT;
         }
         return SimpleRank.USER;
     }
