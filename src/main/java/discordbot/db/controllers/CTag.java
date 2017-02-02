@@ -122,10 +122,6 @@ public class CTag {
     }
 
     public static void delete(OTag record) {
-        if (record.id == 0) {
-            insert(record);
-            return;
-        }
         try {
             WebDb.get().query(
                     "DELETE FROM tags WHERE tag_name = ? AND guild_id = ? ",
