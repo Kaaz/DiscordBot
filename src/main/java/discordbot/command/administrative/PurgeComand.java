@@ -24,6 +24,7 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
+import net.dv8tion.jda.core.MessageHistory;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -44,7 +45,8 @@ import java.util.regex.PatternSyntaxException;
  * Purges messages in channel
  */
 public class PurgeComand extends AbstractCommand {
-    private static final int BULK_DELETE_MAX = 100;
+    private static final int MAX_DELETE_COUNT = 2500;
+    private static final int MAX_BULK_SIZE = 100;
 
     public PurgeComand() {
         super();
@@ -102,7 +104,7 @@ public class PurgeComand extends AbstractCommand {
         List<Message> messagesToDelete = new ArrayList<>();
         Member toDeleteFrom = null;
         Pattern deletePattern = null;
-        int deleteLimit = 100;
+        int toDelete = 100;
         final String cmdPrefix = DisUtil.getCommandPrefix(channel);
         PurgeStyle style = PurgeStyle.UNKNOWN;
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
@@ -131,7 +133,7 @@ public class PurgeComand extends AbstractCommand {
                             toDeleteFrom = guild.getMember(user);
                         }
                         if (toDeleteFrom != null && author.getId().equals(toDeleteFrom.getUser().getId())) {
-                            deleteLimit++;//exclude the command itself from the limit
+                            toDelete++;//exclude the command itself from the limit
                         }
                         if (toDeleteFrom != null && !hasManageMessages && !channel.getJDA().getSelfUser().getId().equals(toDeleteFrom.getUser().getId())) {
                             return Template.get("permission_missing_manage_messages");
@@ -158,31 +160,39 @@ public class PurgeComand extends AbstractCommand {
             if (DisUtil.isUserMention(args[0])) {
                 toDeleteFrom = guild.getMember(channel.getJDA().getUserById(DisUtil.mentionToId(args[0])));
                 if (args.length >= 2 && args[1].matches("^\\d+$")) {
-                    deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1]));
+                    toDelete = Math.min(MAX_DELETE_COUNT, Integer.parseInt(args[1]));
                 }
             } else if (args[0].matches("^\\d+$")) {
-                deleteLimit = Math.min(deleteLimit, Misc.parseInt(args[0], deleteLimit)) + 1;
+                toDelete = Math.min(MAX_DELETE_COUNT, Misc.parseInt(args[0], toDelete)) + 1;
             } else {
                 toDeleteFrom = DisUtil.findUserIn((TextChannel) channel, args[0]);
                 if (args.length >= 2 && args[1].matches("^\\d+$")) {
-                    deleteLimit = Math.min(deleteLimit, Integer.parseInt(args[1])) + 1;
+                    toDelete = Math.min(toDelete, Integer.parseInt(args[1])) + 1;
                 }
             }
         }
-
-        int finalDeleteLimit = deleteLimit;
+        int finalDeleteLimit = toDelete;
         long twoWeeksAgo = ((System.currentTimeMillis() - (14 * 24 * 60 * 60 * 1000)) - MiscUtil.DISCORD_EPOCH) << MiscUtil.TIMESTAMP_OFFSET;
         Member finalToDeleteFrom = toDeleteFrom;
         PurgeStyle finalStyle = style;
         Pattern finalDeletePattern = deletePattern;
-        channel.getHistory().retrievePast(100).queue(messages -> {
-            int deletedCount = 0;
+        int totalMessages = toDelete;
+        MessageHistory history = channel.getHistory();
+        int deletedCount = 0;
+        boolean oldMessageDetected = false;
+        do {
+            int part = Math.min(MAX_BULK_SIZE, totalMessages);
+            List<Message> messages = history.retrievePast(part).complete();
+            if (messages.isEmpty()) {
+                break;
+            }
             for (Message msg : messages) {
                 if (deletedCount == finalDeleteLimit) {
                     break;
                 }
                 if (msg.isPinned() || Long.parseLong(msg.getId()) < twoWeeksAgo) {
-                    continue;
+                    oldMessageDetected = true;
+                    break;
                 }
                 switch (finalStyle) {
                     case ALL:
@@ -224,13 +234,18 @@ public class PurgeComand extends AbstractCommand {
                             deletedCount++;
                         }
                         break;
-
+                    case UNKNOWN:
+                        messagesToDelete.add(msg);
+                        deletedCount++;
 
                 }
             }
-            deleteBulk(bot, (TextChannel) channel, hasManageMessages, messagesToDelete);
-
-        });
+            totalMessages -= part;
+            if (oldMessageDetected) {
+                break;
+            }
+        } while (totalMessages > 0);
+        deleteBulk(bot, (TextChannel) channel, hasManageMessages, messagesToDelete);
         return "";
     }
 
@@ -248,13 +263,13 @@ public class PurgeComand extends AbstractCommand {
         }
         if (hasManageMessages) {
             bot.out.sendAsyncMessage(channel, Template.get(
-                    "command_purge_success"), message -> {
+                    "command_purge_success", messagesToDelete.size()), message -> {
                 messagesToDelete.add(message);
-                for (int index = 0; index < messagesToDelete.size(); index += BULK_DELETE_MAX) {
+                for (int index = 0; index < messagesToDelete.size(); index += MAX_BULK_SIZE) {
                     if (messagesToDelete.size() - index < 2) {
                         messagesToDelete.get(index).deleteMessage().queue();
                     } else {
-                        channel.deleteMessages(messagesToDelete.subList(index, Math.min(index + BULK_DELETE_MAX, messagesToDelete.size()))).queue();
+                        channel.deleteMessages(messagesToDelete.subList(index, Math.min(index + MAX_BULK_SIZE, messagesToDelete.size()))).queue();
                     }
                     try {
                         Thread.sleep(2000L);
