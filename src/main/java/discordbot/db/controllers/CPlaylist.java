@@ -77,6 +77,7 @@ public class CPlaylist {
             } else {
                 s.ownerId = userId;
                 s.guildId = guildId;
+                s.code = code;
             }
             rs.getStatement().close();
         } catch (Exception e) {
