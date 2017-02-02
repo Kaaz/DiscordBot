@@ -191,6 +191,9 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 } else if (args.length > 1 && args[1].matches("^\\d+$")) {
                     musicRec = CMusic.findById(Integer.parseInt(args[1]));
                     nowPlayingId = musicRec.id;
+                } else if (args.length > 1 && YTUtil.isValidYoutubeCode(args[1])) {
+                    musicRec = CMusic.findByYoutubeId(args[1]);
+                    nowPlayingId = musicRec.id;
                 }
                 if (!canRemoveTracks(playlist, (TextChannel) channel, author, userRank)) {
                     return Template.get(channel, "no_permission");
@@ -468,7 +471,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 playlistTable + Config.EOL +
                 String.format("Showing [page %s/%s]", currentPage, maxPage) + Config.EOL + Config.EOL +
                 "_You can use the `#` to remove an item from the playlist._" + Config.EOL + Config.EOL +
-                "_Example:_ `" + DisUtil.getCommandPrefix(guild) + "pl del 123`";
+                "_Example:_ `" + DisUtil.getCommandPrefix(guild) + "pl del QnTYIBU7Ueg`";
     }
 
     @Override
