@@ -18,7 +18,10 @@ package discordbot.command.music;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import com.vdurmont.emoji.EmojiParser;
+import discordbot.command.CommandReactionListener;
 import discordbot.command.CommandVisibility;
+import discordbot.command.ICommandReactionListener;
+import discordbot.command.PaginationInfo;
 import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CMusic;
@@ -45,12 +48,14 @@ import net.dv8tion.jda.core.entities.User;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * !playlist
  * shows the current songs in the queue
  */
-public class PlaylistCommand extends AbstractCommand {
+public class PlaylistCommand extends AbstractCommand implements ICommandReactionListener<PaginationInfo<OPlaylist>> {
+    private final static int ITEMS_PER_PAGE = 25;
 
     public PlaylistCommand() {
         super();
@@ -197,28 +202,19 @@ public class PlaylistCommand extends AbstractCommand {
                 if (playlist.isGlobalList()) {
                     return Template.get(channel, "playlist_global_readonly");
                 }
-                int currentPage = 0;
-                int itemsPerPage = 20;
+                final int currentPage = 1;
                 int totalTracks = CPlaylist.getMusicCount(playlist.id);
-                int maxPage = 1 + totalTracks / itemsPerPage;
-                if (args.length >= 2) {
-                    if (args[1].matches("^\\d+$")) {
-                        currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage - 1);
-                    }
-                }
-                List<OMusic> items = CPlaylist.getMusic(playlist.id, itemsPerPage, currentPage * itemsPerPage);
-                if (items.isEmpty()) {
-                    return "The playlist is empty.";
-                }
-                String playlistTable = Config.EOL;
-                for (OMusic item : items) {
-                    playlistTable += String.format("`%11s` %s %s" + Config.EOL, item.youtubecode, Emojibet.HASH, item.youtubeTitle);
-                }
-                return String.format("Music in the playlist: %s" + Config.EOL, playlist.title) +
-                        playlistTable + Config.EOL +
-                        String.format("Showing [page %s/%s] (in total: %s items)", currentPage + 1, maxPage, totalTracks) + Config.EOL + Config.EOL +
-                        "_You can use the `#` to remove an item from the playlist._" + Config.EOL + Config.EOL +
-                        "_Example:_ `" + DisUtil.getCommandPrefix(channel) + "pl del 123`";
+                int maxPage = 1 + totalTracks / ITEMS_PER_PAGE;
+                OPlaylist finalPlaylist = playlist;
+                channel.sendMessage(makePage(guild, playlist, currentPage, maxPage)).queue(
+                        message -> {
+                            if (maxPage > 1) {
+                                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message,
+                                        getReactionListener(author.getId(), new PaginationInfo<>(currentPage, maxPage, guild, finalPlaylist)));
+                            }
+                        }
+                );
+                return "";
 
             default:
                 break;
@@ -457,5 +453,38 @@ public class PlaylistCommand extends AbstractCommand {
 //		body.add(Arrays.asList("visibility", playlist.getVisibility().getDescription()));
 //		body.add(Arrays.asList("created", TimeUtil.formatYMD(playlist.createdOn)));
         return Misc.makeAsciiTable(Arrays.asList("Name", "Value"), body, null);
+    }
+
+    private String makePage(Guild guild, OPlaylist playlist, int currentPage, int maxPage) {
+        List<OMusic> items = CPlaylist.getMusic(playlist.id, ITEMS_PER_PAGE, (currentPage - 1) * ITEMS_PER_PAGE);
+        if (items.isEmpty()) {
+            return "The playlist is empty!";
+        }
+        String playlistTable = Config.EOL;
+        for (OMusic item : items) {
+            playlistTable += String.format("`%11s` %s %s" + Config.EOL, item.youtubecode, Emojibet.HASH, item.youtubeTitle);
+        }
+        return String.format("Music in the playlist: %s" + Config.EOL, playlist.title) +
+                playlistTable + Config.EOL +
+                String.format("Showing [page %s/%s]", currentPage, maxPage) + Config.EOL + Config.EOL +
+                "_You can use the `#` to remove an item from the playlist._" + Config.EOL + Config.EOL +
+                "_Example:_ `" + DisUtil.getCommandPrefix(guild) + "pl del 123`";
+    }
+
+    @Override
+    public CommandReactionListener<PaginationInfo<OPlaylist>> getReactionListener(String InvokerUserId, PaginationInfo<OPlaylist> initialData) {
+        CommandReactionListener<PaginationInfo<OPlaylist>> listener = new CommandReactionListener<>(InvokerUserId, initialData);
+        listener.setExpiresIn(TimeUnit.MINUTES, 2);
+        listener.registerReaction(Emojibet.PREV_TRACK, o -> {
+            if (listener.getData().previousPage()) {
+                o.editMessage(makePage(initialData.getGuild(), initialData.getExtra(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).queue();
+            }
+        });
+        listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
+            if (listener.getData().nextPage()) {
+                o.editMessage(makePage(initialData.getGuild(), initialData.getExtra(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).queue();
+            }
+        });
+        return listener;
     }
 }
