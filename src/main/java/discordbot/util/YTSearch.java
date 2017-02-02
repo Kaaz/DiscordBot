@@ -110,6 +110,7 @@ public class YTSearch {
         try {
             YouTube.PlaylistItems.List playlistRequest = youtube.playlistItems().list("id,contentDetails,snippet");
             playlistRequest.setPlaylistId(playlistCode);
+            playlistRequest.setKey(search.getKey());
             playlistRequest.setFields("items(contentDetails/videoId,snippet/title,snippet/publishedAt),nextPageToken,pageInfo");
             String nextToken = "";
             do {

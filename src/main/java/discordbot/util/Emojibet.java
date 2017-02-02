@@ -81,6 +81,7 @@ public class Emojibet {
     public static final String DEFENSE = "\uD83D\uDEE1";
     public static String SWORDS = "\u2694";
     public static String EXPLOSION = "\uD83D\uDCA5";
+    public static final String HASH = "\u0023\u20E3";
 
     static {
         emojis.put("a", "\uD83C\uDDE6");

@@ -34,7 +34,9 @@ import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
+import discordbot.util.Emojibet;
 import discordbot.util.Misc;
+import discordbot.util.YTUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -210,7 +212,7 @@ public class PlaylistCommand extends AbstractCommand {
                 }
                 String playlistTable = Config.EOL;
                 for (OMusic item : items) {
-                    playlistTable += String.format(":hash: `%6s` \uD83D\uDD39 %s" + Config.EOL, item.id, item.youtubeTitle);
+                    playlistTable += String.format("`%11s` %s %s" + Config.EOL, item.youtubecode, Emojibet.HASH, item.youtubeTitle);
                 }
                 return String.format("Music in the playlist: %s" + Config.EOL, playlist.title) +
                         playlistTable + Config.EOL +
@@ -288,9 +290,14 @@ public class PlaylistCommand extends AbstractCommand {
                 }
                 return Template.get("playlist_setting_not_numeric", "visibility");
             case "play":
-                if (args.length > 1 && args[1].matches("^\\d+$")) {
-                    OMusic record = CMusic.findById(Integer.parseInt(args[1]));
-                    if (record.id > 0) {
+                if (args.length > 1) {
+                    OMusic record = null;
+                    if (args[1].matches("^\\d+$")) {
+                        record = CMusic.findById(Integer.parseInt(args[1]));
+                    } else if (YTUtil.isValidYoutubeCode(args[1])) {
+                        record = CMusic.findByYoutubeId(args[1]);
+                    }
+                    if (record != null && record.id > 0) {
                         if (player.canUseVoiceCommands(author, userRank)) {
                             player.connectTo(guild.getMember(author).getVoiceState().getChannel());
                             player.addToQueue(record.filename, author);
