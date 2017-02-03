@@ -70,9 +70,9 @@ public class PurgeComand extends AbstractCommand {
     @Override
     public String[] getUsage() {
         return new String[]{
-                "//deletes up to 100 non-pinned messages",
+                "//deletes up to "+MAX_BULK_SIZE+" non-pinned messages",
                 "purge",
-                "//deletes <limit> (max 100) non-pinned messages",
+                "//deletes <limit> (max "+MAX_DELETE_COUNT+") non-pinned messages",
                 "purge <limit>",
                 "//deletes <limit> messages from <user>, limit is optional",
                 "purge @user [limit]",
