@@ -30,7 +30,7 @@ public class db_28_to_29 implements IDbVersion {
 
     @Override
     public int getToVersion() {
-        return 29;
+        return 28;
     }
 
     @Override
