@@ -28,11 +28,14 @@ import discordbot.db.model.OTodoItem;
 import discordbot.db.model.OTodoList;
 import discordbot.handler.Template;
 import discordbot.main.DiscordBot;
+import discordbot.util.DisUtil;
 import discordbot.util.Emojibet;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ToDoCommand extends AbstractCommand implements ICommandReactionListener<PaginationInfo<String>> {
@@ -51,18 +54,17 @@ public class ToDoCommand extends AbstractCommand implements ICommandReactionList
         return new String[]{
                 "todo                         //overview of your lists items",
                 "todo create                  //creates the list",
-                "todo listname <name>         //sets the name",
                 "todo list <name/code>        //check todo items of a list",
                 "todo add <text>              //adds a todo item to your list",
-                "todo add <list> <text>       //adds a todo item to a list",
                 "todo remove <id>             //removes a todo item from your list",
-                "todo remove <list> <text>    //removes a todo item from a list",
                 "todo check <text>            //marks an item as checked",
-                "todo check <list> <text>     //marks an item as checked",
-                "todo priority <list><number> <priority>     //sets a priority of a todo item",
+                "todo uncheck <text>          //marks an item as unchecked",
+                "todo clearchecked            //deletes checked items",
+                "todo priority <number> <priority>     //sets a priority of a todo item",
         };
     }
-//another use case might be; I'd want invoices to be numbered per month, and every month I want it to start on 1, so to do this I'd like the invoiceNumber to be an inc
+
+    //another use case might be; I'd want invoices to be numbered per month, and every month I want it to start on 1, so to do this I'd like the invoiceNumber to be an inc
     @Override
     public String[] getAliases() {
         return new String[0];
@@ -75,8 +77,7 @@ public class ToDoCommand extends AbstractCommand implements ICommandReactionList
             if (rec.id == 0) {
                 return Template.get("todo_your_list_not_found");
             }
-            return "Your list: \n\n" +
-                    Emojibet.NOTEPAD + " " + rec.listName + " \n";
+            return makeListFor(author, rec);
         }
         switch (args[0].toLowerCase()) {
             case "create":
@@ -94,28 +95,84 @@ public class ToDoCommand extends AbstractCommand implements ICommandReactionList
                 }
                 CTodoLists.update(rec);
                 return Template.get("todo_list_updated");
-            case "user":
-                return "overview of user";
-            case "add":
-                if (rec.id > 0 && args.length > 1) {
-                    OTodoItem item = new OTodoItem();
-                    item.listId = rec.id;
-                    item.description = Misc.joinStrings(args, 1);
-                    CTodoItems.insert(item);
-                    return Template.get("todo_item_add_success");
+            case "clearchecked":
+            case "deletechecked":
+                if (rec.id == 0) {
+                    return Template.get("todo_your_list_not_found");
                 }
-                return Template.get("todo_item_add_failed");
+                CTodoItems.deleteChecked(rec.id);
+                return Template.get("todo_list_cleared");
+            case "user":
+                if (args.length == 1) {
+                    return Template.get("command_invalid_use");
+                }
+                User user = DisUtil.findUser((TextChannel) channel, Misc.joinStrings(args, 1));
+                if (user == null) {
+                    return Template.get("cant_find_user", Misc.joinStrings(args, 1));
+                }
+                OTodoList userList = CTodoLists.findBy(CUser.getCachedId(user.getId()));
+                if (userList.id == 0) {
+                    return Template.get("todo_user_list_not_found", user.getName());
+                }
+                return makeListFor(user, rec);
+        }
+        if (rec.id == 0 || args.length < 2) {
+            return Template.get("command_invalid_use");
+        }
+        switch (args[0].toLowerCase()) {
+            case "add":
+                OTodoItem item = new OTodoItem();
+                item.listId = rec.id;
+                item.description = Misc.joinStrings(args, 1);
+                CTodoItems.insert(item);
+                return Template.get("todo_item_add_success");
             case "remove":
-                return "remove an item";
+                OTodoItem editItem = CTodoItems.findBy(Misc.parseInt(args[1], 0));
+                if (editItem.listId != rec.id) {
+                    return Template.get("todo_not_your_item");
+                }
+                CTodoItems.delete(editItem);
+                return Template.get("todo_item_removed");
+            case "uncheck":
             case "check":
-                return "check or uncheck";
+                OTodoItem check = CTodoItems.findBy(Misc.parseInt(args[1], 0));
+                if (check.listId != rec.id || check.id == 0) {
+                    return Template.get("todo_not_your_item");
+                }
+                check.checked = args[0].equals("check") ? 1 : 0;
+                CTodoItems.update(check);
+                return Template.get("todo_item_updated");
             case "priority":
-                return "change the priority";
-            case "tag":
-            case "tags":
-                return "add tags to items";
+                if (args.length < 3) {
+                    return Template.get("command_invalid_use");
+                }
+                OTodoItem priority = CTodoItems.findBy(Misc.parseInt(args[1], 0));
+                if (priority.listId != rec.id || priority.id == 0) {
+                    return Template.get("todo_not_your_item");
+                }
+                priority.priority = Misc.parseInt(args[2], 0);
+                CTodoItems.update(priority);
+                return Template.get("todo_item_updated");
         }
         return Emojibet.EYES;
+    }
+
+    private String makeListFor(User user, OTodoList rec) {
+
+        List<OTodoItem> list = CTodoItems.getListFor(rec.id);
+        if (list.isEmpty()) {
+            return "The todo list is empty!";
+        }
+        String out = "Todo list for " + user.getName() + ": \n\n" + Emojibet.NOTEPAD + " " + rec.listName + " \n\n";
+        for (OTodoItem item : list) {
+            out += String.format("%s`\u200B%5d` %s %s\n",
+                    item.checked == 1 ? Emojibet.CHECK_MARK_GREEN : Emojibet.CHECK_BOX_UNCHECKED,
+                    item.id,
+                    Emojibet.HASH,
+                    item.description
+            );
+        }
+        return out;
     }
 
     private String makePageFor(String userId, int page) {

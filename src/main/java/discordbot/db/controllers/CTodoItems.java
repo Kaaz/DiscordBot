@@ -22,6 +22,8 @@ import discordbot.db.model.OTodoItem;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CTodoItems {
 
@@ -39,6 +41,23 @@ public class CTodoItems {
             Logger.fatal(e);
         }
         return t;
+    }
+
+    public static List<OTodoItem> getListFor(int listId) {
+        ArrayList<OTodoItem> ret = new ArrayList<>();
+        try (ResultSet rs = WebDb.get().select(
+                "SELECT *  " +
+                        "FROM todo_item " +
+                        "WHERE list_id= ? " +
+                        "ORDER BY priority DESC, id ASC", listId)) {
+            while (rs.next()) {
+                ret.add(fillRecord(rs));
+            }
+            rs.getStatement().close();
+        } catch (Exception e) {
+            Logger.fatal(e);
+        }
+        return ret;
     }
 
     private static OTodoItem fillRecord(ResultSet rs) throws SQLException {
@@ -62,13 +81,24 @@ public class CTodoItems {
         }
     }
 
+    public static void deleteChecked(int listId) {
+        try {
+            WebDb.get().query(
+                    "DELETE FROM todo_item WHERE list_id = ? AND checked = 1",
+                    listId
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void update(OTodoItem record) {
         if (record.id == 0) {
             insert(record);
             return;
         }
         try {
-            record.id = WebDb.get().query(
+            WebDb.get().query(
                     "UPDATE todo_item SET description = ?, checked = ?, priority = ? WHERE id = ?",
                     record.description, record.checked, record.priority, record.id);
         } catch (Exception e) {
