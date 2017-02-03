@@ -281,7 +281,8 @@ public class PurgeComand extends AbstractCommand {
             bot.out.sendAsyncMessage(channel, Template.get("permission_missing_manage_messages"), message -> {
                 messagesToDelete.add(message);
                 for (Message toDelete : messagesToDelete) {
-                    toDelete.deleteMessage().queue();
+                    if (toDelete.getAuthor().getId().equals(channel.getJDA().getSelfUser().getId()))
+                        toDelete.deleteMessage().queue();
                     try {
                         Thread.sleep(500L);
                     } catch (Exception ignored) {
