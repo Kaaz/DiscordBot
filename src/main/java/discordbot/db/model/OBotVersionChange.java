@@ -31,7 +31,7 @@ public class OBotVersionChange {
     }
 
     public enum ChangeType {
-        ADDED(1, "A", "Added", Emojibet.CHECK_BOX),
+        ADDED(1, "A", "Added", Emojibet.CHECK_MARK_GREEN),
         CHANGED(2, "C", "Changed", Emojibet.WRENCH),
         REMOVED(3, "R", "Removed", Emojibet.BASKET),
         FIXED(4, "F", "Bugs fixed", Emojibet.BUG),
