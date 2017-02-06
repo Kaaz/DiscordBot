@@ -465,7 +465,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         }
         String playlistTable = Config.EOL;
         for (OMusic item : items) {
-            playlistTable += String.format("`%11s` %s %s" + Config.EOL, item.youtubecode, Emojibet.HASH, item.youtubeTitle);
+            playlistTable += String.format("`%11s` | %s" + Config.EOL, item.youtubecode, item.youtubeTitle);
         }
         return String.format("Music in the playlist: %s" + Config.EOL, playlist.title) +
                 playlistTable + Config.EOL +
