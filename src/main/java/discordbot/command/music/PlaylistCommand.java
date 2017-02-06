@@ -207,7 +207,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 }
                 final int currentPage = 1;
                 int totalTracks = CPlaylist.getMusicCount(playlist.id);
-                int maxPage = 1 + totalTracks / ITEMS_PER_PAGE;
+                int maxPage = (int) Math.ceil((double) totalTracks / (double) ITEMS_PER_PAGE);
                 OPlaylist finalPlaylist = playlist;
                 channel.sendMessage(makePage(guild, playlist, currentPage, maxPage)).queue(
                         message -> {
