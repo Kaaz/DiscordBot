@@ -58,7 +58,7 @@ public class MusicCleanupService extends AbstractService {
 
     @Override
     public void run() {
-        long olderThan = (System.currentTimeMillis() / 1000L) - TimeUnit.DAYS.toSeconds(14);
+        long olderThan = (System.currentTimeMillis() / 1000L) - TimeUnit.DAYS.toSeconds(7);
         try (ResultSet rs = WebDb.get().select("SELECT m.* " +
                 " FROM music m " +
                 " WHERE m.lastplaydate < ? " +
