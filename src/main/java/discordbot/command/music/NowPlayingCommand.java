@@ -119,7 +119,10 @@ public class NowPlayingCommand extends AbstractCommand {
         if (song.id == 0 && (args.length == 0 || !args[0].equals("clear"))) {
             return Template.get("command_currentlyplaying_nosong");
         }
-
+        if (args.length == 0 && PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
+            channel.sendMessage(MusicUtil.nowPlayingMessage(player, song, null)).queue();
+            return "";
+        }
         if (args.length > 0) {
             String voteInput = args[0].toLowerCase();
             if (args.length > 1) {
@@ -129,7 +132,7 @@ public class NowPlayingCommand extends AbstractCommand {
             if (m.find()) {
                 OMusicVote voteRecord = CMusicVote.findBy(song.id, author.getId());
                 if (m.group(1) != null) {
-                    int vote = Math.max(1, Math.min(10, Integer.parseInt(m.group(1))));
+                    int vote = Math.max(1, Math.min(10, Misc.parseInt(m.group(1), 0)));
                     CMusicVote.insertOrUpdate(song.id, author.getId(), vote);
                     return "vote is registered (" + vote + ")";
                 }
@@ -178,6 +181,7 @@ public class NowPlayingCommand extends AbstractCommand {
                     return Template.get("music_clear_mode", adminOnly ? "admin-only" : "normal");
             }
         }
+
         OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
         String ret = "";
         if (player.getRequiredVotes() > 1) {
