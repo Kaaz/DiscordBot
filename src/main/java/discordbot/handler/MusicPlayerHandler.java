@@ -298,7 +298,7 @@ public class MusicPlayerHandler {
                     YTUtil.getTrackDuration(record);
                     CMusic.update(record);
                 }
-                if (scheduler.getLastRequester() != null && !scheduler.getLastRequester().isEmpty()) {
+                if (((scheduler.getLastRequester() != null) && !scheduler.getLastRequester().isEmpty()) || !playlist.isGlobalList()) {
                     record.lastplaydate = System.currentTimeMillis() / 1000L;
                     CMusic.update(record);
                 }
