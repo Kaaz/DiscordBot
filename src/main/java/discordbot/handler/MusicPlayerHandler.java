@@ -27,6 +27,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import discordbot.command.music.PlayCommand;
 import discordbot.db.WebDb;
 import discordbot.db.controllers.CBotPlayingOn;
 import discordbot.db.controllers.CGuild;
@@ -506,6 +507,10 @@ public class MusicPlayerHandler {
             return false;
         }
         if (!musicFile.exists()) {//check in config directory
+            if (!playlist.isGlobalList()) {
+                PlayCommand.handleFile(this,bot,bot.getMusicChannel(getJDA().getGuildById(guildId)),getJDA().getSelfUser(),record.youtubecode,record.youtubeTitle,false);
+                return true;
+            }
             record.fileExists = 0;
             CMusic.update(record);
             bot.getContainer().reportError(new Exception("NoMusicFile"), "filename: ", musicFile.getAbsolutePath(), "plz fix", "I want music", bot);

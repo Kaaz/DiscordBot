@@ -151,7 +151,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
         }
         if (args.length > 0) {
             final String videoTitle;
-            String videoCode = YTUtil.extractCodeFromUrl(args[0]);
+            String videoCode = YTUtil.isValidYoutubeCode(args[0]) ? args[0] : YTUtil.extractCodeFromUrl(args[0]);
             String playlistCode = YTUtil.getPlayListCode(args[0]);
             if (playlistCode != null) {
                 if (!ytSearch.hasValidKey()) {
@@ -215,7 +215,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
         }
     }
 
-    private String handleFile(MusicPlayerHandler player, DiscordBot bot, TextChannel channel, User invoker, String videoCode, String videoTitle, boolean useTemplates) {
+    public static String handleFile(MusicPlayerHandler player, DiscordBot bot, TextChannel channel, User invoker, String videoCode, String videoTitle, boolean useTemplates) {
         OMusic record = CMusic.findByYoutubeId(videoCode);
         final File filecheck;
         if (record.id > 0 && record.fileExists == 1) {
