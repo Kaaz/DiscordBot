@@ -296,9 +296,12 @@ public class MusicPlayerHandler {
             if (record.id > 0) {
                 if (record.duration == 0) {
                     YTUtil.getTrackDuration(record);
+                    CMusic.update(record);
                 }
-                record.lastplaydate = System.currentTimeMillis() / 1000L;
-                CMusic.update(record);
+                if (scheduler.getLastRequester() != null && !scheduler.getLastRequester().isEmpty()) {
+                    record.lastplaydate = System.currentTimeMillis() / 1000L;
+                    CMusic.update(record);
+                }
                 currentlyPlaying = record.id;
                 currentSongLength = record.duration;
                 CMusicLog.insert(CGuild.getCachedId(guildId), record.id, 0);
@@ -508,7 +511,7 @@ public class MusicPlayerHandler {
         }
         if (!musicFile.exists()) {//check in config directory
             if (!playlist.isGlobalList()) {
-                PlayCommand.handleFile(this,bot,bot.getMusicChannel(getJDA().getGuildById(guildId)),getJDA().getSelfUser(),record.youtubecode,record.youtubeTitle,false);
+                PlayCommand.handleFile(this, bot, bot.getMusicChannel(getJDA().getGuildById(guildId)), getJDA().getSelfUser(), record.youtubecode, record.youtubeTitle, false);
                 return true;
             }
             record.fileExists = 0;
