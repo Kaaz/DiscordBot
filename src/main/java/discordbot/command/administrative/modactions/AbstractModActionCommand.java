@@ -94,6 +94,6 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
                     }
             );
         }
-        return Template.get("command_modaction_success", getPunishType().getKeyword().toLowerCase(), targetUser.getName());
+        return Template.get("command_modaction_success", targetUser.getName(), getPunishType().getVerb().toLowerCase());
     }
 }
