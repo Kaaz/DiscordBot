@@ -18,8 +18,8 @@ package discordbot.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class TimeUtil {
     public static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
@@ -102,7 +102,8 @@ public class TimeUtil {
         return ">2w";
     }
 
-    private static final Map<Character, Long> TIME_SYMBOLS = new ConcurrentHashMap<>();
+    private static final Map<Character, Long> TIME_SYMBOLS = new HashMap<>();
+
     static {
         TIME_SYMBOLS.put('w', 604800000L);
         TIME_SYMBOLS.put('d', 86400000L);
@@ -115,26 +116,27 @@ public class TimeUtil {
      * Takes the value of the string as represented by trailing
      * w, d, h, m, or s characters and gets a millisecond value
      * from them.  Any values with no label are added as millis.
+     *
      * @param s the string to be parsed
      * @return the value of the string in milliseconds
-     *          or null if it can not be parsed
+     * or null if it can not be parsed
      */
-    public static Long toMillis(String s){
+    public static long toMillis(String s) {
         s = s.toLowerCase();
         long val = 0;
         String working = "";
         for (int i = 0; i < s.length(); i++) {
-            if (Character.isDigit(s.charAt(i))){
+            if (Character.isDigit(s.charAt(i))) {
                 working += s.charAt(i);
-            }else if (TIME_SYMBOLS.containsKey(s.charAt(i))){
-                val += Integer.parseInt(working) * TIME_SYMBOLS.get(s.charAt(i));
-                working = "";
-            }else{
-                return null;
+            } else if (TIME_SYMBOLS.containsKey(s.charAt(i))) {
+                if (!working.isEmpty()) {
+                    val += Misc.parseInt(working, 0) * TIME_SYMBOLS.get(s.charAt(i));
+                    working = "";
+                }
             }
         }
-        if (working.length() != 0){
-            val += Integer.parseInt(working);
+        if (working.length() != 0) {
+            val += Misc.parseInt(working, 0);
         }
         return val;
     }
