@@ -91,9 +91,14 @@ public class MusicReactionHandler {
                 playlist.setEditType(OPlaylist.EditType.PRIVATE_AUTO);
                 CPlaylist.insert(playlist);
             }
+            OMusic np = CMusic.findById(player.getCurrentlyPlaying());
             if (isAdding) {
                 CPlaylist.addToPlayList(playlist.id, player.getCurrentlyPlaying());
+                discordBot.out.sendPrivateMessage(invoker,
+                        Template.get("reaction_playlist_item_added_private", np.youtubecode, np.youtubeTitle, playlist.code));
             } else {
+                discordBot.out.sendPrivateMessage(invoker,
+                        Template.get("reaction_playlist_item_removed_private", np.youtubecode, np.youtubeTitle, playlist.code));
                 CPlaylist.removeFromPlayList(playlist.id, player.getCurrentlyPlaying());
             }
             return true;
