@@ -299,7 +299,11 @@ public class MusicPlayerHandler {
                     CMusic.update(record);
                 }
                 if (((scheduler.getLastRequester() != null) && !scheduler.getLastRequester().isEmpty()) || !playlist.isGlobalList()) {
+                    if (scheduler.getLastRequester() != null && !scheduler.getLastRequester().isEmpty()) {
+                        record.playCount++;
+                    }
                     record.lastplaydate = System.currentTimeMillis() / 1000L;
+
                     CMusic.update(record);
                 }
                 currentlyPlaying = record.id;
@@ -453,6 +457,7 @@ public class MusicPlayerHandler {
                 "SELECT filename, youtube_title, lastplaydate " +
                         "FROM music " +
                         "WHERE banned = 0 AND file_exists = 1 " +
+                        "AND play_count > 25 " +
                         "ORDER BY lastplaydate ASC " +
                         "LIMIT 50")) {
             while (rs.next()) {
