@@ -65,6 +65,9 @@ public class MuteCommand extends AbstractModActionCommand {
             return false;
         }
         List<Role> roles = member.getRoles();
+
+        List<Role> rolesToAdd = new ArrayList<>();
+        rolesToAdd.add(role);
         List<Role> rolesToRemove = new ArrayList<>();
         for (Role r : roles) {
             if (r.isManaged()) {
@@ -73,11 +76,13 @@ public class MuteCommand extends AbstractModActionCommand {
             if (!PermissionUtil.canInteract(guild.getSelfMember(), r)) {
                 continue;
             }
+            if (r.equals(role)) {
+                roles.remove(role);
+                continue;
+            }
             rolesToRemove.add(r);
         }
-        guild.getController().removeRolesFromMember(member, rolesToRemove).queue(aVoid ->
-                guild.getController().addRolesToMember(member, role).queue()
-        );
+        guild.getController().modifyMemberRoles(member, rolesToAdd, rolesToRemove).queue();
         return true;
     }
 }
