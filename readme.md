@@ -39,13 +39,12 @@ Commands | | | | |
 [invite](#invite) | [join](#join) | [joke](#joke) | [kick](#kick) | [leaveguild](#leaveguild)
 [logging](#logging) | [meme](#meme) | [modcase](#modcase) | [music](#music) | [mute](#mute)
 [pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
-[poec](#poec) | [poeitem](#poeitem) | [poelab](#poelab) | [poll](#poll) | [prefix](#prefix)
-[purge](#purge) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
-[roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [server](#server)
-[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
-[tag](#tag) | [tempban](#tempban) | [template](#template) | [ud](#ud) | [uptime](#uptime)
-[user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume) | [warn](#warn)
-
+[poll](#poll) | [prefix](#prefix) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit)
+[reload](#reload) | [report](#report) | [roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate)
+[sendfile](#sendfile) | [server](#server) | [skip](#skip) | [slot](#slot) | [stop](#stop)
+[subscribe](#subscribe) | [system](#system) | [tag](#tag) | [tempban](#tempban) | [template](#template)
+[test](#test) | [todo](#todo) | [ud](#ud) | [uptime](#uptime) | [user](#user)
+[userrank](#userrank) | [version](#version) | [volume](#volume) | [warn](#warn) | 
 
 ## Games
 
@@ -414,11 +413,11 @@ Usable in public and private channels
 #### Usage
 
 ```php
-activity //shows last shard activity
+fixusernames, fixrelations, youtube 
 ```
 ### donate
 
-general info about how to contribute or donate to NovaBot
+general info about how to contribute or donate to Emily
 
 Accessible though: donate, contribute
 
@@ -509,6 +508,7 @@ Usable in public and private channels
 stats         //stats!
 stats mini    //minified!
 stats users   //graph of when users joined!
+stats activity//last activity per shard
 ```
 ### help
 
@@ -747,42 +747,6 @@ Usable in public and private channels
 ```php
 pm <@user> <message..>
 ```
-### poec
-
-Returns a list of currency on your account
-
-Accessible though: poec
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-poec                   //returns list of currency for default league
-poec token <token>     //sets the session token
-poec league <league>   //currency for league
-```
-### poeitem
-
-Analyzes an item from path of exile.
-
-Accessible though: poeitem
-
-Usable in public and private channels
-### poelab
-
-Attempts to find a description from reddit for the Labyrinth instance.
-
-Accessible though: poelab
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-poelab              //lists for all difficulties
-poelab <difficulty> //only for that difficulty
-```
 ### poll
 
 Strawpoll: propose a question and choices for the chat to vote on
@@ -824,12 +788,24 @@ Usable in public  channels
 #### Usage
 
 ```php
-purge               //deletes up to 100 messages
-purge <limit>       //deletes non-pinned messages
-purge @user         //deletes messages from user
-purge @user <limit> //deletes up to <limit> messages from user
-purge commands      //delete command related messages
-purge emily         //deletes my messages :(
+//deletes up to 100 non-pinned messages
+purge
+//deletes <limit> (max 2500) non-pinned messages
+purge <limit>
+//deletes messages newer than now - (input)
+purge time 1d2h10m         //you can use dhms and combinations 
+//deletes <limit> messages from <user>, limit is optional
+purge @user [limit]
+//deletes messages from <user>, user can be part of a user's name
+purge user <user>
+//deletes messages matching <regex>
+purge matches <regex>
+//delete messages NOT matching <regex>
+purge notmatches <regex>
+//delete command related messages
+purge commands
+//deletes bot messages
+purge bot
 ```
 ### reboot
 
@@ -1094,6 +1070,40 @@ Key                Replacement
 %rand-user%        random user in guild
 %rand-user-online% random ONLINE user in guild
 ```
+### test
+
+kaaz's test command
+
+Accessible though: test
+
+Usable in public  channels
+
+#### Usage
+
+```php
+NOPE
+```
+### todo
+
+administer todo items
+
+Accessible though: todo
+
+Usable in public and private channels
+
+#### Usage
+
+```php
+todo                         //overview of your lists items
+todo create                  //creates the list
+todo list <name/code>        //check todo items of a list
+todo add <text>              //adds a todo item to your list
+todo remove <id>             //removes a todo item from your list
+todo check <text>            //marks an item as checked
+todo uncheck <text>          //marks an item as unchecked
+todo clearchecked            //deletes checked items
+todo priority <number> <priority>     //sets a priority of a todo item
+```
 ### ud
 
 A veritable cornucopia of streetwise lingo
@@ -1145,6 +1155,7 @@ userrank <user>                   //check rank of user
 userrank <user> <rank>            //gives a rank to user
 userrank <user> perm <+/-> <node> //adds/removes permission from user
 userrank permlist                 //lists all permissions
+userrank ranks                    //lists all ranks
 ```
 ### version
 

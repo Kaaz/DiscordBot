@@ -24,6 +24,7 @@ import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
+import discordbot.util.TimeUtil;
 import net.dv8tion.jda.core.MessageHistory;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
@@ -37,6 +38,7 @@ import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -70,10 +72,12 @@ public class PurgeComand extends AbstractCommand {
     @Override
     public String[] getUsage() {
         return new String[]{
-                "//deletes up to "+MAX_BULK_SIZE+" non-pinned messages",
+                "//deletes up to " + MAX_BULK_SIZE + " non-pinned messages",
                 "purge",
-                "//deletes <limit> (max "+MAX_DELETE_COUNT+") non-pinned messages",
+                "//deletes <limit> (max " + MAX_DELETE_COUNT + ") non-pinned messages",
                 "purge <limit>",
+                "//deletes messages newer than now - (input)",
+                "purge time 1d2h10m         //you can use dhms and combinations ",
                 "//deletes <limit> messages from <user>, limit is optional",
                 "purge @user [limit]",
                 "//deletes messages from <user>, user can be part of a user's name",
@@ -104,6 +108,7 @@ public class PurgeComand extends AbstractCommand {
         List<Message> messagesToDelete = new ArrayList<>();
         Member toDeleteFrom = null;
         Pattern deletePattern = null;
+        long maxMessageAge = TimeUnit.DAYS.toMillis(14);
         int toDelete = 100;
         final String cmdPrefix = DisUtil.getCommandPrefix(channel);
         PurgeStyle style = PurgeStyle.UNKNOWN;
@@ -116,6 +121,12 @@ public class PurgeComand extends AbstractCommand {
         }
         if (args.length > 0) {
             switch (args[0]) {
+                case "time":
+                    if (args.length > 1) {
+                        style = PurgeStyle.ALL;
+                        maxMessageAge = Math.min(maxMessageAge, TimeUtil.toMillis(Misc.joinStrings(args, 1)));
+                    }
+                    break;
                 case "commands":
                 case "command":
                     style = PurgeStyle.COMMANDS;
@@ -172,7 +183,7 @@ public class PurgeComand extends AbstractCommand {
             }
         }
         int finalDeleteLimit = toDelete;
-        long twoWeeksAgo = ((System.currentTimeMillis() - (14 * 24 * 60 * 60 * 1000)) - MiscUtil.DISCORD_EPOCH) << MiscUtil.TIMESTAMP_OFFSET;
+        long twoWeeksAgo = (System.currentTimeMillis() - maxMessageAge - MiscUtil.DISCORD_EPOCH) << MiscUtil.TIMESTAMP_OFFSET;
         Member finalToDeleteFrom = toDeleteFrom;
         PurgeStyle finalStyle = style;
         Pattern finalDeletePattern = deletePattern;
