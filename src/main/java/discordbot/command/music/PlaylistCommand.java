@@ -123,7 +123,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         int nowPlayingId = player.getCurrentlyPlaying();
         OMusic musicRec = CMusic.findById(nowPlayingId);
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
+            return Template.get(channel, "music_required_role_not_found", guild.getRoleById(GuildSettings.getFor(channel, SettingMusicRole.class)).getName());
         }
         OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
         if (playlist.id == 0) {

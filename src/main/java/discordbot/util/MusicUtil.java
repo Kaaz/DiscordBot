@@ -23,6 +23,7 @@ import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
 import discordbot.main.Config;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
@@ -46,6 +47,8 @@ public class MusicUtil {
      */
     public static MessageEmbed nowPlayingMessage(MusicPlayerHandler player, OMusic record, Member member) {
         EmbedBuilder embed = new EmbedBuilder();
+        Guild guild = player.getJDA().getGuildById(player.getGuild());
+
         embed.setThumbnail("https://i.ytimg.com/vi/" + record.youtubecode + "/0.jpg");
         embed.setTitle("\uD83C\uDFB6 " + record.youtubeTitle);
         embed.setDescription("[source](https://www.youtube.com/watch?v=" + record.youtubecode + ") | `" + DisUtil.getCommandPrefix(player.getGuild()) + "pl` - " + player.getPlaylist().title);
@@ -56,7 +59,7 @@ public class MusicUtil {
         }
         String requiredRole = GuildSettings.get(player.getGuild()).getOrDefault(SettingMusicRole.class);
         if (!requiredRole.equals("false")) {
-            optionsField += "Role req.: " + requiredRole + Config.EOL;
+            optionsField += "Role req.: " + guild.getRoleById(requiredRole).getName() + Config.EOL;
         }
         if (GuildSettings.get(player.getGuild()).getOrDefault(SettingMusicQueueOnly.class).equals("false")) {
             optionsField += "Random after queue";

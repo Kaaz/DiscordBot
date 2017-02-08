@@ -206,7 +206,7 @@ public class GuildSettings {
             roleFound = false;
             List<Role> roles = user.getJDA().getGuildById(Long.toString(guildId)).getMember(user).getRoles();
             for (Role role : roles) {
-                if (role.getName().equalsIgnoreCase(requiredRole)) {
+                if (role.getId().equals(requiredRole)) {
                     roleFound = true;
                     break;
                 }

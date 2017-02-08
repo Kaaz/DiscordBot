@@ -82,7 +82,7 @@ public class SkipTrack extends AbstractCommand {
             return Template.get(channel, "music_skip_admin_only");
         }
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Template.get(channel, "music_required_role_not_found", GuildSettings.getFor(channel, SettingMusicRole.class));
+            return Template.get(channel, "music_required_role_not_found", guild.getRoleById(GuildSettings.getFor(channel, SettingMusicRole.class)).getName());
         }
         if (!player.isPlaying()) {
             return Template.get("command_currentlyplaying_nosong");
