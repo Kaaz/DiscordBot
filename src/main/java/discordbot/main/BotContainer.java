@@ -189,6 +189,23 @@ public class BotContainer {
     }
 
     /**
+     *
+     */
+    public synchronized void firmRequestExit(ExitCode reason){
+        Thread thread = new Thread(() -> {
+            try{
+                Thread.sleep(300000);// 5 minutes
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.exit(reason.getCode());
+        }, "Firm-Request-Exit-Thread");
+        thread.setDaemon(true);
+        thread.start();
+        requestExit(reason);
+    }
+
+    /**
      * report an error to the configured error channel
      *
      * @param error   the Exception

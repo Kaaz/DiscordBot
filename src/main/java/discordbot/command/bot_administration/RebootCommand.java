@@ -52,7 +52,9 @@ public class RebootCommand extends AbstractCommand {
     public String[] getUsage() {
         return new String[]{
                 "reboot now              //reboots the system",
+                "reboot now firm         //reboots the system, but ensures a restart in 5 minutes",
                 "reboot update           //reboots the system and updates",
+                "reboot update firm      //reboots the system and updates, but ensures a restart in 5 minutes",
                 "reboot shard <id>       //reboots shard",
                 "reboot shard <guildid>  //reboots shard for guild-id",
         };
@@ -72,11 +74,23 @@ public class RebootCommand extends AbstractCommand {
             switch (args[0].toLowerCase()) {
                 case "update":
                     if (UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
-                        bot.out.sendAsyncMessage(channel, Template.get("command_reboot_update"), message -> bot.getContainer().requestExit(ExitCode.UPDATE));
+                        bot.out.sendAsyncMessage(channel, Template.get("command_reboot_update"), message -> {
+                            if (args.length > 1 && args[1].equals("firm")){
+                                bot.getContainer().firmRequestExit(ExitCode.UPDATE);
+                            }else{
+                                bot.getContainer().requestExit(ExitCode.UPDATE);
+                            }
+                        });
                         return "";
                     }
                 case "now":
-                    bot.out.sendAsyncMessage(channel, Template.get("command_reboot_success"), message -> bot.getContainer().requestExit(ExitCode.REBOOT));
+                    bot.out.sendAsyncMessage(channel, Template.get("command_reboot_success"), message -> {
+                        if (args.length > 1 && args[1].equals("firm")){
+                            bot.getContainer().firmRequestExit(ExitCode.REBOOT);
+                        }else{
+                            bot.getContainer().requestExit(ExitCode.REBOOT);
+                        }
+                    });
                     return "";
                 case "forceupdate":
                 case "fursupdate":
