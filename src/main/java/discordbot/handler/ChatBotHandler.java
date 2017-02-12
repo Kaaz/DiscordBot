@@ -16,10 +16,11 @@
 
 package discordbot.handler;
 
-import com.google.code.chatterbotapi.ChatterBot;
-import com.google.code.chatterbotapi.ChatterBotFactory;
-import com.google.code.chatterbotapi.ChatterBotSession;
-import com.google.code.chatterbotapi.ChatterBotType;
+
+import discordbot.modules.chatbot.ChatterBot;
+import discordbot.modules.chatbot.ChatterBotFactory;
+import discordbot.modules.chatbot.ChatterBotSession;
+import discordbot.modules.chatbot.ChatterBotType;
 
 import java.util.Iterator;
 import java.util.Locale;
