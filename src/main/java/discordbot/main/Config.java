@@ -29,6 +29,7 @@ public class Config {
     public static final long GUILD_OWNER_MIN_ACCOUNT_AGE = 7;
     //if a guild has less users it will be marked as a test guild
     public static final int GUILD_MIN_USERS = 5;
+    public static final int MAX_MESSAGE_SIZE = 2000;
     //the default time to delete messages after milliseconds
     public static long DELETE_MESSAGES_AFTER = 120000;
 
