@@ -291,7 +291,7 @@ public class JDAEvents extends ListenerAdapter {
         discordBot.logGuildEvent(guild, "\uD83D\uDC64", "**" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator() + "** joined the guild");
         if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
             TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
-            if (defaultChannel != null) {
+            if (defaultChannel != null && defaultChannel.canTalk()) {
                 defaultChannel.sendMessage(
                         Template.getWithTags(defaultChannel, firstTime ? "welcome_new_user" : "welcome_back_user", user)).queue(
                         message -> discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS)
@@ -321,7 +321,7 @@ public class JDAEvents extends ListenerAdapter {
         }
         if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingWelcomeNewUsers.class))) {
             TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
-            if (defaultChannel != null) {
+            if (defaultChannel != null && defaultChannel.canTalk()) {
                 defaultChannel.sendMessage(
                         Template.getWithTags(defaultChannel, "message_user_leaves", user)).queue(
                         message -> discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS)
