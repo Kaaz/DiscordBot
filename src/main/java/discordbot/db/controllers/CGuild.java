@@ -49,7 +49,6 @@ public class CGuild {
         }
         return 0;
     }
-
     public static int getCachedId(String discordId) {
         return getCachedId(Long.parseLong(discordId));
     }
@@ -76,6 +75,22 @@ public class CGuild {
             discordIdCache.put(id, server.discord_id);
         }
         return Long.toString(discordIdCache.get(id));
+    }
+    public static List<OGuild> getMostUsedGuildsFor(int userId){
+        List<OGuild> list = new ArrayList<>();
+        try (ResultSet rs = WebDb.get().select("SELECT g.id, discord_id, name, owner, active, banned " +
+                "FROM command_log l " +
+                "JOIN guilds g on g.id = l.guild " +
+                "WHERE l.user_id = ? " +
+                "GROUP BY g.id ORDER BY count(l.id) desc LIMIT 10", userId)) {
+            while (rs.next()) {
+                list.add(loadRecord(rs));
+            }
+            rs.getStatement().close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public static OGuild findBy(long discordId) {

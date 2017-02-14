@@ -68,7 +68,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class    DiscordBot {
+public class DiscordBot {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
     public final long startupTimeStamp;
@@ -106,14 +106,17 @@ public class    DiscordBot {
     }
 
     public void restartJDA() throws LoginException, InterruptedException, RateLimitedException {
+        client = null;
         JDABuilder builder = new JDABuilder(AccountType.BOT).setToken(Config.BOT_TOKEN);
         if (totShards > 1) {
             builder.useSharding(shardId, totShards);
         }
         builder.setEventManager(eventManager);
         builder.setBulkDeleteSplittingEnabled(false);
-        builder.setEnableShutdownHook(false);
+        builder.setEnableShutdownHook(true);
+        System.out.println("STARTING SHARD " + shardId);
         client = builder.buildBlocking();
+        System.out.println("SHARD " + shardId + " IS READY ");
 
     }
 

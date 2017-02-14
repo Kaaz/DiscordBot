@@ -22,6 +22,7 @@ import discordbot.db.controllers.CGuild;
 import discordbot.db.controllers.CGuildMember;
 import discordbot.db.controllers.CUser;
 import discordbot.db.model.OBank;
+import discordbot.db.model.OGuild;
 import discordbot.db.model.OGuildMember;
 import discordbot.db.model.OUser;
 import discordbot.guildsettings.bot.SettingUseEconomy;
@@ -29,7 +30,9 @@ import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
+import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
+import discordbot.util.Misc;
 import discordbot.util.TimeUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -40,6 +43,9 @@ import net.dv8tion.jda.core.entities.User;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * !user
@@ -68,7 +74,8 @@ public class UserCommand extends AbstractCommand {
                 "user                             //info about you",
                 "user @user                       //info about @user",
                 "user @user joindate yyyy-MM-dd   //overrides the join-date of a user",
-                "user @user joindate reset        //restores the original value"
+                "user @user joindate reset        //restores the original value",
+                "user guilds @user                //what guilds/shards @user most likely uses"
         };
     }
 
@@ -90,7 +97,19 @@ public class UserCommand extends AbstractCommand {
             OUser dbUser = CUser.findById(Integer.parseInt(args[0].substring(1)));
             infoUser = channel.getJDA().getUserById(dbUser.discord_id);
         } else if (channel instanceof TextChannel) {
-
+            if (args.length >= 2 && args[0].equals("guilds") && bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
+                System.out.println(Misc.joinStrings(args,1));
+                User user = DisUtil.findUser((TextChannel) channel, Misc.joinStrings(args, 1));
+                if (user == null) {
+                    return Template.get("command_user_not_found");
+                }
+                List<OGuild> guilds = CGuild.getMostUsedGuildsFor(CUser.getCachedId(author.getId()));
+                List<List<String>> tbl = new ArrayList<>();
+                for (OGuild guild : guilds) {
+                    tbl.add(Arrays.asList("" + bot.getContainer().calcShardId(guild.discord_id), Long.toString(guild.discord_id), guild.name));
+                }
+                return Misc.makeAsciiTable(Arrays.asList("shard", "guild", "name"), tbl, null);
+            }
             Member member = DisUtil.findUserIn((TextChannel) channel, args[0]);
             if (member != null) {
                 infoUser = member.getUser();

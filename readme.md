@@ -819,7 +819,9 @@ Usable in public and private channels
 
 ```php
 reboot now              //reboots the system
+reboot now firm         //reboots the system, but ensures a restart in 5 minutes
 reboot update           //reboots the system and updates
+reboot update firm      //reboots the system and updates, but ensures a restart in 5 minutes
 reboot shard <id>       //reboots shard
 reboot shard <guildid>  //reboots shard for guild-id
 ```

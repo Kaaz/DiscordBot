@@ -133,38 +133,46 @@ public class BotContainer {
         for (Guild guild : shards[shardId].client.getGuilds()) {
             MusicPlayerHandler.removeGuild(guild, true);
         }
+        System.out.println("shutting down shard "+shardId);
         shards[shardId].client.shutdownNow(false);
-        Thread.sleep(5_000L);
-        shards[shardId].restartJDA();
-        List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
-        for (OBotPlayingOn radio : radios) {
-            if (calcShardId(Long.parseLong(radio.guildId)) != shardId) {
-                continue;
+        System.out.println("SHUT DOWN SHARD "+shardId);
+        schedule(() -> {
+            try {
+                shards[shardId].restartJDA();
+            } catch (LoginException | InterruptedException | RateLimitedException e) {
+                e.printStackTrace();
             }
-            Guild guild = shards[shardId].client.getGuildById(radio.guildId);
-            if (guild != null) {
-                VoiceChannel channel = guild.getVoiceChannelById(radio.channelId);
-                if (channel != null) {
-                    boolean hasUsers = false;
-                    for (Member user : channel.getMembers()) {
-                        if (!user.getUser().isBot()) {
-                            hasUsers = true;
-                            break;
+            List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
+            for (OBotPlayingOn radio : radios) {
+                if (calcShardId(Long.parseLong(radio.guildId)) != shardId) {
+                    continue;
+                }
+                Guild guild = shards[shardId].client.getGuildById(radio.guildId);
+                if (guild != null) {
+                    VoiceChannel channel = guild.getVoiceChannelById(radio.channelId);
+                    if (channel != null) {
+                        boolean hasUsers = false;
+                        for (Member user : channel.getMembers()) {
+                            if (!user.getUser().isBot()) {
+                                hasUsers = true;
+                                break;
+                            }
                         }
-                    }
-                    if (hasUsers) {
-                        MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, shards[shardId]);
-                        player.connectTo(channel);
-                        if (!player.isPlaying()) {
-                            player.playRandomSong();
+                        if (hasUsers) {
+                            MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, shards[shardId]);
+                            player.connectTo(channel);
+                            if (!player.isPlaying()) {
+                                player.playRandomSong();
+                            }
                         }
                     }
                 }
+                CBotPlayingOn.deleteGuild(radio.guildId);
             }
-            CBotPlayingOn.deleteGuild(radio.guildId);
-        }
-        reportError(String.format("Quick, shard `%02d` is on %s, where are the %s'? Restarting the shard, off we go %s!",
-                shardId, Emojibet.FIRE, Emojibet.FIRE_TRUCK, Emojibet.ROCKET));
+            reportError(String.format("Quick, shard `%02d` is on %s, where are the %s'? Restarting the shard, off we go %s!",
+                    shardId, Emojibet.FIRE, Emojibet.FIRE_TRUCK, Emojibet.ROCKET));
+        },5L, TimeUnit.SECONDS);
+
     }
 
     public void setLastAction(int shard, long timestamp) {
@@ -194,7 +202,7 @@ public class BotContainer {
     public synchronized void firmRequestExit(ExitCode reason) {
         Thread thread = new Thread(() -> {
             try {
-                Thread.sleep(300000);// 5 minutes
+                Thread.sleep(300_000);// 5 minutes
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -255,11 +263,14 @@ public class BotContainer {
             LOGGER.warn("Can't find BOT_ERROR_CHANNEL_ID " + Config.BOT_ERROR_CHANNEL_ID);
             return;
         }
-        channel.sendMessage(message.length() > Config.MAX_MESSAGE_SIZE ? message.substring(0, Config.MAX_MESSAGE_SIZE-1) : message).queue();
+        channel.sendMessage(message.length() > Config.MAX_MESSAGE_SIZE ? message.substring(0, Config.MAX_MESSAGE_SIZE - 1) : message).queue();
     }
 
     public void reportStatus(int shardId, JDA.Status oldStatus, JDA.Status status) {
         DiscordBot shard = getShardFor(Config.BOT_GUILD_ID);
+        if(shard.client == null){
+            return;
+        }
         Guild guild = shard.client.getGuildById(Config.BOT_GUILD_ID);
         if (guild == null) {
             LOGGER.warn("Can't find BOT_GUILD_ID " + Config.BOT_GUILD_ID);
