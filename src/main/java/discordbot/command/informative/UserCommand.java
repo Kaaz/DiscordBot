@@ -103,7 +103,7 @@ public class UserCommand extends AbstractCommand {
                 if (user == null) {
                     return Template.get("command_user_not_found");
                 }
-                List<OGuild> guilds = CGuild.getMostUsedGuildsFor(CUser.getCachedId(author.getId()));
+                List<OGuild> guilds = CGuild.getMostUsedGuildsFor(CUser.getCachedId(user.getId()));
                 List<List<String>> tbl = new ArrayList<>();
                 for (OGuild guild : guilds) {
                     tbl.add(Arrays.asList("" + bot.getContainer().calcShardId(guild.discord_id), Long.toString(guild.discord_id), guild.name));

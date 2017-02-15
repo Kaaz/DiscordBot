@@ -133,9 +133,9 @@ public class BotContainer {
         for (Guild guild : shards[shardId].client.getGuilds()) {
             MusicPlayerHandler.removeGuild(guild, true);
         }
-        System.out.println("shutting down shard "+shardId);
+        System.out.println("shutting down shard " + shardId);
         shards[shardId].client.shutdownNow(false);
-        System.out.println("SHUT DOWN SHARD "+shardId);
+        System.out.println("SHUT DOWN SHARD " + shardId);
         schedule(() -> {
             try {
                 shards[shardId].restartJDA();
@@ -171,7 +171,7 @@ public class BotContainer {
             }
             reportError(String.format("Quick, shard `%02d` is on %s, where are the %s'? Restarting the shard, off we go %s!",
                     shardId, Emojibet.FIRE, Emojibet.FIRE_TRUCK, Emojibet.ROCKET));
-        },5L, TimeUnit.SECONDS);
+        }, 5L, TimeUnit.SECONDS);
 
     }
 
@@ -268,7 +268,7 @@ public class BotContainer {
 
     public void reportStatus(int shardId, JDA.Status oldStatus, JDA.Status status) {
         DiscordBot shard = getShardFor(Config.BOT_GUILD_ID);
-        if(shard.client == null){
+        if (shard.client == null) {
             return;
         }
         Guild guild = shard.client.getGuildById(Config.BOT_GUILD_ID);
@@ -282,7 +282,6 @@ public class BotContainer {
             return;
         }
         if (!status.equals(JDA.Status.SHUTTING_DOWN)) {
-            NumberFormat.getIntegerInstance().setMinimumIntegerDigits(3);
             int length = 1 + (int) Math.floor(Math.log10(shards.length));
             channel.sendMessage(String.format(Emojibet.SHARD_ICON + " `%0" + length + "d/%0" + length + "d` | ~~%s~~ -> %s", shardId, shards.length, oldStatus.toString(), status.toString())).queue();
         }
