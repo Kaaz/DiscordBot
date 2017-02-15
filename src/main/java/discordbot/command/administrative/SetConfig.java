@@ -226,7 +226,6 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
             }
 
             if (GuildSettings.get(guild).set(guild, args[0], newValue)) {
-                bot.getContainer().getShardFor(guild.getId()).clearChannels(guild);
                 return Template.get("command_config_key_modified");
             }
         }

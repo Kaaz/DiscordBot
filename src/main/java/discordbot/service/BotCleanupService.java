@@ -74,13 +74,6 @@ public class BotCleanupService extends AbstractService {
                 ((ICommandCleanup) abstractCommand).cleanup();
             }
         }
-        for (DiscordBot shard : bot.getShards()) {
-            if (shard == null || !shard.isReady()) {
-                continue;
-            }
-            shard.clearChannels();
-        }
-
     }
 
     @Override

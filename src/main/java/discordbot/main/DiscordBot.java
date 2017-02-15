@@ -61,8 +61,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -72,8 +70,6 @@ public class DiscordBot {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
     public final long startupTimeStamp;
-    private final Map<String, String> musicChannels = new ConcurrentHashMap<>();
-    private final Map<String, String> logChannels = new ConcurrentHashMap<>();
     private final int totShards;
     private final ScheduledExecutorService scheduler;
     private final JDAEventManager eventManager;
@@ -164,25 +160,22 @@ public class DiscordBot {
         if (channelIdentifier.equals("false")) {
             return;
         }
-        if (!logChannels.containsKey(guild.getId())) {
-            TextChannel channel;
-            if (channelIdentifier.matches("\\d{12,}")) {
-                channel = guild.getTextChannelById(channelIdentifier);
-            } else {
-                channel = DisUtil.findChannel(guild, channelIdentifier);
-            }
-            if (channel == null || !channel.canTalk()) {
-                GuildSettings.get(guild).set(guild, SettingLoggingChannel.class, "false");
-                if (channel == null) {
-                    out.sendAsyncMessage(getDefaultChannel(guild), Template.get("guild_logchannel_not_found", channelIdentifier));
-                } else {
-                    out.sendAsyncMessage(getDefaultChannel(guild), Template.get("guild_logchannel_no_permission", channelIdentifier));
-                }
-                return;
-            }
-            logChannels.put(guild.getId(), channel.getId());
+        TextChannel channel;
+        if (channelIdentifier.matches("\\d{12,}")) {
+            channel = guild.getTextChannelById(channelIdentifier);
+        } else {
+            channel = DisUtil.findChannel(guild, channelIdentifier);
         }
-        out.sendAsyncMessage(client.getTextChannelById(logChannels.get(guild.getId())), String.format("%s %s", category, message));
+        if (channel == null || !channel.canTalk()) {
+            GuildSettings.get(guild).set(guild, SettingLoggingChannel.class, "false");
+            if (channel == null) {
+                out.sendAsyncMessage(getDefaultChannel(guild), Template.get("guild_logchannel_not_found", channelIdentifier));
+            } else {
+                out.sendAsyncMessage(getDefaultChannel(guild), Template.get("guild_logchannel_no_permission", channelIdentifier));
+            }
+            return;
+        }
+        out.sendAsyncMessage(channel, String.format("%s %s", category, message));
     }
 
     public int getShardId() {
@@ -229,24 +222,21 @@ public class DiscordBot {
         if (guild == null) {
             return null;
         }
-        if (!musicChannels.containsKey(guild.getId())) {
-            String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingMusicChannel.class);
-            TextChannel channel;
-            if (channelIdentifier.matches("\\d{12,}")) {
-                channel = guild.getTextChannelById(channelIdentifier);
-            } else {
-                channel = DisUtil.findChannel(guild, channelIdentifier);
-            }
-
-            if (channel == null) {
-                channel = getDefaultChannel(guild);
-            }
-            if (channel == null) {
-                return null;
-            }
-            musicChannels.put(guild.getId(), channel.getId());
+        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingMusicChannel.class);
+        TextChannel channel;
+        if (channelIdentifier.matches("\\d{12,}")) {
+            channel = guild.getTextChannelById(channelIdentifier);
+        } else {
+            channel = DisUtil.findChannel(guild, channelIdentifier);
         }
-        return client.getTextChannelById(musicChannels.get(guild.getId()));
+
+        if (channel == null) {
+            channel = getDefaultChannel(guild);
+        }
+        if (channel == null || !channel.canTalk()) {
+            return null;
+        }
+        return channel;
     }
 
     /**
@@ -300,8 +290,6 @@ public class DiscordBot {
     }
 
     public synchronized void loadConfiguration() {
-        musicChannels.clear();
-        logChannels.clear();
         SecurityHandler.initialize();
     }
 
@@ -310,27 +298,11 @@ public class DiscordBot {
     }
 
     /**
-     * Clears the cached channels for a guild
-     *
-     * @param guild the guild to clear for
-     */
-    public synchronized void clearChannels(Guild guild) {
-        musicChannels.remove(guild.getId());
-        logChannels.remove(guild.getId());
-    }
-
-    public synchronized void clearChannels() {
-        musicChannels.clear();
-        logChannels.clear();
-    }
-
-    /**
      * Remove all cached objects for a guild
      *
      * @param guild the guild to clear
      */
     public void clearGuildData(Guild guild) {
-        musicChannels.remove(guild.getId());
         GuildSettings.remove(guild.getId());
         Template.removeGuild(CGuild.getCachedId(guild.getId()));
         autoReplyhandler.removeGuild(guild.getId());

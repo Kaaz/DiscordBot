@@ -69,7 +69,6 @@ public class ReloadCommand extends AbstractCommand {
             return Template.get("command_reload_success");
         }
         if (rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            bot.clearChannels(guild);
             bot.loadGuild(guild);
             return Template.get("command_reload_success");
         }
