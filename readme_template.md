@@ -2,7 +2,7 @@
 
 A Java bot for [Discord](https://discordapp.com/) using the [JDA library](https://github.com/DV8FromTheWorld/JDA).
 
-It uses mysql to store data, a create script can be found in the sql folder  
+It uses sql (mariadb) to store data  
 To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [ffmpeg](https://www.ffmpeg.org/)
 If you'd like to run your own version of this project check the [installation part](#run-the-bot-yourself)
 
@@ -76,13 +76,13 @@ Right, so lets get started. Before starting make sure you at least have the foll
 * [git](https://git-scm.com/)
 * [maven](https://maven.apache.org/)
 
-Also prepare a [MySQL](https://mariadb.org/) server (either hosted or installed locally).<br/>
+Also prepare a [MariaDB SQL](https://mariadb.org/) server (either hosted or installed locally).<br/>
 Then continue with the following steps.
 
 1. Create a database
 
-    Emily uses a MySQL database to store information. Create a database using the utf8mb4 character set. Emily will create/update the used tables.<br/>
-    To make this easier you can do this using a MySQL management tool like [PHPMyAdmin](https://www.phpmyadmin.net/) or [HeidiSQL](http://www.heidisql.com/).
+    Emily uses a SQL database to store information. Create a database using the utf8mb4 character set. Emily will create/update the used tables.<br/>
+    To make this easier you can do this using a SQL management tool like [PHPMyAdmin](https://www.phpmyadmin.net/) or [HeidiSQL](http://www.heidisql.com/).
          Due to the myriad amount of hosters and possible configurations it's propbably better to contact your hoster instead of other people in case something goes wrong here.
 
 2. Clone the project with git
@@ -154,10 +154,10 @@ MUSIC_DOWNLOAD_SOUNDCLOUD_API_TOKEN | "some-token" | token used to connect to so
 YOUTUBEDL_EXE | "H:/youtube-dl.exe" | location of youtubedl.exe
 YOUTUBEDL_BIN | "H:/music/bin/" | folder with the binary files required for ffmpeg
 MUSIC_DIRECTORY | "H:/music/" | directory where all the music is stored
-DB_HOST | "localhost" | mysql hostname
-DB_USER | "root" | mysql user
-DB_PASS | "" | mysql password
-DB_NAME | "discord" | mysql database name
+DB_HOST | "localhost" | sql hostname
+DB_USER | "root" | sql user
+DB_PASS | "" | sql password
+DB_NAME | "discord" | sql database name
 MODULE_ECONOMY_ENABLED | true | enable economy globally
 MODULE_POE_ENABLED | true | enable poe globally
 MODULE_HEARTHSTONE_ENABLED | true | enable hearthstone globally
