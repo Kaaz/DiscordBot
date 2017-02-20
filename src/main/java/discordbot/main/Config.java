@@ -59,6 +59,12 @@ public class Config {
     @ConfigurationOption
     public static String TOKEN_RIOT_GAMES = "token-here";
 
+    @ConfigurationOption
+    public static String CLEVERBOT_IO_USER = "token-here";
+
+    @ConfigurationOption
+    public static String CLEVERBOT_IO_KEY = "token-here";
+
 
     //the website of the bot
     @ConfigurationOption

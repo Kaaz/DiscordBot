@@ -17,33 +17,23 @@
 package discordbot.handler;
 
 
-import discordbot.modules.chatbot.ChatterBot;
-import discordbot.modules.chatbot.ChatterBotFactory;
-import discordbot.modules.chatbot.ChatterBotSession;
-import discordbot.modules.chatbot.ChatterBotType;
+import discordbot.main.Config;
+import discordbot.modules.cleverbotio.CleverbotIO;
 
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class ChatBotHandler {
     private final Map<String, ChatBotInstance> sessions;
-    private ChatterBot chatbot;
 
     public ChatBotHandler() {
-        ChatterBotFactory factory = new ChatterBotFactory();
         sessions = new ConcurrentHashMap<>();
-        try {
-            chatbot = factory.create(ChatterBotType.CLEVERBOT);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
-    private ChatterBotSession getSession() {
-        return chatbot.createSession(Locale.ENGLISH);
+    private CleverbotIO getSession(String nick) {
+        return new CleverbotIO(Config.CLEVERBOT_IO_USER, Config.CLEVERBOT_IO_KEY, nick);
     }
 
     public void cleanCache() {
@@ -59,7 +49,7 @@ public class ChatBotHandler {
 
     public String chat(String guildId, String input) {
         if (!sessions.containsKey(guildId)) {
-            sessions.put(guildId, new ChatBotInstance(getSession()));
+            sessions.put(guildId, new ChatBotInstance(getSession(guildId)));
         }
         return sessions.get(guildId).chat(input);
     }
@@ -67,9 +57,9 @@ public class ChatBotHandler {
     private class ChatBotInstance {
         private long lastInteraction;
         private int failedAttempts = 0;
-        private ChatterBotSession botsession = null;
+        private CleverbotIO botsession = null;
 
-        ChatBotInstance(ChatterBotSession session) {
+        ChatBotInstance(CleverbotIO session) {
             botsession = session;
         }
 
@@ -84,7 +74,7 @@ public class ChatBotHandler {
             try {
                 failedAttempts = 0;
                 lastInteraction = System.currentTimeMillis();
-                return new String(botsession.think(input).getBytes("UTF-8"), "UTF-8");
+                return new String(botsession.ask(input).getBytes("UTF-8"), "UTF-8");
             } catch (Exception ignored) {
                 failedAttempts++;
             }

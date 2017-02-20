@@ -25,12 +25,12 @@ import discordbot.permission.SimpleRank;
 import discordbot.util.DisUtil;
 import discordbot.util.Misc;
 import discordbot.util.TimeUtil;
-import net.dv8tion.jda.core.MessageHistory;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.utils.MiscUtil;
@@ -278,7 +278,7 @@ public class PurgeComand extends AbstractCommand {
                 messagesToDelete.add(message);
                 for (int index = 0; index < messagesToDelete.size(); index += MAX_BULK_SIZE) {
                     if (messagesToDelete.size() - index < 2) {
-                        messagesToDelete.get(index).deleteMessage().queue();
+                        messagesToDelete.get(index).delete().queue();
                     } else {
                         channel.deleteMessages(messagesToDelete.subList(index, Math.min(index + MAX_BULK_SIZE, messagesToDelete.size()))).queue();
                     }
@@ -293,7 +293,7 @@ public class PurgeComand extends AbstractCommand {
                 messagesToDelete.add(message);
                 for (Message toDelete : messagesToDelete) {
                     if (toDelete.getAuthor().getId().equals(channel.getJDA().getSelfUser().getId()))
-                        toDelete.deleteMessage().queue();
+                        toDelete.delete().queue();
                     try {
                         Thread.sleep(500L);
                     } catch (Exception ignored) {

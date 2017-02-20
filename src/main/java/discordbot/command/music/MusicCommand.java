@@ -150,7 +150,7 @@ public class MusicCommand extends AbstractCommand {
         ret += "" + Config.EOL;
         ret += "" + Config.EOL;
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("Music configuration");
+        embedBuilder.setTitle("Music configuration",null);
         embedBuilder.setDescription("These are the current settings for " + guild.getName());
         embedBuilder.addField("Required role to use music-commands", (requiredRole != null ? requiredRole.getName() : "none"), true);
         embedBuilder.addField("Music output text-channel", (outputChannel != null ? outputChannel.getAsMention() : Emojibet.WARNING + " channel not found"), true);

@@ -79,7 +79,7 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
         b.setFooter("Page " + (activePage + 1) + " / " + maxPage + " | Press the buttons for other pages", null);
         b.setDescription(String.format("To see more details about a setting:" + Config.EOL +
                 "`%1$scfg settingname`" + Config.EOL + Config.EOL, commandPrefix));
-        b.setTitle("Current Settings for " + guild.getName() + " [" + (1 + activePage) + " / " + maxPage + "]");
+        b.setTitle("Current Settings for " + guild.getName() + " [" + (1 + activePage) + " / " + maxPage + "]",null);
         return b.build();
     }
 

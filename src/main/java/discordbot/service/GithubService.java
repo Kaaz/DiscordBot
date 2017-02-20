@@ -105,9 +105,9 @@ public class GithubService extends AbstractService {
             embed.setColor(GfxUtil.getAverageColor(committerAvatar));
             embed.setAuthor(committerName, committerUrl, committerAvatar);
             if (commitCount == 1) {
-                embed.setTitle("There has been a commit to my repository");
+                embed.setTitle("There has been a commit to my repository",null);
             } else {
-                embed.setTitle(String.format("There have been **%s** commits to my repository", commitCount));
+                embed.setTitle(String.format("There have been **%s** commits to my repository", commitCount),null);
             }
             String description = "** Hash**          **Description**" + Config.EOL;
             int maxCharsPerline = 65;

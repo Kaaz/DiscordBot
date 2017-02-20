@@ -117,7 +117,7 @@ public class LoLCommand extends AbstractCommand {
             EmbedBuilder e = new EmbedBuilder();
             e.setAuthor(c.getName(), null, getImage(c.getImage()));
             e.setThumbnail(getImage(c.getImage()));
-            e.setTitle(c.getTitle());
+            e.setTitle(c.getTitle(),null);
             description += Joiner.on(", ").join(c.getTags());
             description += "\n\n";
             description += String.format("%s Attack\n", Misc.makeStackedBar(5, c.getInfo().getAttack() / 2, Emojibet.SWORDS));
