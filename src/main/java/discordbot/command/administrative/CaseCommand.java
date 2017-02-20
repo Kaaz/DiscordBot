@@ -88,7 +88,6 @@ public class CaseCommand extends AbstractCommand {
     }
 
     private String editReason(Guild guild, Member moderator, MessageChannel feedbackChannel, String caseId, String reason) {
-
         OModerationCase oCase;
         if (caseId.equalsIgnoreCase("last")) {
             oCase = CModerationCase.findLastFor(CGuild.getCachedId(guild.getId()), CUser.getCachedId(moderator.getUser().getId()));

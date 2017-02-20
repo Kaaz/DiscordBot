@@ -249,6 +249,7 @@ public class YoutubeThread extends Thread {
                     rec.lastManualPlaydate = System.currentTimeMillis() / 1000L;
                     CMusic.update(rec);
                 }
+
                 if (task.getCallback() != null) {
                     TextChannel channel = task.getMessage().getJDA().getTextChannelById(task.getMessage().getChannel().getId());
                     if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY)) {

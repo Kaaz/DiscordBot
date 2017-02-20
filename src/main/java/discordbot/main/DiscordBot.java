@@ -61,6 +61,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import java.util.Collections;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -109,7 +111,7 @@ public class DiscordBot {
         }
         builder.setEventManager(eventManager);
         builder.setBulkDeleteSplittingEnabled(false);
-        builder.setEnableShutdownHook(true);
+        builder.setEnableShutdownHook(false);
         System.out.println("STARTING SHARD " + shardId);
         client = builder.buildBlocking();
         System.out.println("SHARD " + shardId + " IS READY ");
