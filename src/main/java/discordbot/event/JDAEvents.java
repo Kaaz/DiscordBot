@@ -24,6 +24,7 @@ import discordbot.db.controllers.CUser;
 import discordbot.db.model.OGuild;
 import discordbot.db.model.OGuildMember;
 import discordbot.db.model.OUser;
+import discordbot.guildsettings.bot.SettingCleanupMessages;
 import discordbot.guildsettings.bot.SettingCommandPrefix;
 import discordbot.guildsettings.bot.SettingPMUserEvents;
 import discordbot.guildsettings.bot.SettingRoleTimeRanks;
@@ -294,7 +295,11 @@ public class JDAEvents extends ListenerAdapter {
             if (defaultChannel != null && defaultChannel.canTalk()) {
                 defaultChannel.sendMessage(
                         Template.getWithTags(defaultChannel, firstTime ? "welcome_new_user" : "welcome_back_user", user)).queue(
-                        message -> discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS)
+                        message -> {
+                            if(!"no".equals(settings.getOrDefault(SettingCleanupMessages.class))) {
+                                discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
+                            }
+                        }
                 );
             }
         }
@@ -324,7 +329,11 @@ public class JDAEvents extends ListenerAdapter {
             if (defaultChannel != null && defaultChannel.canTalk()) {
                 defaultChannel.sendMessage(
                         Template.getWithTags(defaultChannel, "message_user_leaves", user)).queue(
-                        message -> discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS)
+                        message -> {
+                            if(!"no".equals(GuildSettings.get(guild.getId()).getOrDefault(SettingCleanupMessages.class))) {
+                                discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
+                            }
+                        }
                 );
             }
         }
