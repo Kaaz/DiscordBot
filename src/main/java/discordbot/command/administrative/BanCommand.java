@@ -50,7 +50,7 @@ public class BanCommand extends AbstractModActionCommand {
 
     @Override
     protected boolean punish(Guild guild, Member member) {
-        guild.getController().ban(member, 7);
+        guild.getController().ban(member, 7).queue();
         return true;
     }
 }

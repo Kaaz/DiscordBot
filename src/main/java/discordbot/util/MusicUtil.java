@@ -50,7 +50,7 @@ public class MusicUtil {
         Guild guild = player.getJDA().getGuildById(player.getGuild());
 
         embed.setThumbnail("https://i.ytimg.com/vi/" + record.youtubecode + "/0.jpg");
-        embed.setTitle("\uD83C\uDFB6 " + record.youtubeTitle,null);
+        embed.setTitle("\uD83C\uDFB6 " + record.youtubeTitle, null);
         embed.setDescription("[source](https://www.youtube.com/watch?v=" + record.youtubecode + ") | `" + DisUtil.getCommandPrefix(player.getGuild()) + "pl` - " + player.getPlaylist().title);
         embed.addField("duration", Misc.getDurationString(record.duration), true);
         String optionsField = "";
