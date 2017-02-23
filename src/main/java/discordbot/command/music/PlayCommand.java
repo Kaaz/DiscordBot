@@ -128,7 +128,8 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
         }
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         if (!isInVoiceWith(guild, author)) {
-            if (guild.getMember(author).getVoiceState().getChannel() == null) {
+            VoiceChannel vc = guild.getMember(author).getVoiceState().getChannel();
+            if (vc == null) {
                 return "you are not in a voicechannel";
             }
             try {
@@ -138,10 +139,14 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                     }
                     player.leave();
                 }
-                if (!PermissionUtil.checkPermission(guild.getMember(author).getVoiceState().getChannel(), guild.getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
-                    return Template.get("music_join_no_permission", guild.getMember(author).getVoiceState().getChannel().getName());
+                if (!PermissionUtil.checkPermission(vc, guild.getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
+                    return Template.get("music_join_no_permission", vc.getName());
                 }
-                player.connectTo(guild.getMember(author).getVoiceState().getChannel());
+                if (!PermissionUtil.checkPermission(vc, guild.getSelfMember(), Permission.MANAGE_CHANNEL)
+                        && vc.getUserLimit() != 0 && vc.getUserLimit() <= vc.getMembers().size()) {
+                    return Template.get("music_join_channel_full", vc.getName());
+                }
+                player.connectTo(vc);
             } catch (Exception e) {
                 e.printStackTrace();
                 return "Can't connect to you";
