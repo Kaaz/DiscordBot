@@ -148,6 +148,9 @@ public class SecurityHandler {
             }
             return SimpleRank.BOT;
         }
+        if (systemAdmins.contains(userId)) {
+            return SimpleRank.SYSTEM_ADMIN;
+        }
         if (botAdmins.contains(userId)) {
             return SimpleRank.BOT_ADMIN;
         }
@@ -156,9 +159,6 @@ public class SecurityHandler {
         }
         if (bannedUsers.contains(userId)) {
             return SimpleRank.BANNED_USER;
-        }
-        if (systemAdmins.contains(userId)) {
-            return SimpleRank.SYSTEM_ADMIN;
         }
         if (guild != null) {
             if (guild.getOwner().equals(user)) {
