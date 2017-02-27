@@ -52,6 +52,8 @@ public class DisUtil {
     private static final Pattern channelPattern = Pattern.compile("<#!?([0-9]{4,})>");
     private static final Pattern rolePattern = Pattern.compile("<@&([0-9]{4,})>");
     private static final Pattern anyMention = Pattern.compile("<[@#][&!]?([0-9]{4,})>");
+    private static final Pattern discordId = Pattern.compile("\\d{10,}");
+
 
     /**
      * find a text channel by name
@@ -65,6 +67,14 @@ public class DisUtil {
             if (channel.getName().equalsIgnoreCase(channelName)) {
                 return channel;
             }
+        }
+        return null;
+    }
+
+    public static String extractId(String id) {
+        Matcher matcher = discordId.matcher(id);
+        if (matcher.find()) {
+            return matcher.group(1);
         }
         return null;
     }
@@ -178,10 +188,8 @@ public class DisUtil {
      * @return use economy?
      */
     public static boolean useEconomy(Channel channel) {
-        if (channel != null && channel instanceof TextChannel) {
-            return GuildSettings.getFor(((TextChannel) channel), SettingUseEconomy.class).equals("true");
-        }
-        return false;
+        return channel != null && channel instanceof TextChannel
+                && GuildSettings.getFor(((TextChannel) channel), SettingUseEconomy.class).equals("true");
     }
 
     /**
