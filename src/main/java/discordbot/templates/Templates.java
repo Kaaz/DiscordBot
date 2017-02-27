@@ -25,17 +25,21 @@ public class Templates {
     public static Template PERMISSION_MISSING = new Template(TemplateArgument.ARGS);
     public static Template TEST = new Template(TemplateArgument.USER, TemplateArgument.USER_DESCRIMINATOR, TemplateArgument.GUILD);
 
-    public static class Command {
+    public static class command {
         public static Template SAY_CONTAINS_MENTION = new Template();
         public static Template SAY_WHATEXACTLY = new Template();
     }
 
-    public static class Music {
+    public static class music {
 
     }
 
-    public static class Misc {
+    public static class misc {
 
+    }
+
+    public static boolean isValidTemplate(String key) {
+        return dictionary.containsKey(key);
     }
 
     public static void init() {

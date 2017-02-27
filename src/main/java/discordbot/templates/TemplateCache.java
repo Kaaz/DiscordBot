@@ -17,15 +17,18 @@
 package discordbot.templates;
 
 import discordbot.db.WebDb;
+import discordbot.main.Config;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TemplateCache {
+    private static Random rng = new Random();
     //map <{template-key}, {list-of-options}>
     static private final Map<String, List<String>> dictionary = new ConcurrentHashMap<>();
 
@@ -38,6 +41,9 @@ public class TemplateCache {
         try (ResultSet rs = WebDb.get().select("SELECT id,guild_id, keyphrase, text FROM template_texts WHERE guild_id = 0")) {
             while (rs.next()) {
                 String keyphrase = rs.getString("keyphrase");
+                if (!Templates.isValidTemplate(keyphrase)) {
+                    continue;
+                }
                 if (!dictionary.containsKey(keyphrase)) {
                     dictionary.put(keyphrase, new ArrayList<>());
                 }
@@ -45,8 +51,15 @@ public class TemplateCache {
             }
             rs.getStatement().close();
         } catch (SQLException e) {
-            System.out.println(e);
             e.getStackTrace();
         }
+    }
+
+    public static String getGlobal(String keyPhrase) {
+        if (!Config.SHOW_KEYPHRASE) {
+            List<String> list = dictionary.get(keyPhrase);
+            return list.get(rng.nextInt(list.size()));
+        }
+        return "**`" + keyPhrase + "`**";
     }
 }

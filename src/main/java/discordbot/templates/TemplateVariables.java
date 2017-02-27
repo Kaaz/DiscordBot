@@ -16,10 +16,13 @@
 
 package discordbot.templates;
 
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import discordbot.main.BotContainer;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.impl.TextChannelImpl;
+import net.dv8tion.jda.core.entities.impl.UserImpl;
 
 import java.util.HashMap;
 
@@ -38,9 +41,12 @@ public class TemplateVariables {
 
     private static void init() {
         mapper.put(User.class, (var, object) -> var.USER = (User) object);
+        mapper.put(UserImpl.class, (var, object) -> var.USER = (User) object);
         mapper.put(TextChannel.class, (var, object) -> var.CHANNEL = (TextChannel) object);
+        mapper.put(TextChannelImpl.class, (var, object) -> var.CHANNEL = (TextChannel) object);
         mapper.put(Guild.class, (var, object) -> var.GUILD = (Guild) object);
         mapper.put(String.class, (var, object) -> var.ARGS = (String) object);
+        mapper.put(String[].class, (var, object) -> var.ARGS = Joiner.on(" ").join((String[]) object));
     }
 
     public static TemplateVariables create(Object... vars) {
@@ -55,7 +61,7 @@ public class TemplateVariables {
             if (mapper.containsKey(var.getClass())) {
                 mapper.get(var.getClass()).apply(tmp, var);
             } else {
-                BotContainer.LOGGER.warn("[template] UNMAPPED TYPE: {0} ", var.getClass().getSimpleName());
+                BotContainer.LOGGER.warn("[template] UNMAPPED TYPE: "+ var.getClass().getSimpleName());
             }
         }
         return tmp;

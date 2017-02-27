@@ -23,9 +23,11 @@ public class Template {
     public Template(TemplateArgument... args) {
         arguments = args;
     }
-    public void setKey(String key){
+
+    public void setKey(String key) {
         this.key = key;
     }
+
     public String getKey() {
         return key;
     }
@@ -47,5 +49,17 @@ public class Template {
             }
         }
         return true;
+    }
+
+    public String compile(Object... vars) {
+        if (arguments == null || arguments.length == 0) {
+            return TemplateCache.getGlobal(getKey());
+        }
+        String tmp = TemplateCache.getGlobal(getKey());
+        TemplateVariables env = TemplateVariables.create(vars);
+        for (TemplateArgument arg : arguments) {
+            tmp = tmp.replace(arg.getPattern(), arg.parse(env));
+        }
+        return tmp;
     }
 }

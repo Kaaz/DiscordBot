@@ -60,8 +60,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.util.Collections;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -415,6 +413,23 @@ public class DiscordBot {
         }
         Unirest.post("https://bots.discord.pw/api/bots/" + client.getSelfUser().getId() + "/stats")
                 .header("Authorization", Config.BOT_TOKEN_BOTS_DISCORD_PW)
+                .header("Content-Type", "application/json")
+                .body(data.toString())
+                .asJsonAsync();
+    }
+
+    public void sendStatsToDiscordbotsOrg() {
+        if (Config.BOT_TOKEN_DISCORDBOTS_ORG.length() < 10) {
+            return;
+        }
+        JSONObject data = new JSONObject();
+        data.put("server_count", client.getGuilds().size());
+        if (totShards > 1) {
+            data.put("shard_id", shardId);
+            data.put("shard_count", totShards);
+        }
+        Unirest.post("https://discordbots.org/api/bots/" + client.getSelfUser().getId() + "/stats")
+                .header("Authorization", Config.BOT_TOKEN_DISCORDBOTS_ORG)
                 .header("Content-Type", "application/json")
                 .body(data.toString())
                 .asJsonAsync();
