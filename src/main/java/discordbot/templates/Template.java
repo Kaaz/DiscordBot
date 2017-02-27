@@ -17,6 +17,35 @@
 package discordbot.templates;
 
 public class Template {
+    private String key;
+    final private TemplateArgument[] arguments;
+
     public Template(TemplateArgument... args) {
+        arguments = args;
+    }
+    public void setKey(String key){
+        this.key = key;
+    }
+    public String getKey() {
+        return key;
+    }
+
+    public TemplateArgument[] getArguments() {
+        return arguments;
+    }
+
+    public boolean isValidTemplate(String template) {
+        if (template == null || template.isEmpty()) {
+            return false;
+        }
+        if (arguments == null || arguments.length == 0) {
+            return true;
+        }
+        for (TemplateArgument argument : arguments) {
+            if (template.contains(argument.getPattern())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

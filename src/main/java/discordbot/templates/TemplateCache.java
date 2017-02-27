@@ -16,6 +16,37 @@
 
 package discordbot.templates;
 
-public class TemplateCache {
+import discordbot.db.WebDb;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class TemplateCache {
+    //map <{template-key}, {list-of-options}>
+    static private final Map<String, List<String>> dictionary = new ConcurrentHashMap<>();
+
+    //map <{guild-id}, map<{template-key}, {list-of-options}>
+    static private final ConcurrentHashMap<Integer, Map<String, List<String>>> guildDictionary = new ConcurrentHashMap<>();
+
+    public static synchronized void initialize() {
+        dictionary.clear();
+        guildDictionary.clear();
+        try (ResultSet rs = WebDb.get().select("SELECT id,guild_id, keyphrase, text FROM template_texts WHERE guild_id = 0")) {
+            while (rs.next()) {
+                String keyphrase = rs.getString("keyphrase");
+                if (!dictionary.containsKey(keyphrase)) {
+                    dictionary.put(keyphrase, new ArrayList<>());
+                }
+                dictionary.get(keyphrase).add(rs.getString("text"));
+            }
+            rs.getStatement().close();
+        } catch (SQLException e) {
+            System.out.println(e);
+            e.getStackTrace();
+        }
+    }
 }

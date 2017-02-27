@@ -16,15 +16,54 @@
 
 package discordbot.templates;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Templates {
-    public static class Command{
+    final private static HashMap<String, Template> dictionary = new HashMap<>();
+
+    public static Template PERMISSION_MISSING = new Template();
+
+    public static class Command {
         public static Template SAY_CONTAINS_MENTION = new Template();
         public static Template SAY_WHATEXACTLY = new Template();
     }
+
     public static class Music {
 
     }
+
     public static class Misc {
 
+    }
+
+    public static void init() {
+        System.out.println("hi!!!!!");
+        loadCategory("", Templates.class);
+        TemplateCache.initialize();
+        System.out.println("KEYS__");
+        for (Map.Entry<String, Template> set : dictionary.entrySet()) {
+            System.out.println(set.getKey());
+        }
+    }
+
+    public static void loadCategory(String prefix, Class<?> clazz) {
+        String pre = prefix.isEmpty() ? "" : prefix + "_";
+        for (Class<?> sub : clazz.getClasses()) {
+            loadCategory((pre + sub.getSimpleName()).toLowerCase(), sub);
+        }
+        for (Field field : clazz.getFields()) {
+            if (field.getType().equals(Template.class)) {
+                String key = (pre + field.getName()).toLowerCase();
+                try {
+                    Template tmp = (Template) field.get(null);
+                    tmp.setKey(key);
+                    dictionary.put(key, tmp);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

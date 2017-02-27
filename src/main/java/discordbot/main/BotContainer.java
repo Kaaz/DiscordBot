@@ -29,6 +29,8 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.SecurityHandler;
 import discordbot.handler.Template;
 import discordbot.role.RoleRankings;
+import discordbot.templates.TemplateCache;
+import discordbot.templates.Templates;
 import discordbot.threads.YoutubeThread;
 import discordbot.util.Emojibet;
 import discordbot.util.Misc;
@@ -411,6 +413,7 @@ public class BotContainer {
         GameHandler.initialize();
         SecurityHandler.initialize();
         Template.initialize();
+        Templates.init();
         MusicPlayerHandler.init();
         RoleRankings.init();
     }

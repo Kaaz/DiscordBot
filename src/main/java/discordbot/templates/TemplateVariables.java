@@ -28,16 +28,19 @@ public class TemplateVariables {
     public User USER = null;
     public TextChannel CHANNEL = null;
     public Guild GUILD = null;
+    public String ARGS;
     private static final HashMap<Class, TemplateVariableParser> mapper = new HashMap<>();
 
     static {
         init();
     }
 
+
     private static void init() {
         mapper.put(User.class, (var, object) -> var.USER = (User) object);
         mapper.put(TextChannel.class, (var, object) -> var.CHANNEL = (TextChannel) object);
         mapper.put(Guild.class, (var, object) -> var.GUILD = (Guild) object);
+        mapper.put(String.class, (var, object) -> var.ARGS = (String) object);
     }
 
     public static TemplateVariables create(Object... vars) {
