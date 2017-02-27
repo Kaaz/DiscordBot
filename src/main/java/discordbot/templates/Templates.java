@@ -18,7 +18,6 @@ package discordbot.templates;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Map;
 
 public class Templates {
     final private static HashMap<String, Template> dictionary = new HashMap<>();
@@ -39,13 +38,8 @@ public class Templates {
     }
 
     public static void init() {
-        System.out.println("hi!!!!!");
         loadCategory("", Templates.class);
         TemplateCache.initialize();
-        System.out.println("KEYS__");
-        for (Map.Entry<String, Template> set : dictionary.entrySet()) {
-            System.out.println(set.getKey());
-        }
     }
 
     public static void loadCategory(String prefix, Class<?> clazz) {
