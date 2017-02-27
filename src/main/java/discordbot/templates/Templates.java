@@ -27,8 +27,4 @@ public class Templates {
     public static class Misc {
 
     }
-
-//    command_say_contains_mention(),
-//    command_say_whatexactly()
-
 }

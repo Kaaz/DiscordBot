@@ -19,7 +19,6 @@ package discordbot.main;
 import com.mashape.unirest.http.Unirest;
 import discordbot.db.controllers.CBanks;
 import discordbot.db.controllers.CGuild;
-import discordbot.event.JDAEventManager;
 import discordbot.event.JDAEvents;
 import discordbot.guildsettings.bot.SettingActiveChannels;
 import discordbot.guildsettings.bot.SettingAutoReplyModule;
@@ -74,7 +73,6 @@ public class DiscordBot {
     public final long startupTimeStamp;
     private final int totShards;
     private final ScheduledExecutorService scheduler;
-    private final JDAEventManager eventManager;
     public volatile JDA client;
     public String mentionMe;
     public String mentionMeAlias;
@@ -95,7 +93,6 @@ public class DiscordBot {
         this.totShards = numShards;
         registerHandlers();
         setContainer(container);
-        eventManager = new JDAEventManager(container);
         chatBotHandler = new ChatBotHandler();
         startupTimeStamp = System.currentTimeMillis() / 1000L;
         restartJDA();
@@ -109,7 +106,6 @@ public class DiscordBot {
         if (totShards > 1) {
             builder.useSharding(shardId, totShards);
         }
-        builder.setEventManager(eventManager);
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setEnableShutdownHook(false);
         System.out.println("STARTING SHARD " + shardId);

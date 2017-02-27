@@ -17,10 +17,6 @@
 package discordbot.templates;
 
 public class Template {
-    public Template() {
-
-    }
-
     public Template(TemplateArgument... args) {
     }
 }

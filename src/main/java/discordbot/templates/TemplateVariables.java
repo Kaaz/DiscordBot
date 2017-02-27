@@ -16,6 +16,7 @@
 
 package discordbot.templates;
 
+import discordbot.main.BotContainer;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -51,7 +52,7 @@ public class TemplateVariables {
             if (mapper.containsKey(var.getClass())) {
                 mapper.get(var.getClass()).apply(tmp, var);
             } else {
-                System.out.println("??????????????????????????????????????????????????????");
+                BotContainer.LOGGER.warn("[template] UNMAPPED TYPE: {0} ", var.getClass().getSimpleName());
             }
         }
         return tmp;
