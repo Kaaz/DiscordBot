@@ -158,7 +158,7 @@ public class JDAEvents extends ListenerAdapter {
                             guild.getId(),
                             dbGuild.id,
                             guild.getMembers().size(),
-                            EmojiParser.parseToAliases(guild.getName())));
+                            EmojiParser.parseToAliases(guild.getName())).replace("@","@\u200B"));
             discordBot.getContainer().guildJoined();
             Launcher.log("bot joins guild", "bot", "guild-join",
                     "guild-id", guild.getId(),
@@ -206,7 +206,7 @@ public class JDAEvents extends ListenerAdapter {
                 String.format(":id: %s | :hash: %s | %s",
                         guild.getId(),
                         server.id,
-                        EmojiParser.parseToAliases(guild.getName())
+                        EmojiParser.parseToAliases(guild.getName()).replace("@","@\u200B")
                 ));
     }
 
