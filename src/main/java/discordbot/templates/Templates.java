@@ -22,7 +22,8 @@ import java.util.HashMap;
 public class Templates {
     final private static HashMap<String, Template> dictionary = new HashMap<>();
 
-    public static Template PERMISSION_MISSING = new Template();
+    public static Template PERMISSION_MISSING = new Template(TemplateArgument.ARGS);
+    public static Template TEST = new Template(TemplateArgument.USER, TemplateArgument.USER_DESCRIMINATOR, TemplateArgument.GUILD);
 
     public static class Command {
         public static Template SAY_CONTAINS_MENTION = new Template();
