@@ -29,7 +29,7 @@ public enum TemplateArgument {
 
     NICKNAME("nick", "Nickname of user", e -> e.user != null && e.guild != null ? e.guild.getMember(e.user).getEffectiveName() : ""),
     GUILD("guild", "Guild name", e -> e.guild != null ? e.guild.getName() : ""),
-    GUILD_ID("guild-id", "Guild's id", e -> e.guild != null ? e.guild.getName() : ""),
+    GUILD_ID("guild-id", "Guild's id", e -> e.guild != null ? e.guild.getId() : ""),
     GUILD_USERS("guild-users", "Sums guild members", e -> e.guild != null ? Integer.toString(e.guild.getMembers().size()) : ""),
 
     CHANNEL("channel", "Channel name", e -> e.channel != null ? e.channel.getName() : ""),

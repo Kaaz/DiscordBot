@@ -86,19 +86,20 @@ public class Template {
         if (showTemplates) {
             StringBuilder sb = new StringBuilder();
             sb.append("Template: `").append(getKey()).append("`");
-            sb.append("\nAvailable arguments:\n");
+            sb.append("\nAvailable arguments:\n```\n");
             if (templateArguments.length > 0) {
                 sb.append("Required:\n\n");
                 for (TemplateArgument arg : templateArguments) {
-                    sb.append(String.format("`%s` -> `\u200B%s`\n", arg.getPattern(), arg.parse(env)));
+                    sb.append(String.format("%-17s -> %s\n", arg.getPattern(), arg.parse(env)));
                 }
             }
             if (optionalArgs.length > 0) {
                 sb.append("\nOptional:\n\n");
                 for (TemplateArgument arg : optionalArgs) {
-                    sb.append(String.format("`%s` -> `\u200B%s`\n", arg.getPattern(), arg.parse(env)));
+                    sb.append(String.format("%-17s -> %s\n", arg.getPattern(), arg.parse(env)));
                 }
             }
+            sb.append("```");
             return sb.toString();
         } else {
             String tmp = guildid != null && !guildid.isEmpty() ? TemplateCache.getGuild(CGuild.getCachedId(guildid), getKey()) : TemplateCache.getGlobal(getKey());
