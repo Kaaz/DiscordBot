@@ -17,7 +17,11 @@
 package discordbot.templates;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * All public static Template variables are mapped to the database
@@ -26,21 +30,33 @@ import java.util.HashMap;
  * <p>
  * usage/examples in commands/etc:
  * Templates.TEST.compile(User, Guild)
- * Templates.PERMISSION_MISSING.compile("some permission")
+ * Templates.permission_missing.compile("some permission")
  * Templates.command.SAY_CONTAINS_MENTION.compile()
  */
 public class Templates {
     final private static HashMap<String, Template> dictionary = new HashMap<>();
 
-    public static Template PERMISSION_MISSING = new Template(TemplateArgument.ARG);
+    public static Template permission_missing = new Template(TemplateArgument.ARG);
+    public static Template no_permission = new Template();
     public static Template TEST = new Template(
             new TemplateArgument[]{TemplateArgument.USER, TemplateArgument.USER_DESCRIMINATOR, TemplateArgument.GUILD},
             new TemplateArgument[]{TemplateArgument.ARG, TemplateArgument.ARGS});
-    public static Template WELCOME_NEW_USER = new Template(null, TemplateArgument.values());
-    public static Template WELCOME_BACK_USER = new Template(null, TemplateArgument.values());
-    public static Template MESSAGE_USER_LEAVES = new Template(null, TemplateArgument.values());
+    public static Template welcome_new_user = new Template(null, TemplateArgument.values());
+    public static Template welcome_back_user = new Template(null, TemplateArgument.values());
+    public static Template message_user_leaves = new Template(null, TemplateArgument.values());
 
     public static class command {
+        public static class template {
+            public static Template added = new Template();
+            public static Template added_failed = new Template();
+            public static Template invalid_option = new Template();
+            public static Template delete_success = new Template();
+            public static Template delete_failed = new Template();
+            public static Template not_found = new Template(TemplateArgument.ARG);
+
+
+        }
+
         public static Template SAY_CONTAINS_MENTION = new Template();
         public static Template SAY_WHATEXACTLY = new Template();
     }
@@ -49,8 +65,33 @@ public class Templates {
 
     }
 
-    public static class misc {
+    public static class error {
+        public static Template command_private_only = new Template();
+        public static Template command_public_only = new Template();
+    }
 
+    public static int uniquePhraseCount() {
+        return dictionary.keySet().size();
+    }
+
+    public static List<String> getAllKeyphrases(int itemsPerPage, int offset) {
+        List<String> list = new ArrayList<>(dictionary.keySet());
+        Collections.sort(list);
+        return list.subList(offset, Math.min(list.size(), itemsPerPage + offset));
+    }
+
+    /**
+     * returns a list of templates matching the filter
+     *
+     * @param contains keyphrase contains this string
+     * @return list of filtered keyphrases
+     */
+    public static List<String> getAllKeyphrases(String contains) {
+        List<String> matching = dictionary.keySet().stream().filter(s -> s.contains(contains)).collect(Collectors.toList());
+        if (matching.size() > 25) {
+            return matching.subList(0, 25);
+        }
+        return matching;
     }
 
     public static boolean isValidTemplate(String key) {

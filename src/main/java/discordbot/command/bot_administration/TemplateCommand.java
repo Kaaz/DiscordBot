@@ -19,11 +19,17 @@ package discordbot.command.bot_administration;
 import com.vdurmont.emoji.EmojiParser;
 import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CGuild;
+import discordbot.guildsettings.bot.SettingBotShowTemplates;
+import discordbot.handler.GuildSettings;
 import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
+import discordbot.templates.TemplateArgument;
+import discordbot.templates.Templates;
 import discordbot.util.Misc;
+import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -61,23 +67,10 @@ public class TemplateCommand extends AbstractCommand {
                 "template remove <keyphrase> <index>   //removes selected template for keyphrase",
                 "",
                 "There are a few keywords you can utilize in templates. These keywords will be replaced by its value ",
+                "To see which variables are at your disposal:",
+                "template variable",
                 "",
                 "for users with botadmin+, use 'template global ...' for global templates",
-                "Key                Replacement",
-                "---                ---",
-                "%user%             Username ",
-                "%user-mention%     Mentions user ",
-                "%user-id%          ID of user",
-                "%nick%             Nickname",
-                "%discrim%          discrim",
-                "%guild%            Guild name",
-                "%guild-id%         guild id",
-                "%guild-users%      amount of users in the guild",
-                "%channel%          channel name",
-                "%channel-id%       channel id",
-                "%channel-mention%  Mentions channel",
-                "%rand-user%        random user in guild",
-                "%rand-user-online% random ONLINE user in guild"
 
         };
     }
@@ -94,11 +87,11 @@ public class TemplateCommand extends AbstractCommand {
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         int guildId = CGuild.getCachedId(channel);
         if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Template.get(channel, "no_permission");
+            return Templates.no_permission.compile();
         }
         if (!userRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
             if (!(channel instanceof TextChannel)) {
-                return Template.get(channel, "command_not_for_private");
+                return Templates.error.command_public_only.compile();
             }
         } else {
             if (args.length > 1 && args[0].equals("global")) {
@@ -114,16 +107,30 @@ public class TemplateCommand extends AbstractCommand {
             return usage + "```";
         }
         switch (args[0]) {
-            case "toggledebug":
-                if (userRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-                    Config.SHOW_KEYPHRASE = !Config.SHOW_KEYPHRASE;
-                    if (Config.SHOW_KEYPHRASE) {
-                        return "Keyphrases shown ";
+            case "var":
+            case "variable":
+                StringBuilder sb = new StringBuilder("Template variables\n\n")
+                        .append("Variables are predefined texts which are replaced based on context\n\n")
+                        .append("You can use the following variables in templates:\n```\n");
+                sb.append(String.format("%-18s %s\n", "Pattern", "Description"));
+                sb.append(String.format("%-18s %s\n", "---", "---"));
+                for (TemplateArgument argument : TemplateArgument.values()) {
+                    sb.append(String.format("%-18s %s\n", argument.getPattern(), argument.getDescription()));
+                }
+                sb.append("```");
+                return sb.toString();
+            case "debug":
+                if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && channel.getType().equals(ChannelType.TEXT)) {
+                    Guild guild = ((TextChannel) channel).getGuild();
+                    if (args.length == 1) {
+                        return "Show templates: " + GuildSettings.get(guild).getDisplayValue(guild, "show_templates");
                     } else {
-                        return "Keyphrases are being translated";
+                        if (GuildSettings.get(guild).set(guild, SettingBotShowTemplates.class, args[1])) {
+                            return "Show templates: " + GuildSettings.get(guild).getDisplayValue(guild, "show_templates");
+                        }
                     }
                 }
-                return Template.get(channel, "no_permission");
+                return Templates.no_permission.compile();
             case "add":
                 if (args.length >= 3) {
                     String text = args[2];
@@ -131,40 +138,39 @@ public class TemplateCommand extends AbstractCommand {
                         text += " " + args[i];
                     }
                     Template.add(guildId, args[1], EmojiParser.parseToAliases(text));
-                    return Template.get(channel, "command_template_added");
+                    return Templates.command.template.added.compile();
                 }
-                return Template.get(channel, "command_template_added_failed");
+                return Templates.command.template.added_failed.compile();
             case "delete":
             case "del":
             case "remove":
                 if (args.length < 3 || !args[2].matches("^\\d+$")) {
-                    return Template.get(channel, "command_template_invalid_option");
+                    return Templates.command.template.invalid_option.compile();
                 }
                 int deleteIndex = Integer.parseInt(args[2]);
                 List<String> templateList = Template.getAllFor(guildId, args[1]);
                 if (templateList.size() > deleteIndex) {
                     Template.remove(guildId, args[1], templateList.get(deleteIndex));
-                    return Template.get(channel, "command_template_delete_success");
+                    return Templates.command.template.delete_success.compile();
                 }
-                return Template.get(channel, "command_template_delete_failed");
+                return Templates.command.template.delete_failed.compile();
             case "list":
             case "search":
                 int currentPage = 0;
-                int itemsPerPage = 30;
-                int maxPage = 1 + Template.uniquePhraseCount() / itemsPerPage;
-                if (args.length >= 2) {
-                    if (args[1].matches("^\\d+$")) {
-                        currentPage = Math.min(Math.max(0, Integer.parseInt(args[1]) - 1), maxPage - 1);
-                    } else {
-                        List<String> allKeyphrases = Template.getAllKeyphrases(args[1], itemsPerPage, 0);
-                        if (allKeyphrases.isEmpty()) {
-                            return "No keyphases matching `" + args[1] + "`";
-                        }
-                        return String.format("All keyphrases matching `%s`: ", args[1]) + Config.EOL +
-                                Misc.makeTable(allKeyphrases, 50, 2);
+                int itemsPerPage = 5;
+                int uniq = Templates.uniquePhraseCount();
+                int maxPage = 1 + Templates.uniquePhraseCount() / itemsPerPage;
+                if (args.length >= 2 && !args[1].matches("\\d+")) {
+                    List<String> allKeyphrases = Templates.getAllKeyphrases(args[1]);
+                    if (allKeyphrases.isEmpty()) {
+                        return "No keyphases matching `" + args[1] + "`";
                     }
+                    return String.format("All keyphrases matching `%s`: ", args[1]) + Config.EOL +
+                            Misc.makeTable(allKeyphrases, 50, 2);
+                } else if (args.length >= 2 && args[1].matches("\\d+")) {
+                    currentPage = Math.min(Math.max(0, Misc.parseInt(args[1], 0) - 1), maxPage - 1);
                 }
-                List<String> allKeyphrases = Template.getAllKeyphrases(itemsPerPage, currentPage * itemsPerPage);
+                List<String> allKeyphrases = Templates.getAllKeyphrases(itemsPerPage, currentPage * itemsPerPage);
                 if (allKeyphrases.isEmpty()) {
                     return "No keyphrases set at this moment.";
                 }
@@ -175,7 +181,7 @@ public class TemplateCommand extends AbstractCommand {
                 List<String> templates = Template.getAllFor(guildId, args[0]);
                 if (args.length == 1) {
                     if (templates.isEmpty()) {
-                        return Template.get(channel, "command_template_not_found", args[0]);
+                        return Templates.command.template.not_found.compile(args[0]);
                     }
                     List<List<String>> body = new ArrayList<>();
                     int index = 0;
@@ -185,7 +191,7 @@ public class TemplateCommand extends AbstractCommand {
                     return "Template overview for `" + args[0] + "`" + Config.EOL +
                             Misc.makeAsciiTable(Arrays.asList("#", "value"), body, null);
                 }
-                return Template.get(channel, "command_template_invalid_option");
+                return Templates.command.template.invalid_option.compile();
         }
     }
 }

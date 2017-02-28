@@ -96,7 +96,6 @@ public class AutoReplyCommand extends AbstractCommand {
             return Template.get("no_permission");
         }
         if (args.length == 0) {
-
             List<OReplyPattern> all = CReplyPattern.getAll(CGuild.getCachedId(guild.getId()));
             List<List<String>> tbl = new ArrayList<>();
             for (OReplyPattern replyPattern : all) {
