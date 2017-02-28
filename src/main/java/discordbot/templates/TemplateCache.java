@@ -17,11 +17,13 @@
 package discordbot.templates;
 
 import discordbot.db.WebDb;
-import discordbot.main.Config;
+import discordbot.db.controllers.CGuild;
+import discordbot.main.BotContainer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -55,8 +57,72 @@ public class TemplateCache {
         }
     }
 
+    public static void initGuildTemplates(BotContainer container) {
+        guildDictionary.clear();
+        HashSet<Integer> skipList = new HashSet<>();
+        HashSet<Integer> whiteList = new HashSet<>();
+        try (ResultSet rs = WebDb.get().select("SELECT id,guild_id, keyphrase, text FROM template_texts WHERE guild_id > 0 ORDER BY guild_id")) {
+            while (rs.next()) {
+                int guildId = rs.getInt("guild_id");
+                String keyphrase = rs.getString("keyphrase");
+                if (skipList.contains(guildId)) {
+                    continue;
+                }
+                long discordGuildId = Long.parseLong(CGuild.getCachedDiscordId(guildId));
+                if (!whiteList.contains(guildId)) {
+                    if (container.getShardFor(discordGuildId).client.getGuildById(Long.toString(discordGuildId)) == null) {
+                        skipList.add(guildId);
+                        continue;
+                    } else {
+                        whiteList.add(guildId);
+                    }
+                }
+                if (!guildDictionary.containsKey(guildId)) {
+                    guildDictionary.put(guildId, new ConcurrentHashMap<>());
+                }
+                if (!guildDictionary.get(guildId).containsKey(keyphrase)) {
+                    guildDictionary.get(guildId).put(keyphrase, new ArrayList<>());
+                }
+                guildDictionary.get(guildId).get(keyphrase).add(rs.getString("text"));
+            }
+            rs.getStatement().close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static synchronized void reloadGuild(int guildId) {
+        if (guildDictionary.containsKey(guildId)) {
+            guildDictionary.remove(guildId);
+        }
+        try (ResultSet rs = WebDb.get().select("SELECT id,keyphrase, text FROM template_texts WHERE guild_id = ?", guildId)) {
+            while (rs.next()) {
+                String keyphrase = rs.getString("keyphrase");
+                if (!guildDictionary.containsKey(guildId)) {
+                    guildDictionary.put(guildId, new ConcurrentHashMap<>());
+                }
+                if (!guildDictionary.get(guildId).containsKey(keyphrase)) {
+                    guildDictionary.get(guildId).put(keyphrase, new ArrayList<>());
+                }
+                guildDictionary.get(guildId).get(keyphrase).add(rs.getString("text"));
+
+            }
+            rs.getStatement().close();
+        } catch (SQLException e) {
+            e.getStackTrace();
+        }
+    }
+
+    public static String getGuild(int guildId, String keyPhrase) {
+        if (!guildDictionary.containsKey(guildId) || !guildDictionary.get(guildId).containsKey(keyPhrase)) {
+            return getGlobal(keyPhrase);
+        }
+        List<String> list = guildDictionary.get(guildId).get(keyPhrase);
+        return list.get(rng.nextInt(list.size()));
+    }
+
     public static String getGlobal(String keyPhrase) {
-        if (!Config.SHOW_KEYPHRASE) {
+        if (dictionary.containsKey(keyPhrase)) {
             List<String> list = dictionary.get(keyPhrase);
             return list.get(rng.nextInt(list.size()));
         }

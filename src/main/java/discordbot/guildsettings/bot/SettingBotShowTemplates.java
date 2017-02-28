@@ -29,7 +29,7 @@ public class SettingBotShowTemplates extends AbstractGuildSetting<BooleanSetting
 
     @Override
     public String getKey() {
-        return "bot_debug_templates";
+        return "show_templates";
     }
 
     @Override
@@ -39,7 +39,7 @@ public class SettingBotShowTemplates extends AbstractGuildSetting<BooleanSetting
 
     @Override
     public boolean isReadOnly() {
-        return true;
+        return false;
     }
 
     @Override

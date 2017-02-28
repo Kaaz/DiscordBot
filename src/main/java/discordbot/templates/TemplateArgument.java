@@ -19,28 +19,35 @@ package discordbot.templates;
 import discordbot.main.Config;
 
 public enum TemplateArgument {
-    ARGS("args", e -> e.ARGS != null ? e.ARGS : ""),
+    ARG("arg1", "First input argument", e -> e.arg != null ? e.arg : ""),
+    ARGS("allargs", "All input arguments", e -> e.args != null ? e.args : ""),
 
-    USER("user", e -> e.USER != null ? e.USER.getName() : ""),
-    USER_MENTION("user-mention", e -> e.USER != null ? e.USER.getAsMention() : ""),
-    USER_ID("user-id", e -> e.USER != null ? e.USER.getId() : ""),
-    USER_DESCRIMINATOR("discrim", e -> e.USER != null ? e.USER.getDiscriminator() : ""),
+    USER("user", "Username", e -> e.user != null ? e.user.getName() : ""),
+    USER_MENTION("user-mention", "Mentions user", e -> e.user != null ? e.user.getAsMention() : ""),
+    USER_ID("user-id", "User's id", e -> e.user != null ? e.user.getId() : ""),
+    USER_DESCRIMINATOR("discrim", "Discriminator of the user", e -> e.user != null ? e.user.getDiscriminator() : ""),
 
-    NICKNAME("nick", e -> e.USER != null && e.GUILD != null ? e.GUILD.getMember(e.USER).getEffectiveName() : ""),
-    GUILD("guild", e -> e.GUILD != null ? e.GUILD.getName() : ""),
-    GUILD_ID("guild-id", e -> e.GUILD != null ? e.GUILD.getName() : ""),
-    GUILD_USERS("guild-users", e -> e.GUILD != null ? Integer.toString(e.GUILD.getMembers().size()) : ""),
+    NICKNAME("nick", "Nickname of user", e -> e.user != null && e.guild != null ? e.guild.getMember(e.user).getEffectiveName() : ""),
+    GUILD("guild", "Guild name", e -> e.guild != null ? e.guild.getName() : ""),
+    GUILD_ID("guild-id", "Guild's id", e -> e.guild != null ? e.guild.getName() : ""),
+    GUILD_USERS("guild-users", "Sums guild members", e -> e.guild != null ? Integer.toString(e.guild.getMembers().size()) : ""),
 
-    CHANNEL("channel", e -> e.CHANNEL != null ? e.CHANNEL.getName() : ""),
-    CHANNEL_ID("channel-id", e -> e.CHANNEL != null ? e.CHANNEL.getId() : ""),
-    CHANNEL_MENTION("channel-mention", e -> e.CHANNEL != null ? e.CHANNEL.getAsMention() : ""),;
+    CHANNEL("channel", "Channel name", e -> e.channel != null ? e.channel.getName() : ""),
+    CHANNEL_ID("channel-id", "Channel id", e -> e.channel != null ? e.channel.getId() : ""),
+    CHANNEL_MENTION("channel-mention", "Mentions channel", e -> e.channel != null ? e.channel.getAsMention() : ""),
+
+    ROLE("role", "Role name", e -> e.role != null ? e.role.getName() : ""),
+    ROLE_ID("role-id", "Role's id", e -> e.role != null ? e.role.getId() : ""),
+    ROLE_MENTION("role-mention", "mentions the role", e -> e.role != null ? e.role.isMentionable() ? e.role.getAsMention() : e.role.getName() : ""),;
 
     private final String pattern;
     private final TemplateParser parser;
+    private final String description;
 
-    TemplateArgument(String pattern, TemplateParser parser) {
+    TemplateArgument(String pattern, String description, TemplateParser parser) {
         this.pattern = Config.TEMPLATE_QUOTE + pattern + Config.TEMPLATE_QUOTE;
         this.parser = parser;
+        this.description = description;
     }
 
     public String getPattern() {
@@ -49,5 +56,9 @@ public enum TemplateArgument {
 
     public String parse(TemplateVariables vars) {
         return parser.apply(vars);
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

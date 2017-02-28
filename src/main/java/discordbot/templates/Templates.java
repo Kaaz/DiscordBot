@@ -19,11 +19,26 @@ package discordbot.templates;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
+/**
+ * All public static Template variables are mapped to the database
+ * naming goes as follows:
+ * classname_variable_name -> to lower case
+ * <p>
+ * usage/examples in commands/etc:
+ * Templates.TEST.compile(User, Guild)
+ * Templates.PERMISSION_MISSING.compile("some permission")
+ * Templates.command.SAY_CONTAINS_MENTION.compile()
+ */
 public class Templates {
     final private static HashMap<String, Template> dictionary = new HashMap<>();
 
-    public static Template PERMISSION_MISSING = new Template(TemplateArgument.ARGS);
-    public static Template TEST = new Template(TemplateArgument.USER, TemplateArgument.USER_DESCRIMINATOR, TemplateArgument.GUILD);
+    public static Template PERMISSION_MISSING = new Template(TemplateArgument.ARG);
+    public static Template TEST = new Template(
+            new TemplateArgument[]{TemplateArgument.USER, TemplateArgument.USER_DESCRIMINATOR, TemplateArgument.GUILD},
+            new TemplateArgument[]{TemplateArgument.ARG, TemplateArgument.ARGS});
+    public static Template WELCOME_NEW_USER = new Template(null, TemplateArgument.values());
+    public static Template WELCOME_BACK_USER = new Template(null, TemplateArgument.values());
+    public static Template MESSAGE_USER_LEAVES = new Template(null, TemplateArgument.values());
 
     public static class command {
         public static Template SAY_CONTAINS_MENTION = new Template();

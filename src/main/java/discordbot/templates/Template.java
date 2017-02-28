@@ -16,12 +16,31 @@
 
 package discordbot.templates;
 
+import discordbot.db.controllers.CGuild;
+import discordbot.guildsettings.bot.SettingBotShowTemplates;
+import discordbot.handler.GuildSettings;
+import discordbot.main.Config;
+
 public class Template {
     private String key;
-    final private TemplateArgument[] arguments;
+    final private TemplateArgument[] templateArguments;
+    final private TemplateArgument[] optionalArgs;
 
-    public Template(TemplateArgument... args) {
-        arguments = args;
+    public Template(TemplateArgument... templateArguments) {
+        this(templateArguments, null);
+    }
+
+    public Template(TemplateArgument[] requiredArguments, TemplateArgument[] optionalArgs) {
+        if (requiredArguments == null) {
+            templateArguments = new TemplateArgument[]{};
+        } else {
+            templateArguments = requiredArguments;
+        }
+        if (optionalArgs == null) {
+            this.optionalArgs = new TemplateArgument[]{};
+        } else {
+            this.optionalArgs = optionalArgs;
+        }
     }
 
     public void setKey(String key) {
@@ -32,18 +51,18 @@ public class Template {
         return key;
     }
 
-    public TemplateArgument[] getArguments() {
-        return arguments;
+    public TemplateArgument[] getRequiredArguments() {
+        return templateArguments;
     }
 
     public boolean isValidTemplate(String template) {
         if (template == null || template.isEmpty()) {
             return false;
         }
-        if (arguments == null || arguments.length == 0) {
+        if (templateArguments.length == 0) {
             return true;
         }
-        for (TemplateArgument argument : arguments) {
+        for (TemplateArgument argument : templateArguments) {
             if (template.contains(argument.getPattern())) {
                 return false;
             }
@@ -52,14 +71,44 @@ public class Template {
     }
 
     public String compile(Object... vars) {
-        if (arguments == null || arguments.length == 0) {
+        return compile(null, vars);
+    }
+
+    public String compile(String guildid, Object... vars) {
+        if (templateArguments.length == 0 & optionalArgs.length == 0) {
             return TemplateCache.getGlobal(getKey());
         }
-        String tmp = TemplateCache.getGlobal(getKey());
-        TemplateVariables env = TemplateVariables.create(vars);
-        for (TemplateArgument arg : arguments) {
-            tmp = tmp.replace(arg.getPattern(), arg.parse(env));
+        boolean showTemplates = Config.SHOW_KEYPHRASE;
+        if (guildid != null && !guildid.isEmpty()) {
+            showTemplates = "true".equals(GuildSettings.get(guildid).getOrDefault(SettingBotShowTemplates.class));
         }
-        return tmp;
+        TemplateVariables env = TemplateVariables.create(vars);
+        if (showTemplates) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Template: `").append(getKey()).append("`");
+            sb.append("\nAvailable arguments:\n");
+            if (templateArguments.length > 0) {
+                sb.append("Required:\n\n");
+                for (TemplateArgument arg : templateArguments) {
+                    sb.append(String.format("`%s` -> `\u200B%s`\n", arg.getPattern(), arg.parse(env)));
+                }
+            }
+            if (optionalArgs.length > 0) {
+                sb.append("\nOptional:\n\n");
+                for (TemplateArgument arg : optionalArgs) {
+                    sb.append(String.format("`%s` -> `\u200B%s`\n", arg.getPattern(), arg.parse(env)));
+                }
+            }
+            return sb.toString();
+        } else {
+            String tmp = guildid != null && !guildid.isEmpty() ? TemplateCache.getGuild(CGuild.getCachedId(guildid), getKey()) : TemplateCache.getGlobal(getKey());
+            for (TemplateArgument arg : templateArguments) {
+                tmp = tmp.replace(arg.getPattern(), arg.parse(env));
+            }
+            for (TemplateArgument arg : optionalArgs) {
+                tmp = tmp.replace(arg.getPattern(), arg.parse(env));
+            }
+            return tmp;
+        }
     }
 }
