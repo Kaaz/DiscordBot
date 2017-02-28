@@ -29,7 +29,6 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.SecurityHandler;
 import discordbot.handler.Template;
 import discordbot.role.RoleRankings;
-import discordbot.templates.TemplateCache;
 import discordbot.templates.Templates;
 import discordbot.threads.YoutubeThread;
 import discordbot.util.Emojibet;
@@ -45,7 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.text.NumberFormat;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -293,7 +291,7 @@ public class BotContainer {
      * sends stats to discordlist.net
      */
     public void sendStatsToDiscordlistNet() {
-        if (!Config.BOT_STATS_DISCORDLIST_NET) {
+        if (!Config.BOT_STATS_DISCORDLIST_NET || !allShardsReady()) {
             return;
         }
         int totGuilds = 0;

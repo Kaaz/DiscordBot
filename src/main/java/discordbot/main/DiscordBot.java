@@ -280,6 +280,7 @@ public class DiscordBot {
         loadConfiguration();
         client.addEventListener(new JDAEvents(this));
         sendStatsToDiscordPw();
+        sendStatsToDiscordbotsOrg();
         isReady = true;
         RoleRankings.fixRoles(this.client.getGuilds());
         container.allShardsReady();
