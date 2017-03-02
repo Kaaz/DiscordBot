@@ -86,7 +86,7 @@ public class DiscordBot {
     private BotContainer container;
 
     public DiscordBot(int shardId, int numShards, BotContainer container) throws LoginException, InterruptedException, RateLimitedException {
-        scheduler = Executors.newScheduledThreadPool(3);
+        scheduler = Executors.newScheduledThreadPool(1);
         this.shardId = shardId;
         this.totShards = numShards;
         registerHandlers();

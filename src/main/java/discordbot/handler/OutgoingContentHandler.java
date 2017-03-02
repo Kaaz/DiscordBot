@@ -149,7 +149,7 @@ public class OutgoingContentHandler {
             if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_HISTORY)) {
                 channel.getMessageById(messageToDelete.getId()).queue(msg -> {
                     if (msg != null) {
-                        msg.delete().complete();
+                        msg.delete().queue();
                     }
                 });
             }
