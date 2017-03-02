@@ -17,7 +17,6 @@
 package discordbot.main;
 
 import com.mashape.unirest.http.Unirest;
-import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import discordbot.db.controllers.CBanks;
 import discordbot.db.controllers.CGuild;
 import discordbot.event.JDAEvents;
@@ -105,7 +104,6 @@ public class DiscordBot {
         if (totShards > 1) {
             builder.useSharding(shardId, totShards);
         }
-        builder.setAudioSendFactory(new NativeAudioSendFactory());
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setEnableShutdownHook(false);
         System.out.println("STARTING SHARD " + shardId);

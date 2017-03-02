@@ -119,11 +119,6 @@
 			<version>1.2.13</version>
 		</dependency>
 		<dependency>
-			<groupId>com.sedmelluq</groupId>
-			<artifactId>jda-nas</artifactId>
-			<version>1.0.3</version>
-		</dependency>
-		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.1.7</version>
