@@ -137,13 +137,14 @@ public class YTSearch {
             List<SearchResult> searchResultList = searchResponse.getItems();
             searchResultList.forEach((sr) -> urls.add(new SimpleResult(sr.getId().getVideoId(), sr.getSnippet().getTitle())));
         } catch (GoogleJsonResponseException e) {
-            Launcher.logToDiscord(e, "youtube-search-error", "<--",
-                    "code", e.getDetails().getCode(),
-                    "message", e.getDetails().getMessage());
             if (e.getMessage().contains("quotaExceeded") || e.getMessage().contains("keyInvalid")) {
                 if (setupNextKey()) {
                     return getResults(query, numresults);
                 }
+            } else {
+                Launcher.logToDiscord(e, "youtube-search-error", "<--",
+                        "code", e.getDetails().getCode(),
+                        "message", e.getDetails().getMessage());
             }
         } catch (IOException ex) {
             DiscordBot.LOGGER.error("YTSearch failure: " + ex.toString());
