@@ -32,12 +32,13 @@ import discordbot.guildsettings.bot.SettingWelcomeNewUsers;
 import discordbot.guildsettings.music.SettingMusicAutoVoiceChannel;
 import discordbot.handler.GuildSettings;
 import discordbot.handler.MusicPlayerHandler;
-import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.main.GuildCheckResult;
 import discordbot.main.Launcher;
 import discordbot.role.RoleRankings;
+import discordbot.templates.Template;
+import discordbot.templates.Templates;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -158,7 +159,7 @@ public class JDAEvents extends ListenerAdapter {
                             guild.getId(),
                             dbGuild.id,
                             guild.getMembers().size(),
-                            EmojiParser.parseToAliases(guild.getName())).replace("@","@\u200B"));
+                            EmojiParser.parseToAliases(guild.getName())).replace("@", "@\u200B"));
             discordBot.getContainer().guildJoined();
             Launcher.log("bot joins guild", "bot", "guild-join",
                     "guild-id", guild.getId(),
@@ -206,7 +207,7 @@ public class JDAEvents extends ListenerAdapter {
                 String.format(":id: %s | :hash: %s | %s",
                         guild.getId(),
                         server.id,
-                        EmojiParser.parseToAliases(guild.getName()).replace("@","@\u200B")
+                        EmojiParser.parseToAliases(guild.getName()).replace("@", "@\u200B")
                 ));
     }
 
@@ -232,9 +233,9 @@ public class JDAEvents extends ListenerAdapter {
             discordBot.commandReactionHandler.handle(channel, e.getMessageId(), e.getUser().getId(), e.getReaction());
             return;
         }
-        if (discordBot.gameHandler.executeReaction(e.getUser(), e.getChannel(), e.getReaction(), e.getMessageId())) ;
-        discordBot.musicReactionHandler.handle(e.getMessageId(), channel, e.getUser(), e.getReaction().getEmote(), adding);
-
+        if (discordBot.gameHandler.executeReaction(e.getUser(), e.getChannel(), e.getReaction(), e.getMessageId())) {
+            discordBot.musicReactionHandler.handle(e.getMessageId(), channel, e.getUser(), e.getReaction().getEmote(), adding);
+        }
     }
 
     @Override
@@ -293,10 +294,11 @@ public class JDAEvents extends ListenerAdapter {
         if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
             TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
             if (defaultChannel != null && defaultChannel.canTalk()) {
+                Template template = firstTime ? Templates.welcome_new_user : Templates.welcome_back_user;
                 defaultChannel.sendMessage(
-                        Template.getWithTags(defaultChannel, firstTime ? "welcome_new_user" : "welcome_back_user", user)).queue(
+                        template.compile(guild.getId(), guild, user)).queue(
                         message -> {
-                            if(!"no".equals(settings.getOrDefault(SettingCleanupMessages.class))) {
+                            if (!"no".equals(settings.getOrDefault(SettingCleanupMessages.class))) {
                                 discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
                             }
                         }
@@ -328,9 +330,9 @@ public class JDAEvents extends ListenerAdapter {
             TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
             if (defaultChannel != null && defaultChannel.canTalk()) {
                 defaultChannel.sendMessage(
-                        Template.getWithTags(defaultChannel, "message_user_leaves", user)).queue(
+                        Templates.message_user_leaves.compile(user, guild)).queue(
                         message -> {
-                            if(!"no".equals(GuildSettings.get(guild.getId()).getOrDefault(SettingCleanupMessages.class))) {
+                            if (!"no".equals(GuildSettings.get(guild.getId()).getOrDefault(SettingCleanupMessages.class))) {
                                 discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
                             }
                         }
@@ -413,7 +415,7 @@ public class JDAEvents extends ListenerAdapter {
         }
         TextChannel musicChannel = discordBot.getMusicChannel(guild);
         if (musicChannel != null && musicChannel.canTalk()) {
-            discordBot.out.sendAsyncMessage(musicChannel, Template.get("music_no_one_listens_i_leave"));
+            discordBot.out.sendAsyncMessage(musicChannel, Templates.music.no_one_listens_i_leave.compile());
         }
     }
 }

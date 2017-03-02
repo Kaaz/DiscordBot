@@ -53,16 +53,14 @@ public class Templates {
             public static Template delete_success = new Template();
             public static Template delete_failed = new Template();
             public static Template not_found = new Template(TemplateArgument.ARG);
-
-
         }
-
         public static Template SAY_CONTAINS_MENTION = new Template();
         public static Template SAY_WHATEXACTLY = new Template();
     }
 
     public static class music {
 
+        public static Template no_one_listens_i_leave = new Template();
     }
 
     public static class error {

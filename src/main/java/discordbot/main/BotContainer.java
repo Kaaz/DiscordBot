@@ -29,6 +29,7 @@ import discordbot.handler.MusicPlayerHandler;
 import discordbot.handler.SecurityHandler;
 import discordbot.handler.Template;
 import discordbot.role.RoleRankings;
+import discordbot.templates.TemplateCache;
 import discordbot.templates.Templates;
 import discordbot.threads.YoutubeThread;
 import discordbot.util.Emojibet;
@@ -298,6 +299,7 @@ public class BotContainer {
         for (DiscordBot shard : shards) {
             totGuilds += shard.client.getGuilds().size();
         }
+        TemplateCache.initGuildTemplates(this);
         Unirest.post("https://bots.discordlist.net/api.php")
                 .field("token", Config.BOT_STATS_DISCORDLIST_NET_TOKEN)
                 .field("servers", totGuilds)
