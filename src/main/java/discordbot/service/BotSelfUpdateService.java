@@ -107,7 +107,7 @@ public class BotSelfUpdateService extends AbstractService {
                         case "always":
                             String extraContent = "";
                             TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
-                            if (defaultChannel == null) {
+                            if (defaultChannel == null || !defaultChannel.canTalk()) {
                                 break;
                             }
                             if (isUpdating) {

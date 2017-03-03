@@ -39,6 +39,7 @@ import discordbot.main.Launcher;
 import discordbot.role.RoleRankings;
 import discordbot.templates.Template;
 import discordbot.templates.Templates;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -222,18 +223,22 @@ public class JDAEvents extends ListenerAdapter {
     }
 
     private void handleReaction(GenericMessageReactionEvent e, boolean adding) {
-        if (e.getUser().isBot() && !discordBot.security.isInteractionBot(Long.parseLong(e.getUser().getId()))) {
-            return;
+        if (e.getUser().isBot()) {
+            if (!discordBot.security.isInteractionBot(Long.parseLong(e.getUser().getId()))) {
+                return;
+            }
         }
-        if (!(e.getChannel() instanceof TextChannel)) {
+        if (!e.getChannel().getType().equals(ChannelType.TEXT)) {
             return;
         }
         TextChannel channel = (TextChannel) e.getChannel();
+        System.out.println("can you handle it??");
         if (discordBot.commandReactionHandler.canHandle(channel.getGuild().getId(), e.getMessageId())) {
+            System.out.println("-- YES I CAN");
             discordBot.commandReactionHandler.handle(channel, e.getMessageId(), e.getUser().getId(), e.getReaction());
             return;
         }
-        if (discordBot.gameHandler.executeReaction(e.getUser(), e.getChannel(), e.getReaction(), e.getMessageId())) {
+        if (!discordBot.gameHandler.executeReaction(e.getUser(), e.getChannel(), e.getReaction(), e.getMessageId())) {
             discordBot.musicReactionHandler.handle(e.getMessageId(), channel, e.getUser(), e.getReaction().getEmote(), adding);
         }
     }
