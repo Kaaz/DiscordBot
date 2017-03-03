@@ -63,24 +63,28 @@ public class Template {
             return true;
         }
         for (TemplateArgument argument : templateArguments) {
-            if (template.contains(argument.getPattern())) {
+            if (!template.contains(argument.getPattern())) {
                 return false;
             }
         }
         return true;
     }
 
-    public String compile(Object... vars) {
-        return compile(null, vars);
+    public String format(Object... vars) {
+        return formatFull(null, false, vars);
     }
 
-    public String compile(String guildid, Object... vars) {
+    public String formatGuild(String guildId, Object... vars) {
+        return formatFull(guildId, false, vars);
+    }
+
+    public String formatFull(String guildId, boolean forceDebug, Object... vars) {
         if (templateArguments.length == 0 & optionalArgs.length == 0) {
             return TemplateCache.getGlobal(getKey());
         }
-        boolean showTemplates = Config.SHOW_KEYPHRASE;
-        if (guildid != null && !guildid.isEmpty()) {
-            showTemplates = "true".equals(GuildSettings.get(guildid).getOrDefault(SettingBotShowTemplates.class));
+        boolean showTemplates = forceDebug || Config.SHOW_KEYPHRASE;
+        if (!forceDebug && guildId != null && !guildId.isEmpty()) {
+            showTemplates = "true".equals(GuildSettings.get(guildId).getOrDefault(SettingBotShowTemplates.class));
         }
         TemplateVariables env = TemplateVariables.create(vars);
         if (showTemplates) {
@@ -90,19 +94,19 @@ public class Template {
             if (templateArguments.length > 0) {
                 sb.append("Required:\n\n");
                 for (TemplateArgument arg : templateArguments) {
-                    sb.append(String.format("%-17s -> %s\n", arg.getPattern(), arg.parse(env)));
+                    sb.append(String.format("%-17s -> %s\n", arg.getPattern(), arg.getDescription()));
                 }
             }
             if (optionalArgs.length > 0) {
                 sb.append("\nOptional:\n\n");
                 for (TemplateArgument arg : optionalArgs) {
-                    sb.append(String.format("%-17s -> %s\n", arg.getPattern(), arg.parse(env)));
+                    sb.append(String.format("%-17s -> %s\n", arg.getPattern(), arg.getDescription()));
                 }
             }
             sb.append("```");
             return sb.toString();
         } else {
-            String tmp = guildid != null && !guildid.isEmpty() ? TemplateCache.getGuild(CGuild.getCachedId(guildid), getKey()) : TemplateCache.getGlobal(getKey());
+            String tmp = guildId != null && !guildId.isEmpty() ? TemplateCache.getGuild(CGuild.getCachedId(guildId), getKey()) : TemplateCache.getGlobal(getKey());
             for (TemplateArgument arg : templateArguments) {
                 tmp = tmp.replace(arg.getPattern(), arg.parse(env));
             }

@@ -43,7 +43,7 @@ public class TemplateCache {
         try (ResultSet rs = WebDb.get().select("SELECT id,guild_id, keyphrase, text FROM template_texts WHERE guild_id = 0")) {
             while (rs.next()) {
                 String keyphrase = rs.getString("keyphrase");
-                if (!Templates.isValidTemplate(keyphrase)) {
+                if (!Templates.templateExists(keyphrase)) {
                     continue;
                 }
                 if (!dictionary.containsKey(keyphrase)) {
@@ -127,5 +127,111 @@ public class TemplateCache {
             return list.get(rng.nextInt(list.size()));
         }
         return "**`" + keyPhrase + "`**";
+    }
+
+    /**
+     * returns a list of all texts for specified keyphrase
+     *
+     * @param keyphrase to return a list of
+     * @return list
+     */
+    public static List<String> getAllFor(String keyphrase) {
+        if (dictionary.containsKey(keyphrase)) {
+            return dictionary.get(keyphrase);
+        }
+        return new ArrayList<>();
+    }
+
+    public static List<String> getAllFor(int guildId, String keyphrase) {
+        if (guildId > 0 && guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyphrase)) {
+            return guildDictionary.get(guildId).get(keyphrase);
+        }
+        return getAllFor(keyphrase);
+    }
+
+    public static synchronized void remove(int guildId, String keyPhrase, String text) {
+        if (guildId == 0) {
+            removeGlobal(keyPhrase, text);
+            return;
+        }
+        if (guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyPhrase)) {
+            if (guildDictionary.get(guildId).get(keyPhrase).contains(text)) {
+                try {
+                    WebDb.get().query("DELETE FROM template_texts WHERE keyphrase = ? AND text = ? AND guild_id = ?", keyPhrase, text, guildId);
+                    guildDictionary.get(guildId).get(keyPhrase).remove(text);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * deletes a specific entry
+     *
+     * @param keyPhrase keyphrase
+     * @param text      text
+     */
+    public static synchronized void removeGlobal(String keyPhrase, String text) {
+        if (dictionary.containsKey(keyPhrase)) {
+            if (dictionary.get(keyPhrase).contains(text)) {
+                try {
+                    WebDb.get().query("DELETE FROM template_texts WHERE keyphrase = ? AND text = ? ", keyPhrase, text);
+                    dictionary.get(keyPhrase).remove(text);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * adds a template for a keyphrase for a guild
+     * Only adds the template if the template exists in the dictionary
+     *
+     * @param guildId   internal guild id
+     * @param keyPhrase keyphrase
+     * @param text      the text
+     */
+    public static synchronized boolean add(int guildId, String keyPhrase, String text) {
+        if (!Templates.templateExists(keyPhrase)) {
+            return false;
+        }
+        if (guildId == 0) {
+            addGlobal(keyPhrase, text);
+            return true;
+        }
+        try {
+            WebDb.get().query("INSERT INTO template_texts(guild_id,keyphrase,text) VALUES(?, ?, ?)", guildId, keyPhrase, text);
+            if (!guildDictionary.containsKey(guildId)) {
+                guildDictionary.put(guildId, new ConcurrentHashMap<>());
+            }
+            if (!guildDictionary.get(guildId).containsKey(keyPhrase)) {
+                guildDictionary.get(guildId).put(keyPhrase, new ArrayList<>());
+            }
+            guildDictionary.get(guildId).get(keyPhrase).add(text);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * adds a template for a keyphrase
+     *
+     * @param keyPhrase keyphrase
+     * @param text      the text
+     */
+    public static synchronized void addGlobal(String keyPhrase, String text) {
+        try {
+            WebDb.get().query("INSERT INTO template_texts(keyphrase,text,guild_id) VALUES(?, ?, 0)", keyPhrase, text);
+            if (!dictionary.containsKey(keyPhrase)) {
+                dictionary.put(keyPhrase, new ArrayList<>());
+            }
+            dictionary.get(keyPhrase).add(text);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

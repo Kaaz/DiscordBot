@@ -200,18 +200,6 @@ public class DisUtil {
      * @param channel channel/guild info
      * @return formatted string
      */
-    public static String replaceTags(String input, User user, MessageChannel channel) {
-        return replaceTags(input, user, channel, null);
-    }
-
-    /**
-     * Replaces tags with a variable
-     *
-     * @param input   the message to replace tags in
-     * @param user    user info for user related tags
-     * @param channel channel/guild info
-     * @return formatted string
-     */
 
     public static String replaceTags(String input, User user, MessageChannel channel, String[] userArgs) {
         Guild guild = null;

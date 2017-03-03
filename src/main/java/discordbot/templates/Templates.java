@@ -29,9 +29,9 @@ import java.util.stream.Collectors;
  * classname_variable_name -> to lower case
  * <p>
  * usage/examples in commands/etc:
- * Templates.TEST.compile(User, Guild)
- * Templates.permission_missing.compile("some permission")
- * Templates.command.SAY_CONTAINS_MENTION.compile()
+ * Templates.TEST.format(User, Guild)
+ * Templates.permission_missing.format("some permission")
+ * Templates.command.SAY_CONTAINS_MENTION.format()
  */
 public class Templates {
     final private static HashMap<String, Template> dictionary = new HashMap<>();
@@ -45,6 +45,10 @@ public class Templates {
     public static Template welcome_back_user = new Template(null, TemplateArgument.values());
     public static Template message_user_leaves = new Template(null, TemplateArgument.values());
 
+    public static Template getByKey(String templateKey) {
+        return dictionary.get(templateKey);
+    }
+
     public static class command {
         public static class template {
             public static Template added = new Template();
@@ -54,6 +58,7 @@ public class Templates {
             public static Template delete_failed = new Template();
             public static Template not_found = new Template(TemplateArgument.ARG);
         }
+
         public static Template SAY_CONTAINS_MENTION = new Template();
         public static Template SAY_WHATEXACTLY = new Template();
     }
@@ -92,7 +97,7 @@ public class Templates {
         return matching;
     }
 
-    public static boolean isValidTemplate(String key) {
+    public static boolean templateExists(String key) {
         return dictionary.containsKey(key);
     }
 

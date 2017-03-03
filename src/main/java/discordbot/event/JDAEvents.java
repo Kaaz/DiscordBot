@@ -301,7 +301,7 @@ public class JDAEvents extends ListenerAdapter {
             if (defaultChannel != null && defaultChannel.canTalk()) {
                 Template template = firstTime ? Templates.welcome_new_user : Templates.welcome_back_user;
                 defaultChannel.sendMessage(
-                        template.compile(guild.getId(), guild, user)).queue(
+                        template.format(guild.getId(), guild, user)).queue(
                         message -> {
                             if (!"no".equals(settings.getOrDefault(SettingCleanupMessages.class))) {
                                 discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
@@ -335,7 +335,7 @@ public class JDAEvents extends ListenerAdapter {
             TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
             if (defaultChannel != null && defaultChannel.canTalk()) {
                 defaultChannel.sendMessage(
-                        Templates.message_user_leaves.compile(user, guild)).queue(
+                        Templates.message_user_leaves.format(user, guild)).queue(
                         message -> {
                             if (!"no".equals(GuildSettings.get(guild.getId()).getOrDefault(SettingCleanupMessages.class))) {
                                 discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
@@ -420,7 +420,7 @@ public class JDAEvents extends ListenerAdapter {
         }
         TextChannel musicChannel = discordBot.getMusicChannel(guild);
         if (musicChannel != null && musicChannel.canTalk()) {
-            discordBot.out.sendAsyncMessage(musicChannel, Templates.music.no_one_listens_i_leave.compile());
+            discordBot.out.sendAsyncMessage(musicChannel, Templates.music.no_one_listens_i_leave.format());
         }
     }
 }

@@ -21,11 +21,12 @@ import discordbot.core.AbstractCommand;
 import discordbot.db.controllers.CGuild;
 import discordbot.guildsettings.bot.SettingBotShowTemplates;
 import discordbot.handler.GuildSettings;
-import discordbot.handler.Template;
 import discordbot.main.Config;
 import discordbot.main.DiscordBot;
 import discordbot.permission.SimpleRank;
+import discordbot.templates.Template;
 import discordbot.templates.TemplateArgument;
+import discordbot.templates.TemplateCache;
 import discordbot.templates.Templates;
 import discordbot.util.Misc;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -65,6 +66,7 @@ public class TemplateCommand extends AbstractCommand {
                 "template search <contains>            //searches for keyphrases matching part of the <contains>",
                 "template list <page>                  //lists all keyphrases",
                 "template remove <keyphrase> <index>   //removes selected template for keyphrase",
+                "template debug [on/off]               //enables/disabled debugging of templates",
                 "",
                 "There are a few keywords you can utilize in templates. These keywords will be replaced by its value ",
                 "To see which variables are at your disposal:",
@@ -87,11 +89,11 @@ public class TemplateCommand extends AbstractCommand {
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         int guildId = CGuild.getCachedId(channel);
         if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Templates.no_permission.compile();
+            return Templates.no_permission.format();
         }
         if (!userRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
             if (!(channel instanceof TextChannel)) {
-                return Templates.error.command_public_only.compile();
+                return Templates.error.command_public_only.format();
             }
         } else {
             if (args.length > 1 && args[0].equals("global")) {
@@ -123,37 +125,42 @@ public class TemplateCommand extends AbstractCommand {
                 if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && channel.getType().equals(ChannelType.TEXT)) {
                     Guild guild = ((TextChannel) channel).getGuild();
                     if (args.length == 1) {
-                        return "Show templates: " + GuildSettings.get(guild).getDisplayValue(guild, "show_templates");
+                        return "Show keyphrases: " + GuildSettings.get(guild).getDisplayValue(guild, "show_templates");
                     } else {
                         if (GuildSettings.get(guild).set(guild, SettingBotShowTemplates.class, args[1])) {
-                            return "Show templates: " + GuildSettings.get(guild).getDisplayValue(guild, "show_templates");
+                            return "Show Keyphrases: " + GuildSettings.get(guild).getDisplayValue(guild, "show_templates");
                         }
                     }
                 }
-                return Templates.no_permission.compile();
+                return Templates.no_permission.format();
             case "add":
                 if (args.length >= 3) {
-                    String text = args[2];
-                    for (int i = 3; i < args.length; i++) {
-                        text += " " + args[i];
+                    String text = Misc.joinStrings(args, 2);
+                    if (Templates.templateExists(args[1])) {
+                        Template tmp = Templates.getByKey(args[1]);
+                        if (tmp.isValidTemplate(text)) {
+                            TemplateCache.add(guildId, args[1], EmojiParser.parseToAliases(text));
+                            return Templates.command.template.added.format();
+                        }
+                        System.out.println(tmp.formatFull(CGuild.getCachedDiscordId(guildId), true));
+                        return Templates.command.template.added_failed.formatGuild(CGuild.getCachedDiscordId(guildId)) + "\n\n" +
+                                tmp.formatFull(CGuild.getCachedDiscordId(guildId), true);
                     }
-                    Template.add(guildId, args[1], EmojiParser.parseToAliases(text));
-                    return Templates.command.template.added.compile();
                 }
-                return Templates.command.template.added_failed.compile();
+                return Templates.command.template.added_failed.format();
             case "delete":
             case "del":
             case "remove":
                 if (args.length < 3 || !args[2].matches("^\\d+$")) {
-                    return Templates.command.template.invalid_option.compile();
+                    return Templates.command.template.invalid_option.format();
                 }
                 int deleteIndex = Integer.parseInt(args[2]);
-                List<String> templateList = Template.getAllFor(guildId, args[1]);
+                List<String> templateList = TemplateCache.getAllFor(guildId, args[1]);
                 if (templateList.size() > deleteIndex) {
-                    Template.remove(guildId, args[1], templateList.get(deleteIndex));
-                    return Templates.command.template.delete_success.compile();
+                    TemplateCache.remove(guildId, args[1], templateList.get(deleteIndex));
+                    return Templates.command.template.delete_success.format();
                 }
-                return Templates.command.template.delete_failed.compile();
+                return Templates.command.template.delete_failed.format();
             case "list":
             case "search":
                 int currentPage = 0;
@@ -178,10 +185,10 @@ public class TemplateCommand extends AbstractCommand {
                         Misc.makeTable(allKeyphrases, 50, 2);
             default:
                 args[0] = args[0].toLowerCase();
-                List<String> templates = Template.getAllFor(guildId, args[0]);
+                List<String> templates = TemplateCache.getAllFor(guildId, args[0]);
                 if (args.length == 1) {
                     if (templates.isEmpty()) {
-                        return Templates.command.template.not_found.compile(args[0]);
+                        return Templates.command.template.not_found.formatGuild(CGuild.getCachedDiscordId(guildId), args[0]);
                     }
                     List<List<String>> body = new ArrayList<>();
                     int index = 0;
@@ -191,7 +198,7 @@ public class TemplateCommand extends AbstractCommand {
                     return "Template overview for `" + args[0] + "`" + Config.EOL +
                             Misc.makeAsciiTable(Arrays.asList("#", "value"), body, null);
                 }
-                return Templates.command.template.invalid_option.compile();
+                return Templates.command.template.invalid_option.format();
         }
     }
 }

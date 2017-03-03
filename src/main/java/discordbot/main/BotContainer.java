@@ -299,7 +299,6 @@ public class BotContainer {
         for (DiscordBot shard : shards) {
             totGuilds += shard.client.getGuilds().size();
         }
-        TemplateCache.initGuildTemplates(this);
         Unirest.post("https://bots.discordlist.net/api.php")
                 .field("token", Config.BOT_STATS_DISCORDLIST_NET_TOKEN)
                 .field("servers", totGuilds)
@@ -403,6 +402,8 @@ public class BotContainer {
      * After the bot is ready to go; reconnect to the voicechannels and start playing where it left off
      */
     private void onAllShardsReady() {
+        TemplateCache.initGuildTemplates(this);
+        System.out.println("DONE LOADING TEMPLATES");
         youtubeThread.start();
         CBotPlayingOn.deleteAll();
         sendStatsToDiscordlistNet();
