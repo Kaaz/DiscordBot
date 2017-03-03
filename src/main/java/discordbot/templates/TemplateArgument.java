@@ -27,7 +27,7 @@ public enum TemplateArgument {
     USER_ID("user-id", "User's id", e -> e.user != null ? e.user.getId() : ""),
     USER_DESCRIMINATOR("discrim", "Discriminator of the user", e -> e.user != null ? e.user.getDiscriminator() : ""),
 
-    NICKNAME("nick", "Nickname of user", e -> e.user != null && e.guild != null ? e.guild.getMember(e.user).getEffectiveName() : ""),
+    NICKNAME("nick", "Nickname of user", e -> e.user != null && e.guild != null ? e.guild.getMember(e.user) == null ? e.user.getName() : e.guild.getMember(e.user).getEffectiveName() : ""),
     GUILD("guild", "Guild name", e -> e.guild != null ? e.guild.getName() : ""),
     GUILD_ID("guild-id", "Guild's id", e -> e.guild != null ? e.guild.getId() : ""),
     GUILD_USERS("guild-users", "Sums guild members", e -> e.guild != null ? Integer.toString(e.guild.getMembers().size()) : ""),

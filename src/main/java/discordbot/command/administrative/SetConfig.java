@@ -63,7 +63,7 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
         EmbedBuilder b = new EmbedBuilder();
         List<String> keys = DefaultGuildSettings.getWritableKeys();
         Collections.sort(keys);
-        int maxPage = (int) Math.ceil(keys.size() / CFG_PER_PAGE);
+        int maxPage = (int) Math.ceil((double) keys.size() / (double) CFG_PER_PAGE);
         activePage = Math.max(0, Math.min(maxPage - 1, activePage - 1));
         int endIndex = activePage * CFG_PER_PAGE + CFG_PER_PAGE;
         int elements = 0;
@@ -79,7 +79,7 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
         b.setFooter("Page " + (activePage + 1) + " / " + maxPage + " | Press the buttons for other pages", null);
         b.setDescription(String.format("To see more details about a setting:" + Config.EOL +
                 "`%1$scfg settingname`" + Config.EOL + Config.EOL, commandPrefix));
-        b.setTitle("Current Settings for " + guild.getName() + " [" + (1 + activePage) + " / " + maxPage + "]",null);
+        b.setTitle("Current Settings for " + guild.getName() + " [" + (1 + activePage) + " / " + maxPage + "]", null);
         return b.build();
     }
 
