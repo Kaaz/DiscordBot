@@ -336,7 +336,7 @@ public class MusicPlayerHandler {
                 }
                 bot.musicReactionHandler.clearGuild(guildId);
                 Guild guild = bot.client.getGuildById(guildId);
-                if (PermissionUtil.checkPermission(message.getTextChannel(), guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION)) {
+                if (PermissionUtil.checkPermission(message.getTextChannel(), guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY)) {
                     message.addReaction(Emojibet.STAR).queue();
                     message.addReaction(Emojibet.NEXT_TRACK).queue();
                     if (aListenerIsAtLeast(SimpleRank.BOT_ADMIN)) {
