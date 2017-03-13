@@ -47,7 +47,6 @@ public class RedditScraper {
     }
 
     public static List<Post> getDailyTop(String subreddit) {
-
         String response = HttpHelper.doRequest(RedditConstants.URL + RedditConstants.SUBREDDIT_INDICATOR + subreddit + "/top.json?sort=top&t=day&limit=100");
         InitialData listing = gson.fromJson(response, InitialData.class);
         if (listing.data != null && listing.data.children != null) {

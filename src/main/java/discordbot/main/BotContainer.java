@@ -142,6 +142,7 @@ public class BotContainer {
                 shards[shardId].restartJDA();
             } catch (LoginException | InterruptedException | RateLimitedException e) {
                 e.printStackTrace();
+                return;
             }
             List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
             for (OBotPlayingOn radio : radios) {

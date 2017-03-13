@@ -57,7 +57,8 @@ public class RedditCommand extends AbstractCommand {
             "pbs.twimg.com",
             "gfycat.com",
             "file1.answcdn.com",
-            "i.reddituploads.com"
+            "i.reddituploads.com",
+            "youtube.com"
     }));
 
     public RedditCommand() {
@@ -93,15 +94,14 @@ public class RedditCommand extends AbstractCommand {
             subReddit = args[0];
         }
         List<Post> dailyTop = RedditScraper.getDailyTop(subReddit);
-        if (dailyTop.isEmpty()) {
+        if (dailyTop.size() == 0) {
             return Template.get("command_reddit_sub_not_found");
         }
         Random rng = new Random();
         Post post;
         do {
             int index = rng.nextInt(dailyTop.size());
-            post = dailyTop.get(index);
-            dailyTop.remove(index);
+            post = dailyTop.remove(index);
             if (post.data.is_self) {
                 break;
             }
@@ -111,6 +111,9 @@ public class RedditCommand extends AbstractCommand {
         } while (dailyTop.size() > 0);
         if (post.data.is_self) {
             return ":newspaper:" + Config.EOL + post.data.getTitle() + Config.EOL + post.data.getSelftext();
+        }
+        if (post.data.url != null && post.data.url.length() > 20) {
+            return post.data.title + "\n" + post.data.url;
         }
         ImagePreview preview = post.data.getPreview();
         if (preview != null && preview.images.size() > 0) {
