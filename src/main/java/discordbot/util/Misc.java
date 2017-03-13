@@ -44,7 +44,7 @@ public class Misc {
             "\u0039\u20E3",
             "\uD83D\uDD1F"
     };
-    private final static HashSet<String> fuzzyTrue = new HashSet<>(Arrays.asList("yea", "yep", "yes", "true", "ja", "y", "t", "1","check"));
+    private final static HashSet<String> fuzzyTrue = new HashSet<>(Arrays.asList("yea", "yep", "yes", "true", "ja", "y", "t", "1", "check"));
     private final static HashSet<String> fuzzyFalse = new HashSet<>(Arrays.asList("no", "false", "nope", "nein", "nee", "n", "f", "0"));
 
 
@@ -62,7 +62,7 @@ public class Misc {
         return bar;
     }
 
-    public static String makeStackedBar(int max,int bar, String barChar) {
+    public static String makeStackedBar(int max, int bar, String barChar) {
         String fill = ":wavy_dash:";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < bar; i++) {
@@ -329,9 +329,22 @@ public class Misc {
      * @return a joined string
      */
     public static String joinStrings(String[] strings, int startIndex) {
+        return joinStrings(strings, startIndex, strings.length);
+    }
+
+    /**
+     * Joins an array of strings together to 1 starting at position x ending at position y
+     *
+     * @param strings    the array of strings to join
+     * @param startIndex index to start at
+     * @param endIndex   index to end at
+     * @return joined string
+     */
+    public static String joinStrings(String[] strings, int startIndex, int endIndex) {
         if (startIndex < strings.length) {
             String ret = strings[startIndex];
-            for (int i = startIndex + 1; i < strings.length; i++) {
+            endIndex = Math.min(endIndex, strings.length);
+            for (int i = startIndex + 1; i < endIndex; i++) {
                 ret += " " + strings[i];
             }
             return ret;

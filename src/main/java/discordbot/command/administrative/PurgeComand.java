@@ -137,7 +137,7 @@ public class PurgeComand extends AbstractCommand {
                     style = PurgeStyle.BOTS;
                     break;
                 case "user":
-                    style = PurgeStyle.AUTHOR;
+                    style = PurgeStyle.USER;
                     if (args.length > 1) {
                         User user = DisUtil.findUser((TextChannel) channel, Misc.joinStrings(args, 1));
                         if (user != null) {
@@ -176,10 +176,17 @@ public class PurgeComand extends AbstractCommand {
             } else if (args[0].matches("^\\d+$")) {
                 toDelete = Math.min(MAX_DELETE_COUNT, Misc.parseInt(args[0], toDelete)) + 1;
             } else {
-                toDeleteFrom = DisUtil.findUserIn((TextChannel) channel, args[0]);
-                if (args.length >= 2 && args[1].matches("^\\d+$")) {
-                    toDelete = Math.min(toDelete, Integer.parseInt(args[1])) + 1;
+                int lastIndex = args.length;
+                if (args.length > 1) {
+                    if (args[args.length - 1].matches("\\d+")) {
+                        lastIndex--;
+                        toDelete = Math.min(toDelete, Integer.parseInt(args[args.length - 1])) + 1;
+                    }
                 }
+                toDeleteFrom = DisUtil.findUserIn((TextChannel) channel, Misc.joinStrings(args, 0, lastIndex));
+            }
+            if (toDeleteFrom != null) {
+                style = PurgeStyle.USER;
             }
         }
         int finalDeleteLimit = toDelete;
@@ -220,7 +227,7 @@ public class PurgeComand extends AbstractCommand {
                             deletedCount++;
                         }
                         break;
-                    case AUTHOR:
+                    case USER:
                         if (finalToDeleteFrom != null && msg.getAuthor() != null && msg.getAuthor().getId().equals(finalToDeleteFrom.getUser().getId())) {
                             messagesToDelete.add(msg);
                             deletedCount++;
@@ -304,6 +311,6 @@ public class PurgeComand extends AbstractCommand {
     }
 
     private enum PurgeStyle {
-        UNKNOWN, ALL, BOTS, AUTHOR, MATCHES, NOTMATCHES, COMMANDS
+        UNKNOWN, ALL, BOTS, USER, MATCHES, NOTMATCHES, COMMANDS
     }
 }

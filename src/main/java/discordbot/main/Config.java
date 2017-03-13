@@ -31,7 +31,8 @@ public class Config {
     public static final int GUILD_MIN_USERS = 5;
     public static final int MAX_MESSAGE_SIZE = 2000;
     //the default time to delete messages after milliseconds
-    public static long DELETE_MESSAGES_AFTER = 120000;
+    public static long DELETE_MESSAGES_AFTER = 120_000;
+
     public static String TEMPLATE_QUOTE = "%";
     //bot enabled? must be set to true in order to run
     @ConfigurationOption

@@ -126,7 +126,7 @@ public class Launcher {
                         CBotPlayingOn.insert(guild.getId(), audio.getConnectedChannel().getId());
                     }
                 }
-                discordBot.client.shutdownNow(true);
+                discordBot.client.shutdown(true);
             }
         }
 

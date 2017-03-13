@@ -135,7 +135,7 @@ public class BotContainer {
             MusicPlayerHandler.removeGuild(guild, true);
         }
         System.out.println("shutting down shard " + shardId);
-        shards[shardId].client.shutdownNow(false);
+        shards[shardId].client.shutdown(false);
         System.out.println("SHUT DOWN SHARD " + shardId);
         schedule(() -> {
             try {
@@ -282,7 +282,7 @@ public class BotContainer {
             LOGGER.warn("Can't find BOT_STATUS_CHANNEL_ID " + Config.BOT_STATUS_CHANNEL_ID);
             return;
         }
-        if (!status.equals(JDA.Status.SHUTTING_DOWN)) {
+        if (channel.getJDA().getStatus() == JDA.Status.CONNECTED) {
             int length = 1 + (int) Math.floor(Math.log10(shards.length));
             channel.sendMessage(String.format(Emojibet.SHARD_ICON + " `%0" + length + "d/%0" + length + "d` | ~~%s~~ -> %s", shardId, shards.length, oldStatus.toString(), status.toString())).queue();
         }

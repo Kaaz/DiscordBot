@@ -144,14 +144,11 @@ public class OutgoingContentHandler {
      * @param messageToDelete the message to delete
      */
     public void saveDelete(Message messageToDelete) {
-        if (messageToDelete != null) {
-            TextChannel channel = messageToDelete.getJDA().getTextChannelById(messageToDelete.getChannel().getId());
+        if (messageToDelete != null && botInstance.client == messageToDelete.getJDA()) {
+            TextChannel channel = botInstance.client.getTextChannelById(messageToDelete.getChannel().getId());
             if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_HISTORY)) {
-                channel.getMessageById(messageToDelete.getId()).queue(msg -> {
-                    if (msg != null) {
-                        msg.delete().queue();
-                    }
-                });
+                Message msg = channel.getMessageById(messageToDelete.getId()).complete();
+                msg.delete().complete();
             }
         }
     }
