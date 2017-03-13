@@ -232,9 +232,7 @@ public class JDAEvents extends ListenerAdapter {
             return;
         }
         TextChannel channel = (TextChannel) e.getChannel();
-        System.out.println("can you handle it??");
         if (discordBot.commandReactionHandler.canHandle(channel.getGuild().getId(), e.getMessageId())) {
-            System.out.println("-- YES I CAN");
             discordBot.commandReactionHandler.handle(channel, e.getMessageId(), e.getUser().getId(), e.getReaction());
             return;
         }
@@ -335,7 +333,7 @@ public class JDAEvents extends ListenerAdapter {
             TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
             if (defaultChannel != null && defaultChannel.canTalk()) {
                 defaultChannel.sendMessage(
-                        Templates.message_user_leaves.formatGuild(guild.getId(),user, guild)).queue(
+                        Templates.message_user_leaves.formatGuild(guild.getId(), user, guild)).queue(
                         message -> {
                             if (!"no".equals(GuildSettings.get(guild.getId()).getOrDefault(SettingCleanupMessages.class))) {
                                 discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);

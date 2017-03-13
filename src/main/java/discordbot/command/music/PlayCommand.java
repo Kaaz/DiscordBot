@@ -241,8 +241,17 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                             }
                             player.addToQueue(targetFile.toPath().toRealPath().toString(), invoker);
                         } else {
-                            if (msg != null) {
-                                msg.editMessage("Download failed, the song is likely too long or region locked!").queue();
+                            if (player.getPlaylist().isGlobalList()) {
+                                if (msg != null) {
+                                    msg.editMessage("Download failed, the song is likely too long or region locked!").queue();
+                                }
+                            } else {
+                                if (msg != null) {
+                                    CPlaylist.removeFromPlayList(player.getPlaylist().id, record.id);
+                                    msg.editMessage(String.format("the video `%s` (%s) is unavailable and its removed from the playlist '%s'",
+                                            record.youtubecode, record.youtubeTitle, player.getPlaylist().title));
+                                    player.forceSkip();
+                                }
                             }
                         }
                     } catch (IOException e) {
