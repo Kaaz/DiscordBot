@@ -249,7 +249,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                                 if (msg != null) {
                                     CPlaylist.removeFromPlayList(player.getPlaylist().id, record.id);
                                     msg.editMessage(String.format("the video `%s` (%s) is unavailable and its removed from the playlist '%s'",
-                                            record.youtubecode, record.youtubeTitle, player.getPlaylist().title));
+                                            record.youtubecode, record.youtubeTitle, player.getPlaylist().title)).queue();
                                     player.forceSkip();
                                 }
                             }
