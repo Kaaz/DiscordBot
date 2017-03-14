@@ -224,7 +224,7 @@ public class NowPlayingCommand extends AbstractCommand {
                             }
                             message.editMessage((player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + Config.EOL +
                                     MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL
-                            ).queue(null, throwable -> f[0].cancel(false));
+                            ).complete();
                         }, 10_000L, 10_000L
                 );
             });
@@ -244,7 +244,7 @@ public class NowPlayingCommand extends AbstractCommand {
                     bot.scheduleRepeat(() -> {
                         if (!player.isUpdateChannelTitle() || !player.canTogglePause()) {
                             player.setUpdateChannelTitle(false);
-                            musicChannel.getManager().setTopic("").queue();
+                            musicChannel.getManager().setTopic("").complete();
                             f[0].cancel(false);
                             return;
                         }
@@ -253,7 +253,7 @@ public class NowPlayingCommand extends AbstractCommand {
                                 (player.isInRepeatMode() ? "\uD83D\uDD02 " : "") +
                                         MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) +
                                         (nowPlaying.id > 0 ? "\uD83C\uDFB6 " + nowPlaying.youtubeTitle : "")
-                        ).queue();
+                        ).complete();
                     }, 10_000L, 10_000L);
                     return Template.get("music_channel_autotitle_start");
                 }

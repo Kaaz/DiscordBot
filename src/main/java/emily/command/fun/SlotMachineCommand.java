@@ -117,10 +117,10 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
                             } else {
                                 gameResult = Template.get("gamble_ai_lose");
                             }
-                            message.editMessage(slotMachine.toString() + Config.EOL + gameResult).queue();
+                            message.editMessage(slotMachine.toString() + Config.EOL + gameResult).complete();
                             f[0].cancel(false);
                         } else {
-                            message.editMessage(slotMachine.toString()).queue();
+                            message.editMessage(slotMachine.toString()).complete();
                         }
                     } catch (Exception e) {
                         bot.getContainer().reportError(e, "slotmachine", author.getId(), "channel", ((TextChannel) channel).getAsMention(), bot);
