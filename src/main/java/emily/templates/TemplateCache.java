@@ -77,13 +77,7 @@ public class TemplateCache {
                         whiteList.add(guildId);
                     }
                 }
-                if (!guildDictionary.containsKey(guildId)) {
-                    guildDictionary.put(guildId, new ConcurrentHashMap<>());
-                }
-                if (!guildDictionary.get(guildId).containsKey(keyphrase)) {
-                    guildDictionary.get(guildId).put(keyphrase, new ArrayList<>());
-                }
-                guildDictionary.get(guildId).get(keyphrase).add(rs.getString("text"));
+                addToGuildCache(guildId, keyphrase, rs.getString("text"));
             }
             rs.getStatement().close();
         } catch (SQLException e) {
@@ -97,20 +91,22 @@ public class TemplateCache {
         }
         try (ResultSet rs = WebDb.get().select("SELECT id,keyphrase, text FROM template_texts WHERE guild_id = ?", guildId)) {
             while (rs.next()) {
-                String keyphrase = rs.getString("keyphrase");
-                if (!guildDictionary.containsKey(guildId)) {
-                    guildDictionary.put(guildId, new ConcurrentHashMap<>());
-                }
-                if (!guildDictionary.get(guildId).containsKey(keyphrase)) {
-                    guildDictionary.get(guildId).put(keyphrase, new ArrayList<>());
-                }
-                guildDictionary.get(guildId).get(keyphrase).add(rs.getString("text"));
-
+                addToGuildCache(guildId, rs.getString("keyphrase"), rs.getString("text"));
             }
             rs.getStatement().close();
         } catch (SQLException e) {
             e.getStackTrace();
         }
+    }
+
+    private static void addToGuildCache(int guildId, String keyphrase, String text) {
+        if (!guildDictionary.containsKey(guildId)) {
+            guildDictionary.put(guildId, new ConcurrentHashMap<>());
+        }
+        if (!guildDictionary.get(guildId).containsKey(keyphrase)) {
+            guildDictionary.get(guildId).put(keyphrase, new ArrayList<>());
+        }
+        guildDictionary.get(guildId).get(keyphrase).add(text);
     }
 
     public static String getGuild(int guildId, String keyPhrase) {
@@ -154,14 +150,12 @@ public class TemplateCache {
             removeGlobal(keyPhrase, text);
             return;
         }
-        if (guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyPhrase)) {
-            if (guildDictionary.get(guildId).get(keyPhrase).contains(text)) {
-                try {
-                    WebDb.get().query("DELETE FROM template_texts WHERE keyphrase = ? AND text = ? AND guild_id = ?", keyPhrase, text, guildId);
-                    guildDictionary.get(guildId).get(keyPhrase).remove(text);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+        if (guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyPhrase) && guildDictionary.get(guildId).get(keyPhrase).contains(text)) {
+            try {
+                WebDb.get().query("DELETE FROM template_texts WHERE keyphrase = ? AND text = ? AND guild_id = ?", keyPhrase, text, guildId);
+                guildDictionary.get(guildId).get(keyPhrase).remove(text);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -173,14 +167,12 @@ public class TemplateCache {
      * @param text      text
      */
     public static synchronized void removeGlobal(String keyPhrase, String text) {
-        if (dictionary.containsKey(keyPhrase)) {
-            if (dictionary.get(keyPhrase).contains(text)) {
-                try {
-                    WebDb.get().query("DELETE FROM template_texts WHERE keyphrase = ? AND text = ? ", keyPhrase, text);
-                    dictionary.get(keyPhrase).remove(text);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+        if (dictionary.containsKey(keyPhrase) && dictionary.get(keyPhrase).contains(text)) {
+            try {
+                WebDb.get().query("DELETE FROM template_texts WHERE keyphrase = ? AND text = ? ", keyPhrase, text);
+                dictionary.get(keyPhrase).remove(text);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
