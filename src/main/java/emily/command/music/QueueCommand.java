@@ -43,7 +43,7 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
 
     @Override
     public String getDescription() {
-        return "check and modify the queue";
+        return "check whats in the music queue";
     }
 
     @Override
@@ -84,7 +84,6 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
                                     guild.getId(), message,
                                     getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)));
                         }
-
                     }
             );
             return "";
