@@ -33,47 +33,47 @@ import java.util.stream.Collectors;
  * Templates.permission_missing.format("some permission")
  * Templates.command.SAY_CONTAINS_MENTION.format()
  */
-public class Templates {
+public final class Templates {
     final private static HashMap<String, Template> dictionary = new HashMap<>();
 
-    public static Template permission_missing = new Template(TemplateArgument.ARG);
-    public static Template no_permission = new Template();
-    public static Template TEST = new Template(
+    public static final Template permission_missing = new Template(TemplateArgument.ARG);
+    public static final Template no_permission = new Template();
+    public static final Template TEST = new Template(
             new TemplateArgument[]{TemplateArgument.USER, TemplateArgument.USER_DESCRIMINATOR, TemplateArgument.GUILD},
             new TemplateArgument[]{TemplateArgument.ARG, TemplateArgument.ARGS});
-    public static Template welcome_new_user = new Template(null, TemplateArgument.values());
-    public static Template welcome_back_user = new Template(null, TemplateArgument.values());
-    public static Template message_user_leaves = new Template(null, TemplateArgument.values());
+    public static final Template welcome_new_user = new Template(null, TemplateArgument.values());
+    public static final Template welcome_back_user = new Template(null, TemplateArgument.values());
+    public static final Template message_user_leaves = new Template(null, TemplateArgument.values());
 
     public static Template getByKey(String templateKey) {
         return dictionary.get(templateKey);
     }
 
-    public static class command {
+    final public static class command {
         public static class template {
-            public static Template added = new Template();
-            public static Template added_failed = new Template();
-            public static Template invalid_option = new Template();
+            public static final Template added = new Template();
+            public static final Template added_failed = new Template();
+            public static final Template invalid_option = new Template();
 
-            public static Template delete_success = new Template();
-            public static Template delete_failed = new Template();
-            public static Template not_found = new Template(TemplateArgument.ARG);
+            public static final Template delete_success = new Template();
+            public static final Template delete_failed = new Template();
+            public static final Template not_found = new Template(TemplateArgument.ARG);
         }
 
-        public static Template invalid_use = new Template();
-        public static Template SAY_CONTAINS_MENTION = new Template();
-        public static Template SAY_WHATEXACTLY = new Template();
+        public static final Template invalid_use = new Template();
+        public static final Template SAY_CONTAINS_MENTION = new Template();
+        public static final Template SAY_WHATEXACTLY = new Template();
     }
 
-    public static class music {
+    final public static class music {
 
-        public static Template no_one_listens_i_leave = new Template();
-        public static Template queue_is_empty = new Template(TemplateArgument.GUILD);
+        public static final Template no_one_listens_i_leave = new Template();
+        public static final Template queue_is_empty = new Template(TemplateArgument.GUILD);
     }
 
-    public static class error {
-        public static Template command_private_only = new Template();
-        public static Template command_public_only = new Template();
+    final public static class error {
+        public static final Template command_private_only = new Template();
+        public static final Template command_public_only = new Template();
     }
 
     public static int uniquePhraseCount() {
@@ -109,7 +109,7 @@ public class Templates {
         TemplateCache.initialize();
     }
 
-    public static void loadCategory(String prefix, Class<?> clazz) {
+    private static void loadCategory(String prefix, Class<?> clazz) {
         String pre = prefix.isEmpty() ? "" : prefix + "_";
         for (Class<?> sub : clazz.getClasses()) {
             loadCategory((pre + sub.getSimpleName()).toLowerCase(), sub);
