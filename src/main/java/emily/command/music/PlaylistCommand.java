@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit;
  * shows the current songs in the queue
  */
 public class PlaylistCommand extends AbstractCommand implements ICommandReactionListener<PaginationInfo<OPlaylist>> {
-    private final static int ITEMS_PER_PAGE = 25;
+    private final static int ITEMS_PER_PAGE = 20;
 
     public PlaylistCommand() {
         super();
@@ -480,12 +480,20 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         listener.setExpiresIn(TimeUnit.MINUTES, 2);
         listener.registerReaction(Emojibet.PREV_TRACK, o -> {
             if (listener.getData().previousPage()) {
-                o.editMessage(makePage(initialData.getGuild(), initialData.getExtra(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).queue();
+                String txt = makePage(initialData.getGuild(), initialData.getExtra(), listener.getData().getCurrentPage(), listener.getData().getMaxPage());
+                if (txt.length() > 2000) {
+                    txt = txt.substring(0, 1999);
+                }
+                o.editMessage(txt).queue();
             }
         });
         listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
             if (listener.getData().nextPage()) {
-                o.editMessage(makePage(initialData.getGuild(), initialData.getExtra(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).queue();
+                String txt = makePage(initialData.getGuild(), initialData.getExtra(), listener.getData().getCurrentPage(), listener.getData().getMaxPage());
+                if (txt.length() > 2000) {
+                    txt = txt.substring(0, 1999);
+                }
+                o.editMessage(txt).queue();
             }
         });
         return listener;
