@@ -40,7 +40,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>discordbot.main.Launcher</mainClass>
+							<mainClass>emily.main.Launcher</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

@@ -5,5 +5,5 @@ logs
 application.cfg
 log/
 #so I can uglyfy this file without worries
-src/main/java/discordbot/command/fun/MyTestCommand.java
+src/main/java/emily/command/fun/MyTestCommand.java
 src/main/resources/logback.xml
