@@ -19,28 +19,28 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * Start the logging of bot events such as joining / leaving guilds
+ * saving some info on shutdown
+ * Save the channels where the bot was playing on, to resume again on startup.
  */
-public class db_07_to_08 implements IDbVersion {
+public class Db_12_to_13 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 7;
+        return 12;
     }
 
     @Override
     public int getToVersion() {
-        return 8;
+        return 13;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "CREATE TABLE bot_events ( " +
-                        " id INT PRIMARY KEY AUTO_INCREMENT, " +
-                        " created_on TIMESTAMP NOT NULL," +
-                        " event_group VARCHAR(32) NOT NULL," +
-                        " sub_group VARCHAR(32)," +
-                        " data TEXT )"
+                "CREATE TABLE bot_playing_on ( " +
+                        "guild_id VARCHAR(32), " +
+                        "channel_id VARCHAR(32), " +
+                        "CONSTRAINT bot_playing_on_pk PRIMARY KEY (guild_id, channel_id))",
+
         };
     }
 }

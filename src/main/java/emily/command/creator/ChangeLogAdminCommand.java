@@ -32,9 +32,6 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
 public class ChangeLogAdminCommand extends AbstractCommand {
-    public ChangeLogAdminCommand() {
-        super();
-    }
 
     @Override
     public String getDescription() {

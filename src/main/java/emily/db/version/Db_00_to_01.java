@@ -18,25 +18,24 @@ package emily.db.version;
 
 import emily.db.IDbVersion;
 
-//message saved as varchar
-public class db_27_to_28 implements IDbVersion {
+/**
+ * Start with a meta controllers for meta information such as database version
+ */
+public class Db_00_to_01 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 27;
+        return 0;
     }
 
     @Override
     public int getToVersion() {
-        return 28;
+        return 1;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "ALTER TABLE moderation_case MODIFY message_id VARCHAR(32)",
-                "ALTER TABLE moderation_case ADD user_name VARCHAR(64) NULL",
-                "ALTER TABLE moderation_case ADD moderator_name VARCHAR(64) NULL",
-                "TRUNCATE TABLE moderation_case"
+                "CREATE TABLE bot_meta (meta_name VARCHAR(32) PRIMARY KEY NOT NULL,  meta_value VARCHAR(32));"
         };
     }
 }

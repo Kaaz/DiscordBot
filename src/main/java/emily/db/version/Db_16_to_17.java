@@ -19,23 +19,23 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * keep track of whether a file should exist or not
+ * per-user based permission
  */
-public class db_18_to_19 implements IDbVersion {
+public class Db_16_to_17 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 18;
+        return 16;
     }
 
     @Override
     public int getToVersion() {
-        return 19;
+        return 17;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "ALTER TABLE music ADD file_exists INT DEFAULT 1 NOT NULL"
+                "ALTER TABLE users ADD permission_mask INT DEFAULT 0 NOT NULL",
         };
     }
 }

@@ -19,23 +19,23 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * Start with a meta controllers for meta information such as database version
+ * for music; Allow for a longer filename (up to 255)
  */
-public class db_00_to_01 implements IDbVersion {
+public class Db_02_to_03 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 0;
+        return 2;
     }
 
     @Override
     public int getToVersion() {
-        return 1;
+        return 3;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "CREATE TABLE bot_meta (meta_name VARCHAR(32) PRIMARY KEY NOT NULL,  meta_value VARCHAR(32));"
+                "ALTER TABLE playlist MODIFY filename VARCHAR(255) NOT NULL"
         };
     }
 }

@@ -19,23 +19,28 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * for music; Allow for a longer filename (up to 255)
+ * init self assignable roles
  */
-public class db_02_to_03 implements IDbVersion {
+public class Db_19_to_20 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 2;
+        return 19;
     }
 
     @Override
     public int getToVersion() {
-        return 3;
+        return 20;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "ALTER TABLE playlist MODIFY filename VARCHAR(255) NOT NULL"
+                "CREATE TABLE guild_roles_self ( " +
+                        " guild_id INT NOT NULL, " +
+                        " discord_role_id VARCHAR(32)) ",
+                "ALTER TABLE guild_roles_self ADD description TEXT NULL",
+                "ALTER TABLE guild_roles_self ADD role_name VARCHAR(128) NULL",
+                "ALTER TABLE guild_roles_self ADD PRIMARY KEY (guild_id, discord_role_id)"
         };
     }
 }

@@ -19,23 +19,31 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * Track if a server is still active, mostly so it can send a different message the first time it connects to a guild
+ * controllers for the tag command
  */
-public class db_03_to_04 implements IDbVersion {
+public class Db_01_to_02 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 3;
+        return 1;
     }
 
     @Override
     public int getToVersion() {
-        return 4;
+        return 2;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "ALTER TABLE servers ADD active INT NULL"
+                "CREATE TABLE tags\n" +
+                        "         (\n" +
+                        "         id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                        "         tag_name VARCHAR(32),\n" +
+                        "         guild_id INT,\n" +
+                        "         response TEXT\n" +
+                        "         )",
+                "ALTER TABLE tags ADD user_id INT NULL",
+                "ALTER TABLE tags ADD creation_date TIMESTAMP NULL"
         };
     }
 }

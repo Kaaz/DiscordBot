@@ -22,7 +22,7 @@ import emily.db.IDbVersion;
  * some progress on the economy part
  * and tables for !changelog
  */
-public class db_26_to_27 implements IDbVersion {
+public class Db_26_to_27 implements IDbVersion {
     @Override
     public int getFromVersion() {
         return 26;

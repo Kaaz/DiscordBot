@@ -21,7 +21,7 @@ import emily.db.IDbVersion;
 /**
  * guild moderation cases
  */
-public class db_23_to_24 implements IDbVersion {
+public class Db_23_to_24 implements IDbVersion {
     @Override
     public int getFromVersion() {
         return 23;

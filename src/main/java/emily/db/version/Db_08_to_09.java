@@ -19,25 +19,28 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * playlist: + playmode
+ * the ability for users to rate songs
  */
-public class db_14_to_15 implements IDbVersion {
+public class Db_08_to_09 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 14;
+        return 8;
     }
 
     @Override
     public int getToVersion() {
-        return 15;
+        return 9;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "ALTER TABLE music ADD play_count INT NOT NULL",
-                "ALTER TABLE music ADD last_manual_playdate INT NOT NULL",
-                "ALTER TABLE users ADD commands_used INT NOT NULL",
+                " CREATE TABLE music_votes " +
+                        " (	song_id INT NOT NULL, " +
+                        "		user_id INT NOT NULL," +
+                        "		vote INT NOT NULL," +
+                        "		created_on TIMESTAMP NOT NULL," +
+                        "		CONSTRAINT music_votes_song_id_user_id_pk PRIMARY KEY (song_id, user_id) )"
         };
     }
 }

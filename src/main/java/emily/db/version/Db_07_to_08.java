@@ -19,30 +19,28 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * Renamed a couple of tables to match the discord names
- * added the option to ban users, guilds
- * added a few indices to make searching a bit better
+ * Start the logging of bot events such as joining / leaving guilds
  */
-public class db_05_to_06 implements IDbVersion {
+public class Db_07_to_08 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 5;
+        return 7;
     }
 
     @Override
     public int getToVersion() {
-        return 6;
+        return 8;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "ALTER TABLE servers ADD banned INT NULL",
-                "ALTER TABLE servers RENAME TO guilds",
-                "CREATE UNIQUE INDEX users_discord_id_uindex ON users (discord_id)",
-                "ALTER TABLE playlist RENAME TO music",
-                "ALTER TABLE users ADD banned INT NULL",
-                "CREATE UNIQUE INDEX guilds_discord_id_uindex ON guilds (discord_id)"
+                "CREATE TABLE bot_events ( " +
+                        " id INT PRIMARY KEY AUTO_INCREMENT, " +
+                        " created_on TIMESTAMP NOT NULL," +
+                        " event_group VARCHAR(32) NOT NULL," +
+                        " sub_group VARCHAR(32)," +
+                        " data TEXT )"
         };
     }
 }

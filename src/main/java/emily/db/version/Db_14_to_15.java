@@ -19,28 +19,25 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * saving some info on shutdown
- * Save the channels where the bot was playing on, to resume again on startup.
+ * playlist: + playmode
  */
-public class db_12_to_13 implements IDbVersion {
+public class Db_14_to_15 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 12;
+        return 14;
     }
 
     @Override
     public int getToVersion() {
-        return 13;
+        return 15;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "CREATE TABLE bot_playing_on ( " +
-                        "guild_id VARCHAR(32), " +
-                        "channel_id VARCHAR(32), " +
-                        "CONSTRAINT bot_playing_on_pk PRIMARY KEY (guild_id, channel_id))",
-
+                "ALTER TABLE music ADD play_count INT NOT NULL",
+                "ALTER TABLE music ADD last_manual_playdate INT NOT NULL",
+                "ALTER TABLE users ADD commands_used INT NOT NULL",
         };
     }
 }

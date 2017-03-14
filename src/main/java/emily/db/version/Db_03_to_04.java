@@ -19,26 +19,23 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * command blacklist for specific channels
+ * Track if a server is still active, mostly so it can send a different message the first time it connects to a guild
  */
-public class db_20_to_21 implements IDbVersion {
+public class Db_03_to_04 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 20;
+        return 3;
     }
 
     @Override
     public int getToVersion() {
-        return 21;
+        return 4;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "ALTER TABLE blacklist_commands ADD channel_id VARCHAR(32)NOT NULL",
-                "ALTER TABLE blacklist_commands DROP PRIMARY KEY",
-                "ALTER TABLE blacklist_commands ADD PRIMARY KEY(guild_id, command, channel_id)",
-                "ALTER TABLE blacklist_commands ADD enabled INT DEFAULT 0 NULL",
+                "ALTER TABLE servers ADD active INT NULL"
         };
     }
 }

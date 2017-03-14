@@ -21,7 +21,7 @@ import emily.db.IDbVersion;
 /**
  * introduction of music_log; keep track of whats being played
  */
-public class db_11_to_12 implements IDbVersion {
+public class Db_11_to_12 implements IDbVersion {
     @Override
     public int getFromVersion() {
         return 11;

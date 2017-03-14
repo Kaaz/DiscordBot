@@ -19,31 +19,24 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * controllers for the tag command
+ * bot events, add a log level to it
  */
-public class db_01_to_02 implements IDbVersion {
+public class Db_15_to_16 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 1;
+        return 15;
     }
 
     @Override
     public int getToVersion() {
-        return 2;
+        return 16;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "CREATE TABLE tags\n" +
-                        "         (\n" +
-                        "         id INT PRIMARY KEY AUTO_INCREMENT,\n" +
-                        "         tag_name VARCHAR(32),\n" +
-                        "         guild_id INT,\n" +
-                        "         response TEXT\n" +
-                        "         )",
-                "ALTER TABLE tags ADD user_id INT NULL",
-                "ALTER TABLE tags ADD creation_date TIMESTAMP NULL"
+                "ALTER TABLE bot_events ADD log_level INT DEFAULT 6 NULL",
+                "ALTER TABLE bot_events MODIFY log_level INT(11) NOT NULL DEFAULT '6'"
         };
     }
 }

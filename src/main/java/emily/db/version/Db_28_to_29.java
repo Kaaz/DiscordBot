@@ -22,7 +22,7 @@ import emily.db.IDbVersion;
  * more work on economy + introduction of betting
  * more indexes on tags
  */
-public class db_28_to_29 implements IDbVersion {
+public class Db_28_to_29 implements IDbVersion {
     @Override
     public int getFromVersion() {
         return 28;

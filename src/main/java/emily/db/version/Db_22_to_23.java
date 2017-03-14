@@ -22,7 +22,7 @@ import emily.main.Config;
 /**
  * move to utf8mb4
  */
-public class db_22_to_23 implements IDbVersion {
+public class Db_22_to_23 implements IDbVersion {
     @Override
     public int getFromVersion() {
         return 22;

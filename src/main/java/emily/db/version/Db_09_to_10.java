@@ -21,7 +21,7 @@ import emily.db.IDbVersion;
 /**
  * introduction of playlists
  */
-public class db_09_to_10 implements IDbVersion {
+public class Db_09_to_10 implements IDbVersion {
     @Override
     public int getFromVersion() {
         return 9;

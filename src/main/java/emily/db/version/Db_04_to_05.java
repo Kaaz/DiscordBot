@@ -19,24 +19,32 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * introduction of guild-based templates
+ * Table for auto replies to matching patterns in text
  */
-public class db_10_to_11 implements IDbVersion {
+public class Db_04_to_05 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 10;
+        return 4;
     }
 
     @Override
     public int getToVersion() {
-        return 11;
+        return 5;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "ALTER TABLE template_texts ADD guild_id INT NOT NULL",
-                "ALTER TABLE template_texts MODIFY COLUMN guild_id INT NOT NULL AFTER id",
+                "CREATE TABLE reply_pattern ( " +
+                        " id INT PRIMARY KEY AUTO_INCREMENT, " +
+                        " guild_id INT, " +
+                        " user_id INT, " +
+                        " tag VARCHAR(64), " +
+                        " pattern VARCHAR(255) NOT NULL, " +
+                        " reply TEXT, " +
+                        " created_on TIMESTAMP, " +
+                        " cooldown INT " +
+                        " )"
         };
     }
 }

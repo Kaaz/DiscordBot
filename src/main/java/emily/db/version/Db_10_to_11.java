@@ -19,28 +19,24 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * enabling/disabling commands per guild
+ * introduction of guild-based templates
  */
-public class db_17_to_18 implements IDbVersion {
+public class Db_10_to_11 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 17;
+        return 10;
     }
 
     @Override
     public int getToVersion() {
-        return 18;
+        return 11;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                " CREATE TABLE blacklist_commands ( " +
-                        " guild_id INT NOT NULL, " +
-                        " command VARCHAR(64) NOT NULL, " +
-                        " CONSTRAINT blacklist_commands_guild_id_command_pk PRIMARY KEY (guild_id, command) " +
-                        " )",
-                "CREATE INDEX blacklist_commands_guild_id_index ON blacklist_commands (guild_id)"
+                "ALTER TABLE template_texts ADD guild_id INT NOT NULL",
+                "ALTER TABLE template_texts MODIFY COLUMN guild_id INT NOT NULL AFTER id",
         };
     }
 }

@@ -19,24 +19,27 @@ package emily.db.version;
 import emily.db.IDbVersion;
 
 /**
- * bot events, add a log level to it
+ * guild mod case
  */
-public class db_15_to_16 implements IDbVersion {
+public class Db_24_to_25 implements IDbVersion {
     @Override
     public int getFromVersion() {
-        return 15;
+        return 24;
     }
 
     @Override
     public int getToVersion() {
-        return 16;
+        return 25;
     }
 
     @Override
     public String[] getExecutes() {
         return new String[]{
-                "ALTER TABLE bot_events ADD log_level INT DEFAULT 6 NULL",
-                "ALTER TABLE bot_events MODIFY log_level INT(11) NOT NULL DEFAULT '6'"
+                "DROP INDEX moderation_case_guild_id_user_id_pk ON moderation_case",
+                "DROP INDEX moderation_case_guild_id_message_id_pk ON moderation_case",
+                "CREATE INDEX moderation_case_guild_id_message_id_pk ON moderation_case(guild_id, message_id)",
+                "DROP INDEX moderation_case_user_id_message_id_pk ON moderation_case",
+                "CREATE INDEX moderation_case_user_id_message_id_pk ON moderation_case(user_id, message_id)",
         };
     }
 }

@@ -21,7 +21,7 @@ import emily.db.IDbVersion;
 /**
  * initialize the whole thing
  */
-public class db_00_init implements IDbVersion {
+public class Db_00_init implements IDbVersion {
     @Override
     public int getFromVersion() {
         return -1;
