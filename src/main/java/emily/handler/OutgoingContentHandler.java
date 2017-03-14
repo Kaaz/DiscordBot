@@ -170,15 +170,17 @@ public class OutgoingContentHandler {
                         Guild guild = roleToModify.getRole().getGuild();
                         Member member = guild.getMember(roleToModify.getUser());
                         Role role = roleToModify.getRole();
+                        if (member == null) {
+                            continue;
+                        }
                         if (PermissionUtil.canInteract(guild.getSelfMember(), role)) {
                             if (roleToModify.isAdd()) {
-                                guild.getController().addRolesToMember(member, role).queue();
+                                guild.getController().addRolesToMember(member, role).complete();
                             } else {
-                                guild.getController().removeRolesFromMember(member, role).queue();
+                                guild.getController().removeRolesFromMember(member, role).complete();
                             }
                         }
                     }
-                    sleep(2_000L);
                 }
             } catch (InterruptedException ignored) {
             } finally {

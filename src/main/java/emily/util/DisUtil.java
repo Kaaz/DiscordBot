@@ -407,12 +407,16 @@ public class DisUtil {
      */
     public static Role findRole(Guild guild, String roleName) {
         List<Role> roles = guild.getRoles();
+        Role containsRole = null;
         for (Role role : roles) {
             if (role.getName().equalsIgnoreCase(roleName)) {
                 return role;
             }
+            if (containsRole == null && role.getName().contains(roleName)) {
+                containsRole = role;
+            }
         }
-        return null;
+        return containsRole;
     }
 
 

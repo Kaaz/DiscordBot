@@ -54,11 +54,13 @@ public class Templates {
             public static Template added = new Template();
             public static Template added_failed = new Template();
             public static Template invalid_option = new Template();
+
             public static Template delete_success = new Template();
             public static Template delete_failed = new Template();
             public static Template not_found = new Template(TemplateArgument.ARG);
         }
 
+        public static Template invalid_use = new Template();
         public static Template SAY_CONTAINS_MENTION = new Template();
         public static Template SAY_WHATEXACTLY = new Template();
     }

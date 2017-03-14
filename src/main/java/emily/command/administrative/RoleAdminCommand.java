@@ -25,10 +25,12 @@ import emily.main.Config;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.role.RoleRankings;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -74,6 +76,9 @@ public class RoleAdminCommand extends AbstractCommand {
                 "roleadmin self remove <rolename>               //remove a role from the list of assignable roles",
 //				"roleadmin self describe <role> <description>   //add a description to what this role does",
                 "",
+                "//You can use everyone as <user> and it'll apply to everyone",
+                "roleadmin give <user> <role>     //gives a user a role",
+                "roleadmin take <user> <role>     //takes away role",
                 "",
                 "roleadmin                        //lists roles",
                 "roleadmin cleanup                //cleans up the roles from the time-based rankings",
@@ -114,11 +119,11 @@ public class RoleAdminCommand extends AbstractCommand {
             }
             return out;
         }
+        if (!PermissionUtil.checkPermission(guild, guild.getSelfMember(), Permission.MANAGE_ROLES)) {
+            return Template.get("permission_missing_manage_roles");
+        }
         switch (args[0].toLowerCase()) {
             case "self":
-                if (!PermissionUtil.checkPermission(guild, guild.getSelfMember(), Permission.MANAGE_ROLES)) {
-                    return Template.get("permission_missing_manage_roles");
-                }
                 if (args.length == 1) {
                     return "self roles overview";
                 }
@@ -151,8 +156,68 @@ public class RoleAdminCommand extends AbstractCommand {
                     return "Set up all the required roles :smile:";
                 }
                 return "No permissions to manage roles";
+            case "give":
+                if (args.length < 3) {
+                    return Templates.command.invalid_use.formatGuild(guild.getId());
+                }
+                return mutateRole((TextChannel) channel, args[1], args[2], true);
+            case "take":
+                if (args.length < 3) {
+                    return Templates.command.invalid_use.formatGuild(guild.getId());
+                }
+                return mutateRole((TextChannel) channel, args[1], args[2], false);
             default:
                 return ":face_palm: I expected you to know how to use it";
+        }
+    }
+
+    private String mutateRole(TextChannel channel, String user, String role, boolean adding) {
+        Role r = DisUtil.findRole(channel.getGuild(), role);
+        if (r == null) {
+            return "can't find a role matching **" + role + "**";
+        }
+        if ("everyone".equalsIgnoreCase(user)) {
+            for (Member member : channel.getGuild().getMembers()) {
+                _mutateRole(r, member, adding);
+            }
+            if (adding) {
+                return "(trying) to give everyone " + r.getName();
+            }
+            return "(trying) to remove *" + r.getName() + "* from everyone ";
+        }
+        User u = DisUtil.findUser(channel, user);
+        if (u == null) {
+            return "cant find user matching " + user;
+        }
+        _mutateRole(r, channel.getGuild().getMember(u), adding);
+        if (adding) {
+            return String.format("adding %s to %s", r.getName(), u.getName());
+        }
+        return String.format("removing %s to %s", r.getName(), u.getName());
+    }
+
+    private void _mutateRole(Role role, Member member, boolean adding) {
+        if (PermissionUtil.canInteract(role.getGuild().getSelfMember(), role)) {
+            if (adding) {
+                for (Role memberRole : member.getRoles()) {
+                    if (memberRole.getId().equals(role.getId())) {
+                        return;
+                    }
+                }
+                role.getGuild().getController().addRolesToMember(member, role).queue();
+            } else {
+                boolean hasRole = false;
+                for (Role memberRole : member.getRoles()) {
+                    if (memberRole.getId().equals(role.getId())) {
+                        hasRole = true;
+                        break;
+                    }
+                }
+                if (!hasRole) {
+                    return;
+                }
+                role.getGuild().getController().removeRolesFromMember(member, role).queue();
+            }
         }
     }
 }
