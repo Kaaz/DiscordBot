@@ -44,6 +44,6 @@ public class BooleanSettingType implements IGuildSettingType {
 
     @Override
     public String toDisplay(Guild guild, String value) {
-        return value.equals("true") ? Emojibet.OKE_SIGN : Emojibet.X;
+        return "true".equals(value) ? Emojibet.OKE_SIGN : Emojibet.X;
     }
 }

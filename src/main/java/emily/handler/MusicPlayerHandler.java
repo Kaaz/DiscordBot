@@ -329,7 +329,7 @@ public class MusicPlayerHandler {
                 }
             }
         }
-        if (!messageType.equals("off") && record.id > 0) {
+        if (!"off".equals(messageType) && record.id > 0) {
             if (musicChannel == null || !musicChannel.canTalk()) {
                 return;
             }
@@ -556,6 +556,9 @@ public class MusicPlayerHandler {
                         }
                     case PUBLIC_AUTO:
                         CPlaylist.addToPlayList(playlist.id, record.id);
+                        break;
+                    default:
+                        break;
                 }
             }
         }
