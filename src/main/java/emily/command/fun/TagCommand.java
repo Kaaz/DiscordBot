@@ -200,8 +200,8 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
     }
 
     @Override
-    public CommandReactionListener<PaginationInfo> getReactionListener(String InvokerUserId, PaginationInfo initialData) {
-        CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(InvokerUserId, initialData);
+    public CommandReactionListener<PaginationInfo> getReactionListener(String userId, PaginationInfo initialData) {
+        CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(userId, initialData);
         listener.setExpiresIn(TimeUnit.MINUTES, 2);
         listener.registerReaction(Emojibet.PREV_TRACK, o -> {
             if (listener.getData().previousPage()) {

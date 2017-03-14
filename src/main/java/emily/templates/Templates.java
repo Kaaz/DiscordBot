@@ -66,6 +66,7 @@ public class Templates {
     public static class music {
 
         public static Template no_one_listens_i_leave = new Template();
+        public static Template queue_is_empty = new Template(TemplateArgument.GUILD);
     }
 
     public static class error {

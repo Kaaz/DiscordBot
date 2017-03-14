@@ -39,6 +39,7 @@ import emily.util.YTUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -48,6 +49,7 @@ import net.dv8tion.jda.core.utils.PermissionUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * !play
@@ -164,19 +166,14 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                 }
                 if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getId()).hasPermission(OUser.PermissionNode.IMPORT_PLAYLIST)) {
                     List<YTSearch.SimpleResult> items = ytSearch.getPlayListItems(playlistCode);
-                    String output = "Added the following items to the playlist: " + Config.EOL;
                     int playCount = 0;
                     for (YTSearch.SimpleResult track : items) {
-                        if (playCount++ == Config.MUSIC_MAX_PLAYLIST_SIZE) {
-                            output += "Maximum of **" + Config.MUSIC_MAX_PLAYLIST_SIZE + "** items in the playlist!";
+                        processTrack(player, bot, (TextChannel) channel, author, track.getCode(), track.getTitle(), false);
+                        if (++playCount == Config.MUSIC_MAX_PLAYLIST_SIZE) {
                             break;
                         }
-                        String out = handleFile(player, bot, (TextChannel) channel, author, track.getCode(), track.getTitle(), false);
-                        if (!out.isEmpty()) {
-                            output += out + Config.EOL;
-                        }
                     }
-                    return output;
+                    return String.format("Added **%s** items to the queue", playCount);
                 }
             }
             if (!YTUtil.isValidYoutubeCode(videoCode)) {
@@ -195,7 +192,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                 videoTitle = videoCode;
             }
             if (videoCode != null && YTUtil.isValidYoutubeCode(videoCode)) {
-                return handleFile(player, bot, (TextChannel) channel, author, videoCode, videoTitle, true);
+                return processTrack(player, bot, (TextChannel) channel, author, videoCode, videoTitle, true);
             } else {
                 return Template.get("command_play_no_results");
             }
@@ -220,7 +217,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
         }
     }
 
-    public static String handleFile(MusicPlayerHandler player, DiscordBot bot, TextChannel channel, User invoker, String videoCode, String videoTitle, boolean useTemplates) {
+    public static String processTrack(MusicPlayerHandler player, DiscordBot bot, TextChannel channel, User invoker, String videoCode, String videoTitle, boolean useTemplates) {
         OMusic record = CMusic.findByYoutubeId(videoCode);
         final File filecheck;
         if (record.id > 0 && record.fileExists == 1) {
@@ -228,40 +225,43 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
         } else {
             filecheck = new File(YTUtil.getOutputPath(videoCode));
         }
+        final String finalVideoCode = videoCode;
+        Consumer<Message> consumer = message -> bot.getContainer().downloadRequest(finalVideoCode, videoTitle, message, msg -> {
+            try {
+                File targetFile = new File(YTUtil.getOutputPath(videoCode));
+                if (targetFile.exists()) {
+                    if (msg != null) {
+                        msg.editMessage(":notes: Found *" + videoTitle + "* And added it to the queue").complete();
+                    }
+                    player.addToQueue(targetFile.toPath().toRealPath().toString(), invoker);
+                } else {
+                    if (player.getPlaylist().isGlobalList()) {
+                        if (msg != null) {
+                            msg.editMessage("Download failed, the song is likely too long or region locked!").complete();
+                        }
+                    } else {
+                        CPlaylist.removeFromPlayList(player.getPlaylist().id, record.id);
+                        if (msg != null) {
+                            msg.editMessage(String.format("the video `%s` (%s) is unavailable and its removed from the playlist '%s'",
+                                    record.youtubecode, record.youtubeTitle, player.getPlaylist().title)).complete();
+                        }
+                        player.forceSkip();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                if (msg != null) {
+                    msg.editMessage(Template.get("music_file_error")).queue();
+                }
+            }
+        });
         boolean isInProgress = bot.getContainer().isInProgress(videoCode);
         if (!filecheck.exists() && !isInProgress) {
-            final String finalVideoCode = videoCode;
-            bot.out.sendAsyncMessage(channel, Template.get("music_downloading_in_queue", videoTitle), message -> {
-                bot.getContainer().downloadRequest(finalVideoCode, videoTitle, message, msg -> {
-                    try {
-                        File targetFile = new File(YTUtil.getOutputPath(videoCode));
-                        if (targetFile.exists()) {
-                            if (msg != null) {
-                                msg.editMessage(":notes: Found *" + videoTitle + "* And added it to the queue").queue();
-                            }
-                            player.addToQueue(targetFile.toPath().toRealPath().toString(), invoker);
-                        } else {
-                            if (player.getPlaylist().isGlobalList()) {
-                                if (msg != null) {
-                                    msg.editMessage("Download failed, the song is likely too long or region locked!").queue();
-                                }
-                            } else {
-                                if (msg != null) {
-                                    CPlaylist.removeFromPlayList(player.getPlaylist().id, record.id);
-                                    msg.editMessage(String.format("the video `%s` (%s) is unavailable and its removed from the playlist '%s'",
-                                            record.youtubecode, record.youtubeTitle, player.getPlaylist().title)).queue();
-                                    player.forceSkip();
-                                }
-                            }
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        if (msg != null) {
-                            msg.editMessage(Template.get("music_file_error")).queue();
-                        }
-                    }
-                });
-            });
+            if (useTemplates) {
+                bot.out.sendAsyncMessage(channel, Template.get("music_downloading_in_queue", videoTitle), consumer);
+            } else {
+                consumer.accept(null);
+            }
             return "";
         } else if (YTUtil.isValidYoutubeCode(videoCode) && isInProgress) {
             return Template.get(channel, "music_downloading_in_progress", videoTitle);

@@ -227,16 +227,19 @@ public class YoutubeThread extends Thread {
                 }
 
                 if (isInProgress(task.getCode())) {
-                    task.getMessage().getJDA().getTextChannelById(task.getMessage().getChannel().getId()).getMessageById(task.getMessage().getId()).queue(
-                            message -> message.editMessage(Template.get("music_downloading_in_progress", task.getTitle()))
-                    );
+                    if (task.message != null) {
+                        Message msg = task.getMessage().getJDA().getTextChannelById(task.getMessage().getChannel().getId()).getMessageById(task.getMessage().getId()).complete();
+                        msg.editMessage(Template.get("music_downloading_in_progress", task.getTitle())).complete();
+                    }
                     return;
                 }
                 registerProgress(task.getCode());
 
                 final File fileCheck = new File(YTUtil.getOutputPath(task.getCode()));
                 if (!fileCheck.exists()) {
-                    task.getMessage().editMessage(Template.get("music_downloading_hang_on")).queue();
+                    if (task.message != null) {
+                        task.getMessage().editMessage(Template.get("music_downloading_hang_on")).complete();
+                    }
                     downloadFileFromYoutube(task.getCode());
                 }
                 if (fileCheck.exists()) {
@@ -247,17 +250,21 @@ public class YoutubeThread extends Thread {
                     rec.playCount += 1;
                     rec.fileExists = 1;
                     rec.lastManualPlaydate = System.currentTimeMillis() / 1000L;
+                    if (rec.duration == 0) {
+                        YTUtil.getTrackDuration(rec);
+                    }
                     CMusic.update(rec);
                 }
-
                 if (task.getCallback() != null) {
-                    TextChannel channel = task.getMessage().getJDA().getTextChannelById(task.getMessage().getChannel().getId());
-                    if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY)) {
-                        channel.getMessageById(task.getMessage().getId()).queue(
-                                message -> task.getCallback().accept(message),
-                                throwable -> task.getCallback().accept(null));
-                    } else {
+                    if (task.getMessage() == null) {
                         task.getCallback().accept(null);
+                    } else {
+                        TextChannel channel = task.getMessage().getJDA().getTextChannelById(task.getMessage().getChannel().getId());
+                        if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY)) {
+                            task.getCallback().accept(channel.getMessageById(task.getMessage().getId()).complete());
+                        } else {
+                            task.getCallback().accept(null);
+                        }
                     }
                 }
             } catch (Exception e) {

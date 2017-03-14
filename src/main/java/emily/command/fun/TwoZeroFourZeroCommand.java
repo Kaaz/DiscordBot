@@ -82,17 +82,17 @@ public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandR
     }
 
     @Override
-    public CommandReactionListener<Game2048> getReactionListener(String invoker, Game2048 game) {
-        CommandReactionListener<Game2048> listener = new CommandReactionListener<>(invoker, game);
+    public CommandReactionListener<Game2048> getReactionListener(String userId, Game2048 game) {
+        CommandReactionListener<Game2048> listener = new CommandReactionListener<>(userId, game);
         listener.setExpiresIn(TimeUnit.MINUTES, 5);
         for (String reaction : game.getReactions()) {
             listener.registerReaction(Emojibet.getEmojiFor(reaction), message -> {
                 Game2048Turn turn = new Game2048Turn();
                 turn.parseInput(reaction);
-                if (!game.isValidMove(message.getJDA().getUserById(invoker), turn)) {
+                if (!game.isValidMove(message.getJDA().getUserById(userId), turn)) {
                     message.editMessage(game.toString() + Config.EOL + Template.get("playmode_not_a_valid_move")).queue();
                 } else {
-                    game.playTurn(message.getJDA().getUserById(invoker), turn);
+                    game.playTurn(message.getJDA().getUserById(userId), turn);
                     message.editMessage(game.toString()).queue();
                 }
                 if (game.getGameState().equals(GameState.OVER)) {

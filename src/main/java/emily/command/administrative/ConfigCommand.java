@@ -52,10 +52,10 @@ import java.util.concurrent.TimeUnit;
  * !config
  * gets/sets the configuration of the bot
  */
-public class SetConfig extends AbstractCommand implements ICommandReactionListener<PaginationInfo> {
+public class ConfigCommand extends AbstractCommand implements ICommandReactionListener<PaginationInfo> {
     public static final int CFG_PER_PAGE = 15;
 
-    public SetConfig() {
+    public ConfigCommand() {
         super();
     }
 
@@ -244,9 +244,9 @@ public class SetConfig extends AbstractCommand implements ICommandReactionListen
     }
 
     @Override
-    public CommandReactionListener<PaginationInfo> getReactionListener(String invoker, PaginationInfo data) {
+    public CommandReactionListener<PaginationInfo> getReactionListener(String userId, PaginationInfo data) {
 
-        CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(invoker, data);
+        CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(userId, data);
         listener.setExpiresIn(TimeUnit.MINUTES, 2);
         listener.registerReaction(Emojibet.PREV_TRACK, o -> {
             if (listener.getData().previousPage()) {

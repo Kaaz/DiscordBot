@@ -475,8 +475,8 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
     }
 
     @Override
-    public CommandReactionListener<PaginationInfo<OPlaylist>> getReactionListener(String InvokerUserId, PaginationInfo<OPlaylist> initialData) {
-        CommandReactionListener<PaginationInfo<OPlaylist>> listener = new CommandReactionListener<>(InvokerUserId, initialData);
+    public CommandReactionListener<PaginationInfo<OPlaylist>> getReactionListener(String userId, PaginationInfo<OPlaylist> initialData) {
+        CommandReactionListener<PaginationInfo<OPlaylist>> listener = new CommandReactionListener<>(userId, initialData);
         listener.setExpiresIn(TimeUnit.MINUTES, 2);
         listener.registerReaction(Emojibet.PREV_TRACK, o -> {
             if (listener.getData().previousPage()) {

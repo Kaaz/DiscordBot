@@ -516,7 +516,7 @@ public class MusicPlayerHandler {
         }
         if (!musicFile.exists()) {//check in config directory
             if (!playlist.isGlobalList()) {
-                PlayCommand.handleFile(this, bot, bot.getMusicChannel(getJDA().getGuildById(guildId)), getJDA().getSelfUser(), record.youtubecode, record.youtubeTitle, false);
+                PlayCommand.processTrack(this, bot, bot.getMusicChannel(getJDA().getGuildById(guildId)), getJDA().getSelfUser(), record.youtubecode, record.youtubeTitle, false);
                 return true;
             }
             record.fileExists = 0;

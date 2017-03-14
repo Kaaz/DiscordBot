@@ -180,8 +180,8 @@ public class ToDoCommand extends AbstractCommand implements ICommandReactionList
     }
 
     @Override
-    public CommandReactionListener<PaginationInfo<String>> getReactionListener(String InvokerUserId, PaginationInfo<String> initialData) {
-        CommandReactionListener<PaginationInfo<String>> listener = new CommandReactionListener<>(InvokerUserId, initialData);
+    public CommandReactionListener<PaginationInfo<String>> getReactionListener(String userId, PaginationInfo<String> initialData) {
+        CommandReactionListener<PaginationInfo<String>> listener = new CommandReactionListener<>(userId, initialData);
         listener.setExpiresIn(TimeUnit.MINUTES, 2);
         listener.registerReaction(Emojibet.PREV_TRACK, o -> {
             if (listener.getData().previousPage()) {
