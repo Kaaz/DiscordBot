@@ -251,7 +251,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
             } catch (IOException e) {
                 e.printStackTrace();
                 if (msg != null) {
-                    msg.editMessage(Template.get("music_file_error")).queue();
+                    msg.editMessage(Template.get("music_file_error")).complete();
                 }
             }
         });

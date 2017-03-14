@@ -93,7 +93,7 @@ public class BlackJackCommand extends AbstractCommand {
                         playerGames.get(author.getId()).stand();
                         f[0] = bot.scheduleRepeat(() -> {
                             boolean didHit = playerGames.get(author.getId()).dealerHit();
-                            message.editMessage(playerGames.get(author.getId()).toString()).queue();
+                            message.editMessage(playerGames.get(author.getId()).toString()).complete();
 
                             if (!didHit) {
                                 playerGames.remove(author.getId());
