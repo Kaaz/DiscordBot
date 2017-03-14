@@ -90,7 +90,10 @@ public class GameHandler {
             Map.Entry<String, AbstractGame> game = iterator.next();
             if (game.getValue().getLastTurnTimestamp() < maxAge) {
                 playerGames.remove(game.getKey());
-                reactionMessages.remove(Misc.getKeyByValue(reactionMessages, game.getKey()));
+                String key = Misc.getKeyByValue(reactionMessages, game.getKey());
+                if (key != null) {
+                    reactionMessages.remove(key);
+                }
                 String otherplayer = Misc.getKeyByValue(playersToGames, game.getKey());
                 if (otherplayer != null) {
                     playersToGames.remove(otherplayer);
