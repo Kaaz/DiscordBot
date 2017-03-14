@@ -70,19 +70,29 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
 
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-        Guild guild = ((TextChannel) channel).getGuild();
+        final Guild guild = ((TextChannel) channel).getGuild();
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         if (args.length == 0) {
             if (player.getQueue().isEmpty()) {
                 return Templates.music.queue_is_empty.formatGuild(guild.getId(), guild);
             }
-            channel.sendMessage(printQueue(guild, player.getQueue(), 1)).queue();
+            int maxPage = (int) Math.ceil((double) player.getQueue().size() / (double) ITEMS_PER_PAGE);
+            channel.sendMessage(printQueue(guild, player.getQueue(), 1, maxPage)).queue(
+                    message -> {
+                        if (maxPage > 1) {
+                            bot.commandReactionHandler.addReactionListener(
+                                    guild.getId(), message,
+                                    getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)));
+                        }
+
+                    }
+            );
             return "";
         }
         return "";
     }
 
-    private MessageEmbed printQueue(Guild guild, List<OMusic> queue, int page) {
+    private MessageEmbed printQueue(Guild guild, List<OMusic> queue, int page, int maxpage) {
         EmbedBuilder eb = new EmbedBuilder();
         StringBuilder sb = new StringBuilder();
         sb.append("There are **").append(queue.size())
@@ -103,6 +113,7 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
             }
             sb.append("\n");
         }
+        eb.setFooter(String.format("Page [%s / %s]", page, maxpage), null);
         return eb.setDescription(sb.toString()).build();
     }
 
@@ -112,12 +123,12 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
         listener.setExpiresIn(TimeUnit.MINUTES, 2);
         listener.registerReaction(Emojibet.PREV_TRACK, o -> {
             if (listener.getData().previousPage()) {
-//                o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).queue();
+                o.editMessage(printQueue(initialData.getGuild(), MusicPlayerHandler.getFor(o.getGuild()).getQueue(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).queue();
             }
         });
         listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
             if (listener.getData().nextPage()) {
-//                o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).queue();
+                o.editMessage(printQueue(initialData.getGuild(), MusicPlayerHandler.getFor(o.getGuild()).getQueue(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).queue();
             }
         });
         return listener;

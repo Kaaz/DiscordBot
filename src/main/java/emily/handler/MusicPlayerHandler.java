@@ -144,6 +144,10 @@ public class MusicPlayerHandler {
         }
     }
 
+    public static MusicPlayerHandler getFor(Guild guild) {
+        return playerInstances.get(guild.getId());
+    }
+
     public static MusicPlayerHandler getFor(Guild guild, DiscordBot bot) {
         if (playerInstances.containsKey(guild.getId())) {
             return playerInstances.get(guild.getId());

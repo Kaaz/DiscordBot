@@ -33,6 +33,9 @@ public class CommandReactionHandler {
     }
 
     public void addReactionListener(String guildId, Message message, CommandReactionListener<?> handler) {
+        if (handler == null) {
+            return;
+        }
         if (!reactions.containsKey(guildId)) {
             reactions.put(guildId, new ConcurrentHashMap<>());
         }
