@@ -16,9 +16,6 @@
 
 package emily.command.informative;
 
-import emily.command.CommandReactionListener;
-import emily.command.ICommandReactionListener;
-import emily.command.PaginationInfo;
 import emily.core.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CTodoItems;
@@ -36,9 +33,9 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class ToDoCommand extends AbstractCommand implements ICommandReactionListener<PaginationInfo<String>> {
+public class ToDoCommand extends AbstractCommand {
+
     @Override
     public String getDescription() {
         return "administer todo items";
@@ -179,20 +176,4 @@ public class ToDoCommand extends AbstractCommand implements ICommandReactionList
         return "";
     }
 
-    @Override
-    public CommandReactionListener<PaginationInfo<String>> getReactionListener(String userId, PaginationInfo<String> initialData) {
-        CommandReactionListener<PaginationInfo<String>> listener = new CommandReactionListener<>(userId, initialData);
-        listener.setExpiresIn(TimeUnit.MINUTES, 2);
-        listener.registerReaction(Emojibet.PREV_TRACK, o -> {
-            if (listener.getData().previousPage()) {
-//                o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).queue();
-            }
-        });
-        listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
-            if (listener.getData().nextPage()) {
-//                o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).queue();
-            }
-        });
-        return listener;
-    }
 }
