@@ -256,7 +256,7 @@ public class GameHandler {
             return Template.get("playmode_already_in_game");
         }
         String userId = DisUtil.mentionToId(theMention);
-        User targetUser = bot.client.getUserById(userId);
+        User targetUser = bot.getJda().getUserById(userId);
         if (targetUser.isBot()) {
             return Template.get("playmode_not_vs_bots");
         }

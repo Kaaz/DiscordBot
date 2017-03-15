@@ -95,7 +95,7 @@ public class BotSelfUpdateService extends AbstractService {
                 sendTo(channel, message);
             }
             for (DiscordBot discordBot : this.bot.getShards()) {
-                for (Guild guild : discordBot.client.getGuilds()) {
+                for (Guild guild : discordBot.getJda().getGuilds()) {
                     String announce = GuildSettings.get(guild).getOrDefault(SettingBotUpdateWarning.class);
                     switch (announce.toLowerCase()) {
                         case "off":

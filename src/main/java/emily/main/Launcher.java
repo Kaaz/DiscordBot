@@ -120,13 +120,13 @@ public class Launcher {
     private static void shutdownHook() {
         if (botContainer != null) {
             for (DiscordBot discordBot : botContainer.getShards()) {
-                for (Guild guild : discordBot.client.getGuilds()) {
+                for (Guild guild : discordBot.getJda().getGuilds()) {
                     AudioManager audio = guild.getAudioManager();
                     if (audio.isConnected()) {
                         CBotPlayingOn.insert(guild.getId(), audio.getConnectedChannel().getId());
                     }
                 }
-                discordBot.client.shutdown(true);
+                discordBot.getJda().shutdown(true);
             }
         }
 

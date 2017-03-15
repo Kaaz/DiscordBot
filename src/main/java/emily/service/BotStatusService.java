@@ -97,7 +97,7 @@ public class BotStatusService extends AbstractService {
     @Override
     public void run() {
         int roll = rng.nextInt(100);
-        TextChannel inviteChannel = bot.getShardFor(Config.BOT_GUILD_ID).client.getTextChannelById(Config.BOT_CHANNEL_ID);
+        TextChannel inviteChannel = bot.getShardFor(Config.BOT_GUILD_ID).getJda().getTextChannelById(Config.BOT_CHANNEL_ID);
         if (inviteChannel != null && roll < 10) {
             String fallback = "Feedback @ https://discord.gg/eaywDDt | #%s";
             inviteChannel.getInvites().queue(invites -> {
@@ -109,7 +109,7 @@ public class BotStatusService extends AbstractService {
             }, throwable -> setGameOnShards(bot, fallback));
 
         } else if (roll < 50) {
-            String username = bot.getShards()[0].client.getSelfUser().getName();
+            String username = bot.getShards()[0].getJda().getSelfUser().getName();
             setGameOnShards(bot, "@" + username + " help | @" + username + " invite | #%s");
         } else {
             setGameOnShards(bot, statusList[new Random().nextInt(statusList.length)]);
@@ -118,7 +118,7 @@ public class BotStatusService extends AbstractService {
 
     private void setGameOnShards(BotContainer container, String status) {
         for (DiscordBot shard : container.getShards()) {
-            shard.client.getPresence().setGame(Game.of(String.format(status, shard.getShardId())));
+            shard.getJda().getPresence().setGame(Game.of(String.format(status, shard.getShardId())));
         }
     }
 

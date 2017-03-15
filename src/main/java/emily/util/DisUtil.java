@@ -148,10 +148,10 @@ public class DisUtil {
         if (searchArg.matches("i\\d+")) {
             OGuild rec = CGuild.findById(Integer.parseInt(searchArg.substring(1)));
             if (rec.id > 0) {
-                return container.getShardFor(rec.discord_id).client.getGuildById(Long.toString(rec.discord_id));
+                return container.getShardFor(rec.discord_id).getJda().getGuildById(Long.toString(rec.discord_id));
             }
         } else if (searchArg.matches("^\\d{10,}$")) {
-            return container.getShardFor(searchArg).client.getGuildById(searchArg);
+            return container.getShardFor(searchArg).getJda().getGuildById(searchArg);
         }
         return null;
     }

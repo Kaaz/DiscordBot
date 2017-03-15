@@ -131,25 +131,31 @@ public class BotContainer {
      * @throws RateLimitedException
      */
     public synchronized void restartShard(int shardId) throws InterruptedException, LoginException, RateLimitedException {
-        for (Guild guild : shards[shardId].client.getGuilds()) {
+        for (Guild guild : shards[shardId].getJda().getGuilds()) {
             MusicPlayerHandler.removeGuild(guild, true);
         }
         System.out.println("shutting down shard " + shardId);
-        shards[shardId].client.shutdown(false);
+        shards[shardId].getJda().shutdown(false);
         System.out.println("SHUT DOWN SHARD " + shardId);
         schedule(() -> {
-            try {
-                shards[shardId].restartJDA();
-            } catch (LoginException | InterruptedException | RateLimitedException e) {
-                e.printStackTrace();
-                return;
+            while (true) {
+                try {
+                    shards[shardId].restartJDA();
+                    break;
+                } catch (LoginException | InterruptedException | RateLimitedException e) {
+                    e.printStackTrace();
+                    try {
+                        Thread.sleep(10_000L);
+                    } catch (InterruptedException ignored) {
+                    }
+                }
             }
             List<OBotPlayingOn> radios = CBotPlayingOn.getAll();
             for (OBotPlayingOn radio : radios) {
                 if (calcShardId(Long.parseLong(radio.guildId)) != shardId) {
                     continue;
                 }
-                Guild guild = shards[shardId].client.getGuildById(radio.guildId);
+                Guild guild = shards[shardId].getJda().getGuildById(radio.guildId);
                 if (guild != null) {
                     VoiceChannel channel = guild.getVoiceChannelById(radio.channelId);
                     if (channel != null) {
@@ -229,7 +235,7 @@ public class BotContainer {
             errorMessage += error.getMessage() + Config.EOL + Config.EOL;
         }
         String stack = "";
-        int maxTrace = 8;
+        int maxTrace = 10;
         StackTraceElement[] stackTrace1 = error.getStackTrace();
         for (int i = 0; i < stackTrace1.length; i++) {
             StackTraceElement stackTrace = stackTrace1[i];
@@ -255,7 +261,7 @@ public class BotContainer {
 
     public void reportError(String message) {
         DiscordBot shard = getShardFor(Config.BOT_GUILD_ID);
-        Guild guild = shard.client.getGuildById(Config.BOT_GUILD_ID);
+        Guild guild = shard.getJda().getGuildById(Config.BOT_GUILD_ID);
         if (guild == null) {
             LOGGER.warn("Can't find BOT_GUILD_ID " + Config.BOT_GUILD_ID);
             return;
@@ -270,10 +276,10 @@ public class BotContainer {
 
     public void reportStatus(int shardId, JDA.Status oldStatus, JDA.Status status) {
         DiscordBot shard = getShardFor(Config.BOT_GUILD_ID);
-        if (shard.client == null) {
+        if (shard.getJda() == null) {
             return;
         }
-        Guild guild = shard.client.getGuildById(Config.BOT_GUILD_ID);
+        Guild guild = shard.getJda().getGuildById(Config.BOT_GUILD_ID);
         if (guild == null) {
             LOGGER.warn("Can't find BOT_GUILD_ID " + Config.BOT_GUILD_ID);
             return;
@@ -298,7 +304,7 @@ public class BotContainer {
         }
         int totGuilds = 0;
         for (DiscordBot shard : shards) {
-            totGuilds += shard.client.getGuilds().size();
+            totGuilds += shard.getJda().getGuilds().size();
         }
         Unirest.post("https://bots.discordlist.net/api.php")
                 .field("token", Config.BOT_STATS_DISCORDLIST_NET_TOKEN)

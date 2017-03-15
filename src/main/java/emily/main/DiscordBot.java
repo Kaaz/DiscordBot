@@ -19,6 +19,7 @@ package emily.main;
 import com.mashape.unirest.http.Unirest;
 import emily.db.controllers.CBanks;
 import emily.db.controllers.CGuild;
+import emily.event.JDAEventManager;
 import emily.event.JDAEvents;
 import emily.guildsettings.bot.SettingActiveChannels;
 import emily.guildsettings.bot.SettingAutoReplyModule;
@@ -64,6 +65,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DiscordBot {
 
@@ -71,7 +73,7 @@ public class DiscordBot {
     public final long startupTimeStamp;
     private final int totShards;
     private final ScheduledExecutorService scheduler;
-    public volatile JDA client;
+    private final AtomicReference<JDA> jda;
     public String mentionMe;
     public String mentionMeAlias;
     public ChatBotHandler chatBotHandler = null;
@@ -87,6 +89,7 @@ public class DiscordBot {
 
     public DiscordBot(int shardId, int numShards, BotContainer container) throws LoginException, InterruptedException, RateLimitedException {
         scheduler = Executors.newScheduledThreadPool(1);
+        jda = new AtomicReference<>();
         this.shardId = shardId;
         this.totShards = numShards;
         registerHandlers();
@@ -98,17 +101,25 @@ public class DiscordBot {
         container.setLastAction(shardId, System.currentTimeMillis());
     }
 
+    public void updateJda(JDA jda) {
+        this.jda.compareAndSet(this.jda.get(), jda);
+    }
+
+    public JDA getJda() {
+        return jda.get();
+    }
+
     public void restartJDA() throws LoginException, InterruptedException, RateLimitedException {
-        client = null;
         JDABuilder builder = new JDABuilder(AccountType.BOT).setToken(Config.BOT_TOKEN);
         if (totShards > 1) {
             builder.useSharding(shardId, totShards);
         }
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setEnableShutdownHook(false);
+        builder.setEventManager(new JDAEventManager(this));
         System.out.println("STARTING SHARD " + shardId);
-        client = builder.buildBlocking();
-        client.addEventListener(new JDAEvents(this));
+        jda.set(builder.buildBlocking());
+        jda.get().addEventListener(new JDAEvents(this));
         System.out.println("SHARD " + shardId + " IS READY ");
         //
     }
@@ -201,7 +212,7 @@ public class DiscordBot {
         if (defaultChannel != null) {
             return defaultChannel;
         }
-        return DisUtil.findFirstWriteableChannel(client, guild);
+        return DisUtil.findFirstWriteableChannel(getJda(), guild);
     }
 
     /**
@@ -215,7 +226,7 @@ public class DiscordBot {
     }
 
     public synchronized TextChannel getMusicChannel(String guildId) {
-        Guild guild = client.getGuildById(guildId);
+        Guild guild = getJda().getGuildById(guildId);
         if (guild == null) {
             return null;
         }
@@ -243,7 +254,7 @@ public class DiscordBot {
      * @return channel || null
      */
     public synchronized TextChannel getModlogChannel(String guildId) {
-        Guild guild = client.getGuildById(guildId);
+        Guild guild = getJda().getGuildById(guildId);
         String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingModlogChannel.class);
         if ("false".equals(channelIdentifier)) {
             return null;
@@ -276,13 +287,13 @@ public class DiscordBot {
         if (isReady) {
             return;
         }
-        mentionMe = "<@" + this.client.getSelfUser().getId() + ">";
-        mentionMeAlias = "<@!" + this.client.getSelfUser().getId() + ">";
+        mentionMe = "<@" + this.getJda().getSelfUser().getId() + ">";
+        mentionMeAlias = "<@!" + this.getJda().getSelfUser().getId() + ">";
         loadConfiguration();
         sendStatsToDiscordPw();
         sendStatsToDiscordbotsOrg();
         isReady = true;
-        RoleRankings.fixRoles(this.client.getGuilds());
+        RoleRankings.fixRoles(this.getJda().getGuilds());
         container.allShardsReady();
     }
 
@@ -328,12 +339,12 @@ public class DiscordBot {
     }
 
     public String getUserName() {
-        return client.getSelfUser().getName();
+        return getJda().getSelfUser().getName();
     }
 
     public boolean setUserName(String newName) {
         if (!getUserName().equals(newName)) {
-            client.getSelfUser().getManager().setName(newName).queue();
+            getJda().getSelfUser().getManager().setName(newName).queue();
             return true;
         }
         return false;
@@ -407,12 +418,12 @@ public class DiscordBot {
             return;
         }
         JSONObject data = new JSONObject();
-        data.put("server_count", client.getGuilds().size());
+        data.put("server_count", getJda().getGuilds().size());
         if (totShards > 1) {
             data.put("shard_id", shardId);
             data.put("shard_count", totShards);
         }
-        Unirest.post("https://bots.discord.pw/api/bots/" + client.getSelfUser().getId() + "/stats")
+        Unirest.post("https://bots.discord.pw/api/bots/" + getJda().getSelfUser().getId() + "/stats")
                 .header("Authorization", Config.BOT_TOKEN_BOTS_DISCORD_PW)
                 .header("Content-Type", "application/json")
                 .body(data.toString())
@@ -424,12 +435,12 @@ public class DiscordBot {
             return;
         }
         JSONObject data = new JSONObject();
-        data.put("server_count", client.getGuilds().size());
+        data.put("server_count", getJda().getGuilds().size());
         if (totShards > 1) {
             data.put("shard_id", shardId);
             data.put("shard_count", totShards);
         }
-        Unirest.post("https://discordbots.org/api/bots/" + client.getSelfUser().getId() + "/stats")
+        Unirest.post("https://discordbots.org/api/bots/" + getJda().getSelfUser().getId() + "/stats")
                 .header("Authorization", Config.BOT_TOKEN_DISCORDBOTS_ORG)
                 .header("Content-Type", "application/json")
                 .body(data.toString())
@@ -437,6 +448,6 @@ public class DiscordBot {
     }
 
     public void initOnce() {
-        CBanks.init(client.getSelfUser().getId(), client.getSelfUser().getName());
+        CBanks.init(getJda().getSelfUser().getId(), getJda().getSelfUser().getName());
     }
 }

@@ -70,7 +70,7 @@ public class TemplateCache {
                 }
                 long discordGuildId = Long.parseLong(CGuild.getCachedDiscordId(guildId));
                 if (!whiteList.contains(guildId)) {
-                    if (container.getShardFor(discordGuildId).client.getGuildById(Long.toString(discordGuildId)) == null) {
+                    if (container.getShardFor(discordGuildId).getJda().getGuildById(Long.toString(discordGuildId)) == null) {
                         skipList.add(guildId);
                         continue;
                     } else {

@@ -54,12 +54,12 @@ public class Logger {
         print(LogLevel.FATAL, String.format(msg, params));
     }
 
-    public static void fatal(Exception e) {
+    public static void fatal(Throwable e) {
         System.out.println(e.getMessage());
         e.printStackTrace();
     }
 
-    public static void fatal(Exception e, Object... message) {
+    public static void fatal(Throwable e, Object... message) {
         print(LogLevel.FATAL, message);
     }
 

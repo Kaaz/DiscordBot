@@ -58,7 +58,7 @@ public abstract class AbstractService {
         for (QActiveSubscriptions activeSubscriptions : subscriptionsForService) {
             OChannel databaseChannel = CChannels.findById(activeSubscriptions.channelId);
             DiscordBot botInstance = bot.getShardFor(CGuild.getCachedDiscordId(activeSubscriptions.guildId));
-            TextChannel botChannel = botInstance.client.getTextChannelById(databaseChannel.discord_id);
+            TextChannel botChannel = botInstance.getJda().getTextChannelById(databaseChannel.discord_id);
             if (botChannel != null) {
                 channels.add(botChannel);
             } else {

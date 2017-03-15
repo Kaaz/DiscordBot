@@ -46,7 +46,6 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.DisconnectEvent;
-import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReconnectedEvent;
 import net.dv8tion.jda.core.events.ResumedEvent;
 import net.dv8tion.jda.core.events.StatusChangeEvent;
@@ -95,15 +94,7 @@ public class JDAEvents extends ListenerAdapter {
 
     @Override
     public void onReconnect(ReconnectedEvent event) {
-        if (!discordBot.equals(event.getJDA())) {
-            discordBot.client = event.getJDA();
-            discordBot.getContainer().reportError(String.format("[RECONCT] \\#%02d with a different JDA", discordBot.getShardId()));
-        }
-    }
-
-    @Override
-    public void onGenericEvent(Event event) {
-        discordBot.getContainer().setLastAction(discordBot.getShardId(), System.currentTimeMillis());
+        discordBot.getContainer().reportError(String.format("[RECONCT] \\#%02d with a different JDA", discordBot.getShardId()));
     }
 
     public void onGuildJoin(GuildJoinEvent event) {
@@ -276,9 +267,6 @@ public class JDAEvents extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        if (!event.getJDA().equals(discordBot.client)) {
-            discordBot.client = event.getJDA();
-        }
         User user = event.getMember().getUser();
         Guild guild = event.getGuild();
         GuildSettings settings = GuildSettings.get(guild);

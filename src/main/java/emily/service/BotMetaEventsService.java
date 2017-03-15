@@ -65,13 +65,13 @@ public class BotMetaEventsService extends AbstractService {
         List<TextChannel> subscribedChannels = getSubscribedChannels();
         int totGuilds = 0, totUsers = 0, totChannels = 0, totVoice = 0, totActiveVoice = 0;
         for (DiscordBot shard : bot.getShards()) {
-            List<Guild> guilds = shard.client.getGuilds();
+            List<Guild> guilds = shard.getJda().getGuilds();
             int numGuilds = guilds.size();
-            int users = shard.client.getUsers().size();
-            int channels = shard.client.getTextChannels().size();
-            int voiceChannels = shard.client.getVoiceChannels().size();
+            int users = shard.getJda().getUsers().size();
+            int channels = shard.getJda().getTextChannels().size();
+            int voiceChannels = shard.getJda().getVoiceChannels().size();
             int activeVoice = 0;
-            for (Guild guild : shard.client.getGuilds()) {
+            for (Guild guild : shard.getJda().getGuilds()) {
                 if (guild.getAudioManager().isConnected()) {
                     activeVoice++;
                 }

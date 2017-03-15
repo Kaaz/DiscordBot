@@ -322,7 +322,7 @@ public class MusicPlayerHandler {
         }
         TextChannel musicChannel = bot.getMusicChannel(guildId);
         if ("true".equals(GuildSettings.get(guildId).getOrDefault(SettingMusicChannelTitle.class))) {
-            Guild guild = bot.client.getGuildById(guildId);
+            Guild guild = bot.getJda().getGuildById(guildId);
             if (musicChannel != null && PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
                 if (!isUpdateChannelTitle()) {
                     musicChannel.getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).queue();
@@ -339,7 +339,7 @@ public class MusicPlayerHandler {
                     bot.schedule(() -> bot.out.saveDelete(message), deleteAfter, TimeUnit.MILLISECONDS);
                 }
                 bot.musicReactionHandler.clearGuild(guildId);
-                Guild guild = bot.client.getGuildById(guildId);
+                Guild guild = bot.getJda().getGuildById(guildId);
                 if (PermissionUtil.checkPermission(message.getTextChannel(), guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY)) {
                     message.addReaction(Emojibet.STAR).queue();
                     message.addReaction(Emojibet.NEXT_TRACK).queue();
@@ -349,7 +349,7 @@ public class MusicPlayerHandler {
                     bot.musicReactionHandler.addMessage(guildId, message.getId());
                 }
             };
-            Guild guild = bot.client.getGuildById(guildId);
+            Guild guild = bot.getJda().getGuildById(guildId);
             if (!PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
                 musicChannel.sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).queue(callback);
             } else {
@@ -370,7 +370,7 @@ public class MusicPlayerHandler {
     }
 
     public boolean isConnected() {
-        Guild guildById = bot.client.getGuildById(guildId);
+        Guild guildById = bot.getJda().getGuildById(guildId);
         return guildById != null && guildById.getAudioManager().getConnectedChannel() != null;
     }
 
@@ -378,7 +378,7 @@ public class MusicPlayerHandler {
         if (isConnected()) {
             stopMusic();
         }
-        Guild guild = bot.client.getGuildById(guildId);
+        Guild guild = bot.getJda().getGuildById(guildId);
         if (guild != null) {
             guild.getAudioManager().closeAudioConnection();
         }
@@ -582,7 +582,7 @@ public class MusicPlayerHandler {
      */
     public List<Member> getUsersInVoiceChannel() {
         ArrayList<Member> userList = new ArrayList<>();
-        VoiceChannel currentChannel = bot.client.getGuildById(guildId).getAudioManager().getConnectedChannel();
+        VoiceChannel currentChannel = bot.getJda().getGuildById(guildId).getAudioManager().getConnectedChannel();
         if (currentChannel != null) {
             List<Member> connectedUsers = currentChannel.getMembers();
             userList.addAll(connectedUsers.stream().filter(user -> !user.getUser().isBot() && !user.getVoiceState().isDeafened() &&
@@ -599,7 +599,7 @@ public class MusicPlayerHandler {
      * @return found a user?
      */
     public boolean aListenerIsAtLeast(SimpleRank rank) {
-        VoiceChannel currentChannel = bot.client.getGuildById(guildId).getAudioManager().getConnectedChannel();
+        VoiceChannel currentChannel = bot.getJda().getGuildById(guildId).getAudioManager().getConnectedChannel();
         if (currentChannel != null) {
             for (Member member : currentChannel.getMembers()) {
                 if (member.getVoiceState().isDeafened() || member.getUser().isBot()) {
@@ -670,7 +670,7 @@ public class MusicPlayerHandler {
     }
 
     public JDA getJDA() {
-        return bot.client;
+        return bot.getJda();
     }
 
     public synchronized void stopAfterTrack(boolean stopAfter) {

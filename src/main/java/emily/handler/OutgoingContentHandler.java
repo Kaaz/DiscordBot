@@ -102,11 +102,11 @@ public class OutgoingContentHandler {
      * @param message the message to send
      */
     public void sendMessageToCreator(String message) {
-        User user = botInstance.client.getUserById(Config.CREATOR_ID);
+        User user = botInstance.getJda().getUserById(Config.CREATOR_ID);
         if (user != null) {
             sendPrivateMessage(user, message);
         } else {
-            sendPrivateMessage(botInstance.getContainer().getShardFor(Config.BOT_GUILD_ID).client.getUserById(Config.CREATOR_ID), message);
+            sendPrivateMessage(botInstance.getContainer().getShardFor(Config.BOT_GUILD_ID).getJda().getUserById(Config.CREATOR_ID), message);
         }
     }
 
@@ -144,8 +144,8 @@ public class OutgoingContentHandler {
      * @param messageToDelete the message to delete
      */
     public void saveDelete(Message messageToDelete) {
-        if (messageToDelete != null && botInstance.client == messageToDelete.getJDA()) {
-            TextChannel channel = botInstance.client.getTextChannelById(messageToDelete.getChannel().getId());
+        if (messageToDelete != null && botInstance.getJda() == messageToDelete.getJDA()) {
+            TextChannel channel = botInstance.getJda().getTextChannelById(messageToDelete.getChannel().getId());
             if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_HISTORY)) {
                 Message msg = channel.getMessageById(messageToDelete.getId()).complete();
                 msg.delete().complete();

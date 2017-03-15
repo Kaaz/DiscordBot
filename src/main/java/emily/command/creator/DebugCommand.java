@@ -109,7 +109,7 @@ public class DebugCommand extends AbstractCommand {
         long tmp = 0;
         final long updateInterval = 2500;
         for (DiscordBot shard : shards) {
-            tmp += shard.client.getUsers().size();
+            tmp += shard.getJda().getUsers().size();
         }
         final long totalUsers = tmp;
         int length = 1 + (int) Math.floor(Math.log10(totalUsers));
@@ -117,7 +117,7 @@ public class DebugCommand extends AbstractCommand {
         channel.sendMessage(Emojibet.INFORMATION + " Synchronizing names: " + totalUsers + " users").queue(message -> {
                     long usersCompleted = 0;
                     for (DiscordBot shard : shards) {
-                        for (User user : shard.client.getUsers()) {
+                        for (User user : shard.getJda().getUsers()) {
                             CUser.getCachedId(user.getId(), user.getName());
                             usersCompleted++;
                             if (usersCompleted % updateInterval == 0L) {
@@ -137,8 +137,8 @@ public class DebugCommand extends AbstractCommand {
         long tmpMembers = 0, tmpGuilds = 0;
         final long updateInterval = 2500;
         for (DiscordBot shard : shards) {
-            tmpGuilds += shard.client.getGuilds().size();
-            for (Guild guild : shard.client.getGuilds()) {
+            tmpGuilds += shard.getJda().getGuilds().size();
+            for (Guild guild : shard.getJda().getGuilds()) {
                 tmpMembers += guild.getMembers().size();
             }
         }
@@ -153,7 +153,7 @@ public class DebugCommand extends AbstractCommand {
                     long usersCompleted = 0;
                     long guildsCompleted = 0;
                     for (DiscordBot shard : shards) {
-                        for (Guild guild : shard.client.getGuilds()) {
+                        for (Guild guild : shard.getJda().getGuilds()) {
                             for (Member member : guild.getMembers()) {
                                 User guildUser = member.getUser();
                                 int userId = CUser.getCachedId(guildUser.getId(), guildUser.getName());

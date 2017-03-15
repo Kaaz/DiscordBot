@@ -59,10 +59,10 @@ public class UserRankingSystemService extends AbstractService {
     @Override
     public void run() {
         for (DiscordBot discordBot : bot.getShards()) {
-            List<Guild> guilds = discordBot.client.getGuilds();
+            List<Guild> guilds = discordBot.getJda().getGuilds();
             for (Guild guild : guilds) {
                 GuildSettings settings = GuildSettings.get(guild);
-                if (settings != null && "true".equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && RoleRankings.canModifyRoles(guild, discordBot.client.getSelfUser())) {
+                if (settings != null && "true".equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && RoleRankings.canModifyRoles(guild, discordBot.getJda().getSelfUser())) {
                     try {
                         handleGuild(discordBot, guild);
                     } catch (Exception e) {
