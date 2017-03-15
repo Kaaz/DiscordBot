@@ -256,7 +256,7 @@ public class DisUtil {
      * @return IUser | null
      */
     public static Member findUserIn(TextChannel channel, String searchText) {
-        List<Member> users = channel.getMembers();
+        List<Member> users = channel.getGuild().getMembers();
         List<Member> potential = new ArrayList<>();
         int smallestDiffIndex = 0, smallestDiff = -1;
         for (Member u : users) {
@@ -406,6 +406,20 @@ public class DisUtil {
      * @return role or null
      */
     public static Role findRole(Guild guild, String roleName) {
+        List<Role> roles = guild.getRoles();
+        Role containsRole = null;
+        for (Role role : roles) {
+            if (role.getName().equalsIgnoreCase(roleName)) {
+                return role;
+            }
+            if (containsRole == null && role.getName().contains(roleName)) {
+                containsRole = role;
+            }
+        }
+        return containsRole;
+    }
+
+    public static Role hasRole(Guild guild, String roleName) {
         List<Role> roles = guild.getRoles();
         Role containsRole = null;
         for (Role role : roles) {
