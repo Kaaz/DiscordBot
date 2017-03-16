@@ -18,6 +18,7 @@ package emily.command.informative;
 
 import emily.core.AbstractCommand;
 import emily.main.DiscordBot;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -52,9 +53,8 @@ public class PingCommand extends AbstractCommand {
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
         long start = System.currentTimeMillis();
-        channel.sendMessage(":outbox_tray: checking ping").queue(
-                message -> message.editMessage(":inbox_tray: ping is " + (System.currentTimeMillis() - start) + "ms").queue()
-        );
+        Message message = channel.sendMessage(":outbox_tray: checking ping").complete();
+        message.editMessage(":inbox_tray: ping is " + (System.currentTimeMillis() - start) + "ms").complete();
         return "";
     }
 }

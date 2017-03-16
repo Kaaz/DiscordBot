@@ -134,7 +134,7 @@ public class LoLCommand extends AbstractCommand {
                 skillNum++;
             }
             e.setDescription(description);
-            channel.sendMessage(e.build()).queue();
+            channel.sendMessage(e.build()).complete();
 
         } catch (RiotApiException e) {
             e.printStackTrace();

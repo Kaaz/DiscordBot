@@ -28,6 +28,7 @@ import emily.util.DisUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -86,13 +87,10 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
         int caseId = CModerationCase.insert(guild, targetUser, author, getPunishType(), null);
         TextChannel modlogChannel = bot.getModlogChannel(guild.getId());
         if (modlogChannel != null) {
-            modlogChannel.sendMessage(CModerationCase.buildCase(guild, caseId)).queue(
-                    message -> {
-                        OModerationCase modcase = CModerationCase.findById(caseId);
-                        modcase.messageId = message.getId();
-                        CModerationCase.update(modcase);
-                    }
-            );
+            Message message = modlogChannel.sendMessage(CModerationCase.buildCase(guild, caseId)).complete();
+            OModerationCase modcase = CModerationCase.findById(caseId);
+            modcase.messageId = message.getId();
+            CModerationCase.update(modcase);
         }
         return Template.get("command_modaction_success", targetUser.getName(), getPunishType().getVerb().toLowerCase());
     }

@@ -31,6 +31,7 @@ import emily.util.Misc;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -103,16 +104,12 @@ public class CaseCommand extends AbstractCommand {
         if (channel == null) {
             return Template.get("guild_channel_modlog_not_found");
         }
-        channel.getMessageById(oCase.messageId).queue(
-                message -> {
-                    message.editMessage(new MessageBuilder().setEmbed(CModerationCase.buildCase(guild, oCase)).build()).queue();
-                    feedbackChannel.sendMessage(Template.get("command_case_reason_modified")).queue();
-                }
-                , throwable ->
-                        feedbackChannel.sendMessage(Template.get("command_case_message_unknown")).queue()
-
-
-        );
+        Message msg = channel.getMessageById(oCase.messageId).complete();
+        if (msg != null) {
+            msg.editMessage(new MessageBuilder().setEmbed(CModerationCase.buildCase(guild, oCase)).build()).complete();
+        } else {
+            feedbackChannel.sendMessage(Template.get("command_case_reason_modified")).complete();
+        }
         return "";
     }
 }

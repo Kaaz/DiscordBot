@@ -90,7 +90,8 @@ public class ProfileCommand extends AbstractCommand {
                 ProfileImageV3 version2 = new ProfileImageV3(user);
                 file = version2.getProfileImage();
             }
-            channel.sendFile(file, null).queue(message -> file.delete());
+            channel.sendFile(file, null).complete();
+            file.delete();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.getStackTrace();

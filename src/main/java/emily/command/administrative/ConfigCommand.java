@@ -35,6 +35,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -164,10 +165,10 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
                 if (args.length > 1 && args[0].equals("page")) {
                     activePage = Math.max(0, Math.min(maxPage - 1, Misc.parseInt(args[1], 0) - 1));
                 }
-                channel.sendMessage(makeEmbedConfig(guild, activePage)).queue(
-                        message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message,
-                                getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)))
-                );
+                Message message = channel.sendMessage(makeEmbedConfig(guild, activePage)).complete();
+                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message,
+                        getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)));
+
                 return "";
             }
 
@@ -222,7 +223,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
             }
             if (args[0].equals("bot_listen") && args[1].equals("mine")) {
                 channel.sendMessage(Emojibet.WARNING + " I will only listen to the configured `bot_channel`. If you rename the channel, you might not be able to access me anymore. " +
-                        "You can reset by typing `@" + channel.getJDA().getSelfUser().getName() + " reset yesimsure`").queue();
+                        "You can reset by typing `@" + channel.getJDA().getSelfUser().getName() + " reset yesimsure`").complete();
             }
 
             if (GuildSettings.get(guild).set(guild, args[0], newValue)) {
@@ -250,12 +251,12 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         listener.setExpiresIn(TimeUnit.MINUTES, 2);
         listener.registerReaction(Emojibet.PREV_TRACK, o -> {
             if (listener.getData().previousPage()) {
-                o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).queue();
+                o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).complete();
             }
         });
         listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
             if (listener.getData().nextPage()) {
-                o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).queue();
+                o.editMessage(new MessageBuilder().setEmbed(makeEmbedConfig(data.getGuild(), listener.getData().getCurrentPage())).build()).complete();
             }
         });
         return listener;

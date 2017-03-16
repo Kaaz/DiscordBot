@@ -82,7 +82,7 @@ public class MuteCommand extends AbstractModActionCommand {
             }
             rolesToRemove.add(r);
         }
-        guild.getController().modifyMemberRoles(member, rolesToAdd, rolesToRemove).queue();
+        guild.getController().modifyMemberRoles(member, rolesToAdd, rolesToRemove).complete();
         return true;
     }
 }

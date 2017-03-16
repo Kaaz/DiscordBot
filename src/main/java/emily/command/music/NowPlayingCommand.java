@@ -42,6 +42,7 @@ import emily.util.MusicUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -120,7 +121,7 @@ public class NowPlayingCommand extends AbstractCommand {
             return Template.get("command_currentlyplaying_nosong");
         }
         if (args.length == 0 && PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-            channel.sendMessage(MusicUtil.nowPlayingMessage(player, song, null)).queue();
+            channel.sendMessage(MusicUtil.nowPlayingMessage(player, song, null)).complete();
             return "";
         }
         if (args.length > 0) {
@@ -214,20 +215,19 @@ public class NowPlayingCommand extends AbstractCommand {
 
         }
         if (args.length == 1 && args[0].equals("update")) {
-            channel.sendMessage(ret).queue(message -> {
-                final Future<?>[] f = {null};
-                bot.scheduleRepeat(
-                        () -> {
-                            if (player.getCurrentlyPlaying() != song.id) {
-                                f[0].cancel(false);
-                                return;
-                            }
-                            message.editMessage((player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + Config.EOL +
-                                    MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL
-                            ).complete();
-                        }, 10_000L, 10_000L
-                );
-            });
+            final Message message = channel.sendMessage(ret).complete();
+            final Future<?>[] f = {null};
+            bot.scheduleRepeat(
+                    () -> {
+                        if (player.getCurrentlyPlaying() != song.id) {
+                            f[0].cancel(false);
+                            return;
+                        }
+                        message.editMessage((player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + Config.EOL +
+                                MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL
+                        ).complete();
+                    }, 10_000L, 10_000L
+            );
             return "";
         } else if (args.length >= 1 && args[0].equals("updatetitle")) {
             if (!userRank.isAtLeast(SimpleRank.USER)) {

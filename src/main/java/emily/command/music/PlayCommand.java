@@ -258,7 +258,8 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
         boolean isInProgress = bot.getContainer().isInProgress(videoCode);
         if (!filecheck.exists() && !isInProgress) {
             if (useTemplates) {
-                consumer.accept(bot.out.sendBlock(channel, Template.get("music_downloading_in_queue", videoTitle)));
+                Message message = bot.out.sendBlock(channel, Template.get("music_downloading_in_queue", videoTitle));
+                consumer.accept(message);
             } else {
                 consumer.accept(null);
             }

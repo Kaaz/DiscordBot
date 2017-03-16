@@ -240,7 +240,7 @@ public class MusicPlayerHandler {
                     keepGoing = true;
                     if (!playRandomSong()) {
                         player.destroy();
-                        bot.getMusicChannel(guildId).sendMessage("Stopped playing because the playlist is empty").queue();
+                        bot.getMusicChannel(guildId).sendMessage("Stopped playing because the playlist is empty").complete();
                         leave();
                         return;
                     }
@@ -325,7 +325,7 @@ public class MusicPlayerHandler {
             Guild guild = bot.getJda().getGuildById(guildId);
             if (musicChannel != null && PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
                 if (!isUpdateChannelTitle()) {
-                    musicChannel.getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).queue();
+                    musicChannel.getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).complete();
                 }
             }
         }
@@ -341,19 +341,21 @@ public class MusicPlayerHandler {
                 bot.musicReactionHandler.clearGuild(guildId);
                 Guild guild = bot.getJda().getGuildById(guildId);
                 if (PermissionUtil.checkPermission(message.getTextChannel(), guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY)) {
-                    message.addReaction(Emojibet.STAR).queue();
-                    message.addReaction(Emojibet.NEXT_TRACK).queue();
+                    message.addReaction(Emojibet.STAR).complete();
+                    message.addReaction(Emojibet.NEXT_TRACK).complete();
                     if (aListenerIsAtLeast(SimpleRank.BOT_ADMIN)) {
-                        message.addReaction(Emojibet.NO_ENTRY).queue();
+                        message.addReaction(Emojibet.NO_ENTRY).complete();
                     }
                     bot.musicReactionHandler.addMessage(guildId, message.getId());
                 }
             };
             Guild guild = bot.getJda().getGuildById(guildId);
             if (!PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-                musicChannel.sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).queue(callback);
+                Message complete = musicChannel.sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).complete();
+                callback.accept(complete);
             } else {
-                musicChannel.sendMessage(MusicUtil.nowPlayingMessage(this, record, guild.getMemberById(scheduler.getLastRequester()))).queue(callback);
+                Message complete = musicChannel.sendMessage(MusicUtil.nowPlayingMessage(this, record, guild.getMemberById(scheduler.getLastRequester()))).complete();
+                callback.accept(complete);
             }
         }
     }

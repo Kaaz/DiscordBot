@@ -71,7 +71,7 @@ public class ChangeAvatar extends AbstractCommand {
         }
         if (args.length <= 1) {
             try {
-                channel.getJDA().getSelfUser().getManager().setAvatar(Icon.from(Unirest.get(args[0]).asBinary().getBody())).queue();
+                channel.getJDA().getSelfUser().getManager().setAvatar(Icon.from(Unirest.get(args[0]).asBinary().getBody())).complete();
             } catch (IOException | UnirestException e) {
                 return "Error: " + e.getMessage();
             }

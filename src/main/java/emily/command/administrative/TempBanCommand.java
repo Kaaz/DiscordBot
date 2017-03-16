@@ -50,7 +50,7 @@ public class TempBanCommand extends AbstractModActionCommand {
 
     @Override
     protected boolean punish(Guild guild, Member member) {
-        guild.getController().kick(member).queue();
+        guild.getController().kick(member).complete();
         return true;
     }
 }

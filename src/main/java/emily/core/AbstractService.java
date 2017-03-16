@@ -75,7 +75,7 @@ public abstract class AbstractService {
     }
 
     protected void sendTo(TextChannel channel, MessageEmbed message) {
-        channel.sendMessage(message).queue();
+        channel.sendMessage(message).complete();
     }
 
     protected void sendTo(TextChannel channel, String message) {

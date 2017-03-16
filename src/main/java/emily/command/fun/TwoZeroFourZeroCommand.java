@@ -30,6 +30,7 @@ import emily.main.DiscordBot;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -73,10 +74,8 @@ public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandR
         }
         Game2048 game = new Game2048();
         game.addPlayer(author);
-        channel.sendMessage(game.toString()).queue(
-                message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), game))
-
-        );
+        Message message = channel.sendMessage(game.toString()).complete();
+        bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), game));
         return "";
 
     }
@@ -90,14 +89,14 @@ public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandR
                 Game2048Turn turn = new Game2048Turn();
                 turn.parseInput(reaction);
                 if (!game.isValidMove(message.getJDA().getUserById(userId), turn)) {
-                    message.editMessage(game.toString() + Config.EOL + Template.get("playmode_not_a_valid_move")).queue();
+                    message.editMessage(game.toString() + Config.EOL + Template.get("playmode_not_a_valid_move")).complete();
                 } else {
                     game.playTurn(message.getJDA().getUserById(userId), turn);
-                    message.editMessage(game.toString()).queue();
+                    message.editMessage(game.toString()).complete();
                 }
                 if (game.getGameState().equals(GameState.OVER)) {
                     listener.disable();
-                    message.clearReactions().queue();
+                    message.clearReactions().complete();
                 }
             });
         }

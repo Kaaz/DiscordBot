@@ -24,6 +24,7 @@ import emily.main.DiscordBot;
 import emily.util.Misc;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -98,11 +99,10 @@ public class PollCommand extends AbstractCommand {
             for (int i = 1; i < answers; i++) {
                 outtext += Misc.numberToEmote(i) + " " + split[i].trim() + Config.EOL + Config.EOL;
             }
-            channel.sendMessage(outtext).queue(message -> {
-                for (int i = 1; i < answers; i++) {
-                    message.addReaction(Misc.numberToEmote(i)).queue();
-                }
-            });
+            Message message = channel.sendMessage(outtext).complete();
+            for (int i = 1; i < answers; i++) {
+                message.addReaction(Misc.numberToEmote(i)).complete();
+            }
         }
 //		return Template.get("command_not_implemented");
         return "";

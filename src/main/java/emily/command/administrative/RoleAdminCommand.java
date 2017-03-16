@@ -204,7 +204,7 @@ public class RoleAdminCommand extends AbstractCommand {
                         return;
                     }
                 }
-                role.getGuild().getController().addRolesToMember(member, role).queue();
+                role.getGuild().getController().addRolesToMember(member, role).complete();
             } else {
                 boolean hasRole = false;
                 for (Role memberRole : member.getRoles()) {
@@ -216,7 +216,7 @@ public class RoleAdminCommand extends AbstractCommand {
                 if (!hasRole) {
                     return;
                 }
-                role.getGuild().getController().removeRolesFromMember(member, role).queue();
+                role.getGuild().getController().removeRolesFromMember(member, role).complete();
             }
         }
     }

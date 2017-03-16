@@ -33,7 +33,6 @@ import emily.db.model.OBotEvent;
 import emily.db.model.OCommandCooldown;
 import emily.guildsettings.bot.SettingCommandPrefix;
 import emily.guildsettings.bot.SettingShowUnknownCommands;
-import emily.guildsettings.moderation.SettingCommandLoggingChannel;
 import emily.main.Config;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
@@ -194,10 +193,7 @@ public class CommandHandler {
                             String.format("%s **%s#%s** used %s `%s` in %s",
                                     Emojibet.USER, author.getName(), author.getDiscriminator(), Emojibet.KEYBOARD, commandUsed, tc.getAsMention()
                             )
-                    ).queue(
-                            null,
-                            throwable -> GuildSettings.get(tc.getGuild()).set(null, SettingCommandLoggingChannel.class, "false")
-                    );
+                    ).complete();
                 }
                 Launcher.log("command executed", "bot", "command",
                         "input", incomingMessage,

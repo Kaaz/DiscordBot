@@ -18,6 +18,7 @@ package emily.util;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 
 public class DebugUtil {
@@ -28,15 +29,13 @@ public class DebugUtil {
      * @param output  the output to upload
      */
     public static void handleDebug(MessageChannel channel, String output) {
-        channel.sendMessage("One moment, uploading results: ").queue(message -> {
-            String result = DebugUtil.sendToHastebin(output);
-            if (result == null) {
-                message.editMessage("Uploading failed!").queue();
-            } else {
-                message.editMessage("Here you go: " + result).queue();
-            }
-        });
-
+        Message message = channel.sendMessage("One moment, uploading results: ").complete();
+        String result = DebugUtil.sendToHastebin(output);
+        if (result == null) {
+            message.editMessage("Uploading failed!").complete();
+        } else {
+            message.editMessage("Here you go: " + result).complete();
+        }
     }
 
     /**

@@ -141,7 +141,8 @@ public class MemeCommand extends AbstractCommand {
                 memeFile.delete();
             }
             ImageIO.write(image, "png", memeFile);
-            channel.sendFile(memeFile, null).queue(message -> memeFile.delete());
+            channel.sendFile(memeFile, null).complete();
+            memeFile.delete();
         } catch (InterruptedException | ExecutionException | IOException e) {
             e.printStackTrace();
             return "No memes for you :(";

@@ -125,7 +125,8 @@ public class RedditCommand extends AbstractCommand {
                 try (InputStream in = new URL(StringEscapeUtils.unescapeHtml4(image.source.url)).openStream()) {
                     File outputfile = new File("tmp_" + channel.getId() + ".jpg");
                     ImageIO.write(ImageIO.read(in), "jpg", outputfile);
-                    channel.sendFile(outputfile, new MessageBuilder().append(post.data.title).build()).queue(message -> outputfile.delete());
+                    channel.sendFile(outputfile, new MessageBuilder().append(post.data.title).build()).complete();
+                    outputfile.delete();
                     return "";
                 } catch (IOException e) {
                     e.printStackTrace();

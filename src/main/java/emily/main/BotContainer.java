@@ -271,7 +271,7 @@ public class BotContainer {
             LOGGER.warn("Can't find BOT_ERROR_CHANNEL_ID " + Config.BOT_ERROR_CHANNEL_ID);
             return;
         }
-        channel.sendMessage(message.length() > Config.MAX_MESSAGE_SIZE ? message.substring(0, Config.MAX_MESSAGE_SIZE - 1) : message).queue();
+        channel.sendMessage(message.length() > Config.MAX_MESSAGE_SIZE ? message.substring(0, Config.MAX_MESSAGE_SIZE - 1) : message).complete();
     }
 
     public void reportStatus(int shardId, JDA.Status oldStatus, JDA.Status status) {
@@ -291,7 +291,7 @@ public class BotContainer {
         }
         if (channel.getJDA().getStatus() == JDA.Status.CONNECTED) {
             int length = 1 + (int) Math.floor(Math.log10(shards.length));
-            channel.sendMessage(String.format(Emojibet.SHARD_ICON + " `%0" + length + "d/%0" + length + "d` | ~~%s~~ -> %s", shardId, shards.length, oldStatus.toString(), status.toString())).queue();
+            channel.sendMessage(String.format(Emojibet.SHARD_ICON + " `%0" + length + "d/%0" + length + "d` | ~~%s~~ -> %s", shardId, shards.length, oldStatus.toString(), status.toString())).complete();
         }
     }
 

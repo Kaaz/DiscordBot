@@ -347,7 +347,7 @@ public class DiscordBot {
 
     public boolean setUserName(String newName) {
         if (!getUserName().equals(newName)) {
-            getJda().getSelfUser().getManager().setName(newName).queue();
+            getJda().getSelfUser().getManager().setName(newName).complete();
             return true;
         }
         return false;
@@ -381,7 +381,7 @@ public class DiscordBot {
         if (settings.getOrDefault(SettingActiveChannels.class).equals("mine") &&
                 !channel.getId().equals(settings.getOrDefault(SettingBotChannel.class))) {
             if (message.getRawContent().equals(mentionMe + " reset yesimsure") || message.getRawContent().equals(mentionMeAlias + " reset yesimsure")) {
-                channel.sendMessage(Emojibet.THUMBS_UP).queue();
+                channel.sendMessage(Emojibet.THUMBS_UP).complete();
                 settings.set(null, SettingActiveChannels.class, "all");
             }
             return;

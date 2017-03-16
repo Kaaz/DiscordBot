@@ -26,6 +26,7 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -41,7 +42,7 @@ import java.util.function.Consumer;
 public class OutgoingContentHandler {
     private final DiscordBot botInstance;
     private final RoleModifier roleThread;
-    private final long TIMEOUT = 15L;
+    private final long TIMEOUT = 10L;
 
     public OutgoingContentHandler(DiscordBot b) {
         botInstance = b;
@@ -59,8 +60,7 @@ public class OutgoingContentHandler {
             case PRIVATE:
                 break;
             case TEXT:
-                sendToText((TextChannel) channel, msg);
-                break;
+                return sendToText((TextChannel) channel, msg);
             default:
                 break;
         }
@@ -115,23 +115,16 @@ public class OutgoingContentHandler {
             sendAsyncMessage(channel, content);
             return;
         }
-        channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue(callback,
-                throwable -> {
-                    Launcher.logToDiscord(throwable, "channel", channel.getId(), "content", content);
-                    callback.accept(null);
-                });
+        callback.accept(channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).complete());
     }
 
     public void sendAsyncMessage(MessageChannel channel, String content) {
-        channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).queue((message) -> {
-            if (botInstance.shouldCleanUpMessages(channel)) {
-                botInstance.schedule(() -> saveDelete(message), Config.DELETE_MESSAGES_AFTER, TimeUnit.MILLISECONDS);
-            }
-        }, throwable -> Launcher.logToDiscord(throwable, "channel", channel.getId(), "content", content));
+        Message message = channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).complete();
+        botInstance.schedule(() -> saveDelete(message), Config.DELETE_MESSAGES_AFTER, TimeUnit.MILLISECONDS);
     }
 
     public void editAsync(Message message, String content) {
-        message.editMessage(content.substring(0, Math.min(1999, content.length()))).queue();
+        message.editMessage(content.substring(0, Math.min(1999, content.length()))).complete();
     }
 
     /**
@@ -181,18 +174,12 @@ public class OutgoingContentHandler {
 
     public void sendPrivateMessage(User target, String message, final Consumer<Message> onSuccess, final Consumer<Throwable> onFailed) {
         if (target != null && !target.isFake() && message != null && !message.isEmpty()) {
-            target.openPrivateChannel().queue(c -> c.sendMessage(message).queue(
-                    onSuccess,
-                    throwable -> {
-                        Launcher.logToDiscord(throwable,
-                                "user", target.getName() + "#" + target.getDiscriminator(),
-                                "message", message
-                        );
-                        if (onFailed != null) {
-                            onFailed.accept(throwable);
-                        }
-                    }
-            ));
+            PrivateChannel channel = target.openPrivateChannel().complete();
+            onSuccess.accept(channel.sendMessage(message).complete());
+            return;
+        }
+        if (onFailed != null) {
+            onFailed.accept(null);
         }
     }
 
@@ -207,8 +194,7 @@ public class OutgoingContentHandler {
             TextChannel channel = botInstance.getJda().getTextChannelById(messageToDelete.getChannel().getId());
             if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_HISTORY)) {
                 try {
-                    Message msg = channel.getMessageById(messageToDelete.getId()).submit(true).get(TIMEOUT, TimeUnit.SECONDS);
-                    msg.delete().submit(true).get(TIMEOUT, TimeUnit.SECONDS);
+                    channel.deleteMessageById(messageToDelete.getId()).submit(true).get(TIMEOUT, TimeUnit.SECONDS);
                 } catch (InterruptedException | TimeoutException | ExecutionException e) {
                     e.printStackTrace();
                 }

@@ -134,16 +134,14 @@ public class RoleRankings {
         if (rolesByName.size() > 0) {
             role = rolesByName.get(0);
         } else {
-            guild.getController().createRole().queue(newRole -> {
-                        RoleManagerUpdatable manager = newRole.getManagerUpdatable();
-                        manager.getNameField().setValue(getFullName(guild, rank));
-                        manager.getColorField().setValue(rank.getColor());
-                        manager.getHoistedField().setValue(rank.isHoisted());
-                        manager.getPermissionField().setPermissions(guild.getPublicRole().getPermissions());
-                        manager.getPermissionField().revokePermissions(Permission.MESSAGE_MENTION_EVERYONE);
-                        manager.update().queue();
-                    }
-            );
+            Role newRole = guild.getController().createRole().complete();
+            RoleManagerUpdatable manager = newRole.getManagerUpdatable();
+            manager.getNameField().setValue(getFullName(guild, rank));
+            manager.getColorField().setValue(rank.getColor());
+            manager.getHoistedField().setValue(rank.isHoisted());
+            manager.getPermissionField().setPermissions(guild.getPublicRole().getPermissions());
+            manager.getPermissionField().revokePermissions(Permission.MESSAGE_MENTION_EVERYONE);
+            manager.update().complete();
             return;
         }
         if (!PermissionUtil.canInteract(guild.getSelfMember(), role)) {
@@ -162,7 +160,7 @@ public class RoleRankings {
             role.getManagerUpdatable().getPermissionField().revokePermissions(Permission.MESSAGE_MENTION_EVERYONE);
         }
         if (needsUpdate) {
-            role.getManagerUpdatable().update().queue();
+            role.getManagerUpdatable().update().complete();
         }
     }
 
@@ -189,9 +187,9 @@ public class RoleRankings {
         }
         for (Role role : guild.getRoles()) {
             if (role.getName().equals("new role") || role.getName().contains(getPrefix(guild))) {
-                role.delete().queue();
+                role.delete().complete();
             } else if (roleNames.contains(role.getName().toLowerCase())) {
-                role.delete().queue();
+                role.delete().complete();
             }
         }
     }

@@ -166,7 +166,7 @@ public class MusicCommand extends AbstractCommand {
         embedBuilder.addField("Clear the music-queue", (settings.getOrDefault(SettingMusicClearAdminOnly.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
         embedBuilder.addField("Change the volume", (settings.getOrDefault(SettingMusicAdminVolume.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
         if (PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-            channel.sendMessage(embedBuilder.build()).queue();
+            channel.sendMessage(embedBuilder.build()).complete();
             return "";
         }
         return ret;

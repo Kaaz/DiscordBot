@@ -121,9 +121,9 @@ public class RebootCommand extends AbstractCommand {
                         boolean restartSuccess = bot.getContainer().tryRestartingShard(shardId);
                         if (!isThisShard) {
                             if (restartSuccess) {
-                                message.editMessage(Template.get("command_reboot_shard_success", shardId)).queue();
+                                message.editMessage(Template.get("command_reboot_shard_success", shardId)).complete();
                             } else {
-                                message.editMessage(Template.get("command_reboot_shard_failed", shardId)).queue();
+                                message.editMessage(Template.get("command_reboot_shard_failed", shardId)).complete();
                             }
                         }
                     });

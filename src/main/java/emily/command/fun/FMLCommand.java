@@ -70,7 +70,7 @@ public class FMLCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 
         if (items.size() < MIN_QUEUE_ITEMS) {
-            channel.sendTyping().queue();
+            channel.sendTyping().complete();
             getFMLItems();
         }
         if (!items.isEmpty()) {

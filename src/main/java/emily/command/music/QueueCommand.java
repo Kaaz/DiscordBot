@@ -30,6 +30,7 @@ import emily.util.Misc;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -77,15 +78,12 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
                 return Templates.music.queue_is_empty.formatGuild(guild.getId(), guild);
             }
             int maxPage = (int) Math.ceil((double) player.getQueue().size() / (double) ITEMS_PER_PAGE);
-            channel.sendMessage(printQueue(guild, player.getQueue(), 1, maxPage)).queue(
-                    message -> {
-                        if (maxPage > 1) {
-                            bot.commandReactionHandler.addReactionListener(
-                                    guild.getId(), message,
-                                    getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)));
-                        }
-                    }
-            );
+            Message msg = channel.sendMessage(printQueue(guild, player.getQueue(), 1, maxPage)).complete();
+            if (maxPage > 1) {
+                bot.commandReactionHandler.addReactionListener(
+                        guild.getId(), msg,
+                        getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)));
+            }
             return "";
         }
         return "";
@@ -99,7 +97,7 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
                 .append(Misc.getDurationString(queue.stream().mapToLong(oMusic -> oMusic.duration).sum())).append("**\n\n");
         int start = Math.max(0, (page - 1) * ITEMS_PER_PAGE);
         int end = Math.min(queue.size() - 1, start + ITEMS_PER_PAGE);
-        for (int i = start; i < end; i++) {
+        for (int i = start; i <= end; i++) {
             OMusic music = queue.get(i);
             Member member = guild.getMemberById(music.requestedBy);
             sb.append("`").append(music.youtubecode).append("`")
@@ -122,12 +120,12 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
         listener.setExpiresIn(TimeUnit.MINUTES, 2);
         listener.registerReaction(Emojibet.PREV_TRACK, o -> {
             if (listener.getData().previousPage()) {
-                o.editMessage(printQueue(initialData.getGuild(), MusicPlayerHandler.getFor(o.getGuild()).getQueue(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).queue();
+                o.editMessage(printQueue(initialData.getGuild(), MusicPlayerHandler.getFor(o.getGuild()).getQueue(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).complete();
             }
         });
         listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
             if (listener.getData().nextPage()) {
-                o.editMessage(printQueue(initialData.getGuild(), MusicPlayerHandler.getFor(o.getGuild()).getQueue(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).queue();
+                o.editMessage(printQueue(initialData.getGuild(), MusicPlayerHandler.getFor(o.getGuild()).getQueue(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).complete();
             }
         });
         return listener;

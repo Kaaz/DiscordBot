@@ -35,6 +35,7 @@ import emily.util.Emojibet;
 import emily.util.Misc;
 import emily.util.TimeUtil;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -105,11 +106,10 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
                 return "The following tags exist: " + Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
             }
             int maxPage = (int) Math.ceil((double) CTag.countTagsOn(CGuild.getCachedId(guild.getId())) / (double) TAGS_PER_PAGE);
-            channel.sendMessage(makePage(guild, 1, maxPage)).queue(
-                    message -> bot.commandReactionHandler.addReactionListener(
-                            ((TextChannel) channel).getGuild().getId(), message,
-                            getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)))
-            );
+            Message message = channel.sendMessage(makePage(guild, 1, maxPage)).complete();
+            bot.commandReactionHandler.addReactionListener(
+                    ((TextChannel) channel).getGuild().getId(), message,
+                    getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)));
             return "";
 
         } else if (args[0].equalsIgnoreCase("mine")) {
@@ -170,10 +170,10 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
             if (tag.id > 0 && tag.userId != CUser.getCachedId(author.getId())) {
                 return Template.get("command_tag_only_creator_can_edit");
             }
-            String output = Misc.joinStrings(args,1);
+            String output = Misc.joinStrings(args, 1);
             output = output.trim();
             if (tag.id == 0) {
-                tag.tagname = args[0].replace(Config.EOL,"").trim();
+                tag.tagname = args[0].replace(Config.EOL, "").trim();
                 tag.guildId = CGuild.getCachedId(guild.getId());
                 tag.userId = CUser.getCachedId(author.getId(), author.getName());
                 tag.created = new Timestamp(System.currentTimeMillis());
@@ -205,12 +205,12 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
         listener.setExpiresIn(TimeUnit.MINUTES, 2);
         listener.registerReaction(Emojibet.PREV_TRACK, o -> {
             if (listener.getData().previousPage()) {
-                o.editMessage(makePage(o.getGuild(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).queue();
+                o.editMessage(makePage(o.getGuild(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).complete();
             }
         });
         listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
             if (listener.getData().nextPage()) {
-                o.editMessage(makePage(o.getGuild(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).queue();
+                o.editMessage(makePage(o.getGuild(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).complete();
             }
         });
         return listener;

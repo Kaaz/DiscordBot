@@ -41,6 +41,7 @@ import emily.util.Emojibet;
 import emily.util.Misc;
 import emily.util.YTUtil;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -209,14 +210,11 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 int totalTracks = CPlaylist.getMusicCount(playlist.id);
                 int maxPage = (int) Math.ceil((double) totalTracks / (double) ITEMS_PER_PAGE);
                 OPlaylist finalPlaylist = playlist;
-                channel.sendMessage(makePage(guild, playlist, currentPage, maxPage)).queue(
-                        message -> {
-                            if (maxPage > 1) {
-                                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message,
-                                        getReactionListener(author.getId(), new PaginationInfo<>(currentPage, maxPage, guild, finalPlaylist)));
-                            }
-                        }
-                );
+                Message msg = channel.sendMessage(makePage(guild, playlist, currentPage, maxPage)).complete();
+                if (maxPage > 1) {
+                    bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), msg,
+                            getReactionListener(author.getId(), new PaginationInfo<>(currentPage, maxPage, guild, finalPlaylist)));
+                }
                 return "";
 
             default:
@@ -484,7 +482,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 if (txt.length() > 2000) {
                     txt = txt.substring(0, 1999);
                 }
-                o.editMessage(txt).queue();
+                o.editMessage(txt).complete();
             }
         });
         listener.registerReaction(Emojibet.NEXT_TRACK, o -> {
@@ -493,7 +491,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 if (txt.length() > 2000) {
                     txt = txt.substring(0, 1999);
                 }
-                o.editMessage(txt).queue();
+                o.editMessage(txt).complete();
             }
         });
         return listener;

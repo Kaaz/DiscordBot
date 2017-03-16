@@ -201,8 +201,8 @@ public class CommandAdminCommand extends AbstractCommand {
             if (role == null) {
                 return "role not found";
             }
-            channel.sendMessage(String.format("Role: %s (%s)", role.getName(), role.getId())).queue();
-            channel.sendMessage(String.format("cmd: %s (%s)", role.getName(), role.getId())).queue();
+            channel.sendMessage(String.format("Role: %s (%s)", role.getName(), role.getId())).complete();
+            channel.sendMessage(String.format("cmd: %s (%s)", role.getName(), role.getId())).complete();
             return "Action = " + type;
         }
         if (args.length < 2) {

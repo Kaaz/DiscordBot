@@ -49,7 +49,7 @@ public class CommandReactionHandler {
         }
         if (!reactions.get(guildId).containsKey(message.getId())) {
             for (String emote : handler.getEmotes()) {
-                message.addReaction(emote).queue();
+                message.addReaction(emote).complete();
             }
             reactions.get(guildId).put(message.getId(), handler);
         }
@@ -69,7 +69,7 @@ public class CommandReactionHandler {
             reactions.get(channel.getGuild().getId()).remove(messageId);
         } else if (listener.hasReaction(reaction.getEmote().getName()) && listener.getUserId().equals(userId)) {
             reactions.get(channel.getGuild().getId()).get(messageId).updateLastAction();
-            channel.getMessageById(messageId).queue(message -> listener.react(reaction.getEmote().getName(), message));
+            channel.addReactionById(messageId, reaction.getEmote().getName()).complete();
         }
 
     }

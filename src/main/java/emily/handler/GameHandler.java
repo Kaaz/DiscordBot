@@ -114,9 +114,11 @@ public class GameHandler {
             return false;
         }
         final String input = Misc.emoteToNumber(reaction.getEmote().getName());
-        channel.getMessageById(messageId).queue(message ->
-                execute(player, (TextChannel) channel, input, message)
-        );
+        Message msg = channel.getMessageById(messageId).complete();
+        if (msg == null) {
+            return false;
+        }
+        execute(player, (TextChannel) channel, input, channel.getMessageById(messageId).complete());
         return true;
     }
 
@@ -176,13 +178,13 @@ public class GameHandler {
         }
         if (!gameMessage.isEmpty()) {
             if (targetMessage != null) {
-                targetMessage.editMessage(gameMessage).queue();
+                targetMessage.editMessage(gameMessage).complete();
             } else {
                 if (playerGames.containsKey(player.getId()) && playerGames.get(player.getId()).couldAddReactions()) {
                     bot.out.sendAsyncMessage(channel, gameMessage, msg -> {
                                 reactionMessages.put(msg.getId(), player.getId());
                                 for (String reaction : playerGames.get(player.getId()).getReactions()) {
-                                    msg.addReaction(Misc.numberToEmote(Integer.parseInt(reaction))).queue(
+                                    msg.addReaction(Misc.numberToEmote(Integer.parseInt(reaction))).complete(
                                     );
                                 }
                             }
