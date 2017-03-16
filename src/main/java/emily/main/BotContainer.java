@@ -79,7 +79,6 @@ public class BotContainer {
         shards = new DiscordBot[numShards];
         youtubeThread = new YoutubeThread(this);
         lastActions = new AtomicLongArray(numShards);
-        SecurityHandler.initialize();
         initHandlers();
         initShards();
     }
@@ -424,6 +423,7 @@ public class BotContainer {
         Template.initialize();
         Templates.init();
         MusicPlayerHandler.init();
+        SecurityHandler.initialize();
         RoleRankings.init();
     }
 

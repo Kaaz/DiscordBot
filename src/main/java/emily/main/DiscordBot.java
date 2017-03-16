@@ -87,7 +87,7 @@ public class DiscordBot {
     private int shardId;
     private BotContainer container;
 
-    public DiscordBot(int shardId, int numShards, BotContainer container) throws LoginException, InterruptedException, RateLimitedException {
+    public DiscordBot(int shardId, int numShards, BotContainer container) {
         scheduler = Executors.newScheduledThreadPool(1);
         jda = new AtomicReference<>();
         this.shardId = shardId;
@@ -96,7 +96,18 @@ public class DiscordBot {
         setContainer(container);
         chatBotHandler = new ChatBotHandler();
         startupTimeStamp = System.currentTimeMillis() / 1000L;
-        restartJDA();
+        while (true) {
+            try {
+                restartJDA();
+                break;
+            } catch (LoginException | InterruptedException | RateLimitedException e) {
+                try {
+                    Thread.sleep(5_000L);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
         markReady();
         container.setLastAction(shardId, System.currentTimeMillis());
     }
