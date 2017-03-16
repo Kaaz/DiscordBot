@@ -270,8 +270,8 @@ public class YoutubeThread extends Thread {
                         if (channel == null || !PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY)) {
                             task.getCallback().accept(null);
                         } else {
+                            Future<Message> future = channel.getMessageById(task.getMessage().getId()).submit(true);
                             try {
-                                Future<Message> future = channel.getMessageById(task.getMessage().getId()).submit(true);
                                 Message message = future.get(30, TimeUnit.SECONDS);
                                 if (message != null) {
                                     task.getCallback().accept(message);
@@ -279,7 +279,7 @@ public class YoutubeThread extends Thread {
                                     task.getCallback().accept(null);
                                 }
                             } catch (InterruptedException | ExecutionException | TimeoutException ex) {
-
+                                future.cancel(true);
                                 task.getCallback().accept(null);
                             }
                         }

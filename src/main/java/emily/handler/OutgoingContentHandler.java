@@ -79,6 +79,7 @@ public class OutgoingContentHandler {
             Message message = get.get(TIMEOUT, TimeUnit.SECONDS);
             message.editMessage(newContent).submit(true).get(TIMEOUT, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            get.cancel(true);
             e.printStackTrace();
         }
     }
