@@ -23,15 +23,15 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-public class CommandReactionListener<DataType> {
+public class CommandReactionListener<T> {
 
     private final LinkedHashMap<String, Consumer<Message>> reactions;
     private final String userId;
-    private volatile DataType data;
+    private volatile T data;
     private Long expiresIn, lastAction;
     private boolean active;
 
-    public CommandReactionListener(String userId, DataType data) {
+    public CommandReactionListener(String userId, T data) {
         this.data = data;
         this.userId = userId;
         reactions = new LinkedHashMap<>();
@@ -79,11 +79,11 @@ public class CommandReactionListener<DataType> {
         reactions.get(emote).accept(message);
     }
 
-    public DataType getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(DataType data) {
+    public void setData(T data) {
         this.data = data;
     }
 
