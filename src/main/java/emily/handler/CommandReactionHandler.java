@@ -69,7 +69,8 @@ public class CommandReactionHandler {
             reactions.get(channel.getGuild().getId()).remove(messageId);
         } else if (listener.hasReaction(reaction.getEmote().getName()) && listener.getUserId().equals(userId)) {
             reactions.get(channel.getGuild().getId()).get(messageId).updateLastAction();
-            channel.addReactionById(messageId, reaction.getEmote().getName()).complete();
+            Message message = channel.getMessageById(messageId).complete();
+            listener.react(reaction.getEmote().getName(), message);
         }
 
     }
