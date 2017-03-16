@@ -175,7 +175,9 @@ public class OutgoingContentHandler {
     public void sendPrivateMessage(User target, String message, final Consumer<Message> onSuccess, final Consumer<Throwable> onFailed) {
         if (target != null && !target.isFake() && message != null && !message.isEmpty()) {
             PrivateChannel channel = target.openPrivateChannel().complete();
-            onSuccess.accept(channel.sendMessage(message).complete());
+            if (onSuccess != null) {
+                onSuccess.accept(channel.sendMessage(message).complete());
+            }
             return;
         }
         if (onFailed != null) {
