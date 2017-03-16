@@ -39,10 +39,13 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -263,11 +266,22 @@ public class YoutubeThread extends Thread {
                     if (task.getMessage() == null) {
                         task.getCallback().accept(null);
                     } else {
-                        TextChannel channel = task.getMessage().getJDA().getTextChannelById(task.getMessage().getChannel().getId());
-                        if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY)) {
-                            task.getCallback().accept(channel.getMessageById(task.getMessage().getId()).complete());
-                        } else {
+                        TextChannel channel = container.getShardFor(task.getMessage().getTextChannel().getGuild().getId()).getJda().getTextChannelById(task.getMessage().getTextChannel().getId());
+                        if (channel == null || !PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY)) {
                             task.getCallback().accept(null);
+                        } else {
+                            try {
+                                Future<Message> future = channel.getMessageById(task.getMessage().getId()).submit(true);
+                                Message message = future.get(30, TimeUnit.SECONDS);
+                                if (message != null) {
+                                    task.getCallback().accept(message);
+                                } else {
+                                    task.getCallback().accept(null);
+                                }
+                            } catch (InterruptedException | ExecutionException | TimeoutException ex) {
+
+                                task.getCallback().accept(null);
+                            }
                         }
                     }
                 }
