@@ -22,6 +22,7 @@ import emily.db.controllers.CMusic;
 import emily.db.model.OBotEvent;
 import emily.db.model.OMusic;
 import emily.handler.Template;
+import emily.main.BotContainer;
 import emily.main.Config;
 import emily.main.Launcher;
 import emily.util.YTUtil;
@@ -53,10 +54,12 @@ public class YoutubeThread extends Thread {
     private final AtomicInteger counter = new AtomicInteger(0);
     private final ExecutorService executor;
     private final LinkedBlockingQueue<YoutubeTask> queue = new LinkedBlockingQueue<>();
+    private final BotContainer container;
     private volatile boolean shutdownMode = false;
 
-    public YoutubeThread() throws InterruptedException {
+    public YoutubeThread(BotContainer container) throws InterruptedException {
         super("yt-to-mp3");
+        this.container = container;
         executor = Executors.newFixedThreadPool(3);
     }
 
@@ -228,8 +231,8 @@ public class YoutubeThread extends Thread {
 
                 if (isInProgress(task.getCode())) {
                     if (task.message != null) {
-                        Message msg = task.getMessage().getJDA().getTextChannelById(task.getMessage().getChannel().getId()).getMessageById(task.getMessage().getId()).complete();
-                        msg.editMessage(Template.get("music_downloading_in_progress", task.getTitle())).complete();
+                        container.getShardFor(task.getMessage().getTextChannel().getGuild().getId())
+                                .out.editBlocking(task.message, Template.get("music_downloading_in_progress", task.getTitle()));
                     }
                     return;
                 }
@@ -238,7 +241,8 @@ public class YoutubeThread extends Thread {
                 final File fileCheck = new File(YTUtil.getOutputPath(task.getCode()));
                 if (!fileCheck.exists()) {
                     if (task.message != null) {
-                        task.getMessage().editMessage(Template.get("music_downloading_hang_on")).complete();
+                        container.getShardFor(task.getMessage().getTextChannel().getGuild().getId())
+                                .out.editBlocking(task.message, Template.get("music_downloading_hang_on"));
                     }
                     downloadFileFromYoutube(task.getCode());
                 }

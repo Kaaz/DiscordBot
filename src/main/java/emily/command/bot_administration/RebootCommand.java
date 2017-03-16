@@ -75,9 +75,9 @@ public class RebootCommand extends AbstractCommand {
                 case "update":
                     if (UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
                         bot.out.sendAsyncMessage(channel, Template.get("command_reboot_update"), message -> {
-                            if (args.length > 1 && args[1].equals("firm")){
+                            if (args.length > 1 && args[1].equals("firm")) {
                                 bot.getContainer().firmRequestExit(ExitCode.UPDATE);
-                            }else{
+                            } else {
                                 bot.getContainer().requestExit(ExitCode.UPDATE);
                             }
                         });
@@ -85,9 +85,9 @@ public class RebootCommand extends AbstractCommand {
                     }
                 case "now":
                     bot.out.sendAsyncMessage(channel, Template.get("command_reboot_success"), message -> {
-                        if (args.length > 1 && args[1].equals("firm")){
+                        if (args.length > 1 && args[1].equals("firm")) {
                             bot.getContainer().firmRequestExit(ExitCode.REBOOT);
-                        }else{
+                        } else {
                             bot.getContainer().requestExit(ExitCode.REBOOT);
                         }
                     });

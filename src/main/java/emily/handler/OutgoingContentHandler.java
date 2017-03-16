@@ -21,6 +21,7 @@ import emily.main.Config;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -30,17 +31,77 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 public class OutgoingContentHandler {
     private final DiscordBot botInstance;
     private final RoleModifier roleThread;
+    private final long TIMEOUT = 15L;
 
     public OutgoingContentHandler(DiscordBot b) {
         botInstance = b;
         roleThread = new RoleModifier();
+    }
+
+    public void sendBlock(MessageChannel channel, String msg) {
+        if (channel == null || msg == null) {
+            return;
+        }
+        if (msg.length() > 2000) {
+            msg = msg.substring(0, 1999);
+        }
+        switch (channel.getType()) {
+            case PRIVATE:
+                break;
+            case TEXT:
+                sendToText((TextChannel) channel, msg);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void editBlocking(Message msg, String newContent) {
+        if (!msg.getChannelType().equals(ChannelType.TEXT)) {
+            return;
+        }
+        TextChannel channel = botInstance.getJda().getTextChannelById(msg.getTextChannel().getId());
+        if (channel == null) {
+            return;
+        }
+        Future<Message> get = channel.getMessageById(msg.getId()).submit(true);
+        try {
+            Message message = get.get(TIMEOUT, TimeUnit.SECONDS);
+            message.editMessage(newContent).submit(true).get(TIMEOUT, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @param channel the channel to send it to
+     * @param message the message
+     */
+    private boolean sendToText(TextChannel channel, String message) {
+        if (!channel.canTalk() || botInstance.getJda().getGuildById(channel.getGuild().getId()) == null) {
+            return false;
+        }
+        try {
+            Future<Message> future = channel.sendMessage(message).submit(true);
+            future.get(30, TimeUnit.SECONDS);
+            if (future.isDone()) {
+                future.cancel(true);
+            }
+            return true;
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**
@@ -147,8 +208,12 @@ public class OutgoingContentHandler {
         if (messageToDelete != null && botInstance.getJda() == messageToDelete.getJDA()) {
             TextChannel channel = botInstance.getJda().getTextChannelById(messageToDelete.getChannel().getId());
             if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_HISTORY)) {
-                Message msg = channel.getMessageById(messageToDelete.getId()).complete();
-                msg.delete().complete();
+                try {
+                    Message msg = channel.getMessageById(messageToDelete.getId()).submit(true).get(TIMEOUT, TimeUnit.SECONDS);
+                    msg.delete().submit(true).get(TIMEOUT, TimeUnit.SECONDS);
+                } catch (InterruptedException | TimeoutException | ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

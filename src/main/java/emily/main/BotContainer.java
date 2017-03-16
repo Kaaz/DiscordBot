@@ -75,9 +75,9 @@ public class BotContainer {
     public BotContainer(int numGuilds) throws LoginException, InterruptedException, RateLimitedException {
         scheduler = Executors.newScheduledThreadPool(3);
         this.numGuilds = new AtomicInteger(numGuilds);
-        youtubeThread = new YoutubeThread();
         this.numShards = getRecommendedShards();
         shards = new DiscordBot[numShards];
+        youtubeThread = new YoutubeThread(this);
         lastActions = new AtomicLongArray(numShards);
         initHandlers();
         initShards();
