@@ -58,7 +58,7 @@ public class JDAEventManager implements IEventManager {
 
     @Override
     public void handle(Event event) {
-        Runnable rn = () -> {
+        threadExecutor.submit(() -> {
             bot.getContainer().setLastAction(event.getJDA().getShardInfo() == null ? 0 : event.getJDA().getShardInfo().getShardId(), System.currentTimeMillis());
             bot.updateJda(event.getJDA());
             if (!(event.getJDA().getStatus() == JDA.Status.CONNECTED)) {
@@ -76,8 +76,7 @@ public class JDAEventManager implements IEventManager {
                     bot.getContainer().reportError(throwable);
                 }
             }
-        };
-        threadExecutor.submit(rn);
+        });
     }
 
     @Override

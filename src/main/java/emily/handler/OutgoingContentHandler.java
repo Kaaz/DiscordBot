@@ -120,7 +120,9 @@ public class OutgoingContentHandler {
 
     public void sendAsyncMessage(MessageChannel channel, String content) {
         Message message = channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).complete();
-        botInstance.schedule(() -> saveDelete(message), Config.DELETE_MESSAGES_AFTER, TimeUnit.MILLISECONDS);
+        if (botInstance.shouldCleanUpMessages(channel)) {
+            botInstance.schedule(() -> saveDelete(message), Config.DELETE_MESSAGES_AFTER, TimeUnit.MILLISECONDS);
+        }
     }
 
     public void editAsync(Message message, String content) {
