@@ -73,11 +73,6 @@ public class Launcher {
     }
 
     public static void main(String[] args) throws Exception {
-        RequestConfig globalConfig = RequestConfig.custom()
-                .setCookieSpec(CookieSpecs.DEFAULT).build();
-
-        HttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
-        Unirest.setHttpClient(httpclient);
         new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
         WebDb.init();
         Launcher.init();
