@@ -48,9 +48,9 @@ public class OutgoingContentHandler {
         roleThread = new RoleModifier();
     }
 
-    public void sendBlock(MessageChannel channel, String msg) {
+    public Message sendBlock(MessageChannel channel, String msg) {
         if (channel == null || msg == null) {
-            return;
+            return null;
         }
         if (msg.length() > 2000) {
             msg = msg.substring(0, 1999);
@@ -64,6 +64,7 @@ public class OutgoingContentHandler {
             default:
                 break;
         }
+        return null;
     }
 
     public void editBlocking(Message msg, String newContent) {
@@ -87,21 +88,18 @@ public class OutgoingContentHandler {
      * @param channel the channel to send it to
      * @param message the message
      */
-    private boolean sendToText(TextChannel channel, String message) {
+    private Message sendToText(TextChannel channel, String message) {
         if (!channel.canTalk() || botInstance.getJda().getGuildById(channel.getGuild().getId()) == null) {
-            return false;
+            return null;
         }
+        Future<Message> future = channel.sendMessage(message).submit(true);
         try {
-            Future<Message> future = channel.sendMessage(message).submit(true);
-            future.get(30, TimeUnit.SECONDS);
-            if (future.isDone()) {
-                future.cancel(true);
-            }
-            return true;
+            return future.get(30, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            future.cancel(true);
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     /**

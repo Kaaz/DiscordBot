@@ -63,7 +63,7 @@ public class YoutubeThread extends Thread {
     public YoutubeThread(BotContainer container) throws InterruptedException {
         super("yt-to-mp3");
         this.container = container;
-        executor = Executors.newFixedThreadPool(3);
+        executor = Executors.newFixedThreadPool(4);
     }
 
     /**
@@ -107,7 +107,7 @@ public class YoutubeThread extends Thread {
                 errorGobbler.start();
                 outputGobbler.start();
             }
-            process.waitFor(5, TimeUnit.MINUTES);
+            process.waitFor(3, TimeUnit.MINUTES);
             process.destroy();
         } catch (IOException | InterruptedException e) {
             Launcher.logToDiscord(e);
@@ -272,7 +272,7 @@ public class YoutubeThread extends Thread {
                         } else {
                             Future<Message> future = channel.getMessageById(task.getMessage().getId()).submit(true);
                             try {
-                                Message message = future.get(30, TimeUnit.SECONDS);
+                                Message message = future.get(10, TimeUnit.SECONDS);
                                 if (message != null) {
                                     task.getCallback().accept(message);
                                 } else {
