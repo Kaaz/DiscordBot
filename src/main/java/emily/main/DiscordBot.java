@@ -276,10 +276,6 @@ public class DiscordBot {
         return guild.getTextChannelById(channelIdentifier);
     }
 
-    public synchronized void reconnect() {
-        loadConfiguration();
-    }
-
     /**
      * Mark the shard as ready, the bot will start working once all shards are marked as ready
      */
@@ -289,7 +285,6 @@ public class DiscordBot {
         }
         mentionMe = "<@" + this.getJda().getSelfUser().getId() + ">";
         mentionMeAlias = "<@!" + this.getJda().getSelfUser().getId() + ">";
-        loadConfiguration();
         sendStatsToDiscordPw();
         sendStatsToDiscordbotsOrg();
         isReady = true;
@@ -297,9 +292,6 @@ public class DiscordBot {
         container.allShardsReady();
     }
 
-    public synchronized void loadConfiguration() {
-        SecurityHandler.initialize();
-    }
 
     public void reloadAutoReplies() {
         autoReplyhandler.reload();

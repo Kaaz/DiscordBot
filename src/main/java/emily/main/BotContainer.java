@@ -79,6 +79,7 @@ public class BotContainer {
         shards = new DiscordBot[numShards];
         youtubeThread = new YoutubeThread(this);
         lastActions = new AtomicLongArray(numShards);
+        SecurityHandler.initialize();
         initHandlers();
         initShards();
     }
