@@ -50,6 +50,10 @@ public final class Templates {
     }
 
     final public static class command {
+        public static class uptime {
+            public static final Template upfor = new Template(TemplateArgument.ARG);
+        }
+
         public static class template {
             public static final Template added = new Template();
             public static final Template added_failed = new Template();

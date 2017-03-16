@@ -16,6 +16,7 @@
 
 package emily.main;
 
+import com.mashape.unirest.http.Unirest;
 import com.wezinkhof.configuration.ConfigurationBuilder;
 import emily.core.DbUpdate;
 import emily.core.ExitCode;
@@ -31,6 +32,10 @@ import emily.util.YTUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.utils.SimpleLog;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.HttpClients;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,6 +73,11 @@ public class Launcher {
     }
 
     public static void main(String[] args) throws Exception {
+        RequestConfig globalConfig = RequestConfig.custom()
+                .setCookieSpec(CookieSpecs.IGNORE_COOKIES).build();
+
+        HttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
+        Unirest.setHttpClient(httpclient);
         new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
         WebDb.init();
         Launcher.init();

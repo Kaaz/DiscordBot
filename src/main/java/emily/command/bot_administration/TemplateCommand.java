@@ -70,7 +70,9 @@ public class TemplateCommand extends AbstractCommand {
                 "",
                 "There are a few keywords you can utilize in templates. These keywords will be replaced by its value ",
                 "To see which variables are at your disposal:",
-                "template variable",
+                "",
+                "template variable                    //all variables",
+                "template variable <keyphrase>        //variables for that keyphrase",
                 "",
                 "for users with botadmin+, use 'template global ...' for global templates",
 
@@ -111,6 +113,13 @@ public class TemplateCommand extends AbstractCommand {
         switch (args[0]) {
             case "var":
             case "variable":
+                if (args.length > 1) {
+                    Template template = Templates.getByKey(args[1]);
+                    if (template == null) {
+                        return Templates.command.invalid_use.formatGuild(channel);
+                    }
+                    return template.formatFull(null, true);
+                }
                 StringBuilder sb = new StringBuilder("Template variables\n\n")
                         .append("Variables are predefined texts which are replaced based on context\n\n")
                         .append("You can use the following variables in templates:\n```\n");

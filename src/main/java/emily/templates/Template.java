@@ -20,6 +20,9 @@ import emily.db.controllers.CGuild;
 import emily.guildsettings.bot.SettingBotShowTemplates;
 import emily.handler.GuildSettings;
 import emily.main.Config;
+import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 public class Template {
     private String key;
@@ -74,6 +77,13 @@ public class Template {
         return formatFull(null, false, vars);
     }
 
+    public String formatGuild(MessageChannel channel, Object... vars) {
+        if (channel.getType().equals(ChannelType.TEXT)) {
+            return formatFull(((TextChannel) channel).getGuild().getId(), false, vars);
+        }
+        return formatFull(null, false, vars);
+    }
+
     public String formatGuild(String guildId, Object... vars) {
         return formatFull(guildId, false, vars);
     }
@@ -95,12 +105,17 @@ public class Template {
                 sb.append("Required:\n\n");
                 for (TemplateArgument arg : templateArguments) {
                     sb.append(String.format("%-17s -> %s\n", arg.getPattern(), arg.getDescription()));
+                    sb.append(String.format("%-17s -> %s\n", " |-> value -> ", arg.parse(env)));
                 }
             }
             if (optionalArgs.length > 0) {
                 sb.append("\nOptional:\n\n");
                 for (TemplateArgument arg : optionalArgs) {
                     sb.append(String.format("%-17s -> %s\n", arg.getPattern(), arg.getDescription()));
+                    String var = arg.parse(env);
+                    if (!var.isEmpty()) {
+                        sb.append(String.format("%-17s -> %s\n", " |-> value -> ", arg.parse(env)));
+                    }
                 }
             }
             sb.append("```");
@@ -111,7 +126,9 @@ public class Template {
                 tmp = tmp.replace(arg.getPattern(), arg.parse(env));
             }
             for (TemplateArgument arg : optionalArgs) {
-                tmp = tmp.replace(arg.getPattern(), arg.parse(env));
+                if (tmp.contains(arg.getPattern())) {
+                    tmp = tmp.replace(arg.getPattern(), arg.parse(env));
+                }
             }
             return tmp;
         }

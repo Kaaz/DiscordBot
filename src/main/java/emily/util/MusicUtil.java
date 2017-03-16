@@ -26,6 +26,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.core.entities.Role;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class MusicUtil {
      *
      * @param player the musicplayer
      * @param record the record playing
-     * @param member
+     * @param member the song requester
      * @return an embedded message
      */
     public static MessageEmbed nowPlayingMessage(MusicPlayerHandler player, OMusic record, Member member) {
@@ -59,7 +60,10 @@ public class MusicUtil {
         }
         String requiredRole = GuildSettings.get(player.getGuild()).getOrDefault(SettingMusicRole.class);
         if (!requiredRole.equals("false")) {
-            optionsField += "Role req.: " + guild.getRoleById(requiredRole).getName() + Config.EOL;
+            Role role = guild.getRoleById(requiredRole);
+            if (role != null) {
+                optionsField += "Role req.: " + role.getName() + Config.EOL;
+            }
         }
         if (GuildSettings.get(player.getGuild()).getOrDefault(SettingMusicQueueOnly.class).equals("false")) {
             optionsField += "Random after queue";
