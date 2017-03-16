@@ -231,19 +231,19 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                 File targetFile = new File(YTUtil.getOutputPath(videoCode));
                 if (targetFile.exists()) {
                     if (msg != null) {
-                        msg.editMessage(":notes: Found *" + videoTitle + "* And added it to the queue").complete();
+                        bot.out.editBlocking(msg, ":notes: Found *" + videoTitle + "* And added it to the queue");
                     }
                     player.addToQueue(targetFile.toPath().toRealPath().toString(), invoker);
                 } else {
                     if (player.getPlaylist().isGlobalList()) {
                         if (msg != null) {
-                            msg.editMessage("Download failed, the song is likely too long or region locked!").complete();
+                            bot.out.editBlocking(msg, "Download failed, the song is likely too long or region locked!");
                         }
                     } else {
                         CPlaylist.removeFromPlayList(player.getPlaylist().id, record.id);
                         if (msg != null) {
-                            msg.editMessage(String.format("the video `%s` (%s) is unavailable and its removed from the playlist '%s'",
-                                    record.youtubecode, record.youtubeTitle, player.getPlaylist().title)).complete();
+                            bot.out.editBlocking(msg, String.format("the video `%s` (%s) is unavailable and its removed from the playlist '%s'",
+                                    finalVideoCode, record.youtubeTitle, player.getPlaylist().title));
                         }
                         player.forceSkip();
                     }
@@ -251,7 +251,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
             } catch (IOException e) {
                 e.printStackTrace();
                 if (msg != null) {
-                    msg.editMessage(Template.get("music_file_error")).complete();
+                    bot.out.editBlocking(msg, (Template.get("music_file_error")));
                 }
             }
         });

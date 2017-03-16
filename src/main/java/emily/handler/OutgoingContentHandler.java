@@ -74,12 +74,11 @@ public class OutgoingContentHandler {
         if (channel == null) {
             return;
         }
-        Future<Message> get = channel.getMessageById(msg.getId()).submit(true);
+        Future<Message> newMsg = channel.editMessageById(msg.getId(), newContent).submit(true);
         try {
-            Message message = get.get(TIMEOUT, TimeUnit.SECONDS);
-            message.editMessage(newContent).submit(true).get(TIMEOUT, TimeUnit.SECONDS);
+            newMsg.get(TIMEOUT, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            get.cancel(true);
+            newMsg.cancel(true);
             e.printStackTrace();
         }
     }
