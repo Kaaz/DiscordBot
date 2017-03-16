@@ -17,9 +17,12 @@
 package emily.handler;
 
 import emily.command.CommandReactionListener;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageReaction;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -35,6 +38,11 @@ public class CommandReactionHandler {
     public void addReactionListener(String guildId, Message message, CommandReactionListener<?> handler) {
         if (handler == null) {
             return;
+        }
+        if (message.getChannelType().equals(ChannelType.TEXT)) {
+            if (!PermissionUtil.checkPermission(message.getTextChannel(), message.getGuild().getSelfMember(), Permission.MESSAGE_ADD_REACTION)) {
+                return;
+            }
         }
         if (!reactions.containsKey(guildId)) {
             reactions.put(guildId, new ConcurrentHashMap<>());
