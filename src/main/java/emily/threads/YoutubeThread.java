@@ -72,7 +72,7 @@ public class YoutubeThread extends Thread {
      * @param videocode youtube video id
      * @return success or not
      */
-    public static boolean downloadFileFromYoutube(String videocode) {
+    private static boolean downloadFileFromYoutube(String videocode) {
         List<String> infoArgs = new LinkedList<>();
         infoArgs.add(Config.YOUTUBEDL_EXE);
         infoArgs.add("--no-check-certificate");
@@ -117,11 +117,11 @@ public class YoutubeThread extends Thread {
         return true;
     }
 
-    public synchronized void registerProgress(String youtubeCode) {
+    private synchronized void registerProgress(String youtubeCode) {
         itemsInProgress.add(youtubeCode);
     }
 
-    public synchronized void unRegisterProgress(String youtubeCode) {
+    private synchronized void unRegisterProgress(String youtubeCode) {
         itemsInProgress.remove(youtubeCode);
         counter.decrementAndGet();
     }
@@ -265,25 +265,24 @@ public class YoutubeThread extends Thread {
                 if (task.getCallback() != null) {
                     if (task.getMessage() == null) {
                         task.getCallback().accept(null);
-                    } else {
-                        TextChannel channel = container.getShardFor(task.getMessage().getTextChannel().getGuild().getId()).getJda().getTextChannelById(task.getMessage().getTextChannel().getId());
-                        if (channel == null || !PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY)) {
-                            task.getCallback().accept(null);
-                        } else {
-                            Future<Message> future = channel.getMessageById(task.getMessage().getId()).submit(true);
-                            try {
-                                Message message = future.get(10, TimeUnit.SECONDS);
-                                if (message != null) {
-                                    task.getCallback().accept(message);
-                                } else {
-                                    task.getCallback().accept(null);
-                                }
-                            } catch (InterruptedException | ExecutionException | TimeoutException ex) {
-                                future.cancel(true);
-                                task.getCallback().accept(null);
-                            }
-                        }
+                        return;
                     }
+                    TextChannel channel = container.getShardFor(task.getMessage().getTextChannel().getGuild().getId()).getJda().getTextChannelById(task.getMessage().getTextChannel().getId());
+                    if (channel == null || !PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY)) {
+                        task.getCallback().accept(null);
+                        return;
+                    }
+                    Future<Message> future = channel.getMessageById(task.getMessage().getId()).submit(true);
+                    try {
+                        Message message = future.get(10, TimeUnit.SECONDS);
+                        if (message != null) {
+                            task.getCallback().accept(message);
+                            return;
+                        }
+                    } catch (InterruptedException | ExecutionException | TimeoutException ex) {
+                        future.cancel(true);
+                    }
+                    task.getCallback().accept(null);
                 }
             } catch (Exception e) {
                 Launcher.logToDiscord(e, "yt-code", task.getCode());
