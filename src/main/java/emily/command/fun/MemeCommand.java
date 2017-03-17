@@ -140,14 +140,17 @@ public class MemeCommand extends AbstractCommand {
             if (memeFile.exists()) {
                 memeFile.delete();
             }
-            ImageIO.write(image, "png", memeFile);
-            channel.sendFile(memeFile, null).complete();
-            memeFile.delete();
+            if (image != null) {
+                ImageIO.write(image, "png", memeFile);
+                channel.sendFile(memeFile, null).complete();
+                memeFile.delete();
+                return "";
+            }
         } catch (InterruptedException | ExecutionException | IOException e) {
             e.printStackTrace();
             return "No memes for you :(";
         }
-        return "";
+        return "The site seems to be down :thinking:";
     }
 
     private void loadMemeOptions() {
