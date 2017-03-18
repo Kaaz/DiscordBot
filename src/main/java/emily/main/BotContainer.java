@@ -271,7 +271,7 @@ public class BotContainer {
             LOGGER.warn("Can't find BOT_ERROR_CHANNEL_ID " + Config.BOT_ERROR_CHANNEL_ID);
             return;
         }
-        channel.sendMessage(message.length() > Config.MAX_MESSAGE_SIZE ? message.substring(0, Config.MAX_MESSAGE_SIZE - 1) : message).complete();
+        shard.queue.add(channel.sendMessage(message.length() > Config.MAX_MESSAGE_SIZE ? message.substring(0, Config.MAX_MESSAGE_SIZE - 1) : message));
     }
 
     public void reportStatus(int shardId, JDA.Status oldStatus, JDA.Status status) {

@@ -254,10 +254,10 @@ public class YoutubeThread extends Thread {
                     rec.playCount += 1;
                     rec.fileExists = 1;
                     rec.lastManualPlaydate = System.currentTimeMillis() / 1000L;
+                    CMusic.update(rec);
                     if (rec.duration == 0) {
                         YTUtil.getTrackDuration(rec);
                     }
-                    CMusic.update(rec);
                 }
                 if (task.getCallback() != null) {
                     if (task.getMessage() == null) {
