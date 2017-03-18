@@ -33,11 +33,8 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.requests.RestAction;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 public class OutgoingContentHandler {
@@ -50,24 +47,6 @@ public class OutgoingContentHandler {
         roleThread = new RoleModifier();
     }
 
-    public Message sendBlock(MessageChannel channel, String msg) {
-        if (channel == null || msg == null) {
-            return null;
-        }
-        if (msg.length() > 2000) {
-            msg = msg.substring(0, 1999);
-        }
-        switch (channel.getType()) {
-            case PRIVATE:
-                break;
-            case TEXT:
-                return sendToText((TextChannel) channel, msg);
-            default:
-                break;
-        }
-        return null;
-    }
-
     public void editBlocking(Message msg, String newContent) {
         if (!msg.getChannelType().equals(ChannelType.TEXT)) {
             return;
@@ -77,24 +56,6 @@ public class OutgoingContentHandler {
             return;
         }
         botInstance.queue.add(channel.editMessageById(msg.getId(), newContent));
-    }
-
-    /**
-     * @param channel the channel to send it to
-     * @param message the message
-     */
-    private Message sendToText(TextChannel channel, String message) {
-        if (!channel.canTalk() || botInstance.getJda().getGuildById(channel.getGuild().getId()) == null) {
-            return null;
-        }
-        Future<Message> future = channel.sendMessage(message).submit(true);
-        try {
-            return future.get(30, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            future.cancel(true);
-            e.printStackTrace();
-        }
-        return null;
     }
 
     /**
@@ -194,11 +155,7 @@ public class OutgoingContentHandler {
         if (messageToDelete != null && botInstance.getJda() == messageToDelete.getJDA()) {
             TextChannel channel = botInstance.getJda().getTextChannelById(messageToDelete.getChannel().getId());
             if (channel != null && PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_HISTORY)) {
-                try {
-                    channel.deleteMessageById(messageToDelete.getId()).submit(true).get(TIMEOUT, TimeUnit.SECONDS);
-                } catch (InterruptedException | TimeoutException | ExecutionException e) {
-                    e.printStackTrace();
-                }
+                botInstance.queue.add(channel.deleteMessageById(messageToDelete.getId()));
             }
         }
     }

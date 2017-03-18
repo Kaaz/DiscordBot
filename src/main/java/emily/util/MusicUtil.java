@@ -66,9 +66,9 @@ public class MusicUtil {
             }
         }
         if (GuildSettings.get(player.getGuild()).getOrDefault(SettingMusicQueueOnly.class).equals("false")) {
-            optionsField += "Random after add";
+            optionsField += "Random after queue";
         } else {
-            optionsField += "Stop after add";
+            optionsField += "Stop after queue";
         }
         embed.addField("Options:", optionsField, true);
         List<OMusic> queue = player.getQueue();

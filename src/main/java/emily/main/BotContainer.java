@@ -291,7 +291,9 @@ public class BotContainer {
         }
         if (channel.getJDA().getStatus() == JDA.Status.CONNECTED) {
             int length = 1 + (int) Math.floor(Math.log10(shards.length));
-            shard.out.sendBlock(channel, String.format(Emojibet.SHARD_ICON + " `%0" + length + "d/%0" + length + "d` | ~~%s~~ -> %s", shardId, shards.length, oldStatus.toString(), status.toString()));
+            shard.queue.add(channel.sendMessage(
+                    String.format(Emojibet.SHARD_ICON + " `%0" + length + "d/%0" + length + "d` | ~~%s~~ -> %s",
+                            shardId, shards.length, oldStatus.toString(), status.toString())));
         }
     }
 

@@ -39,13 +39,10 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -272,17 +269,14 @@ public class YoutubeThread extends Thread {
                         task.getCallback().accept(null);
                         return;
                     }
-                    Future<Message> future = channel.getMessageById(task.getMessage().getId()).submit(true);
-                    try {
-                        Message message = future.get(10, TimeUnit.SECONDS);
-                        if (message != null) {
-                            task.getCallback().accept(message);
-                            return;
-                        }
-                    } catch (InterruptedException | ExecutionException | TimeoutException ex) {
-                        future.cancel(true);
-                    }
-                    task.getCallback().accept(null);
+                    container.getShardFor(task.getMessage().getTextChannel().getGuild().getId()).queue.add(channel.getMessageById(task.getMessage().getId()),
+                            message -> {
+                                if (message != null) {
+                                    task.getCallback().accept(message);
+                                    return;
+                                }
+                                task.getCallback().accept(null);
+                            });
                 }
             } catch (Exception e) {
                 Launcher.logToDiscord(e, "yt-code", task.getCode());
