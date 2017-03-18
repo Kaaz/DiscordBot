@@ -42,7 +42,6 @@ import emily.util.MusicUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -88,7 +87,7 @@ public class NowPlayingCommand extends AbstractCommand {
                 "current source          //Shows the source of the video",
                 "current pm              //sends you a private message with the details",
                 "",
-                "current clear               //clears everything in the queue",
+                "current clear               //clears everything in the add",
                 "current clear admin         //check if clear is admin-only",
                 "current clear admin toggle  //switch between admin-only and normal",
 //				"current artist        //sets the artist of current song",
@@ -121,7 +120,7 @@ public class NowPlayingCommand extends AbstractCommand {
             return Template.get("command_currentlyplaying_nosong");
         }
         if (args.length == 0 && PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-            channel.sendMessage(MusicUtil.nowPlayingMessage(player, song, null)).complete();
+            bot.queue.add(channel.sendMessage(MusicUtil.nowPlayingMessage(player, song, null)));
             return "";
         }
         if (args.length > 0) {
@@ -215,19 +214,24 @@ public class NowPlayingCommand extends AbstractCommand {
 
         }
         if (args.length == 1 && args[0].equals("update")) {
-            final Message message = channel.sendMessage(ret).complete();
             final Future<?>[] f = {null};
-            bot.scheduleRepeat(
-                    () -> {
-                        if (player.getCurrentlyPlaying() != song.id) {
-                            f[0].cancel(false);
+            bot.queue.add(channel.sendMessage(ret),
+                    message -> {
+                        if (message == null) {
                             return;
                         }
-                        message.editMessage((player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + Config.EOL +
-                                MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL
-                        ).complete();
-                    }, 10_000L, 10_000L
-            );
+                        bot.scheduleRepeat(
+                                () -> {
+                                    if (player.getCurrentlyPlaying() != song.id) {
+                                        f[0].cancel(false);
+                                        return;
+                                    }
+                                    bot.queue.add(message.editMessage((player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + Config.EOL +
+                                            MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + Config.EOL + Config.EOL
+                                    ));
+                                }, 10_000L, 10_000L
+                        );
+                    });
             return "";
         } else if (args.length >= 1 && args[0].equals("updatetitle")) {
             if (!userRank.isAtLeast(SimpleRank.USER)) {
@@ -244,16 +248,16 @@ public class NowPlayingCommand extends AbstractCommand {
                     bot.scheduleRepeat(() -> {
                         if (!player.isUpdateChannelTitle() || !player.canTogglePause()) {
                             player.setUpdateChannelTitle(false);
-                            musicChannel.getManager().setTopic("").complete();
+                            bot.queue.add(musicChannel.getManager().setTopic(""));
                             f[0].cancel(false);
                             return;
                         }
                         OMusic nowPlaying = CMusic.findById(player.getCurrentlyPlaying());
-                        musicChannel.getManager().setTopic(
+                        bot.queue.add(musicChannel.getManager().setTopic(
                                 (player.isInRepeatMode() ? "\uD83D\uDD02 " : "") +
                                         MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) +
                                         (nowPlaying.id > 0 ? "\uD83C\uDFB6 " + nowPlaying.youtubeTitle : "")
-                        ).complete();
+                        ));
                     }, 10_000L, 10_000L);
                     return Template.get("music_channel_autotitle_start");
                 }

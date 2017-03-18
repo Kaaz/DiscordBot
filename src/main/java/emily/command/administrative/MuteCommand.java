@@ -20,6 +20,7 @@ import emily.command.administrative.modactions.AbstractModActionCommand;
 import emily.db.model.OModerationCase;
 import emily.guildsettings.moderation.SettingMuteRole;
 import emily.handler.GuildSettings;
+import emily.main.DiscordBot;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -59,7 +60,7 @@ public class MuteCommand extends AbstractModActionCommand {
     }
 
     @Override
-    protected boolean punish(Guild guild, Member member) {
+    protected boolean punish(DiscordBot bot, Guild guild, Member member) {
         Role role = guild.getRoleById(GuildSettings.get(guild).getOrDefault(SettingMuteRole.class));
         if (role == null) {
             return false;
@@ -82,7 +83,7 @@ public class MuteCommand extends AbstractModActionCommand {
             }
             rolesToRemove.add(r);
         }
-        guild.getController().modifyMemberRoles(member, rolesToAdd, rolesToRemove).complete();
+        bot.queue.add(guild.getController().modifyMemberRoles(member, rolesToAdd, rolesToRemove));
         return true;
     }
 }

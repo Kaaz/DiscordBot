@@ -21,10 +21,8 @@ import emily.main.BotContainer;
 import emily.main.Config;
 import emily.main.DiscordBot;
 import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Invite;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -102,12 +100,14 @@ public class BotStatusService extends AbstractService {
         TextChannel inviteChannel = bot.getShardFor(Config.BOT_GUILD_ID).getJda().getTextChannelById(Config.BOT_CHANNEL_ID);
         if (inviteChannel != null && roll < 10) {
             String fallback = "Feedback @ https://discord.gg/eaywDDt | #%s";
-            List<Invite> invites = inviteChannel.getInvites().complete();
-            if (invites != null && !invites.isEmpty()) {
-                setGameOnShards(bot, "Feedback @ https://discord.gg/" + invites.get(0).getCode() + " | %s");
-            } else {
-                setGameOnShards(bot, fallback);
-            }
+            bot.getShardFor(Config.BOT_GUILD_ID).queue.add(inviteChannel.getInvites(),
+                    invites -> {
+                        if (invites != null && !invites.isEmpty()) {
+                            setGameOnShards(bot, "Feedback @ https://discord.gg/" + invites.get(0).getCode() + " | %s");
+                        } else {
+                            setGameOnShards(bot, fallback);
+                        }
+                    });
         } else if (roll < 50) {
             String username = bot.getShards()[0].getJda().getSelfUser().getName();
             setGameOnShards(bot, "@" + username + " help | @" + username + " invite | #%s");

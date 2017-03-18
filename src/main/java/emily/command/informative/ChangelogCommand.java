@@ -91,7 +91,7 @@ public class ChangelogCommand extends AbstractCommand {
             if (channel instanceof TextChannel && !PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
                 return Template.get("permission_missing", Permission.MESSAGE_EMBED_LINKS);
             }
-            channel.sendMessage(message).complete();
+            bot.queue.add(channel.sendMessage(message));
             return "";
         }
         return "No changes for version " + version.toString();

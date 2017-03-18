@@ -18,24 +18,27 @@ package emily.util;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import net.dv8tion.jda.core.entities.Message;
+import emily.main.DiscordBot;
 import net.dv8tion.jda.core.entities.MessageChannel;
 
 public class DebugUtil {
     /**
      * Handles the debug output + response
      *
+     * @param bot
      * @param channel the channel to send the messages to
      * @param output  the output to upload
      */
-    public static void handleDebug(MessageChannel channel, String output) {
-        Message message = channel.sendMessage("One moment, uploading results: ").complete();
-        String result = DebugUtil.sendToHastebin(output);
-        if (result == null) {
-            message.editMessage("Uploading failed!").complete();
-        } else {
-            message.editMessage("Here you go: " + result).complete();
-        }
+    public static void handleDebug(DiscordBot bot, MessageChannel channel, String output) {
+        bot.queue.add(channel.sendMessage("One moment, uploading results: "),
+                message -> {
+                    String result = DebugUtil.sendToHastebin(output);
+                    if (result == null) {
+                        bot.queue.add(message.editMessage("Uploading failed!"));
+                    } else {
+                        bot.queue.add(message.editMessage("Here you go: " + result));
+                    }
+                });
     }
 
     /**

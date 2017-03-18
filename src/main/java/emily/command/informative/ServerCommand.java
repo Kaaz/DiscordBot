@@ -102,7 +102,7 @@ public class ServerCommand extends AbstractCommand {
         b.addField("My prefix", String.format("`%s`", DisUtil.getCommandPrefix(guild)), true);
         b.addField("Created On", new SimpleDateFormat("dd MMMM yyyy").format(new Date(guild.getCreationTime().toInstant().toEpochMilli())), true);
         b.setFooter(guild.getSelfMember().getEffectiveName(), channel.getJDA().getSelfUser().getAvatarUrl());
-        channel.sendMessage(b.build()).complete();
+        bot.queue.add(channel.sendMessage(b.build()));
         return "";
     }
 }

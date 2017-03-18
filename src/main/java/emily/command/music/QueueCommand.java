@@ -30,7 +30,6 @@ import emily.util.Misc;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -44,18 +43,18 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
 
     @Override
     public String getDescription() {
-        return "check whats in the music queue";
+        return "check whats in the music add";
     }
 
     @Override
     public String getCommand() {
-        return "queue";
+        return "add";
     }
 
     @Override
     public String[] getUsage() {
         return new String[]{
-                "queue        //overview"
+                "add        //overview"
         };
     }
 
@@ -78,12 +77,15 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
                 return Templates.music.queue_is_empty.formatGuild(guild.getId(), guild);
             }
             int maxPage = (int) Math.ceil((double) player.getQueue().size() / (double) ITEMS_PER_PAGE);
-            Message msg = channel.sendMessage(printQueue(guild, player.getQueue(), 1, maxPage)).complete();
-            if (maxPage > 1) {
-                bot.commandReactionHandler.addReactionListener(
-                        guild.getId(), msg,
-                        getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)));
-            }
+            bot.queue.add(channel.sendMessage(printQueue(guild, player.getQueue(), 1, maxPage)),
+                    msg -> {
+                        if (maxPage > 1) {
+                            bot.commandReactionHandler.addReactionListener(
+                                    guild.getId(), msg,
+                                    getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)));
+                        }
+                    }
+            );
             return "";
         }
         return "";
@@ -93,7 +95,7 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
         EmbedBuilder eb = new EmbedBuilder();
         StringBuilder sb = new StringBuilder();
         sb.append("There are **").append(queue.size())
-                .append("** tracks in the queue with an estimated playtime of **")
+                .append("** tracks in the add with an estimated playtime of **")
                 .append(Misc.getDurationString(queue.stream().mapToLong(oMusic -> oMusic.duration).sum())).append("**\n\n");
         int start = Math.max(0, (page - 1) * ITEMS_PER_PAGE);
         int end = Math.min(queue.size() - 1, start + ITEMS_PER_PAGE);

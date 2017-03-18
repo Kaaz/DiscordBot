@@ -18,6 +18,7 @@ package emily.command.administrative;
 
 import emily.command.administrative.modactions.AbstractModActionCommand;
 import emily.db.model.OModerationCase;
+import emily.main.DiscordBot;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -49,7 +50,7 @@ public class WarnCommand extends AbstractModActionCommand {
     }
 
     @Override
-    protected boolean punish(Guild guild, Member member) {
+    protected boolean punish(DiscordBot bot, Guild guild, Member member) {
         return true;
     }
 }

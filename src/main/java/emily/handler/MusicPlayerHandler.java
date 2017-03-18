@@ -240,7 +240,7 @@ public class MusicPlayerHandler {
                     keepGoing = true;
                     if (!playRandomSong()) {
                         player.destroy();
-                        bot.getMusicChannel(guildId).sendMessage("Stopped playing because the playlist is empty").complete();
+                        bot.queue.add(bot.getMusicChannel(guildId).sendMessage("Stopped playing because the playlist is empty"));
                         leave();
                         return;
                     }
@@ -325,7 +325,7 @@ public class MusicPlayerHandler {
             Guild guild = bot.getJda().getGuildById(guildId);
             if (musicChannel != null && PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
                 if (!isUpdateChannelTitle()) {
-                    musicChannel.getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle).complete();
+                    bot.queue.add(musicChannel.getManager().setTopic("\uD83C\uDFB6 " + record.youtubeTitle));
                 }
             }
         }
@@ -351,11 +351,9 @@ public class MusicPlayerHandler {
             };
             Guild guild = bot.getJda().getGuildById(guildId);
             if (!PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-                Message complete = musicChannel.sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)).complete();
-                callback.accept(complete);
+                bot.queue.add(musicChannel.sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)), callback);
             } else {
-                Message complete = musicChannel.sendMessage(MusicUtil.nowPlayingMessage(this, record, guild.getMemberById(scheduler.getLastRequester()))).complete();
-                callback.accept(complete);
+                bot.queue.add(musicChannel.sendMessage(MusicUtil.nowPlayingMessage(this, record, guild.getMemberById(scheduler.getLastRequester()))), callback);
             }
         }
     }
@@ -481,7 +479,7 @@ public class MusicPlayerHandler {
     }
 
     /**
-     * Adds a random song from the music directory to the queue
+     * Adds a random song from the music directory to the add
      * if a track fails, try the next one
      *
      * @return successfully started playing

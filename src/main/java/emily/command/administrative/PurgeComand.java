@@ -285,9 +285,9 @@ public class PurgeComand extends AbstractCommand {
                 messagesToDelete.add(message);
                 for (int index = 0; index < messagesToDelete.size(); index += MAX_BULK_SIZE) {
                     if (messagesToDelete.size() - index < 2) {
-                        messagesToDelete.get(index).delete().complete();
+                        bot.queue.add(messagesToDelete.get(index).delete());
                     } else {
-                        channel.deleteMessages(messagesToDelete.subList(index, Math.min(index + MAX_BULK_SIZE, messagesToDelete.size()))).complete();
+                        bot.queue.add(channel.deleteMessages(messagesToDelete.subList(index, Math.min(index + MAX_BULK_SIZE, messagesToDelete.size()))));
                     }
                     try {
                         Thread.sleep(2000L);
@@ -300,7 +300,7 @@ public class PurgeComand extends AbstractCommand {
                 messagesToDelete.add(message);
                 for (Message toDelete : messagesToDelete) {
                     if (toDelete.getAuthor().getId().equals(channel.getJDA().getSelfUser().getId()))
-                        toDelete.delete().complete();
+                        bot.queue.add(toDelete.delete());
                     try {
                         Thread.sleep(500L);
                     } catch (Exception ignored) {

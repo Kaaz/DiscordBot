@@ -41,7 +41,6 @@ import emily.util.Emojibet;
 import emily.util.Misc;
 import emily.util.YTUtil;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -53,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * !playlist
- * shows the current songs in the queue
+ * shows the current songs in the add
  */
 public class PlaylistCommand extends AbstractCommand implements ICommandReactionListener<PaginationInfo<OPlaylist>> {
     private final static int ITEMS_PER_PAGE = 20;
@@ -210,11 +209,13 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 int totalTracks = CPlaylist.getMusicCount(playlist.id);
                 int maxPage = (int) Math.ceil((double) totalTracks / (double) ITEMS_PER_PAGE);
                 OPlaylist finalPlaylist = playlist;
-                Message msg = channel.sendMessage(makePage(guild, playlist, currentPage, maxPage)).complete();
-                if (maxPage > 1) {
-                    bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), msg,
-                            getReactionListener(author.getId(), new PaginationInfo<>(currentPage, maxPage, guild, finalPlaylist)));
-                }
+                bot.queue.add(channel.sendMessage(makePage(guild, playlist, currentPage, maxPage)),
+                        msg -> {
+                            if (maxPage > 1) {
+                                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), msg,
+                                        getReactionListener(author.getId(), new PaginationInfo<>(currentPage, maxPage, guild, finalPlaylist)));
+                            }
+                        });
                 return "";
 
             default:

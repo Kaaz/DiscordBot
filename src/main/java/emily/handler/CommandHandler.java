@@ -189,11 +189,11 @@ public class CommandHandler {
                 TextChannel tc = (TextChannel) channel;
                 TextChannel commandLogChannel = bot.getCommandLogChannel(tc.getGuild());
                 if (commandLogChannel != null && commandLogChannel.canTalk()) {
-                    commandLogChannel.sendMessage(
+                    bot.queue.add(commandLogChannel.sendMessage(
                             String.format("%s **%s#%s** used %s `%s` in %s",
                                     Emojibet.USER, author.getName(), author.getDiscriminator(), Emojibet.KEYBOARD, commandUsed, tc.getAsMention()
                             )
-                    ).complete();
+                    ));
                 }
                 Launcher.log("command executed", "bot", "command",
                         "input", incomingMessage,

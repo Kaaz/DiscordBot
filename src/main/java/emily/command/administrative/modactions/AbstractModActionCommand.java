@@ -28,7 +28,6 @@ import emily.util.DisUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -56,7 +55,7 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
         return CommandVisibility.PUBLIC;
     }
 
-    protected abstract boolean punish(Guild guild, Member member);
+    protected abstract boolean punish(DiscordBot bot, Guild guild, Member member);
 
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
@@ -81,16 +80,19 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
         if (targetUser.getId().equals(guild.getSelfMember().getUser().getId())) {
             return Template.get("command_modaction_not_self", getPunishType().getKeyword().toLowerCase());
         }
-        if (!PermissionUtil.canInteract(guild.getSelfMember(), guild.getMember(targetUser)) || !punish(guild, guild.getMember(targetUser))) {
+        if (!PermissionUtil.canInteract(guild.getSelfMember(), guild.getMember(targetUser)) || !punish(bot, guild, guild.getMember(targetUser))) {
             return Template.get("command_modaction_failed", getPunishType().getKeyword().toLowerCase(), targetUser.getName());
         }
         int caseId = CModerationCase.insert(guild, targetUser, author, getPunishType(), null);
         TextChannel modlogChannel = bot.getModlogChannel(guild.getId());
         if (modlogChannel != null) {
-            Message message = modlogChannel.sendMessage(CModerationCase.buildCase(guild, caseId)).complete();
-            OModerationCase modcase = CModerationCase.findById(caseId);
-            modcase.messageId = message.getId();
-            CModerationCase.update(modcase);
+            bot.queue.add(modlogChannel.sendMessage(CModerationCase.buildCase(guild, caseId)),
+                    message -> {
+                        OModerationCase modCase = CModerationCase.findById(caseId);
+                        modCase.messageId = message.getId();
+                        CModerationCase.update(modCase);
+                    });
+
         }
         return Template.get("command_modaction_success", targetUser.getName(), getPunishType().getVerb().toLowerCase());
     }

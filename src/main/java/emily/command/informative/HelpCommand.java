@@ -32,7 +32,6 @@ import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -117,8 +116,9 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
             if (PermissionUtil.checkPermission(textChannel, textChannel.getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_ADD_REACTION)) {
                 HashMap<CommandCategory, ArrayList<String>> map = getCommandMap(userRank);
                 CommandCategory cat = CommandCategory.getFirstWithPermission(userRank);
-                Message msg = channel.sendMessage(writeFancyHeader(channel, cat, map.keySet()) + styleTableCategory(cat, map.get(cat)) + writeFancyFooter(channel)).complete();
-                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), msg, getReactionListener(author.getId(), new ReactionData(userRank, cat)));
+                bot.queue.add(channel.sendMessage(writeFancyHeader(channel, cat, map.keySet()) + styleTableCategory(cat, map.get(cat)) + writeFancyFooter(channel)),
+                        msg ->
+                                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), msg, getReactionListener(author.getId(), new ReactionData(userRank, cat))));
 
                 return "";
             }

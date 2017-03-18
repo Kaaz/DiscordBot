@@ -97,7 +97,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
                 bank.transferTo(CBanks.getBotAccount(), betAmount, "slot machine");
             }
             final SlotMachine slotMachine = new SlotMachine();
-            bot.out.sendAsyncMessage(channel, slotMachine.toString(), message -> {
+            bot.queue.add(channel.sendMessage(slotMachine.toString()), message -> {
                 final Future<?>[] f = {null};
                 f[0] = bot.scheduleRepeat(() -> {
                     try {
@@ -117,10 +117,10 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
                             } else {
                                 gameResult = Template.get("gamble_ai_lose");
                             }
-                            message.editMessage(slotMachine.toString() + Config.EOL + gameResult).complete();
+                            bot.queue.add(message.editMessage(slotMachine.toString() + Config.EOL + gameResult));
                             f[0].cancel(false);
                         } else {
-                            message.editMessage(slotMachine.toString()).complete();
+                            bot.queue.add(message.editMessage(slotMachine.toString()));
                         }
                     } catch (Exception e) {
                         bot.getContainer().reportError(e, "slotmachine", author.getId(), "channel", ((TextChannel) channel).getAsMention(), bot);

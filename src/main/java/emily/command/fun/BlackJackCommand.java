@@ -89,12 +89,11 @@ public class BlackJackCommand extends AbstractCommand {
             if (playerGames.containsKey(author.getId())) {
                 final Future<?>[] f = {null};
                 if (!playerGames.get(author.getId()).playerIsStanding()) {
-                    bot.out.sendAsyncMessage(channel, playerGames.get(author.getId()).toString(), message -> {
+                    bot.queue.add(channel.sendMessage(playerGames.get(author.getId()).toString()), message -> {
                         playerGames.get(author.getId()).stand();
                         f[0] = bot.scheduleRepeat(() -> {
                             boolean didHit = playerGames.get(author.getId()).dealerHit();
-                            message.editMessage(playerGames.get(author.getId()).toString()).complete();
-
+                            bot.queue.add(message.editMessage(playerGames.get(author.getId()).toString()));
                             if (!didHit) {
                                 playerGames.remove(author.getId());
                                 f[0].cancel(false);

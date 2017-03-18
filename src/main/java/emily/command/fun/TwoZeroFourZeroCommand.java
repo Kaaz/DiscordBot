@@ -30,7 +30,6 @@ import emily.main.DiscordBot;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -74,8 +73,7 @@ public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandR
         }
         Game2048 game = new Game2048();
         game.addPlayer(author);
-        Message message = channel.sendMessage(game.toString()).complete();
-        bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), game));
+        bot.queue.add(channel.sendMessage(game.toString()), message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), game)));
         return "";
 
     }

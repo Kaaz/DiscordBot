@@ -35,7 +35,6 @@ import emily.util.Emojibet;
 import emily.util.Misc;
 import emily.util.TimeUtil;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -106,10 +105,11 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
                 return "The following tags exist: " + Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
             }
             int maxPage = (int) Math.ceil((double) CTag.countTagsOn(CGuild.getCachedId(guild.getId())) / (double) TAGS_PER_PAGE);
-            Message message = channel.sendMessage(makePage(guild, 1, maxPage)).complete();
-            bot.commandReactionHandler.addReactionListener(
-                    ((TextChannel) channel).getGuild().getId(), message,
-                    getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)));
+            bot.queue.add(channel.sendMessage(makePage(guild, 1, maxPage)),
+                    message ->
+                            bot.commandReactionHandler.addReactionListener(
+                                    guild.getId(), message,
+                                    getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild))));
             return "";
 
         } else if (args[0].equalsIgnoreCase("mine")) {

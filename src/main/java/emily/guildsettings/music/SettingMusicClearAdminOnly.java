@@ -43,13 +43,13 @@ public class SettingMusicClearAdminOnly extends AbstractGuildSetting<BooleanSett
 
     @Override
     public String[] getDescription() {
-        return new String[]{"Only allow admins to clear the music queue?",
+        return new String[]{"Only allow admins to clear the music add?",
                 "",
                 "true",
-                "Only admins can clear the music queue",
+                "Only admins can clear the music add",
                 "",
                 "false",
-                "Everyone can clear the queue",
+                "Everyone can clear the add",
         };
     }
 }

@@ -30,6 +30,7 @@ import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.requests.RestAction;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.concurrent.ExecutionException;
@@ -75,13 +76,7 @@ public class OutgoingContentHandler {
         if (channel == null) {
             return;
         }
-        Future<Message> newMsg = channel.editMessageById(msg.getId(), newContent).submit(true);
-        try {
-            newMsg.get(TIMEOUT, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            newMsg.cancel(true);
-            e.printStackTrace();
-        }
+        botInstance.queue.add(channel.editMessageById(msg.getId(), newContent));
     }
 
     /**
@@ -115,18 +110,20 @@ public class OutgoingContentHandler {
             sendAsyncMessage(channel, content);
             return;
         }
-        callback.accept(channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).complete());
+        botInstance.queue.add(channel.sendMessage(content.substring(0, Math.min(1999, content.length()))), callback);
     }
 
     public void sendAsyncMessage(MessageChannel channel, String content) {
-        Message message = channel.sendMessage(content.substring(0, Math.min(1999, content.length()))).complete();
-        if (botInstance.shouldCleanUpMessages(channel)) {
-            botInstance.schedule(() -> saveDelete(message), Config.DELETE_MESSAGES_AFTER, TimeUnit.MILLISECONDS);
-        }
+        RestAction<Message> messageRestAction = channel.sendMessage(content.substring(0, Math.min(1999, content.length())));
+        botInstance.queue.add(messageRestAction, message -> {
+            if (botInstance.shouldCleanUpMessages(channel)) {
+                botInstance.schedule(() -> saveDelete(message), Config.DELETE_MESSAGES_AFTER, TimeUnit.MILLISECONDS);
+            }
+        });
     }
 
     public void editAsync(Message message, String content) {
-        message.editMessage(content.substring(0, Math.min(1999, content.length()))).complete();
+        botInstance.queue.add(message.editMessage(content.substring(0, Math.min(1999, content.length()))));
     }
 
     /**

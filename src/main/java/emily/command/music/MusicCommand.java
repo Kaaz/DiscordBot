@@ -129,8 +129,8 @@ public class MusicCommand extends AbstractCommand {
         ret += (outputChannel != null ? outputChannel.getAsMention() : Emojibet.WARNING + " channel not found") + Config.EOL + Config.EOL;
         ret += "**auto-join voice-channel:** " + Config.EOL;
         ret += (autoVoice != null ? autoVoice.getName() : "disabled") + Config.EOL + Config.EOL;
-        ret += "**music from queue only?**" + Config.EOL;
-        ret += (settings.getOrDefault(SettingMusicQueueOnly.class).equals("true") ? "Only music from the queue will be played" : "A track from the configured playlist will be played once the queue is empty.") + Config.EOL + Config.EOL;
+        ret += "**music from add only?**" + Config.EOL;
+        ret += (settings.getOrDefault(SettingMusicQueueOnly.class).equals("true") ? "Only music from the add will be played" : "A track from the configured playlist will be played once the add is empty.") + Config.EOL + Config.EOL;
         ret += "**vote-skipping percentage required?**" + Config.EOL;
         ret += settings.getOrDefault(SettingMusicVotePercent.class) + "%" + Config.EOL + Config.EOL;
         ret += "**now-playing message?**" + Config.EOL;
@@ -143,19 +143,19 @@ public class MusicCommand extends AbstractCommand {
         ret += "__Admin-only options__" + Config.EOL;
         ret += "**skip the playing track?** " + Config.EOL;
         ret += (settings.getOrDefault(SettingMusicSkipAdminOnly.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + Config.EOL + Config.EOL;
-        ret += "**Clear the music-queue?**" + Config.EOL;
+        ret += "**Clear the music-add?**" + Config.EOL;
         ret += (settings.getOrDefault(SettingMusicClearAdminOnly.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + Config.EOL + Config.EOL;
         ret += "**Change the volume?**" + Config.EOL;
         ret += (settings.getOrDefault(SettingMusicAdminVolume.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + Config.EOL + Config.EOL;
         ret += "" + Config.EOL;
         ret += "" + Config.EOL;
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("Music configuration",null);
-        embedBuilder.setDescription("These are the current settings for " + guild.getName());
+        embedBuilder.setTitle("Music configuration", null);
+        embedBuilder.setDescription("These are the current settings for " + guild.getName() + "\n ** use the Config command to change these, this is an overview!**");
         embedBuilder.addField("Required role to use music-commands", (requiredRole != null ? requiredRole.getName() : "none"), true);
         embedBuilder.addField("Music output text-channel", (outputChannel != null ? outputChannel.getAsMention() : Emojibet.WARNING + " channel not found"), true);
         embedBuilder.addField("auto-join voice-channel", (autoVoice != null ? autoVoice.getName() : "disabled"), true);
-        embedBuilder.addField("music from queue only", (settings.getOrDefault(SettingMusicQueueOnly.class).equals("true") ? "Only music from the queue will be played" : "A track from the configured playlist will be played once the queue is empty."), true);
+        embedBuilder.addField("music from add only", (settings.getOrDefault(SettingMusicQueueOnly.class).equals("true") ? "Only music from the add will be played" : "A track from the configured playlist will be played once the add is empty."), true);
         embedBuilder.addField("vote-skipping percentage required", settings.getOrDefault(SettingMusicVotePercent.class) + "%", true);
         embedBuilder.addField("now-playing message", settings.getOrDefault(SettingMusicPlayingMessage.class), true);
         embedBuilder.addField("Playlist", playlist.title, true);
@@ -163,10 +163,10 @@ public class MusicCommand extends AbstractCommand {
         embedBuilder.addBlankField(true);
         embedBuilder.addBlankField(false);
         embedBuilder.addField("skip the playing track", (settings.getOrDefault(SettingMusicSkipAdminOnly.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
-        embedBuilder.addField("Clear the music-queue", (settings.getOrDefault(SettingMusicClearAdminOnly.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
+        embedBuilder.addField("Clear the music-add", (settings.getOrDefault(SettingMusicClearAdminOnly.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
         embedBuilder.addField("Change the volume", (settings.getOrDefault(SettingMusicAdminVolume.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
         if (PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-            channel.sendMessage(embedBuilder.build()).complete();
+            bot.queue.add(channel.sendMessage(embedBuilder.build()));
             return "";
         }
         return ret;

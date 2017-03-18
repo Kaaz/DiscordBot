@@ -107,7 +107,7 @@ public class YoutubeThread extends Thread {
                 errorGobbler.start();
                 outputGobbler.start();
             }
-            process.waitFor(3, TimeUnit.MINUTES);
+            process.waitFor(2, TimeUnit.MINUTES);
             process.destroy();
         } catch (IOException | InterruptedException e) {
             Launcher.logToDiscord(e);

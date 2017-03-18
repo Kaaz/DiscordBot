@@ -84,6 +84,7 @@ public class StopCommand extends AbstractCommand {
             }
         }
         if (!player.isPlaying()) {
+            player.leave();
             return Template.get("command_currentlyplaying_nosong");
         }
         if (player.isConnected()) {

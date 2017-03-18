@@ -41,6 +41,7 @@ import emily.handler.MusicReactionHandler;
 import emily.handler.OutgoingContentHandler;
 import emily.handler.SecurityHandler;
 import emily.handler.Template;
+import emily.handler.discord.RestQueue;
 import emily.role.RoleRankings;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
@@ -74,6 +75,7 @@ public class DiscordBot {
     private final int totShards;
     private final ScheduledExecutorService scheduler;
     private final AtomicReference<JDA> jda;
+    public final RestQueue queue;
     public String mentionMe;
     public String mentionMeAlias;
     public ChatBotHandler chatBotHandler = null;
@@ -88,6 +90,7 @@ public class DiscordBot {
     private BotContainer container;
 
     public DiscordBot(int shardId, int numShards, BotContainer container) {
+        queue = new RestQueue(this);
         scheduler = Executors.newScheduledThreadPool(1);
         jda = new AtomicReference<>();
         this.shardId = shardId;

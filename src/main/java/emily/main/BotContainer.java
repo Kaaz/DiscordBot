@@ -291,7 +291,7 @@ public class BotContainer {
         }
         if (channel.getJDA().getStatus() == JDA.Status.CONNECTED) {
             int length = 1 + (int) Math.floor(Math.log10(shards.length));
-            channel.sendMessage(String.format(Emojibet.SHARD_ICON + " `%0" + length + "d/%0" + length + "d` | ~~%s~~ -> %s", shardId, shards.length, oldStatus.toString(), status.toString())).complete();
+            shard.out.sendBlock(channel, String.format(Emojibet.SHARD_ICON + " `%0" + length + "d/%0" + length + "d` | ~~%s~~ -> %s", shardId, shards.length, oldStatus.toString(), status.toString()));
         }
     }
 
@@ -466,7 +466,7 @@ public class BotContainer {
     }
 
     /**
-     * how many tracks are in the queue to be processed?
+     * how many tracks are in the add to be processed?
      *
      * @return amount
      */

@@ -118,7 +118,7 @@ public class GameHandler {
         if (msg == null) {
             return false;
         }
-        execute(player, (TextChannel) channel, input, channel.getMessageById(messageId).complete());
+        execute(player, (TextChannel) channel, input, msg);
         return true;
     }
 
@@ -178,14 +178,13 @@ public class GameHandler {
         }
         if (!gameMessage.isEmpty()) {
             if (targetMessage != null) {
-                targetMessage.editMessage(gameMessage).complete();
+                bot.queue.add(targetMessage.editMessage(gameMessage));
             } else {
                 if (playerGames.containsKey(player.getId()) && playerGames.get(player.getId()).couldAddReactions()) {
                     bot.out.sendAsyncMessage(channel, gameMessage, msg -> {
                                 reactionMessages.put(msg.getId(), player.getId());
                                 for (String reaction : playerGames.get(player.getId()).getReactions()) {
-                                    msg.addReaction(Misc.numberToEmote(Integer.parseInt(reaction))).complete(
-                                    );
+                                    msg.addReaction(Misc.numberToEmote(Integer.parseInt(reaction))).complete();
                                 }
                             }
                     );

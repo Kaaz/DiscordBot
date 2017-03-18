@@ -33,7 +33,7 @@ public class SettingMusicQueueOnly extends AbstractGuildSetting<BooleanSettingTy
 
     @Override
     public String[] getTags() {
-        return new String[]{"music", "queue", "random"};
+        return new String[]{"music", "add", "random"};
     }
 
     @Override
@@ -43,13 +43,13 @@ public class SettingMusicQueueOnly extends AbstractGuildSetting<BooleanSettingTy
 
     @Override
     public String[] getDescription() {
-        return new String[]{"Stop playing music once the queue is empty?",
+        return new String[]{"Stop playing music once the add is empty?",
                 "",
                 "true",
-                "once the queue is empty I stop playing music and leave the voice channel",
+                "once the add is empty I stop playing music and leave the voice channel",
                 "",
                 "false",
-                "If the queue is empty, I'm gonna pick the track.",
+                "If the add is empty, I'm gonna pick the track.",
         };
     }
 }

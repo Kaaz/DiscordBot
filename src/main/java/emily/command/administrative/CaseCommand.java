@@ -31,7 +31,6 @@ import emily.util.Misc;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -82,13 +81,13 @@ public class CaseCommand extends AbstractCommand {
                     if (args.length < 3) {
                         return Template.get("command_invalid_use");
                     }
-                    return editReason(guild, guild.getMember(author), channel, args[1], Misc.joinStrings(args, 2));
+                    return editReason(bot, guild, guild.getMember(author), channel, args[1], Misc.joinStrings(args, 2));
             }
         }
         return Template.get("command_invalid_use");
     }
 
-    private String editReason(Guild guild, Member moderator, MessageChannel feedbackChannel, String caseId, String reason) {
+    private String editReason(DiscordBot bot, Guild guild, Member moderator, MessageChannel feedbackChannel, String caseId, String reason) {
         OModerationCase oCase;
         if (caseId.equalsIgnoreCase("last")) {
             oCase = CModerationCase.findLastFor(CGuild.getCachedId(guild.getId()), CUser.getCachedId(moderator.getUser().getId()));
@@ -104,12 +103,15 @@ public class CaseCommand extends AbstractCommand {
         if (channel == null) {
             return Template.get("guild_channel_modlog_not_found");
         }
-        Message msg = channel.getMessageById(oCase.messageId).complete();
-        if (msg != null) {
-            msg.editMessage(new MessageBuilder().setEmbed(CModerationCase.buildCase(guild, oCase)).build()).complete();
-        } else {
-            feedbackChannel.sendMessage(Template.get("command_case_reason_modified")).complete();
-        }
+        bot.queue.add(channel.getMessageById(oCase.messageId),
+                msg -> {
+                    if (msg != null) {
+                        bot.queue.add(msg.editMessage(new MessageBuilder().setEmbed(CModerationCase.buildCase(guild, oCase)).build()));
+                    } else {
+                        bot.queue.add(feedbackChannel.sendMessage(Template.get("command_case_reason_modified")));
+                    }
+                });
+
         return "";
     }
 }

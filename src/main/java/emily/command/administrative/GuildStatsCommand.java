@@ -138,8 +138,7 @@ public class GuildStatsCommand extends AbstractCommand {
                 try {
                     File f = new File("./Sample_Chart.png");
                     BitmapEncoder.saveBitmap(chart, f.getAbsolutePath(), BitmapEncoder.BitmapFormat.PNG);
-                    channel.sendFile(f, null).complete();
-                    f.delete();
+                    bot.queue.add(channel.sendFile(f, null), message -> f.delete());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
