@@ -277,8 +277,7 @@ public class JDAEvents extends ListenerAdapter {
 
         if ("true".equals(settings.getOrDefault(SettingPMUserEvents.class))) {
             discordBot.out.sendPrivateMessage(guild.getOwner().getUser(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()),
-                    null,
-                    throwable -> settings.set(guild, SettingPMUserEvents.class, "false")
+                    null
             );
         }
         discordBot.logGuildEvent(guild, "\uD83D\uDC64", "**" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator() + "** joined the guild");

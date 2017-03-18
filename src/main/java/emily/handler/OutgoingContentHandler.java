@@ -26,7 +26,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -40,7 +39,6 @@ import java.util.function.Consumer;
 public class OutgoingContentHandler {
     private final DiscordBot botInstance;
     private final RoleModifier roleThread;
-    private final long TIMEOUT = 10L;
 
     public OutgoingContentHandler(DiscordBot b) {
         botInstance = b;
@@ -129,19 +127,13 @@ public class OutgoingContentHandler {
      * @param message the message
      */
     public void sendPrivateMessage(User target, String message) {
-        sendPrivateMessage(target, message, null, null);
+        sendPrivateMessage(target, message, null);
     }
 
-    public void sendPrivateMessage(User target, String message, final Consumer<Message> onSuccess, final Consumer<Throwable> onFailed) {
+    public void sendPrivateMessage(User target, String message, final Consumer<Message> onSuccess) {
         if (target != null && !target.isFake() && message != null && !message.isEmpty()) {
-            PrivateChannel channel = target.openPrivateChannel().complete();
-            if (onSuccess != null) {
-                onSuccess.accept(channel.sendMessage(message).complete());
-            }
-            return;
-        }
-        if (onFailed != null) {
-            onFailed.accept(null);
+            botInstance.queue.add(target.openPrivateChannel(),
+                    privateChannel -> botInstance.queue.add(privateChannel.sendMessage(message), onSuccess));
         }
     }
 
