@@ -83,7 +83,7 @@ public class YoutubeThread extends Thread {
         infoArgs.add("0");
         infoArgs.add("--prefer-ffmpeg");
         infoArgs.add("--max-filesize");
-        infoArgs.add("64m");
+        infoArgs.add("128m");
         if (Config.MUSIC_USE_CACHE_DIR) {
             infoArgs.add("--exec");
             infoArgs.add("mv {} " + Config.MUSIC_DIRECTORY);
