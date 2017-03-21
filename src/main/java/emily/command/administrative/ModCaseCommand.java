@@ -61,7 +61,5 @@ public class ModCaseCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
         SimpleRank rank = bot.security.getSimpleRank(author);
         return "Not finished yet!";
-//		guild.getController().kick(guild.getMember(author)).complete();
-//		return Emojibet.OKE_SIGN;
     }
 }

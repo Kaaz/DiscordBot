@@ -109,10 +109,15 @@
 			<version>LATEST</version>
 		</dependency>
 		<dependency>
-			<groupId>net.dv8tion</groupId>
-			<artifactId>JDA</artifactId>
-			<version>3.0.0_155</version>
+			<groupId>com.github.Kaaz</groupId>
+			<artifactId>jda</artifactId>
+			<version>95e49be43d</version>
 		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>net.dv8tion</groupId>-->
+			<!--<artifactId>JDA</artifactId>-->
+			<!--<version>3.0.0_155</version>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>com.sedmelluq</groupId>
 			<artifactId>lavaplayer</artifactId>

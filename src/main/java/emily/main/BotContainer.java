@@ -276,7 +276,7 @@ public class BotContainer {
 
     public void reportStatus(int shardId, JDA.Status oldStatus, JDA.Status status) {
         DiscordBot shard = getShardFor(Config.BOT_GUILD_ID);
-        if (shard.getJda() == null) {
+        if (shard == null || shard.getJda() == null) {
             return;
         }
         Guild guild = shard.getJda().getGuildById(Config.BOT_GUILD_ID);

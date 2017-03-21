@@ -175,7 +175,7 @@ public class TemplateCommand extends AbstractCommand {
                 int currentPage = 0;
                 int itemsPerPage = 5;
                 int uniq = Templates.uniquePhraseCount();
-                int maxPage = 1 + Templates.uniquePhraseCount() / itemsPerPage;
+                int maxPage = (int) Math.ceil((double) Templates.uniquePhraseCount() / (double) itemsPerPage);
                 if (args.length >= 2 && !args[1].matches("\\d+")) {
                     List<String> allKeyphrases = Templates.getAllKeyphrases(args[1]);
                     if (allKeyphrases.isEmpty()) {
