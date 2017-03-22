@@ -51,7 +51,6 @@ public class BanCommand extends AbstractModActionCommand {
 
     @Override
     protected boolean punish(DiscordBot bot, Guild guild, Member member) {
-        guild.getController().setNickname(guild.getSelfMember(),"somename");
         bot.queue.add(guild.getController().ban(member, 7));
         return true;
     }
