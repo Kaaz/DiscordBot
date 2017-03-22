@@ -18,6 +18,7 @@ package emily.service;
 
 import emily.core.AbstractService;
 import emily.db.controllers.CBotEvent;
+import emily.db.controllers.CBotStat;
 import emily.db.model.OBotEvent;
 import emily.main.BotContainer;
 import emily.main.DiscordBot;
@@ -82,6 +83,7 @@ public class BotMetaEventsService extends AbstractService {
             totVoice += voiceChannels;
             totActiveVoice += activeVoice;
         }
+        CBotStat.insert(totGuilds, totUsers, totActiveVoice);
         Launcher.log("Statistics", "bot", "meta-stats",
                 "guilds", totGuilds,
                 "users", totUsers,

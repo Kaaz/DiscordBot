@@ -4,8 +4,8 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import emily.main.DiscordBot;
 import net.dv8tion.jda.core.requests.RestAction;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Consumer;
 
 /**
@@ -15,12 +15,12 @@ import java.util.function.Consumer;
  * Yey another layer of abstraction isn't java great /s
  */
 public class RestQueue {
-    private final ThreadPoolExecutor executor;
+    private final ExecutorService executor;
 
     public RestQueue(DiscordBot bot) {
         ThreadFactoryBuilder threadBuilder = new ThreadFactoryBuilder();
         threadBuilder.setNameFormat(String.format("shard-%02d-message-add-%%d", bot.getShardId()));
-        executor = (ThreadPoolExecutor) Executors.newCachedThreadPool(threadBuilder.build());
+        executor = Executors.newFixedThreadPool(10,threadBuilder.build());
     }
 
     public <T> void add(RestAction<T> action) {

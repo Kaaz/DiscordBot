@@ -111,7 +111,7 @@
 		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
-			<version>3.0.0_155</version>
+			<version>3.0.0_160</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sedmelluq</groupId>

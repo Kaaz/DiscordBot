@@ -29,9 +29,6 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
 public class CookieCommand extends AbstractCommand {
-    public CookieCommand() {
-        super();
-    }
 
     @Override
     public String getDescription() {

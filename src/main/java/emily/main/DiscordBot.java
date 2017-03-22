@@ -384,7 +384,7 @@ public class DiscordBot {
         if (settings.getOrDefault(SettingActiveChannels.class).equals("mine") &&
                 !channel.getId().equals(settings.getOrDefault(SettingBotChannel.class))) {
             if (message.getRawContent().equals(mentionMe + " reset yesimsure") || message.getRawContent().equals(mentionMeAlias + " reset yesimsure")) {
-                channel.sendMessage(Emojibet.THUMBS_UP).complete();
+                queue.add(channel.sendMessage(Emojibet.THUMBS_UP));
                 settings.set(null, SettingActiveChannels.class, "all");
             }
             return;

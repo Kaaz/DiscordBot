@@ -3,8 +3,8 @@ package emily.handler.discord;
 import net.dv8tion.jda.core.requests.RestAction;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
@@ -16,7 +16,7 @@ public class RestTask<T> implements Runnable {
     private final static long TIMEOUT = 15L;
     private final RestAction<T> action;
     private final Consumer<T> complete;
-    private final ThreadPoolExecutor pool;
+    private final ExecutorService pool;
 
     public RestTask(RestAction<T> action) {
 
@@ -25,7 +25,7 @@ public class RestTask<T> implements Runnable {
         pool = null;
     }
 
-    public RestTask(ThreadPoolExecutor pool, RestAction<T> action, Consumer<T> complete) {
+    public RestTask(ExecutorService pool, RestAction<T> action, Consumer<T> complete) {
         this.pool = pool;
         this.action = action;
         this.complete = complete;

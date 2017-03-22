@@ -1,0 +1,2 @@
+ALTER TABLE music
+  ADD duration INT DEFAULT 0 NOT NULL;
