@@ -179,7 +179,7 @@ public class DiscordBot {
 
     public void logGuildEvent(Guild guild, String category, String message) {
         String channelIdentifier = GuildSettings.get(guild).getOrDefault(SettingLoggingChannel.class);
-        if (channelIdentifier.equals("false")) {
+        if ("false".equals(channelIdentifier)) {
             return;
         }
         TextChannel channel;
