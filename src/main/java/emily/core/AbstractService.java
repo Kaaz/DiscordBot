@@ -28,8 +28,10 @@ import emily.db.model.QActiveSubscriptions;
 import emily.main.BotContainer;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,7 +77,9 @@ public abstract class AbstractService {
     }
 
     protected void sendTo(TextChannel channel, MessageEmbed message) {
-        bot.getShardFor(channel.getGuild().getId()).queue.add(channel.sendMessage(message));
+        if (PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
+            bot.getShardFor(channel.getGuild().getId()).queue.add(channel.sendMessage(message));
+        }
     }
 
     protected void sendTo(TextChannel channel, String message) {
