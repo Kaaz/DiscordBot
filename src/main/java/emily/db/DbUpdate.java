@@ -57,7 +57,7 @@ public class DbUpdate {
             while (entries.hasMoreElements()) {
                 final JarEntry file = entries.nextElement();
                 if (file.getName().startsWith(path + "/")) {
-                    prepareFile(new File(file.getName()));
+                    prepareFile(new File(getClass().getClassLoader().getResource(file.getName()).getFile()));
                 }
             }
             jar.close();
@@ -82,8 +82,6 @@ public class DbUpdate {
     private void prepareFile(File file) {
         Matcher m = filepattern.matcher(file.getName());
         if (!m.find()) {
-            Logger.warn("INVALID DB VERSION FILE:: " + file.getName());
-            System.out.println(file.getName());
             return;
         }
         int fromVersion = Integer.parseInt(m.group(1));
