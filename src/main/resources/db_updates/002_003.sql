@@ -1,0 +1,2 @@
+ALTER TABLE playlist
+  MODIFY filename VARCHAR(255) NOT NULL;

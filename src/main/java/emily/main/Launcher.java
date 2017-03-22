@@ -16,9 +16,8 @@
 
 package emily.main;
 
-import com.mashape.unirest.http.Unirest;
 import com.wezinkhof.configuration.ConfigurationBuilder;
-import emily.core.DbUpdate;
+import emily.db.DbUpdate;
 import emily.core.ExitCode;
 import emily.core.Logger;
 import emily.db.WebDb;
@@ -32,13 +31,10 @@ import emily.util.YTUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.utils.SimpleLog;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.HttpClients;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Properties;
 
 public class Launcher {
@@ -94,7 +90,7 @@ public class Launcher {
         }
     }
 
-    private static void init() throws IOException, InterruptedException {
+    private static void init() throws IOException, InterruptedException, SQLException {
         Properties props = new Properties();
         props.load(Launcher.class.getClassLoader().getResourceAsStream("version.properties"));
         Launcher.version = ProgramVersion.fromString(String.valueOf(props.getOrDefault("version", "1")));
