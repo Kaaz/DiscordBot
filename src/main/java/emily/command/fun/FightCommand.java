@@ -258,7 +258,6 @@ public class FightCommand extends AbstractCommand implements ICommandCooldown {
                     g.drawImage(avatar, pos.x, pos.y, pos.x + pos.height, pos.y + pos.width, 0, 0, avatar.getWidth(), avatar.getHeight(), null);
                 }
                 writer.writeToSequence(frame.getImage());
-                ImageIO.write(frame.getImage(), "png", new File(String.format("G:\\gif\\out\\stickman%03d.png", i)));
                 if (pos == null) {
                     break;
                 }
