@@ -16,12 +16,10 @@
 
 package emily.db;
 
-import emily.core.Logger;
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.DatabaseMetaData;
@@ -57,7 +55,7 @@ public class DbUpdate {
             while (entries.hasMoreElements()) {
                 final JarEntry file = entries.nextElement();
                 if (file.getName().startsWith(path + "/")) {
-                    prepareFile(new File(getClass().getClassLoader().getResource(file.getName()).getFile()));
+                    prepareFile(file.getName());
                 }
             }
             jar.close();
@@ -71,7 +69,7 @@ public class DbUpdate {
                         return;
                     }
                     for (File file : files) {
-                        prepareFile(file);
+                        prepareFile(path+"/"+file.getName());
                     }
                 } catch (URISyntaxException ignored) {
                 }
@@ -79,14 +77,14 @@ public class DbUpdate {
         }
     }
 
-    private void prepareFile(File file) {
-        Matcher m = filepattern.matcher(file.getName());
+    private void prepareFile(String filePath) {
+        Matcher m = filepattern.matcher(filePath);
         if (!m.find()) {
             return;
         }
         int fromVersion = Integer.parseInt(m.group(1));
         int toVersion = Integer.parseInt(m.group(2));
-        versionMap.put(fromVersion, new DbVersion(toVersion, file));
+        versionMap.put(fromVersion, new DbVersion(toVersion, filePath));
         highestVersion = Math.max(highestVersion, toVersion);
     }
 
@@ -103,7 +101,8 @@ public class DbUpdate {
         boolean hasUpgrade = versionMap.containsKey(currentVersion);
         while (hasUpgrade) {
             DbVersion version = versionMap.get(currentVersion);
-            try (FileReader reader = new FileReader(version.file);
+            System.out.println(version.file);
+            try (InputStreamReader reader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(version.file));
                  BufferedReader br = new BufferedReader(reader)) {
                 runner.runScript(br);
             } catch (IOException e) {
@@ -183,11 +182,11 @@ public class DbUpdate {
 
     private class DbVersion {
         final int toVersion;
-        final File file;
+        final String file;
 
-        private DbVersion(int toVersion, File file) {
+        private DbVersion(int toVersion, String filePath) {
             this.toVersion = toVersion;
-            this.file = file;
+            this.file = filePath;
         }
     }
 }
