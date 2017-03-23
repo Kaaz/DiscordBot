@@ -25,6 +25,7 @@ import emily.guildsettings.bot.SettingUseEconomy;
 import emily.handler.GuildSettings;
 import emily.main.BotContainer;
 import emily.main.Config;
+import emily.main.Launcher;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.Permission;
@@ -38,6 +39,11 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -433,5 +439,17 @@ public class DisUtil {
         return containsRole;
     }
 
+    public static BufferedImage getUserAvatar(User user) throws IOException {
+
+        URLConnection connection = new URL(user.getAvatarUrl() != null ? user.getAvatarUrl() : user.getDefaultAvatarUrl()).openConnection();
+        connection.setRequestProperty("User-Agent", "bot emily-bot");
+        BufferedImage profileImg;
+        try {
+            profileImg = ImageIO.read(connection.getInputStream());
+        } catch (Exception ignored) {
+            profileImg = ImageIO.read(Launcher.class.getClassLoader().getResource("default_profile.jpg"));
+        }
+        return profileImg;
+    }
 
 }
