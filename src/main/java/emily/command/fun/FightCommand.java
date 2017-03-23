@@ -51,10 +51,8 @@ import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -64,8 +62,8 @@ public class FightCommand extends AbstractCommand implements ICommandCooldown {
     final private GifPosition[] positions;
 
     public FightCommand() throws IOException {
-        URL resource = Launcher.class.getClassLoader().getResource("fight/stickman001.gif");
-        frames = readGif(new File(resource.getFile()));
+        InputStream resource = Launcher.class.getClassLoader().getResourceAsStream("fight/stickman001.gif");
+        frames = readGif(resource);
         positions = new GifPosition[frames.length];
         positions[0] = new GifPosition(19, 55, 22, 25);
         positions[1] = new GifPosition(19, 55, 22, 25);
@@ -247,7 +245,7 @@ public class FightCommand extends AbstractCommand implements ICommandCooldown {
         try {
             Random rng = new Random();
             BufferedImage avatar = DisUtil.getUserAvatar(user);
-
+            new File("tmp/").mkdirs();
             File f = new File("tmp/fight_" + channel.getId() + ".gif");
             ImageOutputStream output = new FileImageOutputStream(f);
             GifSequenceWriter writer =
@@ -341,11 +339,10 @@ public class FightCommand extends AbstractCommand implements ICommandCooldown {
         }
     }
 
-    private ImageFrame[] readGif(File file) throws IOException {
+    private ImageFrame[] readGif(InputStream in) throws IOException {
         ArrayList<ImageFrame> frames = new ArrayList<>(2);
-        InputStream stream = new FileInputStream(file);
         ImageReader reader = ImageIO.getImageReadersByFormatName("gif").next();
-        reader.setInput(ImageIO.createImageInputStream(stream));
+        reader.setInput(ImageIO.createImageInputStream(in));
 
         int lastx = 0;
         int lasty = 0;
