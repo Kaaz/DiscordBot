@@ -175,7 +175,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                             break;
                         }
                     }
-                    return String.format("Added **%s** items to the add", playCount);
+                    return String.format("Added **%s** items to the queue", playCount);
                 }
             }
             if (!YTUtil.isValidYoutubeCode(videoCode)) {
@@ -233,7 +233,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                 File targetFile = new File(YTUtil.getOutputPath(videoCode));
                 if (targetFile.exists()) {
                     if (msg != null) {
-                        bot.out.editBlocking(msg, ":notes: Found *" + videoTitle + "* And added it to the add");
+                        bot.out.editBlocking(msg, ":notes: Found *" + videoTitle + "* And added it to the queue");
                     }
                     player.addToQueue(targetFile.toPath().toRealPath().toString(), invoker);
                 } else {
