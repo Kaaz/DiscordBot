@@ -87,7 +87,7 @@ public class NowPlayingCommand extends AbstractCommand {
                 "current source          //Shows the source of the video",
                 "current pm              //sends you a private message with the details",
                 "",
-                "current clear               //clears everything in the add",
+                "current clear               //clears everything in the queue",
                 "current clear admin         //check if clear is admin-only",
                 "current clear admin toggle  //switch between admin-only and normal",
 //				"current artist        //sets the artist of current song",
