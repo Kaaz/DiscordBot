@@ -53,7 +53,7 @@ public class MusicUtil {
         embed.setThumbnail("https://i.ytimg.com/vi/" + record.youtubecode + "/0.jpg");
         embed.setTitle("\uD83C\uDFB6 " + record.youtubeTitle, null);
         embed.setDescription("[source](https://www.youtube.com/watch?v=" + record.youtubecode + ") | `" + DisUtil.getCommandPrefix(player.getGuild()) + "pl` - " + player.getPlaylist().title);
-        embed.addField("duration", Misc.getDurationString(record.duration), true);
+        embed.addField("duration", Misc.getDurationString(player.player.getPlayingTrack().getPosition()/1000)+" / "+Misc.getDurationString(record.duration), true);
         String optionsField = "";
         if (player.getRequiredVotes() != 1) {
             optionsField += "Skips req.: " + player.getRequiredVotes() + Config.EOL;

@@ -85,7 +85,7 @@ public class MusicPlayerHandler {
     private final static DefaultAudioPlayerManager playerManager = new DefaultAudioPlayerManager();
     private final static Map<String, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
     private final DiscordBot bot;
-    private final AudioPlayer player;
+    public final AudioPlayer player;
     private final TrackScheduler scheduler;
     private final HashSet<User> skipVotes;
     private final String guildId;
@@ -123,6 +123,10 @@ public class MusicPlayerHandler {
         }
         activePlayListId = playlist.id;
         skipVotes = new HashSet<>();
+    }
+
+    public void goToTime(Long millis) {
+        player.getPlayingTrack().setPosition(millis);
     }
 
     public static void init() {

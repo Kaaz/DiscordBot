@@ -39,6 +39,7 @@ import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import emily.util.MusicUtil;
+import emily.util.TimeUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -80,6 +81,7 @@ public class NowPlayingCommand extends AbstractCommand {
     public String[] getUsage() {
         return new String[]{
                 "current                 //info about the currently playing song",
+                "current seek <time>     //go to specified timestamp of track (eg. 3m10s)",
                 "current vote <1-10>     //Cast your vote to the song; 1=worst, 10=best",
                 "current repeat          //repeats the currently playing song",
                 "current update          //updates the now playing message every 10 seconds",
@@ -146,6 +148,10 @@ public class NowPlayingCommand extends AbstractCommand {
 
         if (args.length >= 1) {
             switch (args[0].toLowerCase()) {
+                case "seek":
+                case "goto":
+                    player.goToTime(TimeUtil.toMillis(Misc.joinStrings(args, 1)));
+                    return "";
                 case "repeat":
                     boolean repeatMode = !player.isInRepeatMode();
                     player.setRepeat(repeatMode);
