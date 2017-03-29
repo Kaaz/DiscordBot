@@ -43,18 +43,18 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
 
     @Override
     public String getDescription() {
-        return "check whats in the music add";
+        return "check whats in the music queue";
     }
 
     @Override
     public String getCommand() {
-        return "add";
+        return "queue";
     }
 
     @Override
     public String[] getUsage() {
         return new String[]{
-                "add        //overview"
+                "queue        //overview"
         };
     }
 
@@ -95,7 +95,7 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
         EmbedBuilder eb = new EmbedBuilder();
         StringBuilder sb = new StringBuilder();
         sb.append("There are **").append(queue.size())
-                .append("** tracks in the add with an estimated playtime of **")
+                .append("** tracks in the queue with an estimated playtime of **")
                 .append(Misc.getDurationString(queue.stream().mapToLong(oMusic -> oMusic.duration).sum())).append("**\n\n");
         int start = Math.max(0, (page - 1) * ITEMS_PER_PAGE);
         int end = Math.min(queue.size() - 1, start + ITEMS_PER_PAGE);
