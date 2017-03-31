@@ -23,10 +23,8 @@ import emily.command.ICommandCleanup;
 import emily.core.AbstractCommand;
 import emily.db.controllers.CMusic;
 import emily.db.controllers.CPlaylist;
-import emily.db.controllers.CUser;
 import emily.db.model.OMusic;
 import emily.db.model.OPlaylist;
-import emily.db.model.OUser;
 import emily.guildsettings.music.SettingMusicRole;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
@@ -166,17 +164,17 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                 if (!ytSearch.hasValidKey()) {
                     return Template.get("music_no_valid_youtube_key", YTUtil.nextApiResetTime());
                 }
-                if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getId()).hasPermission(OUser.PermissionNode.IMPORT_PLAYLIST)) {
-                    List<YTSearch.SimpleResult> items = ytSearch.getPlayListItems(playlistCode);
-                    int playCount = 0;
-                    for (YTSearch.SimpleResult track : items) {
-                        processTrack(player, bot, (TextChannel) channel, author, track.getCode(), track.getTitle(), false);
-                        if (++playCount == Config.MUSIC_MAX_PLAYLIST_SIZE) {
-                            break;
-                        }
+//                if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getId()).hasPermission(OUser.PermissionNode.IMPORT_PLAYLIST)) {
+                List<YTSearch.SimpleResult> items = ytSearch.getPlayListItems(playlistCode);
+                int playCount = 0;
+                for (YTSearch.SimpleResult track : items) {
+                    processTrack(player, bot, (TextChannel) channel, author, track.getCode(), track.getTitle(), false);
+                    if (++playCount == Config.MUSIC_MAX_PLAYLIST_SIZE) {
+                        break;
                     }
-                    return String.format("Added **%s** items to the queue", playCount);
                 }
+                return String.format("Added **%s** items to the queue", playCount);
+//                }
             }
             if (!YTUtil.isValidYoutubeCode(videoCode)) {
                 if (!ytSearch.hasValidKey()) {

@@ -125,6 +125,7 @@ public class NowPlayingCommand extends AbstractCommand {
             bot.queue.add(channel.sendMessage(MusicUtil.nowPlayingMessage(player, song, null)));
             return "";
         }
+        //
         if (args.length > 0) {
             String voteInput = args[0].toLowerCase();
             if (args.length > 1) {
