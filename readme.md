@@ -44,11 +44,11 @@ Commands | | | | |
 [sendfile](#sendfile) | [server](#server) | [skip](#skip) | [slot](#slot) | [stop](#stop)
 [subscribe](#subscribe) | [system](#system) | [tag](#tag) | [tempban](#tempban) | [template](#template)
 [test](#test) | [todo](#todo) | [ud](#ud) | [uptime](#uptime) | [user](#user)
-[userrank](#userrank) | [version](#version) | [volume](#volume) | [warn](#warn) | 
+[userrank](#userrank) | [version](#version) | [volume](#volume) | [warn](#warn) | [fight](#fight)
 
 ## Games
 
-Games can be accessed though the **!game** command
+Games can be accessed through the **!game** command
 
 A list of games:
 
@@ -61,7 +61,7 @@ tic | Tic tac toe | 2
 
 ## Per guild configuration
 
-The per-guild configuration can be accessed though the **!config** command, to use it you must be the server owner, or have the discord-administrator permission
+The per-guild configuration can be accessed through the **!config** command, to use it you must be the server owner, or have the discord-administrator permission
  
 The following settings can be changed per guild:
 
@@ -206,16 +206,16 @@ On the first run it will generate a config file and stop running. You'll need to
 
 See what the magic 8ball has to say
 
-Accessible though: 8ball
+Accessible through: 8ball
 
 Usable in public and private channels
 ### ban
 
 bans a member from your guild
 
-Accessible though: ban
+Accessible through: ban
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -226,7 +226,7 @@ ban <user>     //Permanently removes user from guild user from guild
 
 play a game of blackjack!
 
-Accessible though: blackjack, bj
+Accessible through: blackjack, bj
 
 Usable in public and private channels
 
@@ -241,7 +241,7 @@ blackjack stand  //stands
 
 Set the game I'm currently playing
 
-Accessible though: botstatus
+Accessible through: botstatus
 
 Usable in public and private channels
 
@@ -256,9 +256,9 @@ botstatus stream <username> <game>   //streaming twitch.tv/<username> playing <g
 
 Moderate the mod-cases
 
-Accessible though: case
+Accessible through: case
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -270,21 +270,21 @@ case reason last <message> //sets/modified the reason of the last added case by 
 
 Cat facts!
 
-Accessible though: catfact
+Accessible through: catfact
 
 Usable in public and private channels
 ### changename
 
 Changes my name
 
-Accessible though: changename
+Accessible through: changename
 
 Usable in public and private channels
 ### cla
 
 manage the changelog
 
-Accessible though: cla
+Accessible through: cla
 
 Usable in public and private channels
 
@@ -321,9 +321,9 @@ Key                Replacement
 %rand-user%        random user in guild
 %rand-user-online% random ONLINE user in guild
 
-Accessible though: command, cmd, customcommand
+Accessible through: command, cmd, customcommand
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -339,9 +339,9 @@ A channel specific setting will always override the guild setting
 
 You can also give/deny permission to roles to use certain commands
 
-Accessible though: commandadmin, ca
+Accessible through: commandadmin, ca
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -363,9 +363,9 @@ ca meme enable #spam                        //overrides and meme is enabled in #
 
 Gets/sets the configuration of the bot
 
-Accessible though: config, setting, cfg
+Accessible through: config, setting, cfg
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -383,9 +383,9 @@ config reset yesimsure    //resets the configuration to the default settings
 
 retrieves information about the song currently playing
 
-Accessible though: current, playing, np, nowplaying
+Accessible through: current, playing, np, nowplaying
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -406,7 +406,7 @@ current clear admin toggle  //switch between admin-only and normal
 
 some debugging tools
 
-Accessible though: debug
+Accessible through: debug
 
 Usable in public and private channels
 
@@ -419,37 +419,51 @@ fixusernames, fixrelations, youtube
 
 general info about how to contribute or donate to Emily
 
-Accessible though: donate, contribute
+Accessible through: donate, contribute
 
 Usable in public and private channels
 ### exec
 
 executes commandline stuff
 
-Accessible though: exec
+Accessible through: exec
 
 Usable in public and private channels
 ### exit
 
 completely shuts the bot down
 
-Accessible though: exit, brexit
+Accessible through: exit, brexit
 
 Usable in public and private channels
+### fight
+
+get in an epic fight; (gif fight)
+
+Accessible through: fight
+
+Useable in public and private channels
+
+#### Usage
+
+```php
+fight         //random user fights
+fight <user>  //<user> fights
+```
 ### fml
 
 fmylife! Returns a random entry from fmylife.com
 
-Accessible though: fml
+Accessible through: fml
 
 Usable in public and private channels
 ### game
 
 play games against eachother!
 
-Accessible though: game
+Accessible through: game
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -462,9 +476,9 @@ game cancel               //cancel an active game!
 
 allows users to request a role
 
-Accessible though: getrole
+Accessible through: getrole
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -477,7 +491,7 @@ remove <rolename>   //removes the <rolename> from you
 
 Gifs from giphy
 
-Accessible though: gif
+Accessible through: gif
 
 Usable in public and private channels
 
@@ -491,14 +505,14 @@ gif <tags>  //random gif based on tags
 
 Ban those nasty humans
 
-Accessible though: globalban
+Accessible through: globalban
 
 Usable in public and private channels
 ### guildstats
 
 shows some statistics
 
-Accessible though: guildstats, stats
+Accessible through: guildstats, stats
 
 Usable in public and private channels
 
@@ -514,7 +528,7 @@ stats activity//last activity per shard
 
 An attempt to help out
 
-Accessible though: help, ?, halp, helpme, h, commands
+Accessible through: help, ?, halp, helpme, h, commands
 
 Usable in public and private channels
 
@@ -529,7 +543,7 @@ help <command>  //usage for that command
 
 Special command for special use case. Imports music files from a directory. Only imports files with a valid id3v[1-2] tag
 
-Accessible though: importmusic
+Accessible through: importmusic
 
 Usable in public and private channels
 
@@ -542,7 +556,7 @@ importmusic <path/to/music>  //imports a folder
 
 Shows some general information about me and my future plans.
 
-Accessible though: info, about
+Accessible through: info, about
 
 Usable in public and private channels
 
@@ -558,16 +572,16 @@ info progress //see whats currently being worked on
 
 Provides an invite link to add the bot to your server.
 
-Accessible though: invite, inv
+Accessible through: invite, inv
 
 Usable in public and private channels
 ### join
 
 joins a voicechannel
 
-Accessible though: join
+Accessible through: join
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -579,16 +593,16 @@ join <channelname>  //attempts to join channelname
 
 An attempt to be funny
 
-Accessible though: joke
+Accessible through: joke
 
 Usable in public and private channels
 ### kick
 
 Kicks a member from your guild
 
-Accessible though: kick
+Accessible through: kick
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -599,7 +613,7 @@ kick <user>     //Remove user from the guild user from guild
 
 leaves guild :(
 
-Accessible though: leaveguild
+Accessible through: leaveguild
 
 Usable in public and private channels
 
@@ -612,14 +626,14 @@ leaveguild     //leaves the guild
 
 log all the things! Configure how/where/what is being logged
 
-Accessible though: logging, log
+Accessible through: logging, log
 
 Usable in public and private channels
 ### meme
 
 generate a meme!
 
-Accessible though: meme
+Accessible through: meme
 
 Usable in public and private channels
 
@@ -637,9 +651,9 @@ meme sohappy If I could use this meme | I would be so happy
 
 Modcases
 
-Accessible though: modcase, case
+Accessible through: modcase, case
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -650,9 +664,9 @@ kick <user>            //kicks user
 
 gets and sets the music-related settings
 
-Accessible though: music
+Accessible through: music
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -663,9 +677,9 @@ music                   //shows music configuration
 
 Mute a member from your guild
 
-Accessible though: mute
+Accessible through: mute
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -676,23 +690,23 @@ mute <user>     //Adds the configured muted role to user user from guild
 
 pauses the music or resumes it if its paused
 
-Accessible though: pause, resume
+Accessible through: pause, resume
 
-Usable in public  channels
+Usable in public channels
 ### ping
 
 checks the latency of the bot
 
-Accessible though: ping
+Accessible through: ping
 
 Usable in public and private channels
 ### play
 
 Plays a song from youtube
 
-Accessible though: play, p
+Accessible through: play, p
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -705,9 +719,9 @@ play                  //just start playing something
 
 information about the playlists
 
-Accessible though: playlist, pl
+Accessible through: playlist, pl
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -738,7 +752,7 @@ playlist playtype <new type>         //change the play-type of a playlist
 
 Send a message to user
 
-Accessible though: pm
+Accessible through: pm
 
 Usable in public and private channels
 
@@ -751,9 +765,9 @@ pm <@user> <message..>
 
 Strawpoll: propose a question and choices for the chat to vote on
 
-Accessible though: poll
+Accessible through: poll
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -767,7 +781,7 @@ poll 1-9      //vote on the options
 
 Forgot what the prefix is? I got you covered
 
-Accessible though: prefix
+Accessible through: prefix
 
 Usable in public and private channels
 
@@ -781,9 +795,9 @@ prefix <prefix>                  //sets the prefix to <prefix>
 
 deletes non-pinned messages
 
-Accessible though: purge, clear, delete
+Accessible through: purge, clear, delete
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -811,7 +825,7 @@ purge bot
 
 restarts the bot
 
-Accessible though: reboot, restart
+Accessible through: reboot, restart
 
 Usable in public and private channels
 
@@ -829,7 +843,7 @@ reboot shard <guildid>  //reboots shard for guild-id
 
 Posts something from reddit
 
-Accessible though: reddit, r
+Accessible through: reddit, r
 
 Usable in public and private channels
 
@@ -842,14 +856,14 @@ r <subreddit>
 
 reloads the configuration
 
-Accessible though: reload
+Accessible through: reload
 
-Usable in public  channels
+Usable in public channels
 ### report
 
 Report bugs/abuse/incidents
 
-Accessible though: report
+Accessible through: report
 
 Usable in private channels
 
@@ -865,14 +879,14 @@ You can give users the ability to self-assign roles.
 
 Note: 
 self-assignable roles are not created by emily!
-To add an assignable role, you'll first have to add that role though discord.
+To add an assignable role, you'll first have to add that role through discord.
 
 
 Users can get/remove their own roles with the `getrole` command 
 
-Accessible though: roleadmin, ra
+Accessible through: roleadmin, ra
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -892,7 +906,7 @@ roleadmin setup                  //creates the roles for the time-based rankings
 
 if you ever need a random number
 
-Accessible though: roll, dice, rng
+Accessible through: roll, dice, rng
 
 Usable in public and private channels
 
@@ -909,7 +923,7 @@ roll XdY+z         //eg. 2d5+2 rolls 2 dice of 1-5 and returns the sum plus 2
 
 Rotate text!
 
-Accessible though: rotate
+Accessible through: rotate
 
 Usable in public and private channels
 
@@ -922,23 +936,23 @@ rotate <text..>
 
 executes commandline stuff
 
-Accessible though: sendfile
+Accessible through: sendfile
 
 Usable in public and private channels
 ### server
 
 Information about the server
 
-Accessible though: server
+Accessible through: server
 
-Usable in public  channels
+Usable in public channels
 ### skip
 
 skip current track
 
-Accessible though: skip, next
+Accessible through: skip, next
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -952,7 +966,7 @@ skip force            //admin-only, force a skip
 
 Feeling lucky? try the slotmachine! You might just win a hand full of air!
 
-Accessible though: slot
+Accessible through: slot
 
 Usable in public and private channels
 
@@ -967,9 +981,9 @@ slot info         //info about payout
 
 stops playing music
 
-Accessible though: stop, leave
+Accessible through: stop, leave
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -982,9 +996,9 @@ stop afternp  //stops and leaves after the now playing track is over
 
 subscribe the channel to certain events
 
-Accessible though: subscribe, sub
+Accessible through: subscribe, sub
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -999,16 +1013,16 @@ subscribe list           //See what subscription options there are
 
 Shows memory usage
 
-Accessible though: system, sysinfo, sys
+Accessible through: system, sysinfo, sys
 
 Usable in public and private channels
 ### tag
 
 Tags!
 
-Accessible though: tag, t, tags
+Accessible through: tag, t, tags
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -1027,9 +1041,9 @@ tag <name> <content>    //creates the tag
 
 Bans a user for a while
 
-Accessible though: tempban
+Accessible through: tempban
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -1040,7 +1054,7 @@ tempban <user>     //Remove user from guild, unable to rejoin for a while user f
 
 adds/removes templates
 
-Accessible though: template, tpl
+Accessible through: template, tpl
 
 Usable in public and private channels
 
@@ -1076,9 +1090,9 @@ Key                Replacement
 
 kaaz's test command
 
-Accessible though: test
+Accessible through: test
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -1089,7 +1103,7 @@ NOPE
 
 administer todo items
 
-Accessible though: todo
+Accessible through: todo
 
 Usable in public and private channels
 
@@ -1110,7 +1124,7 @@ todo priority <number> <priority>     //sets a priority of a todo item
 
 A veritable cornucopia of streetwise lingo
 
-Accessible though: ud
+Accessible through: ud
 
 Usable in public and private channels
 
@@ -1123,14 +1137,14 @@ ud <anything>  //looks up what it means on urban dictionary
 
 How long am I running for?
 
-Accessible though: uptime
+Accessible through: uptime
 
 Usable in public and private channels
 ### user
 
 Shows information about the user
 
-Accessible though: user, whois
+Accessible through: user, whois
 
 Usable in public and private channels
 
@@ -1147,9 +1161,9 @@ user guilds @user                //what guilds/shards @user most likely uses
 
 This command is intended for bot admins
 
-Accessible though: userrank, ur
+Accessible through: userrank, ur
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -1164,7 +1178,7 @@ userrank ranks                    //lists all ranks
 
 Shows what versions I'm using
 
-Accessible though: version, v
+Accessible through: version, v
 
 Usable in public and private channels
 
@@ -1177,9 +1191,9 @@ version  //version usage
 
 gets and sets the volume of the music
 
-Accessible though: volume, vol
+Accessible through: volume, vol
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -1191,9 +1205,9 @@ volume <1 to 100>   //sets volume
 
 Give a user a warning
 
-Accessible though: warn
+Accessible through: warn
 
-Usable in public  channels
+Usable in public channels
 
 #### Usage
 
@@ -1212,7 +1226,7 @@ The following settings can be set globally:
 Setting name | default | description
 ---|---|---
 BOT_ENABLED | false | Enables the bot<br/> This must be set to true in order to run the bot
-BOT_AUTO_UPDATE | false | Enable automatic updates. <br/>For this to work you'll have to launch the bot though my other project<br/>https://github.com/Kaaz/ConfigurationBuilder
+BOT_AUTO_UPDATE | false | Enable automatic updates. <br/>For this to work you'll have to launch the bot through my other project<br/>https://github.com/Kaaz/ConfigurationBuilder
 BOT_NAME | "NovaBot" | the default name of the bot,
 BOT_CHANNEL_ID | "225170823898464256" | Discord channel is of the bot's own channel
 BOT_TOKEN | "mybottokenhere" | token used to login to discord
