@@ -22,6 +22,8 @@ import emily.util.Emojibet;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
+import java.util.List;
+
 /**
  * VoiceChannel settings type
  * the value has to be a real voice-channel in a guild + will be saved as the channel id
@@ -70,7 +72,17 @@ public class VoiceChannelSettingType implements IGuildSettingType {
 
     @Override
     public String toDisplay(Guild guild, String value) {
-        VoiceChannel channel = guild.getVoiceChannelById(value);
+        VoiceChannel channel = null;
+        try{
+            channel = guild.getVoiceChannelById(value);
+        }
+        catch (NumberFormatException ignored){
+            List<VoiceChannel> list = guild.getVoiceChannelsByName(value,true);
+            if(!list.isEmpty()){
+                channel = list.get(0);
+            }
+        }
+
         if (channel != null) {
             return channel.getName();
         }

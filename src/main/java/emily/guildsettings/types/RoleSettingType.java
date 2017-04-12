@@ -22,6 +22,8 @@ import emily.util.Emojibet;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
 
+import java.util.List;
+
 /**
  * TextChannel settings type
  * the value has to be a real channel in a guild + will be saved as the channel id
@@ -76,7 +78,15 @@ public class RoleSettingType implements IGuildSettingType {
 
     @Override
     public String toDisplay(Guild guild, String value) {
-        Role role = guild.getRoleById(value);
+        Role role = null;
+        try {
+            role = guild.getRoleById(value);
+        } catch (NumberFormatException ignored) {
+            List<Role> list = guild.getRolesByName(value, true);
+            if (!list.isEmpty()) {
+                role = list.get(0);
+            }
+        }
         if (role != null) {
             return role.getName();
         }
