@@ -357,7 +357,11 @@ public class MusicPlayerHandler {
             if (!PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
                 bot.queue.add(musicChannel.sendMessage(MusicUtil.nowPlayingMessageNoEmbed(this, record)), callback);
             } else {
-                bot.queue.add(musicChannel.sendMessage(MusicUtil.nowPlayingMessage(this, record, guild.getMemberById(scheduler.getLastRequester()))), callback);
+                Member member = null;
+                if (scheduler.getLastRequester() != null && !scheduler.getLastRequester().isEmpty()) {
+                    member = guild.getMemberById(scheduler.getLastRequester());
+                }
+                bot.queue.add(musicChannel.sendMessage(MusicUtil.nowPlayingMessage(this, record, member)), callback);
             }
         }
     }
