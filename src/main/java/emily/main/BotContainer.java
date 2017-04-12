@@ -180,7 +180,6 @@ public class BotContainer {
             reportError(String.format("Quick, shard `%02d` is on %s, where are the %s'? Restarting the shard, off we go %s!",
                     shardId, Emojibet.FIRE, Emojibet.FIRE_TRUCK, Emojibet.ROCKET));
         }, 5L, TimeUnit.SECONDS);
-
     }
 
     public void setLastAction(int shard, long timestamp) {
