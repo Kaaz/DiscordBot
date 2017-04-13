@@ -163,7 +163,7 @@ public class UserCommand extends AbstractCommand {
                 CGuildMember.insertOrUpdate(member);
             }
 
-            sb.append(":date: joined: ")
+            sb.append(":date: joined guild: ")
                     .append(joindateFormat.format(member.joinDate))
                     .append(" (")
                     .append(TimeUtil.getRelativeTime(member.joinDate.getTime() / 1000L, false, true))
