@@ -148,8 +148,8 @@ public class UserCommand extends AbstractCommand {
         OUser dbUser = CUser.findBy(infoUser.getId());
         sb.append("Querying for ").append(nickname).append(Config.EOL);
         sb.append(":bust_in_silhouette: User: ").append(infoUser.getName()).append("#").append(infoUser.getDiscriminator()).append(Config.EOL);
-        sb.append(":id: discord id:").append(infoUser.getId()).append(Config.EOL);
-        sb.append(":keyboard: Commands used:").append(dbUser.commandsUsed).append(Config.EOL);
+        sb.append(":id: Discord id: ").append(infoUser.getId()).append(Config.EOL);
+        sb.append(":keyboard: Commands used: ").append(dbUser.commandsUsed).append(Config.EOL);
         if (guildId == 0 || "true".equals(GuildSettings.getFor(channel, SettingUseEconomy.class))) {
             OBank bankAccount = CBanks.findBy(userId);
             sb.append(Config.ECONOMY_CURRENCY_ICON).append(" ").append(Config.ECONOMY_CURRENCY_NAMES).append(": ").append(bankAccount.currentBalance).append(Config.EOL);
@@ -163,7 +163,7 @@ public class UserCommand extends AbstractCommand {
                 CGuildMember.insertOrUpdate(member);
             }
 
-            sb.append(":date: joined guild: ")
+            sb.append(":date: Joined guild: ")
                     .append(joindateFormat.format(member.joinDate))
                     .append(" (")
                     .append(TimeUtil.getRelativeTime(member.joinDate.getTime() / 1000L, false, true))
