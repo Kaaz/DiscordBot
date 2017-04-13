@@ -18,6 +18,7 @@ package emily.command.music;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import com.vdurmont.emoji.EmojiParser;
+import emily.command.CommandReactionListener;
 import emily.command.CommandVisibility;
 import emily.command.ICommandCleanup;
 import emily.core.AbstractCommand;
@@ -25,15 +26,19 @@ import emily.db.controllers.CMusic;
 import emily.db.controllers.CPlaylist;
 import emily.db.model.OMusic;
 import emily.db.model.OPlaylist;
+import emily.guildsettings.music.SettingMusicResultPicker;
 import emily.guildsettings.music.SettingMusicRole;
+import emily.handler.CommandHandler;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
 import emily.handler.Template;
 import emily.main.Config;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.util.Misc;
 import emily.util.YTSearch;
 import emily.util.YTUtil;
+import javafx.util.Pair;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -47,6 +52,7 @@ import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -120,7 +126,8 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
         TextChannel txt = (TextChannel) channel;
         Guild guild = txt.getGuild();
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
-        if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
+        GuildSettings guildSettings = GuildSettings.get(guild);
+        if (!guildSettings.canUseMusicCommands(author, userRank)) {
             Role role = guild.getRoleById(GuildSettings.getFor(channel, SettingMusicRole.class));
             return Template.get(channel, "music_required_role_not_found", role == null ? "UNKNOWN" : role.getName());
         }
@@ -180,7 +187,37 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                 if (!ytSearch.hasValidKey()) {
                     return Template.get("music_no_valid_youtube_key", YTUtil.nextApiResetTime());
                 }
-                YTSearch.SimpleResult results = ytSearch.getResults(Joiner.on(" ").join(args));
+                int maxResultCount = Integer.parseInt(guildSettings.getOrDefault(SettingMusicResultPicker.class));
+                String searchCriteria = Joiner.on(" ").join(args);
+                if (maxResultCount > 1 && PermissionUtil.checkPermission(txt, guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION)) {
+                    List<YTSearch.SimpleResult> results = ytSearch.getResults(searchCriteria, maxResultCount);
+                    String ret = "Results for: " + searchCriteria + "\n\n";
+                    int i = 0;
+                    final ArrayList<Pair<String, String>> reactions = new ArrayList<>();
+                    for (YTSearch.SimpleResult result : results) {
+                        ++i;
+                        ret += String.format("%s %s\n", Misc.numberToEmote(i), result.getTitle());
+                        reactions.add(new Pair<>(Misc.numberToEmote(i), result.getCode()));
+                    }
+                    ret += "\nYou can pick a song by clicking one of the reactions";
+                    txt.sendMessage(ret).queue(msg -> {
+                        CommandReactionListener<Integer> listener = new CommandReactionListener<>(author.getId(), null);
+                        for (Pair<String, String> reaction : reactions) {
+                            listener.registerReaction(reaction.getKey(),
+                                    message -> {
+                                        listener.disable();
+                                        message.editMessage(message.getContent() + "\n\nyou picked " + reaction.getKey()).queue();
+                                        AbstractCommand play = CommandHandler.getCommand("play");
+                                        if (play != null) {
+                                            play.execute(bot, new String[]{reaction.getValue()}, channel, author);
+                                        }
+                                    });
+                        }
+                        bot.commandReactionHandler.addReactionListener(guild.getId(), msg, listener);
+                    });
+                    return "";
+                }
+                YTSearch.SimpleResult results = ytSearch.getResults(searchCriteria);
                 if (results != null) {
                     videoCode = results.getCode();
                     videoTitle = EmojiParser.parseToAliases(results.getTitle());
@@ -230,8 +267,9 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
             try {
                 File targetFile = new File(YTUtil.getOutputPath(videoCode));
                 if (targetFile.exists()) {
+                    OMusic record2 = CMusic.findByYoutubeId(videoCode);
                     if (msg != null) {
-                        bot.out.editBlocking(msg, ":notes: Found *" + videoTitle + "* And added it to the queue");
+                        bot.out.editBlocking(msg, ":notes: Found *" + record2.youtubeTitle + "* and added it to the queue");
                     }
                     player.addToQueue(targetFile.toPath().toRealPath().toString(), invoker);
                 } else {
