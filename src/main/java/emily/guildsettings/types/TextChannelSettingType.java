@@ -22,8 +22,6 @@ import emily.util.Emojibet;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.util.List;
-
 /**
  * TextChannel settings type
  * the value has to be a real channel in a guild + will be saved as the channel id
@@ -61,7 +59,7 @@ public class TextChannelSettingType implements IGuildSettingType {
     @Override
     public String fromInput(Guild guild, String value) {
         if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
-            return "false";
+            return "";
         }
         if (DisUtil.isChannelMention(value)) {
             TextChannel textChannel = guild.getTextChannelById(DisUtil.mentionToId(value));
@@ -78,23 +76,12 @@ public class TextChannelSettingType implements IGuildSettingType {
 
     @Override
     public String toDisplay(Guild guild, String value) {
-        TextChannel channel = null;
-        try {
-            channel = guild.getTextChannelById(value);
-        } catch (NumberFormatException ignored) {
-            List<TextChannel> list = guild.getTextChannelsByName(value, true);
-            if(!list.isEmpty()){
-                channel = list.get(0);
-            }
+        if (value == null || value.isEmpty() || !value.matches("\\d{10,}")) {
+            return Emojibet.X;
         }
+        TextChannel channel = guild.getTextChannelById(value);
         if (channel != null) {
-            return channel.getAsMention();
-        }
-        if (!value.isEmpty() && !value.matches("\\d{10,}")) {
-            TextChannel channelByName = DisUtil.findChannel(guild, value);
-            if (channelByName != null) {
-                return channelByName.getAsMention();
-            }
+            return channel.getName();
         }
         return Emojibet.X;
     }

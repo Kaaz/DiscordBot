@@ -22,8 +22,6 @@ import emily.util.Emojibet;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
 
-import java.util.List;
-
 /**
  * TextChannel settings type
  * the value has to be a real channel in a guild + will be saved as the channel id
@@ -61,7 +59,7 @@ public class RoleSettingType implements IGuildSettingType {
     @Override
     public String fromInput(Guild guild, String value) {
         if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
-            return "false";
+            return "";
         }
         if (DisUtil.isRoleMention(value)) {
             Role role = guild.getRoleById(DisUtil.mentionToId(value));
@@ -73,28 +71,17 @@ public class RoleSettingType implements IGuildSettingType {
         if (role != null) {
             return role.getId();
         }
-        return "false";
+        return "";
     }
 
     @Override
     public String toDisplay(Guild guild, String value) {
-        Role role = null;
-        try {
-            role = guild.getRoleById(value);
-        } catch (NumberFormatException ignored) {
-            List<Role> list = guild.getRolesByName(value, true);
-            if (!list.isEmpty()) {
-                role = list.get(0);
-            }
+        if (value == null || value.isEmpty() || !value.matches("\\d{10,}")) {
+            return Emojibet.X;
         }
+        Role role = guild.getRoleById(value);
         if (role != null) {
             return role.getName();
-        }
-        if (!value.isEmpty() && !value.matches("\\d{10,}")) {
-            Role roleByName = DisUtil.findRole(guild, value);
-            if (roleByName != null) {
-                return roleByName.getName();
-            }
         }
         return Emojibet.X;
     }

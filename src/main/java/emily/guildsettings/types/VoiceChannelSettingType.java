@@ -22,8 +22,6 @@ import emily.util.Emojibet;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
-import java.util.List;
-
 /**
  * VoiceChannel settings type
  * the value has to be a real voice-channel in a guild + will be saved as the channel id
@@ -55,7 +53,7 @@ public class VoiceChannelSettingType implements IGuildSettingType {
     @Override
     public String fromInput(Guild guild, String value) {
         if (allowNull && (value == null || value.isEmpty() || value.equalsIgnoreCase("false"))) {
-            return "false";
+            return "";
         }
         if (DisUtil.isChannelMention(value)) {
             VoiceChannel channel = guild.getVoiceChannelById(DisUtil.mentionToId(value));
@@ -67,30 +65,17 @@ public class VoiceChannelSettingType implements IGuildSettingType {
         if (channel != null) {
             return channel.getId();
         }
-        return "false";
+        return "";
     }
 
     @Override
     public String toDisplay(Guild guild, String value) {
-        VoiceChannel channel = null;
-        try{
-            channel = guild.getVoiceChannelById(value);
+        if (value == null || value.isEmpty() || !value.matches("\\d{10,}")) {
+            return Emojibet.X;
         }
-        catch (NumberFormatException ignored){
-            List<VoiceChannel> list = guild.getVoiceChannelsByName(value,true);
-            if(!list.isEmpty()){
-                channel = list.get(0);
-            }
-        }
-
-        if (channel != null) {
-            return channel.getName();
-        }
-        if (!value.isEmpty() && !value.matches("\\d{10,}")) {
-            VoiceChannel channelByName = DisUtil.findVoiceChannel(guild, value);
-            if (channelByName != null) {
-                return channelByName.getName();
-            }
+        VoiceChannel voiceChannel = guild.getVoiceChannelById(value);
+        if (voiceChannel != null) {
+            return voiceChannel.getName();
         }
         return Emojibet.X;
     }
