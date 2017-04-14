@@ -21,8 +21,6 @@ import emily.main.DiscordBot;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
-import java.util.concurrent.Future;
-
 /**
  * !ping
  */
@@ -31,13 +29,11 @@ public class PingCommand extends AbstractCommand {
         super();
     }
 
-    int i = 0;
-    String[] pingMessages = new String[]{
+    private static final String[] pingMessages = new String[]{
             ":ping_pong::white_small_square::black_small_square::black_small_square::ping_pong:",
             ":ping_pong::black_small_square::white_small_square::black_small_square::ping_pong:",
             ":ping_pong::black_small_square::black_small_square::white_small_square::ping_pong:",
             ":ping_pong::black_small_square::white_small_square::black_small_square::ping_pong:",
-            ":ping_pong::white_small_square::black_small_square::black_small_square::ping_pong:",
     };
 
 
@@ -68,36 +64,25 @@ public class PingCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
 
         if (args.length > 0 && args[0].matches("fancy")) {
-            String[] pings = new String[6];
-            pings[0] = "\nPing is: ...";
             bot.queue.add(channel.sendMessage("Checking ping..."), message -> {
-                final Future<?>[] f = {null};
-                f[0] = bot.scheduleRepeat(() -> {
+                int pings = 6;
+                int lastResult;
+                int sum = 0, min = 999, max = 0;
+                long start = System.currentTimeMillis();
+                for (int j = 0; j < pings; j++) {
+                    message.editMessage(pingMessages[j % pingMessages.length]).complete();
+                    lastResult = (int) (System.currentTimeMillis() - start);
+                    sum += lastResult;
+                    min = Math.min(min, lastResult);
+                    max = Math.max(max, lastResult);
                     try {
-                        long finish = 0;
-                        if (i < pingMessages.length) {
-                            long start = System.currentTimeMillis();
-                            message.editMessage(pingMessages[i] + pings[i]).complete();
-                            finish = System.currentTimeMillis() - start;
-                            i++;
-                            pings[i] = ("\nPing is: " + Long.toString(finish));
-                        } else {
-                            int temp = 0;
-                            for (int p = 1; p < pings.length; p++) {
-                                String[] splitter = pings[p].split("(: )");
-                                temp = temp + Integer.parseInt(splitter[1]);
-                            }
-                            int averagePing = (int) Math.ceil(temp / (pings.length - 1));
-                            message.editMessage("Ping is: " + averagePing).complete();
-                            i = 0;
-                            f[0].cancel(true);
-                        }
-
-                    } catch (Exception e) {
-                        System.out.println(e);
-                        f[0].cancel(true);
+                        Thread.sleep(1_500L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                }, 100L, 1000L);
+                    start = System.currentTimeMillis();
+                }
+                message.editMessage(String.format("Average ping is %dms (min: %d, max: %d)", (int)Math.ceil(sum / 6f), min, max)).complete();
             });
         } else {
             long start = System.currentTimeMillis();
