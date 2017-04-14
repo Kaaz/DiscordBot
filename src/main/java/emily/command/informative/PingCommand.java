@@ -65,7 +65,7 @@ public class PingCommand extends AbstractCommand {
 
         if (args.length > 0 && args[0].matches("fancy")) {
             bot.queue.add(channel.sendMessage("Checking ping..."), message -> {
-                int pings = 6;
+                int pings = 5;
                 int lastResult;
                 int sum = 0, min = 999, max = 0;
                 long start = System.currentTimeMillis();
