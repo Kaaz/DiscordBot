@@ -51,7 +51,7 @@ public class TempBanCommand extends AbstractModActionCommand {
 
     @Override
     protected boolean punish(DiscordBot bot, Guild guild, Member member) {
-        bot.queue.add(guild.getController().kick(member));
+        bot.queue.add(guild.getController().ban(member, 5), t -> guild.getController().unban(member.getUser()).complete());
         return true;
     }
 }
