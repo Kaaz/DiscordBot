@@ -18,10 +18,9 @@ package emily.command.informative;
 
 import emily.core.AbstractCommand;
 import emily.main.DiscordBot;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
-import java.lang.reflect.Array;
+
 import java.util.concurrent.Future;
 
 /**
@@ -31,6 +30,7 @@ public class PingCommand extends AbstractCommand {
     public PingCommand() {
         super();
     }
+
     int i = 0;
     String[] pingMessages = new String[]{
             ":ping_pong::white_small_square::black_small_square::black_small_square::ping_pong:",
@@ -87,16 +87,17 @@ public class PingCommand extends AbstractCommand {
                                 String[] splitter = pings[p].split("(: )");
                                 temp = temp + Integer.parseInt(splitter[1]);
                             }
-                            int averagePing = (int)Math.ceil(temp / (pings.length-1));
+                            int averagePing = (int) Math.ceil(temp / (pings.length - 1));
                             message.editMessage("Ping is: " + averagePing).complete();
                             i = 0;
-                            f[0].cancel(false);
+                            f[0].cancel(true);
                         }
 
                     } catch (Exception e) {
                         System.out.println(e);
+                        f[0].cancel(true);
                     }
-                },100L,1000L);
+                }, 100L, 1000L);
             });
         } else {
             long start = System.currentTimeMillis();

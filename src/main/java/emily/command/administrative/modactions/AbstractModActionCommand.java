@@ -92,7 +92,6 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
                         modCase.messageId = message.getId();
                         CModerationCase.update(modCase);
                     });
-
         }
         return Template.get("command_modaction_success", targetUser.getName(), getPunishType().getVerb().toLowerCase());
     }
