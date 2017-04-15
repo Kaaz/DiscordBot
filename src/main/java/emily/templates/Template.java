@@ -89,7 +89,7 @@ public class Template {
     }
 
     public String formatFull(String guildId, boolean forceDebug, Object... vars) {
-        if (templateArguments.length == 0 & optionalArgs.length == 0) {
+        if (templateArguments.length == 0 & optionalArgs.length == 0 & guildId == null) {
             return TemplateCache.getGlobal(getKey());
         }
         boolean showTemplates = forceDebug || Config.SHOW_KEYPHRASE;
