@@ -89,8 +89,11 @@ public class Template {
     }
 
     public String formatFull(String guildId, boolean forceDebug, Object... vars) {
-        if (templateArguments.length == 0 & optionalArgs.length == 0) {
-            return TemplateCache.getGlobal(getKey());
+        if (templateArguments.length == 0 && optionalArgs.length == 0) {
+            if (guildId == null) {
+                return TemplateCache.getGlobal(getKey());
+            }
+            return TemplateCache.getGuild(CGuild.getCachedId(guildId), getKey());
         }
         boolean showTemplates = forceDebug || Config.SHOW_KEYPHRASE;
         if (!forceDebug && guildId != null && !guildId.isEmpty()) {
