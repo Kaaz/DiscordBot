@@ -82,7 +82,7 @@ public class PingCommand extends AbstractCommand {
                     }
                     start = System.currentTimeMillis();
                 }
-                message.editMessage(String.format("Average ping is %dms (min: %d, max: %d)", (int)Math.ceil(sum / 6f), min, max)).complete();
+                message.editMessage(String.format("Average ping is %dms (min: %d, max: %d)", (int)Math.ceil(sum / 5f), min, max)).complete();
             });
         } else {
             long start = System.currentTimeMillis();
@@ -93,4 +93,3 @@ public class PingCommand extends AbstractCommand {
         return "";
     }
 }
-
