@@ -133,7 +133,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         if (args.length == 0) {
             if (playlist.isGlobalList()) {
                 return Template.get(channel, "music_playlist_using", playlist.title) + " See `" + cp + "pl help` for more info" + Config.EOL +
-                        "You can switch to a different playlist with `" + cp + "pl guild` to the guild's list or `" + cp + "pl personal` to your own one";
+                        "You can switch to a different playlist with `" + cp + "pl guild` to the guild's list or `" + cp + "pl mine` to your own one";
             }
             return Template.get(channel, "music_playlist_using", playlist.title) +
                     "Settings " + makeSettingsTable(playlist) +
