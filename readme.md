@@ -137,8 +137,7 @@ Consul | 500 days
 
 ## Run the bot yourself
 
-Before we get started I want to note that the development happens mainly on a windows machine, so there might be some unforeseen errors on other operating systems.  
-If you do encounter errors, please let me know so I can fix them.
+Before we get started I want to note that this tutorial is written for people with some hosting experience. We do not support self-hosted versions of Emily, ie. We will not answer help requests or fix personal issues with the bot. The source code is here in the interest of transparency.
 
 Also note that running the bot requires basic experience with the command line 
 (or your OS's equivalent like CMD/PowerShell on Windows) and the ability to add software to you System's path.
