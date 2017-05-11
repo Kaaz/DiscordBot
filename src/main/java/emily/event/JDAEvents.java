@@ -36,6 +36,7 @@ import emily.main.Config;
 import emily.main.DiscordBot;
 import emily.main.GuildCheckResult;
 import emily.main.Launcher;
+import emily.permission.SimpleRank;
 import emily.role.RoleRankings;
 import emily.templates.Template;
 import emily.templates.Templates;
@@ -283,7 +284,7 @@ public class JDAEvents extends ListenerAdapter {
         discordBot.logGuildEvent(guild, "\uD83D\uDC64", "**" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator() + "** joined the guild");
         if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
             TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
-            if (defaultChannel != null && defaultChannel.canTalk()) {
+            if (defaultChannel != null && defaultChannel.canTalk() && !discordBot.security.isBotAdmin(user.getIdLong())) {
                 Template template = firstTime ? Templates.welcome_new_user : Templates.welcome_back_user;
                 discordBot.queue.add(defaultChannel.sendMessage(
                         template.formatGuild(guild.getId(), guild, user)),
@@ -292,6 +293,16 @@ public class JDAEvents extends ListenerAdapter {
                                 discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
                             }
                         });
+            } else if (defaultChannel != null && defaultChannel.canTalk() && discordBot.security.isBotAdmin(user.getIdLong())) {
+                Template template = Templates.welcome_bot_admin;
+                discordBot.queue.add(defaultChannel.sendMessage(
+                        template.formatGuild(guild.getId(), guild, user)),
+                        message -> {
+                            if (!"no".equals(settings.getOrDefault(SettingCleanupMessages.class))) {
+                                discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
+                            }
+                        });
+
             }
         }
         Launcher.log("user joins guild", "guild", "member-join",

@@ -44,6 +44,7 @@ public final class Templates {
     public static final Template welcome_new_user = new Template(null, TemplateArgument.values());
     public static final Template welcome_back_user = new Template(null, TemplateArgument.values());
     public static final Template message_user_leaves = new Template(null, TemplateArgument.values());
+    public static final Template welcome_bot_admin = new Template(null, TemplateArgument.values());
 
     public static Template getByKey(String templateKey) {
         return dictionary.get(templateKey);
