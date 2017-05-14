@@ -95,7 +95,7 @@ public class CustomCommand extends AbstractCommand {
 
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-        SimpleRank rank = bot.security.getSimpleRank(author);
+        SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
             return Template.get("permission_denied");
         }
