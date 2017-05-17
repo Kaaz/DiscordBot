@@ -186,7 +186,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
     }
 
     private String writeFancyFooter(MessageChannel channel) {
-        return "for more details about a command use `" + DisUtil.getCommandPrefix(channel) + "help <command>`";
+        return "for more details about a command use `" + DisUtil.getCommandPrefix(channel) + "help <command>`\nuse the reactions below to switch between the pages";
     }
 
     @Override
