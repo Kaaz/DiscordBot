@@ -125,7 +125,7 @@ public class RoleAdminCommand extends AbstractCommand {
         switch (args[0].toLowerCase()) {
             case "self":
                 if (args.length == 1) {
-                    return "self roles overview";
+                    return "this will say something useful in future";
                 }
                 if (args.length < 3) {
                     return Template.get("command_invalid_use");
@@ -170,9 +170,10 @@ public class RoleAdminCommand extends AbstractCommand {
                 return ":face_palm: I expected you to know how to use it";
         }
     }
-
+    boolean success;
     private String mutateRole(TextChannel channel, String user, String role, boolean adding) {
         Role r = DisUtil.findRole(channel.getGuild(), role);
+        success = true;
         if (r == null) {
             return "can't find a role matching **" + role + "**";
         }
@@ -190,10 +191,13 @@ public class RoleAdminCommand extends AbstractCommand {
             return "cant find user matching " + user;
         }
         _mutateRole(r, channel.getGuild().getMember(u), adding);
-        if (adding) {
-            return String.format("adding %s to %s", r.getName(), u.getName());
+        if (success) {
+            if (adding) {
+                return String.format("adding %s to %s", r.getName(), u.getName());
+            }
+            return String.format("removing %s from %s", r.getName(), u.getName());
         }
-        return String.format("removing %s to %s", r.getName(), u.getName());
+        return String.format("I can't edit the %s role, you need to make sure my highest role is above this one for it to work", r.getName());
     }
 
     private void _mutateRole(Role role, Member member, boolean adding) {
@@ -217,7 +221,10 @@ public class RoleAdminCommand extends AbstractCommand {
                     return;
                 }
                 role.getGuild().getController().removeRolesFromMember(member, role).complete();
+
             }
+        } else {
+            this.success = false;
         }
     }
 }
