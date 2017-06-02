@@ -76,9 +76,6 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
     public String[] getUsage() {
         return new String[]{
                 "info          //general info",
-                "info planned  //see whats planned in the near future",
-                "info bugs     //known bugs",
-                "info progress //see whats currently being worked on",
         };
     }
 
