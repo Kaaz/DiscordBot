@@ -68,10 +68,10 @@ public class CGuildRoleAssignable {
         return record;
     }
 
-    public static void delete(int guildId, String discordRoleId) {
+    public static void delete(int guildId, String discordRoleId, String roleName) {
         try {
             WebDb.get().query(
-                    "DELETE FROM guild_roles_self WHERE guild_id = ? AND  discord_role_id = ?", guildId, discordRoleId);
+                    "DELETE FROM guild_roles_self WHERE guild_id = ? AND (discord_role_id = ? OR role_name = '?')", guildId, discordRoleId, roleName);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -142,7 +142,8 @@ public class RoleAdminCommand extends AbstractCommand {
                         return Template.get("command_role_admin_adding", role.getName());
                     case "remove":
                     case "-":
-                        CGuildRoleAssignable.delete(CGuild.getCachedId(guild.getId()), role.getId());
+                    case "delete":
+                        CGuildRoleAssignable.delete(CGuild.getCachedId(guild.getId()), role.getId(), roleName);
                         return Template.get("command_role_admin_removing", role.getName());
                     case "describe":
                         return Template.get("not_implemented_yet");
