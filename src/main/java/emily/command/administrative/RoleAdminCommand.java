@@ -133,7 +133,10 @@ public class RoleAdminCommand extends AbstractCommand {
                 String roleName = Misc.joinStrings(args, 2);
                 Role role = DisUtil.findRole(guild, roleName);
                 if (role == null) {
-                    return "role not found";
+                    List selfRoleList = CGuildRoleAssignable.getRolesFor(CGuild.getCachedId(guild.getId()));
+                    if (!selfRoleList.contains(roleName)) {
+                        return "role not found :frowning:";
+                    }
                 }
                 switch (args[1].toLowerCase()) {
                     case "add":
