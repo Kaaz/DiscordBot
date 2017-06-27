@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package emily.command.bot_administration;
+package emily.command.administrative;
 
 import com.vdurmont.emoji.EmojiParser;
 import emily.core.AbstractCommand;
