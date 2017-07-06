@@ -20,7 +20,9 @@ package emily.handler;
 import emily.main.Config;
 import emily.modules.cleverbotio.CleverbotIO;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -74,12 +76,26 @@ public class ChatBotHandler {
             try {
                 failedAttempts = 0;
                 lastInteraction = System.currentTimeMillis();
-                return new String(botsession.ask(input).getBytes("UTF-8"), "UTF-8");
+                String string;
+                while (!acceptableMessage(string = new String(botsession.ask(input).getBytes("UTF-8"), "UTF-8"))){
+                    Thread.sleep(250);
+                }
+                return string;
             } catch (Exception ignored) {
                 failedAttempts++;
             }
             return "";
         }
 
+    }
+
+    private static final List<String> BANNED = Arrays.asList("discord.gg", "http", "clan", "server", "you");
+    private static boolean acceptableMessage(String s){
+        s = s.toLowerCase();
+        if (Character.isLetter(s.charAt(0))) return false;
+        for (String s1 : BANNED){
+            if (s.contains(s1)) return false;
+        }
+        return true;
     }
 }
