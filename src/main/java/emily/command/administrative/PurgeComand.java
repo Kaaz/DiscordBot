@@ -151,8 +151,10 @@ public class PurgeComand extends AbstractCommand {
                         }
                     }
                     break;
+                case "match":
                 case "matches":
                     style = PurgeStyle.MATCHES;
+                case "notmatch":
                 case "notmatches":
                     if (style.equals(PurgeStyle.UNKNOWN)) {
                         style = PurgeStyle.NOTMATCHES;
