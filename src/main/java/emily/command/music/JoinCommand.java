@@ -75,7 +75,7 @@ public class JoinCommand extends AbstractCommand {
             if (voiceChannel == null) {
                 return Template.get("command_join_cantfindyou");
             }
-            if (player.isConnectedTo(voiceChannel)) {
+                if (player.isConnectedTo(voiceChannel)) {
                 return Template.get("command_join_already_there");
             }
             if (!PermissionUtil.checkPermission(voiceChannel, voiceChannel.getGuild().getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {

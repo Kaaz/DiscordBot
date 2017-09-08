@@ -26,6 +26,9 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 /**
  * leaves the guild
  */
@@ -61,6 +64,17 @@ public class LeaveGuildCommand extends AbstractCommand {
         boolean shouldLeave = false;
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
+        if (rank.isAtLeast(SimpleRank.CREATOR) && args.length > 0 && args[0].equals("leaveall")) {
+            HashSet<Long> wl = new HashSet<>(Arrays.asList(225168913808228352L, 97284987396554752L, 212835949888012290L));
+            for (DiscordBot discordBot : bot.getContainer().getShards()) {
+                for (Guild g : discordBot.getJda().getGuilds()) {
+                    if (!wl.contains(g.getIdLong())) {
+                        discordBot.queue.add(g.leave());
+                    }
+                }
+            }
+            return "k";
+        }
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
             return Template.get("no_permission");
         }

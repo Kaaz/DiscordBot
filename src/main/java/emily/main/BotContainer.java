@@ -145,7 +145,7 @@ public class BotContainer {
                 } catch (LoginException | InterruptedException | RateLimitedException e) {
                     e.printStackTrace();
                     try {
-                        Thread.sleep(10_000L);
+                        Thread.sleep(5_000L);
                     } catch (InterruptedException ignored) {
                     }
                 }

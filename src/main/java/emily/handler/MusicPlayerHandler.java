@@ -311,7 +311,6 @@ public class MusicPlayerHandler {
                         record.playCount++;
                     }
                     record.lastplaydate = System.currentTimeMillis() / 1000L;
-
                     CMusic.update(record);
                 }
                 currentlyPlaying = record.id;

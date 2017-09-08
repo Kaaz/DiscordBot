@@ -175,5 +175,4 @@ public class ToDoCommand extends AbstractCommand {
     private String makePageFor(String userId, int page) {
         return "";
     }
-
 }
