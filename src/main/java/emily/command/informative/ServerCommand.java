@@ -72,7 +72,6 @@ public class ServerCommand extends AbstractCommand {
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
         Guild guild = ((TextChannel) channel).getGuild();
-        TextChannel defaultTxt = guild.getPublicChannel();
         if (!PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
             return Template.get("permission_missing_embed");
         }
@@ -97,7 +96,6 @@ public class ServerCommand extends AbstractCommand {
         b.setColor(GfxUtil.getAverageColor(guild.getIconUrl()));
         b.addField("Members", String.format("%s online\n%s in total", online, guild.getMembers().size()), true);
         b.addField("Channels", String.format("%s text channels\n%s voice channels", guild.getTextChannels().size(), guild.getVoiceChannels().size()), true);
-        b.addField("Default channel", defaultTxt.getAsMention(), true);
         b.addField("Created by", String.format("%s\\#%s", guild.getOwner().getUser().getName(), guild.getOwner().getUser().getDiscriminator()), true);
         b.addField("My prefix", String.format("`%s`", DisUtil.getCommandPrefix(guild)), true);
         b.addField("Created On", new SimpleDateFormat("dd MMMM yyyy").format(new Date(guild.getCreationTime().toInstant().toEpochMilli())), true);
