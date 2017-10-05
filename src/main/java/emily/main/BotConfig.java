@@ -17,10 +17,10 @@
 package emily.main;
 
 
-import com.wezinkhof.configuration.ConfigurationOption;
+import com.kaaz.configuration.ConfigurationOption;
 import emily.util.Emojibet;
 
-public class Config {
+public class BotConfig {
 
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36";
     //the bot/users ratio for guilds

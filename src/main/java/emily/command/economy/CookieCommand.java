@@ -21,7 +21,7 @@ import emily.db.controllers.CBanks;
 import emily.db.controllers.CUser;
 import emily.db.model.OBank;
 import emily.db.model.OUser;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.util.TimeUtil;
@@ -77,7 +77,7 @@ public class CookieCommand extends AbstractCommand {
         int lastCurrencyRetrieval = user.lastCurrencyRetrieval;
         if (income == 0) {
             return String.format("no %s for you yet, try again in %s",
-                    Config.ECONOMY_CURRENCY_ICON, TimeUtil.getRelativeTime((long) (now + 1 + CBanks.SECONDS_PER_CURRENCY - (now - lastCurrencyRetrieval)), false, false))
+                    BotConfig.ECONOMY_CURRENCY_ICON, TimeUtil.getRelativeTime((long) (now + 1 + CBanks.SECONDS_PER_CURRENCY - (now - lastCurrencyRetrieval)), false, false))
                     + getFooter();
         }
         if (income == CBanks.CURRENCY_GIVEAWAY_MAX) {
@@ -90,13 +90,13 @@ public class CookieCommand extends AbstractCommand {
         }
         user.lastCurrencyRetrieval = lastCurrencyRetrieval;
         CUser.update(user);
-        return String.format("you get %s %s!", income, income == 1 ? Config.ECONOMY_CURRENCY_NAME : Config.ECONOMY_CURRENCY_NAMES) +
+        return String.format("you get %s %s!", income, income == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES) +
                 getFooter();
     }
 
     private String getFooter() {
-        return Config.EOL +
+        return BotConfig.EOL +
                 String.format("You can retrieve a %s every %s minutes, you don't have to retrieve them directly, I'll save up to %s %s for you.",
-                        Config.ECONOMY_CURRENCY_NAME, (int) (CBanks.SECONDS_PER_CURRENCY / 60), CBanks.CURRENCY_GIVEAWAY_MAX, Config.ECONOMY_CURRENCY_NAMES);
+                        BotConfig.ECONOMY_CURRENCY_NAME, (int) (CBanks.SECONDS_PER_CURRENCY / 60), CBanks.CURRENCY_GIVEAWAY_MAX, BotConfig.ECONOMY_CURRENCY_NAMES);
     }
 }

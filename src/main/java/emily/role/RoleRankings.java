@@ -18,8 +18,7 @@ package emily.role;
 
 import emily.db.controllers.CGuildMember;
 import emily.db.model.OGuildMember;
-import emily.guildsettings.bot.SettingRoleTimeRanks;
-import emily.guildsettings.bot.SettingRoleTimeRanksPrefix;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
@@ -118,7 +117,7 @@ public class RoleRankings {
     }
 
     public static String getPrefix(Guild guild) {
-        return GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanksPrefix.class);
+        return GuildSettings.get(guild).getOrDefault(GSetting.USER_TIME_RANKS_PREFIX);
     }
 
     /**
@@ -172,7 +171,7 @@ public class RoleRankings {
      * @return has the manage roles premission?
      */
     public static boolean canModifyRoles(Guild guild, User ourUser) {
-        return PermissionUtil.checkPermission(guild, guild.getSelfMember(), Permission.MANAGE_ROLES);
+        return PermissionUtil.checkPermission(guild.getSelfMember(), Permission.MANAGE_ROLES);
     }
 
     /**
@@ -203,7 +202,7 @@ public class RoleRankings {
         for (Guild guild : guilds) {
             try {
                 if (GuildSettings.get(guild) != null) {
-                    if (!"true".equals(GuildSettings.get(guild).getOrDefault(SettingRoleTimeRanks.class))) {
+                    if (!"true".equals(GuildSettings.get(guild).getOrDefault(GSetting.USER_TIME_RANKS))) {
                         continue;
                     }
                     if (canModifyRoles(guild, guild.getJDA().getSelfUser())) {

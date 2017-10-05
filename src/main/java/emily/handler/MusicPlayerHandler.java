@@ -37,15 +37,10 @@ import emily.db.controllers.CPlaylist;
 import emily.db.controllers.CUser;
 import emily.db.model.OMusic;
 import emily.db.model.OPlaylist;
-import emily.guildsettings.music.SettingMusicChannelTitle;
-import emily.guildsettings.music.SettingMusicLastPlaylist;
-import emily.guildsettings.music.SettingMusicPlayingMessage;
-import emily.guildsettings.music.SettingMusicQueueOnly;
-import emily.guildsettings.music.SettingMusicVolume;
-import emily.guildsettings.music.SettingMusicVotePercent;
+import emily.guildsettings.GSetting;
 import emily.handler.audio.AudioPlayerSendHandler;
 import emily.handler.audio.QueuedAudioTrack;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.permission.SimpleRank;
@@ -112,9 +107,9 @@ public class MusicPlayerHandler {
         queue = new LinkedList<>();
         scheduler = new TrackScheduler(player);
         player.addListener(scheduler);
-        player.setVolume(Integer.parseInt(GuildSettings.get(guild.getId()).getOrDefault(SettingMusicVolume.class)));
+        player.setVolume(Integer.parseInt(GuildSettings.get(guild.getId()).getOrDefault(GSetting.MUSIC_VOLUME)));
         playerInstances.put(guild.getId(), this);
-        int savedPlaylist = Integer.parseInt(GuildSettings.get(guild.getId()).getOrDefault(SettingMusicLastPlaylist.class));
+        int savedPlaylist = Integer.parseInt(GuildSettings.get(guild.getId()).getOrDefault(GSetting.MUSIC_PLAYLIST_ID));
         if (savedPlaylist > 0) {
             playlist = CPlaylist.findById(savedPlaylist);
         }
@@ -188,7 +183,7 @@ public class MusicPlayerHandler {
      */
     public boolean canUseVoiceCommands(User user, SimpleRank rank) {
         Guild guild = user.getJDA().getGuildById(guildId);
-        if (PermissionUtil.checkPermission(guild, guild.getMember(user), Permission.ADMINISTRATOR)) {
+        if (PermissionUtil.checkPermission(guild.getMember(user), Permission.ADMINISTRATOR)) {
             return true;
         }
         if (!GuildSettings.get(guild).canUseMusicCommands(user, rank)) {
@@ -231,7 +226,7 @@ public class MusicPlayerHandler {
         playlist = CPlaylist.findById(id);
         if (activePlayListId != playlist.id) {
             activePlayListId = playlist.id;
-            GuildSettings.get(guildId).set(null, SettingMusicLastPlaylist.class, "" + id);
+            GuildSettings.get(guildId).set(null, GSetting.MUSIC_PLAYLIST_ID, "" + id);
         }
     }
 
@@ -240,7 +235,7 @@ public class MusicPlayerHandler {
         boolean keepGoing = false;
         if (scheduler.queue.isEmpty()) {
             if (queue.isEmpty()) {
-                if (!stopAfterTrack && "false".equals(GuildSettings.get(guildId).getOrDefault(SettingMusicQueueOnly.class))) {
+                if (!stopAfterTrack && "false".equals(GuildSettings.get(guildId).getOrDefault(GSetting.MUSIC_QUEUE_ONLY))) {
                     keepGoing = true;
                     if (!playRandomSong()) {
                         player.destroy();
@@ -276,7 +271,7 @@ public class MusicPlayerHandler {
 
                 @Override
                 public void loadFailed(FriendlyException exception) {
-                    bot.out.sendMessageToCreator("file:" + absolutePath + Config.EOL + "Message: " + exception.getMessage());
+                    bot.out.sendMessageToCreator("file:" + absolutePath + BotConfig.EOL + "Message: " + exception.getMessage());
                     trackToAdd.fileExists = 0;
                     CMusic.update(trackToAdd);
                     new File(absolutePath).delete();
@@ -296,7 +291,7 @@ public class MusicPlayerHandler {
         skipVotes.clear();
         currentSongStartTimeInSeconds = System.currentTimeMillis() / 1000L;
         OMusic record;
-        final String messageType = GuildSettings.get(guildId).getOrDefault(SettingMusicPlayingMessage.class);
+        final String messageType = GuildSettings.get(guildId).getOrDefault(GSetting.MUSIC_PLAYING_MESSAGE);
         AudioTrackInfo info = player.getPlayingTrack().getInfo();
         if (info != null) {
             File f = new File(info.identifier);
@@ -324,7 +319,7 @@ public class MusicPlayerHandler {
             record = new OMusic();
         }
         TextChannel musicChannel = bot.getMusicChannel(guildId);
-        if ("true".equals(GuildSettings.get(guildId).getOrDefault(SettingMusicChannelTitle.class))) {
+        if ("true".equals(GuildSettings.get(guildId).getOrDefault(GSetting.MUSIC_CHANNEL_TITLE))) {
             Guild guild = bot.getJda().getGuildById(guildId);
             if (musicChannel != null && PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
                 if (!isUpdateChannelTitle()) {
@@ -444,7 +439,7 @@ public class MusicPlayerHandler {
      * @return required votes
      */
     public synchronized int getRequiredVotes() {
-        return Math.max(1, (int) (Double.parseDouble(GuildSettings.get(guildId).getOrDefault(SettingMusicVotePercent.class)) / 100D * (double) getUsersInVoiceChannel().size()));
+        return Math.max(1, (int) (Double.parseDouble(GuildSettings.get(guildId).getOrDefault(GSetting.MUSIC_VOTE_PERCENT)) / 100D * (double) getUsersInVoiceChannel().size()));
     }
 
     /**
@@ -547,7 +542,7 @@ public class MusicPlayerHandler {
             if (playlist.isGuildList() && guild.isMember(user)) {
                 switch (playlist.getEditType()) {
                     case PRIVATE_AUTO:
-                        if (!PermissionUtil.checkPermission(guild, guild.getMember(user), Permission.ADMINISTRATOR)) {
+                        if (!PermissionUtil.checkPermission(guild.getMember(user), Permission.ADMINISTRATOR)) {
                             break;
                         }
                     case PUBLIC_AUTO:

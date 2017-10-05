@@ -20,12 +20,11 @@ import emily.command.CommandCategory;
 import emily.command.CommandReactionListener;
 import emily.command.ICommandReactionListener;
 import emily.core.AbstractCommand;
-import emily.guildsettings.bot.SettingCommandPrefix;
-import emily.guildsettings.bot.SettingHelpInPM;
+import emily.guildsettings.GSetting;
 import emily.handler.CommandHandler;
 import emily.handler.GuildSettings;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -83,25 +82,25 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
 
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-        String commandPrefix = GuildSettings.getFor(channel, SettingCommandPrefix.class);
-        boolean showHelpInPM = GuildSettings.getFor(channel, SettingHelpInPM.class).equals("true");
+        String commandPrefix = GuildSettings.getFor(channel, GSetting.COMMAND_PREFIX);
+        boolean showHelpInPM = GuildSettings.getFor(channel, GSetting.HELP_IN_PM).equals("true");
         if (args.length > 0 && !args[0].equals("full")) {
             AbstractCommand c = CommandHandler.getCommand(DisUtil.filterPrefix(args[0], channel));
             if (c != null) {
-                String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + Config.EOL;
+                String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + BotConfig.EOL;
                 ArrayList<String> aliases = new ArrayList<>();
                 aliases.add(commandPrefix + c.getCommand());
                 for (String alias : c.getAliases()) {
                     aliases.add(commandPrefix + alias);
                 }
-                ret += Emojibet.KEYBOARD + " **Accessible through:** " + Config.EOL +
+                ret += Emojibet.KEYBOARD + " **Accessible through:** " + BotConfig.EOL +
                         Misc.makeTable(aliases, 16, 3);
-                ret += Emojibet.NOTEPAD + " **Description:** " + Config.EOL +
+                ret += Emojibet.NOTEPAD + " **Description:** " + BotConfig.EOL +
                         Misc.makeTable(c.getDescription());
                 if (c.getUsage().length > 0) {
-                    ret += Emojibet.GEAR + " **Usages**:```php" + Config.EOL;
+                    ret += Emojibet.GEAR + " **Usages**:```php" + BotConfig.EOL;
                     for (String line : c.getUsage()) {
-                        ret += line + Config.EOL;
+                        ret += line + BotConfig.EOL;
                     }
                     ret += "```";
                 }
@@ -110,7 +109,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
             return Template.get("command_help_donno");
         }
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
-        String ret = "I know the following commands: " + Config.EOL + Config.EOL;
+        String ret = "I know the following commands: " + BotConfig.EOL + BotConfig.EOL;
         if ((args.length == 0 || !args[0].equals("full")) && channel instanceof TextChannel) {
             TextChannel textChannel = (TextChannel) channel;
             if (PermissionUtil.checkPermission(textChannel, textChannel.getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_ADD_REACTION)) {
@@ -125,8 +124,8 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
         }
         ret += styleTablePerCategory(getCommandMap(userRank));
         if (showHelpInPM) {
-            bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + Config.EOL +
-                    ":exclamation: In private messages the prefix for commands is **" + Config.BOT_COMMAND_PREFIX + "**");
+            bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + BotConfig.EOL +
+                    ":exclamation: In private messages the prefix for commands is **" + BotConfig.BOT_COMMAND_PREFIX + "**");
             return Template.get("command_help_send_private");
         } else {
             return ret + "for more details about a command use **" + commandPrefix + "help <command>**";
@@ -164,7 +163,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
     }
 
     private String styleTableCategory(CommandCategory category, ArrayList<String> commands) {
-        return category.getEmoticon() + " " + category.getDisplayName() + Config.EOL + Misc.makeTable(commands);
+        return category.getEmoticon() + " " + category.getDisplayName() + BotConfig.EOL + Misc.makeTable(commands);
     }
 
     private String writeFancyHeader(MessageChannel channel, CommandCategory active, Set<CommandCategory> categories) {

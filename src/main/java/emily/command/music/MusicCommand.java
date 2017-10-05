@@ -20,21 +20,11 @@ import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.db.controllers.CPlaylist;
 import emily.db.model.OPlaylist;
-import emily.guildsettings.bot.SettingMusicAdminVolume;
-import emily.guildsettings.music.SettingMusicAutoVoiceChannel;
-import emily.guildsettings.music.SettingMusicChannel;
-import emily.guildsettings.music.SettingMusicClearAdminOnly;
-import emily.guildsettings.music.SettingMusicLastPlaylist;
-import emily.guildsettings.music.SettingMusicPlayingMessage;
-import emily.guildsettings.music.SettingMusicQueueOnly;
-import emily.guildsettings.music.SettingMusicRole;
-import emily.guildsettings.music.SettingMusicSkipAdminOnly;
-import emily.guildsettings.music.SettingMusicVolume;
-import emily.guildsettings.music.SettingMusicVotePercent;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.Emojibet;
@@ -96,17 +86,17 @@ public class MusicCommand extends AbstractCommand {
         GuildSettings settings = GuildSettings.get(guild);
 
         TextChannel outputChannel = null;
-        List<TextChannel> channels = guild.getTextChannelsByName(settings.getOrDefault(SettingMusicChannel.class), true);
+        List<TextChannel> channels = guild.getTextChannelsByName(settings.getOrDefault(GSetting.MUSIC_CHANNEL), true);
         if (!channels.isEmpty()) {
             outputChannel = channels.get(0);
         }
         VoiceChannel autoVoice = null;
-        List<VoiceChannel> vchannels = guild.getVoiceChannelsByName(settings.getOrDefault(SettingMusicAutoVoiceChannel.class), true);
+        List<VoiceChannel> vchannels = guild.getVoiceChannelsByName(settings.getOrDefault(GSetting.MUSIC_CHANNEL_AUTO), true);
         if (!vchannels.isEmpty()) {
             autoVoice = vchannels.get(0);
         }
         Role requiredRole = null;
-        String roleReq = settings.getOrDefault(SettingMusicRole.class);
+        String roleReq = settings.getOrDefault(GSetting.MUSIC_ROLE_REQUIREMENT);
         if (!(roleReq.equalsIgnoreCase("none") || roleReq.equals("false"))) {
             List<Role> roles = guild.getRolesByName(roleReq, true);
             if (!roles.isEmpty()) {
@@ -118,53 +108,53 @@ public class MusicCommand extends AbstractCommand {
             return Template.get("not_implemented_yet");
         }
 
-        OPlaylist playlist = CPlaylist.findById(Integer.parseInt(settings.getOrDefault(SettingMusicLastPlaylist.class)));
+        OPlaylist playlist = CPlaylist.findById(Integer.parseInt(settings.getOrDefault(GSetting.MUSIC_PLAYLIST_ID)));
         if (playlist.id == 0) {
             playlist = CPlaylist.getGlobalList();
         }
-        String ret = "Current settings for music: " + Config.EOL + Config.EOL;
-        ret += "**Required role to use music-commands:** " + Config.EOL;
-        ret += (requiredRole != null ? requiredRole.getName() : "none") + Config.EOL + Config.EOL;
-        ret += "**Music output text-channel:** " + Config.EOL;
-        ret += (outputChannel != null ? outputChannel.getAsMention() : Emojibet.WARNING + " channel not found") + Config.EOL + Config.EOL;
-        ret += "**auto-join voice-channel:** " + Config.EOL;
-        ret += (autoVoice != null ? autoVoice.getName() : "disabled") + Config.EOL + Config.EOL;
-        ret += "**music from queue only?**" + Config.EOL;
-        ret += (settings.getOrDefault(SettingMusicQueueOnly.class).equals("true") ? "Only music from the queue will be played" : "A track from the configured playlist will be played once the queue is empty.") + Config.EOL + Config.EOL;
-        ret += "**vote-skipping percentage required?**" + Config.EOL;
-        ret += settings.getOrDefault(SettingMusicVotePercent.class) + "%" + Config.EOL + Config.EOL;
-        ret += "**now-playing message?**" + Config.EOL;
-        ret += settings.getOrDefault(SettingMusicPlayingMessage.class) + Config.EOL + Config.EOL;
-        ret += "**Playlist?**" + Config.EOL;
-        ret += playlist.title + Config.EOL + Config.EOL;
-        ret += "**Volume:** " + Config.EOL;
-        ret += settings.getOrDefault(SettingMusicVolume.class) + "%" + Config.EOL + Config.EOL;
-        ret += "" + Config.EOL;
-        ret += "__Admin-only options__" + Config.EOL;
-        ret += "**skip the playing track?** " + Config.EOL;
-        ret += (settings.getOrDefault(SettingMusicSkipAdminOnly.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + Config.EOL + Config.EOL;
-        ret += "**Clear the music-queue?**" + Config.EOL;
-        ret += (settings.getOrDefault(SettingMusicClearAdminOnly.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + Config.EOL + Config.EOL;
-        ret += "**Change the volume?**" + Config.EOL;
-        ret += (settings.getOrDefault(SettingMusicAdminVolume.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + Config.EOL + Config.EOL;
-        ret += "" + Config.EOL;
-        ret += "" + Config.EOL;
+        String ret = "Current settings for music: " + BotConfig.EOL + BotConfig.EOL;
+        ret += "**Required role to use music-commands:** " + BotConfig.EOL;
+        ret += (requiredRole != null ? requiredRole.getName() : "none") + BotConfig.EOL + BotConfig.EOL;
+        ret += "**Music output text-channel:** " + BotConfig.EOL;
+        ret += (outputChannel != null ? outputChannel.getAsMention() : Emojibet.WARNING + " channel not found") + BotConfig.EOL + BotConfig.EOL;
+        ret += "**auto-join voice-channel:** " + BotConfig.EOL;
+        ret += (autoVoice != null ? autoVoice.getName() : "disabled") + BotConfig.EOL + BotConfig.EOL;
+        ret += "**music from queue only?**" + BotConfig.EOL;
+        ret += (settings.getOrDefault(GSetting.MUSIC_QUEUE_ONLY).equals("true") ? "Only music from the queue will be played" : "A track from the configured playlist will be played once the queue is empty.") + BotConfig.EOL + BotConfig.EOL;
+        ret += "**vote-skipping percentage required?**" + BotConfig.EOL;
+        ret += settings.getOrDefault(GSetting.MUSIC_VOTE_PERCENT) + "%" + BotConfig.EOL + BotConfig.EOL;
+        ret += "**now-playing message?**" + BotConfig.EOL;
+        ret += settings.getOrDefault(GSetting.MUSIC_PLAYING_MESSAGE) + BotConfig.EOL + BotConfig.EOL;
+        ret += "**Playlist?**" + BotConfig.EOL;
+        ret += playlist.title + BotConfig.EOL + BotConfig.EOL;
+        ret += "**Volume:** " + BotConfig.EOL;
+        ret += settings.getOrDefault(GSetting.MUSIC_VOLUME) + "%" + BotConfig.EOL + BotConfig.EOL;
+        ret += "" + BotConfig.EOL;
+        ret += "__Admin-only options__" + BotConfig.EOL;
+        ret += "**skip the playing track?** " + BotConfig.EOL;
+        ret += (settings.getOrDefault(GSetting.MUSIC_SKIP_ADMIN_ONLY).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + BotConfig.EOL + BotConfig.EOL;
+        ret += "**Clear the music-queue?**" + BotConfig.EOL;
+        ret += (settings.getOrDefault(GSetting.MUSIC_CLEAR_ADMIN_ONLY).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + BotConfig.EOL + BotConfig.EOL;
+        ret += "**Change the volume?**" + BotConfig.EOL;
+        ret += (settings.getOrDefault(GSetting.MUSIC_VOLUME_ADMIN).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + BotConfig.EOL + BotConfig.EOL;
+        ret += "" + BotConfig.EOL;
+        ret += "" + BotConfig.EOL;
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle("Music configuration", null);
         embedBuilder.setDescription("These are the current settings for " + guild.getName() + "\n ** use the Config command to change these, this is an overview!**");
         embedBuilder.addField("Required role to use music-commands", (requiredRole != null ? requiredRole.getName() : "none"), true);
         embedBuilder.addField("Music output text-channel", (outputChannel != null ? outputChannel.getAsMention() : Emojibet.WARNING + " channel not found"), true);
         embedBuilder.addField("auto-join voice-channel", (autoVoice != null ? autoVoice.getName() : "disabled"), true);
-        embedBuilder.addField("music from queue only", (settings.getOrDefault(SettingMusicQueueOnly.class).equals("true") ? "Only music from the queue will be played" : "A track from the configured playlist will be played once the queue is empty."), true);
-        embedBuilder.addField("vote-skipping percentage required", settings.getOrDefault(SettingMusicVotePercent.class) + "%", true);
-        embedBuilder.addField("now-playing message", settings.getOrDefault(SettingMusicPlayingMessage.class), true);
+        embedBuilder.addField("music from queue only", (settings.getOrDefault(GSetting.MUSIC_QUEUE_ONLY).equals("true") ? "Only music from the queue will be played" : "A track from the configured playlist will be played once the queue is empty."), true);
+        embedBuilder.addField("vote-skipping percentage required", settings.getOrDefault(GSetting.MUSIC_VOTE_PERCENT) + "%", true);
+        embedBuilder.addField("now-playing message", settings.getOrDefault(GSetting.MUSIC_PLAYING_MESSAGE), true);
         embedBuilder.addField("Playlist", playlist.title, true);
-        embedBuilder.addField("Volume", settings.getOrDefault(SettingMusicVolume.class) + "%", true);
+        embedBuilder.addField("Volume", settings.getOrDefault(GSetting.MUSIC_VOLUME) + "%", true);
         embedBuilder.addBlankField(true);
         embedBuilder.addBlankField(false);
-        embedBuilder.addField("skip the playing track", (settings.getOrDefault(SettingMusicSkipAdminOnly.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
-        embedBuilder.addField("Clear the music-queue", (settings.getOrDefault(SettingMusicClearAdminOnly.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
-        embedBuilder.addField("Change the volume", (settings.getOrDefault(SettingMusicAdminVolume.class).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
+        embedBuilder.addField("skip the playing track", (settings.getOrDefault(GSetting.MUSIC_SKIP_ADMIN_ONLY).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
+        embedBuilder.addField("Clear the music-queue", (settings.getOrDefault(GSetting.MUSIC_CLEAR_ADMIN_ONLY).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
+        embedBuilder.addField("Change the volume", (settings.getOrDefault(GSetting.MUSIC_VOLUME_ADMIN).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
         if (PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
             bot.queue.add(channel.sendMessage(embedBuilder.build()));
             return "";

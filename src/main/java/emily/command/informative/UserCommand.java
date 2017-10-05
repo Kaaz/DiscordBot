@@ -25,10 +25,10 @@ import emily.db.model.OBank;
 import emily.db.model.OGuild;
 import emily.db.model.OGuildMember;
 import emily.db.model.OUser;
-import emily.guildsettings.bot.SettingUseEconomy;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -98,7 +98,7 @@ public class UserCommand extends AbstractCommand {
             infoUser = channel.getJDA().getUserById(dbUser.discord_id);
         } else if (channel instanceof TextChannel) {
             if (args.length >= 2 && args[0].equals("guilds") && bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
-                System.out.println(Misc.joinStrings(args,1));
+                System.out.println(Misc.joinStrings(args, 1));
                 User user = DisUtil.findUser((TextChannel) channel, Misc.joinStrings(args, 1));
                 if (user == null) {
                     return Template.get("command_user_not_found");
@@ -146,13 +146,13 @@ public class UserCommand extends AbstractCommand {
         }
         StringBuilder sb = new StringBuilder();
         OUser dbUser = CUser.findBy(infoUser.getId());
-        sb.append("Querying for ").append(nickname).append(Config.EOL);
-        sb.append(":bust_in_silhouette: User: ").append(infoUser.getName()).append("#").append(infoUser.getDiscriminator()).append(Config.EOL);
-        sb.append(":id: Discord id: ").append(infoUser.getId()).append(Config.EOL);
-        sb.append(":keyboard: Commands used: ").append(dbUser.commandsUsed).append(Config.EOL);
-        if (guildId == 0 || "true".equals(GuildSettings.getFor(channel, SettingUseEconomy.class))) {
+        sb.append("Querying for ").append(nickname).append(BotConfig.EOL);
+        sb.append(":bust_in_silhouette: User: ").append(infoUser.getName()).append("#").append(infoUser.getDiscriminator()).append(BotConfig.EOL);
+        sb.append(":id: Discord id: ").append(infoUser.getId()).append(BotConfig.EOL);
+        sb.append(":keyboard: Commands used: ").append(dbUser.commandsUsed).append(BotConfig.EOL);
+        if (guildId == 0 || "true".equals(GuildSettings.getFor(channel, GSetting.MODULE_ECONOMY))) {
             OBank bankAccount = CBanks.findBy(userId);
-            sb.append(Config.ECONOMY_CURRENCY_ICON).append(" ").append(Config.ECONOMY_CURRENCY_NAMES).append(": ").append(bankAccount.currentBalance).append(Config.EOL);
+            sb.append(BotConfig.ECONOMY_CURRENCY_ICON).append(" ").append(BotConfig.ECONOMY_CURRENCY_NAMES).append(": ").append(bankAccount.currentBalance).append(BotConfig.EOL);
         }
 
         if (guildId > 0) {
@@ -168,11 +168,11 @@ public class UserCommand extends AbstractCommand {
                     .append(" (")
                     .append(TimeUtil.getRelativeTime(member.joinDate.getTime() / 1000L, false, true))
                     .append(")")
-                    .append(Config.EOL);
+                    .append(BotConfig.EOL);
 
         }
         if (infoUser.getAvatarUrl() != null) {
-            sb.append(":frame_photo: Avatar: <").append(infoUser.getAvatarUrl()).append(">").append(Config.EOL);
+            sb.append(":frame_photo: Avatar: <").append(infoUser.getAvatarUrl()).append(">").append(BotConfig.EOL);
         }
         if (infoUser.isBot()) {
             sb.append(":robot: This user is a bot (or pretends to be)");

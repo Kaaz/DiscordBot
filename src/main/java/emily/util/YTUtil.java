@@ -18,7 +18,7 @@ package emily.util;
 
 import emily.db.controllers.CMusic;
 import emily.db.model.OMusic;
-import emily.main.Config;
+import emily.main.BotConfig;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONObject;
 import sun.misc.IOUtils;
@@ -126,7 +126,7 @@ public class YTUtil {
     }
 
     public static String getOutputPath(String videoCode) {
-        return Config.MUSIC_DIRECTORY + videoCode + ".opus";
+        return BotConfig.MUSIC_DIRECTORY + videoCode + ".opus";
     }
 
     public static boolean getTrackDuration(OMusic record) {

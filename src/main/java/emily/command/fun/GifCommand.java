@@ -22,7 +22,7 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import emily.core.AbstractCommand;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -66,7 +66,7 @@ public class GifCommand extends AbstractCommand {
             if (args.length > 0) {
                 tags = "&tag=" + Joiner.on("+").join(args);
             }
-            HttpResponse<JsonNode> response = Unirest.get("http://api.giphy.com/v1/gifs/random?api_key=" + Config.GIPHY_TOKEN + tags).asJson();
+            HttpResponse<JsonNode> response = Unirest.get("http://api.giphy.com/v1/gifs/random?api_key=" + BotConfig.GIPHY_TOKEN + tags).asJson();
             return response.getBody().getObject().getJSONObject("data").getString("url");
         } catch (Exception ignored) {
             //this exception is about as useful as a nipple on a male

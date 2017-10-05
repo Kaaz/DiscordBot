@@ -17,7 +17,7 @@
 package emily.service;
 
 import emily.core.AbstractService;
-import emily.guildsettings.bot.SettingRoleTimeRanks;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.main.BotContainer;
 import emily.main.DiscordBot;
@@ -62,7 +62,7 @@ public class UserRankingSystemService extends AbstractService {
             List<Guild> guilds = discordBot.getJda().getGuilds();
             for (Guild guild : guilds) {
                 GuildSettings settings = GuildSettings.get(guild);
-                if (settings != null && "true".equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && RoleRankings.canModifyRoles(guild, discordBot.getJda().getSelfUser())) {
+                if (settings != null && "true".equals(settings.getOrDefault(GSetting.USER_TIME_RANKS)) && RoleRankings.canModifyRoles(guild, discordBot.getJda().getSelfUser())) {
                     try {
                         handleGuild(discordBot, guild);
                     } catch (Exception e) {

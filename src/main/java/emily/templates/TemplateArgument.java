@@ -16,7 +16,7 @@
 
 package emily.templates;
 
-import emily.main.Config;
+import emily.main.BotConfig;
 
 public enum TemplateArgument {
     ARG("arg1", "First input argument", e -> e.arg != null ? e.arg : ""),
@@ -45,7 +45,7 @@ public enum TemplateArgument {
     private final String description;
 
     TemplateArgument(String pattern, String description, TemplateParser parser) {
-        this.pattern = Config.TEMPLATE_QUOTE + pattern + Config.TEMPLATE_QUOTE;
+        this.pattern = BotConfig.TEMPLATE_QUOTE + pattern + BotConfig.TEMPLATE_QUOTE;
         this.parser = parser;
         this.description = description;
     }

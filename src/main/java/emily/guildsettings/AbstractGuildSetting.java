@@ -21,6 +21,10 @@ import net.dv8tion.jda.core.entities.Guild;
 import java.util.Arrays;
 import java.util.HashSet;
 
+/**
+ * @deprecated being replaced by {@link GSetting}
+ * @param <T>
+ */
 abstract public class AbstractGuildSetting<T extends IGuildSettingType> {
     final private T type;
     private final HashSet<String> tags;
@@ -75,25 +79,5 @@ abstract public class AbstractGuildSetting<T extends IGuildSettingType> {
         return false;
     }
 
-    /**
-     * Checks if the value is a valid setting
-     *
-     * @param input value to check
-     * @return is it a valid value
-     */
-    public boolean isValidValue(Guild guild, String input) {
-        return type.validate(guild, input);
-    }
 
-    public String getValue(Guild guild, String input) {
-        return type.fromInput(guild, input);
-    }
-
-    public String toDisplay(Guild guild, String value) {
-        return type.toDisplay(guild, value);
-    }
-
-    public String getSettingType() {
-        return type.typeName();
-    }
 }

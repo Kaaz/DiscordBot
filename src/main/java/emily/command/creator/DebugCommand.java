@@ -22,7 +22,7 @@ import emily.db.controllers.CGuildMember;
 import emily.db.controllers.CUser;
 import emily.db.model.OGuildMember;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.Emojibet;
@@ -93,9 +93,9 @@ public class DebugCommand extends AbstractCommand {
             case "yt":
             case "youtube":
                 if (updating) {
-                    Config.YOUTUBEDL_DEBUG_PROCESS = value;
+                    BotConfig.YOUTUBEDL_DEBUG_PROCESS = value;
                 }
-                value = Config.YOUTUBEDL_DEBUG_PROCESS;
+                value = BotConfig.YOUTUBEDL_DEBUG_PROCESS;
                 break;
             default:
                 return Emojibet.SHRUG;

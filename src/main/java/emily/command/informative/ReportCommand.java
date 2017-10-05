@@ -19,7 +19,7 @@ package emily.command.informative;
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -80,12 +80,12 @@ public class ReportCommand extends AbstractCommand {
         if (body.length() < 20 || title.length() < 3) {
             return Template.get("command_report_message_too_short");
         }
-        bot.out.sendPrivateMessage(channel.getJDA().getUserById(Config.CREATOR_ID), "new :e_mail: Report coming in!" + Config.EOL + Config.EOL +
-                ":bust_in_silhouette: user:  " + author.getName() + " ( " + author.getAsMention() + " )" + Config.EOL +
-                "Title: " + Config.EOL + title + Config.EOL + Config.EOL +
-                "Message: " + Config.EOL + body
+        bot.out.sendPrivateMessage(channel.getJDA().getUserById(BotConfig.CREATOR_ID), "new :e_mail: Report coming in!" + BotConfig.EOL + BotConfig.EOL +
+                ":bust_in_silhouette: user:  " + author.getName() + " ( " + author.getAsMention() + " )" + BotConfig.EOL +
+                "Title: " + BotConfig.EOL + title + BotConfig.EOL + BotConfig.EOL +
+                "Message: " + BotConfig.EOL + body
         );
-        return Template.get("command_report_success") + Config.EOL + Config.EOL +
+        return Template.get("command_report_success") + BotConfig.EOL + BotConfig.EOL +
                 "Note: This is 1-way communication, if you'd like give feedback or need assistance feel free to join my **!discord**";
     }
 }

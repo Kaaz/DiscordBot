@@ -24,19 +24,13 @@ import emily.db.controllers.CUser;
 import emily.db.model.OGuild;
 import emily.db.model.OGuildMember;
 import emily.db.model.OUser;
-import emily.guildsettings.bot.SettingCleanupMessages;
-import emily.guildsettings.bot.SettingCommandPrefix;
-import emily.guildsettings.bot.SettingPMUserEvents;
-import emily.guildsettings.bot.SettingRoleTimeRanks;
-import emily.guildsettings.bot.SettingWelcomeNewUsers;
-import emily.guildsettings.music.SettingMusicAutoVoiceChannel;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.GuildCheckResult;
 import emily.main.Launcher;
-import emily.permission.SimpleRank;
 import emily.role.RoleRankings;
 import emily.templates.Template;
 import emily.templates.Templates;
@@ -117,21 +111,21 @@ public class JDAEvents extends ListenerAdapter {
             return;
         }
         discordBot.loadGuild(guild);
-        String cmdPre = GuildSettings.get(guild).getOrDefault(SettingCommandPrefix.class);
+        String cmdPre = GuildSettings.get(guild).getOrDefault(GSetting.COMMAND_PREFIX);
         GuildCheckResult guildCheck = discordBot.security.checkGuild(guild);
         if (dbGuild.active != 1) {
-            String message = "Thanks for adding me to your guild!" + Config.EOL +
-                    "To see what I can do you can type the command `" + cmdPre + "help`." + Config.EOL +
-                    "Most of my features are opt-in, which means that you'll have to enable them first. Admins can use `" + cmdPre + "config` to change my settings." + Config.EOL +
-                    "Most commands has a help portion which can be accessed by typing help after the command; For instance: `" + cmdPre + "skip help` " + Config.EOL + Config.EOL +
+            String message = "Thanks for adding me to your guild!" + BotConfig.EOL +
+                    "To see what I can do you can type the command `" + cmdPre + "help`." + BotConfig.EOL +
+                    "Most of my features are opt-in, which means that you'll have to enable them first. Admins can use `" + cmdPre + "config` to change my settings." + BotConfig.EOL +
+                    "Most commands has a help portion which can be accessed by typing help after the command; For instance: `" + cmdPre + "skip help` " + BotConfig.EOL + BotConfig.EOL +
                     "If you need help or would like to give feedback, feel free to let me know on either `" + cmdPre + "discord` or `" + cmdPre + "github`";
             switch (guildCheck) {
                 case TEST_GUILD:
-                    message += Config.EOL + Config.EOL + " :warning: The guild has been categorized as a test guild. This means that I might leave this guild when the next cleanup happens." + Config.EOL +
+                    message += BotConfig.EOL + BotConfig.EOL + " :warning: The guild has been categorized as a test guild. This means that I might leave this guild when the next cleanup happens." + BotConfig.EOL +
                             "If this is not a test guild feel free to join my `" + cmdPre + "discord` and ask to have your guild added to the whitelist!";
                     break;
                 case BOT_GUILD:
-                    message += Config.EOL + Config.EOL + ":warning: :robot: Too many bots here, I'm leaving! " + Config.EOL +
+                    message += BotConfig.EOL + BotConfig.EOL + ":warning: :robot: Too many bots here, I'm leaving! " + BotConfig.EOL +
                             "If your guild is not a collection of bots and you actually plan on using me join my `" + cmdPre + "discord` and ask to have your guild added to the whitelist!";
                     break;
                 case SMALL:
@@ -276,21 +270,21 @@ public class JDAEvents extends ListenerAdapter {
         guildMember.joinDate = new Timestamp(System.currentTimeMillis());
         CGuildMember.insertOrUpdate(guildMember);
 
-        if ("true".equals(settings.getOrDefault(SettingPMUserEvents.class))) {
+        if ("true".equals(settings.getOrDefault(GSetting.PM_USER_EVENTS))) {
             discordBot.out.sendPrivateMessage(guild.getOwner().getUser(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()),
                     null
             );
         }
         discordBot.logGuildEvent(guild, "\uD83D\uDC64", "**" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator() + "** joined the guild");
-        if ("true".equals(settings.getOrDefault(SettingWelcomeNewUsers.class))) {
+        if ("true".equals(settings.getOrDefault(GSetting.WELCOME_NEW_USERS))) {
             TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
             if (defaultChannel != null && defaultChannel.canTalk() && !discordBot.security.isBotAdmin(user.getIdLong())) {
                 Template template = firstTime ? Templates.welcome_new_user : Templates.welcome_back_user;
                 discordBot.queue.add(defaultChannel.sendMessage(
                         template.formatGuild(guild.getId(), guild, user)),
                         message -> {
-                            if (!"no".equals(settings.getOrDefault(SettingCleanupMessages.class))) {
-                                discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
+                            if (!"no".equals(settings.getOrDefault(GSetting.CLEANUP_MESSAGES))) {
+                                discordBot.schedule(() -> discordBot.out.saveDelete(message), BotConfig.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
                             }
                         });
             } else if (defaultChannel != null && defaultChannel.canTalk() && discordBot.security.isBotAdmin(user.getIdLong())) {
@@ -298,8 +292,8 @@ public class JDAEvents extends ListenerAdapter {
                 discordBot.queue.add(defaultChannel.sendMessage(
                         template.formatGuild(guild.getId(), guild, user)),
                         message -> {
-                            if (!"no".equals(settings.getOrDefault(SettingCleanupMessages.class))) {
-                                discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
+                            if (!"no".equals(settings.getOrDefault(GSetting.CLEANUP_MESSAGES))) {
+                                discordBot.schedule(() -> discordBot.out.saveDelete(message), BotConfig.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
                             }
                         });
 
@@ -311,7 +305,7 @@ public class JDAEvents extends ListenerAdapter {
                 "user-id", user.getId(),
                 "user-name", user.getName());
 
-        if ("true".equals(settings.getOrDefault(SettingRoleTimeRanks.class)) && !user.isBot()) {
+        if ("true".equals(settings.getOrDefault(GSetting.USER_TIME_RANKS)) && !user.isBot()) {
             RoleRankings.assignUserRole(discordBot, guild, user);
         }
     }
@@ -323,17 +317,17 @@ public class JDAEvents extends ListenerAdapter {
             return;
         }
         Guild guild = event.getGuild();
-        if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingPMUserEvents.class))) {
+        if ("true".equals(GuildSettings.get(guild).getOrDefault(GSetting.PM_USER_EVENTS))) {
             discordBot.out.sendPrivateMessage(guild.getOwner().getUser(), String.format("[user-event] **%s#%s** left the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()));
         }
-        if ("true".equals(GuildSettings.get(guild).getOrDefault(SettingWelcomeNewUsers.class))) {
+        if ("true".equals(GuildSettings.get(guild).getOrDefault(GSetting.WELCOME_NEW_USERS))) {
             TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
             if (defaultChannel != null && defaultChannel.canTalk()) {
                 discordBot.queue.add(defaultChannel.sendMessage(
                         Templates.message_user_leaves.formatGuild(guild.getId(), user, guild)),
                         message -> {
-                            if (!"no".equals(GuildSettings.get(guild.getId()).getOrDefault(SettingCleanupMessages.class))) {
-                                discordBot.schedule(() -> discordBot.out.saveDelete(message), Config.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
+                            if (!"no".equals(GuildSettings.get(guild.getId()).getOrDefault(GSetting.CLEANUP_MESSAGES))) {
+                                discordBot.schedule(() -> discordBot.out.saveDelete(message), BotConfig.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
                             }
                         });
             }
@@ -362,7 +356,7 @@ public class JDAEvents extends ListenerAdapter {
         if (player.isConnected()) {
             return;
         }
-        String autoChannel = GuildSettings.get(event.getGuild()).getOrDefault(SettingMusicAutoVoiceChannel.class);
+        String autoChannel = GuildSettings.get(event.getGuild()).getOrDefault(GSetting.MUSIC_CHANNEL_AUTO);
         if ("false".equalsIgnoreCase(autoChannel)) {
             return;
         }
@@ -408,7 +402,7 @@ public class JDAEvents extends ListenerAdapter {
             }
         }
         player.leave();
-        String autoChannel = GuildSettings.get(guild).getOrDefault(SettingMusicAutoVoiceChannel.class);
+        String autoChannel = GuildSettings.get(guild).getOrDefault(GSetting.MUSIC_CHANNEL_AUTO);
         if (!"false".equalsIgnoreCase(autoChannel) && channel.getName().equalsIgnoreCase(autoChannel)) {
             return;
         }

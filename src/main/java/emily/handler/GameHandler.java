@@ -19,8 +19,8 @@ package emily.handler;
 import emily.games.AbstractGame;
 import emily.games.GameState;
 import emily.games.GameTurn;
-import emily.guildsettings.bot.SettingGameModule;
-import emily.main.Config;
+import emily.guildsettings.GSetting;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -139,7 +139,7 @@ public class GameHandler {
     }
 
     public boolean isGameInput(TextChannel channel, User player, String message) {
-        if (GuildSettings.getFor(channel, SettingGameModule.class).equals("true")) {
+        if (GuildSettings.getFor(channel, GSetting.MODULE_GAMES).equals("true")) {
             if (isInPlayMode(player, channel) || message.startsWith(DisUtil.getCommandPrefix(channel) + COMMAND_NAME)) {
                 return true;
             }
@@ -172,7 +172,7 @@ public class GameHandler {
         String[] args = message.split(" ");
         String gameMessage = executeGameMove(args, player, channel);
         if (isInPlayMode(player, channel)) {
-            gameMessage = "*note: " + Template.get("playmode_in_mode_warning") + "*" + Config.EOL + gameMessage;
+            gameMessage = "*note: " + Template.get("playmode_in_mode_warning") + "*" + BotConfig.EOL + gameMessage;
         } else if ("".equals(message) || "help".equals(message)) {
             gameMessage = showList(channel);
         }
@@ -235,13 +235,13 @@ public class GameHandler {
                 }
                 gameInstance.addPlayer(player);
                 if (gameInstance.waitingForPlayer()) {
-                    return Template.get("playmode_created_waiting_for_player") + Config.EOL + gameInstance.toString();
+                    return Template.get("playmode_created_waiting_for_player") + BotConfig.EOL + gameInstance.toString();
                 }
                 return gameInstance.toString();
             }
             return Template.get("playmode_invalid_gamecode");
         }
-        return Template.get("playmode_already_in_game") + Config.EOL + getGame(player.getId());
+        return Template.get("playmode_already_in_game") + BotConfig.EOL + getGame(player.getId());
     }
 
     private String cancelGame(User player) {
@@ -270,7 +270,7 @@ public class GameHandler {
                 otherGame.addPlayer(player);
                 otherGame.setLastPrefix(DisUtil.getCommandPrefix(channel));
                 joinGame(player.getId(), targetUser.getId());
-                return Template.get("playmode_joined_target") + Config.EOL + otherGame.toString();
+                return Template.get("playmode_joined_target") + BotConfig.EOL + otherGame.toString();
             }
             return Template.get("playmode_target_already_in_a_game");
         }
@@ -296,11 +296,11 @@ public class GameHandler {
 
     private String showList(TextChannel channel) {
         String prefix = DisUtil.getCommandPrefix(channel);
-        return "A list of all available games" + Config.EOL +
-                getFormattedGameList() + Config.EOL +
-                "To start a game you can type `" + prefix + COMMAND_NAME + " <@user> <gamecode>`" + Config.EOL + Config.EOL +
-                "To stop a game type `" + prefix + COMMAND_NAME + " cancel`" + Config.EOL + Config.EOL +
-                "You can enter *gamemode* by typing `" + prefix + COMMAND_NAME + " enter` " + Config.EOL +
+        return "A list of all available games" + BotConfig.EOL +
+                getFormattedGameList() + BotConfig.EOL +
+                "To start a game you can type `" + prefix + COMMAND_NAME + " <@user> <gamecode>`" + BotConfig.EOL + BotConfig.EOL +
+                "To stop a game type `" + prefix + COMMAND_NAME + " cancel`" + BotConfig.EOL + BotConfig.EOL +
+                "You can enter *gamemode* by typing `" + prefix + COMMAND_NAME + " enter` " + BotConfig.EOL +
                 "This makes it so that you don't have to prefix your messages with `" + prefix + COMMAND_NAME + "`";
     }
 
@@ -338,7 +338,7 @@ public class GameHandler {
                 return Template.get("playmode_waiting_for_player");
             }
             if (!game.isTurnOf(player)) {
-                return game.toString() + Config.EOL + Template.get("playmode_not_your_turn");
+                return game.toString() + BotConfig.EOL + Template.get("playmode_not_your_turn");
             }
             GameTurn gameTurnInstance = game.getGameTurnInstance();
             if (gameTurnInstance == null) {
@@ -352,7 +352,7 @@ public class GameHandler {
                     }
                     usersInPlayMode.get(player.getId()).failedAttempts++;
                 }
-                return game.toString() + Config.EOL + ":exclamation: " + gameTurnInstance.getInputErrorMessage();
+                return game.toString() + BotConfig.EOL + ":exclamation: " + gameTurnInstance.getInputErrorMessage();
             } else {
                 if (isInPlayMode(player, channel)) {
                     usersInPlayMode.get(player.getId()).failedAttempts = 0;
@@ -360,7 +360,7 @@ public class GameHandler {
             }
             gameTurnInstance.setCommandPrefix(DisUtil.getCommandPrefix(channel));
             if (!game.isValidMove(player, gameTurnInstance)) {
-                return game.toString() + Config.EOL + Template.get("playmode_not_a_valid_move");
+                return game.toString() + BotConfig.EOL + Template.get("playmode_not_a_valid_move");
             }
             game.playTurn(player, gameTurnInstance);
             String gamestr = game.toString();

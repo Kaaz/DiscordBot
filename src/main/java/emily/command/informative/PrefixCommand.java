@@ -16,12 +16,11 @@
 
 package emily.command.informative;
 
-import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import emily.core.AbstractCommand;
-import emily.guildsettings.bot.SettingCommandPrefix;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -63,12 +62,12 @@ public class PrefixCommand extends AbstractCommand {
         if (args.length > 0 && rank.isAtLeast(SimpleRank.GUILD_ADMIN) && channel instanceof TextChannel) {
             TextChannel text = (TextChannel) channel;
             GuildSettings guildSettings = GuildSettings.get(text.getGuild());
-            if (guildSettings.set(text.getGuild(), SettingCommandPrefix.class, args[0])) {
+            if (guildSettings.set(text.getGuild(), GSetting.COMMAND_PREFIX, args[0])) {
                 return Template.get(channel, "command_prefix_saved", args[0]);
             }
             return Template.get(channel, "command_prefix_invalid",
                     args[0],
-                    "```" + Config.EOL + Joiner.on(Config.EOL).join(guildSettings.getDescription(SettingCommandPrefix.class)) + Config.EOL + "```");
+                    "```" + BotConfig.EOL + GSetting.COMMAND_PREFIX.getDescription() + BotConfig.EOL + "```");
         }
         return Template.get(channel, "command_prefix_is", DisUtil.getCommandPrefix(channel));
     }

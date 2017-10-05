@@ -18,7 +18,7 @@ package emily.command.music;
 
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
-import emily.guildsettings.music.SettingMusicRole;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
 import emily.handler.Template;
@@ -71,7 +71,7 @@ public class PauseCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Template.get(channel, "music_required_role_not_found", guild.getRoleById(GuildSettings.getFor(channel, SettingMusicRole.class)).getName());
+            return Template.get(channel, "music_required_role_not_found", guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)).getName());
         }
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         if (!player.canTogglePause()) {

@@ -41,8 +41,8 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.security.auth.login.LoginException;
 import java.util.List;
@@ -59,7 +59,7 @@ import java.util.function.Consumer;
  * Shared information between bots
  */
 public class BotContainer {
-    public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
+    public static final Logger LOGGER = LogManager.getLogger(DiscordBot.class);
     private final int numShards;
     private final DiscordBot[] shards;
     private final YoutubeThread youtubeThread;
@@ -135,7 +135,7 @@ public class BotContainer {
             MusicPlayerHandler.removeGuild(guild, true);
         }
         System.out.println("shutting down shard " + shardId);
-        shards[shardId].getJda().shutdown(false);
+        shards[shardId].getJda().shutdown();
         System.out.println("SHUT DOWN SHARD " + shardId);
         schedule(() -> {
             while (true) {
@@ -228,64 +228,64 @@ public class BotContainer {
      */
 
     public void reportError(Throwable error, Object... details) {
-        String errorMessage = "I've encountered a **" + error.getClass().getName() + "**" + Config.EOL;
+        String errorMessage = "I've encountered a **" + error.getClass().getName() + "**" + BotConfig.EOL;
         if (error.getMessage() != null) {
-            errorMessage += "Message: " + Config.EOL;
-            errorMessage += error.getMessage() + Config.EOL + Config.EOL;
+            errorMessage += "Message: " + BotConfig.EOL;
+            errorMessage += error.getMessage() + BotConfig.EOL + BotConfig.EOL;
         }
         String stack = "";
         int maxTrace = 10;
         StackTraceElement[] stackTrace1 = error.getStackTrace();
         for (int i = 0; i < stackTrace1.length; i++) {
             StackTraceElement stackTrace = stackTrace1[i];
-            stack += stackTrace.toString() + Config.EOL;
+            stack += stackTrace.toString() + BotConfig.EOL;
             if (i > maxTrace) {
                 break;
             }
         }
         if (details.length > 0) {
-            errorMessage += "Extra information: " + Config.EOL;
+            errorMessage += "Extra information: " + BotConfig.EOL;
             for (int i = 1; i < details.length; i += 2) {
                 if (details[i] != null) {
-                    errorMessage += details[i - 1] + " = " + details[i] + Config.EOL;
+                    errorMessage += details[i - 1] + " = " + details[i] + BotConfig.EOL;
                 } else if (details[i - 1] != null) {
                     errorMessage += details[i - 1];
                 }
             }
-            errorMessage += Config.EOL + Config.EOL;
+            errorMessage += BotConfig.EOL + BotConfig.EOL;
         }
-        errorMessage += "Accompanied stacktrace: " + Config.EOL + Misc.makeTable(stack) + Config.EOL;
+        errorMessage += "Accompanied stacktrace: " + BotConfig.EOL + Misc.makeTable(stack) + BotConfig.EOL;
         reportError(errorMessage);
     }
 
     public void reportError(String message) {
-        DiscordBot shard = getShardFor(Config.BOT_GUILD_ID);
-        Guild guild = shard.getJda().getGuildById(Config.BOT_GUILD_ID);
+        DiscordBot shard = getShardFor(BotConfig.BOT_GUILD_ID);
+        Guild guild = shard.getJda().getGuildById(BotConfig.BOT_GUILD_ID);
         if (guild == null) {
-            LOGGER.warn("Can't find BOT_GUILD_ID " + Config.BOT_GUILD_ID);
+            LOGGER.warn("Can't find BOT_GUILD_ID " + BotConfig.BOT_GUILD_ID);
             return;
         }
-        TextChannel channel = guild.getTextChannelById(Config.BOT_ERROR_CHANNEL_ID);
+        TextChannel channel = guild.getTextChannelById(BotConfig.BOT_ERROR_CHANNEL_ID);
         if (channel == null) {
-            LOGGER.warn("Can't find BOT_ERROR_CHANNEL_ID " + Config.BOT_ERROR_CHANNEL_ID);
+            LOGGER.warn("Can't find BOT_ERROR_CHANNEL_ID " + BotConfig.BOT_ERROR_CHANNEL_ID);
             return;
         }
-        shard.queue.add(channel.sendMessage(message.length() > Config.MAX_MESSAGE_SIZE ? message.substring(0, Config.MAX_MESSAGE_SIZE - 1) : message));
+        shard.queue.add(channel.sendMessage(message.length() > BotConfig.MAX_MESSAGE_SIZE ? message.substring(0, BotConfig.MAX_MESSAGE_SIZE - 1) : message));
     }
 
     public void reportStatus(int shardId, JDA.Status oldStatus, JDA.Status status) {
-        DiscordBot shard = getShardFor(Config.BOT_GUILD_ID);
+        DiscordBot shard = getShardFor(BotConfig.BOT_GUILD_ID);
         if (shard == null || shard.getJda() == null) {
             return;
         }
-        Guild guild = shard.getJda().getGuildById(Config.BOT_GUILD_ID);
+        Guild guild = shard.getJda().getGuildById(BotConfig.BOT_GUILD_ID);
         if (guild == null) {
-            LOGGER.warn("Can't find BOT_GUILD_ID " + Config.BOT_GUILD_ID);
+            LOGGER.warn("Can't find BOT_GUILD_ID " + BotConfig.BOT_GUILD_ID);
             return;
         }
-        TextChannel channel = guild.getTextChannelById(Config.BOT_STATUS_CHANNEL_ID);
+        TextChannel channel = guild.getTextChannelById(BotConfig.BOT_STATUS_CHANNEL_ID);
         if (channel == null) {
-            LOGGER.warn("Can't find BOT_STATUS_CHANNEL_ID " + Config.BOT_STATUS_CHANNEL_ID);
+            LOGGER.warn("Can't find BOT_STATUS_CHANNEL_ID " + BotConfig.BOT_STATUS_CHANNEL_ID);
             return;
         }
         if (channel.getJDA().getStatus() == JDA.Status.CONNECTED) {
@@ -300,7 +300,7 @@ public class BotContainer {
      * sends stats to discordlist.net
      */
     public void sendStatsToDiscordlistNet() {
-        if (!Config.BOT_STATS_DISCORDLIST_NET || !allShardsReady()) {
+        if (!BotConfig.BOT_STATS_DISCORDLIST_NET || !allShardsReady()) {
             return;
         }
         int totGuilds = 0;
@@ -308,7 +308,7 @@ public class BotContainer {
             totGuilds += shard.getJda().getGuilds().size();
         }
         Unirest.post("https://bots.discordlist.net/api.php")
-                .field("token", Config.BOT_STATS_DISCORDLIST_NET_TOKEN)
+                .field("token", BotConfig.BOT_STATS_DISCORDLIST_NET_TOKEN)
                 .field("servers", totGuilds)
                 .asStringAsync();
     }
@@ -332,7 +332,7 @@ public class BotContainer {
     public int getRecommendedShards() {
         try {
             HttpResponse<JsonNode> request = Unirest.get("https://discordapp.com/api/gateway/bot")
-                    .header("Authorization", "Bot " + Config.BOT_TOKEN)
+                    .header("Authorization", "Bot " + BotConfig.BOT_TOKEN)
                     .header("Content-Type", "application/json")
                     .asJson();
             return Integer.parseInt(request.getBody().getObject().get("shards").toString());

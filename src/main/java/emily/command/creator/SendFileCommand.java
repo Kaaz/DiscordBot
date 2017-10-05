@@ -72,7 +72,7 @@ public class SendFileCommand extends AbstractCommand {
         if (f.exists()) {
             try {
                 bot.queue.add(channel.sendFile(f, null));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return "can't for some reason; " + e.getMessage();
             }

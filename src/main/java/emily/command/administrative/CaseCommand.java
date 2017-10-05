@@ -22,7 +22,7 @@ import emily.db.controllers.CGuild;
 import emily.db.controllers.CModerationCase;
 import emily.db.controllers.CUser;
 import emily.db.model.OModerationCase;
-import emily.guildsettings.moderation.SettingModlogChannel;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.Template;
 import emily.main.DiscordBot;
@@ -99,7 +99,7 @@ public class CaseCommand extends AbstractCommand {
         }
         oCase.reason = reason;
         CModerationCase.update(oCase);
-        TextChannel channel = guild.getTextChannelById(GuildSettings.get(guild).getOrDefault(SettingModlogChannel.class));
+        TextChannel channel = guild.getTextChannelById(GuildSettings.get(guild).getOrDefault(GSetting.BOT_CHANNEL));
         if (channel == null) {
             return Template.get("guild_channel_modlog_not_found");
         }

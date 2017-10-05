@@ -26,7 +26,7 @@ import emily.db.model.OUser;
 import emily.db.model.OUserRank;
 import emily.handler.SecurityHandler;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -93,11 +93,11 @@ public class UserRankCommand extends AbstractCommand {
             return Template.get("command_invalid_use");
         }
         if (args[0].equals("permlist")) {
-            return "Available permissions: " + Config.EOL +
+            return "Available permissions: " + BotConfig.EOL +
                     tableFor(Arrays.asList(OUser.PermissionNode.values()));
         }
         if (args[0].equals("ranks")) {
-            return "Available permissions: " + Config.EOL +
+            return "Available permissions: " + BotConfig.EOL +
                     tableFor(SimpleRank.values());
         }
         User user;
@@ -133,7 +133,7 @@ public class UserRankCommand extends AbstractCommand {
                 if (dbUser.getPermission().isEmpty()) {
                     return "No permissions set for " + user.getName();
                 }
-                return "Permissions for " + user.getName() + Config.EOL +
+                return "Permissions for " + user.getName() + BotConfig.EOL +
                         tableFor(dbUser.getPermission());
             }
             boolean adding = true;

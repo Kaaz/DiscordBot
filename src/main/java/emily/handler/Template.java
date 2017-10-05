@@ -21,7 +21,7 @@ import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import emily.db.WebDb;
 import emily.db.controllers.CBotEvent;
 import emily.db.controllers.CGuild;
-import emily.main.Config;
+import emily.main.BotConfig;
 import net.dv8tion.jda.core.entities.MessageChannel;
 
 import java.sql.ResultSet;
@@ -67,7 +67,7 @@ public class Template {
     }
 
     public static String get(int guildId, String keyPhrase) {
-        if (!Config.SHOW_KEYPHRASE) {
+        if (!BotConfig.SHOW_KEYPHRASE) {
             if (guildId > 0 && guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyPhrase)) {
                 List<String> list = guildDictionary.get(guildId).get(keyPhrase);
                 return list.get(rnd.nextInt(list.size()));
@@ -96,7 +96,7 @@ public class Template {
     }
 
     public static String get(int guildId, String keyPhrase, Object... parameters) {
-        if (!Config.SHOW_KEYPHRASE) {
+        if (!BotConfig.SHOW_KEYPHRASE) {
             return String.format(get(guildId, keyPhrase), parameters);
         }
         return "`" + keyPhrase + "` params: `" + Joiner.on("`, `").join(parameters) + "`";

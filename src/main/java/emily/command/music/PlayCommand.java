@@ -26,13 +26,12 @@ import emily.db.controllers.CMusic;
 import emily.db.controllers.CPlaylist;
 import emily.db.model.OMusic;
 import emily.db.model.OPlaylist;
-import emily.guildsettings.music.SettingMusicResultPicker;
-import emily.guildsettings.music.SettingMusicRole;
+import emily.guildsettings.GSetting;
 import emily.handler.CommandHandler;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.Misc;
@@ -73,7 +72,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
     public void cleanup() {
         ytSearch.resetCache();
         if (!ytSearch.hasValidKey()) {
-            for (String key : Config.GOOGLE_API_KEY) {
+            for (String key : BotConfig.GOOGLE_API_KEY) {
                 ytSearch.addYoutubeKey(key);
             }
         }
@@ -128,7 +127,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         GuildSettings guildSettings = GuildSettings.get(guild);
         if (!guildSettings.canUseMusicCommands(author, userRank)) {
-            Role role = guild.getRoleById(GuildSettings.getFor(channel, SettingMusicRole.class));
+            Role role = guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT));
             return Template.get(channel, "music_required_role_not_found", role == null ? "UNKNOWN" : role.getName());
         }
 
@@ -172,22 +171,22 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                     return Template.get("music_no_valid_youtube_key", YTUtil.nextApiResetTime());
                 }
                 if (userRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-                List<YTSearch.SimpleResult> items = ytSearch.getPlayListItems(playlistCode);
-                int playCount = 0;
-                for (YTSearch.SimpleResult track : items) {
-                    processTrack(player, bot, (TextChannel) channel, author, track.getCode(), track.getTitle(), false);
-                    if (++playCount == Config.MUSIC_MAX_PLAYLIST_SIZE) {
-                        break;
+                    List<YTSearch.SimpleResult> items = ytSearch.getPlayListItems(playlistCode);
+                    int playCount = 0;
+                    for (YTSearch.SimpleResult track : items) {
+                        processTrack(player, bot, (TextChannel) channel, author, track.getCode(), track.getTitle(), false);
+                        if (++playCount == BotConfig.MUSIC_MAX_PLAYLIST_SIZE) {
+                            break;
+                        }
                     }
-                }
-                return String.format("Added **%s** items to the queue", playCount);
+                    return String.format("Added **%s** items to the queue", playCount);
                 }
             }
             if (!YTUtil.isValidYoutubeCode(videoCode)) {
                 if (!ytSearch.hasValidKey()) {
                     return Template.get("music_no_valid_youtube_key", YTUtil.nextApiResetTime());
                 }
-                int maxResultCount = Integer.parseInt(guildSettings.getOrDefault(SettingMusicResultPicker.class));
+                int maxResultCount = Integer.parseInt(guildSettings.getOrDefault(GSetting.MUSIC_RESULT_PICKER));
                 String searchCriteria = Joiner.on(" ").join(args);
                 if (maxResultCount > 1 && PermissionUtil.checkPermission(txt, guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION)) {
                     List<YTSearch.SimpleResult> results = ytSearch.getResults(searchCriteria, maxResultCount);

@@ -20,11 +20,10 @@ import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import emily.db.controllers.CGuild;
 import emily.db.model.OGuild;
 import emily.guildsettings.DefaultGuildSettings;
-import emily.guildsettings.bot.SettingCommandPrefix;
-import emily.guildsettings.bot.SettingUseEconomy;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
+import emily.main.BotConfig;
 import emily.main.BotContainer;
-import emily.main.Config;
 import emily.main.Launcher;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.OnlineStatus;
@@ -195,7 +194,7 @@ public class DisUtil {
      */
     public static boolean useEconomy(Channel channel) {
         return channel != null && channel instanceof TextChannel
-                && GuildSettings.getFor(((TextChannel) channel), SettingUseEconomy.class).equals("true");
+                && GuildSettings.getFor(((TextChannel) channel), GSetting.MODULE_ECONOMY).equals("true");
     }
 
     /**
@@ -367,7 +366,7 @@ public class DisUtil {
         if (channel instanceof TextChannel) {
             return getCommandPrefix(((TextChannel) channel).getGuild());
         }
-        return DefaultGuildSettings.getDefault(SettingCommandPrefix.class);
+        return DefaultGuildSettings.getDefault(GSetting.COMMAND_PREFIX);
     }
 
     public static String getCommandPrefix(Guild guild) {
@@ -376,9 +375,9 @@ public class DisUtil {
 
     public static String getCommandPrefix(String guildId) {
         if (guildId != null) {
-            return GuildSettings.get(guildId).getOrDefault(SettingCommandPrefix.class);
+            return GuildSettings.get(guildId).getOrDefault(GSetting.COMMAND_PREFIX);
         }
-        return Config.BOT_COMMAND_PREFIX;
+        return BotConfig.BOT_COMMAND_PREFIX;
     }
 
     /**
@@ -401,7 +400,7 @@ public class DisUtil {
      * @return permission found
      */
     public static boolean hasPermission(User user, Guild guild, Permission permission) {
-        return PermissionUtil.checkPermission(guild, guild.getMember(user), permission);
+        return PermissionUtil.checkPermission(guild.getMember(user), permission);
     }
 
     /**

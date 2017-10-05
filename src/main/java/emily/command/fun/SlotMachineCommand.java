@@ -24,7 +24,7 @@ import emily.db.model.OBank;
 import emily.games.SlotMachine;
 import emily.games.slotmachine.Slot;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -92,7 +92,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
             if (betAmount > 0) {
                 OBank bank = CBanks.findBy(author.getId());
                 if (bank.currentBalance < betAmount) {
-                    return Template.get("gamble_insufficient_funds", betAmount, Config.ECONOMY_CURRENCY_ICON);
+                    return Template.get("gamble_insufficient_funds", betAmount, BotConfig.ECONOMY_CURRENCY_ICON);
                 }
                 bank.transferTo(CBanks.getBotAccount(), betAmount, "slot machine");
             }
@@ -109,7 +109,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
                             int winMulti = slotMachine.getWinMultiplier();
                             if (winMulti > 0) {
                                 if (betAmount > 0) {
-                                    gameResult = Template.get("gamble_slot_win", slotMachine.getWinSlotTimes(), slotMachine.getWinSlot().getEmote(), betAmount * winMulti, Config.ECONOMY_CURRENCY_ICON);
+                                    gameResult = Template.get("gamble_slot_win", slotMachine.getWinSlotTimes(), slotMachine.getWinSlot().getEmote(), betAmount * winMulti, BotConfig.ECONOMY_CURRENCY_ICON);
                                     CBanks.getBotAccount().transferTo(CBanks.findBy(author.getId()), betAmount * winMulti, "slot winnings!");
                                 } else {
                                     gameResult = "You rolled " + slotMachine.getWinSlotTimes() + " **" + slotMachine.getWinSlot().getEmote() + "** and won **nothing**";
@@ -117,7 +117,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
                             } else {
                                 gameResult = Template.get("gamble_ai_lose");
                             }
-                            bot.queue.add(message.editMessage(slotMachine.toString() + Config.EOL + gameResult));
+                            bot.queue.add(message.editMessage(slotMachine.toString() + BotConfig.EOL + gameResult));
                             f[0].cancel(false);
                         } else {
                             bot.queue.add(message.editMessage(slotMachine.toString()));
@@ -129,10 +129,10 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
                 }, 1000L, SPIN_INTERVAL);
             });
         } else {
-            String ret = "The slotmachine!" + Config.EOL;
-            ret += "payout is as follows: " + Config.EOL;
+            String ret = "The slotmachine!" + BotConfig.EOL;
+            ret += "payout is as follows: " + BotConfig.EOL;
             for (Slot s : Slot.values()) {
-                ret += String.format("%1$s %1$s %1$s = %2$s" + Config.EOL, s.getEmote(), s.getTriplePayout());
+                ret += String.format("%1$s %1$s %1$s = %2$s" + BotConfig.EOL, s.getEmote(), s.getTriplePayout());
             }
             ret += "type **slot play** to give it a shot!";
             return ret;

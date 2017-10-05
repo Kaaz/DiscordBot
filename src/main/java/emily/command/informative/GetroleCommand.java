@@ -22,7 +22,7 @@ import emily.db.controllers.CGuild;
 import emily.db.controllers.CGuildRoleAssignable;
 import emily.db.model.OGuildRoleAssignable;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.DisUtil;
 import emily.util.Misc;
@@ -79,7 +79,7 @@ public class GetroleCommand extends AbstractCommand {
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
         Guild guild = ((TextChannel) channel).getGuild();
-        if (!PermissionUtil.checkPermission(guild, guild.getSelfMember(), Permission.MANAGE_ROLES)) {
+        if (!PermissionUtil.checkPermission(guild.getSelfMember(), Permission.MANAGE_ROLES)) {
             return Template.get("permission_missing_manage_roles");
         }
         if (args.length == 0 || args[0].equalsIgnoreCase("list")) {
@@ -87,13 +87,13 @@ public class GetroleCommand extends AbstractCommand {
             if (roles.isEmpty()) {
                 return Template.get("command_getrole_empty");
             }
-            String ret = "You can request the following roles:" + Config.EOL + Config.EOL;
+            String ret = "You can request the following roles:" + BotConfig.EOL + BotConfig.EOL;
             for (OGuildRoleAssignable role : roles) {
-                ret += "`" + role.roleName + "`" + Config.EOL;
+                ret += "`" + role.roleName + "`" + BotConfig.EOL;
                 if (!role.description.isEmpty()) {
-                    ret += " -> " + role.description + Config.EOL;
+                    ret += " -> " + role.description + BotConfig.EOL;
                 }
-                ret += Config.EOL;
+                ret += BotConfig.EOL;
             }
             return ret;
         }

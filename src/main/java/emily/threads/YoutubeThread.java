@@ -23,7 +23,7 @@ import emily.db.model.OBotEvent;
 import emily.db.model.OMusic;
 import emily.handler.Template;
 import emily.main.BotContainer;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.Launcher;
 import emily.util.YTUtil;
 import net.dv8tion.jda.core.Permission;
@@ -71,10 +71,10 @@ public class YoutubeThread extends Thread {
      */
     private static boolean downloadFileFromYoutube(String videocode) {
         List<String> infoArgs = new LinkedList<>();
-        infoArgs.add(Config.YOUTUBEDL_EXE);
+        infoArgs.add(BotConfig.YOUTUBEDL_EXE);
         infoArgs.add("--no-check-certificate");
         infoArgs.add("-x");
-        if (Config.YOUTUBEDL_DEBUG_PROCESS) {
+        if (BotConfig.YOUTUBEDL_DEBUG_PROCESS) {
             infoArgs.add("-v");
         }
         infoArgs.add("--audio-format");
@@ -84,21 +84,21 @@ public class YoutubeThread extends Thread {
         infoArgs.add("--prefer-ffmpeg");
         infoArgs.add("--max-filesize");
         infoArgs.add("128m");
-        if (Config.MUSIC_USE_CACHE_DIR) {
+        if (BotConfig.MUSIC_USE_CACHE_DIR) {
             infoArgs.add("--exec");
-            infoArgs.add("mv {} " + Config.MUSIC_DIRECTORY);
+            infoArgs.add("mv {} " + BotConfig.MUSIC_DIRECTORY);
             infoArgs.add("--output");
-            infoArgs.add(Config.MUSIC_CACHE_DIR + videocode + ".%(ext)s");
+            infoArgs.add(BotConfig.MUSIC_CACHE_DIR + videocode + ".%(ext)s");
         } else {
             infoArgs.add("--output");
-            infoArgs.add(Config.MUSIC_DIRECTORY + videocode + ".%(ext)s");
+            infoArgs.add(BotConfig.MUSIC_DIRECTORY + videocode + ".%(ext)s");
         }
         infoArgs.add("https://www.youtube.com/watch?v=" + videocode);
         ProcessBuilder builder = new ProcessBuilder().command(infoArgs);
         builder.redirectErrorStream(true);
         try {
             Process process = builder.start();
-            if (Config.YOUTUBEDL_DEBUG_PROCESS) {
+            if (BotConfig.YOUTUBEDL_DEBUG_PROCESS) {
                 StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream());
                 StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream());
                 errorGobbler.start();

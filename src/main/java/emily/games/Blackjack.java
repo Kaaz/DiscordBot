@@ -18,7 +18,7 @@ package emily.games;
 
 import emily.games.blackjack.BlackJackHand;
 import emily.games.card.Card;
-import emily.main.Config;
+import emily.main.BotConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -108,16 +108,16 @@ public class Blackjack {
 
     @Override
     public String toString() {
-        StringBuilder game = new StringBuilder("Blackjack game: " + Config.EOL);
-        game.append(String.format("Dealers hand (%s):" + Config.EOL, getDealerValue()));
-        game.append(dealerHand.printHand()).append(Config.EOL);
-        game.append(Config.EOL);
-        game.append(String.format("%s's hand (%s):" + Config.EOL, playerMention, getPlayerValue()));
-        game.append(playerHand.printHand()).append(Config.EOL);
+        StringBuilder game = new StringBuilder("Blackjack game: " + BotConfig.EOL);
+        game.append(String.format("Dealers hand (%s):" + BotConfig.EOL, getDealerValue()));
+        game.append(dealerHand.printHand()).append(BotConfig.EOL);
+        game.append(BotConfig.EOL);
+        game.append(String.format("%s's hand (%s):" + BotConfig.EOL, playerMention, getPlayerValue()));
+        game.append(playerHand.printHand()).append(BotConfig.EOL);
         if (getPlayerValue() > 21) {
-            game.append("**Bust!** I win, better luck next time.").append(Config.EOL);
+            game.append("**Bust!** I win, better luck next time.").append(BotConfig.EOL);
         } else if (!gameInProgress) {
-            game.append(Config.EOL);
+            game.append(BotConfig.EOL);
             if (getPlayerValue() == getDealerValue()) {
                 game.append("Looks like it ended in a draw");
             } else if (getPlayerValue() > getDealerValue() || getDealerValue() > 21) {

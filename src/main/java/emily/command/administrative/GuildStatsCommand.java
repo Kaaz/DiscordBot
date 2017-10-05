@@ -19,7 +19,7 @@ package emily.command.administrative;
 import emily.core.AbstractCommand;
 import emily.handler.Template;
 import emily.main.BotContainer;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DebugUtil;
@@ -94,13 +94,13 @@ public class GuildStatsCommand extends AbstractCommand {
             return "Not fully loaded yet!";
         }
         if (args.length == 0) {
-            return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + Config.EOL +
-                    getTotalTable(bot, false) + Config.EOL + "You are on shard # " + bot.getShardId();
+            return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + BotConfig.EOL +
+                    getTotalTable(bot, false) + BotConfig.EOL + "You are on shard # " + bot.getShardId();
         }
         SimpleRank userrank = bot.security.getSimpleRank(author, channel);
         switch (args[0].toLowerCase()) {
             case "mini":
-                return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + Config.EOL +
+                return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + BotConfig.EOL +
                         getTotalTable(bot, true);
             case "music":
                 return DebugUtil.sendToHastebin(getPlayingOn(bot.getContainer(), userrank.isAtLeast(SimpleRank.BOT_ADMIN) || (args.length >= 2 && args[1].equalsIgnoreCase("guilds"))));
@@ -144,7 +144,7 @@ public class GuildStatsCommand extends AbstractCommand {
                 }
                 return "";
         }
-        return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + Config.EOL +
+        return "Statistics! " + (tracksProcessing > 0 ? "There are **" + tracksProcessing + "** tracks waiting to be processed" : "") + BotConfig.EOL +
                 getTotalTable(bot, false);
     }
 
@@ -175,7 +175,7 @@ public class GuildStatsCommand extends AbstractCommand {
         if (!showGuildnames) {
             return Template.get("command_stats_playing_music_on", activeVoice);
         }
-        return Template.get("command_stats_playing_music_on", activeVoice) + Config.EOL +
+        return Template.get("command_stats_playing_music_on", activeVoice) + BotConfig.EOL +
                 Misc.makeAsciiTable(Arrays.asList("Discord Id", "Name", "users", "in voice"),
                         body,
                         activeVoice > 1 ? Arrays.asList("TOTAL", "" + activeVoice, "" + totUsersInGuilds, "" + totUsersInVoice) : null);

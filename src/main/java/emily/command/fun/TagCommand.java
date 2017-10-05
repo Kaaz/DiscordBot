@@ -27,7 +27,7 @@ import emily.db.controllers.CTag;
 import emily.db.controllers.CUser;
 import emily.db.model.OTag;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -102,7 +102,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
             }
             int tagCount = CTag.countTagsOn(CGuild.getCachedId(guild.getId()));
             if (tagCount <= TAGS_PER_PAGE) {
-                return "The following tags exist: " + Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
+                return "The following tags exist: " + BotConfig.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
             }
             int maxPage = (int) Math.ceil((double) CTag.countTagsOn(CGuild.getCachedId(guild.getId())) / (double) TAGS_PER_PAGE);
             bot.queue.add(channel.sendMessage(makePage(guild, 1, maxPage)),
@@ -117,7 +117,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
             if (tags.isEmpty()) {
                 return Template.get("command_tag_no_tags");
             }
-            return "You have made the following tags: " + Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
+            return "You have made the following tags: " + BotConfig.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("details")) {
             OTag tag = CTag.findBy(CGuild.getCachedId(guild.getId()), args[1]);
@@ -138,7 +138,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
                 return Template.get("cant_find_user", args[1]);
             }
             List<OTag> tags = CTag.findByUser(CGuild.getCachedId(guild.getId()), CUser.getCachedId(user.getId()));
-            return user.getName() + " made the following tags: " + Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
+            return user.getName() + " made the following tags: " + BotConfig.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
         }
         if (args.length > 1 && args[0].equalsIgnoreCase("deleteuser")) {
             if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
@@ -173,7 +173,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
             String output = Misc.joinStrings(args, 1);
             output = output.trim();
             if (tag.id == 0) {
-                tag.tagname = args[0].replace(Config.EOL, "").trim();
+                tag.tagname = args[0].replace(BotConfig.EOL, "").trim();
                 tag.guildId = CGuild.getCachedId(guild.getId());
                 tag.userId = CUser.getCachedId(author.getId(), author.getName());
                 tag.created = new Timestamp(System.currentTimeMillis());
@@ -196,7 +196,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
         int offset = (activePage - 1) * TAGS_PER_PAGE;
         List<OTag> tags = CTag.getTagsFor(guild.getId(), offset, TAGS_PER_PAGE);
         return String.format("The following tags exist: [page %2d/%2d] ", activePage, maxPage) +
-                Config.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
+                BotConfig.EOL + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
     }
 
     @Override

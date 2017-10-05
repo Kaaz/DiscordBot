@@ -16,7 +16,7 @@
 
 package emily.games;
 
-import emily.main.Config;
+import emily.main.BotConfig;
 import net.dv8tion.jda.core.entities.User;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +28,7 @@ public abstract class AbstractGame<turnType extends GameTurn> {
     private User[] players;
     private volatile int activePlayerIndex = 0;
     private volatile int winnerIndex = -1;
-    private String lastPrefix = Config.BOT_COMMAND_PREFIX;
+    private String lastPrefix = BotConfig.BOT_COMMAND_PREFIX;
     private volatile long lastTurnTimestamp = System.currentTimeMillis();
 
     public boolean isListed() {

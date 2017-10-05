@@ -18,7 +18,7 @@ package emily.service;
 
 import emily.core.AbstractService;
 import emily.main.BotContainer;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 
 import java.util.concurrent.TimeUnit;
@@ -46,7 +46,7 @@ public class ConnectionCheckerService extends AbstractService {
 
     @Override
     public boolean shouldIRun() {
-        return Config.BOT_RESTART_INACTIVE_SHARDS;
+        return BotConfig.BOT_RESTART_INACTIVE_SHARDS;
     }
 
     @Override

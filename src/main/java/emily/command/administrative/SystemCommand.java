@@ -17,7 +17,7 @@
 package emily.command.administrative;
 
 import emily.core.AbstractCommand;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -62,11 +62,11 @@ public class SystemCommand extends AbstractCommand {
         long memoryLimit = runtime.maxMemory();
         long memoryInUse = runtime.totalMemory() - runtime.freeMemory();
 
-        sb.append("System information: ").append(Config.EOL);
-        sb.append("Running version: ").append(Config.EOL).append(Launcher.getVersion()).append(Config.EOL);
-        sb.append("Memory").append(Config.EOL);
+        sb.append("System information: ").append(BotConfig.EOL);
+        sb.append("Running version: ").append(BotConfig.EOL).append(Launcher.getVersion()).append(BotConfig.EOL);
+        sb.append("Memory").append(BotConfig.EOL);
         sb.append(getProgressbar(memoryInUse, memoryLimit));
-        sb.append(" [ ").append(numberInMb(memoryInUse)).append(" / ").append(numberInMb(memoryLimit)).append(" ]").append(Config.EOL);
+        sb.append(" [ ").append(numberInMb(memoryInUse)).append(" / ").append(numberInMb(memoryLimit)).append(" ]").append(BotConfig.EOL);
         return sb.toString();
     }
 

@@ -18,7 +18,7 @@ package emily.util;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import emily.main.Config;
+import emily.main.BotConfig;
 
 /**
  * Created on 8-9-2016
@@ -31,7 +31,7 @@ public class HttpHelper {
      */
     public static String doRequest(String url) {
         try {
-            return Unirest.get(url).header("User-Agent", Config.USER_AGENT).asString().getBody();
+            return Unirest.get(url).header("User-Agent", BotConfig.USER_AGENT).asString().getBody();
         } catch (UnirestException e) {
             e.printStackTrace();
         }

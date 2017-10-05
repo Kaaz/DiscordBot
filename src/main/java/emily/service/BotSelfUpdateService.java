@@ -18,11 +18,11 @@ package emily.service;
 
 import emily.core.AbstractService;
 import emily.core.ExitCode;
-import emily.guildsettings.bot.SettingBotUpdateWarning;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.Template;
+import emily.main.BotConfig;
 import emily.main.BotContainer;
-import emily.main.Config;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.main.ProgramVersion;
@@ -56,7 +56,7 @@ public class BotSelfUpdateService extends AbstractService {
 
     @Override
     public boolean shouldIRun() {
-        return Config.BOT_AUTO_UPDATE && !usersHaveBeenWarned;
+        return BotConfig.BOT_AUTO_UPDATE && !usersHaveBeenWarned;
     }
 
     @Override
@@ -96,7 +96,7 @@ public class BotSelfUpdateService extends AbstractService {
             }
             for (DiscordBot discordBot : this.bot.getShards()) {
                 for (Guild guild : discordBot.getJda().getGuilds()) {
-                    String announce = GuildSettings.get(guild).getOrDefault(SettingBotUpdateWarning.class);
+                    String announce = GuildSettings.get(guild).getOrDefault(GSetting.BOT_UPDATE_WARNING);
                     switch (announce.toLowerCase()) {
                         case "off":
                             continue;
@@ -111,7 +111,7 @@ public class BotSelfUpdateService extends AbstractService {
                                 break;
                             }
                             if (isUpdating) {
-                                extraContent += Config.EOL + Config.EOL + "You can view the changes with `" + DisUtil.getCommandPrefix(defaultChannel) + "changelog`";
+                                extraContent += BotConfig.EOL + BotConfig.EOL + "You can view the changes with `" + DisUtil.getCommandPrefix(defaultChannel) + "changelog`";
                             }
                             discordBot.out.sendAsyncMessage(defaultChannel, message + extraContent, null);
                             break;

@@ -17,7 +17,7 @@
 package emily.handler;
 
 import emily.handler.discord.RoleModifyTask;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import net.dv8tion.jda.core.Permission;
@@ -76,7 +76,7 @@ public class OutgoingContentHandler {
         RestAction<Message> messageRestAction = channel.sendMessage(content.substring(0, Math.min(1999, content.length())));
         botInstance.queue.add(messageRestAction, message -> {
             if (botInstance.shouldCleanUpMessages(channel)) {
-                botInstance.schedule(() -> saveDelete(message), Config.DELETE_MESSAGES_AFTER, TimeUnit.MILLISECONDS);
+                botInstance.schedule(() -> saveDelete(message), BotConfig.DELETE_MESSAGES_AFTER, TimeUnit.MILLISECONDS);
             }
         });
     }
@@ -106,17 +106,17 @@ public class OutgoingContentHandler {
     }
 
     /**
-     * send a message to creator {@link Config#CREATOR_ID}
-     * has to be in the {@link Config#BOT_GUILD_ID } bot's guild
+     * send a message to creator {@link BotConfig#CREATOR_ID}
+     * has to be in the {@link BotConfig#BOT_GUILD_ID } bot's guild
      *
      * @param message the message to send
      */
     public void sendMessageToCreator(String message) {
-        User user = botInstance.getJda().getUserById(Config.CREATOR_ID);
+        User user = botInstance.getJda().getUserById(BotConfig.CREATOR_ID);
         if (user != null) {
             sendPrivateMessage(user, message);
         } else {
-            sendPrivateMessage(botInstance.getContainer().getShardFor(Config.BOT_GUILD_ID).getJda().getUserById(Config.CREATOR_ID), message);
+            sendPrivateMessage(botInstance.getContainer().getShardFor(BotConfig.BOT_GUILD_ID).getJda().getUserById(BotConfig.CREATOR_ID), message);
         }
     }
 

@@ -19,9 +19,8 @@ package emily.handler;
 import emily.db.WebDb;
 import emily.db.controllers.CGuild;
 import emily.db.model.OGuild;
-import emily.guildsettings.AbstractGuildSetting;
 import emily.guildsettings.DefaultGuildSettings;
-import emily.guildsettings.music.SettingMusicRole;
+import emily.guildsettings.GSetting;
 import emily.permission.SimpleRank;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -40,13 +39,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class GuildSettings {
     private final static Map<Long, GuildSettings> settingInstance = new ConcurrentHashMap<>();
-    private final Map<String, String> settings;
+    private final String[] settings;
     private final long guildId;
     private int id = 0;
     private boolean initialized = false;
 
     private GuildSettings(Long guild) {
-        this.settings = new ConcurrentHashMap<>();
+        this.settings = new String[GSetting.values().length];
         OGuild record = CGuild.findBy(guild);
         if (record.id == 0) {
             record.name = String.valueOf(guild);
@@ -63,15 +62,15 @@ public class GuildSettings {
     /**
      * Simplified method to get the setting for a channel instead of guild
      *
-     * @param channel      the channel to check
-     * @param settingClass the Setting
+     * @param channel the channel to check
+     * @param setting the Setting
      * @return the setting
      */
-    public static String getFor(MessageChannel channel, Class<? extends AbstractGuildSetting> settingClass) {
+    public static String getFor(MessageChannel channel, GSetting setting) {
         if (channel != null && channel instanceof TextChannel) {
-            return GuildSettings.get(((TextChannel) channel).getGuild()).getOrDefault(settingClass);
+            return GuildSettings.get(((TextChannel) channel).getGuild()).getOrDefault(setting);
         }
-        return DefaultGuildSettings.getDefault(settingClass);
+        return DefaultGuildSettings.getDefault(setting);
     }
 
     public static void remove(String guildId) {
@@ -97,15 +96,15 @@ public class GuildSettings {
     }
 
     /**
-     * @param clazz class to search
+     * @param setting the setting
      * @return the setting or default value
      */
-    public String getOrDefault(Class<? extends AbstractGuildSetting> clazz) {
-        return getOrDefault(DefaultGuildSettings.getKey(clazz));
+    public String getOrDefault(GSetting setting) {
+        return settings[setting.ordinal()] == null ? setting.getDefaultValue() : settings[setting.ordinal()];
     }
 
     public String getOrDefault(String key) {
-        return settings.get(key);
+        return getOrDefault(GSetting.valueOf(key));
     }
 
     /**
@@ -115,10 +114,8 @@ public class GuildSettings {
         if (initialized || id <= 0) {
             return;
         }
-        settings.clear();
-        Map<String, AbstractGuildSetting> defaults = DefaultGuildSettings.getDefaults();
-        for (String key : defaults.keySet()) {
-            settings.put(key, defaults.get(key).getDefault());
+        for (GSetting setting : GSetting.values()) {
+            settings[setting.ordinal()] = null;
         }
         try (ResultSet rs = WebDb.get().select(
                 "SELECT name, config " +
@@ -127,10 +124,8 @@ public class GuildSettings {
             while (rs.next()) {
                 String key = rs.getString("name");
                 String value = rs.getString("config");
-                if (defaults.containsKey(key)) {
-                    if (null != value && !value.isEmpty()) {
-                        settings.put(key, value);
-                    }
+                if (DefaultGuildSettings.isValidKey(key)) {
+                    settings[GSetting.valueOf(key).ordinal()] = value;
                 }
             }
             rs.getStatement().close();
@@ -140,15 +135,12 @@ public class GuildSettings {
         }
     }
 
-    public String[] getDescription(Class<? extends AbstractGuildSetting> settingClass) {
-        return getDescription(DefaultGuildSettings.getKey(settingClass));
-    }
 
-    public String[] getDescription(String key) {
+    public String getDescription(String key) {
         if (DefaultGuildSettings.isValidKey(key)) {
             return DefaultGuildSettings.get(key).getDescription();
         }
-        return new String[]{};
+        return "";
     }
 
     public String getSettingsType(String key) {
@@ -159,17 +151,17 @@ public class GuildSettings {
         return DefaultGuildSettings.get(key).toDisplay(guild, getOrDefault(key));
     }
 
-    public boolean set(Guild guild, Class<? extends AbstractGuildSetting> settingClass, String value) {
-        return set(guild, DefaultGuildSettings.getKey(settingClass), value);
+    public boolean set(Guild guild, String setting, String value) {
+        return DefaultGuildSettings.isValidKey(setting) && set(guild, GSetting.valueOf(setting), value);
     }
 
-    public boolean set(Guild guild, String key, String value) {
-        if (DefaultGuildSettings.isValidKey(key) && DefaultGuildSettings.get(key).isValidValue(guild, value)) {
+    public boolean set(Guild guild, GSetting setting, String value) {
+        if (setting.isValidValue(guild, value)) {
             try {
-                String dbValue = DefaultGuildSettings.get(key).getValue(guild, value);
+                String dbValue = setting.getValue(guild, value);
                 WebDb.get().insert("INSERT INTO guild_settings (guild, name, config) VALUES(?, ?, ?) " +
-                        "ON DUPLICATE KEY UPDATE config=?", id, key, dbValue, dbValue);
-                settings.put(key, dbValue);
+                        "ON DUPLICATE KEY UPDATE config=?", id, setting.name().toLowerCase(), dbValue, dbValue);
+                settings[setting.ordinal()] = dbValue;
                 return true;
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -178,13 +170,13 @@ public class GuildSettings {
         return false;
     }
 
-    public Map<String, String> getSettings() {
+    public String[] getSettings() {
         return settings;
     }
 
     public String getDefaultValue(String key) {
         if (DefaultGuildSettings.isValidKey(key)) {
-            return DefaultGuildSettings.get(key).getDefault();
+            return DefaultGuildSettings.get(key).getDefaultValue();
         }
         return "";
     }
@@ -200,7 +192,7 @@ public class GuildSettings {
     }
 
     public boolean canUseMusicCommands(User user, SimpleRank userRank) {
-        String requiredRole = getOrDefault(SettingMusicRole.class);
+        String requiredRole = getOrDefault(GSetting.MUSIC_ROLE_REQUIREMENT);
         boolean roleFound = true;
         if (!requiredRole.isEmpty() && !"false".equals(requiredRole) && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
             roleFound = false;

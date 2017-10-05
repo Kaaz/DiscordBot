@@ -18,7 +18,7 @@ package emily.games.gameofsticks;
 
 import emily.games.AbstractGame;
 import emily.games.GameState;
-import emily.main.Config;
+import emily.main.BotConfig;
 import net.dv8tion.jda.core.entities.User;
 
 /**
@@ -81,12 +81,12 @@ public class GameOfSticks extends AbstractGame<GoSTurn> {
 
     @Override
     public String toString() {
-        String ret = "A Game of sticks." + Config.EOL;
-        ret += "Take away a few sticks, the player to take away the last stick loses!" + Config.EOL;
+        String ret = "A Game of sticks." + BotConfig.EOL;
+        ret += "Take away a few sticks, the player to take away the last stick loses!" + BotConfig.EOL;
         ret += "There are currently **" + sticksleft + "** Sticks left";
-        ret += Config.EOL + Config.EOL;
+        ret += BotConfig.EOL + BotConfig.EOL;
         if (getGameState().equals(GameState.IN_PROGRESS) || getGameState().equals(GameState.READY)) {
-            ret += "It's the turn of " + getActivePlayer().getAsMention() + Config.EOL;
+            ret += "It's the turn of " + getActivePlayer().getAsMention() + BotConfig.EOL;
             ret += "to play type **" + getLastPrefix() + "game 1-3**";
         } else if (getGameState().equals(GameState.OVER)) {
             ret += "Its over! The winner is " + getPlayer(getWinnerIndex()).getAsMention();

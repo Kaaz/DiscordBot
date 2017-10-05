@@ -27,7 +27,7 @@ import emily.db.model.OBank;
 import emily.db.model.OBet;
 import emily.db.model.OBetOption;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Guild;
@@ -192,7 +192,7 @@ public class BetCommand extends AbstractCommand {
         String ret = "\n\n **You have a bet bet in preparation**:";
         ret += "\n\n**Title**:\n" + bet.title;
         ret += "\n\n**Cost to join**:\n";
-        ret += Config.ECONOMY_CURRENCY_ICON + " " + bet.price;
+        ret += BotConfig.ECONOMY_CURRENCY_ICON + " " + bet.price;
         ret += "\n\n**Options**: ";
         List<OBetOption> options = CBetOption.getOptionsForBet(bet.id);
         if (options.isEmpty()) {

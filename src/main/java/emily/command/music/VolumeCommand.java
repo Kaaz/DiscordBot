@@ -18,8 +18,7 @@ package emily.command.music;
 
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
-import emily.guildsettings.bot.SettingMusicAdminVolume;
-import emily.guildsettings.music.SettingMusicVolume;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
 import emily.handler.Template;
@@ -74,7 +73,7 @@ public class VolumeCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         if (args.length > 0) {
-            if (GuildSettings.getFor(channel, SettingMusicAdminVolume.class).equals("true") && !bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.GUILD_ADMIN)) {
+            if (GuildSettings.getFor(channel, GSetting.MUSIC_VOLUME_ADMIN).equals("true") && !bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.GUILD_ADMIN)) {
                 return Template.get("command_volume_invalid_permissions");
             }
             int volume;
@@ -82,7 +81,7 @@ public class VolumeCommand extends AbstractCommand {
                 volume = Integer.parseInt(args[0]);
                 if (volume > 0 && volume <= 100) {
                     player.setVolume(volume);
-                    GuildSettings.get(guild).set(guild, SettingMusicVolume.class, String.valueOf(player.getVolume()));
+                    GuildSettings.get(guild).set(guild, GSetting.MUSIC_VOLUME_ADMIN, String.valueOf(player.getVolume()));
                     return Template.get("command_volume_changed", player.getVolume());
                 }
             } catch (NumberFormatException ignored) {

@@ -17,7 +17,7 @@
 package emily.games;
 
 import emily.games.slotmachine.Slot;
-import emily.main.Config;
+import emily.main.BotConfig;
 
 import java.util.Random;
 
@@ -95,7 +95,7 @@ public class SlotMachine {
 
     @Override
     public String toString() {
-        String table = "the slotmachine! " + Config.EOL;
+        String table = "the slotmachine! " + BotConfig.EOL;
         String[] machineLine = new String[wheels];
         for (int i = 0; i < wheels; i++) {
             machineLine[i] = "";
@@ -114,7 +114,7 @@ public class SlotMachine {
 
         }
         for (int i = 0; i < wheels; i++) {
-            table += machineLine[i] + "|" + Config.EOL;
+            table += machineLine[i] + "|" + BotConfig.EOL;
         }
         return table;
     }

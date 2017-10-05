@@ -17,9 +17,9 @@
 package emily.templates;
 
 import emily.db.controllers.CGuild;
-import emily.guildsettings.bot.SettingBotShowTemplates;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
-import emily.main.Config;
+import emily.main.BotConfig;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -95,9 +95,9 @@ public class Template {
             }
             return TemplateCache.getGuild(CGuild.getCachedId(guildId), getKey());
         }
-        boolean showTemplates = forceDebug || Config.SHOW_KEYPHRASE;
+        boolean showTemplates = forceDebug || BotConfig.SHOW_KEYPHRASE;
         if (!forceDebug && guildId != null && !guildId.isEmpty()) {
-            showTemplates = "true".equals(GuildSettings.get(guildId).getOrDefault(SettingBotShowTemplates.class));
+            showTemplates = "true".equals(GuildSettings.get(guildId).getOrDefault(GSetting.SHOW_TEMPLATES));
         }
         TemplateVariables env = TemplateVariables.create(vars);
         if (showTemplates) {

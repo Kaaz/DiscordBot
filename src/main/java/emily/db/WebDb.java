@@ -16,7 +16,7 @@
 
 package emily.db;
 
-import emily.main.Config;
+import emily.main.BotConfig;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class WebDb {
 
     public static void init() {
         connections.clear();
-        connections.put("discord", new MySQLAdapter(Config.DB_HOST, Config.DB_USER, Config.DB_PASS, Config.DB_NAME));
+        connections.put("discord", new MySQLAdapter(BotConfig.DB_HOST, BotConfig.DB_USER, BotConfig.DB_PASS, BotConfig.DB_NAME));
         try {
             get().query("SET NAMES utf8mb4");
         } catch (SQLException e) {

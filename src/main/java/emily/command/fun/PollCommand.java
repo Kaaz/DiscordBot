@@ -19,7 +19,7 @@ package emily.command.fun;
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.Misc;
 import net.dv8tion.jda.core.Permission;
@@ -92,11 +92,11 @@ public class PollCommand extends AbstractCommand {
             if (split[0].trim().length() < 3) {
                 return Template.get("command_poll_question_too_short");
             }
-            String outtext = "A poll has been created by " + author.getName() + Config.EOL + Config.EOL;
-            outtext += "**" + split[0].trim() + "**" + Config.EOL + Config.EOL;
+            String outtext = "A poll has been created by " + author.getName() + BotConfig.EOL + BotConfig.EOL;
+            outtext += "**" + split[0].trim() + "**" + BotConfig.EOL + BotConfig.EOL;
             final int answers = Math.min(8, split.length);
             for (int i = 1; i < answers; i++) {
-                outtext += Misc.numberToEmote(i) + " " + split[i].trim() + Config.EOL + Config.EOL;
+                outtext += Misc.numberToEmote(i) + " " + split[i].trim() + BotConfig.EOL + BotConfig.EOL;
             }
             bot.queue.add(channel.sendMessage(outtext), message -> {
                 for (int i = 1; i < answers; i++) {

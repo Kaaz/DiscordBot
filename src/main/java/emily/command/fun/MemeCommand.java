@@ -22,7 +22,7 @@ import com.mashape.unirest.http.Unirest;
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.DisUtil;
 import emily.util.Misc;
@@ -91,17 +91,17 @@ public class MemeCommand extends AbstractCommand {
                 return Template.get("permission_missing_attach_files");
             }
         }
-        String msg = "Use one of the following meme types:" + Config.EOL;
+        String msg = "Use one of the following meme types:" + BotConfig.EOL;
         channel.sendTyping();
         if (memeTypes.isEmpty()) {
             loadMemeOptions();
         }
         if (args.length == 0) {
-            return Template.get("command_invalid_use") + Config.EOL +
-                    msg + Misc.makeTable(new ArrayList<>(memeTypes)) + Config.EOL +
-                    "Usage:" + Config.EOL +
-                    DisUtil.getCommandPrefix(channel) + "meme <type> <toptext> | <bottomtext>Config.EOL+Config.EOL" + Config.EOL + Config.EOL +
-                    "Example:" + Config.EOL +
+            return Template.get("command_invalid_use") + BotConfig.EOL +
+                    msg + Misc.makeTable(new ArrayList<>(memeTypes)) + BotConfig.EOL +
+                    "Usage:" + BotConfig.EOL +
+                    DisUtil.getCommandPrefix(channel) + "meme <type> <toptext> | <bottomtext>Config.EOL+Config.EOL" + BotConfig.EOL + BotConfig.EOL +
+                    "Example:" + BotConfig.EOL +
                     "meme sohappy If I could use this meme | I would be so happy";
         }
         switch (args[0].toLowerCase()) {
@@ -115,8 +115,8 @@ public class MemeCommand extends AbstractCommand {
         String type = args[0].toLowerCase();
         if (!memeTypes.contains(type)) {
             return Template.get("command_meme_invalid_type") +
-                    msg + Misc.makeTable(new ArrayList<>(memeTypes)) + Config.EOL + Config.EOL +
-                    "Example:" + Config.EOL +
+                    msg + Misc.makeTable(new ArrayList<>(memeTypes)) + BotConfig.EOL + BotConfig.EOL +
+                    "Example:" + BotConfig.EOL +
                     "meme sohappy If I could use this meme | I would be so happy";
         }
         String topText = "-";
@@ -154,7 +154,7 @@ public class MemeCommand extends AbstractCommand {
 
     private void loadMemeOptions() {
         try {
-            Document document = Jsoup.connect("https://memegen.link/").userAgent(Config.USER_AGENT).get();
+            Document document = Jsoup.connect("https://memegen.link/").userAgent(BotConfig.USER_AGENT).get();
             if (document != null) {
                 Elements fmls = document.select(".js-meme-selector option");
                 if (!fmls.isEmpty()) {

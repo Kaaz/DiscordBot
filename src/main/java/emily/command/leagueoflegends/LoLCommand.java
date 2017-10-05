@@ -18,7 +18,7 @@ package emily.command.leagueoflegends;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import emily.core.AbstractCommand;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.Emojibet;
 import emily.util.Misc;
@@ -28,11 +28,11 @@ import net.dv8tion.jda.core.entities.User;
 import net.rithms.riot.api.ApiConfig;
 import net.rithms.riot.api.RiotApi;
 import net.rithms.riot.api.RiotApiException;
-import net.rithms.riot.api.endpoints.static_data.constant.ChampData;
+import net.rithms.riot.api.endpoints.static_data.constant.ChampionListTags;
 import net.rithms.riot.api.endpoints.static_data.dto.Champion;
 import net.rithms.riot.api.endpoints.static_data.dto.ChampionSpell;
 import net.rithms.riot.api.endpoints.static_data.dto.Image;
-import net.rithms.riot.constant.Region;
+import net.rithms.riot.constant.Platform;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class LoLCommand extends AbstractCommand {
 
     public LoLCommand() {
         super();
-        ApiConfig config = new ApiConfig().setKey(Config.TOKEN_RIOT_GAMES);
+        ApiConfig config = new ApiConfig().setKey(BotConfig.TOKEN_RIOT_GAMES);
         api = new RiotApi(config);
 
     }
@@ -84,11 +84,11 @@ public class LoLCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
         try {
             if (gameVersion == null) {
-                gameVersion = api.getDataVersions(Region.EUW).get(0);
+                gameVersion = api.getDataVersions(Platform.EUW).get(0);
                 baseUrl = String.format("http://ddragon.leagueoflegends.com/cdn/%s/img/", gameVersion);
             }
             if (dataChampionList == null) {
-                Map<String, Champion> tmp = api.getDataChampionList(Region.EUW, null, null, false, ChampData.ALL).getData();
+                Map<String, Champion> tmp = api.getDataChampionList(Platform.EUW, null, null, false, ChampionListTags.ALL).getData();
                 dataChampionList = new HashMap<>();
                 for (Map.Entry<String, Champion> entry : tmp.entrySet()) {
                     dataChampionList.put(entry.getKey().toLowerCase(), entry.getValue());

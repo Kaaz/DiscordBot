@@ -22,7 +22,7 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import emily.core.AbstractCommand;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.Emojibet;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -82,13 +82,13 @@ public class UrbanDictionaryCommand extends AbstractCommand {
                 return Template.get("command_ud_no_results", search);
             }
             JSONObject item = list.getJSONObject(0);
-            return String.format("Urban Dictionary " + Config.EOL + Config.EOL
-                            + "Definition for **%s**: " + Config.EOL
-                            + "```" + Config.EOL
-                            + "%s" + Config.EOL
-                            + "```" + Config.EOL
-                            + "**example**: " + Config.EOL
-                            + "%s" + Config.EOL + Config.EOL
+            return String.format("Urban Dictionary " + BotConfig.EOL + BotConfig.EOL
+                            + "Definition for **%s**: " + BotConfig.EOL
+                            + "```" + BotConfig.EOL
+                            + "%s" + BotConfig.EOL
+                            + "```" + BotConfig.EOL
+                            + "**example**: " + BotConfig.EOL
+                            + "%s" + BotConfig.EOL + BotConfig.EOL
                             + "_by %s (" + Emojibet.THUMBS_UP + "%s  " + Emojibet.THUMBS_DOWN + "%s)_"
                     , item.getString("word"), item.getString("definition"), item.getString("example"),
                     item.getString("author"), item.getInt("thumbs_up"), item.getInt("thumbs_down"));

@@ -17,7 +17,7 @@
 package emily.command.informative;
 
 import emily.core.AbstractCommand;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.DisUtil;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -30,7 +30,7 @@ public class DonateCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "general info about how to contribute or donate to " + Config.BOT_NAME;
+        return "general info about how to contribute or donate to " + BotConfig.BOT_NAME;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class DonateCommand extends AbstractCommand {
 
     @Override
     public boolean isEnabled() {
-        return Config.CREATOR_ID.equals("97433066384928768");
+        return BotConfig.CREATOR_ID.equals("97433066384928768");
     }
 
     @Override

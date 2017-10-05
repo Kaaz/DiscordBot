@@ -19,9 +19,9 @@ package emily.command.administrative;
 import com.vdurmont.emoji.EmojiParser;
 import emily.core.AbstractCommand;
 import emily.db.controllers.CGuild;
-import emily.guildsettings.bot.SettingBotShowTemplates;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.templates.Template;
@@ -104,9 +104,9 @@ public class TemplateCommand extends AbstractCommand {
             }
         }
         if (args.length == 0) {
-            String usage = ":gear: **Options**:```php" + Config.EOL;
+            String usage = ":gear: **Options**:```php" + BotConfig.EOL;
             for (String line : getUsage()) {
-                usage += line + Config.EOL;
+                usage += line + BotConfig.EOL;
             }
             return usage + "```";
         }
@@ -136,7 +136,7 @@ public class TemplateCommand extends AbstractCommand {
                     if (args.length == 1) {
                         return "Show keyphrases: " + GuildSettings.get(guild).getDisplayValue(guild, "show_templates");
                     } else {
-                        if (GuildSettings.get(guild).set(guild, SettingBotShowTemplates.class, args[1])) {
+                        if (GuildSettings.get(guild).set(guild, GSetting.SHOW_TEMPLATES, args[1])) {
                             return "Show Keyphrases: " + GuildSettings.get(guild).getDisplayValue(guild, "show_templates");
                         }
                     }
@@ -181,7 +181,7 @@ public class TemplateCommand extends AbstractCommand {
                     if (allKeyphrases.isEmpty()) {
                         return "No keyphases matching `" + args[1] + "`";
                     }
-                    return String.format("All keyphrases matching `%s`: ", args[1]) + Config.EOL +
+                    return String.format("All keyphrases matching `%s`: ", args[1]) + BotConfig.EOL +
                             Misc.makeTable(allKeyphrases, 50, 2);
                 } else if (args.length >= 2 && args[1].matches("\\d+")) {
                     currentPage = Math.min(Math.max(0, Misc.parseInt(args[1], 0) - 1), maxPage - 1);
@@ -190,7 +190,7 @@ public class TemplateCommand extends AbstractCommand {
                 if (allKeyphrases.isEmpty()) {
                     return "No keyphrases set at this moment.";
                 }
-                return String.format("All keyphrases: [page %s/%s]", currentPage + 1, maxPage) + Config.EOL +
+                return String.format("All keyphrases: [page %s/%s]", currentPage + 1, maxPage) + BotConfig.EOL +
                         Misc.makeTable(allKeyphrases, 50, 2);
             default:
                 args[0] = args[0].toLowerCase();
@@ -204,7 +204,7 @@ public class TemplateCommand extends AbstractCommand {
                     for (String template : templates) {
                         body.add(Arrays.asList(String.valueOf(index++), template));
                     }
-                    return "Template overview for `" + args[0] + "`" + Config.EOL +
+                    return "Template overview for `" + args[0] + "`" + BotConfig.EOL +
                             Misc.makeAsciiTable(Arrays.asList("#", "value"), body, null);
                 }
                 return Templates.command.template.invalid_option.format();

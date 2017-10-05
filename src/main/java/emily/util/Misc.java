@@ -17,7 +17,7 @@
 package emily.util;
 
 import com.google.common.base.Strings;
-import emily.main.Config;
+import emily.main.BotConfig;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -157,19 +157,19 @@ public class Misc {
      * @return formatted controllers
      */
     public static String makeTable(List<String> items, int columnLength, int columns) {
-        String ret = "```xl" + Config.EOL;
+        String ret = "```xl" + BotConfig.EOL;
         int counter = 0;
         for (String item : items) {
             counter++;
             ret += String.format("%-" + columnLength + "s", item);
             if (counter % columns == 0) {
-                ret += Config.EOL;
+                ret += BotConfig.EOL;
             }
         }
         if (counter % columns != 0) {
-            ret += Config.EOL;
+            ret += BotConfig.EOL;
         }
-        return ret + "```" + Config.EOL;
+        return ret + "```" + BotConfig.EOL;
     }
 
     /**
@@ -177,9 +177,9 @@ public class Misc {
      * @return formatted controllers
      */
     public static String makeTable(String tableText) {
-        return "```" + Config.EOL
-                + tableText + Config.EOL +
-                "```" + Config.EOL;
+        return "```" + BotConfig.EOL
+                + tableText + BotConfig.EOL +
+                "```" + BotConfig.EOL;
     }
 
     /**
@@ -241,12 +241,12 @@ public class Misc {
                 }
             }
         }
-        sb.append("```").append(Config.EOL);
+        sb.append("```").append(BotConfig.EOL);
         String formatLine = "|";
         for (int width : widths) {
             formatLine += " %-" + width + "s |";
         }
-        formatLine += Config.EOL;
+        formatLine += BotConfig.EOL;
         sb.append(appendSeparatorLine("+", "+", "+", padding, widths));
         sb.append(String.format(formatLine, headers.toArray()));
         sb.append(appendSeparatorLine("+", "+", "+", padding, widths));
@@ -283,7 +283,7 @@ public class Misc {
                 ret.append(middle).append(Strings.repeat("-", size + padding * 2));
             }
         }
-        return ret.append(right).append(Config.EOL).toString();
+        return ret.append(right).append(BotConfig.EOL).toString();
     }
 
     /**

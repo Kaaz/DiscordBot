@@ -14,25 +14,8 @@
  * limitations under the License.
  */
 
-package emily.games;
+package emily.guildsettings;
 
-import emily.main.BotConfig;
-
-/**
- * a turn in a game
- */
-public abstract class GameTurn {
-    private String commandPrefix = BotConfig.BOT_COMMAND_PREFIX;
-
-    abstract public boolean parseInput(String input);
-
-    abstract public String getInputErrorMessage();
-
-    public String getCommandPrefix() {
-        return commandPrefix;
-    }
-
-    public void setCommandPrefix(String commandPrefix) {
-        this.commandPrefix = commandPrefix;
-    }
+public enum GSettingTag {
+    META,LOGGING, ROLE, MODERATION, CHANNEL, MUSIC, ADMIN, INTERNAL, COMMAND, DEBUG
 }

@@ -26,7 +26,7 @@ import emily.db.model.OService;
 import emily.db.model.OSubscription;
 import emily.db.model.QActiveSubscriptions;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -95,11 +95,11 @@ public class Subscribe extends AbstractCommand {
                 tbl.add(row);
             }
             if (tbl.size() > 0) {
-                return "Active Subscriptions" + Config.EOL +
+                return "Active Subscriptions" + BotConfig.EOL +
                         "This channel is currenty subscribed for: " +
                         Misc.makeAsciiTable(headers, tbl, null);
             }
-            return Template.get("command_subscribe_channel_has_no_subscriptions") + Config.EOL +
+            return Template.get("command_subscribe_channel_has_no_subscriptions") + BotConfig.EOL +
                     "Possible options to subscribe to: " +
                     getServicesTable();
         }
@@ -124,7 +124,7 @@ public class Subscribe extends AbstractCommand {
             }
             return Template.get("command_subscribe_invalid_use");
         } else if (args[0].equalsIgnoreCase("list")) {
-            return "Subscriptions" + Config.EOL +
+            return "Subscriptions" + BotConfig.EOL +
                     "Possible options to subscribe to: " +
                     getServicesTable();
         }

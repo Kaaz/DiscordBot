@@ -16,45 +16,25 @@
 
 package emily.guildsettings;
 
-import emily.core.ExitCode;
-import emily.exceptions.DefaultSettingAlreadyExistsException;
-import emily.main.Launcher;
-import org.reflections.Reflections;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 
 public class DefaultGuildSettings {
-    private final static Map<String, AbstractGuildSetting> defaultSettings = new HashMap<>();
-    private final static Map<Class<? extends AbstractGuildSetting>, String> classNameToKey = new HashMap<>();
     private static final TreeSet<String> tags = new TreeSet<>();
     private static boolean initialized = false;
 
     static {
-        try {
-            initSettings();
-        } catch (DefaultSettingAlreadyExistsException e) {
-            e.printStackTrace();
-            System.out.println(e.toString());
-            Launcher.stop(ExitCode.GENERIC_ERROR);
-        }
+        initSettings();
     }
 
     public static TreeSet<String> getAllTags() {
         return new TreeSet<>(tags);
     }
 
-    public static Map<String, AbstractGuildSetting> getDefaults() {
-        return defaultSettings;
-    }
-
     public static String getDefault(String key) {
-        return defaultSettings.get(key).getDefault();
+        return GSetting.valueOf(key).getDefaultValue();
     }
 
     public static int countSettings() {
@@ -63,62 +43,58 @@ public class DefaultGuildSettings {
 
     public static int countSettings(boolean includeReadOnly) {
         if (includeReadOnly) {
-            return defaultSettings.keySet().size();
+            return GSetting.values().length;
         }
-        return (int) defaultSettings.values().stream().filter(abstractGuildSetting -> !abstractGuildSetting.isReadOnly()).count();
+        return (int) Arrays.stream(GSetting.values()).filter(gSetting -> !gSetting.isInternal()).count();
     }
 
     public static List<String> getWritableKeys() {
         ArrayList<String> set = new ArrayList<>();
-        for (Map.Entry<String, AbstractGuildSetting> entry : defaultSettings.entrySet()) {
-            if (entry.getValue().isReadOnly()) {
+        for (GSetting setting : GSetting.values()) {
+            if (setting.isInternal()) {
                 continue;
             }
-            set.add(entry.getKey());
+            set.add(setting.name());
         }
         return set;
     }
 
-    public static AbstractGuildSetting get(String key) {
-        return defaultSettings.get(key);
+    public static List<String> getAllKeys() {
+        ArrayList<String> set = new ArrayList<>();
+        for (GSetting setting : GSetting.values()) {
+            set.add(setting.name());
+        }
+        return set;
     }
 
-    public static String getDefault(Class<? extends AbstractGuildSetting> guildSettingClass) {
-        return defaultSettings.get(getKey(guildSettingClass)).getDefault();
+    public static GSetting get(String key) {
+        return GSetting.valueOf(key);
+    }
+
+    public static String getDefault(GSetting setting) {
+        return setting.getDefaultValue();
     }
 
     public static boolean isValidKey(String key) {
-        return defaultSettings.containsKey(key);
+        try {
+            GSetting.valueOf(key);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    public static String getKey(Class<? extends AbstractGuildSetting> clazz) {
-        return classNameToKey.get(clazz);
-    }
-
-    private static void initSettings() throws DefaultSettingAlreadyExistsException {
+    private static void initSettings() {
         if (initialized) {
             return;
         }
-        Reflections reflections = new Reflections("emily.guildsettings");
-        Set<Class<? extends AbstractGuildSetting>> classes = reflections.getSubTypesOf(AbstractGuildSetting.class);
-        for (Class<? extends AbstractGuildSetting> settingClass : classes) {
-            try {
-                AbstractGuildSetting setting = settingClass.getConstructor().newInstance();
-                if (!defaultSettings.containsKey(setting.getKey())) {
-                    defaultSettings.put(setting.getKey(), setting);
-                    classNameToKey.put(settingClass, setting.getKey());
-                    for (String tag : setting.getTags()) {
-                        if (!tags.contains(tag)) {
-                            tags.add(tag);
-                        }
-                    }
-                } else {
-                    throw new DefaultSettingAlreadyExistsException(setting.getKey());
+        for (GSetting setting : GSetting.values()) {
+            for (GSettingTag tag : setting.getTags()) {
+                if (!tags.contains(tag.name())) {
+                    tags.add(tag.name());
                 }
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
             }
+            initialized = true;
         }
-        initialized = true;
     }
 }

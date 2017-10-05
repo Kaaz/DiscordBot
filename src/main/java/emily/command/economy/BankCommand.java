@@ -23,7 +23,7 @@ import emily.db.controllers.CBanks;
 import emily.db.model.OBank;
 import emily.db.model.OBankTransaction;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
@@ -82,7 +82,7 @@ public class BankCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
         OBank bank = CBanks.findBy(author.getId());
         if (args.length == 0) {
-            return String.format("Your current balance is `%s` %s ", bank.currentBalance, Config.ECONOMY_CURRENCY_ICON);
+            return String.format("Your current balance is `%s` %s ", bank.currentBalance, BotConfig.ECONOMY_CURRENCY_ICON);
         }
         switch (args[0].toLowerCase()) {
             case "send":
@@ -92,10 +92,10 @@ public class BankCommand extends AbstractCommand {
                 }
                 int amount = Misc.parseInt(args[2], 0);
                 if (amount < 1) {
-                    return Template.get("bank_transfer_minimum", 1, Config.ECONOMY_CURRENCY_NAME);
+                    return Template.get("bank_transfer_minimum", 1, BotConfig.ECONOMY_CURRENCY_NAME);
                 }
                 if (amount > bank.currentBalance) {
-                    return Template.get("bank_insufficient_funds", amount, amount == 1 ? Config.ECONOMY_CURRENCY_NAME : Config.ECONOMY_CURRENCY_NAMES);
+                    return Template.get("bank_insufficient_funds", amount, amount == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
                 }
                 User targetUser = DisUtil.findUser((TextChannel) channel, args[1]);
                 if (targetUser == null) {
@@ -107,7 +107,7 @@ public class BankCommand extends AbstractCommand {
                     description = Misc.joinStrings(args, 3);
                 }
                 if (bank.transferTo(targetBank, amount, description)) {
-                    return Template.get("bank_transfer_success", targetUser.getName(), amount, amount == 1 ? Config.ECONOMY_CURRENCY_NAME : Config.ECONOMY_CURRENCY_NAMES);
+                    return Template.get("bank_transfer_success", targetUser.getName(), amount, amount == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
                 }
                 return Template.get("bank_transfer_failed");
             case "history":
@@ -118,7 +118,7 @@ public class BankCommand extends AbstractCommand {
                             transaction.bankFrom == bank.id ? Emojibet.TRIANGLE_RED_DOWN : ":arrow_up_small:",
 //                            transaction.bankFrom == bank.id ? Emojibet.TRIANGLE_RED_DOWN : Emojibet.INBOX_TRAY,
                             transaction.bankFrom == bank.id ? -transaction.amount : transaction.amount,
-                            Config.ECONOMY_CURRENCY_ICON,
+                            BotConfig.ECONOMY_CURRENCY_ICON,
                             transaction.bankFrom == bank.id ? transaction.userTo : transaction.userFrom,
                             transaction.bankFrom != bank.id ? ":arrow_left:":":arrow_right:",
                             transaction.bankFrom != bank.id ? Emojibet.USER : Emojibet.SPEECH_BALLOON,

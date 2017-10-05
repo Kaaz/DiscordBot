@@ -18,7 +18,7 @@ package emily.command.fun;
 
 import emily.core.AbstractCommand;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -89,7 +89,7 @@ public class FMLCommand extends AbstractCommand {
 
     private void getFMLItems() {
         try {
-            Document document = Jsoup.connect("http://fmylife.com/random").timeout(30_000).userAgent(Config.USER_AGENT).get();
+            Document document = Jsoup.connect("http://fmylife.com/random").timeout(30_000).userAgent(BotConfig.USER_AGENT).get();
             if (document != null) {
                 Elements fmls = document.select("p.block a[href^=/article/]");
                 for (Element fml : fmls) {

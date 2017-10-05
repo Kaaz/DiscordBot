@@ -17,7 +17,7 @@
 package emily.command.informative;
 
 import emily.core.AbstractCommand;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.util.UpdateUtil;
@@ -61,8 +61,8 @@ public class VersionCommand extends AbstractCommand {
 
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
-        return "Info about the versions:" + Config.EOL +
-                "Current version: `" + Launcher.getVersion() + "`" + Config.EOL +
-                "Latest  version: `" + UpdateUtil.getLatestVersion() + "`" + Config.EOL;
+        return "Info about the versions:" + BotConfig.EOL +
+                "Current version: `" + Launcher.getVersion() + "`" + BotConfig.EOL +
+                "Latest  version: `" + UpdateUtil.getLatestVersion() + "`" + BotConfig.EOL;
     }
 }

@@ -22,7 +22,7 @@ import emily.db.controllers.CUser;
 import emily.db.controllers.CUserRank;
 import emily.db.model.OGuild;
 import emily.db.model.OUserRank;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.GuildCheckResult;
 import emily.permission.SimpleRank;
 import net.dv8tion.jda.core.Permission;
@@ -119,7 +119,7 @@ public class SecurityHandler {
 
         int bots = 0;
         int users = 0;
-        if (MiscUtil.getCreationTime(guild.getOwner().getUser()).isBefore(OffsetDateTime.now().minusDays(Config.GUILD_OWNER_MIN_ACCOUNT_AGE))) {
+        if (MiscUtil.getCreationTime(guild.getOwner().getUser()).isBefore(OffsetDateTime.now().minusDays(BotConfig.GUILD_OWNER_MIN_ACCOUNT_AGE))) {
             return GuildCheckResult.OWNER_TOO_NEW;
         }
         for (Member user : guild.getMembers()) {
@@ -128,10 +128,10 @@ public class SecurityHandler {
             }
             users++;
         }
-        if ((double) bots / users > Config.GUILD_MAX_USER_BOT_RATIO) {
+        if ((double) bots / users > BotConfig.GUILD_MAX_USER_BOT_RATIO) {
             return GuildCheckResult.BOT_GUILD;
         }
-        if (users < Config.GUILD_MIN_USERS) {
+        if (users < BotConfig.GUILD_MIN_USERS) {
             return GuildCheckResult.TEST_GUILD;
         }
         return GuildCheckResult.OKE;
@@ -139,7 +139,7 @@ public class SecurityHandler {
 
     public SimpleRank getSimpleRankForGuild(User user, Guild guild) {
         long userId = Long.parseLong(user.getId());
-        if (user.getId().equals(Config.CREATOR_ID)) {
+        if (user.getId().equals(BotConfig.CREATOR_ID)) {
             return SimpleRank.CREATOR;
         }
         if (user.isBot()) {
@@ -164,7 +164,7 @@ public class SecurityHandler {
             if (guild.getOwner().equals(user)) {
                 return SimpleRank.GUILD_OWNER;
             }
-            if (PermissionUtil.checkPermission(guild, guild.getMember(user), Permission.ADMINISTRATOR)) {
+            if (PermissionUtil.checkPermission(guild.getMember(user), Permission.ADMINISTRATOR)) {
                 return SimpleRank.GUILD_ADMIN;
             }
         }

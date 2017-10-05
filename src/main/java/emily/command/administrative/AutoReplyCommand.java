@@ -24,7 +24,7 @@ import emily.db.controllers.CUser;
 import emily.db.model.OGuild;
 import emily.db.model.OReplyPattern;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.Misc;
@@ -107,7 +107,7 @@ public class AutoReplyCommand extends AbstractCommand {
                 row.add(replyPattern.reply.substring(0, Math.min(40, replyPattern.reply.length())));
                 tbl.add(row);
             }
-            return "The following All Auto replies information. For details about a specific one use **`ar <tag>`**" + Config.EOL +
+            return "The following All Auto replies information. For details about a specific one use **`ar <tag>`**" + BotConfig.EOL +
                     Misc.makeAsciiTable(Arrays.asList("tag", "trigger", "cooldown", "response"), tbl, null);
         }
         if (args.length >= 2) {
@@ -153,8 +153,8 @@ public class AutoReplyCommand extends AbstractCommand {
                         replyPattern.pattern = restOfArgs;
                         CReplyPattern.update(replyPattern);
                     } catch (PatternSyntaxException exception) {
-                        return Template.get("command_autoreply_regex_invalid") + Config.EOL +
-                                exception.getDescription() + Config.EOL +
+                        return Template.get("command_autoreply_regex_invalid") + BotConfig.EOL +
+                                exception.getDescription() + BotConfig.EOL +
                                 Misc.makeTable(exception.getMessage());
                     }
                     bot.reloadAutoReplies();

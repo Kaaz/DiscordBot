@@ -24,7 +24,7 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.PlaylistItemListResponse;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 
@@ -49,9 +49,9 @@ public class YTSearch {
 
     public YTSearch() {
         keyQueue = new LinkedList<>();
-        Collections.addAll(keyQueue, Config.GOOGLE_API_KEY);
+        Collections.addAll(keyQueue, BotConfig.GOOGLE_API_KEY);
         youtube = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), (HttpRequest request) -> {
-        }).setApplicationName(Config.BOT_NAME).build();
+        }).setApplicationName(BotConfig.BOT_NAME).build();
         YouTube.Search.List tmp = null;
         try {
             tmp = youtube.search().list("id,snippet");

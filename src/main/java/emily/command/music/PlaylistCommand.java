@@ -29,11 +29,11 @@ import emily.db.controllers.CPlaylist;
 import emily.db.controllers.CUser;
 import emily.db.model.OMusic;
 import emily.db.model.OPlaylist;
-import emily.guildsettings.music.SettingMusicRole;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -123,7 +123,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         int nowPlayingId = player.getCurrentlyPlaying();
         OMusic musicRec = CMusic.findById(nowPlayingId);
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Template.get(channel, "music_required_role_not_found", guild.getRoleById(GuildSettings.getFor(channel, SettingMusicRole.class)).getName());
+            return Template.get(channel, "music_required_role_not_found", guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)).getName());
         }
         OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
         if (playlist.id == 0) {
@@ -132,7 +132,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         String cp = DisUtil.getCommandPrefix(channel);
         if (args.length == 0) {
             if (playlist.isGlobalList()) {
-                return Template.get(channel, "music_playlist_using", playlist.title) + " See `" + cp + "pl help` for more info" + Config.EOL +
+                return Template.get(channel, "music_playlist_using", playlist.title) + " See `" + cp + "pl help` for more info" + BotConfig.EOL +
                         "You can switch to a different playlist with `" + cp + "pl guild` to the guild's list or `" + cp + "pl mine` to your own one";
             }
             return Template.get(channel, "music_playlist_using", playlist.title) +
@@ -247,9 +247,9 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                         if (editType.getId() < 1) continue;
                         tbl.add(Arrays.asList((editType == playlist.getEditType() ? "*" : " ") + editType.getId(), editType.toString(), editType.getDescription()));
                     }
-                    return "the edit-type of the playlist. A `*` indicates the selected option" + Config.EOL +
-                            Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
-                            "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl edit 3` sets it to PUBLIC_ADD " + Config.EOL + Config.EOL +
+                    return "the edit-type of the playlist. A `*` indicates the selected option" + BotConfig.EOL +
+                            Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + BotConfig.EOL +
+                            "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl edit 3` sets it to PUBLIC_ADD " + BotConfig.EOL + BotConfig.EOL +
                             "Private in a guild context refers to users with admin privileges";
                 }
                 if (args.length > 1 && args[1].matches("^\\d+$")) {
@@ -271,9 +271,9 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                         if (visibility.getId() < 1) continue;
                         tbl.add(Arrays.asList((visibility == playlist.getVisibility() ? "*" : " ") + visibility.getId(), visibility.toString(), visibility.getDescription()));
                     }
-                    return "the visibility-type of the playlist. A `*` indicates the selected option" + Config.EOL +
-                            Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
-                            "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl vis 3` sets it to guild " + Config.EOL + Config.EOL +
+                    return "the visibility-type of the playlist. A `*` indicates the selected option" + BotConfig.EOL +
+                            Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + BotConfig.EOL +
+                            "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl vis 3` sets it to guild " + BotConfig.EOL + BotConfig.EOL +
                             "Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
                 }
                 if (args.length > 1 && args[1].matches("^\\d+$")) {
@@ -313,8 +313,8 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                         if (playType.getId() < 1) continue;
                         tbl.add(Arrays.asList((playType == playlist.getPlayType() ? "*" : " ") + playType.getId(), playType.toString(), playType.getDescription()));
                     }
-                    return "the play-type of the playlist. A `*` indicates the selected option" + Config.EOL +
-                            Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + Config.EOL +
+                    return "the play-type of the playlist. A `*` indicates the selected option" + BotConfig.EOL +
+                            Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + BotConfig.EOL +
                             "Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
                 }
                 if (args.length > 1 && args[1].matches("^\\d+$")) {
@@ -462,14 +462,14 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         if (items.isEmpty()) {
             return "The playlist is empty!";
         }
-        String playlistTable = Config.EOL;
+        String playlistTable = BotConfig.EOL;
         for (OMusic item : items) {
-            playlistTable += String.format("`%11s` | %s" + Config.EOL, item.youtubecode, item.youtubeTitle);
+            playlistTable += String.format("`%11s` | %s" + BotConfig.EOL, item.youtubecode, item.youtubeTitle);
         }
-        return String.format("Music in the playlist: %s" + Config.EOL, playlist.title) +
-                playlistTable + Config.EOL +
-                String.format("Showing [page %s/%s]", currentPage, maxPage) + Config.EOL + Config.EOL +
-                "_You can use the `#` to remove an item from the playlist._" + Config.EOL + Config.EOL +
+        return String.format("Music in the playlist: %s" + BotConfig.EOL, playlist.title) +
+                playlistTable + BotConfig.EOL +
+                String.format("Showing [page %s/%s]", currentPage, maxPage) + BotConfig.EOL + BotConfig.EOL +
+                "_You can use the `#` to remove an item from the playlist._" + BotConfig.EOL + BotConfig.EOL +
                 "_Example:_ `" + DisUtil.getCommandPrefix(guild) + "pl del QnTYIBU7Ueg`";
     }
 

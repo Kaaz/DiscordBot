@@ -23,7 +23,7 @@ import emily.db.controllers.CGuild;
 import emily.db.model.OBlacklistCommand;
 import emily.handler.CommandHandler;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -46,8 +46,8 @@ public class CommandAdminCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Commands can be enabled/disabled through this command." + Config.EOL +
-                "A channel specific setting will always override the guild setting" + Config.EOL + Config.EOL +
+        return "Commands can be enabled/disabled through this command." + BotConfig.EOL +
+                "A channel specific setting will always override the guild setting" + BotConfig.EOL + BotConfig.EOL +
                 "You can also give/deny permission to roles to use certain commands";
     }
 
@@ -117,7 +117,7 @@ public class CommandAdminCommand extends AbstractCommand {
             if (blacklist.isEmpty()) {
                 return Template.get("command_blacklist_command_empty");
             }
-            StringBuilder ret = new StringBuilder().append("The following commands are restricted: ").append(Config.EOL).append(Config.EOL);
+            StringBuilder ret = new StringBuilder().append("The following commands are restricted: ").append(BotConfig.EOL).append(BotConfig.EOL);
             String lastCommand = blacklist.get(0).command;
             boolean guildwide = false;
             boolean firstSubItem = true;
@@ -126,12 +126,12 @@ public class CommandAdminCommand extends AbstractCommand {
                 String cmdStatus = item.blacklisted ? "disabled" : "enabled";
                 if (!lastCommand.equals(item.command)) {
                     lastCommand = item.command;
-                    ret.append(Config.EOL).append(Config.EOL);
+                    ret.append(BotConfig.EOL).append(BotConfig.EOL);
                     guildwide = false;
                     firstSubItem = true;
                 }
                 if (item.channelId.equals("0")) {
-                    ret.append(icon).append(" `").append(item.command).append("` is ").append(cmdStatus).append(" guild-wide!").append(Config.EOL);
+                    ret.append(icon).append(" `").append(item.command).append("` is ").append(cmdStatus).append(" guild-wide!").append(BotConfig.EOL);
                     guildwide = true;
                 } else {
                     TextChannel tmp = channel.getJDA().getTextChannelById(item.channelId);

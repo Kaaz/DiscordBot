@@ -16,7 +16,7 @@
 
 package emily.threads;
 
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.Launcher;
 import org.graylog2.gelfclient.GelfConfiguration;
 import org.graylog2.gelfclient.GelfMessage;
@@ -43,7 +43,7 @@ public class GrayLogThread extends Thread {
     }
 
     private void connect() throws InterruptedException {
-        GelfConfiguration config = new GelfConfiguration(new InetSocketAddress(Config.BOT_GRAYLOG_HOST, Config.BOT_GRAYLOG_PORT))
+        GelfConfiguration config = new GelfConfiguration(new InetSocketAddress(BotConfig.BOT_GRAYLOG_HOST, BotConfig.BOT_GRAYLOG_PORT))
                 .transport(GelfTransports.UDP)
                 .queueSize(512)
                 .connectTimeout(5000)
@@ -51,9 +51,9 @@ public class GrayLogThread extends Thread {
                 .tcpNoDelay(true)
                 .sendBufferSize(32768);
         transport = GelfTransports.create(config);
-        builder = new GelfMessageBuilder("??", Config.BOT_WEBSITE)
+        builder = new GelfMessageBuilder("??", BotConfig.BOT_WEBSITE)
                 .level(GelfMessageLevel.INFO)
-                .additionalField("env", Config.BOT_ENV);
+                .additionalField("env", BotConfig.BOT_ENV);
     }
 
     public void run() {

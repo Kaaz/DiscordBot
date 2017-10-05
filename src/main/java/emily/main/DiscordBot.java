@@ -21,15 +21,7 @@ import emily.db.controllers.CBanks;
 import emily.db.controllers.CGuild;
 import emily.event.JDAEventManager;
 import emily.event.JDAEvents;
-import emily.guildsettings.bot.SettingActiveChannels;
-import emily.guildsettings.bot.SettingAutoReplyModule;
-import emily.guildsettings.bot.SettingBotChannel;
-import emily.guildsettings.bot.SettingCleanupMessages;
-import emily.guildsettings.bot.SettingEnableChatBot;
-import emily.guildsettings.moderation.SettingCommandLoggingChannel;
-import emily.guildsettings.moderation.SettingLoggingChannel;
-import emily.guildsettings.moderation.SettingModlogChannel;
-import emily.guildsettings.music.SettingMusicChannel;
+import emily.guildsettings.GSetting;
 import emily.handler.AutoReplyHandler;
 import emily.handler.ChatBotHandler;
 import emily.handler.CommandHandler;
@@ -57,9 +49,9 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.PermissionUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.util.concurrent.Executors;
@@ -70,7 +62,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class DiscordBot {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(DiscordBot.class);
+    public static final Logger LOGGER = LogManager.getLogger(DiscordBot.class);
     public final long startupTimeStamp;
     private final int totShards;
     private final ScheduledExecutorService scheduler;
@@ -124,7 +116,7 @@ public class DiscordBot {
     }
 
     public void restartJDA() throws LoginException, InterruptedException, RateLimitedException {
-        JDABuilder builder = new JDABuilder(AccountType.BOT).setToken(Config.BOT_TOKEN);
+        JDABuilder builder = new JDABuilder(AccountType.BOT).setToken(BotConfig.BOT_TOKEN);
         if (totShards > 1) {
             builder.useSharding(shardId, totShards);
         }
@@ -167,8 +159,8 @@ public class DiscordBot {
      * @return delete the message?
      */
     public boolean shouldCleanUpMessages(MessageChannel channel) {
-        String cleanupMethod = GuildSettings.getFor(channel, SettingCleanupMessages.class);
-        String myChannel = GuildSettings.getFor(channel, SettingBotChannel.class);
+        String cleanupMethod = GuildSettings.getFor(channel, GSetting.CLEANUP_MESSAGES);
+        String myChannel = GuildSettings.getFor(channel, GSetting.BOT_CHANNEL);
         if ("yes".equals(cleanupMethod)) {
             return true;
         } else if ("nonstandard".equals(cleanupMethod) && !channel.getName().equalsIgnoreCase(myChannel)) {
@@ -178,7 +170,7 @@ public class DiscordBot {
     }
 
     public void logGuildEvent(Guild guild, String category, String message) {
-        String channelIdentifier = GuildSettings.get(guild).getOrDefault(SettingLoggingChannel.class);
+        String channelIdentifier = GuildSettings.get(guild).getOrDefault(GSetting.BOT_CHANNEL);
         if ("false".equals(channelIdentifier)) {
             return;
         }
@@ -189,7 +181,7 @@ public class DiscordBot {
             channel = DisUtil.findChannel(guild, channelIdentifier);
         }
         if (channel == null || !channel.canTalk()) {
-            GuildSettings.get(guild).set(guild, SettingLoggingChannel.class, "false");
+//            GuildSettings.get(guild).set(guild, null, "false");
             if (channel == null) {
                 out.sendAsyncMessage(getDefaultChannel(guild), Template.get("guild_logchannel_not_found", channelIdentifier));
             } else {
@@ -216,7 +208,7 @@ public class DiscordBot {
      * @return default chat channel
      */
     public synchronized TextChannel getDefaultChannel(Guild guild) {
-        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingBotChannel.class);
+        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(GSetting.BOT_CHANNEL);
         TextChannel defaultChannel;
         if (channelIdentifier.matches("\\d{12,}")) {
             defaultChannel = guild.getTextChannelById(channelIdentifier);
@@ -244,7 +236,7 @@ public class DiscordBot {
         if (guild == null) {
             return null;
         }
-        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingMusicChannel.class);
+        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(GSetting.MUSIC_CHANNEL);
         TextChannel channel;
         if (channelIdentifier.matches("\\d{12,}")) {
             channel = guild.getTextChannelById(channelIdentifier);
@@ -269,11 +261,11 @@ public class DiscordBot {
      */
     public synchronized TextChannel getModlogChannel(String guildId) {
         Guild guild = getJda().getGuildById(guildId);
-        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingModlogChannel.class);
-        if ("false".equals(channelIdentifier)) {
-            return null;
-        }
-        return guild.getTextChannelById(channelIdentifier);
+//        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault();
+//        if ("false".equals(channelIdentifier)) {
+        return null;
+//        }
+//        return guild.getTextChannelById(channelIdentifier);
     }
 
     /**
@@ -283,11 +275,11 @@ public class DiscordBot {
      * @return channel || null
      */
     public synchronized TextChannel getCommandLogChannel(Guild guild) {
-        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingCommandLoggingChannel.class);
-        if ("false".equals(channelIdentifier)) {
-            return null;
-        }
-        return guild.getTextChannelById(channelIdentifier);
+//        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingCommandLoggingChannel.class);
+//        if ("false".equals(channelIdentifier)) {
+        return null;
+//        }
+//        return guild.getTextChannelById(channelIdentifier);
     }
 
     /**
@@ -381,14 +373,6 @@ public class DiscordBot {
             return;
         }
         GuildSettings settings = GuildSettings.get(guild.getId());
-        if (settings.getOrDefault(SettingActiveChannels.class).equals("mine") &&
-                !channel.getId().equals(settings.getOrDefault(SettingBotChannel.class))) {
-            if (message.getRawContent().equals(mentionMe + " reset yesimsure") || message.getRawContent().equals(mentionMeAlias + " reset yesimsure")) {
-                queue.add(channel.sendMessage(Emojibet.THUMBS_UP));
-                settings.set(null, SettingActiveChannels.class, "all");
-            }
-            return;
-        }
         if (gameHandler.isGameInput(channel, author, message.getRawContent().toLowerCase())) {
             gameHandler.execute(author, channel, message.getRawContent(), null);
             return;
@@ -397,15 +381,15 @@ public class DiscordBot {
             CommandHandler.process(this, channel, author, message.getRawContent());
             return;
         }
-        if (GuildSettings.getFor(channel, SettingAutoReplyModule.class).equals("true")) {
+        if (GuildSettings.getFor(channel, GSetting.AUTO_REPLY).equals("true")) {
             if (autoReplyhandler.autoReplied(message)) {
                 return;
             }
         }
-        if (Config.BOT_CHATTING_ENABLED && settings.getOrDefault(SettingEnableChatBot.class).equals("true") &&
-                channel.getId().equals(GuildSettings.get(channel.getGuild()).getOrDefault(SettingBotChannel.class))) {
+        if (BotConfig.BOT_CHATTING_ENABLED && settings.getOrDefault(GSetting.CHAT_BOT_ENABLED).equals("true") &&
+                channel.getId().equals(GuildSettings.get(channel.getGuild()).getOrDefault(GSetting.BOT_CHANNEL))) {
             if (PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_WRITE)) {
-                channel.sendTyping();
+                channel.sendTyping().queue();
                 this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(guild.getId(), message.getRawContent()), null);
             }
         }
@@ -420,7 +404,7 @@ public class DiscordBot {
     }
 
     public void sendStatsToDiscordPw() {
-        if (!Config.BOT_STATS_DISCORD_PW_ENABLED) {
+        if (!BotConfig.BOT_STATS_DISCORD_PW_ENABLED) {
             return;
         }
         JSONObject data = new JSONObject();
@@ -430,14 +414,14 @@ public class DiscordBot {
             data.put("shard_count", totShards);
         }
         Unirest.post("https://bots.discord.pw/api/bots/" + getJda().getSelfUser().getId() + "/stats")
-                .header("Authorization", Config.BOT_TOKEN_BOTS_DISCORD_PW)
+                .header("Authorization", BotConfig.BOT_TOKEN_BOTS_DISCORD_PW)
                 .header("Content-Type", "application/json")
                 .body(data.toString())
                 .asJsonAsync();
     }
 
     public void sendStatsToDiscordbotsOrg() {
-        if (Config.BOT_TOKEN_DISCORDBOTS_ORG.length() < 10) {
+        if (BotConfig.BOT_TOKEN_DISCORDBOTS_ORG.length() < 10) {
             return;
         }
         JSONObject data = new JSONObject();
@@ -447,7 +431,7 @@ public class DiscordBot {
             data.put("shard_count", totShards);
         }
         Unirest.post("https://discordbots.org/api/bots/" + getJda().getSelfUser().getId() + "/stats")
-                .header("Authorization", Config.BOT_TOKEN_DISCORDBOTS_ORG)
+                .header("Authorization", BotConfig.BOT_TOKEN_DISCORDBOTS_ORG)
                 .header("Content-Type", "application/json")
                 .body(data.toString())
                 .asJsonAsync();

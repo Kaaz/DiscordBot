@@ -17,11 +17,10 @@
 package emily.util;
 
 import emily.db.model.OMusic;
-import emily.guildsettings.music.SettingMusicQueueOnly;
-import emily.guildsettings.music.SettingMusicRole;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
-import emily.main.Config;
+import emily.main.BotConfig;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -53,19 +52,19 @@ public class MusicUtil {
         embed.setThumbnail("https://i.ytimg.com/vi/" + record.youtubecode + "/0.jpg");
         embed.setTitle("\uD83C\uDFB6 " + record.youtubeTitle, null);
         embed.setDescription("[source](https://www.youtube.com/watch?v=" + record.youtubecode + ") | `" + DisUtil.getCommandPrefix(player.getGuild()) + "pl` - " + player.getPlaylist().title);
-        embed.addField("duration", Misc.getDurationString(player.player.getPlayingTrack().getPosition()/1000)+" / "+Misc.getDurationString(record.duration), true);
+        embed.addField("duration", Misc.getDurationString(player.player.getPlayingTrack().getPosition() / 1000) + " / " + Misc.getDurationString(record.duration), true);
         String optionsField = "";
         if (player.getRequiredVotes() != 1) {
-            optionsField += "Skips req.: " + player.getRequiredVotes() + Config.EOL;
+            optionsField += "Skips req.: " + player.getRequiredVotes() + BotConfig.EOL;
         }
-        String requiredRole = GuildSettings.get(player.getGuild()).getOrDefault(SettingMusicRole.class);
+        String requiredRole = GuildSettings.get(player.getGuild()).getOrDefault(GSetting.MUSIC_ROLE_REQUIREMENT);
         if (!requiredRole.equals("false")) {
             Role role = guild.getRoleById(requiredRole);
             if (role != null) {
-                optionsField += "Role req.: " + role.getName() + Config.EOL;
+                optionsField += "Role req.: " + role.getName() + BotConfig.EOL;
             }
         }
-        if (GuildSettings.get(player.getGuild()).getOrDefault(SettingMusicQueueOnly.class).equals("false")) {
+        if (GuildSettings.get(player.getGuild()).getOrDefault(GSetting.MUSIC_QUEUE_ONLY).equals("false")) {
             optionsField += "Random after queue";
         } else {
             optionsField += "Stop after queue";
@@ -76,7 +75,7 @@ public class MusicUtil {
         if (!queue.isEmpty()) {
             String x = "";
             for (int i = 0; i < Math.min(show, queue.size()); i++) {
-                x += queue.get(i).youtubeTitle + Config.EOL;
+                x += queue.get(i).youtubeTitle + BotConfig.EOL;
             }
             if (queue.size() > show) {
                 x += ".. and **" + (queue.size() - 3) + "** more";

@@ -23,9 +23,10 @@ import emily.command.ICommandReactionListener;
 import emily.command.PaginationInfo;
 import emily.core.AbstractCommand;
 import emily.guildsettings.DefaultGuildSettings;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -45,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,7 +69,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         int elements = 0;
         for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < endIndex; i++) {
             String key = keys.get(i);
-            b.addField(key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key), true);
+            b.addField(key.toLowerCase(), GuildSettings.get(guild.getId()).getDisplayValue(guild, key), true);
             elements++;
         }
         if (elements % 3 == 2) {
@@ -77,8 +77,8 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         }
         String commandPrefix = DisUtil.getCommandPrefix(guild);
         b.setFooter("Page " + (activePage + 1) + " / " + maxPage + " | Press the buttons for other pages", null);
-        b.setDescription(String.format("To see more details about a setting:" + Config.EOL +
-                "`%1$scfg settingname`" + Config.EOL + Config.EOL, commandPrefix));
+        b.setDescription(String.format("To see more details about a setting:" + BotConfig.EOL +
+                "`%1$scfg settingname`" + BotConfig.EOL + BotConfig.EOL, commandPrefix));
         b.setTitle("Current Settings for " + guild.getName() + " [" + (1 + activePage) + " / " + maxPage + "]", null);
         return b.build();
     }
@@ -146,8 +146,8 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         String tag = null;
         if (args.length > 0) {
             if (args[0].equals("tags")) {
-                return "The following tags exist for settings: " + Config.EOL + Config.EOL +
-                        Joiner.on(", ").join(DefaultGuildSettings.getAllTags()) + Config.EOL + Config.EOL +
+                return "The following tags exist for settings: " + BotConfig.EOL + BotConfig.EOL +
+                        Joiner.on(", ").join(DefaultGuildSettings.getAllTags()) + BotConfig.EOL + BotConfig.EOL +
                         "`" + DisUtil.getCommandPrefix(channel) + "cfg tag tagname` to see settings with tagname";
             }
             if (args[0].equals("tag") && args.length > 1) {
@@ -155,8 +155,8 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
             }
         }
         if (args.length == 0 || tag != null || args.length > 0 && args[0].equals("page")) {
-            Map<String, String> settings = GuildSettings.get(guild).getSettings();
-            ArrayList<String> keys = new ArrayList<>(settings.keySet());
+            String[] settings = GuildSettings.get(guild).getSettings();
+            ArrayList<String> keys = new ArrayList<>(DefaultGuildSettings.getAllKeys());
             Collections.sort(keys);
             int activePage = 0;
             int maxPage = 1 + DefaultGuildSettings.countSettings(false) / CFG_PER_PAGE;
@@ -172,16 +172,17 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
                 return "";
             }
 
-            String ret = "Current Settings for " + guild.getName() + Config.EOL + Config.EOL;
+            String ret = "Current Settings for " + guild.getName() + BotConfig.EOL + BotConfig.EOL;
             if (tag != null) {
-                ret += "Only showing settings with the tag `" + tag + "`" + Config.EOL;
+                ret += "Only showing settings with the tag `" + tag + "`" + BotConfig.EOL;
             }
-            ret += ":information_source: Settings indicated with a `*` are different from the default value" + Config.EOL + Config.EOL;
-            String cfgFormat = "`\u200B%-24s:`  %s" + Config.EOL;
+            ret += ":information_source: Settings indicated with a `*` are different from the default value" + BotConfig.EOL + BotConfig.EOL;
+            String cfgFormat = "`\u200B%-24s:`  %s" + BotConfig.EOL;
             boolean isEmpty = true;
             for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < activePage * CFG_PER_PAGE + CFG_PER_PAGE; i++) {
                 String key = keys.get(i);
-                if (DefaultGuildSettings.get(key).isReadOnly()) {
+                GSetting gSetting = GSetting.valueOf(key);
+                if (DefaultGuildSettings.get(key).isInternal()) {
                     if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
                         continue;
                     }
@@ -190,9 +191,9 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
                     continue;
                 }
                 String indicator = "  ";
-                if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && DefaultGuildSettings.get(key).isReadOnly()) {
+                if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && DefaultGuildSettings.get(key).isInternal()) {
                     indicator = "r ";
-                } else if (!settings.get(key).equals(DefaultGuildSettings.getDefault(key))) {
+                } else if (!settings[gSetting.ordinal()].equals(DefaultGuildSettings.getDefault(key))) {
                     indicator = "* ";
                 }
                 ret += String.format(cfgFormat, indicator + key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key));
@@ -209,7 +210,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         if (!DefaultGuildSettings.isValidKey(args[0])) {
             return Template.get("command_config_key_not_exists");
         }
-        if (DefaultGuildSettings.get(args[0]).isReadOnly() && !rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+        if (DefaultGuildSettings.get(args[0]).isInternal() && !rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
             return Template.get("command_config_key_read_only");
         }
 
@@ -233,13 +234,11 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
 
         String tblContent = "";
         GuildSettings setting = GuildSettings.get(guild);
-        for (String s : setting.getDescription(args[0])) {
-            tblContent += s + Config.EOL;
-        }
-        return "Config help for **" + args[0] + "**" + Config.EOL + Config.EOL +
-                "Current value: \"**" + GuildSettings.get(guild.getId()).getDisplayValue(guild, args[0]) + "**\"" + Config.EOL +
-                "Default value: \"**" + setting.getDefaultValue(args[0]) + "**\"" + Config.EOL + Config.EOL +
-                "Description: " + Config.EOL +
+        tblContent += setting.getDescription(args[0]);
+        return "Config help for **" + args[0] + "**" + BotConfig.EOL + BotConfig.EOL +
+                "Current value: \"**" + GuildSettings.get(guild.getId()).getDisplayValue(guild, args[0]) + "**\"" + BotConfig.EOL +
+                "Default value: \"**" + setting.getDefaultValue(args[0]) + "**\"" + BotConfig.EOL + BotConfig.EOL +
+                "Description: " + BotConfig.EOL +
                 Misc.makeTable(tblContent) +
                 "To set it back to default: `" + DisUtil.getCommandPrefix(channel) + "cfg " + args[0] + " " + setting.getDefaultValue(args[0]) + "`";
     }

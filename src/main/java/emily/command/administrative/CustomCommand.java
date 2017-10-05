@@ -22,7 +22,7 @@ import emily.core.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.handler.CommandHandler;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -45,8 +45,8 @@ public class CustomCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Add and remove custom commands." + Config.EOL +
-                "There are a few keywords you can use in commands. These tags will be replaced by its value " + Config.EOL + Config.EOL +
+        return "Add and remove custom commands." + BotConfig.EOL +
+                "There are a few keywords you can use in commands. These tags will be replaced by its value " + BotConfig.EOL + BotConfig.EOL +
                 "Key                Replacement\n" +
                 "---                ---\n" +
                 "%user%             Username \n" +
@@ -117,10 +117,10 @@ public class CustomCommand extends AbstractCommand {
                 return "Removed " + prefix + args[1];
             }
         } else if (args.length == 0 || (args.length > 0 && args[0].equalsIgnoreCase("list"))) {
-            return "All custom commands: " + Config.EOL + Misc.makeTable(CommandHandler.getCustomCommands(guildId));
+            return "All custom commands: " + BotConfig.EOL + Misc.makeTable(CommandHandler.getCustomCommands(guildId));
         } else {
-            return "```" + Config.EOL +
-                    getDescription() + Config.EOL + "```";
+            return "```" + BotConfig.EOL +
+                    getDescription() + BotConfig.EOL + "```";
         }
         return Template.get("permission_denied");
     }

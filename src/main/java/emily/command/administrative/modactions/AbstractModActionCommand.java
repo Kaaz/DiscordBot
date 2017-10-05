@@ -63,10 +63,10 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
         TextChannel chan = (TextChannel) channel;
         Guild guild = chan.getGuild();
         if (getRequiredPermission() != null) {
-            if (!PermissionUtil.checkPermission(guild, guild.getMember(author), getRequiredPermission())) {
+            if (!PermissionUtil.checkPermission(guild.getMember(author), getRequiredPermission())) {
                 return Template.get("command_no_permission");
             }
-            if (!PermissionUtil.checkPermission(guild, guild.getSelfMember(), getRequiredPermission())) {
+            if (!PermissionUtil.checkPermission(guild.getSelfMember(), getRequiredPermission())) {
                 return Template.get("permission_missing", getRequiredPermission().name());
             }
         }

@@ -18,7 +18,7 @@ package emily.service;
 
 import emily.core.AbstractService;
 import emily.main.BotContainer;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -46,25 +46,24 @@ public class BotStatusService extends AbstractService {
             "Half Life %s",
             "russian roulette | %s left",
             "hide and seek with %s users",
-            "peekaboo",
             "\";DROP TABLE WHERE id = %s",
             "rating your waifu a %s",
             "Talking to %s idiots",
             "Looking for %s new jokes",
-            "Organizing music",
-            "Trying to remember preferences",
+            "Organizing music #%s",
+            "Trying to remember preferences #%s",
             "Analyzing %s fellow humans",
-            "Yesterday you said tomorrow",
-            "Let dreams be dreams",
+            "Yesterday you said tomorrow #%s",
+            "Let dreams be dreams #%s",
             "finding Rare pepe #%s",
             "Megaman %s",
             "Having my %s minutes of fame",
             "Predicting %s minutes",
-            "Achieving nirvana",
+            "Achieving nirvana #%s",
             "bending spoons, attempt #%s",
             "Making my top %s most wanted list",
             "Running %s miles",
-            "Dancing the macarena",
+            "Dancing the macarena #%s",
             "Jousting #%s",
             "Fishing with %s poles",
     };
@@ -97,10 +96,10 @@ public class BotStatusService extends AbstractService {
     @Override
     public void run() {
         int roll = rng.nextInt(100);
-        TextChannel inviteChannel = bot.getShardFor(Config.BOT_GUILD_ID).getJda().getTextChannelById(Config.BOT_CHANNEL_ID);
+        TextChannel inviteChannel = bot.getShardFor(BotConfig.BOT_GUILD_ID).getJda().getTextChannelById(BotConfig.BOT_CHANNEL_ID);
         if (inviteChannel != null && roll < 10) {
             String fallback = "Feedback @ https://discord.gg/eaywDDt | #%s";
-            bot.getShardFor(Config.BOT_GUILD_ID).queue.add(inviteChannel.getInvites(),
+            bot.getShardFor(BotConfig.BOT_GUILD_ID).queue.add(inviteChannel.getInvites(),
                     invites -> {
                         if (invites != null && !invites.isEmpty()) {
                             setGameOnShards(bot, "Feedback @ https://discord.gg/" + invites.get(0).getCode() + " | %s");

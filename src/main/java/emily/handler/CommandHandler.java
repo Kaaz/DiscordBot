@@ -31,9 +31,8 @@ import emily.db.controllers.CUser;
 import emily.db.model.OBlacklistCommand;
 import emily.db.model.OBotEvent;
 import emily.db.model.OCommandCooldown;
-import emily.guildsettings.bot.SettingCommandPrefix;
-import emily.guildsettings.bot.SettingShowUnknownCommands;
-import emily.main.Config;
+import emily.guildsettings.GSetting;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.util.DisUtil;
@@ -131,7 +130,7 @@ public class CommandHandler {
             long cooldown = getCommandCooldown(command, author, channel);
             if (command.canBeDisabled() && isDisabled(guildId, channel.getId(), command.getCommand())) {
                 commandSuccess = false;
-                if (GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
+                if (GuildSettings.getFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS).equals("true")) {
                     outMsg = Template.get("command_is_blacklisted", input[0]);
                 }
             } else if (cooldown > 0) {
@@ -153,7 +152,7 @@ public class CommandHandler {
                 if (!commandOutput.isEmpty()) {
                     outMsg = commandOutput;
                 }
-                if (Config.BOT_COMMAND_LOGGING) {
+                if (BotConfig.BOT_COMMAND_LOGGING) {
                     StringBuilder usedArguments = new StringBuilder();
                     for (String arg : args) {
                         usedArguments.append(arg).append(" ");
@@ -172,14 +171,14 @@ public class CommandHandler {
         } else if (guildCommands.containsKey(guildId) && guildCommands.get(guildId).containsKey(input[0])) {
             commandUsed = "custom:" + input[0];
             outMsg = DisUtil.replaceTags(guildCommands.get(guildId).get(input[0]), author, channel, args);
-        } else if (startedWithMention && Config.BOT_CHATTING_ENABLED) {
+        } else if (startedWithMention && BotConfig.BOT_CHATTING_ENABLED) {
             commandSuccess = false;
             channel.sendTyping();
             outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat((guildId > 0 ? CGuild.getCachedDiscordId(guildId) : "private"), inputMessage);
-        } else if (Config.BOT_COMMAND_SHOW_UNKNOWN ||
-                GuildSettings.getFor(channel, SettingShowUnknownCommands.class).equals("true")) {
+        } else if (BotConfig.BOT_COMMAND_SHOW_UNKNOWN ||
+                GuildSettings.getFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS).equals("true")) {
             commandSuccess = false;
-            outMsg = Template.get("unknown_command", GuildSettings.getFor(channel, SettingCommandPrefix.class) + "help");
+            outMsg = Template.get("unknown_command", GuildSettings.getFor(channel, GSetting.COMMAND_PREFIX) + "help");
         }
         if (!outMsg.isEmpty()) {
             bot.out.sendAsyncMessage(channel, outMsg);
@@ -303,8 +302,8 @@ public class CommandHandler {
      * @return instance of Command for Key or null
      */
     public static AbstractCommand getCommand(String key) {
-        if (key.startsWith(Config.BOT_COMMAND_PREFIX)) {
-            key = key.substring(Config.BOT_COMMAND_PREFIX.length());
+        if (key.startsWith(BotConfig.BOT_COMMAND_PREFIX)) {
+            key = key.substring(BotConfig.BOT_COMMAND_PREFIX.length());
         }
         if (commands.containsKey(key)) {
             return commands.get(key);
@@ -420,13 +419,13 @@ public class CommandHandler {
     private static boolean isCommandCategoryEnabled(CommandCategory category) {
         switch (category) {
             case MUSIC:
-                return Config.MODULE_ECONOMY_ENABLED;
+                return BotConfig.MODULE_ECONOMY_ENABLED;
             case ECONOMY:
-                return Config.MODULE_ECONOMY_ENABLED;
+                return BotConfig.MODULE_ECONOMY_ENABLED;
             case POE:
-                return Config.MODULE_POE_ENABLED;
+                return BotConfig.MODULE_POE_ENABLED;
             case HEARTHSTONE:
-                return Config.MODULE_HEARTHSTONE_ENABLED;
+                return BotConfig.MODULE_HEARTHSTONE_ENABLED;
             default:
                 return true;
         }

@@ -21,7 +21,7 @@ import emily.core.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CGuildRoleAssignable;
 import emily.handler.Template;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.role.RoleRankings;
@@ -50,14 +50,14 @@ public class RoleAdminCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Management of roles & general permissions " + Config.EOL +
-                "You can give users the ability to self-assign roles. " + Config.EOL +
-                "" + Config.EOL +
-                "Note: " + Config.EOL +
-                "self-assignable roles are not created by emily!" + Config.EOL +
-                "To add an assignable role, you'll first have to add that role though discord." + Config.EOL +
-                "" + Config.EOL +
-                "" + Config.EOL +
+        return "Management of roles & general permissions " + BotConfig.EOL +
+                "You can give users the ability to self-assign roles. " + BotConfig.EOL +
+                "" + BotConfig.EOL +
+                "Note: " + BotConfig.EOL +
+                "self-assignable roles are not created by emily!" + BotConfig.EOL +
+                "To add an assignable role, you'll first have to add that role though discord." + BotConfig.EOL +
+                "" + BotConfig.EOL +
+                "" + BotConfig.EOL +
                 "Users can get/remove their own roles with the `getrole` command ";
     }
 
@@ -109,17 +109,17 @@ public class RoleAdminCommand extends AbstractCommand {
             return Template.get("command_no_permission");
         }
         if (args.length == 0 || args[0].equals("list")) {
-            String out = "I found the following roles" + Config.EOL;
+            String out = "I found the following roles" + BotConfig.EOL;
             List<Role> roles = guild.getRoles();
             for (Role role : roles) {
                 if (role.getPosition() == -1) {
                     continue;
                 }
-                out += String.format("%s (%s)" + Config.EOL, role.getName(), role.getId());
+                out += String.format("%s (%s)" + BotConfig.EOL, role.getName(), role.getId());
             }
             return out;
         }
-        if (!PermissionUtil.checkPermission(guild, guild.getSelfMember(), Permission.MANAGE_ROLES)) {
+        if (!PermissionUtil.checkPermission(guild.getSelfMember(), Permission.MANAGE_ROLES)) {
             return Template.get("permission_missing_manage_roles");
         }
         switch (args[0].toLowerCase()) {

@@ -16,16 +16,14 @@
 
 package emily.util;
 
-import com.google.common.base.Joiner;
-import com.wezinkhof.configuration.ConfigurationBuilder;
+import com.kaaz.configuration.ConfigurationBuilder;
 import emily.core.AbstractCommand;
 import emily.db.WebDb;
 import emily.games.AbstractGame;
-import emily.guildsettings.AbstractGuildSetting;
-import emily.guildsettings.DefaultGuildSettings;
+import emily.guildsettings.GSetting;
 import emily.handler.CommandHandler;
 import emily.handler.GameHandler;
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.role.MemberShipRole;
 import emily.role.RoleRankings;
 
@@ -37,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +45,7 @@ import java.util.Map;
 public class ReadmeHelper {
 
     public static void main(String[] args) throws Exception {
-        new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
+        new ConfigurationBuilder(BotConfig.class, new File("application.cfg")).build(true);
         WebDb.init();
         RoleRankings.init();
         CommandHandler.initialize();
@@ -68,11 +67,11 @@ public class ReadmeHelper {
     private static String readmeListOfAutoRanks() {
         String s = "";
         List<MemberShipRole> allRoles = RoleRankings.getAllRoles();
-        s += "Name | Time spend |" + Config.EOL;
-        s += "--- | --- | " + Config.EOL;
+        s += "Name | Time spend |" + BotConfig.EOL;
+        s += "--- | --- | " + BotConfig.EOL;
         for (MemberShipRole role : allRoles) {
             s += role.getName() + " | ";
-            s += TimeUtil.getRelativeTime((System.currentTimeMillis() + role.getMembershipTime()) / 1000L + 1000L, false, false) + Config.EOL;
+            s += TimeUtil.getRelativeTime((System.currentTimeMillis() + role.getMembershipTime()) / 1000L + 1000L, false, false) + BotConfig.EOL;
         }
 
         return s;
@@ -83,13 +82,13 @@ public class ReadmeHelper {
         GameHandler gameHandler = new GameHandler(null);
         List<AbstractGame> gameList = gameHandler.getGameList();
         String s = "";
-        s += "Key | Name | Players |" + Config.EOL;
-        s += "--- | --- | --- |" + Config.EOL;
+        s += "Key | Name | Players |" + BotConfig.EOL;
+        s += "--- | --- | --- |" + BotConfig.EOL;
         for (AbstractGame game : gameList) {
             s += game.getCodeName() + " | ";
             s += game.getFullname() + " | ";
             s += game.getTotalPlayers();
-            s += Config.EOL;
+            s += BotConfig.EOL;
         }
 
         return s;
@@ -97,17 +96,20 @@ public class ReadmeHelper {
 
     private static String readmeGuildConfiguration() {
         String s = "";
-        Map<String, AbstractGuildSetting> defaults = DefaultGuildSettings.getDefaults();
+        Map<String, GSetting> defaults = new HashMap<>();
+        for (GSetting setting : GSetting.values()) {
+            defaults.put(setting.name(), setting);
+        }
         ArrayList<String> skeys = new ArrayList<>(defaults.keySet());
         Collections.sort(skeys);
-        s += "Key | Default | Description |" + Config.EOL;
-        s += "--- | --- | ---|" + Config.EOL;
+        s += "Key | Default | Description |" + BotConfig.EOL;
+        s += "--- | --- | ---|" + BotConfig.EOL;
         for (String skey : skeys) {
 
-            s += defaults.get(skey).getKey() + " | ";
-            s += defaults.get(skey).getDefault() + " | ";
-            s += Joiner.on("<br/>").join(defaults.get(skey).getDescription());
-            s += Config.EOL;
+            s += defaults.get(skey).name().toLowerCase() + " | ";
+            s += defaults.get(skey).getDefaultValue() + " | ";
+            s += defaults.get(skey).getDescription();
+            s += BotConfig.EOL;
         }
 
         return s;
@@ -121,8 +123,8 @@ public class ReadmeHelper {
         ArrayList<String> sortedCommandList = new ArrayList<>();
         Collections.addAll(sortedCommandList, CommandHandler.getCommands());
         Collections.sort(sortedCommandList);
-        s += "Commands | | | | |" + Config.EOL;
-        s += "--- | --- | ---| ---| ---" + Config.EOL;
+        s += "Commands | | | | |" + BotConfig.EOL;
+        s += "--- | --- | ---| ---| ---" + BotConfig.EOL;
         int columns = 5;
         int currentColumn = 0;
         for (String commandName : sortedCommandList) {
@@ -132,7 +134,7 @@ public class ReadmeHelper {
                 if (currentColumn % columns <= (columns - 2)) {
                     s += " | ";
                 } else {
-                    s += Config.EOL;
+                    s += BotConfig.EOL;
                 }
                 currentColumn++;
             }
@@ -150,13 +152,13 @@ public class ReadmeHelper {
             if (!command.isEnabled() || !command.isListed()) {
                 continue;
             }
-            text += "### " + command.getCommand() + Config.EOL + Config.EOL;
-            text += command.getDescription() + Config.EOL + Config.EOL;
+            text += "### " + command.getCommand() + BotConfig.EOL + BotConfig.EOL;
+            text += command.getDescription() + BotConfig.EOL + BotConfig.EOL;
             text += "Accessible though: " + command.getCommand();
             for (String alias : command.getAliases()) {
                 text += ", " + alias;
             }
-            text += Config.EOL + Config.EOL;
+            text += BotConfig.EOL + BotConfig.EOL;
             String visibility;
             switch (command.getVisibility()) {
                 case PRIVATE:
@@ -172,15 +174,15 @@ public class ReadmeHelper {
                     visibility = "Nowhere";
                     break;
             }
-            text += "Usable " + visibility + Config.EOL;
+            text += "Usable " + visibility + BotConfig.EOL;
             if (command.getUsage().length > 0) {
-                text += Config.EOL;
-                text += "#### Usage" + Config.EOL + Config.EOL;
-                text += "```php" + Config.EOL;
+                text += BotConfig.EOL;
+                text += "#### Usage" + BotConfig.EOL + BotConfig.EOL;
+                text += "```php" + BotConfig.EOL;
                 for (String line : command.getUsage()) {
-                    text += line + Config.EOL;
+                    text += line + BotConfig.EOL;
                 }
-                text += ("```") + Config.EOL;
+                text += ("```") + BotConfig.EOL;
             }
         }
         return text;

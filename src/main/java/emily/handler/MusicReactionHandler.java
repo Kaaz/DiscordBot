@@ -21,7 +21,7 @@ import emily.db.controllers.CPlaylist;
 import emily.db.controllers.CUser;
 import emily.db.model.OMusic;
 import emily.db.model.OPlaylist;
-import emily.guildsettings.music.SettingMusicSkipAdminOnly;
+import emily.guildsettings.GSetting;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.Emojibet;
@@ -122,7 +122,7 @@ public class MusicReactionHandler {
     }
 
     private void handleVoteSkip(MusicPlayerHandler player, TextChannel channel, User invoker, SimpleRank rank, boolean isAdding) {
-        if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && "true".equals(GuildSettings.getFor(channel, SettingMusicSkipAdminOnly.class))) {
+        if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && "true".equals(GuildSettings.getFor(channel, GSetting.MUSIC_SKIP_ADMIN_ONLY))) {
             return;
         }
         if (isAdding) {

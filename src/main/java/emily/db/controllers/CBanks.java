@@ -20,7 +20,7 @@ import emily.core.Logger;
 import emily.db.WebDb;
 import emily.db.model.OBank;
 import emily.db.model.OUser;
-import emily.main.Config;
+import emily.main.BotConfig;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -83,7 +83,7 @@ public class CBanks {
         }
         try {
             if (bank.currentBalance == 0L) {
-                bank.currentBalance = Config.ECONOMY_START_BALANCE;
+                bank.currentBalance = BotConfig.ECONOMY_START_BALANCE;
             }
             bank.createdOn = new Timestamp(System.currentTimeMillis());
             bank.id = WebDb.get().insert(

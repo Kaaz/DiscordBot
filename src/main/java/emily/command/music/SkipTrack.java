@@ -18,8 +18,7 @@ package emily.command.music;
 
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
-import emily.guildsettings.music.SettingMusicRole;
-import emily.guildsettings.music.SettingMusicSkipAdminOnly;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
 import emily.handler.Template;
@@ -77,12 +76,12 @@ public class SkipTrack extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
-        boolean adminOnly = "true".equals(GuildSettings.getFor(channel, SettingMusicSkipAdminOnly.class));
+        boolean adminOnly = "true".equals(GuildSettings.getFor(channel, GSetting.MUSIC_SKIP_ADMIN_ONLY));
         if (adminOnly && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
             return Template.get(channel, "music_skip_admin_only");
         }
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Template.get(channel, "music_required_role_not_found", guild.getRoleById(GuildSettings.getFor(channel, SettingMusicRole.class)).getName());
+            return Template.get(channel, "music_required_role_not_found", guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)).getName());
         }
         if (!player.isPlaying()) {
             return Template.get("command_currentlyplaying_nosong");
@@ -104,7 +103,7 @@ public class SkipTrack extends AbstractCommand {
                 case "admin":
                 case "adminonly":
                     if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && args.length > 1 && args[1].equalsIgnoreCase("toggle")) {
-                        GuildSettings.get(guild).set(guild, SettingMusicSkipAdminOnly.class, adminOnly ? "false" : "true");
+                        GuildSettings.get(guild).set(guild, GSetting.MUSIC_SKIP_ADMIN_ONLY, adminOnly ? "false" : "true");
                         adminOnly = !adminOnly;
                     }
                     return Template.get("music_skip_mode", adminOnly ? "admin-only" : "normal");

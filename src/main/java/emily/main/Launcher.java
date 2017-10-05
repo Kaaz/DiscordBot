@@ -16,10 +16,10 @@
 
 package emily.main;
 
-import com.wezinkhof.configuration.ConfigurationBuilder;
-import emily.db.DbUpdate;
+import com.kaaz.configuration.ConfigurationBuilder;
 import emily.core.ExitCode;
 import emily.core.Logger;
+import emily.db.DbUpdate;
 import emily.db.WebDb;
 import emily.db.controllers.CBotPlayingOn;
 import emily.db.controllers.CGuild;
@@ -30,7 +30,6 @@ import emily.threads.ServiceHandlerThread;
 import emily.util.YTUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.managers.AudioManager;
-import net.dv8tion.jda.core.utils.SimpleLog;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +52,7 @@ public class Launcher {
      * @param args    optional extra arguments
      */
     public static void log(String message, String type, String subtype, Object... args) {
-        if (GRAYLOG != null && Config.BOT_GRAYLOG_ACTIVE) {
+        if (GRAYLOG != null && BotConfig.BOT_GRAYLOG_ACTIVE) {
             GRAYLOG.log(message, type, subtype, args);
         }
     }
@@ -69,11 +68,10 @@ public class Launcher {
     }
 
     public static void main(String[] args) throws Exception {
-        new ConfigurationBuilder(Config.class, new File("application.cfg")).build();
+        new ConfigurationBuilder(BotConfig.class, new File("application.cfg")).build(true);
         WebDb.init();
         Launcher.init();
-        if (Config.BOT_ENABLED) {
-            SimpleLog.addFileLog(SimpleLog.Level.DEBUG, new File("./logs/jda.log"));
+        if (BotConfig.BOT_ENABLED) {
             Runtime.getRuntime().addShutdownHook(new Thread(Launcher::shutdownHook));
             try {
                 botContainer = new BotContainer((CGuild.getActiveGuildCount()));
@@ -127,7 +125,7 @@ public class Launcher {
                         CBotPlayingOn.insert(guild.getId(), audio.getConnectedChannel().getId());
                     }
                 }
-                discordBot.getJda().shutdown(true);
+                discordBot.getJda().shutdown();
             }
         }
 
@@ -137,7 +135,7 @@ public class Launcher {
      * helper function, retrieves youtubeTitle for mp3 files which contain youtube videocode as filename
      */
     public static void fixExistingYoutubeFiles() {
-        File folder = new File(Config.MUSIC_DIRECTORY);
+        File folder = new File(BotConfig.MUSIC_DIRECTORY);
         String[] fileList = folder.list((dir, name) -> name.toLowerCase().endsWith(".mp3"));
         for (String file : fileList) {
             System.out.println(file);

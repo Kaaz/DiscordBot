@@ -17,7 +17,7 @@
 package emily.handler;
 
 
-import emily.main.Config;
+import emily.main.BotConfig;
 import emily.modules.cleverbotio.CleverbotIO;
 
 import java.util.Arrays;
@@ -35,7 +35,7 @@ public class ChatBotHandler {
     }
 
     private CleverbotIO getSession(String nick) {
-        return new CleverbotIO(Config.CLEVERBOT_IO_USER, Config.CLEVERBOT_IO_KEY, nick);
+        return new CleverbotIO(BotConfig.CLEVERBOT_IO_USER, BotConfig.CLEVERBOT_IO_KEY, nick);
     }
 
     public void cleanCache() {
