@@ -68,7 +68,7 @@ public class DefaultGuildSettings {
     }
 
     public static GSetting get(String key) {
-        return GSetting.valueOf(key);
+        return GSetting.valueOf(key.toUpperCase());
     }
 
     public static String getDefault(GSetting setting) {
@@ -77,7 +77,7 @@ public class DefaultGuildSettings {
 
     public static boolean isValidKey(String key) {
         try {
-            GSetting.valueOf(key);
+            GSetting.valueOf(key.toUpperCase());
             return true;
         } catch (Exception e) {
             return false;

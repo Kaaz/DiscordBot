@@ -104,7 +104,7 @@ public class GuildSettings {
     }
 
     public String getOrDefault(String key) {
-        return getOrDefault(GSetting.valueOf(key));
+        return getOrDefault(GSetting.valueOf(key.toUpperCase()));
     }
 
     /**
@@ -148,11 +148,11 @@ public class GuildSettings {
     }
 
     public String getDisplayValue(Guild guild, String key) {
-        return DefaultGuildSettings.get(key).toDisplay(guild, getOrDefault(key));
+        return DefaultGuildSettings.get(key.toUpperCase()).toDisplay(guild, getOrDefault(key));
     }
 
     public boolean set(Guild guild, String setting, String value) {
-        return DefaultGuildSettings.isValidKey(setting) && set(guild, GSetting.valueOf(setting), value);
+        return DefaultGuildSettings.isValidKey(setting) && set(guild, GSetting.valueOf(setting.toUpperCase()), value);
     }
 
     public boolean set(Guild guild, GSetting setting, String value) {
