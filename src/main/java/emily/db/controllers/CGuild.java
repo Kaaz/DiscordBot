@@ -71,7 +71,7 @@ public class CGuild {
         if (!discordIdCache.containsKey(id)) {
             OGuild server = findById(id);
             if (server.id == 0) {
-                return "";
+                return "0";
             }
             discordIdCache.put(id, server.discord_id);
         }
