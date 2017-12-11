@@ -83,7 +83,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
         String commandPrefix = GuildSettings.getFor(channel, GSetting.COMMAND_PREFIX);
-        boolean showHelpInPM = GuildSettings.getFor(channel, GSetting.HELP_IN_PM).equals("true");
+        boolean showHelpInPM = GuildSettings.getBoolFor(channel, GSetting.HELP_IN_PM);
         if (args.length > 0 && !args[0].equals("full")) {
             AbstractCommand c = CommandHandler.getCommand(DisUtil.filterPrefix(args[0], channel));
             if (c != null) {

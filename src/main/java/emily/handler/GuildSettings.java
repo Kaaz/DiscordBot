@@ -21,6 +21,8 @@ import emily.db.controllers.CGuild;
 import emily.db.model.OGuild;
 import emily.guildsettings.DefaultGuildSettings;
 import emily.guildsettings.GSetting;
+import emily.guildsettings.IGuildSettingType;
+import emily.guildsettings.types.BooleanSettingType;
 import emily.permission.SimpleRank;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -71,6 +73,17 @@ public class GuildSettings {
             return GuildSettings.get(((TextChannel) channel).getGuild()).getOrDefault(setting);
         }
         return DefaultGuildSettings.getDefault(setting);
+    }
+
+    /**
+     * Similar to {@link #getFor(MessageChannel, GSetting)} but more specifically only for boolean type settings
+     *
+     * @param channel the channel to check
+     * @param setting the setting
+     * @return boolean value of the setting
+     */
+    public static boolean getBoolFor(MessageChannel channel, GSetting setting) {
+        return setting.getSettingType() instanceof BooleanSettingType && "true".equals(getFor(channel, setting));
     }
 
     public static void remove(String guildId) {
@@ -143,7 +156,7 @@ public class GuildSettings {
         return "";
     }
 
-    public String getSettingsType(String key) {
+    public IGuildSettingType getSettingsType(String key) {
         return DefaultGuildSettings.get(key).getSettingType();
     }
 

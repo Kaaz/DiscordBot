@@ -144,5 +144,4 @@ public class Emojibet {
         }
         return UNKNOWN;
     }
-
 }

@@ -115,7 +115,7 @@ public class CommandHandler {
                 return;
             }
         }
-        //ignore the first newline
+        //
         String[] input = inputMessage.split("\\s+", 2);// (?:([^\s\"]+)|\"((?:\w+|\\\"|[^\"])+)")
         String[] args;
         if (input.length == 2) {
@@ -173,7 +173,7 @@ public class CommandHandler {
             outMsg = DisUtil.replaceTags(guildCommands.get(guildId).get(input[0]), author, channel, args);
         } else if (startedWithMention && BotConfig.BOT_CHATTING_ENABLED) {
             commandSuccess = false;
-            channel.sendTyping();
+            channel.sendTyping().queue();
             outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat((guildId > 0 ? CGuild.getCachedDiscordId(guildId) : "private"), inputMessage);
         } else if (BotConfig.BOT_COMMAND_SHOW_UNKNOWN ||
                 GuildSettings.getFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS).equals("true")) {

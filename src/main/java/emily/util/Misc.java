@@ -359,4 +359,12 @@ public class Misc {
             return fallback;
         }
     }
+
+    public static long parseLong(String longstr, int fallback) {
+        try {
+            return Long.parseLong(longstr);
+        } catch (NumberFormatException e) {
+            return fallback;
+        }
+    }
 }

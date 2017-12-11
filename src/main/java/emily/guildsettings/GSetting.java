@@ -279,7 +279,7 @@ public enum GSetting {
         return settingType.toDisplay(guild, value);
     }
 
-    public String getSettingType() {
-        return settingType.typeName();
+    public IGuildSettingType getSettingType() {
+        return settingType;
     }
 }

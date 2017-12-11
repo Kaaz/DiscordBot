@@ -36,11 +36,12 @@ import emily.handler.Template;
 import emily.handler.discord.RestQueue;
 import emily.role.RoleRankings;
 import emily.util.DisUtil;
-import emily.util.Emojibet;
+import emily.util.Misc;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Emote;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -54,6 +55,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -105,6 +107,18 @@ public class DiscordBot {
         }
         markReady();
         container.setLastAction(shardId, System.currentTimeMillis());
+    }
+
+    public Emote getEmote(String emoteString) {
+        List<Emote> emotes = jda.get().getEmotesByName(emoteString, true);
+        if (!emotes.isEmpty()) {
+            return emotes.get(0);
+        }
+
+        if (Misc.parseLong(emoteString, 0) > 0) {
+            return jda.get().getEmoteById(emoteString);
+        }
+        return null;
     }
 
     public void updateJda(JDA jda) {
@@ -360,7 +374,7 @@ public class DiscordBot {
         if (CommandHandler.isCommand(null, message.getRawContent(), mentionMe, mentionMeAlias)) {
             CommandHandler.process(this, channel, author, message.getRawContent());
         } else {
-            channel.sendTyping();
+            channel.sendTyping().queue();
             this.out.sendAsyncMessage(channel, this.chatBotHandler.chat("private", message.getRawContent()), null);
         }
     }
