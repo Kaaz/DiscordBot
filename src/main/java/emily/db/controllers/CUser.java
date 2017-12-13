@@ -16,10 +16,10 @@
 
 package emily.db.controllers;
 
-import com.vdurmont.emoji.EmojiParser;
 import emily.core.Logger;
 import emily.db.WebDb;
 import emily.db.model.OUser;
+import emoji4j.EmojiUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,7 +51,7 @@ public class CUser {
                 insert(user);
             }
             if (user.name == null || user.name.isEmpty() || user.name.equals(username)) {
-                user.name = EmojiParser.parseToAliases(username);
+                user.name = EmojiUtils.shortCodify(username);
                 update(user);
             }
             userCache.put(discordId, user.id);

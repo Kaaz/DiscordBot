@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Misc {
 
@@ -46,8 +48,31 @@ public class Misc {
     };
     private final static HashSet<String> fuzzyTrue = new HashSet<>(Arrays.asList("yea", "yep", "yes", "true", "ja", "y", "t", "1", "check"));
     private final static HashSet<String> fuzzyFalse = new HashSet<>(Arrays.asList("no", "false", "nope", "nein", "nee", "n", "f", "0"));
+    private final static Pattern patternGuildEmote = Pattern.compile("<:.*:(\\d+)>");
 
+    /**
+     * check if the sting is a guild emote
+     *
+     * @param emote string to check
+     * @return is it a guild emote?
+     */
+    public static boolean isGuildEmote(String emote) {
+        return patternGuildEmote.matcher(emote).matches();
+    }
 
+    /**
+     * returns the ID part of a guild emote
+     * @param emote the emote to extract from
+     * @return id
+     */
+    public static String getGuildEmoteId(String emote){
+        Matcher matcher = patternGuildEmote.matcher(emote);
+        if(matcher.find()){
+            System.out.println(matcher.group(1));
+            return matcher.group(1);
+        }
+        return null;
+    }
     public static String makeProgressbar(int max, int current) {
         int parts = 8;
         String bar = "";

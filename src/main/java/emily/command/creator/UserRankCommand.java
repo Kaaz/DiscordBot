@@ -32,6 +32,7 @@ import emily.permission.SimpleRank;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -84,7 +85,7 @@ public class UserRankCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank authorRank = bot.security.getSimpleRank(author);
         if (!authorRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
             return Template.get("no_permission");

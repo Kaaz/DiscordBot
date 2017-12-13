@@ -114,9 +114,9 @@
 			<version>LATEST</version>
 		</dependency>
 		<dependency>
-			<groupId>com.vdurmont</groupId>
-			<artifactId>emoji-java</artifactId>
-			<version>LATEST</version>
+			<groupId>com.kcthota</groupId>
+			<artifactId>emoji4j</artifactId>
+			<version>5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.dv8tion</groupId>
@@ -188,5 +188,16 @@
 			<artifactId>log4j-slf4j-impl</artifactId>
 			<version>2.8.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.9.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.3</version>
+		</dependency>
+
 	</dependencies>
 </project>

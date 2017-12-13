@@ -28,6 +28,7 @@ import emily.util.DisUtil;
 import emily.util.Misc;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -77,7 +78,7 @@ public class GetroleCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         Guild guild = ((TextChannel) channel).getGuild();
         if (!PermissionUtil.checkPermission(guild.getSelfMember(), Permission.MANAGE_ROLES)) {
             return Template.get("permission_missing_manage_roles");

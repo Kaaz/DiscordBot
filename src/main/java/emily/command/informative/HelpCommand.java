@@ -31,6 +31,7 @@ import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -81,7 +82,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         String commandPrefix = GuildSettings.getFor(channel, GSetting.COMMAND_PREFIX);
         boolean showHelpInPM = GuildSettings.getBoolFor(channel, GSetting.HELP_IN_PM);
         if (args.length > 0 && !args[0].equals("full")) {

@@ -19,6 +19,7 @@ package emily.core;
 import emily.command.CommandCategory;
 import emily.command.CommandVisibility;
 import emily.main.DiscordBot;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -113,7 +114,8 @@ public abstract class AbstractCommand {
      * @param args    arguments for the command
      * @param channel channel where the command is executed
      * @param author  who invoked the command
+     * @param inputMessage
      * @return the message to output or an empty string for nothing
      */
-    public abstract String execute(DiscordBot bot, String[] args, MessageChannel channel, User author);
+    public abstract String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage);
 }

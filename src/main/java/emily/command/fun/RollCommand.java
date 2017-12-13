@@ -20,6 +20,7 @@ import emily.core.AbstractCommand;
 import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.util.Misc;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -85,7 +86,7 @@ public class RollCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         int min = 1, max = 6, max_dice = 40, min_sides = 2;
         if (args.length == 1) {
             Matcher match = dice.matcher(args[0]);

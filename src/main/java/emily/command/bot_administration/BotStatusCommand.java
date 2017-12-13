@@ -23,6 +23,7 @@ import emily.permission.SimpleRank;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -60,7 +61,7 @@ public class BotStatusCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author);
         if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
             return Template.get(channel, "command_no_permission");

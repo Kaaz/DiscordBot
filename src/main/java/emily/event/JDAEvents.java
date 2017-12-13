@@ -16,7 +16,6 @@
 
 package emily.event;
 
-import com.vdurmont.emoji.EmojiParser;
 import emily.db.controllers.CBotEvent;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CGuildMember;
@@ -34,6 +33,7 @@ import emily.main.Launcher;
 import emily.role.RoleRankings;
 import emily.templates.Template;
 import emily.templates.Templates;
+import emoji4j.EmojiUtils;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -97,11 +97,11 @@ public class JDAEvents extends ListenerAdapter {
         User owner = guild.getOwner().getUser();
         OUser user = CUser.findBy(owner.getId());
         user.discord_id = owner.getId();
-        user.name = EmojiParser.parseToAliases(owner.getName());
+        user.name = EmojiUtils.shortCodify(owner.getName());
         CUser.update(user);
         OGuild dbGuild = CGuild.findBy(guild.getId());
         dbGuild.discord_id = Long.parseLong(guild.getId());
-        dbGuild.name = EmojiParser.parseToAliases(guild.getName());
+        dbGuild.name = EmojiUtils.shortCodify(guild.getName());
         dbGuild.owner = user.id;
         if (dbGuild.id == 0) {
             CGuild.insert(dbGuild);
@@ -146,7 +146,7 @@ public class JDAEvents extends ListenerAdapter {
                             guild.getId(),
                             dbGuild.id,
                             guild.getMembers().size(),
-                            EmojiParser.parseToAliases(guild.getName())).replace("@", "@\u200B"));
+                            EmojiUtils.shortCodify(guild.getName())).replace("@", "@\u200B"));
             discordBot.getContainer().guildJoined();
             Launcher.log("bot joins guild", "bot", "guild-join",
                     "guild-id", guild.getId(),
@@ -194,7 +194,7 @@ public class JDAEvents extends ListenerAdapter {
                 String.format(":id: %s | :hash: %s | %s",
                         guild.getId(),
                         server.id,
-                        EmojiParser.parseToAliases(guild.getName()).replace("@", "@\u200B")
+                        EmojiUtils.shortCodify(guild.getName()).replace("@", "@\u200B")
                 ));
     }
 

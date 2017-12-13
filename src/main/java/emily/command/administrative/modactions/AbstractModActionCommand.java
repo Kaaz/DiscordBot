@@ -28,6 +28,7 @@ import emily.util.DisUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -58,7 +59,7 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
     protected abstract boolean punish(DiscordBot bot, Guild guild, Member member);
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author);
         TextChannel chan = (TextChannel) channel;
         Guild guild = chan.getGuild();

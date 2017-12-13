@@ -19,6 +19,7 @@ package emily.command.fun;
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.main.DiscordBot;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -68,7 +69,7 @@ public class GameCommandCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         return "";//for the implementation see GameHandler
     }
 }

@@ -20,6 +20,7 @@ import emily.core.AbstractCommand;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -56,7 +57,7 @@ public class SystemCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         final Runtime runtime = Runtime.getRuntime();
         StringBuilder sb = new StringBuilder();
         long memoryLimit = runtime.maxMemory();

@@ -372,7 +372,7 @@ public class DiscordBot {
             return;
         }
         if (CommandHandler.isCommand(null, message.getRawContent(), mentionMe, mentionMeAlias)) {
-            CommandHandler.process(this, channel, author, message.getRawContent());
+            CommandHandler.process(this, channel, author, message);
         } else {
             channel.sendTyping().queue();
             this.out.sendAsyncMessage(channel, this.chatBotHandler.chat("private", message.getRawContent()), null);
@@ -392,7 +392,7 @@ public class DiscordBot {
             return;
         }
         if (CommandHandler.isCommand(channel, message.getRawContent().trim(), mentionMe, mentionMeAlias)) {
-            CommandHandler.process(this, channel, author, message.getRawContent());
+            CommandHandler.process(this, channel, author, message);
             return;
         }
         if (GuildSettings.getFor(channel, GSetting.AUTO_REPLY).equals("true")) {

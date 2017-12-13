@@ -20,6 +20,7 @@ import com.google.common.base.Joiner;
 import emily.core.AbstractCommand;
 import emily.main.DiscordBot;
 import emily.modules.pathofexile.ItemAnalyzer;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -53,7 +54,7 @@ public class PoeItemCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         String input = Joiner.on(" ").join(args);
         ItemAnalyzer itemAnalyzer = new ItemAnalyzer();
         return itemAnalyzer.attemptToANALyze(input).toString();

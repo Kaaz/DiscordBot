@@ -22,6 +22,7 @@ import emily.core.AbstractCommand;
 import emily.handler.CommandHandler;
 import emily.handler.Template;
 import emily.main.DiscordBot;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -64,11 +65,11 @@ public class JokeCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         bot.out.sendAsyncMessage(channel, Template.get("command_joke_wait"), message -> {
             String joketxt = "";
             if (new Random().nextInt(100) < 80) {
-                joketxt = CommandHandler.getCommand("reddit").execute(bot, new String[]{"jokes"}, channel, author);
+                joketxt = CommandHandler.getCommand("reddit").execute(bot, new String[]{"jokes"}, channel, author, null);
             } else {
                 try {
                     joketxt = getJokeFromWeb(URLEncoder.encode(author.getName(), "UTF-8"));

@@ -24,6 +24,7 @@ import emily.modules.profile.ProfileImageV1;
 import emily.modules.profile.ProfileImageV3;
 import emily.util.DisUtil;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -64,7 +65,7 @@ public class ProfileCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         User user = author;
         if (args.length > 0) {
             if (DisUtil.isUserMention(args[0])) {

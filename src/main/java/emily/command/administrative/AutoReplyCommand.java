@@ -16,7 +16,6 @@
 
 package emily.command.administrative;
 
-import com.vdurmont.emoji.EmojiParser;
 import emily.core.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CReplyPattern;
@@ -29,7 +28,9 @@ import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.Misc;
 import emily.util.TimeUtil;
+import emoji4j.EmojiUtils;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -89,7 +90,7 @@ public class AutoReplyCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank rank = bot.security.getSimpleRankForGuild(author, guild);
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
@@ -180,7 +181,7 @@ public class AutoReplyCommand extends AbstractCommand {
                     return Template.get("command_autoreply_guild_saved", args[2]);
                 case "response":
                 case "reply":
-                    replyPattern.reply = EmojiParser.parseToAliases(restOfArgs);
+                    replyPattern.reply = EmojiUtils.shortCodify(restOfArgs);
                     CReplyPattern.update(replyPattern);
                     bot.reloadAutoReplies();
                     return Template.get("command_autoreply_response_saved");

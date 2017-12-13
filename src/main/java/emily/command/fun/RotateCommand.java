@@ -19,6 +19,7 @@ package emily.command.fun;
 import emily.core.AbstractCommand;
 import emily.handler.Template;
 import emily.main.DiscordBot;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -129,7 +130,7 @@ public class RotateCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         List<String> inputArray = new ArrayList<>();
         String output = "";
         for (String arg : args) {

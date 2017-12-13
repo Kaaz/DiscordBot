@@ -21,6 +21,7 @@ import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -67,7 +68,7 @@ public class FMLCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
 
         if (items.size() < MIN_QUEUE_ITEMS) {
             bot.queue.add(channel.sendTyping());

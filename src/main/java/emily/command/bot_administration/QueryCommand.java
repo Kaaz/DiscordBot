@@ -25,6 +25,7 @@ import emily.permission.SimpleRank;
 import emily.util.DebugUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -67,7 +68,7 @@ public class QueryCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
             return ":upside_down: You have to be a bot administrator";
         }

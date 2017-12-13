@@ -20,6 +20,7 @@ import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.handler.Template;
 import emily.main.DiscordBot;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -63,7 +64,7 @@ public class StreamCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         TextChannel tc = (TextChannel) channel;
         if (!tc.getGuild().getAudioManager().isConnected()) {
             return Template.get("music_no_users_in_channel");

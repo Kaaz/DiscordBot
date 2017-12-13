@@ -16,7 +16,6 @@
 
 package emily.command.administrative;
 
-import com.vdurmont.emoji.EmojiParser;
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.db.controllers.CGuild;
@@ -27,6 +26,8 @@ import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
 import emily.util.Misc;
+import emoji4j.EmojiUtils;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -94,7 +95,7 @@ public class CustomCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
             return Template.get("permission_denied");
@@ -110,7 +111,7 @@ public class CustomCommand extends AbstractCommand {
                 if (args[0].startsWith(prefix)) {
                     args[0] = args[0].substring(prefix.length());
                 }
-                CommandHandler.addCustomCommand(guildId, args[1], EmojiParser.parseToAliases(output.trim()));
+                CommandHandler.addCustomCommand(guildId, args[1], EmojiUtils.shortCodify(output.trim()));
                 return "Added " + prefix + args[1];
             } else if (args[0].equals("delete")) {
                 CommandHandler.removeCustomCommand(guildId, args[1]);

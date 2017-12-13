@@ -23,6 +23,7 @@ import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.util.Misc;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -67,7 +68,7 @@ public class JoinCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         TextChannel chan = (TextChannel) channel;
         MusicPlayerHandler player = MusicPlayerHandler.getFor(chan.getGuild(), bot);
         if (args.length == 0) {

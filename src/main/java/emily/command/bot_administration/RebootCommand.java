@@ -26,6 +26,7 @@ import emily.permission.SimpleRank;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import emily.util.UpdateUtil;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -66,7 +67,7 @@ public class RebootCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
             if (args.length == 0) {
                 return Template.get("command_invalid_use");

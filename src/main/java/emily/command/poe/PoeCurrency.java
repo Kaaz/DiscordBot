@@ -23,6 +23,7 @@ import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.Misc;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import org.libpoe.model.StashTab;
@@ -72,7 +73,7 @@ public class PoeCurrency extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (args.length > 1) {
             if (args[0].equalsIgnoreCase("token")) {
                 OPoEToken token = CPoEToken.findBy(author.getId());

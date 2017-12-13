@@ -17,7 +17,6 @@
 package emily.command.music;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
-import com.vdurmont.emoji.EmojiParser;
 import emily.command.CommandReactionListener;
 import emily.command.CommandVisibility;
 import emily.command.ICommandCleanup;
@@ -37,6 +36,7 @@ import emily.permission.SimpleRank;
 import emily.util.Misc;
 import emily.util.YTSearch;
 import emily.util.YTUtil;
+import emoji4j.EmojiUtils;
 import javafx.util.Pair;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
@@ -121,7 +121,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         TextChannel txt = (TextChannel) channel;
         Guild guild = txt.getGuild();
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
@@ -208,7 +208,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                                         message.editMessage(message.getContent() + "\n\nyou picked " + reaction.getKey()).queue();
                                         AbstractCommand play = CommandHandler.getCommand("play");
                                         if (play != null) {
-                                            play.execute(bot, new String[]{reaction.getValue()}, channel, author);
+                                            play.execute(bot, new String[]{reaction.getValue()}, channel, author, null);
                                         }
                                     });
                         }
@@ -219,7 +219,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                 YTSearch.SimpleResult results = ytSearch.getResults(searchCriteria);
                 if (results != null) {
                     videoCode = results.getCode();
-                    videoTitle = EmojiParser.parseToAliases(results.getTitle());
+                    videoTitle = EmojiUtils.shortCodify(results.getTitle());
                 } else {
                     videoCode = null;
                     videoTitle = "";

@@ -16,7 +16,6 @@
 
 package emily.handler;
 
-import com.vdurmont.emoji.EmojiParser;
 import emily.command.CommandCategory;
 import emily.command.CommandVisibility;
 import emily.command.ICommandCooldown;
@@ -38,6 +37,8 @@ import emily.main.Launcher;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.TimeUtil;
+import emoji4j.EmojiUtils;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -94,12 +95,12 @@ public class CommandHandler {
      * @param author          author
      * @param incomingMessage message
      */
-    public static void process(DiscordBot bot, MessageChannel channel, User author, String incomingMessage) {
+    public static void process(DiscordBot bot, MessageChannel channel, User author, Message incomingMessage) {
         String outMsg = "";
         boolean commandSuccess = true;
         boolean startedWithMention = false;
         int guildId = 0;
-        String inputMessage = incomingMessage;
+        String inputMessage = incomingMessage.getRawContent();
         String commandUsed = "-";
         if (inputMessage.startsWith(bot.mentionMe)) {
             inputMessage = inputMessage.replace(bot.mentionMe, "").trim();
@@ -145,9 +146,9 @@ public class CommandHandler {
             } else {
                 String commandOutput;
                 if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
-                    commandOutput = commands.get("help").execute(bot, new String[]{input[0]}, channel, author);
+                    commandOutput = commands.get("help").execute(bot, new String[]{input[0]}, channel, author, incomingMessage);
                 } else {
-                    commandOutput = command.execute(bot, args, channel, author);
+                    commandOutput = command.execute(bot, args, channel, author, incomingMessage);
                 }
                 if (!commandOutput.isEmpty()) {
                     outMsg = commandOutput;
@@ -158,10 +159,10 @@ public class CommandHandler {
                         usedArguments.append(arg).append(" ");
                     }
                     if (channel instanceof TextChannel) {
-                        CCommandLog.saveLog(CUser.getCachedId(author.getId(), EmojiParser.parseToAliases(author.getName())),
+                        CCommandLog.saveLog(CUser.getCachedId(author.getId(), EmojiUtils.shortCodify(author.getName())),
                                 CGuild.getCachedId(((TextChannel) channel).getGuild().getId()),
                                 command.getCommand(),
-                                EmojiParser.parseToAliases(usedArguments.toString()).trim());
+                                EmojiUtils.shortCodify(usedArguments.toString()).trim());
                     }
                 }
             }

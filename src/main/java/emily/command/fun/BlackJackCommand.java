@@ -22,6 +22,7 @@ import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.DisUtil;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -68,7 +69,7 @@ public class BlackJackCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (args.length == 0) {
             if (playerGames.containsKey(author.getId()) && playerGames.get(author.getId()).isInProgress()) {
                 return "You are still in a game. To finish type **blackjack stand**" + BotConfig.EOL +

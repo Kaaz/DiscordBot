@@ -20,6 +20,7 @@ import emily.core.AbstractCommand;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.DisUtil;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -54,7 +55,7 @@ public class DonateCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         String prefix = DisUtil.getCommandPrefix(channel);
         return "You're interested in contributing, that's great!\n \n" +
                 "**Found a bug!**\n" +

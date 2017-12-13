@@ -24,6 +24,7 @@ import emily.core.AbstractCommand;
 import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -60,7 +61,7 @@ public class GifCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         try {
             String tags = "";
             if (args.length > 0) {

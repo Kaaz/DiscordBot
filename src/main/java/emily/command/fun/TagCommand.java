@@ -16,7 +16,6 @@
 
 package emily.command.fun;
 
-import com.vdurmont.emoji.EmojiParser;
 import emily.command.CommandReactionListener;
 import emily.command.CommandVisibility;
 import emily.command.ICommandReactionListener;
@@ -34,7 +33,9 @@ import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import emily.util.TimeUtil;
+import emoji4j.EmojiUtils;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -92,7 +93,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (args.length == 0 || args[0].equals("list")) {
@@ -178,7 +179,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
                 tag.userId = CUser.getCachedId(author.getId(), author.getName());
                 tag.created = new Timestamp(System.currentTimeMillis());
             }
-            tag.response = EmojiParser.parseToAliases(output);
+            tag.response = EmojiUtils.shortCodify(output);
             if (tag.response.length() > 2000) {
                 tag.response = tag.response.substring(0, 1999);
             }

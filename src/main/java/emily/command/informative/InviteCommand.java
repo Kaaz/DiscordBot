@@ -19,6 +19,7 @@ package emily.command.informative;
 import emily.core.AbstractCommand;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -59,7 +60,7 @@ public class InviteCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         return "I am honored you'd want to invite me! :hugging: " + BotConfig.EOL +
                 "You can add me to your guild/server with the following link : " + BotConfig.EOL +
                 "https://discordapp.com/oauth2/authorize?client_id=" + channel.getJDA().getSelfUser().getId() + "&scope=bot&permissions=339209287";

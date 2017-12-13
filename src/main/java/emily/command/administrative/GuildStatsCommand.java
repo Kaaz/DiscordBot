@@ -26,6 +26,7 @@ import emily.util.DebugUtil;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -88,7 +89,7 @@ public class GuildStatsCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         int tracksProcessing = bot.getContainer().downloadsProcessing();
         if (!bot.getContainer().allShardsReady()) {
             return "Not fully loaded yet!";

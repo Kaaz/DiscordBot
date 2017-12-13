@@ -18,6 +18,7 @@ package emily.command.informative;
 
 import emily.core.AbstractCommand;
 import emily.main.DiscordBot;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -61,7 +62,7 @@ public class PingCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
 
         if (args.length > 0 && args[0].matches("fancy")) {
             bot.queue.add(channel.sendMessage("Checking ping..."), message -> {

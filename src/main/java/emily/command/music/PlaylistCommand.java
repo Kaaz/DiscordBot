@@ -17,7 +17,6 @@
 package emily.command.music;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
-import com.vdurmont.emoji.EmojiParser;
 import emily.command.CommandReactionListener;
 import emily.command.CommandVisibility;
 import emily.command.ICommandReactionListener;
@@ -40,7 +39,9 @@ import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import emily.util.YTUtil;
+import emoji4j.EmojiUtils;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -116,7 +117,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         Guild guild = ((TextChannel) channel).getGuild();
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
@@ -234,7 +235,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 if (args.length == 1 || !isPlaylistAdmin) {
                     return Template.get(channel, "command_playlist_title", playlist.title);
                 }
-                playlist.title = EmojiParser.parseToAliases(Joiner.on(" ").join(Arrays.copyOfRange(args, 1, args.length)));
+                playlist.title = EmojiUtils.shortCodify(Joiner.on(" ").join(Arrays.copyOfRange(args, 1, args.length)));
                 CPlaylist.update(playlist);
                 player.setActivePlayListId(playlist.id);
                 return Template.get(channel, "playlist_title_updated", playlist.title);
@@ -422,7 +423,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 playlist = CPlaylist.findBy(userId, 0, code);
                 break;
             case "guild":
-                title = EmojiParser.parseToAliases(guild.getName()) + "'s " + code + " list";
+                title = EmojiUtils.shortCodify(guild.getName()) + "'s " + code + " list";
                 playlist = CPlaylist.findBy(0, guildId, code);
                 break;
             case "global":

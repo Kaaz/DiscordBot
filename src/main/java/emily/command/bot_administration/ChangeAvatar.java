@@ -23,6 +23,7 @@ import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import net.dv8tion.jda.core.entities.Icon;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -63,7 +64,7 @@ public class ChangeAvatar extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author);
 
         if (!rank.isAtLeast(SimpleRank.CREATOR)) {

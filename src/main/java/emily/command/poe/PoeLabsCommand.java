@@ -23,6 +23,7 @@ import emily.modules.reddit.RedditScraper;
 import emily.modules.reddit.pojo.Comment;
 import emily.modules.reddit.pojo.Post;
 import emily.util.Misc;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -71,7 +72,7 @@ public class PoeLabsCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         List<Post> search = RedditScraper.search("pathofexile", "title%3ADaily+Labyrinth+author%3AAutoModerator&sort=new&restrict_sr=on&t=day");
 
         if (!search.isEmpty()) {

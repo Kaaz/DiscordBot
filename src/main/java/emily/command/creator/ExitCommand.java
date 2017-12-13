@@ -22,6 +22,7 @@ import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.permission.SimpleRank;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -57,7 +58,7 @@ public class ExitCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author);
         if (rank.isAtLeast(SimpleRank.SYSTEM_ADMIN)) {
             bot.out.sendAsyncMessage(channel, "I am being killed :sob: farewell world! :wave: ", message -> {

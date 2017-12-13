@@ -20,6 +20,7 @@ import emily.core.AbstractCommand;
 import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -67,7 +68,7 @@ public class ImportMusicCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author);
         if (author.getId().equals("97284813643329536") || rank.isAtLeast(SimpleRank.CREATOR)) {
             if (isInProgress.get()) {

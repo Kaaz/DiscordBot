@@ -16,7 +16,6 @@
 
 package emily.command.administrative;
 
-import com.vdurmont.emoji.EmojiParser;
 import emily.core.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.guildsettings.GSetting;
@@ -29,8 +28,10 @@ import emily.templates.TemplateArgument;
 import emily.templates.TemplateCache;
 import emily.templates.Templates;
 import emily.util.Misc;
+import emoji4j.EmojiUtils;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -87,7 +88,7 @@ public class TemplateCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         int guildId = CGuild.getCachedId(channel);
         if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
@@ -148,7 +149,7 @@ public class TemplateCommand extends AbstractCommand {
                     if (Templates.templateExists(args[1])) {
                         Template tmp = Templates.getByKey(args[1]);
                         if (tmp.isValidTemplate(text)) {
-                            TemplateCache.add(guildId, args[1], EmojiParser.parseToAliases(text));
+                            TemplateCache.add(guildId, args[1], EmojiUtils.shortCodify(text));
                             return Templates.command.template.added.format();
                         }
                         System.out.println(tmp.formatFull(CGuild.getCachedDiscordId(guildId), true));

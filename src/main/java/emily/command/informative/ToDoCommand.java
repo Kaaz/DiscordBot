@@ -28,6 +28,7 @@ import emily.main.DiscordBot;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -68,7 +69,7 @@ public class ToDoCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         OTodoList rec = CTodoLists.findBy(CUser.getCachedId(author.getId()));
         if (args.length == 0) {
             if (rec.id == 0) {

@@ -16,16 +16,16 @@
 
 package emily.threads;
 
-import com.vdurmont.emoji.EmojiParser;
 import emily.db.controllers.CBotEvent;
 import emily.db.controllers.CMusic;
 import emily.db.model.OBotEvent;
 import emily.db.model.OMusic;
 import emily.handler.Template;
-import emily.main.BotContainer;
 import emily.main.BotConfig;
+import emily.main.BotContainer;
 import emily.main.Launcher;
 import emily.util.YTUtil;
+import emoji4j.EmojiUtils;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -248,7 +248,9 @@ public class YoutubeThread extends Thread {
                 }
                 if (fileCheck.exists()) {
                     OMusic rec = CMusic.findByYoutubeId(task.getCode());
-                    rec.youtubeTitle = (!task.getTitle().isEmpty() && !task.getTitle().equals(task.getCode())) ? EmojiParser.parseToAliases(task.getTitle()) : EmojiParser.parseToAliases(YTUtil.getTitleFromPage(task.getCode()));
+
+                    rec.youtubeTitle = (!task.getTitle().isEmpty() && !task.getTitle().equals(task.getCode()))
+                            ? EmojiUtils.removeAllEmojis(task.getTitle()) : EmojiUtils.removeAllEmojis(YTUtil.getTitleFromPage(task.getCode()));
                     rec.youtubecode = task.getCode();
                     rec.filename = fileCheck.toPath().toRealPath().toString();
                     rec.playCount += 1;

@@ -23,6 +23,7 @@ import emily.main.DiscordBot;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.rithms.riot.api.ApiConfig;
@@ -81,7 +82,7 @@ public class LoLCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author) {
+    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         try {
             if (gameVersion == null) {
                 gameVersion = api.getDataVersions(Platform.EUW).get(0);
