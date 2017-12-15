@@ -47,6 +47,13 @@ public enum GSetting {
                     "false would show:\n" +
                     "You don't have permission to use that!",
             GSettingTag.DEBUG),
+    DEBUG("false", GuildSettingType.TOGGLE,
+            "Show some debug information.\n\n" +
+                    "valid values: \n" +
+                    "true       -> Show a lot more additional information\n " +
+                    "false      -> don't \n\n" +
+                    "If you want to check if certain things are (not) working.\n\n",
+            GSettingTag.DEBUG),
     BOT_UPDATE_WARNING("playing", new EnumSettingType("always", "playing", "off"),
             "Show a warning that there is an update and that the bot will be updating soon.\n" +
                     "always  -> always show the message in the bot's configured default channel\n" +

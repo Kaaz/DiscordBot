@@ -19,8 +19,10 @@ package emily.handler;
 import emily.db.controllers.CReactionRole;
 import emily.db.model.OReactionRoleKey;
 import emily.db.model.OReactionRoleMessage;
+import emily.guildsettings.GSetting;
 import emily.main.DiscordBot;
 import net.dv8tion.jda.core.entities.MessageReaction;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -97,25 +99,29 @@ public class RoleReactionHandler {
         long guildId = channel.getGuild().getIdLong();
         long msgId = Long.valueOf(messageId);
         initGuild(guildId, false);
-        System.out.println(emote.toString());
-        System.out.println(emote.getName());
-        emote.isEmote();
         String theEmote;
         if (emote.getId() == null) {
             theEmote = emote.getName();
         } else {
             theEmote = emote.getId();
         }
-        channel.sendMessage("checking if message has the emote: " + theEmote).queue();
+
         if (!isListening(guildId, msgId)) {
             return false;
         }
         if (isListeningToReaction(guildId, msgId, theEmote)) {
             Long roleId = listeners.get(guildId).get(msgId).get(theEmote);
+            Role role = channel.getGuild().getRoleById(roleId);
             if (isAdding) {
-                channel.getGuild().getController().addRolesToMember(channel.getGuild().getMember(invoker), channel.getGuild().getRoleById(roleId)).queue();
+                channel.getGuild().getController().addRolesToMember(channel.getGuild().getMember(invoker), role).queue();
+                if (GuildSettings.getBoolFor(channel, GSetting.DEBUG)) {
+                    channel.sendMessage(String.format("Giving the role '%s' to %s", role.getName(), invoker.getName())).queue();
+                }
             } else {
-                channel.getGuild().getController().removeRolesFromMember(channel.getGuild().getMember(invoker), channel.getGuild().getRoleById(roleId)).queue();
+                channel.getGuild().getController().removeRolesFromMember(channel.getGuild().getMember(invoker), role).queue();
+                if (GuildSettings.getBoolFor(channel, GSetting.DEBUG)) {
+                    channel.sendMessage(String.format("Removing the role '%s' to %s", role.getName(), invoker.getName())).queue();
+                }
             }
             return true;
         }

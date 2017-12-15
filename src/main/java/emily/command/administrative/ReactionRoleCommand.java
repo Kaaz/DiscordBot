@@ -116,7 +116,7 @@ public class ReactionRoleCommand extends AbstractCommand {
                     if (!isNormalEmote && bot.getJda().getEmoteById(emoteId) == null) {
                         return "can't find guild-emote";
                     }
-                    CReactionRole.addReaction(key.id, args[2], isNormalEmote, role.getIdLong());
+                    CReactionRole.addReaction(key.id, isNormalEmote ? args[2] : emoteId, isNormalEmote, role.getIdLong());
                     return String.format("adding to key `%s` the reaction %s with role `%s`", args[1], toDisplay(bot, args[2]), role.getName());
                 }
                 return "invalid usage! see help for more info";
@@ -147,7 +147,7 @@ public class ReactionRoleCommand extends AbstractCommand {
                 if (key.id == 0) {
                     return String.format("key `%s` not found!", args[1]);
                 }
-                displayMessage(t, key);
+                displayMessage(bot, t, key);
                 return "";
 
         }
@@ -164,7 +164,7 @@ public class ReactionRoleCommand extends AbstractCommand {
         }
     }
 
-    private void displayMessage(TextChannel channel, OReactionRoleKey key) {
+    private void displayMessage(DiscordBot bot, TextChannel channel, OReactionRoleKey key) {
         if (key.channelId > 0 && key.messageId > 0) {
             TextChannel tchan = channel.getGuild().getTextChannelById(key.channelId);
             if (tchan != null && tchan.canTalk()) {
@@ -172,17 +172,23 @@ public class ReactionRoleCommand extends AbstractCommand {
             }
         }
         String msg = key.message;
-        msg += "\n Use the reactions to give/remove the role";
+        msg += "\n Use the reactions to give/remove the role\n";
         List<OReactionRoleMessage> reactions = CReactionRole.getReactionsForKey(key.id);
+        for (OReactionRoleMessage reaction : reactions) {
+            msg += String.format("%s %s %s\n",
+                    reaction.isNormalEmote ? reaction.emoji : channel.getJDA().getEmoteById(reaction.emoji),
+                    Emojibet.THUMBS_RIGHT,
+                    channel.getGuild().getRoleById(reaction.roleId));
+        }
         channel.sendMessage(msg).queue(message -> {
             key.messageId = message.getIdLong();
             key.channelId = channel.getIdLong();
             CReactionRole.update(key);
+            bot.roleReactionHandler.initGuild(message.getGuild().getIdLong(), true);
             for (OReactionRoleMessage reaction : reactions) {
-                if(reaction.isNormalEmote){
+                if (reaction.isNormalEmote) {
                     message.addReaction(reaction.emoji).queue();
-                }
-                else{
+                } else {
                     message.addReaction(message.getJDA().getEmoteById(reaction.emoji)).queue();
                 }
             }
