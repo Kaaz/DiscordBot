@@ -62,17 +62,22 @@ public class Misc {
 
     /**
      * returns the ID part of a guild emote
+     *
      * @param emote the emote to extract from
      * @return id
      */
-    public static String getGuildEmoteId(String emote){
+    public static String getGuildEmoteId(String emote) {
         Matcher matcher = patternGuildEmote.matcher(emote);
-        if(matcher.find()){
+        if (matcher.find()) {
             System.out.println(matcher.group(1));
             return matcher.group(1);
         }
+        if (emote.matches("^\\d+$")) {
+            return emote;
+        }
         return null;
     }
+
     public static String makeProgressbar(int max, int current) {
         int parts = 8;
         String bar = "";

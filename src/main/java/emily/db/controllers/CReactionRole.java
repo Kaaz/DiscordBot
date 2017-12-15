@@ -19,13 +19,14 @@ package emily.db.controllers;
 import emily.core.Logger;
 import emily.db.WebDb;
 import emily.db.model.OReactionRoleKey;
+import emily.db.model.OReactionRoleMessage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CReactionRoleKey {
+public class CReactionRole {
 
     public static OReactionRoleKey findBy(String discordGuildId, String key) {
         return findBy(CGuild.getCachedId(discordGuildId), key);
@@ -76,6 +77,16 @@ public class CReactionRoleKey {
         }
         return result;
 
+    }
+
+    private static OReactionRoleMessage fillMessageRecord(ResultSet rs) throws SQLException {
+        OReactionRoleMessage m = new OReactionRoleMessage();
+        m.id = rs.getInt("id");
+        m.reactionRoleKey = rs.getInt("reaction_role_key_id");
+        m.emoji = rs.getString("emoji");
+        m.isNormalEmote = rs.getInt("custom_emoji") == 0;
+        m.roleId = rs.getLong("role_id");
+        return m;
     }
 
     private static OReactionRoleKey fillRecord(ResultSet rs) throws SQLException {
@@ -135,6 +146,42 @@ public class CReactionRoleKey {
                     "INSERT INTO reaction_role_key(guild_id, message_key, channel_id, message, message_id) " +
                             "VALUES (?,?,?,?,?)",
                     record.guildId, record.messageKey, record.channelId, record.message, record.messageId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<OReactionRoleMessage> getReactionsForKey(int id) {
+        List<OReactionRoleMessage> l = new ArrayList<>();
+        try (ResultSet rs = WebDb.get().select(
+                "SELECT *  " +
+                        "FROM reaction_role_message " +
+                        "WHERE reaction_role_key_id = ? ", id)) {
+            while (rs.next()) {
+                l.add(fillMessageRecord(rs));
+            }
+            rs.getStatement().close();
+        } catch (Exception e) {
+            Logger.fatal(e);
+        }
+        return l;
+    }
+
+    public static void addReaction(int reactionRoleKeyId, String emote, boolean isNormalEmote, long roleId) {
+        try {
+            WebDb.get().insert("INSERT INTO reaction_role_message (reaction_role_key_id, role_id, emoji, custom_emoji) " +
+                    "VALUES(?,?,?,?)", reactionRoleKeyId, roleId, emote, isNormalEmote ? 0 : 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void removeReaction(int reactionRoleKeyId, String emote) {
+        try {
+            WebDb.get().query(
+                    "DELETE FROM reaction_role_message WHERE reaction_role_key_id = ? AND emoji= ? ",
+                    reactionRoleKeyId, emote
+            );
         } catch (Exception e) {
             e.printStackTrace();
         }

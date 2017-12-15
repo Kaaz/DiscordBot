@@ -31,6 +31,7 @@ import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
 import emily.handler.MusicReactionHandler;
 import emily.handler.OutgoingContentHandler;
+import emily.handler.RoleReactionHandler;
 import emily.handler.SecurityHandler;
 import emily.handler.Template;
 import emily.handler.discord.RestQueue;
@@ -76,6 +77,7 @@ public class DiscordBot {
     public SecurityHandler security = null;
     public OutgoingContentHandler out = null;
     public MusicReactionHandler musicReactionHandler = null;
+    public RoleReactionHandler roleReactionHandler = null;
     public CommandReactionHandler commandReactionHandler = null;
     public GameHandler gameHandler = null;
     private AutoReplyHandler autoReplyhandler;
@@ -346,6 +348,7 @@ public class DiscordBot {
         gameHandler = new GameHandler(this);
         out = new OutgoingContentHandler(this);
         musicReactionHandler = new MusicReactionHandler(this);
+        roleReactionHandler = new RoleReactionHandler(this);
         commandReactionHandler = new CommandReactionHandler();
         autoReplyhandler = new AutoReplyHandler(this);
     }

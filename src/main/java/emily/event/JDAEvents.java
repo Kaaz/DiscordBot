@@ -223,7 +223,9 @@ public class JDAEvents extends ListenerAdapter {
             return;
         }
         if (!discordBot.gameHandler.executeReaction(e.getUser(), e.getChannel(), e.getReaction(), e.getMessageId())) {
-            discordBot.musicReactionHandler.handle(e.getMessageId(), channel, e.getUser(), e.getReaction().getEmote(), adding);
+            if (!discordBot.musicReactionHandler.handle(e.getMessageId(), channel, e.getUser(), e.getReactionEmote(), adding)) {
+                discordBot.roleReactionHandler.handle(e.getMessageId(), channel, e.getUser(), e.getReactionEmote(), adding);
+            }
         }
     }
 
