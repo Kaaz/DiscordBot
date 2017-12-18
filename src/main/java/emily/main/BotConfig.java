@@ -238,5 +238,5 @@ public class BotConfig {
 
     public static String EOL = System.getProperty("line.separator");
     @ConfigurationOption
-    public static String CREATOR_ID = "97433066384928768";
+    public static long CREATOR_ID = 97433066384928768L;
 }

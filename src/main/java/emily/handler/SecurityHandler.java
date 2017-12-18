@@ -139,7 +139,7 @@ public class SecurityHandler {
 
     public SimpleRank getSimpleRankForGuild(User user, Guild guild) {
         long userId = Long.parseLong(user.getId());
-        if (user.getId().equals(BotConfig.CREATOR_ID)) {
+        if (user.getIdLong() == BotConfig.CREATOR_ID) {
             return SimpleRank.CREATOR;
         }
         if (user.isBot()) {
