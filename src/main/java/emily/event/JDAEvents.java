@@ -291,8 +291,7 @@ public class JDAEvents extends ListenerAdapter {
                         });
             } else if (defaultChannel != null && defaultChannel.canTalk() && discordBot.security.isBotAdmin(user.getIdLong())) {
                 Template template = Templates.welcome_bot_admin;
-                discordBot.queue.add(defaultChannel.sendMessage(
-                        template.formatGuild(guild.getId(), guild, user)),
+                discordBot.queue.add(defaultChannel.sendMessage(template.formatGuild(guild.getId(), guild, user)),
                         message -> {
                             if (!"no".equals(settings.getOrDefault(GSetting.CLEANUP_MESSAGES))) {
                                 discordBot.schedule(() -> discordBot.out.saveDelete(message), BotConfig.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);

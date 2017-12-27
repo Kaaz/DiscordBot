@@ -101,7 +101,6 @@ public class SecurityHandler {
     public SimpleRank getSimpleRank(User user) {
         return getSimpleRankForGuild(user, null);
     }
-
     public SimpleRank getSimpleRank(User user, MessageChannel channel) {
         if (channel instanceof TextChannel) {
             return getSimpleRankForGuild(user, ((TextChannel) channel).getGuild());
