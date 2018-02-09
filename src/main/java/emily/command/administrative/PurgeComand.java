@@ -236,20 +236,20 @@ public class PurgeComand extends AbstractCommand {
                         }
                         break;
                     case COMMANDS:
-                        if ((msg.getRawContent().startsWith(cmdPrefix) && hasManageMessages)
+                        if ((msg.getContentRaw().startsWith(cmdPrefix) && hasManageMessages)
                                 || (msg.getAuthor() == null || msg.getAuthor().getId().equals(msg.getJDA().getSelfUser().getId()))) {
                             messagesToDelete.add(msg);
                             deletedCount++;
                         }
                         break;
                     case MATCHES:
-                        if (hasManageMessages && finalDeletePattern.matcher(msg.getRawContent()).find()) {
+                        if (hasManageMessages && finalDeletePattern.matcher(msg.getContentRaw()).find()) {
                             messagesToDelete.add(msg);
                             deletedCount++;
                         }
                         break;
                     case NOTMATCHES:
-                        if (hasManageMessages && !finalDeletePattern.matcher(msg.getRawContent()).find()) {
+                        if (hasManageMessages && !finalDeletePattern.matcher(msg.getContentRaw()).find()) {
                             messagesToDelete.add(msg);
                             deletedCount++;
                         }

@@ -374,11 +374,11 @@ public class DiscordBot {
         if (security.isBanned(author)) {
             return;
         }
-        if (CommandHandler.isCommand(null, message.getRawContent(), mentionMe, mentionMeAlias)) {
+        if (CommandHandler.isCommand(null, message.getContentRaw(), mentionMe, mentionMeAlias)) {
             CommandHandler.process(this, channel, author, message);
         } else {
             channel.sendTyping().queue();
-            this.out.sendAsyncMessage(channel, this.chatBotHandler.chat("private", message.getRawContent()), null);
+            this.out.sendAsyncMessage(channel, this.chatBotHandler.chat("private", message.getContentRaw()), null);
         }
     }
 
@@ -390,11 +390,11 @@ public class DiscordBot {
             return;
         }
         GuildSettings settings = GuildSettings.get(guild.getId());
-        if (gameHandler.isGameInput(channel, author, message.getRawContent().toLowerCase())) {
-            gameHandler.execute(author, channel, message.getRawContent(), null);
+        if (gameHandler.isGameInput(channel, author, message.getContentRaw().toLowerCase())) {
+            gameHandler.execute(author, channel, message.getContentRaw(), null);
             return;
         }
-        if (CommandHandler.isCommand(channel, message.getRawContent().trim(), mentionMe, mentionMeAlias)) {
+        if (CommandHandler.isCommand(channel, message.getContentRaw().trim(), mentionMe, mentionMeAlias)) {
             CommandHandler.process(this, channel, author, message);
             return;
         }
@@ -407,7 +407,7 @@ public class DiscordBot {
                 channel.getId().equals(GuildSettings.get(channel.getGuild()).getOrDefault(GSetting.BOT_CHANNEL))) {
             if (PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_WRITE)) {
                 channel.sendTyping().queue();
-                this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(guild.getId(), message.getRawContent()), null);
+                this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(guild.getId(), message.getContentRaw()), null);
             }
         }
     }

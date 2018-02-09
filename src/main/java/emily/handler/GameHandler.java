@@ -113,7 +113,7 @@ public class GameHandler {
         if (!getGame(player.getId()).isTurnOf(player)) {
             return false;
         }
-        final String input = Misc.emoteToNumber(reaction.getEmote().getName());
+        final String input = Misc.emoteToNumber(reaction.getReactionEmote().getName());
         Message msg = channel.getMessageById(messageId).complete();
         if (msg == null) {
             return false;

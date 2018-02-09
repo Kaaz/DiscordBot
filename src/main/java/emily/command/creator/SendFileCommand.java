@@ -71,7 +71,7 @@ public class SendFileCommand extends AbstractCommand {
         File f = new File(Joiner.on("").join(args));
         if (f.exists()) {
             try {
-                bot.queue.add(channel.sendFile(f, null));
+                bot.queue.add(channel.sendFile(f));
             } catch (Exception e) {
                 e.printStackTrace();
                 return "can't for some reason; " + e.getMessage();

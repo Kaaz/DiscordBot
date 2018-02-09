@@ -121,12 +121,12 @@
 		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
-			<version>3.3.1_308</version>
+			<version>3.5.0_335</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sedmelluq</groupId>
 			<artifactId>lavaplayer</artifactId>
-			<version>1.2.45</version>
+			<version>1.2.47</version>
 		</dependency>
 		<dependency>
 			<groupId>org.reflections</groupId>
@@ -198,6 +198,5 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.9.3</version>
 		</dependency>
-
 	</dependencies>
 </project>

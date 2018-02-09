@@ -67,7 +67,7 @@ public class AutoReplyHandler {
             if (replies[index].guildId == 0 || replies[index].guildId == internalGuildId) {
                 Long lastUse = getCooldown(guildId, index);
                 if (lastUse + replies[index].cooldown < now) {
-                    Matcher matcher = replies[index].pattern.matcher(message.getContent());
+                    Matcher matcher = replies[index].pattern.matcher(message.getContentRaw());
                     if (matcher.find()) {
                         saveCooldown(guildId, index, now);
                         bot.out.sendAsyncMessage(channel, message.getAuthor().getAsMention() + ", " + replies[index].reply, null);

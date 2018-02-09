@@ -263,7 +263,7 @@ public class FightCommand extends AbstractCommand implements ICommandCooldown {
                     break;
                 }
             }
-            bot.queue.add(channel.sendFile(f, null), message -> f.delete());
+            bot.queue.add(channel.sendFile(f), message -> f.delete());
         } catch (IOException e) {
             e.printStackTrace();
             return e.getMessage();

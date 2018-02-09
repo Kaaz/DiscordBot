@@ -100,7 +100,7 @@ public class CommandHandler {
         boolean commandSuccess = true;
         boolean startedWithMention = false;
         int guildId = 0;
-        String inputMessage = incomingMessage.getRawContent();
+        String inputMessage = incomingMessage.getContentRaw();
         String commandUsed = "-";
         if (inputMessage.startsWith(bot.mentionMe)) {
             inputMessage = inputMessage.replace(bot.mentionMe, "").trim();

@@ -67,10 +67,10 @@ public class CommandReactionHandler {
         CommandReactionListener<?> listener = reactions.get(channel.getGuild().getId()).get(messageId);
         if (!listener.isActive() || listener.getExpiresInTimestamp() < System.currentTimeMillis()) {
             reactions.get(channel.getGuild().getId()).remove(messageId);
-        } else if (listener.hasReaction(reaction.getEmote().getName()) && listener.getUserId().equals(userId)) {
+        } else if (listener.hasReaction(reaction.getReactionEmote().getName()) && listener.getUserId().equals(userId)) {
             reactions.get(channel.getGuild().getId()).get(messageId).updateLastAction();
             Message message = channel.getMessageById(messageId).complete();
-            listener.react(reaction.getEmote().getName(), message);
+            listener.react(reaction.getReactionEmote().getName(), message);
         }
 
     }

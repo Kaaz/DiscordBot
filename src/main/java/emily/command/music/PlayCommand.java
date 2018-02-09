@@ -205,7 +205,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                             listener.registerReaction(reaction.getKey(),
                                     message -> {
                                         listener.disable();
-                                        message.editMessage(message.getContent() + "\n\nyou picked " + reaction.getKey()).queue();
+                                        message.editMessage(message.getContentRaw() + "\n\nyou picked " + reaction.getKey()).queue();
                                         AbstractCommand play = CommandHandler.getCommand("play");
                                         if (play != null) {
                                             play.execute(bot, new String[]{reaction.getValue()}, channel, author, null);

@@ -93,7 +93,6 @@ public class MemeCommand extends AbstractCommand {
             }
         }
         String msg = "Use one of the following meme types:" + BotConfig.EOL;
-        channel.sendTyping();
         if (memeTypes.isEmpty()) {
             loadMemeOptions();
         }
@@ -143,7 +142,7 @@ public class MemeCommand extends AbstractCommand {
             }
             if (image != null) {
                 ImageIO.write(image, "png", memeFile);
-                bot.queue.add(channel.sendFile(memeFile, null), message -> memeFile.delete());
+                bot.queue.add(channel.sendFile(memeFile), message -> memeFile.delete());
                 return "";
             }
         } catch (InterruptedException | ExecutionException | IOException e) {

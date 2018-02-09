@@ -17,8 +17,8 @@
 package emily.service;
 
 import emily.core.AbstractService;
-import emily.main.BotContainer;
 import emily.main.BotConfig;
+import emily.main.BotContainer;
 import emily.main.DiscordBot;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -117,7 +117,7 @@ public class BotStatusService extends AbstractService {
 
     private void setGameOnShards(BotContainer container, String status) {
         for (DiscordBot shard : container.getShards()) {
-            shard.getJda().getPresence().setGame(Game.of(String.format(status, shard.getShardId())));
+            shard.getJda().getPresence().setGame(Game.of(Game.GameType.DEFAULT, String.format(status, shard.getShardId())));
         }
     }
 
