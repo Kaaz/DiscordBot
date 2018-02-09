@@ -22,7 +22,6 @@ import emily.db.controllers.CGuild;
 import emily.db.controllers.CGuildRoleAssignable;
 import emily.db.model.OGuildRoleAssignable;
 import emily.handler.Template;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.DisUtil;
 import emily.util.Misc;
@@ -88,13 +87,13 @@ public class GetroleCommand extends AbstractCommand {
             if (roles.isEmpty()) {
                 return Template.get("command_getrole_empty");
             }
-            String ret = "You can request the following roles:" + BotConfig.EOL + BotConfig.EOL;
+            String ret = "You can request the following roles:" + "\n" + "\n";
             for (OGuildRoleAssignable role : roles) {
-                ret += "`" + role.roleName + "`" + BotConfig.EOL;
+                ret += "`" + role.roleName + "`" + "\n";
                 if (!role.description.isEmpty()) {
-                    ret += " -> " + role.description + BotConfig.EOL;
+                    ret += " -> " + role.description + "\n";
                 }
-                ret += BotConfig.EOL;
+                ret += "\n";
             }
             return ret;
         }

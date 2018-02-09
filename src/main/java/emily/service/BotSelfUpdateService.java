@@ -111,7 +111,7 @@ public class BotSelfUpdateService extends AbstractService {
                                 break;
                             }
                             if (isUpdating) {
-                                extraContent += BotConfig.EOL + BotConfig.EOL + "You can view the changes with `" + DisUtil.getCommandPrefix(defaultChannel) + "changelog`";
+                                extraContent += "\n" + "\n" + "You can view the changes with `" + DisUtil.getCommandPrefix(defaultChannel) + "changelog`";
                             }
                             discordBot.out.sendAsyncMessage(defaultChannel, message + extraContent, null);
                             break;

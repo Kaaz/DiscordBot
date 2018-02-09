@@ -92,16 +92,16 @@ public class MemeCommand extends AbstractCommand {
                 return Template.get("permission_missing_attach_files");
             }
         }
-        String msg = "Use one of the following meme types:" + BotConfig.EOL;
+        String msg = "Use one of the following meme types:" + "\n";
         if (memeTypes.isEmpty()) {
             loadMemeOptions();
         }
         if (args.length == 0) {
-            return Template.get("command_invalid_use") + BotConfig.EOL +
-                    msg + Misc.makeTable(new ArrayList<>(memeTypes)) + BotConfig.EOL +
-                    "Usage:" + BotConfig.EOL +
-                    DisUtil.getCommandPrefix(channel) + "meme <type> <toptext> | <bottomtext>Config.EOL+Config.EOL" + BotConfig.EOL + BotConfig.EOL +
-                    "Example:" + BotConfig.EOL +
+            return Template.get("command_invalid_use") + "\n" +
+                    msg + Misc.makeTable(new ArrayList<>(memeTypes)) + "\n" +
+                    "Usage:" + "\n" +
+                    DisUtil.getCommandPrefix(channel) + "meme <type> <toptext> | <bottomtext>Config.EOL+Config.EOL" + "\n" + "\n" +
+                    "Example:" + "\n" +
                     "meme sohappy If I could use this meme | I would be so happy";
         }
         switch (args[0].toLowerCase()) {
@@ -115,8 +115,8 @@ public class MemeCommand extends AbstractCommand {
         String type = args[0].toLowerCase();
         if (!memeTypes.contains(type)) {
             return Template.get("command_meme_invalid_type") +
-                    msg + Misc.makeTable(new ArrayList<>(memeTypes)) + BotConfig.EOL + BotConfig.EOL +
-                    "Example:" + BotConfig.EOL +
+                    msg + Misc.makeTable(new ArrayList<>(memeTypes)) + "\n" + "\n" +
+                    "Example:" + "\n" +
                     "meme sohappy If I could use this meme | I would be so happy";
         }
         String topText = "-";

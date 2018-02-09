@@ -20,7 +20,6 @@ import emily.core.AbstractCommand;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.Template;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -68,7 +67,7 @@ public class PrefixCommand extends AbstractCommand {
             }
             return Template.get(channel, "command_prefix_invalid",
                     args[0],
-                    "```" + BotConfig.EOL + GSetting.COMMAND_PREFIX.getDescription() + BotConfig.EOL + "```");
+                    "```" + "\n" + GSetting.COMMAND_PREFIX.getDescription() + "\n" + "```");
         }
         return Template.get(channel, "command_prefix_is", DisUtil.getCommandPrefix(channel));
     }

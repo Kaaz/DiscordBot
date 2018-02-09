@@ -20,7 +20,7 @@ public class RestQueue {
     public RestQueue(DiscordBot bot) {
         ThreadFactoryBuilder threadBuilder = new ThreadFactoryBuilder();
         threadBuilder.setNameFormat(String.format("shard-%02d-message-add-%%d", bot.getShardId()));
-        executor = Executors.newFixedThreadPool(10,threadBuilder.build());
+        executor = Executors.newFixedThreadPool(10, threadBuilder.build());
     }
 
     public <T> void add(RestAction<T> action) {

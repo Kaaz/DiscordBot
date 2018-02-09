@@ -67,10 +67,10 @@ public class DiscordBot {
 
     public static final Logger LOGGER = LogManager.getLogger(DiscordBot.class);
     public final long startupTimeStamp;
+    public final RestQueue queue;
     private final int totShards;
     private final ScheduledExecutorService scheduler;
     private final AtomicReference<JDA> jda;
-    public final RestQueue queue;
     public String mentionMe;
     public String mentionMeAlias;
     public ChatBotHandler chatBotHandler = null;

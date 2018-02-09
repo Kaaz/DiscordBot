@@ -64,6 +64,6 @@ public class DonateCommand extends AbstractCommand {
                 "Feel free to join *" + prefix + "discord* and let your voice be heard! Feedback and suggestions are always welcome!\n \n" +
                 "**You know how to speak 0101?**\n" +
                 "Check out *" + prefix + "github* and feel free to pick up one of the open issues\n \n" +
-                "If you've ascended beyond 0101 and know multiple numbers, consider following the project on github to see whats happening\n" ;
+                "If you've ascended beyond 0101 and know multiple numbers, consider following the project on github to see whats happening\n";
     }
 }

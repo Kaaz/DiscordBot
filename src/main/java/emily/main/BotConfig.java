@@ -236,7 +236,6 @@ public class BotConfig {
     @ConfigurationOption
     public static String TRELLO_TOKEN = "token-here";
 
-    public static String EOL = System.getProperty("line.separator");
     @ConfigurationOption
     public static long CREATOR_ID = 97433066384928768L;
 }

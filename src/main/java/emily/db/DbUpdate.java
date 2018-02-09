@@ -35,9 +35,9 @@ import java.util.regex.Pattern;
 
 public class DbUpdate {
     private final MySQLAdapter adapter;
+    private final Pattern filepattern = Pattern.compile("(\\d+)_(\\d+).*\\.sql");
     private int highestVersion = 0;
     private Map<Integer, DbVersion> versionMap;
-    private final Pattern filepattern = Pattern.compile("(\\d+)_(\\d+).*\\.sql");
 
     public DbUpdate(MySQLAdapter adapter) throws IOException {
         this.adapter = adapter;
@@ -69,7 +69,7 @@ public class DbUpdate {
                         return;
                     }
                     for (File file : files) {
-                        prepareFile(path+"/"+file.getName());
+                        prepareFile(path + "/" + file.getName());
                     }
                 } catch (URISyntaxException ignored) {
                 }

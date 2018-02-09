@@ -32,7 +32,6 @@ import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
 import emily.handler.Template;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -133,7 +132,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         String cp = DisUtil.getCommandPrefix(channel);
         if (args.length == 0) {
             if (playlist.isGlobalList()) {
-                return Template.get(channel, "music_playlist_using", playlist.title) + " See `" + cp + "pl help` for more info" + BotConfig.EOL +
+                return Template.get(channel, "music_playlist_using", playlist.title) + " See `" + cp + "pl help` for more info" + "\n" +
                         "You can switch to a different playlist with `" + cp + "pl guild` to the guild's list or `" + cp + "pl mine` to your own one";
             }
             return Template.get(channel, "music_playlist_using", playlist.title) +
@@ -248,9 +247,9 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                         if (editType.getId() < 1) continue;
                         tbl.add(Arrays.asList((editType == playlist.getEditType() ? "*" : " ") + editType.getId(), editType.toString(), editType.getDescription()));
                     }
-                    return "the edit-type of the playlist. A `*` indicates the selected option" + BotConfig.EOL +
-                            Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + BotConfig.EOL +
-                            "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl edit 3` sets it to PUBLIC_ADD " + BotConfig.EOL + BotConfig.EOL +
+                    return "the edit-type of the playlist. A `*` indicates the selected option" + "\n" +
+                            Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + "\n" +
+                            "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl edit 3` sets it to PUBLIC_ADD " + "\n" + "\n" +
                             "Private in a guild context refers to users with admin privileges";
                 }
                 if (args.length > 1 && args[1].matches("^\\d+$")) {
@@ -272,9 +271,9 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                         if (visibility.getId() < 1) continue;
                         tbl.add(Arrays.asList((visibility == playlist.getVisibility() ? "*" : " ") + visibility.getId(), visibility.toString(), visibility.getDescription()));
                     }
-                    return "the visibility-type of the playlist. A `*` indicates the selected option" + BotConfig.EOL +
-                            Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + BotConfig.EOL +
-                            "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl vis 3` sets it to guild " + BotConfig.EOL + BotConfig.EOL +
+                    return "the visibility-type of the playlist. A `*` indicates the selected option" + "\n" +
+                            Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + "\n" +
+                            "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl vis 3` sets it to guild " + "\n" + "\n" +
                             "Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
                 }
                 if (args.length > 1 && args[1].matches("^\\d+$")) {
@@ -314,8 +313,8 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                         if (playType.getId() < 1) continue;
                         tbl.add(Arrays.asList((playType == playlist.getPlayType() ? "*" : " ") + playType.getId(), playType.toString(), playType.getDescription()));
                     }
-                    return "the play-type of the playlist. A `*` indicates the selected option" + BotConfig.EOL +
-                            Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + BotConfig.EOL +
+                    return "the play-type of the playlist. A `*` indicates the selected option" + "\n" +
+                            Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + "\n" +
                             "Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
                 }
                 if (args.length > 1 && args[1].matches("^\\d+$")) {
@@ -463,14 +462,14 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         if (items.isEmpty()) {
             return "The playlist is empty!";
         }
-        String playlistTable = BotConfig.EOL;
+        String playlistTable = "\n";
         for (OMusic item : items) {
-            playlistTable += String.format("`%11s` | %s" + BotConfig.EOL, item.youtubecode, item.youtubeTitle);
+            playlistTable += String.format("`%11s` | %s" + "\n", item.youtubecode, item.youtubeTitle);
         }
-        return String.format("Music in the playlist: %s" + BotConfig.EOL, playlist.title) +
-                playlistTable + BotConfig.EOL +
-                String.format("Showing [page %s/%s]", currentPage, maxPage) + BotConfig.EOL + BotConfig.EOL +
-                "_You can use the `#` to remove an item from the playlist._" + BotConfig.EOL + BotConfig.EOL +
+        return String.format("Music in the playlist: %s" + "\n", playlist.title) +
+                playlistTable + "\n" +
+                String.format("Showing [page %s/%s]", currentPage, maxPage) + "\n" + "\n" +
+                "_You can use the `#` to remove an item from the playlist._" + "\n" + "\n" +
                 "_Example:_ `" + DisUtil.getCommandPrefix(guild) + "pl del QnTYIBU7Ueg`";
     }
 

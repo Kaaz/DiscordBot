@@ -18,7 +18,6 @@ package emily.games.tictactoe;
 
 import emily.games.AbstractGame;
 import emily.games.GameState;
-import emily.main.BotConfig;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.User;
 
@@ -102,7 +101,7 @@ public class TicTacToeGame extends AbstractGame<TicGameTurn> {
     @Override
     public String toString() {
         StringBuilder game = new StringBuilder();
-        game.append("Game of Tic").append(BotConfig.EOL);
+        game.append("Game of Tic").append("\n");
         for (int i = 0; i < TILES_ON_BOARD; i++) {
             if (board[i].getState().equals(TileState.FREE)) {
                 game.append(Misc.numberToEmote(i + 1));
@@ -110,17 +109,17 @@ public class TicTacToeGame extends AbstractGame<TicGameTurn> {
                 game.append(board[i].getState().getEmoticon());
             }
             if ((i + 1) % 3 == 0) {
-                game.append(BotConfig.EOL);
+                game.append("\n");
             }
         }
-        game.append(BotConfig.EOL);
+        game.append("\n");
         if (getGameState().equals(GameState.INITIALIZING)) {
-            game.append("Waiting for another player!").append(BotConfig.EOL);
+            game.append("Waiting for another player!").append("\n");
         }
         if (getGameState().equals(GameState.IN_PROGRESS) || getGameState().equals(GameState.READY)) {
-            game.append(TileState.X.getEmoticon()).append(" = ").append(getPlayer(0).getName()).append(BotConfig.EOL);
-            game.append(TileState.O.getEmoticon()).append(" = ").append(getPlayer(1).getName()).append(BotConfig.EOL);
-            game.append("It's the turn of ").append(getActivePlayer().getAsMention()).append(BotConfig.EOL);
+            game.append(TileState.X.getEmoticon()).append(" = ").append(getPlayer(0).getName()).append("\n");
+            game.append(TileState.O.getEmoticon()).append(" = ").append(getPlayer(1).getName()).append("\n");
+            game.append("It's the turn of ").append(getActivePlayer().getAsMention()).append("\n");
             game.append("to play type **").append(getLastPrefix()).append("game <number>**");
         }
         if (getGameState().equals(GameState.OVER)) {

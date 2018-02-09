@@ -118,7 +118,7 @@ public class ChangelogCommand extends AbstractCommand {
 
             desc += String.format(" • %s\n", change.description);
         }
-        b.setTitle("[" + version.toString() + "] Changelog " + (dbVersion.published == 0 ? Emojibet.WARNING + " Still being worked on!" : ""),null);
+        b.setTitle("[" + version.toString() + "] Changelog " + (dbVersion.published == 0 ? Emojibet.WARNING + " Still being worked on!" : ""), null);
         b.setDescription(desc);
         b.setFooter(String.format("I'd love to hear your feedback, feel free to join %sdiscord", DisUtil.getCommandPrefix(channel)), channel.getJDA().getSelfUser().getAvatarUrl());
         return b.build();

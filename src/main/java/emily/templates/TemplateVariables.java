@@ -31,19 +31,18 @@ import java.util.HashMap;
 
 public class TemplateVariables {
     public static final TemplateVariables EMPTY = new TemplateVariables();
-    public User user = null;
-    public TextChannel channel = null;
-    public Guild guild = null;
-    public Role role = null;
-    public String args = null;
-    public String arg = null;
-
     private static final HashMap<Class, TemplateVariableParser> mapper = new HashMap<>();
 
     static {
         init();
     }
 
+    public User user = null;
+    public TextChannel channel = null;
+    public Guild guild = null;
+    public Role role = null;
+    public String args = null;
+    public String arg = null;
 
     private static void init() {
         mapper.put(User.class, (var, object) -> var.user = (User) object);

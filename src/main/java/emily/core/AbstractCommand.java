@@ -110,10 +110,10 @@ public abstract class AbstractCommand {
     }
 
     /**
-     * @param bot     the shard where its executing on
-     * @param args    arguments for the command
-     * @param channel channel where the command is executed
-     * @param author  who invoked the command
+     * @param bot          the shard where its executing on
+     * @param args         arguments for the command
+     * @param channel      channel where the command is executed
+     * @param author       who invoked the command
      * @param inputMessage
      * @return the message to output or an empty string for nothing
      */

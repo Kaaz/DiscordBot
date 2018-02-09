@@ -21,7 +21,6 @@ import emily.core.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CGuildRoleAssignable;
 import emily.handler.Template;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.role.RoleRankings;
@@ -45,20 +44,22 @@ import java.util.List;
  * manages roles
  */
 public class RoleAdminCommand extends AbstractCommand {
+    boolean success;
+
     public RoleAdminCommand() {
         super();
     }
 
     @Override
     public String getDescription() {
-        return "Management of roles & general permissions " + BotConfig.EOL +
-                "You can give users the ability to self-assign roles. " + BotConfig.EOL +
-                "" + BotConfig.EOL +
-                "Note: " + BotConfig.EOL +
-                "self-assignable roles are not created by emily!" + BotConfig.EOL +
-                "To add an assignable role, you'll first have to add that role though discord." + BotConfig.EOL +
-                "" + BotConfig.EOL +
-                "" + BotConfig.EOL +
+        return "Management of roles & general permissions " + "\n" +
+                "You can give users the ability to self-assign roles. " + "\n" +
+                "" + "\n" +
+                "Note: " + "\n" +
+                "self-assignable roles are not created by emily!" + "\n" +
+                "To add an assignable role, you'll first have to add that role though discord." + "\n" +
+                "" + "\n" +
+                "" + "\n" +
                 "Users can get/remove their own roles with the `getrole` command ";
     }
 
@@ -110,13 +111,13 @@ public class RoleAdminCommand extends AbstractCommand {
             return Template.get("command_no_permission");
         }
         if (args.length == 0 || args[0].equals("list")) {
-            String out = "I found the following roles" + BotConfig.EOL;
+            String out = "I found the following roles" + "\n";
             List<Role> roles = guild.getRoles();
             for (Role role : roles) {
                 if (role.getPosition() == -1) {
                     continue;
                 }
-                out += String.format("%s (%s)" + BotConfig.EOL, role.getName(), role.getId());
+                out += String.format("%s (%s)" + "\n", role.getName(), role.getId());
             }
             return out;
         }
@@ -175,7 +176,7 @@ public class RoleAdminCommand extends AbstractCommand {
                 return ":face_palm: I expected you to know how to use it";
         }
     }
-    boolean success;
+
     private String mutateRole(TextChannel channel, String user, String role, boolean adding) {
         Role r = DisUtil.findRole(channel.getGuild(), role);
         success = true;

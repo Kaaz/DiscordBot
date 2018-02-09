@@ -17,7 +17,6 @@
 package emily.command.poe;
 
 import emily.core.AbstractCommand;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.modules.reddit.RedditScraper;
 import emily.modules.reddit.pojo.Comment;
@@ -93,15 +92,15 @@ public class PoeLabsCommand extends AbstractCommand {
                     Matcher m = imagePattern.matcher(searchText);
                     while (m.find()) {
                         if (m.group(1).equals(args[0].toLowerCase())) {
-                            return "Path of Exile - Labyrinth" + BotConfig.EOL + BotConfig.EOL +
-                                    post.data.title + " - **" + args[0].toLowerCase() + "**" + BotConfig.EOL + m.group(2);
+                            return "Path of Exile - Labyrinth" + "\n" + "\n" +
+                                    post.data.title + " - **" + args[0].toLowerCase() + "**" + "\n" + m.group(2);
 
                         }
                     }
                 } else {
                     if (searchText.contains("normal") && searchText.contains("cruel") && searchText.contains("merciless")) {
-                        return "Path of Exile -  Labyrinth" + BotConfig.EOL + BotConfig.EOL +
-                                post.data.title + BotConfig.EOL +
+                        return "Path of Exile -  Labyrinth" + "\n" + "\n" +
+                                post.data.title + "\n" +
                                 Misc.makeTable(comment.data.body);
                     }
                 }

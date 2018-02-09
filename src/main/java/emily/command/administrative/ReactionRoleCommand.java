@@ -46,6 +46,21 @@ public class ReactionRoleCommand extends AbstractCommand {
         super();
     }
 
+    public static boolean isEmote(DiscordBot bot, String emote) {
+        return EmojiUtils.isEmoji(emote) || Misc.isGuildEmote(emote) || bot.getJda().getEmoteById(emote) != null;
+    }
+
+    public static String toDisplay(DiscordBot bot, String emote) {
+        if (EmojiUtils.isEmoji(emote)) {
+            return emote;
+        } else if (Misc.isGuildEmote(emote)) {
+            return bot.getJda().getEmoteById(Misc.getGuildEmoteId(emote)).getAsMention();
+        } else if (bot.getJda().getEmoteById(emote) != null) {
+            return bot.getJda().getEmoteById(emote).getAsMention();
+        }
+        return "";
+    }
+
     @Override
     public String getDescription() {
         return "Adds and removes roles from users based on reactions from a message\n\n" +
@@ -193,20 +208,5 @@ public class ReactionRoleCommand extends AbstractCommand {
                 }
             }
         });
-    }
-
-    public static boolean isEmote(DiscordBot bot, String emote) {
-        return EmojiUtils.isEmoji(emote) || Misc.isGuildEmote(emote) || bot.getJda().getEmoteById(emote) != null;
-    }
-
-    public static String toDisplay(DiscordBot bot, String emote) {
-        if (EmojiUtils.isEmoji(emote)) {
-            return emote;
-        } else if (Misc.isGuildEmote(emote)) {
-            return bot.getJda().getEmoteById(Misc.getGuildEmoteId(emote)).getAsMention();
-        } else if (bot.getJda().getEmoteById(emote) != null) {
-            return bot.getJda().getEmoteById(emote).getAsMention();
-        }
-        return "";
     }
 }

@@ -19,7 +19,6 @@ package emily.command.administrative;
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.handler.Template;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -163,8 +162,8 @@ public class PurgeComand extends AbstractCommand {
                     try {
                         deletePattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
                     } catch (PatternSyntaxException exception) {
-                        return Template.get("command_autoreply_regex_invalid") + BotConfig.EOL +
-                                exception.getDescription() + BotConfig.EOL +
+                        return Template.get("command_autoreply_regex_invalid") + "\n" +
+                                exception.getDescription() + "\n" +
                                 Misc.makeTable(exception.getMessage());
                     }
             }

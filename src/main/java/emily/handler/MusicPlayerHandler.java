@@ -40,7 +40,6 @@ import emily.db.model.OPlaylist;
 import emily.guildsettings.GSetting;
 import emily.handler.audio.AudioPlayerSendHandler;
 import emily.handler.audio.QueuedAudioTrack;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.permission.SimpleRank;
@@ -79,8 +78,8 @@ import java.util.stream.Collectors;
 public class MusicPlayerHandler {
     private final static DefaultAudioPlayerManager playerManager = new DefaultAudioPlayerManager();
     private final static Map<String, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
-    private final DiscordBot bot;
     public final AudioPlayer player;
+    private final DiscordBot bot;
     private final TrackScheduler scheduler;
     private final HashSet<User> skipVotes;
     private final String guildId;
@@ -120,10 +119,6 @@ public class MusicPlayerHandler {
         skipVotes = new HashSet<>();
     }
 
-    public void goToTime(Long millis) {
-        player.getPlayingTrack().setPosition(millis);
-    }
-
     public static void init() {
         AudioSourceManagers.registerLocalSource(playerManager);
         playerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
@@ -153,6 +148,10 @@ public class MusicPlayerHandler {
         } else {
             return new MusicPlayerHandler(guild, bot);
         }
+    }
+
+    public void goToTime(Long millis) {
+        player.getPlayingTrack().setPosition(millis);
     }
 
     public OPlaylist getPlaylist() {
@@ -271,7 +270,7 @@ public class MusicPlayerHandler {
 
                 @Override
                 public void loadFailed(FriendlyException exception) {
-                    bot.out.sendMessageToCreator("file:" + absolutePath + BotConfig.EOL + "Message: " + exception.getMessage());
+                    bot.out.sendMessageToCreator("file:" + absolutePath + "\n" + "Message: " + exception.getMessage());
                     trackToAdd.fileExists = 0;
                     CMusic.update(trackToAdd);
                     new File(absolutePath).delete();

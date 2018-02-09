@@ -20,7 +20,6 @@ import emily.db.model.OMusic;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
-import emily.main.BotConfig;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -55,13 +54,13 @@ public class MusicUtil {
         embed.addField("duration", Misc.getDurationString(player.player.getPlayingTrack().getPosition() / 1000) + " / " + Misc.getDurationString(record.duration), true);
         String optionsField = "";
         if (player.getRequiredVotes() != 1) {
-            optionsField += "Skips req.: " + player.getRequiredVotes() + BotConfig.EOL;
+            optionsField += "Skips req.: " + player.getRequiredVotes() + "\n";
         }
         String requiredRole = GuildSettings.get(player.getGuild()).getOrDefault(GSetting.MUSIC_ROLE_REQUIREMENT);
         if (!requiredRole.equals("false")) {
             Role role = guild.getRoleById(requiredRole);
             if (role != null) {
-                optionsField += "Role req.: " + role.getName() + BotConfig.EOL;
+                optionsField += "Role req.: " + role.getName() + "\n";
             }
         }
         if (GuildSettings.get(player.getGuild()).getOrDefault(GSetting.MUSIC_QUEUE_ONLY).equals("false")) {
@@ -75,7 +74,7 @@ public class MusicUtil {
         if (!queue.isEmpty()) {
             String x = "";
             for (int i = 0; i < Math.min(show, queue.size()); i++) {
-                x += queue.get(i).youtubeTitle + BotConfig.EOL;
+                x += queue.get(i).youtubeTitle + "\n";
             }
             if (queue.size() > show) {
                 x += ".. and **" + (queue.size() - 3) + "** more";

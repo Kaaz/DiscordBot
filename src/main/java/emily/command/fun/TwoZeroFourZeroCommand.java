@@ -25,7 +25,6 @@ import emily.games.GameState;
 import emily.games.game2048.Game2048;
 import emily.games.game2048.Game2048Turn;
 import emily.handler.Template;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
@@ -88,7 +87,7 @@ public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandR
                 Game2048Turn turn = new Game2048Turn();
                 turn.parseInput(reaction);
                 if (!game.isValidMove(message.getJDA().getUserById(userId), turn)) {
-                    message.editMessage(game.toString() + BotConfig.EOL + Template.get("playmode_not_a_valid_move")).complete();
+                    message.editMessage(game.toString() + "\n" + Template.get("playmode_not_a_valid_move")).complete();
                 } else {
                     game.playTurn(message.getJDA().getUserById(userId), turn);
                     message.editMessage(game.toString()).complete();

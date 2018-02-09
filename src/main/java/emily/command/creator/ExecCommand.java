@@ -19,7 +19,6 @@ package emily.command.creator;
 import com.google.common.base.Joiner;
 import emily.core.AbstractCommand;
 import emily.handler.Template;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.Misc;
@@ -87,10 +86,10 @@ public class ExecCommand extends AbstractCommand {
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
-            return "Command output:" + BotConfig.EOL +
+            return "Command output:" + "\n" +
                     Misc.makeTable(sb.toString());
         } catch (InterruptedException | IOException e) {
-            return e.getMessage() + BotConfig.EOL +
+            return e.getMessage() + "\n" +
                     Misc.makeTable(e.toString());
         }
     }

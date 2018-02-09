@@ -21,7 +21,6 @@ import com.google.common.collect.Sets;
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.handler.Template;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -87,8 +86,8 @@ public class ServerCommand extends AbstractCommand {
         b.setThumbnail(guild.getIconUrl());
 
         b.setDescription(
-                "Discord-id `" + guild.getId() + "`" + BotConfig.EOL +
-                        "On shard `" + bot.getShardId() + "`" + BotConfig.EOL +
+                "Discord-id `" + guild.getId() + "`" + "\n" +
+                        "On shard `" + bot.getShardId() + "`" + "\n" +
                         (PermissionUtil.checkPermission(guild.getSelfMember(), Permission.ADMINISTRATOR)
                                 ? Emojibet.POLICE + " Administrator" : "")
         );

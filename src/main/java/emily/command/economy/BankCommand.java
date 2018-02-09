@@ -121,7 +121,7 @@ public class BankCommand extends AbstractCommand {
                             transaction.bankFrom == bank.id ? -transaction.amount : transaction.amount,
                             BotConfig.ECONOMY_CURRENCY_ICON,
                             transaction.bankFrom == bank.id ? transaction.userTo : transaction.userFrom,
-                            transaction.bankFrom != bank.id ? ":arrow_left:":":arrow_right:",
+                            transaction.bankFrom != bank.id ? ":arrow_left:" : ":arrow_right:",
                             transaction.bankFrom != bank.id ? Emojibet.USER : Emojibet.SPEECH_BALLOON,
                             transaction.description.substring(0, Math.min(25, transaction.description.length())));
                 }

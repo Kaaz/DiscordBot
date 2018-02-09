@@ -78,12 +78,12 @@ public class Emojibet {
     public static final String SPEECH_BALLOON = "\uD83D\uDCAC";
     public static final String INBOX_TRAY = "\uD83D\uDCE5";
     public static final String TRIANGLE_RED_DOWN = "\uD83D\uDD3B";
+    public static final String DEFENSE = "\uD83D\uDEE1";
+    public static final String HASH = "\u0023\u20E3";
     private static final Map<String, String> emojis = new HashMap<>();
     private static final String UNKNOWN = " ";
-    public static final String DEFENSE = "\uD83D\uDEE1";
     public static String SWORDS = "\u2694";
     public static String EXPLOSION = "\uD83D\uDCA5";
-    public static final String HASH = "\u0023\u20E3";
 
     static {
         emojis.put("a", "\uD83C\uDDE6");

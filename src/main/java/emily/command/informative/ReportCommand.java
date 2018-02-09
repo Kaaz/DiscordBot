@@ -81,12 +81,12 @@ public class ReportCommand extends AbstractCommand {
         if (body.length() < 20 || title.length() < 3) {
             return Template.get("command_report_message_too_short");
         }
-        bot.out.sendPrivateMessage(channel.getJDA().getUserById(BotConfig.CREATOR_ID), "new :e_mail: Report coming in!" + BotConfig.EOL + BotConfig.EOL +
-                ":bust_in_silhouette: user:  " + author.getName() + " ( " + author.getAsMention() + " )" + BotConfig.EOL +
-                "Title: " + BotConfig.EOL + title + BotConfig.EOL + BotConfig.EOL +
-                "Message: " + BotConfig.EOL + body
+        bot.out.sendPrivateMessage(channel.getJDA().getUserById(BotConfig.CREATOR_ID), "new :e_mail: Report coming in!" + "\n" + "\n" +
+                ":bust_in_silhouette: user:  " + author.getName() + " ( " + author.getAsMention() + " )" + "\n" +
+                "Title: " + "\n" + title + "\n" + "\n" +
+                "Message: " + "\n" + body
         );
-        return Template.get("command_report_success") + BotConfig.EOL + BotConfig.EOL +
+        return Template.get("command_report_success") + "\n" + "\n" +
                 "Note: This is 1-way communication, if you'd like give feedback or need assistance feel free to join my **!discord**";
     }
 }

@@ -118,7 +118,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
                             } else {
                                 gameResult = Template.get("gamble_ai_lose");
                             }
-                            bot.queue.add(message.editMessage(slotMachine.toString() + BotConfig.EOL + gameResult));
+                            bot.queue.add(message.editMessage(slotMachine.toString() + "\n" + gameResult));
                             f[0].cancel(false);
                         } else {
                             bot.queue.add(message.editMessage(slotMachine.toString()));
@@ -130,10 +130,10 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
                 }, 1000L, SPIN_INTERVAL);
             });
         } else {
-            String ret = "The slotmachine!" + BotConfig.EOL;
-            ret += "payout is as follows: " + BotConfig.EOL;
+            String ret = "The slotmachine!" + "\n";
+            ret += "payout is as follows: " + "\n";
             for (Slot s : Slot.values()) {
-                ret += String.format("%1$s %1$s %1$s = %2$s" + BotConfig.EOL, s.getEmote(), s.getTriplePayout());
+                ret += String.format("%1$s %1$s %1$s = %2$s" + "\n", s.getEmote(), s.getTriplePayout());
             }
             ret += "type **slot play** to give it a shot!";
             return ret;

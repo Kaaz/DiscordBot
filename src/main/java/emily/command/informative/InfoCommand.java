@@ -93,12 +93,12 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
             switch (args[0].toLowerCase()) {
                 case "planned":
                 case "plan":
-                    return "The following items are planned:" + BotConfig.EOL + getListFor(BotConfig.TRELLO_LIST_PLANNED, ":date:");
+                    return "The following items are planned:" + "\n" + getListFor(BotConfig.TRELLO_LIST_PLANNED, ":date:");
                 case "bugs":
                 case "bug":
-                    return "The following bugs are known:" + BotConfig.EOL + getListFor(BotConfig.TRELLO_LIST_BUGS, ":exclamation:");
+                    return "The following bugs are known:" + "\n" + getListFor(BotConfig.TRELLO_LIST_BUGS, ":exclamation:");
                 case "progress":
-                    return "The following items are being worked on:" + BotConfig.EOL + getListFor(BotConfig.TRELLO_LIST_IN_PROGRESS, ":construction:");
+                    return "The following items are being worked on:" + "\n" + getListFor(BotConfig.TRELLO_LIST_IN_PROGRESS, ":construction:");
                 default:
                     break;
             }//
@@ -114,16 +114,16 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
         if (purpose.isEmpty()) {
             purpose = "I don't know";
         }
-        return "\u2139 > Info  " + BotConfig.EOL + BotConfig.EOL +
-                "*" + bot.chatBotHandler.chat("emily", "information") + "* " + BotConfig.EOL + BotConfig.EOL +
-                "**What am I?** *" + response + "* " + BotConfig.EOL +
-                "**My purpose?** *" + purpose + "* " + BotConfig.EOL +
-                "**Who made me?** *Kaaz*" + BotConfig.EOL + BotConfig.EOL +
-                "The last time I restarted was  " + onlineFor + "." + BotConfig.EOL +
-                "Running version `" + Launcher.getVersion().toString() + "`. You can use `" + prefix + "changelog` to see what changed." + BotConfig.EOL + BotConfig.EOL +
-                "Type **" + prefix + "help** to see what I'll allow you to do. In total there are " + CommandHandler.getCommands().length + " commands I can perform." + BotConfig.EOL + BotConfig.EOL +
-                "For help about a specific command type `" + prefix + "<command> help`" + BotConfig.EOL +
-                "An example: `" + prefix + "skip help` to see what you can do with the skip command." + BotConfig.EOL + BotConfig.EOL +
+        return "\u2139 > Info  " + "\n" + "\n" +
+                "*" + bot.chatBotHandler.chat("emily", "information") + "* " + "\n" + "\n" +
+                "**What am I?** *" + response + "* " + "\n" +
+                "**My purpose?** *" + purpose + "* " + "\n" +
+                "**Who made me?** *Kaaz*" + "\n" + "\n" +
+                "The last time I restarted was  " + onlineFor + "." + "\n" +
+                "Running version `" + Launcher.getVersion().toString() + "`. You can use `" + prefix + "changelog` to see what changed." + "\n" + "\n" +
+                "Type **" + prefix + "help** to see what I'll allow you to do. In total there are " + CommandHandler.getCommands().length + " commands I can perform." + "\n" + "\n" +
+                "For help about a specific command type `" + prefix + "<command> help`" + "\n" +
+                "An example: `" + prefix + "skip help` to see what you can do with the skip command." + "\n" + "\n" +
                 "If you need assistance, want to share your thoughts or want to contribute feel free to join my __" + prefix + "discord__";
     }
 
@@ -131,23 +131,23 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
         StringBuilder sb = new StringBuilder();
         List<Card> cardsByList = trello.getCardsByList(listId);
         for (Card card : cardsByList) {
-            sb.append(itemPrefix).append(" **").append(card.getName()).append("**").append(BotConfig.EOL);
+            sb.append(itemPrefix).append(" **").append(card.getName()).append("**").append("\n");
             if (card.getDesc().length() > 2) {
-                sb.append(card.getDesc()).append(BotConfig.EOL);
+                sb.append(card.getDesc()).append("\n");
             }
             List<Checklist> checkItemStates = trello.getChecklistByCard(card.getId());
             for (Checklist clist : checkItemStates) {
-                sb.append(BotConfig.EOL);
+                sb.append("\n");
                 for (Checklist.CheckItem item : clist.getCheckItems()) {
-                    sb.append(String.format(" %s %s", item.isChecked() ? ":ballot_box_with_check:" : ":white_large_square:", item.getName())).append(BotConfig.EOL);
+                    sb.append(String.format(" %s %s", item.isChecked() ? ":ballot_box_with_check:" : ":white_large_square:", item.getName())).append("\n");
                 }
             }
 
-            sb.append(BotConfig.EOL);
+            sb.append("\n");
         }
         if (sb.length() == 0) {
             sb.append("There are currently no items!");
         }
-        return BotConfig.EOL + sb.toString();
+        return "\n" + sb.toString();
     }
 }

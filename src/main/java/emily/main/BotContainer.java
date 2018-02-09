@@ -31,13 +31,11 @@ import emily.handler.Template;
 import emily.role.RoleRankings;
 import emily.templates.TemplateCache;
 import emily.templates.Templates;
-import emily.threads.YoutubeThread;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
@@ -53,7 +51,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLongArray;
-import java.util.function.Consumer;
 
 /**
  * Shared information between bots
@@ -62,7 +59,6 @@ public class BotContainer {
     public static final Logger LOGGER = LogManager.getLogger(DiscordBot.class);
     private final int numShards;
     private final DiscordBot[] shards;
-    private final YoutubeThread youtubeThread;
     private final AtomicBoolean statusLocked = new AtomicBoolean(false);
     private final AtomicInteger numGuilds;
     private final AtomicLongArray lastActions;
@@ -77,7 +73,6 @@ public class BotContainer {
         this.numGuilds = new AtomicInteger(numGuilds);
         this.numShards = getRecommendedShards();
         shards = new DiscordBot[numShards];
-        youtubeThread = new YoutubeThread(this);
         lastActions = new AtomicLongArray(numShards);
         initHandlers();
         initShards();
@@ -199,7 +194,6 @@ public class BotContainer {
         if (!terminationRequested) {
             terminationRequested = true;
             rebootReason = reason;
-            youtubeThread.shutown();
         }
     }
 
@@ -228,33 +222,33 @@ public class BotContainer {
      */
 
     public void reportError(Throwable error, Object... details) {
-        String errorMessage = "I've encountered a **" + error.getClass().getName() + "**" + BotConfig.EOL;
+        String errorMessage = "I've encountered a **" + error.getClass().getName() + "**" + "\n";
         if (error.getMessage() != null) {
-            errorMessage += "Message: " + BotConfig.EOL;
-            errorMessage += error.getMessage() + BotConfig.EOL + BotConfig.EOL;
+            errorMessage += "Message: " + "\n";
+            errorMessage += error.getMessage() + "\n" + "\n";
         }
         String stack = "";
         int maxTrace = 10;
         StackTraceElement[] stackTrace1 = error.getStackTrace();
         for (int i = 0; i < stackTrace1.length; i++) {
             StackTraceElement stackTrace = stackTrace1[i];
-            stack += stackTrace.toString() + BotConfig.EOL;
+            stack += stackTrace.toString() + "\n";
             if (i > maxTrace) {
                 break;
             }
         }
         if (details.length > 0) {
-            errorMessage += "Extra information: " + BotConfig.EOL;
+            errorMessage += "Extra information: " + "\n";
             for (int i = 1; i < details.length; i += 2) {
                 if (details[i] != null) {
-                    errorMessage += details[i - 1] + " = " + details[i] + BotConfig.EOL;
+                    errorMessage += details[i - 1] + " = " + details[i] + "\n";
                 } else if (details[i - 1] != null) {
                     errorMessage += details[i - 1];
                 }
             }
-            errorMessage += BotConfig.EOL + BotConfig.EOL;
+            errorMessage += "\n" + "\n";
         }
-        errorMessage += "Accompanied stacktrace: " + BotConfig.EOL + Misc.makeTable(stack) + BotConfig.EOL;
+        errorMessage += "Accompanied stacktrace: " + "\n" + Misc.makeTable(stack) + "\n";
         reportError(errorMessage);
     }
 
@@ -412,7 +406,6 @@ public class BotContainer {
     private void onAllShardsReady() {
         TemplateCache.initGuildTemplates(this);
         System.out.println("DONE LOADING TEMPLATES");
-        youtubeThread.start();
         CBotPlayingOn.deleteAll();
         sendStatsToDiscordlistNet();
     }
@@ -453,30 +446,6 @@ public class BotContainer {
 
     public ExitCode getRebootReason() {
         return rebootReason;
-    }
-
-    /**
-     * Queue up a track to fetch from youtube
-     *
-     * @param youtubeCode the video code
-     * @param message     message object
-     * @param callback    the callback
-     */
-    public void downloadRequest(String youtubeCode, String youtubeTitle, Message message, Consumer<Message> callback) {
-        youtubeThread.addToQueue(youtubeCode, youtubeTitle, message, callback);
-    }
-
-    /**
-     * how many tracks are in the add to be processed?
-     *
-     * @return amount
-     */
-    public int downloadsProcessing() {
-        return youtubeThread.getQueueSize();
-    }
-
-    public synchronized boolean isInProgress(String videoCode) {
-        return youtubeThread.isInProgress(videoCode);
     }
 
     /**

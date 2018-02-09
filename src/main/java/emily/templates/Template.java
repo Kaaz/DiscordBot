@@ -25,9 +25,9 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 public class Template {
-    private String key;
     final private TemplateArgument[] templateArguments;
     final private TemplateArgument[] optionalArgs;
+    private String key;
 
     public Template(TemplateArgument... templateArguments) {
         this(templateArguments, null);
@@ -46,12 +46,12 @@ public class Template {
         }
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
     public String getKey() {
         return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public TemplateArgument[] getRequiredArguments() {

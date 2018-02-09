@@ -50,10 +50,8 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * !play
@@ -66,6 +64,30 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
     public PlayCommand() {
         super();
         ytSearch = new YTSearch();
+    }
+
+    public static String processTrack(MusicPlayerHandler player, DiscordBot bot, TextChannel channel, User invoker, String videoCode, String videoTitle, boolean useTemplates) {
+        OMusic record = CMusic.findByYoutubeId(videoCode);
+        final File filecheck;
+        if (record.id > 0 && record.fileExists == 1) {
+            filecheck = new File(record.filename);
+        } else {
+            filecheck = new File(YTUtil.getOutputPath(videoCode));
+        }
+        final String finalVideoCode = videoCode;
+        try {
+            String path = filecheck.toPath().toRealPath().toString();
+            OMusic rec = CMusic.findByFileName(path);
+            CMusic.registerPlayRequest(rec.id);
+            player.addToQueue(path, invoker);
+            if (useTemplates) {
+                return Template.get("music_added_to_queue", rec.youtubeTitle);
+            }
+            return "\u25AA " + rec.youtubeTitle;
+        } catch (Exception e) {
+            bot.getContainer().reportError(e, "ytcode", videoCode);
+            return Template.get("music_file_error");
+        }
     }
 
     @Override
@@ -250,71 +272,6 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                 }
                 return Template.get("music_failed_to_start");
             }
-        }
-    }
-
-    public static String processTrack(MusicPlayerHandler player, DiscordBot bot, TextChannel channel, User invoker, String videoCode, String videoTitle, boolean useTemplates) {
-        OMusic record = CMusic.findByYoutubeId(videoCode);
-        final File filecheck;
-        if (record.id > 0 && record.fileExists == 1) {
-            filecheck = new File(record.filename);
-        } else {
-            filecheck = new File(YTUtil.getOutputPath(videoCode));
-        }
-        final String finalVideoCode = videoCode;
-        Consumer<Message> consumer = message -> bot.getContainer().downloadRequest(finalVideoCode, videoTitle, message, msg -> {
-            try {
-                File targetFile = new File(YTUtil.getOutputPath(videoCode));
-                if (targetFile.exists()) {
-                    OMusic record2 = CMusic.findByYoutubeId(videoCode);
-                    if (msg != null) {
-                        bot.out.editBlocking(msg, ":notes: Found *" + record2.youtubeTitle + "* and added it to the queue");
-                    }
-                    player.addToQueue(targetFile.toPath().toRealPath().toString(), invoker);
-                } else {
-                    if (player.getPlaylist().isGlobalList()) {
-                        if (msg != null) {
-                            bot.out.editBlocking(msg, "Download failed, the song is likely too long or region locked!");
-                        }
-                    } else {
-                        CPlaylist.removeFromPlayList(player.getPlaylist().id, record.id);
-                        if (msg != null) {
-                            bot.out.editBlocking(msg, String.format("the video `%s` (%s) is unavailable and its removed from the playlist '%s'",
-                                    finalVideoCode, record.youtubeTitle, player.getPlaylist().title));
-                        }
-                        player.forceSkip();
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                if (msg != null) {
-                    bot.out.editBlocking(msg, (Template.get("music_file_error")));
-                }
-            }
-        });
-        boolean isInProgress = bot.getContainer().isInProgress(videoCode);
-        if (!filecheck.exists() && !isInProgress) {
-            if (useTemplates) {
-                bot.queue.add(channel.sendMessage(Template.get("music_downloading_in_queue", videoTitle)), consumer);
-            } else {
-                consumer.accept(null);
-            }
-            return "";
-        } else if (YTUtil.isValidYoutubeCode(videoCode) && isInProgress) {
-            return Template.get(channel, "music_downloading_in_progress", videoTitle);
-        }
-        try {
-            String path = filecheck.toPath().toRealPath().toString();
-            OMusic rec = CMusic.findByFileName(path);
-            CMusic.registerPlayRequest(rec.id);
-            player.addToQueue(path, invoker);
-            if (useTemplates) {
-                return Template.get("music_added_to_queue", rec.youtubeTitle);
-            }
-            return "\u25AA " + rec.youtubeTitle;
-        } catch (Exception e) {
-            bot.getContainer().reportError(e, "ytcode", videoCode);
-            return Template.get("music_file_error");
         }
     }
 }

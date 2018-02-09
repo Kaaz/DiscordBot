@@ -17,8 +17,8 @@
 package emily.service;
 
 import emily.core.AbstractService;
-import emily.main.BotContainer;
 import emily.main.BotConfig;
+import emily.main.BotContainer;
 import emily.main.DiscordBot;
 
 import java.util.concurrent.TimeUnit;

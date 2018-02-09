@@ -34,8 +34,6 @@ import java.util.stream.Collectors;
  * Templates.command.SAY_CONTAINS_MENTION.format()
  */
 public final class Templates {
-    final private static HashMap<String, Template> dictionary = new HashMap<>();
-
     public static final Template permission_missing = new Template(TemplateArgument.ARG);
     public static final Template no_permission = new Template();
     public static final Template TEST = new Template(
@@ -45,40 +43,10 @@ public final class Templates {
     public static final Template welcome_back_user = new Template(null, TemplateArgument.values());
     public static final Template message_user_leaves = new Template(null, TemplateArgument.values());
     public static final Template welcome_bot_admin = new Template(null, TemplateArgument.values());
+    final private static HashMap<String, Template> dictionary = new HashMap<>();
 
     public static Template getByKey(String templateKey) {
         return dictionary.get(templateKey);
-    }
-
-    final public static class command {
-        public static class uptime {
-            public static final Template upfor = new Template(TemplateArgument.ARG);
-        }
-
-        public static class template {
-            public static final Template added = new Template();
-            public static final Template added_failed = new Template();
-            public static final Template invalid_option = new Template();
-
-            public static final Template delete_success = new Template();
-            public static final Template delete_failed = new Template();
-            public static final Template not_found = new Template(TemplateArgument.ARG);
-        }
-
-        public static final Template invalid_use = new Template();
-        public static final Template SAY_CONTAINS_MENTION = new Template();
-        public static final Template SAY_WHATEXACTLY = new Template();
-    }
-
-    final public static class music {
-
-        public static final Template no_one_listens_i_leave = new Template();
-        public static final Template queue_is_empty = new Template(TemplateArgument.GUILD);
-    }
-
-    final public static class error {
-        public static final Template command_private_only = new Template();
-        public static final Template command_public_only = new Template();
     }
 
     public static int uniquePhraseCount() {
@@ -131,5 +99,36 @@ public final class Templates {
                 }
             }
         }
+    }
+
+    final public static class command {
+        public static final Template invalid_use = new Template();
+        public static final Template SAY_CONTAINS_MENTION = new Template();
+        public static final Template SAY_WHATEXACTLY = new Template();
+
+        public static class uptime {
+            public static final Template upfor = new Template(TemplateArgument.ARG);
+        }
+
+        public static class template {
+            public static final Template added = new Template();
+            public static final Template added_failed = new Template();
+            public static final Template invalid_option = new Template();
+
+            public static final Template delete_success = new Template();
+            public static final Template delete_failed = new Template();
+            public static final Template not_found = new Template(TemplateArgument.ARG);
+        }
+    }
+
+    final public static class music {
+
+        public static final Template no_one_listens_i_leave = new Template();
+        public static final Template queue_is_empty = new Template(TemplateArgument.GUILD);
+    }
+
+    final public static class error {
+        public static final Template command_private_only = new Template();
+        public static final Template command_public_only = new Template();
     }
 }

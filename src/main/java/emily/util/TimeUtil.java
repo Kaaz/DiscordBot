@@ -29,6 +29,15 @@ public class TimeUtil {
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
     private static final SimpleDateFormat timestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     private static final SimpleDateFormat ymdFormat = new SimpleDateFormat("yyyy/MM/dd");
+    private static final Map<Character, Long> TIME_SYMBOLS = new HashMap<>();
+
+    static {
+        TIME_SYMBOLS.put('w', 604800000L);
+        TIME_SYMBOLS.put('d', 86400000L);
+        TIME_SYMBOLS.put('h', 3600000L);
+        TIME_SYMBOLS.put('m', 60000L);
+        TIME_SYMBOLS.put('s', 1000L);
+    }
 
     public static String getTimestampFormat(long time) {
         try {
@@ -100,16 +109,6 @@ public class TimeUtil {
             return diff / DAY_MILLIS + (shortText ? "d" : " day" + (diff == 1 ? "" : "s") + " " + chronology);
         }
         return ">2w";
-    }
-
-    private static final Map<Character, Long> TIME_SYMBOLS = new HashMap<>();
-
-    static {
-        TIME_SYMBOLS.put('w', 604800000L);
-        TIME_SYMBOLS.put('d', 86400000L);
-        TIME_SYMBOLS.put('h', 3600000L);
-        TIME_SYMBOLS.put('m', 60000L);
-        TIME_SYMBOLS.put('s', 1000L);
     }
 
     /**

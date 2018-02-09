@@ -20,7 +20,6 @@ import emily.core.AbstractCommand;
 import emily.db.controllers.CPoEToken;
 import emily.db.model.OPoEToken;
 import emily.handler.Template;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Message;
@@ -120,7 +119,7 @@ public class PoeCurrency extends AbstractCommand {
                 }
             }
         }
-        String text = "Checking your currency in PoE!" + BotConfig.EOL;
+        String text = "Checking your currency in PoE!" + "\n";
         List<List<String>> tbl = new ArrayList<>();
         Misc.sortByValue(currency).forEach((k, v) -> {
             ArrayList<String> row = new ArrayList<>();

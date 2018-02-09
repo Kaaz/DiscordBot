@@ -18,7 +18,6 @@ package emily.service;
 
 import emily.core.AbstractService;
 import emily.main.BotContainer;
-import emily.main.BotConfig;
 import emily.modules.github.GitHub;
 import emily.modules.github.GithubConstants;
 import emily.modules.github.pojo.RepositoryCommit;
@@ -109,7 +108,7 @@ public class GithubService extends AbstractService {
             } else {
                 embed.setTitle(String.format("There have been **%s** commits to my repository", commitCount), null);
             }
-            String description = "** Hash**          **Description**" + BotConfig.EOL;
+            String description = "** Hash**          **Description**" + "\n";
             int maxCharsPerline = 65;
             for (Map.Entry<String, String> entry : commitMap.entrySet()) {
                 String cmt = String.format("[`%s`](" + commitUrl + ")", entry.getKey().substring(0, 7), gitUser, gitRepo, entry.getKey());
@@ -135,13 +134,13 @@ public class GithubService extends AbstractService {
                     for (String s : subCommitLine) {
                         if (first) {
                             first = false;
-                            description += cmt + "     " + s + BotConfig.EOL;
+                            description += cmt + "     " + s + "\n";
                         } else {
-                            description += "`.......`     " + s + BotConfig.EOL;
+                            description += "`.......`     " + s + "\n";
                         }
                     }
                 }
-                description += BotConfig.EOL;
+                description += "\n";
             }
             embed.setDescription(description);
             for (TextChannel chan : getSubscribedChannels()) {

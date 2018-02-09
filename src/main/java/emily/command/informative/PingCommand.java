@@ -26,10 +26,6 @@ import net.dv8tion.jda.core.entities.User;
  * !ping
  */
 public class PingCommand extends AbstractCommand {
-    public PingCommand() {
-        super();
-    }
-
     private static final String[] pingMessages = new String[]{
             ":ping_pong::white_small_square::black_small_square::black_small_square::ping_pong:",
             ":ping_pong::black_small_square::white_small_square::black_small_square::ping_pong:",
@@ -37,6 +33,9 @@ public class PingCommand extends AbstractCommand {
             ":ping_pong::black_small_square::white_small_square::black_small_square::ping_pong:",
     };
 
+    public PingCommand() {
+        super();
+    }
 
     @Override
     public String getDescription() {
@@ -83,7 +82,7 @@ public class PingCommand extends AbstractCommand {
                     }
                     start = System.currentTimeMillis();
                 }
-                message.editMessage(String.format("Average ping is %dms (min: %d, max: %d)", (int)Math.ceil(sum / 5f), min, max)).complete();
+                message.editMessage(String.format("Average ping is %dms (min: %d, max: %d)", (int) Math.ceil(sum / 5f), min, max)).complete();
             });
         } else {
             long start = System.currentTimeMillis();

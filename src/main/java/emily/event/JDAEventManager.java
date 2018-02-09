@@ -32,9 +32,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class JDAEventManager implements IEventManager {
 
-    private List<Object> listeners = new LinkedList<>();
     private final DiscordBot bot;
     private final ThreadPoolExecutor threadExecutor;
+    private List<Object> listeners = new LinkedList<>();
 
     public JDAEventManager(DiscordBot bot) {
         ThreadFactoryBuilder threadBuilder = new ThreadFactoryBuilder();

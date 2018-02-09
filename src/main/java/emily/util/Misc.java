@@ -17,7 +17,6 @@
 package emily.util;
 
 import com.google.common.base.Strings;
-import emily.main.BotConfig;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -187,19 +186,19 @@ public class Misc {
      * @return formatted controllers
      */
     public static String makeTable(List<String> items, int columnLength, int columns) {
-        String ret = "```xl" + BotConfig.EOL;
+        String ret = "```xl" + "\n";
         int counter = 0;
         for (String item : items) {
             counter++;
             ret += String.format("%-" + columnLength + "s", item);
             if (counter % columns == 0) {
-                ret += BotConfig.EOL;
+                ret += "\n";
             }
         }
         if (counter % columns != 0) {
-            ret += BotConfig.EOL;
+            ret += "\n";
         }
-        return ret + "```" + BotConfig.EOL;
+        return ret + "```" + "\n";
     }
 
     /**
@@ -207,9 +206,9 @@ public class Misc {
      * @return formatted controllers
      */
     public static String makeTable(String tableText) {
-        return "```" + BotConfig.EOL
-                + tableText + BotConfig.EOL +
-                "```" + BotConfig.EOL;
+        return "```" + "\n"
+                + tableText + "\n" +
+                "```" + "\n";
     }
 
     /**
@@ -271,12 +270,12 @@ public class Misc {
                 }
             }
         }
-        sb.append("```").append(BotConfig.EOL);
+        sb.append("```").append("\n");
         String formatLine = "|";
         for (int width : widths) {
             formatLine += " %-" + width + "s |";
         }
-        formatLine += BotConfig.EOL;
+        formatLine += "\n";
         sb.append(appendSeparatorLine("+", "+", "+", padding, widths));
         sb.append(String.format(formatLine, headers.toArray()));
         sb.append(appendSeparatorLine("+", "+", "+", padding, widths));
@@ -313,7 +312,7 @@ public class Misc {
                 ret.append(middle).append(Strings.repeat("-", size + padding * 2));
             }
         }
-        return ret.append(right).append(BotConfig.EOL).toString();
+        return ret.append(right).append("\n").toString();
     }
 
     /**

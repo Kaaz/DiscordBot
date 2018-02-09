@@ -30,7 +30,6 @@ import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
 import emily.handler.Template;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DisUtil;
@@ -171,7 +170,7 @@ public class NowPlayingCommand extends AbstractCommand {
                     return Template.get(channel, "music_source_location", "<https://www.youtube.com/watch?v=" + song.youtubecode + ">");
                 case "pm":
                     bot.out.sendPrivateMessage(author,
-                            "The track I'm playing now is: " + song.youtubeTitle + BotConfig.EOL +
+                            "The track I'm playing now is: " + song.youtubeTitle + "\n" +
                                     "You can find it here: https://www.youtube.com/watch?v=" + song.youtubecode
                     );
                     return Template.get(channel, "private_message_sent", guild.getMember(author).getEffectiveName());
@@ -196,26 +195,26 @@ public class NowPlayingCommand extends AbstractCommand {
         ret += "[`" + DisUtil.getCommandPrefix(channel) + "pl` " + playlist.title + "] " + "\uD83C\uDFB6 ";
         ret += song.youtubeTitle;
         final String autoUpdateText = ret;
-        ret += BotConfig.EOL + BotConfig.EOL;
+        ret += "\n" + "\n";
         MusicPlayerHandler musicHandler = MusicPlayerHandler.getFor(guild, bot);
-        ret += MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + BotConfig.EOL + BotConfig.EOL;
+        ret += MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + "\n" + "\n";
 
         if (GuildSettings.get(guild).getOrDefault(GSetting.MUSIC_SHOW_LISTENERS).equals("true")) {
             List<Member> userList = musicHandler.getUsersInVoiceChannel();
             if (userList.size() > 0) {
-                ret += "\uD83C\uDFA7  Listeners" + BotConfig.EOL;
+                ret += "\uD83C\uDFA7  Listeners" + "\n";
                 ArrayList<String> displayList = userList.stream().map(Member::getEffectiveName).collect(Collectors.toCollection(ArrayList::new));
                 ret += Misc.makeTable(displayList);
             }
         }
         List<OMusic> queue = musicHandler.getQueue();
         if (queue.size() > 0) {
-            ret += BotConfig.EOL + "\uD83C\uDFB5 *Next up:* " + BotConfig.EOL;
+            ret += "\n" + "\uD83C\uDFB5 *Next up:* " + "\n";
             for (int i = 0; i < Math.min(2, queue.size()); i++) {
-                ret += "\uD83D\uDC49 " + queue.get(i).youtubeTitle + BotConfig.EOL;
+                ret += "\uD83D\uDC49 " + queue.get(i).youtubeTitle + "\n";
             }
             if (queue.size() > 2) {
-                ret += BotConfig.EOL + "... And **" + (queue.size() - 2) + "** more!";
+                ret += "\n" + "... And **" + (queue.size() - 2) + "** more!";
             }
 
         }
@@ -232,8 +231,8 @@ public class NowPlayingCommand extends AbstractCommand {
                                         f[0].cancel(false);
                                         return;
                                     }
-                                    bot.queue.add(message.editMessage((player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + BotConfig.EOL +
-                                            MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + BotConfig.EOL + BotConfig.EOL
+                                    bot.queue.add(message.editMessage((player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + "\n" +
+                                            MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + "\n" + "\n"
                                     ));
                                 }, 10_000L, 10_000L
                         );

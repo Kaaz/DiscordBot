@@ -30,12 +30,11 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TemplateCache {
-    private static Random rng = new Random();
     //map <{template-key}, {list-of-options}>
     static private final Map<String, List<String>> dictionary = new ConcurrentHashMap<>();
-
     //map <{guild-id}, map<{template-key}, {list-of-options}>
     static private final ConcurrentHashMap<Integer, Map<String, List<String>>> guildDictionary = new ConcurrentHashMap<>();
+    private static Random rng = new Random();
 
     public static synchronized void initialize() {
         dictionary.clear();

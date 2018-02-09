@@ -16,8 +16,6 @@
 
 package emily.games.connect4;
 
-import emily.main.BotConfig;
-
 public class C4Board {
 
     private C4Column[] cols;
@@ -70,7 +68,7 @@ public class C4Board {
             for (C4Column col : cols) {
                 sb.append(intToPlayer(col.getCol(height)));
             }
-            sb.append(BotConfig.EOL);
+            sb.append("\n");
         }
         return sb.toString();
     }

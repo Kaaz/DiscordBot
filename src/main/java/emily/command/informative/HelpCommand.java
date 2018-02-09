@@ -88,20 +88,20 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
         if (args.length > 0 && !args[0].equals("full")) {
             AbstractCommand c = CommandHandler.getCommand(DisUtil.filterPrefix(args[0], channel));
             if (c != null) {
-                String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + BotConfig.EOL;
+                String ret = " :information_source: Help > " + c.getCommand() + " :information_source:" + "\n";
                 ArrayList<String> aliases = new ArrayList<>();
                 aliases.add(commandPrefix + c.getCommand());
                 for (String alias : c.getAliases()) {
                     aliases.add(commandPrefix + alias);
                 }
-                ret += Emojibet.KEYBOARD + " **Accessible through:** " + BotConfig.EOL +
+                ret += Emojibet.KEYBOARD + " **Accessible through:** " + "\n" +
                         Misc.makeTable(aliases, 16, 3);
-                ret += Emojibet.NOTEPAD + " **Description:** " + BotConfig.EOL +
+                ret += Emojibet.NOTEPAD + " **Description:** " + "\n" +
                         Misc.makeTable(c.getDescription());
                 if (c.getUsage().length > 0) {
-                    ret += Emojibet.GEAR + " **Usages**:```php" + BotConfig.EOL;
+                    ret += Emojibet.GEAR + " **Usages**:```php" + "\n";
                     for (String line : c.getUsage()) {
-                        ret += line + BotConfig.EOL;
+                        ret += line + "\n";
                     }
                     ret += "```";
                 }
@@ -110,7 +110,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
             return Template.get("command_help_donno");
         }
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
-        String ret = "I know the following commands: " + BotConfig.EOL + BotConfig.EOL;
+        String ret = "I know the following commands: " + "\n" + "\n";
         if ((args.length == 0 || !args[0].equals("full")) && channel instanceof TextChannel) {
             TextChannel textChannel = (TextChannel) channel;
             if (PermissionUtil.checkPermission(textChannel, textChannel.getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_ADD_REACTION)) {
@@ -125,7 +125,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
         }
         ret += styleTablePerCategory(getCommandMap(userRank));
         if (showHelpInPM) {
-            bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + BotConfig.EOL +
+            bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + "\n" +
                     ":exclamation: In private messages the prefix for commands is **" + BotConfig.BOT_COMMAND_PREFIX + "**");
             return Template.get("command_help_send_private");
         } else {
@@ -164,7 +164,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
     }
 
     private String styleTableCategory(CommandCategory category, ArrayList<String> commands) {
-        return category.getEmoticon() + " " + category.getDisplayName() + BotConfig.EOL + Misc.makeTable(commands);
+        return category.getEmoticon() + " " + category.getDisplayName() + "\n" + Misc.makeTable(commands);
     }
 
     private String writeFancyHeader(MessageChannel channel, CommandCategory active, Set<CommandCategory> categories) {

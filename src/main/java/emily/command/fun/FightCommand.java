@@ -201,6 +201,21 @@ public class FightCommand extends AbstractCommand implements ICommandCooldown {
         positions[132] = new GifPosition(-6, 153, 22, 25);
     }
 
+    private static IIOMetadataNode getNode(
+            IIOMetadataNode rootNode,
+            String nodeName) {
+        int nNodes = rootNode.getLength();
+        for (int i = 0; i < nNodes; i++) {
+            if (rootNode.item(i).getNodeName().compareToIgnoreCase(nodeName)
+                    == 0) {
+                return ((IIOMetadataNode) rootNode.item(i));
+            }
+        }
+        IIOMetadataNode node = new IIOMetadataNode(nodeName);
+        rootNode.appendChild(node);
+        return (node);
+    }
+
     @Override
     public String getDescription() {
         return "get in an epic fight; (gif fight)";
@@ -279,64 +294,6 @@ public class FightCommand extends AbstractCommand implements ICommandCooldown {
     @Override
     public CooldownScope getScope() {
         return CooldownScope.USER;
-    }
-
-    public class GifPosition {
-        final int x;
-        final int y;
-        final int height;
-        final int width;
-
-        GifPosition(int x, int y, int height, int width) {
-
-            this.x = x;
-            this.y = y;
-            this.height = height;
-            this.width = width;
-        }
-    }
-
-    public class ImageFrame {
-        private final int delay;
-        private final BufferedImage image;
-        private final String disposal;
-        private final int width, height;
-
-        public ImageFrame(BufferedImage image, int delay, String disposal, int width, int height) {
-            this.image = image;
-            this.delay = delay;
-            this.disposal = disposal;
-            this.width = width;
-            this.height = height;
-        }
-
-        public ImageFrame(BufferedImage image) {
-            this.image = image;
-            this.delay = -1;
-            this.disposal = null;
-            this.width = -1;
-            this.height = -1;
-        }
-
-        public BufferedImage getImage() {
-            return image;
-        }
-
-        public int getDelay() {
-            return delay;
-        }
-
-        public String getDisposal() {
-            return disposal;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public int getHeight() {
-            return height;
-        }
     }
 
     private ImageFrame[] readGif(InputStream in) throws IOException {
@@ -484,6 +441,64 @@ public class FightCommand extends AbstractCommand implements ICommandCooldown {
         return frames.toArray(new ImageFrame[frames.size()]);
     }
 
+    public class GifPosition {
+        final int x;
+        final int y;
+        final int height;
+        final int width;
+
+        GifPosition(int x, int y, int height, int width) {
+
+            this.x = x;
+            this.y = y;
+            this.height = height;
+            this.width = width;
+        }
+    }
+
+    public class ImageFrame {
+        private final int delay;
+        private final BufferedImage image;
+        private final String disposal;
+        private final int width, height;
+
+        public ImageFrame(BufferedImage image, int delay, String disposal, int width, int height) {
+            this.image = image;
+            this.delay = delay;
+            this.disposal = disposal;
+            this.width = width;
+            this.height = height;
+        }
+
+        public ImageFrame(BufferedImage image) {
+            this.image = image;
+            this.delay = -1;
+            this.disposal = null;
+            this.width = -1;
+            this.height = -1;
+        }
+
+        public BufferedImage getImage() {
+            return image;
+        }
+
+        public int getDelay() {
+            return delay;
+        }
+
+        public String getDisposal() {
+            return disposal;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+    }
+
     public class GifSequenceWriter {
         protected ImageWriter gifWriter;
         protected ImageWriteParam imageWriteParam;
@@ -567,20 +582,5 @@ public class FightCommand extends AbstractCommand implements ICommandCooldown {
                 return iter.next();
             }
         }
-    }
-
-    private static IIOMetadataNode getNode(
-            IIOMetadataNode rootNode,
-            String nodeName) {
-        int nNodes = rootNode.getLength();
-        for (int i = 0; i < nNodes; i++) {
-            if (rootNode.item(i).getNodeName().compareToIgnoreCase(nodeName)
-                    == 0) {
-                return ((IIOMetadataNode) rootNode.item(i));
-            }
-        }
-        IIOMetadataNode node = new IIOMetadataNode(nodeName);
-        rootNode.appendChild(node);
-        return (node);
     }
 }

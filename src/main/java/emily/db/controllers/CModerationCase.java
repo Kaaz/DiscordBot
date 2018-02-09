@@ -141,7 +141,7 @@ public class CModerationCase {
 
     public static MessageEmbed buildCase(Guild guild, OModerationCase modcase) {
         EmbedBuilder b = new EmbedBuilder();
-        b.setTitle(String.format("%s | case #%s", modcase.punishment.getKeyword(), modcase.id),null);
+        b.setTitle(String.format("%s | case #%s", modcase.punishment.getKeyword(), modcase.id), null);
         b.setColor(modcase.punishment.getColor());
         b.addField("User", modcase.userName + "\n" + CUser.getCachedDiscordId(modcase.userId) + "\n", true);
         b.addField("Moderator", modcase.moderatorName + "\n" + CUser.getCachedDiscordId(modcase.moderatorId), true);

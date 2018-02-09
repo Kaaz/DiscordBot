@@ -91,8 +91,8 @@ public class RollCommand extends AbstractCommand {
         if (args.length == 1) {
             Matcher match = dice.matcher(args[0]);
             if (match.find()) {
-                int dice = Misc.parseInt(match.group(1),1);
-                int sides = Misc.parseInt(match.group(2),6);
+                int dice = Misc.parseInt(match.group(1), 1);
+                int sides = Misc.parseInt(match.group(2), 6);
                 int bonus = 0;
                 if (dice > max_dice) {
                     return Template.get("command_roll_dice_count", max_dice);
@@ -104,7 +104,7 @@ public class RollCommand extends AbstractCommand {
                     return Template.get("command_roll_side_count", min_sides);
                 }
                 if (match.group(3) != null && !"null".equals(match.group(3))) {
-                    bonus = Misc.parseInt("" + match.group(3),0);
+                    bonus = Misc.parseInt("" + match.group(3), 0);
                 }
                 return multiDice(dice, sides, bonus);
             }

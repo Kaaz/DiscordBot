@@ -67,11 +67,11 @@ public class ReadmeHelper {
     private static String readmeListOfAutoRanks() {
         String s = "";
         List<MemberShipRole> allRoles = RoleRankings.getAllRoles();
-        s += "Name | Time spend |" + BotConfig.EOL;
-        s += "--- | --- | " + BotConfig.EOL;
+        s += "Name | Time spend |" + "\n";
+        s += "--- | --- | " + "\n";
         for (MemberShipRole role : allRoles) {
             s += role.getName() + " | ";
-            s += TimeUtil.getRelativeTime((System.currentTimeMillis() + role.getMembershipTime()) / 1000L + 1000L, false, false) + BotConfig.EOL;
+            s += TimeUtil.getRelativeTime((System.currentTimeMillis() + role.getMembershipTime()) / 1000L + 1000L, false, false) + "\n";
         }
 
         return s;
@@ -82,13 +82,13 @@ public class ReadmeHelper {
         GameHandler gameHandler = new GameHandler(null);
         List<AbstractGame> gameList = gameHandler.getGameList();
         String s = "";
-        s += "Key | Name | Players |" + BotConfig.EOL;
-        s += "--- | --- | --- |" + BotConfig.EOL;
+        s += "Key | Name | Players |" + "\n";
+        s += "--- | --- | --- |" + "\n";
         for (AbstractGame game : gameList) {
             s += game.getCodeName() + " | ";
             s += game.getFullname() + " | ";
             s += game.getTotalPlayers();
-            s += BotConfig.EOL;
+            s += "\n";
         }
 
         return s;
@@ -102,14 +102,14 @@ public class ReadmeHelper {
         }
         ArrayList<String> skeys = new ArrayList<>(defaults.keySet());
         Collections.sort(skeys);
-        s += "Key | Default | Description |" + BotConfig.EOL;
-        s += "--- | --- | ---|" + BotConfig.EOL;
+        s += "Key | Default | Description |" + "\n";
+        s += "--- | --- | ---|" + "\n";
         for (String skey : skeys) {
 
             s += defaults.get(skey).name().toLowerCase() + " | ";
             s += defaults.get(skey).getDefaultValue() + " | ";
             s += defaults.get(skey).getDescription();
-            s += BotConfig.EOL;
+            s += "\n";
         }
 
         return s;
@@ -123,8 +123,8 @@ public class ReadmeHelper {
         ArrayList<String> sortedCommandList = new ArrayList<>();
         Collections.addAll(sortedCommandList, CommandHandler.getCommands());
         Collections.sort(sortedCommandList);
-        s += "Commands | | | | |" + BotConfig.EOL;
-        s += "--- | --- | ---| ---| ---" + BotConfig.EOL;
+        s += "Commands | | | | |" + "\n";
+        s += "--- | --- | ---| ---| ---" + "\n";
         int columns = 5;
         int currentColumn = 0;
         for (String commandName : sortedCommandList) {
@@ -134,7 +134,7 @@ public class ReadmeHelper {
                 if (currentColumn % columns <= (columns - 2)) {
                     s += " | ";
                 } else {
-                    s += BotConfig.EOL;
+                    s += "\n";
                 }
                 currentColumn++;
             }
@@ -152,13 +152,13 @@ public class ReadmeHelper {
             if (!command.isEnabled() || !command.isListed()) {
                 continue;
             }
-            text += "### " + command.getCommand() + BotConfig.EOL + BotConfig.EOL;
-            text += command.getDescription() + BotConfig.EOL + BotConfig.EOL;
+            text += "### " + command.getCommand() + "\n" + "\n";
+            text += command.getDescription() + "\n" + "\n";
             text += "Accessible though: " + command.getCommand();
             for (String alias : command.getAliases()) {
                 text += ", " + alias;
             }
-            text += BotConfig.EOL + BotConfig.EOL;
+            text += "\n" + "\n";
             String visibility;
             switch (command.getVisibility()) {
                 case PRIVATE:
@@ -174,15 +174,15 @@ public class ReadmeHelper {
                     visibility = "Nowhere";
                     break;
             }
-            text += "Usable " + visibility + BotConfig.EOL;
+            text += "Usable " + visibility + "\n";
             if (command.getUsage().length > 0) {
-                text += BotConfig.EOL;
-                text += "#### Usage" + BotConfig.EOL + BotConfig.EOL;
-                text += "```php" + BotConfig.EOL;
+                text += "\n";
+                text += "#### Usage" + "\n" + "\n";
+                text += "```php" + "\n";
                 for (String line : command.getUsage()) {
-                    text += line + BotConfig.EOL;
+                    text += line + "\n";
                 }
-                text += ("```") + BotConfig.EOL;
+                text += ("```") + "\n";
             }
         }
         return text;

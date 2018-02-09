@@ -20,7 +20,6 @@ import emily.core.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.templates.Template;
@@ -105,9 +104,9 @@ public class TemplateCommand extends AbstractCommand {
             }
         }
         if (args.length == 0) {
-            String usage = ":gear: **Options**:```php" + BotConfig.EOL;
+            String usage = ":gear: **Options**:```php" + "\n";
             for (String line : getUsage()) {
-                usage += line + BotConfig.EOL;
+                usage += line + "\n";
             }
             return usage + "```";
         }
@@ -182,7 +181,7 @@ public class TemplateCommand extends AbstractCommand {
                     if (allKeyphrases.isEmpty()) {
                         return "No keyphases matching `" + args[1] + "`";
                     }
-                    return String.format("All keyphrases matching `%s`: ", args[1]) + BotConfig.EOL +
+                    return String.format("All keyphrases matching `%s`: ", args[1]) + "\n" +
                             Misc.makeTable(allKeyphrases, 50, 2);
                 } else if (args.length >= 2 && args[1].matches("\\d+")) {
                     currentPage = Math.min(Math.max(0, Misc.parseInt(args[1], 0) - 1), maxPage - 1);
@@ -191,7 +190,7 @@ public class TemplateCommand extends AbstractCommand {
                 if (allKeyphrases.isEmpty()) {
                     return "No keyphrases set at this moment.";
                 }
-                return String.format("All keyphrases: [page %s/%s]", currentPage + 1, maxPage) + BotConfig.EOL +
+                return String.format("All keyphrases: [page %s/%s]", currentPage + 1, maxPage) + "\n" +
                         Misc.makeTable(allKeyphrases, 50, 2);
             default:
                 args[0] = args[0].toLowerCase();
@@ -205,7 +204,7 @@ public class TemplateCommand extends AbstractCommand {
                     for (String template : templates) {
                         body.add(Arrays.asList(String.valueOf(index++), template));
                     }
-                    return "Template overview for `" + args[0] + "`" + BotConfig.EOL +
+                    return "Template overview for `" + args[0] + "`" + "\n" +
                             Misc.makeAsciiTable(Arrays.asList("#", "value"), body, null);
                 }
                 return Templates.command.template.invalid_option.format();

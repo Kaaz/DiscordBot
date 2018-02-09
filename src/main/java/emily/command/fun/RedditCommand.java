@@ -18,7 +18,6 @@ package emily.command.fun;
 
 import emily.core.AbstractCommand;
 import emily.handler.Template;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.modules.reddit.RedditScraper;
 import emily.modules.reddit.pojo.Image;
@@ -111,7 +110,7 @@ public class RedditCommand extends AbstractCommand {
             }
         } while (dailyTop.size() > 0);
         if (post.data.is_self) {
-            return ":newspaper:" + BotConfig.EOL + post.data.getTitle() + BotConfig.EOL + post.data.getSelftext();
+            return ":newspaper:" + "\n" + post.data.getTitle() + "\n" + post.data.getSelftext();
         }
         if (post.data.url != null && post.data.url.length() > 20) {
             return post.data.title + "\n" + post.data.url;

@@ -147,13 +147,13 @@ public class UserCommand extends AbstractCommand {
         }
         StringBuilder sb = new StringBuilder();
         OUser dbUser = CUser.findBy(infoUser.getId());
-        sb.append("Querying for ").append(nickname).append(BotConfig.EOL);
-        sb.append(":bust_in_silhouette: User: ").append(infoUser.getName()).append("#").append(infoUser.getDiscriminator()).append(BotConfig.EOL);
-        sb.append(":id: Discord id: ").append(infoUser.getId()).append(BotConfig.EOL);
-        sb.append(":keyboard: Commands used: ").append(dbUser.commandsUsed).append(BotConfig.EOL);
+        sb.append("Querying for ").append(nickname).append("\n");
+        sb.append(":bust_in_silhouette: User: ").append(infoUser.getName()).append("#").append(infoUser.getDiscriminator()).append("\n");
+        sb.append(":id: Discord id: ").append(infoUser.getId()).append("\n");
+        sb.append(":keyboard: Commands used: ").append(dbUser.commandsUsed).append("\n");
         if (guildId == 0 || "true".equals(GuildSettings.getFor(channel, GSetting.MODULE_ECONOMY))) {
             OBank bankAccount = CBanks.findBy(userId);
-            sb.append(BotConfig.ECONOMY_CURRENCY_ICON).append(" ").append(BotConfig.ECONOMY_CURRENCY_NAMES).append(": ").append(bankAccount.currentBalance).append(BotConfig.EOL);
+            sb.append(BotConfig.ECONOMY_CURRENCY_ICON).append(" ").append(BotConfig.ECONOMY_CURRENCY_NAMES).append(": ").append(bankAccount.currentBalance).append("\n");
         }
 
         if (guildId > 0) {
@@ -169,11 +169,11 @@ public class UserCommand extends AbstractCommand {
                     .append(" (")
                     .append(TimeUtil.getRelativeTime(member.joinDate.getTime() / 1000L, false, true))
                     .append(")")
-                    .append(BotConfig.EOL);
+                    .append("\n");
 
         }
         if (infoUser.getAvatarUrl() != null) {
-            sb.append(":frame_photo: Avatar: <").append(infoUser.getAvatarUrl()).append(">").append(BotConfig.EOL);
+            sb.append(":frame_photo: Avatar: <").append(infoUser.getAvatarUrl()).append(">").append("\n");
         }
         if (infoUser.isBot()) {
             sb.append(":robot: This user is a bot (or pretends to be)");

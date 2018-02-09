@@ -19,7 +19,6 @@ package emily.command.bot_administration;
 import com.google.common.base.Joiner;
 import emily.core.AbstractCommand;
 import emily.db.WebDb;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.util.DebugUtil;
@@ -101,7 +100,7 @@ public class QueryCommand extends AbstractCommand {
             if (output.length() < 2000) {
                 return output;
             } else {
-                DebugUtil.handleDebug(bot,channel, query + BotConfig.EOL + BotConfig.EOL + output);
+                DebugUtil.handleDebug(bot, channel, query + "\n" + "\n" + output);
                 return "";
             }
         } catch (SQLException e) {

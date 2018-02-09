@@ -18,7 +18,6 @@ package emily.games.connect4;
 
 import emily.games.AbstractGame;
 import emily.games.GameState;
-import emily.main.BotConfig;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.User;
@@ -132,7 +131,7 @@ public class ConnectFourGame extends AbstractGame<Connect4Turn> {
 
     @Override
     public String toString() {
-        String ret = "A Connect 4 game." + BotConfig.EOL;
+        String ret = "A Connect 4 game." + "\n";
         ret += board.toString();
         for (int i = 0; i < COLS; i++) {
             if (board.canPlaceInColumn(i)) {
@@ -141,11 +140,11 @@ public class ConnectFourGame extends AbstractGame<Connect4Turn> {
                 ret += Emojibet.NO_ENTRY;
             }
         }
-        ret += BotConfig.EOL + BotConfig.EOL;
+        ret += "\n" + "\n";
         if (getGameState().equals(GameState.IN_PROGRESS) || getGameState().equals(GameState.READY)) {
-            ret += board.intToPlayer(0) + " = " + getPlayer(0).getName() + BotConfig.EOL;
-            ret += board.intToPlayer(1) + " = " + getPlayer(1).getName() + BotConfig.EOL;
-            ret += "It's the turn of " + getActivePlayer().getAsMention() + BotConfig.EOL;
+            ret += board.intToPlayer(0) + " = " + getPlayer(0).getName() + "\n";
+            ret += board.intToPlayer(1) + " = " + getPlayer(1).getName() + "\n";
+            ret += "It's the turn of " + getActivePlayer().getAsMention() + "\n";
             ret += "to play type **" + getLastPrefix() + "game <columnnumber>**";
         }
         if (getGameState().equals(GameState.OVER)) {

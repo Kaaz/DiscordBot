@@ -17,7 +17,6 @@
 package emily.games.game2048;
 
 import emily.games.AbstractGame;
-import emily.main.BotConfig;
 import net.dv8tion.jda.core.entities.User;
 
 /**
@@ -105,7 +104,7 @@ public class Game2048 extends AbstractGame<Game2048Turn> {
 
     @Override
     public String toString() {
-        String ret = "A 2048 game, score as high as you can!" + BotConfig.EOL;
+        String ret = "A 2048 game, score as high as you can!" + "\n";
         ret += getPlayer(0).getAsMention() + "'s game\n";
         ret += "Score: " + grid.getScore() + " \n\n";
         String format = "`| %4s | %4s | %4s | %4s`\n";

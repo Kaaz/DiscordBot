@@ -19,7 +19,6 @@ package emily.command.fun;
 import emily.core.AbstractCommand;
 import emily.games.Blackjack;
 import emily.handler.Template;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.DisUtil;
 import net.dv8tion.jda.core.entities.Message;
@@ -72,7 +71,7 @@ public class BlackJackCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (args.length == 0) {
             if (playerGames.containsKey(author.getId()) && playerGames.get(author.getId()).isInProgress()) {
-                return "You are still in a game. To finish type **blackjack stand**" + BotConfig.EOL +
+                return "You are still in a game. To finish type **blackjack stand**" + "\n" +
                         playerGames.get(author.getId()).toString();
             }
             return "You are not playing a game, to start use **" + DisUtil.getCommandPrefix(channel) + "blackjack hit**";

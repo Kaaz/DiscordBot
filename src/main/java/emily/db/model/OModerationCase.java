@@ -40,10 +40,10 @@ public class OModerationCase extends AbstractModel {
     }
 
     public enum PunishType {
-        WARN(1, "Warn", "warned","Adds a strike to the user", new Color(0xA8CF00)),
-        MUTE(2, "Mute", "muted","Adds the configured muted role to user", new Color(0xFFF300)),
-        KICK(3, "Kick", "kicked","Remove user from the guild", new Color(0xFF9600)),
-        TMP_BAN(4, "Temp-ban","temporarily banned", "Remove user from guild, unable to rejoin for a while", new Color(0xFF4700)),
+        WARN(1, "Warn", "warned", "Adds a strike to the user", new Color(0xA8CF00)),
+        MUTE(2, "Mute", "muted", "Adds the configured muted role to user", new Color(0xFFF300)),
+        KICK(3, "Kick", "kicked", "Remove user from the guild", new Color(0xFF9600)),
+        TMP_BAN(4, "Temp-ban", "temporarily banned", "Remove user from guild, unable to rejoin for a while", new Color(0xFF4700)),
         BAN(5, "Ban", "banned", "Permanently removes user from guild", new Color(0xB70000));
 
         private final int id;
@@ -52,7 +52,7 @@ public class OModerationCase extends AbstractModel {
         private final String description;
         private final Color color;
 
-        PunishType(int id, String keyword,String verb, String description, Color color) {
+        PunishType(int id, String keyword, String verb, String description, Color color) {
             this.id = id;
             this.keyword = keyword;
             this.description = description;

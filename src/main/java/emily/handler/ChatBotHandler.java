@@ -28,10 +28,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class ChatBotHandler {
+    private static final List<String> BANNED = Arrays.asList("discord.gg", "http", "clan", "server", "you");
     private final Map<String, ChatBotInstance> sessions;
 
     public ChatBotHandler() {
         sessions = new ConcurrentHashMap<>();
+    }
+
+    private static boolean acceptableMessage(String s) {
+        s = s.toLowerCase();
+        if (Character.isLetter(s.charAt(0))) return false;
+        for (String s1 : BANNED) {
+            if (s.contains(s1)) return false;
+        }
+        return true;
     }
 
     private CleverbotIO getSession(String nick) {
@@ -77,7 +87,7 @@ public class ChatBotHandler {
                 failedAttempts = 0;
                 lastInteraction = System.currentTimeMillis();
                 String string;
-                while (!acceptableMessage(string = new String(botsession.ask(input).getBytes("UTF-8"), "UTF-8"))){
+                while (!acceptableMessage(string = new String(botsession.ask(input).getBytes("UTF-8"), "UTF-8"))) {
                     Thread.sleep(250);
                 }
                 return string;
@@ -87,15 +97,5 @@ public class ChatBotHandler {
             return "";
         }
 
-    }
-
-    private static final List<String> BANNED = Arrays.asList("discord.gg", "http", "clan", "server", "you");
-    private static boolean acceptableMessage(String s){
-        s = s.toLowerCase();
-        if (Character.isLetter(s.charAt(0))) return false;
-        for (String s1 : BANNED){
-            if (s.contains(s1)) return false;
-        }
-        return true;
     }
 }
