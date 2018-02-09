@@ -49,7 +49,6 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,22 +67,13 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
 
     public static String processTrack(MusicPlayerHandler player, DiscordBot bot, TextChannel channel, User invoker, String videoCode, String videoTitle, boolean useTemplates) {
         OMusic record = CMusic.findByYoutubeId(videoCode);
-        final File filecheck;
-        if (record.id > 0 && record.fileExists == 1) {
-            filecheck = new File(record.filename);
-        } else {
-            filecheck = new File(YTUtil.getOutputPath(videoCode));
-        }
-        final String finalVideoCode = videoCode;
         try {
-            String path = filecheck.toPath().toRealPath().toString();
-            OMusic rec = CMusic.findByFileName(path);
-            CMusic.registerPlayRequest(rec.id);
-            player.addToQueue(path, invoker);
+            CMusic.registerPlayRequest(record.id);
+            player.addToQueue(videoCode, invoker);
             if (useTemplates) {
-                return Template.get("music_added_to_queue", rec.youtubeTitle);
+                return Template.get("music_added_to_queue", record.youtubeTitle);
             }
-            return "\u25AA " + rec.youtubeTitle;
+            return "\u25AA " + record.youtubeTitle;
         } catch (Exception e) {
             bot.getContainer().reportError(e, "ytcode", videoCode);
             return Template.get("music_file_error");

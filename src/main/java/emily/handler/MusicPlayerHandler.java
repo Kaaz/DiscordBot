@@ -27,7 +27,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
-import emily.command.music.PlayCommand;
 import emily.db.WebDb;
 import emily.db.controllers.CBotPlayingOn;
 import emily.db.controllers.CGuild;
@@ -58,7 +57,6 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -94,6 +92,7 @@ public class MusicPlayerHandler {
     private volatile OPlaylist playlist;
     private Random rng;
     private volatile LinkedList<OMusic> queue;
+    //
 
     private MusicPlayerHandler(Guild guild, DiscordBot bot) {
 
@@ -120,8 +119,9 @@ public class MusicPlayerHandler {
     }
 
     public static void init() {
-        AudioSourceManagers.registerLocalSource(playerManager);
+        AudioSourceManagers.registerRemoteSources(playerManager);
         playerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
+        playerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
     }
 
     public static void removeGuild(Guild guild) {
@@ -251,17 +251,26 @@ public class MusicPlayerHandler {
             if (trackToAdd == null) {
                 return;
             }
-            String absolutePath = new File(trackToAdd.filename).getAbsolutePath();
             boolean finalKeepGoing = keepGoing;
-            playerManager.loadItemOrdered(player, absolutePath, new AudioLoadResultHandler() {
+            playerManager.loadItemOrdered(player, trackToAdd.youtubecode, new AudioLoadResultHandler() {
                 @Override
                 public void trackLoaded(AudioTrack track) {
+                    if (track.getSourceManager().getSourceName().equals("youtube")) {
+                        OMusic rec = CMusic.findByYoutubeId(track.getInfo().identifier);
+                        if (rec.id == 0 || rec.duration == 0) {
+                            rec.artist = track.getInfo().author;
+                            rec.duration = (int) (track.getInfo().length / 1000L);
+                            rec.youtubeTitle = track.getInfo().title;
+                            CMusic.update(rec);
+                        }
+                    }
                     scheduler.queue(new QueuedAudioTrack(trackToAdd.requestedBy, track));
                     startPlaying();
                 }
 
                 @Override
                 public void playlistLoaded(AudioPlaylist playlist) {
+                    System.out.println("ok load success");
                 }
 
                 @Override
@@ -270,10 +279,8 @@ public class MusicPlayerHandler {
 
                 @Override
                 public void loadFailed(FriendlyException exception) {
-                    bot.out.sendMessageToCreator("file:" + absolutePath + "\n" + "Message: " + exception.getMessage());
-                    trackToAdd.fileExists = 0;
-                    CMusic.update(trackToAdd);
-                    new File(absolutePath).delete();
+                    bot.out.sendMessageToCreator("file:" + trackToAdd.youtubecode + "\n" + "Message: " + exception.getMessage());
+                    System.out.println("beep boop, cant start for some reason");
                     if (finalKeepGoing) {
                         trackEnded();
                     }
@@ -293,8 +300,7 @@ public class MusicPlayerHandler {
         final String messageType = GuildSettings.get(guildId).getOrDefault(GSetting.MUSIC_PLAYING_MESSAGE);
         AudioTrackInfo info = player.getPlayingTrack().getInfo();
         if (info != null) {
-            File f = new File(info.identifier);
-            record = CMusic.findByFileName(f.getAbsolutePath());
+            record = CMusic.findByYoutubeId(info.identifier);
             if (record.id > 0) {
                 if (record.duration == 0) {
                     YTUtil.getTrackDuration(record);
@@ -459,14 +465,14 @@ public class MusicPlayerHandler {
             return CPlaylist.getNextTrack(playlist.id, playlist.getPlayType());
         }
         try (ResultSet rs = WebDb.get().select(
-                "SELECT filename, youtube_title, lastplaydate " +
+                "SELECT filename, youtube_title, lastplaydate, youtubecode " +
                         "FROM music " +
-                        "WHERE banned = 0 AND file_exists = 1 " +
+                        "WHERE banned = 0 " +
                         "AND play_count > 25 " +
                         "ORDER BY lastplaydate ASC " +
                         "LIMIT 50")) {
             while (rs.next()) {
-                potentialSongs.add(rs.getString("filename"));
+                potentialSongs.add(rs.getString("youtubecode"));
             }
             rs.getStatement().close();
         } catch (SQLException e) {
@@ -513,25 +519,10 @@ public class MusicPlayerHandler {
     }
 
     public synchronized boolean addToQueue(String filename, User user) {
-        File musicFile = new File(filename);
-        OMusic record = CMusic.findByYoutubeId(musicFile.getName().substring(0, musicFile.getName().lastIndexOf(".")));
+        OMusic record = CMusic.findByYoutubeId(filename);
         if (record.id == 0) {
-            bot.getContainer().reportError(new Exception("No record for file"), "filename: ", musicFile.getAbsolutePath(), "plz fix", "I want music", bot);
-            return false;
-        }
-        if (!musicFile.exists()) {//check in config directory
-            if (!playlist.isGlobalList()) {
-                PlayCommand.processTrack(this, bot, bot.getMusicChannel(getJDA().getGuildById(guildId)), getJDA().getSelfUser(), record.youtubecode, record.youtubeTitle, false);
-                return true;
-            }
-            record.fileExists = 0;
-            CMusic.update(record);
-            bot.getContainer().reportError(new Exception("NoMusicFile"), "filename: ", musicFile.getAbsolutePath(), "plz fix", "I want music", bot);
-            return false;
-        }
-        if (!record.filename.equals(musicFile.getAbsolutePath())) {
-            record.filename = musicFile.getAbsolutePath();
-            CMusic.update(record);
+            record.youtubecode = filename;
+            CMusic.insert(record);
         }
         if (user != null) {
             record.requestedBy = user.getId();
@@ -578,6 +569,8 @@ public class MusicPlayerHandler {
 
     /**
      * retrieves a list of users who can listen and use voice commands
+     * generating images is easy to make messy
+     * for now
      *
      * @return list of users
      */

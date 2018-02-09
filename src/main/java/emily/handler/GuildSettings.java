@@ -43,7 +43,7 @@ public class GuildSettings {
     private final static Map<Long, GuildSettings> settingInstance = new ConcurrentHashMap<>();
     private final String[] settings;
     private final long guildId;
-    private int id = 0;
+    private final int id;
     private boolean initialized = false;
 
     private GuildSettings(Long guild) {
@@ -132,13 +132,13 @@ public class GuildSettings {
         }
         try (ResultSet rs = WebDb.get().select(
                 "SELECT name, config " +
-                        "FROM guild_settings s " +
+                        "FROM guild_settings " +
                         "WHERE guild = ? ", id)) {
             while (rs.next()) {
-                String key = rs.getString("name");
+                String key = rs.getString("name").toUpperCase();
                 String value = rs.getString("config");
                 if (DefaultGuildSettings.isValidKey(key)) {
-                    settings[GSetting.valueOf(key).ordinal()] = value;
+                        settings[GSetting.valueOf(key).ordinal()] = value;
                 }
             }
             rs.getStatement().close();

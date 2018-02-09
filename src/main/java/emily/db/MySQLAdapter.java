@@ -73,7 +73,7 @@ public class MySQLAdapter {
     }
 
     public ResultSet select(String sql, Object... params) throws SQLException {
-        PreparedStatement query = null;
+        PreparedStatement query;
         query = getConnection().prepareStatement(sql);
         resolveParameters(query, params);
         return query.executeQuery();
