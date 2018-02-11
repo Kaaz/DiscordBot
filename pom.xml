@@ -14,11 +14,6 @@
 	</properties>
 	<repositories>
 		<repository>
-			<id>sedmelluq</id>
-			<name>sedmelluq</name>
-			<url>http://maven.sedmelluq.com/</url>
-		</repository>
-		<repository>
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>

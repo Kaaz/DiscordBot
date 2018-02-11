@@ -7,18 +7,18 @@ To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/yo
 If you'd like to run your own version of this project check the [installation part](#run-the-bot-yourself)
 
 You can play/test it on discord 
-[![Discord](https://discordapp.com/api/guilds/225168913808228352/widget.png)](https://discord.gg/eaywDDt)
+[![Discord](https://discordapp.com/api/guilds/365760529899192322/widget.png)](https://discord.gg/7aKuSj5)
 ## What can it do?
 
 
-* Respond to commands
-* Add custom commands
-* play/download music
+* Ton of commands
+* Add your own
+* play music
 * [customizable globally](#global-configuration) and [per guild](#per-guild-configuration)
 * play games against other users
 * subscription system
 * various optional modules
-* auto self updates
+* auto self updates with [this project](https://github.com/Kaaz/discord-bot-manager)
 * [auto ranking system](#ranking-system)
 
 ### Commands
@@ -64,14 +64,6 @@ The rankings go according to the table below:
 
 ## Run the bot yourself
 
-Before we get started I want to note that the development happens mainly on a windows machine, so there might be some unforeseen errors on other operating systems.  
-If you do encounter errors, please let me know so I can fix them.
-
-Also note that running the bot requires basic experience with the command line 
-(or your OS's equivalent like CMD/PowerShell on Windows) and the ability to add software to you System's path.
-
-Right, so lets get started. Before starting make sure you at least have the following installed:
-
 * [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 * [git](https://git-scm.com/)
 * [maven](https://maven.apache.org/)
@@ -81,9 +73,8 @@ Then continue with the following steps.
 
 1. Create a database
 
-    Emily uses a SQL database to store information. Create a database using the utf8mb4 character set. Emily will create/update the used tables.<br/>
+    Create a database using the utf8mb4 character set. <br/>
     To make this easier you can do this using a SQL management tool like [PHPMyAdmin](https://www.phpmyadmin.net/) or [HeidiSQL](http://www.heidisql.com/).
-         Due to the myriad amount of hosters and possible configurations it's propbably better to contact your hoster instead of other people in case something goes wrong here.
 
 2. Clone the project with git
 
@@ -97,7 +88,7 @@ Then continue with the following steps.
     `cd` into the directory that git just created (should be called `DiscordBot`).<br>
     Then type `mvn install`. This might take some time so be patient :)
     
-4. Build Emily
+4. Build
     
     Type `mvn clean process-resources compile assembly:single` in the `DiscordBot` folder.
     In the target map there should be a file called `Discordbot-VERSION_full.jar` (where version is the latest version number).
@@ -107,21 +98,9 @@ Then continue with the following steps.
 
     You can launch the bot with the following command:
     `java -jar <jarfilename>`
-    On her first launch, Emily will generate an `application.cfg` file and exit.<br>
+    On first launch, It will generate an `application.cfg` file and exit.<br>
     You'll have to edit the config file and add in your token, database configuration, etc.
 
-6. Extras
-
-    If you want to use the musicbot you'll also need to install [youtube-dl](https://rg3.github.io/youtube-dl/download.html) and [ffmpeg](https://ffmpeg.zeranoe.com/builds/).
-    The config setting `youtubedl_exe` has to point to the youtube-dl executable.
-    For ffmpeg, the binaries have to be either in the same directory as the bot.jar or be included in in the    system path somewhere.
-
-
-
-
-## Warning
-
-This project is still in an early stage. Some things might not work or get changed drastically.
 
 ## Usage
 
