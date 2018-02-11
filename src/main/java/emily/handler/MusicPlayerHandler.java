@@ -270,7 +270,6 @@ public class MusicPlayerHandler {
 
                 @Override
                 public void playlistLoaded(AudioPlaylist playlist) {
-                    System.out.println("ok load success");
                 }
 
                 @Override
@@ -280,7 +279,6 @@ public class MusicPlayerHandler {
                 @Override
                 public void loadFailed(FriendlyException exception) {
                     bot.out.sendMessageToCreator("file:" + trackToAdd.youtubecode + "\n" + "Message: " + exception.getMessage());
-                    System.out.println("beep boop, cant start for some reason");
                     if (finalKeepGoing) {
                         trackEnded();
                     }
