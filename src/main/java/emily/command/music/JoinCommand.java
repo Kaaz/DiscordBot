@@ -19,8 +19,8 @@ package emily.command.music;
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.handler.MusicPlayerHandler;
-import emily.handler.Template;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.Misc;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
@@ -74,16 +74,16 @@ public class JoinCommand extends AbstractCommand {
         if (args.length == 0) {
             VoiceChannel voiceChannel = chan.getGuild().getMember(author).getVoiceState().getChannel();
             if (voiceChannel == null) {
-                return Template.get("command_join_cantfindyou");
+                return Templates.command.join.cantfindyou.format();
             }
             if (player.isConnectedTo(voiceChannel)) {
-                return Template.get("command_join_already_there");
+                return Templates.command.join.already_there.format();
             }
             if (!PermissionUtil.checkPermission(voiceChannel, voiceChannel.getGuild().getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
-                return Template.get("music_join_no_permission", voiceChannel.getName());
+                return Templates.music.join_no_permission.format(voiceChannel.getName());
             }
             player.connectTo(voiceChannel);
-            return Template.get("command_join_joinedyou");
+            return Templates.command.join.joinedyou.format();
         } else {
             String channelname = Misc.concat(args);
             VoiceChannel targetChannel = null;
@@ -95,17 +95,17 @@ public class JoinCommand extends AbstractCommand {
             }
             if (targetChannel != null) {
                 if (player.isConnectedTo(targetChannel)) {
-                    return Template.get("command_join_already_there");
+                    return Templates.command.join.already_there.format();
                 }
                 if (!PermissionUtil.checkPermission(targetChannel, targetChannel.getGuild().getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
-                    return Template.get("music_join_no_permission", targetChannel.getName());
+                    return Templates.music.join_no_permission.format(targetChannel.getName());
                 }
                 player.leave();
                 player.connectTo(targetChannel);
 //					return Template.get("command_join_nopermssiontojoin");
-                return Template.get("command_join_joined");
+                return Templates.command.join.joinedyou.format();
             }
-            return Template.get("command_join_cantfindchannel");
+            return Templates.command.join.cantfindyou.format();
         }
     }
 }

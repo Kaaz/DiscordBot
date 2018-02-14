@@ -20,9 +20,9 @@ import emily.command.CommandVisibility;
 import emily.command.CooldownScope;
 import emily.command.ICommandCooldown;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import net.dv8tion.jda.core.Permission;
@@ -248,14 +248,14 @@ public class FightCommand extends AbstractCommand implements ICommandCooldown {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         TextChannel txt = (TextChannel) channel;
         if (!PermissionUtil.checkPermission(txt, txt.getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
-            return Template.get("permission_missing_attach_files");
+            return Templates.permission_missing.format("MESSAGE_ATTACH_FILES");
         }
         User user = author;
         if (args.length > 0) {
             user = DisUtil.findUser(txt, Misc.joinStrings(args, 0));
         }
         if (user == null) {
-            return Template.get("command_user_not_found");
+            return Templates.config.cant_find_user.format(args[0]);
         }
         txt.sendTyping().queue(); //since it might take a while
         try {

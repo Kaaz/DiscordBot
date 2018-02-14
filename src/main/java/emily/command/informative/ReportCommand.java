@@ -18,9 +18,9 @@ package emily.command.informative;
 
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -62,31 +62,31 @@ public class ReportCommand extends AbstractCommand {
             return "Usage: " + getUsage()[0];
         }
         boolean seperatorFound = false;
-        String title = "";
-        String body = "";
+        StringBuilder title = new StringBuilder();
+        StringBuilder body = new StringBuilder();
         for (String arg : args) {
             if (arg.equals("|")) {
                 seperatorFound = true;
                 continue;
             }
             if (!seperatorFound) {
-                title += " " + arg;
+                title.append(" ").append(arg);
             } else {
-                body += " " + arg;
+                body.append(" ").append(arg);
             }
         }
         if (!seperatorFound) {
-            return Template.get("command_report_no_separator");
+            return Templates.command.report_no_seperator.format();
         }
         if (body.length() < 20 || title.length() < 3) {
-            return Template.get("command_report_message_too_short");
+            return Templates.command.report_message_too_short.format();
         }
         bot.out.sendPrivateMessage(channel.getJDA().getUserById(BotConfig.CREATOR_ID), "new :e_mail: Report coming in!" + "\n" + "\n" +
                 ":bust_in_silhouette: user:  " + author.getName() + " ( " + author.getAsMention() + " )" + "\n" +
                 "Title: " + "\n" + title + "\n" + "\n" +
                 "Message: " + "\n" + body
         );
-        return Template.get("command_report_success") + "\n" + "\n" +
+        return Templates.command.report_success.format() + "\n\n" +
                 "Note: This is 1-way communication, if you'd like give feedback or need assistance feel free to join my **!discord**";
     }
 }

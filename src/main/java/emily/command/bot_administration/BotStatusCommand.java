@@ -17,9 +17,9 @@
 package emily.command.bot_administration;
 
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Game;
@@ -64,10 +64,10 @@ public class BotStatusCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author);
         if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-            return Template.get(channel, "command_no_permission");
+            return Templates.no_permission.format();
         }
         if (args.length == 0) {
-            return Template.get("command_invalid_use");
+            return Templates.invalid_use.format();
         }
         if (args.length > 0) {
             switch (args[0].toLowerCase()) {
@@ -76,13 +76,13 @@ public class BotStatusCommand extends AbstractCommand {
                     return Emojibet.THUMBS_UP;
                 case "game":
                     if (args.length < 2) {
-                        return Template.get("command_invalid_use");
+                        return Templates.invalid_use.format();
                     }
                     channel.getJDA().getPresence().setGame(Game.of(Game.GameType.DEFAULT, Misc.joinStrings(args, 1)));
                     break;
                 case "stream":
                     if (args.length < 3) {
-                        return Template.get("command_invalid_use");
+                        return Templates.invalid_use.format();
                     }
                     try {
                         channel.getJDA().getPresence().setGame(Game.of(Game.GameType.DEFAULT, Misc.joinStrings(args, 2), "http://www.twitch.tv/" + args[1]));
@@ -91,7 +91,7 @@ public class BotStatusCommand extends AbstractCommand {
                     }
                     break;
                 default:
-                    return Template.get("command_invalid_use");
+                    return Templates.invalid_use.format();
             }
             bot.getContainer().setStatusLocked(true);
             try {
@@ -100,6 +100,6 @@ public class BotStatusCommand extends AbstractCommand {
             }
             return Emojibet.THUMBS_UP;
         }
-        return Template.get("command_invalid_use");
+        return Templates.invalid_use.format();
     }
 }

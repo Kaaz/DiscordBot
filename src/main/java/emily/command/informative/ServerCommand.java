@@ -20,9 +20,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.GfxUtil;
@@ -73,12 +73,12 @@ public class ServerCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         Guild guild = ((TextChannel) channel).getGuild();
         if (!PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-            return Template.get("permission_missing_embed");
+            return Templates.permission_missing.format(Permission.MESSAGE_EMBED_LINKS.toString());
         }
         if (bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.BOT_ADMIN) && args.length > 0 && DisUtil.matchesGuildSearch(args[0])) {
             guild = DisUtil.findGuildBy(args[0], bot.getContainer());
             if (guild == null) {
-                return Template.get("command_config_cant_find_guild");
+                return Templates.config.cant_find_guild.format(args[0]);
             }
         }
         EmbedBuilder b = new EmbedBuilder();

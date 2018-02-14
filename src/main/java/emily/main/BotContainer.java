@@ -27,7 +27,6 @@ import emily.handler.CommandHandler;
 import emily.handler.GameHandler;
 import emily.handler.MusicPlayerHandler;
 import emily.handler.SecurityHandler;
-import emily.handler.Template;
 import emily.role.RoleRankings;
 import emily.templates.TemplateCache;
 import emily.templates.Templates;
@@ -414,7 +413,6 @@ public class BotContainer {
         CommandHandler.initialize();
         GameHandler.initialize();
         SecurityHandler.initialize();
-        Template.initialize();
         Templates.init();
         MusicPlayerHandler.init();
         SecurityHandler.initialize();

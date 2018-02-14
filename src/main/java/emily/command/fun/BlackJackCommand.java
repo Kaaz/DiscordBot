@@ -18,8 +18,8 @@ package emily.command.fun;
 
 import emily.core.AbstractCommand;
 import emily.games.Blackjack;
-import emily.handler.Template;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -35,6 +35,8 @@ import java.util.concurrent.Future;
  */
 public class BlackJackCommand extends AbstractCommand {
     public final long DEALER_TURN_INTERVAL = 2000L;
+
+    //@todo, Icleanupcommand listener; kill games older than x
     private Map<String, Blackjack> playerGames = new ConcurrentHashMap<>();
 
     public BlackJackCommand() {
@@ -106,6 +108,6 @@ public class BlackJackCommand extends AbstractCommand {
             return "You are not playing a game, to start use **" + DisUtil.getCommandPrefix(channel) + "blackjack hit**";
         }
 
-        return Template.get("command_invalid_use");
+        return Templates.invalid_use.format();
     }
 }

@@ -20,12 +20,12 @@ import emily.core.AbstractService;
 import emily.core.ExitCode;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
-import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.BotContainer;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.main.ProgramVersion;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.UpdateUtil;
 import net.dv8tion.jda.core.entities.Guild;
@@ -78,17 +78,17 @@ public class BotSelfUpdateService extends AbstractService {
                 }
             }, 1L, TimeUnit.MINUTES);
             usersHaveBeenWarned = true;
-            String message = Template.get("announce_reboot");
+            String message = Templates.announce_reboot.format();
             if (latestVersion.isHigherThan(Launcher.getVersion())) {
-                message = Template.get("bot_self_update_restart", Launcher.getVersion().toString(), latestVersion.toString());
+                message = Templates.bot_self_update_restart.format(Launcher.getVersion().toString(), latestVersion.toString());
                 isUpdating = true;
             } else if (bot.isTerminationRequested()) {
                 switch (bot.getRebootReason()) {
                     case NEED_MORE_SHARDS:
-                        message = Template.get("bot_reboot_more_shards");
+                        message = Templates.bot_reboot_more_shards.format();
                         break;
                     default:
-                        message = Template.get("announce_reboot");
+                        message = Templates.announce_reboot.format();
                 }
             }
             for (TextChannel channel : getSubscribedChannels()) {

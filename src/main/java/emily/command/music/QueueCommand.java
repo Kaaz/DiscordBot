@@ -75,7 +75,7 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         if (args.length == 0) {
             if (player.getQueue().isEmpty()) {
-                return Templates.music.queue_is_empty.formatGuild(guild.getId(), guild);
+                return Templates.music.queue_is_empty.formatGuild(guild.getIdLong(), guild);
             }
             int maxPage = (int) Math.ceil((double) player.getQueue().size() / (double) ITEMS_PER_PAGE);
             bot.queue.add(channel.sendMessage(printQueue(guild, player.getQueue(), 1, maxPage)),

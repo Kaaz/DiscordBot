@@ -21,9 +21,9 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import net.dv8tion.jda.core.Permission;
@@ -89,7 +89,7 @@ public class MemeCommand extends AbstractCommand {
         if (channel instanceof TextChannel) {
             TextChannel txt = (TextChannel) channel;
             if (!PermissionUtil.checkPermission(txt, txt.getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
-                return Template.get("permission_missing_attach_files");
+                return Templates.permission_missing.format("MESSAGE_ATTACH_FILES");
             }
         }
         String msg = "Use one of the following meme types:" + "\n";
@@ -97,7 +97,7 @@ public class MemeCommand extends AbstractCommand {
             loadMemeOptions();
         }
         if (args.length == 0) {
-            return Template.get("command_invalid_use") + "\n" +
+            return Templates.invalid_use.format() + "\n" +
                     msg + Misc.makeTable(new ArrayList<>(memeTypes)) + "\n" +
                     "Usage:" + "\n" +
                     DisUtil.getCommandPrefix(channel) + "meme <type> <toptext> | <bottomtext>Config.EOL+Config.EOL" + "\n" + "\n" +
@@ -114,7 +114,7 @@ public class MemeCommand extends AbstractCommand {
         }
         String type = args[0].toLowerCase();
         if (!memeTypes.contains(type)) {
-            return Template.get("command_meme_invalid_type") +
+            return Templates.command.meme_invalid_type.format() +
                     msg + Misc.makeTable(new ArrayList<>(memeTypes)) + "\n" + "\n" +
                     "Example:" + "\n" +
                     "meme sohappy If I could use this meme | I would be so happy";

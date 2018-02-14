@@ -18,9 +18,9 @@ package emily.command.creator;
 
 import com.google.common.base.Joiner;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -63,10 +63,10 @@ public class SendFileCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author);
         if (!rank.isAtLeast(SimpleRank.SYSTEM_ADMIN)) {
-            return Template.get(channel, "command_no_permission");
+            return Templates.no_permission.formatGuild(channel);
         }
         if (args.length == 0) {
-            return ":face_palm: I expected you to know how to use it";
+            return Templates.invalid_use.formatGuild(channel);
         }
         File f = new File(Joiner.on("").join(args));
         if (f.exists()) {

@@ -21,9 +21,9 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -72,6 +72,6 @@ public class GifCommand extends AbstractCommand {
         } catch (Exception ignored) {
             //this exception is about as useful as a nipple on a male
         }
-        return Template.get("command_gif_not_today");
+        return Templates.command.gif_not_today.format();
     }
 }

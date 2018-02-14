@@ -17,9 +17,9 @@
 package emily.command.administrative;
 
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
@@ -63,12 +63,12 @@ public class LeaveGuildCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Template.get("no_permission");
+            return Templates.no_permission.format();
         }
         if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1 && args[0].matches("^\\d{10,}$")) {
             guild = channel.getJDA().getGuildById(args[0]);
             if (guild == null) {
-                return Template.get("cant_find_guild");
+                return Templates.config.cant_find_guild.format();
             }
             if (args.length == 1) {
                 return "are you sure? :sob: type **`" + DisUtil.getCommandPrefix(channel) + "leaveguild " + args[0] + " confirm`** to leave _" + guild.getName() + "_";

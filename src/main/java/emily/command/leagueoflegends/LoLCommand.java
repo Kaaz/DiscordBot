@@ -114,27 +114,27 @@ public class LoLCommand extends AbstractCommand {
                 return "Can't find a champion with the name `" + args[0] + "`";
             }
             Champion c = dataChampionList.get(key);
-            String description = c.getBlurb().replace("<br><br>", "\n") + "\n\n";
+            StringBuilder description = new StringBuilder(c.getBlurb().replace("<br><br>", "\n") + "\n\n");
             EmbedBuilder e = new EmbedBuilder();
             e.setAuthor(c.getName(), null, getImage(c.getImage()));
             e.setThumbnail(getImage(c.getImage()));
             e.setTitle(c.getTitle(), null);
-            description += Joiner.on(", ").join(c.getTags());
-            description += "\n\n";
-            description += String.format("%s Attack\n", Misc.makeStackedBar(5, c.getInfo().getAttack() / 2, Emojibet.SWORDS));
-            description += String.format("%s Magic\n", Misc.makeStackedBar(5, c.getInfo().getMagic() / 2, Emojibet.EXPLOSION));
-            description += String.format("%s Defense\n", Misc.makeStackedBar(5, c.getInfo().getDefense() / 2, Emojibet.DEFENSE));
-            description += String.format("%s Difficulty\n", Misc.makeStackedBar(5, c.getInfo().getDifficulty() / 2, Emojibet.QUESTION_MARK));
-            description += "\n**Abilities**\n\n**" + Emojibet.getEmojiFor("p") + " " + c.getPassive().getName() + "**\n";
-            description += c.getPassive().getSanitizedDescription() + "\n\n";
+            description.append(Joiner.on(", ").join(c.getTags()));
+            description.append("\n\n");
+            description.append(String.format("%s Attack\n", Misc.makeStackedBar(5, c.getInfo().getAttack() / 2, Emojibet.SWORDS)));
+            description.append(String.format("%s Magic\n", Misc.makeStackedBar(5, c.getInfo().getMagic() / 2, Emojibet.EXPLOSION)));
+            description.append(String.format("%s Defense\n", Misc.makeStackedBar(5, c.getInfo().getDefense() / 2, Emojibet.DEFENSE)));
+            description.append(String.format("%s Difficulty\n", Misc.makeStackedBar(5, c.getInfo().getDifficulty() / 2, Emojibet.QUESTION_MARK)));
+            description.append("\n**Abilities**\n\n**").append(Emojibet.getEmojiFor("p")).append(" ").append(c.getPassive().getName()).append("**\n");
+            description.append(c.getPassive().getSanitizedDescription()).append("\n\n");
             int skillNum = 0;
             for (ChampionSpell spell : c.getSpells()) {
-                description += "**" + skillIndex[skillNum] + " " + spell.getName() + "**\n";
-                description += spell.getDescription().replace("<br><br>", "\n") + "\n";
-                description += "\n";
+                description.append("**").append(skillIndex[skillNum]).append(" ").append(spell.getName()).append("**\n");
+                description.append(spell.getDescription().replace("<br><br>", "\n")).append("\n");
+                description.append("\n");
                 skillNum++;
             }
-            e.setDescription(description);
+            e.setDescription(description.toString());
             bot.queue.add(channel.sendMessage(e.build()));
 
         } catch (RiotApiException e) {

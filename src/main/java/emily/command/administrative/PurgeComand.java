@@ -18,9 +18,9 @@ package emily.command.administrative;
 
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import emily.util.TimeUtil;
@@ -113,7 +113,7 @@ public class PurgeComand extends AbstractCommand {
         PurgeStyle style = PurgeStyle.UNKNOWN;
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && !channel.getJDA().getSelfUser().equals(author)) {
-            return Template.get("no_permission");
+            return Templates.no_permission.format();
         }
         if (args.length == 0) {
             style = PurgeStyle.ALL;
@@ -146,7 +146,7 @@ public class PurgeComand extends AbstractCommand {
                             toDelete++;//exclude the command itself from the limit
                         }
                         if (toDeleteFrom != null && !hasManageMessages && !channel.getJDA().getSelfUser().getId().equals(toDeleteFrom.getUser().getId())) {
-                            return Template.get("permission_missing_manage_messages");
+                            return Templates.permission_missing.format("manage_messages");
                         }
                     }
                     break;
@@ -162,7 +162,7 @@ public class PurgeComand extends AbstractCommand {
                     try {
                         deletePattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
                     } catch (PatternSyntaxException exception) {
-                        return Template.get("command_autoreply_regex_invalid") + "\n" +
+                        return Templates.command.autoreply.regex_invalid.format() + "\n" +
                                 exception.getDescription() + "\n" +
                                 Misc.makeTable(exception.getMessage());
                     }
@@ -281,8 +281,7 @@ public class PurgeComand extends AbstractCommand {
             return;
         }
         if (hasManageMessages) {
-            bot.out.sendAsyncMessage(channel, Template.get(
-                    "command_purge_success", messagesToDelete.size()), message -> {
+            bot.out.sendAsyncMessage(channel, Templates.command.purge.success.format(messagesToDelete.size()), message -> {
                 messagesToDelete.add(message);
                 for (int index = 0; index < messagesToDelete.size(); index += MAX_BULK_SIZE) {
                     if (messagesToDelete.size() - index < 2) {
@@ -297,7 +296,7 @@ public class PurgeComand extends AbstractCommand {
                 }
             });
         } else {
-            bot.out.sendAsyncMessage(channel, Template.get("permission_missing_manage_messages"), message -> {
+            bot.out.sendAsyncMessage(channel, Templates.permission_missing.format("manage_messages"), message -> {
                 messagesToDelete.add(message);
                 for (Message toDelete : messagesToDelete) {
                     if (toDelete.getAuthor().getId().equals(channel.getJDA().getSelfUser().getId()))

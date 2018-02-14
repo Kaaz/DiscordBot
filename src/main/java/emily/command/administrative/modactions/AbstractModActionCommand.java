@@ -21,9 +21,9 @@ import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.db.controllers.CModerationCase;
 import emily.db.model.OModerationCase;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
@@ -65,24 +65,24 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
         Guild guild = chan.getGuild();
         if (getRequiredPermission() != null) {
             if (!PermissionUtil.checkPermission(guild.getMember(author), getRequiredPermission())) {
-                return Template.get("command_no_permission");
+                return Templates.no_permission.format();
             }
             if (!PermissionUtil.checkPermission(guild.getSelfMember(), getRequiredPermission())) {
-                return Template.get("permission_missing", getRequiredPermission().name());
+                return Templates.permission_missing.format(getRequiredPermission().name());
             }
         }
         if (args.length == 0) {
-            return Template.get("command_modaction_empty", getPunishType().getKeyword().toLowerCase());
+            return Templates.command.modaction_empty.format(getPunishType().getKeyword().toLowerCase());
         }
         User targetUser = DisUtil.findUser(chan, Joiner.on(" ").join(args));
         if (targetUser == null) {
-            return Template.get("cant_find_user", Joiner.on(" ").join(args));
+            return Templates.config.cant_find_user.format(Joiner.on(" ").join(args));
         }
         if (targetUser.getId().equals(guild.getSelfMember().getUser().getId())) {
-            return Template.get("command_modaction_not_self", getPunishType().getKeyword().toLowerCase());
+            return Templates.command.modaction_not_self.format(getPunishType().getKeyword().toLowerCase());
         }
         if (!PermissionUtil.canInteract(guild.getSelfMember(), guild.getMember(targetUser)) || !punish(bot, guild, guild.getMember(targetUser))) {
-            return Template.get("command_modaction_failed", getPunishType().getKeyword().toLowerCase(), targetUser.getName());
+            return Templates.command.modaction_failed.format(getPunishType().getKeyword().toLowerCase(), targetUser);
         }
         int caseId = CModerationCase.insert(guild, targetUser, author, getPunishType(), null);
         TextChannel modlogChannel = bot.getModlogChannel(guild.getId());
@@ -94,6 +94,6 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
                         CModerationCase.update(modCase);
                     });
         }
-        return Template.get("command_modaction_success", targetUser.getName(), getPunishType().getVerb().toLowerCase());
+        return Templates.command.modaction_success.format(targetUser, getPunishType().getVerb().toLowerCase());
     }
 }

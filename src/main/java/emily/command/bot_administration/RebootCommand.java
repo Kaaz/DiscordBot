@@ -19,10 +19,10 @@ package emily.command.bot_administration;
 import emily.core.AbstractCommand;
 import emily.core.ExitCode;
 import emily.db.controllers.CGuild;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import emily.util.UpdateUtil;
@@ -70,12 +70,12 @@ public class RebootCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
             if (args.length == 0) {
-                return Template.get("command_invalid_use");
+                return Templates.invalid_use.format();
             }
             switch (args[0].toLowerCase()) {
                 case "update":
                     if (UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
-                        bot.out.sendAsyncMessage(channel, Template.get("command_reboot_update"), message -> {
+                        bot.out.sendAsyncMessage(channel, Templates.command.reboot.update.format(), message -> {
                             if (args.length > 1 && args[1].equals("firm")) {
                                 bot.getContainer().firmRequestExit(ExitCode.UPDATE);
                             } else {
@@ -85,7 +85,7 @@ public class RebootCommand extends AbstractCommand {
                         return "";
                     }
                 case "now":
-                    bot.out.sendAsyncMessage(channel, Template.get("command_reboot_success"), message -> {
+                    bot.out.sendAsyncMessage(channel, Templates.command.reboot.success.format(), message -> {
                         if (args.length > 1 && args[1].equals("firm")) {
                             bot.getContainer().firmRequestExit(ExitCode.REBOOT);
                         } else {
@@ -95,7 +95,7 @@ public class RebootCommand extends AbstractCommand {
                     return "";
                 case "forceupdate":
                 case "fursupdate":
-                    bot.out.sendAsyncMessage(channel, Template.get("command_reboot_forceupdate"), message -> bot.getContainer().requestExit(ExitCode.UPDATE));
+                    bot.out.sendAsyncMessage(channel, Templates.command.reboot.forceupdate.format(), message -> bot.getContainer().requestExit(ExitCode.UPDATE));
                     return "";
                 case "shard":
                     if (args.length < 2) {
@@ -113,25 +113,25 @@ public class RebootCommand extends AbstractCommand {
                     } else {
                         shardId = Misc.parseInt(args[1], -1);
                     }
-                    channel.sendMessage("shard: " + shardId);
+                    channel.sendMessage("shard: " + shardId).queue();
                     if (shardId == -1 || shardId >= bot.getContainer().getShards().length) {
                         break;
                     }
-                    bot.out.sendAsyncMessage(channel, Template.get("command_reboot_shard", shardId), message -> {
+                    bot.out.sendAsyncMessage(channel, Templates.command.reboot.shard.format(shardId), message -> {
                         boolean isThisShard = shardId == bot.getShardId();
                         boolean restartSuccess = bot.getContainer().tryRestartingShard(shardId);
                         if (!isThisShard) {
                             if (restartSuccess) {
-                                bot.queue.add(message.editMessage(Template.get("command_reboot_shard_success", shardId)));
+                                bot.queue.add(message.editMessage(Templates.command.reboot.shard_success.format(shardId)));
                             } else {
-                                bot.queue.add(message.editMessage(Template.get("command_reboot_shard_failed", shardId)));
+                                bot.queue.add(message.editMessage(Templates.command.reboot.shard_failed.format(shardId)));
                             }
                         }
                     });
                     return "";
             }
-            return Template.get("command_invalid_use");
+            return Templates.invalid_use.format();
         }
-        return Template.get("command_no_permission");
+        return Templates.no_permission.format();
     }
 }

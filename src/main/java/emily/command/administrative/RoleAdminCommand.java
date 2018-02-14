@@ -20,7 +20,6 @@ import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CGuildRoleAssignable;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.role.RoleRankings;
@@ -108,7 +107,7 @@ public class RoleAdminCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Template.get("command_no_permission");
+            return Templates.no_permission.format();
         }
         if (args.length == 0 || args[0].equals("list")) {
             String out = "I found the following roles" + "\n";
@@ -122,7 +121,7 @@ public class RoleAdminCommand extends AbstractCommand {
             return out;
         }
         if (!PermissionUtil.checkPermission(guild.getSelfMember(), Permission.MANAGE_ROLES)) {
-            return Template.get("permission_missing_manage_roles");
+            return Templates.permission_missing.format("manage_roles");
         }
         switch (args[0].toLowerCase()) {
             case "self":
@@ -130,7 +129,7 @@ public class RoleAdminCommand extends AbstractCommand {
                     return "this will say something useful in future";
                 }
                 if (args.length < 3) {
-                    return Template.get("command_invalid_use");
+                    return Templates.invalid_use.format();
                 }
                 String roleName = Misc.joinStrings(args, 2);
                 Role role = DisUtil.findRole(guild, roleName);
@@ -144,14 +143,14 @@ public class RoleAdminCommand extends AbstractCommand {
                     case "add":
                     case "+":
                         CGuildRoleAssignable.insertOrUpdate(CGuild.getCachedId(guild.getId()), role.getId(), role.getName());
-                        return Template.get("command_role_admin_adding", role.getName());
+                        return Templates.command.role_admin.adding.format(role.getName());
                     case "remove":
                     case "-":
                     case "delete":
                         CGuildRoleAssignable.delete(CGuild.getCachedId(guild.getId()), role.getId(), roleName);
-                        return Template.get("command_role_admin_removing", role.getName());
+                        return Templates.command.role_admin.removing.format(role.getName());
                     case "describe":
-                        return Template.get("not_implemented_yet");
+                        return Templates.not_implemented_yet.format();
                 }
             case "cleanup":
                 RoleRankings.cleanUpRoles(guild, channel.getJDA().getSelfUser());
@@ -164,12 +163,12 @@ public class RoleAdminCommand extends AbstractCommand {
                 return "No permissions to manage roles";
             case "give":
                 if (args.length < 3) {
-                    return Templates.command.invalid_use.formatGuild(guild.getId());
+                    return Templates.command.invalid_use.formatGuild(guild.getIdLong());
                 }
                 return mutateRole((TextChannel) channel, args[1], args[2], true);
             case "take":
                 if (args.length < 3) {
-                    return Templates.command.invalid_use.formatGuild(guild.getId());
+                    return Templates.command.invalid_use.formatGuild(guild.getIdLong());
                 }
                 return mutateRole((TextChannel) channel, args[1], args[2], false);
             default:

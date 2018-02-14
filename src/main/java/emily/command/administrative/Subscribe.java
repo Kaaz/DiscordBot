@@ -25,8 +25,8 @@ import emily.db.controllers.CSubscriptions;
 import emily.db.model.OService;
 import emily.db.model.OSubscription;
 import emily.db.model.QActiveSubscriptions;
-import emily.handler.Template;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -63,7 +63,7 @@ public class Subscribe extends AbstractCommand {
                 "subscribe                //check what subscriptions are active",
                 "subscribe <name>         //subscribe to subject",
                 "subscribe stop <name>    //stop subscription to subject",
-                "subscribe info <name>    //information about subject",
+//                "subscribe info <name>    //information about subject",
                 "subscribe list           //See what subscription options there are",
         };
     }
@@ -99,7 +99,7 @@ public class Subscribe extends AbstractCommand {
                         "This channel is currenty subscribed for: " +
                         Misc.makeAsciiTable(headers, tbl, null);
             }
-            return Template.get("command_subscribe_channel_has_no_subscriptions") + "\n" +
+            return Templates.command.subscribe.channel_has_no_subscriptions.format() + "\n" +
                     "Possible options to subscribe to: " +
                     getServicesTable();
         }
@@ -107,22 +107,22 @@ public class Subscribe extends AbstractCommand {
             if (args.length > 1) {
                 OService service = CServices.findBy(args[1].trim());
                 if (service.id == 0) {
-                    return Template.get("command_subscribe_invalid_service");
+                    return Templates.command.subscribe.invalid_service.format();
                 }
                 OSubscription subscription = CSubscriptions.findBy(CGuild.getCachedId(txt.getGuild().getId()), CChannels.getCachedId(channel.getId(), txt.getGuild().getId()), service.id);
                 if (subscription.subscribed == 1) {
                     subscription.subscribed = 0;
                     CSubscriptions.insertOrUpdate(subscription);
-                    return Template.get("command_subscribe_unsubscribed_success", service.displayName);
+                    return Templates.command.subscribe.unsubscribed_success.format(service.displayName);
                 }
-                return Template.get("command_subscribe_not_subscribed");
+                return Templates.command.subscribe.not_subscribed.format();
             }
-            return Template.get("command_subscribe_invalid_use");
+            return Templates.invalid_use.format();
         } else if (args[0].equalsIgnoreCase("info")) {
             if (args.length > 1) {
-                return "todo";
+                Templates.not_implemented_yet.format(); //@todo <--
             }
-            return Template.get("command_subscribe_invalid_use");
+            return Templates.invalid_use.format();
         } else if (args[0].equalsIgnoreCase("list")) {
             return "Subscriptions" + "\n" +
                     "Possible options to subscribe to: " +
@@ -130,7 +130,7 @@ public class Subscribe extends AbstractCommand {
         }
         OService service = CServices.findBy(args[0].trim());
         if (service.id == 0) {
-            return Template.get("command_subscribe_invalid_service");
+            return Templates.command.subscribe.invalid_service.format();
         }
         OSubscription subscription = CSubscriptions.findBy(CGuild.getCachedId(txt.getGuild().getId()), CChannels.getCachedId(channel.getId(), ((TextChannel) channel).getGuild().getId()), service.id);
         if (subscription.subscribed == 0) {
@@ -139,9 +139,9 @@ public class Subscribe extends AbstractCommand {
             subscription.serverId = CGuild.getCachedId(txt.getGuild().getId());
             subscription.serviceId = service.id;
             CSubscriptions.insertOrUpdate(subscription);
-            return Template.get("command_subscribe_success");
+            return Templates.command.subscribe.success.format();
         }
-        return Template.get("command_subscribe_already_subscribed");
+        return Templates.command.subscribe.already_subscribed.format();
     }
 
     private String getServicesTable() {

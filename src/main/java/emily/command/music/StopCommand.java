@@ -21,9 +21,9 @@ import emily.core.AbstractCommand;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -75,35 +75,35 @@ public class StopCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Template.get(channel, "music_required_role_not_found", guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)).getName());
+            return Templates.music.required_role_not_found.format(guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));
         }
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         if (args.length > 0) {
             if (args[0].equals("force") && userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
                 player.leave();
-                return Template.get("command_stop_success");
+                return Templates.command.stop_success.format();
             }
         }
         if (!player.isPlaying()) {
             player.leave();
-            return Template.get("command_currentlyplaying_nosong");
+            return Templates.command.currentlyplaying.nosong.format();
         }
         if (player.isConnected()) {
             if (!player.canUseVoiceCommands(author, userRank)) {
-                return Template.get("music_not_same_voicechannel");
+                return Templates.music.not_same_voicechannel.format();
             }
             if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && player.aListenerIsAtLeast(SimpleRank.GUILD_ADMIN)) {
-                return Template.get("music_not_while_admin_listening");
+                return Templates.music.not_while_admin_listening.format();
             }
             if (args.length > 0 && args[0].equals("afternp")) {
                 player.stopAfterTrack(true);
-                return Template.get("command_stop_after_track");
+                return Templates.command.stop_after_track.format();
             } else {
                 player.leave();
             }
-            return Template.get("command_stop_success");
+            return Templates.command.stop_success.format();
         }
-        return Template.get("command_currentlyplaying_nosong");
+        return Templates.command.currentlyplaying.nosong.format();
 
     }
 }

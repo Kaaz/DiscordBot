@@ -17,9 +17,9 @@
 package emily.command.administrative;
 
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -59,7 +59,7 @@ public class PMCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (!rank.isAtLeast(SimpleRank.USER)) {
-            return Template.get("command_no_permission");
+            return Templates.no_permission.format();
         }
         if (args.length > 1) {
             User targetUser = DisUtil.findUser((TextChannel) channel, args[0]);
@@ -70,11 +70,11 @@ public class PMCommand extends AbstractCommand {
                     message += " " + args[i];
                 }
                 bot.out.sendPrivateMessage(targetUser, "You got a message from " + author.getAsMention() + ": " + message);
-                return Template.get("command_pm_success");
+                return Templates.command.pm_success.format();
             } else {
-                return Template.get("command_pm_cant_find_user");
+                return Templates.command.pm_cant_find_user.format();
             }
         }
-        return Template.get("command_invalid_use");
+        return Templates.invalid_use.format();
     }
 }

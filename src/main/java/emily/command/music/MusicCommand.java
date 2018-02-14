@@ -23,9 +23,9 @@ import emily.db.model.OPlaylist;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.Emojibet;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -105,7 +105,7 @@ public class MusicCommand extends AbstractCommand {
         }
         if (args.length > 0 && rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 
-            return Template.get("not_implemented_yet");
+            return Templates.not_implemented_yet.format();
         }
 
         OPlaylist playlist = CPlaylist.findById(Integer.parseInt(settings.getOrDefault(GSetting.MUSIC_PLAYLIST_ID)));

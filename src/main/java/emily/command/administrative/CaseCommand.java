@@ -24,9 +24,10 @@ import emily.db.controllers.CUser;
 import emily.db.model.OModerationCase;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Template;
+import emily.templates.Templates;
 import emily.util.Misc;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
@@ -74,18 +75,18 @@ public class CaseCommand extends AbstractCommand {
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         Guild guild = ((TextChannel) channel).getGuild();
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Template.get("command_no_permission");
+            return Templates.no_permission.format();
         }
         if (args.length > 0) {
             switch (args[0].toLowerCase()) {
                 case "reason":
                     if (args.length < 3) {
-                        return Template.get("command_invalid_use");
+                        return Templates.invalid_use.format();
                     }
                     return editReason(bot, guild, guild.getMember(author), channel, args[1], Misc.joinStrings(args, 2));
             }
         }
-        return Template.get("command_invalid_use");
+        return Templates.invalid_use.format();
     }
 
     private String editReason(DiscordBot bot, Guild guild, Member moderator, MessageChannel feedbackChannel, String caseId, String reason) {
@@ -96,20 +97,20 @@ public class CaseCommand extends AbstractCommand {
             oCase = CModerationCase.findById(Misc.parseInt(caseId, -1));
         }
         if (oCase.id == 0 || oCase.guildId != CGuild.getCachedId(guild.getId())) {
-            return Template.get("command_case_not_found", oCase.id);
+            return Templates.command.case_not_found.format(oCase.id);
         }
         oCase.reason = reason;
         CModerationCase.update(oCase);
         TextChannel channel = guild.getTextChannelById(GuildSettings.get(guild).getOrDefault(GSetting.BOT_CHANNEL));
         if (channel == null) {
-            return Template.get("guild_channel_modlog_not_found");
+            return Templates.config.modlog_not_found.format();
         }
         bot.queue.add(channel.getMessageById(oCase.messageId),
                 msg -> {
                     if (msg != null) {
                         bot.queue.add(msg.editMessage(new MessageBuilder().setEmbed(CModerationCase.buildCase(guild, oCase)).build()));
                     } else {
-                        bot.queue.add(feedbackChannel.sendMessage(Template.get("command_case_reason_modified")));
+                        bot.queue.add(feedbackChannel.sendMessage(Templates.command.case_reason_modified.format()));
                     }
                 });
 

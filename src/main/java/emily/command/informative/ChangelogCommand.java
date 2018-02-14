@@ -21,11 +21,11 @@ import emily.db.controllers.CBotVersionChanges;
 import emily.db.controllers.CBotVersions;
 import emily.db.model.OBotVersion;
 import emily.db.model.OBotVersionChange;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.main.ProgramVersion;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -90,7 +90,7 @@ public class ChangelogCommand extends AbstractCommand {
         message = printVersion(channel, version, bot.security.getSimpleRank(author, channel));
         if (message != null) {
             if (channel instanceof TextChannel && !PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-                return Template.get("permission_missing", Permission.MESSAGE_EMBED_LINKS);
+                return Templates.permission_missing.format(Permission.MESSAGE_EMBED_LINKS.toString());
             }
             bot.queue.add(channel.sendMessage(message));
             return "";
@@ -108,18 +108,18 @@ public class ChangelogCommand extends AbstractCommand {
         if (changes.isEmpty()) {
             return null;
         }
-        String desc = "";
+        StringBuilder desc = new StringBuilder();
         OBotVersionChange.ChangeType lastType = null;
         for (OBotVersionChange change : changes) {
             if (!change.changeType.equals(lastType)) {
                 lastType = change.changeType;
-                desc += String.format("\n**%s %s**\n", lastType.getEmoji(), lastType.getTitle().toUpperCase());
+                desc.append(String.format("\n**%s %s**\n", lastType.getEmoji(), lastType.getTitle().toUpperCase()));
             }
 
-            desc += String.format(" • %s\n", change.description);
+            desc.append(String.format(" • %s\n", change.description));
         }
         b.setTitle("[" + version.toString() + "] Changelog " + (dbVersion.published == 0 ? Emojibet.WARNING + " Still being worked on!" : ""), null);
-        b.setDescription(desc);
+        b.setDescription(desc.toString());
         b.setFooter(String.format("I'd love to hear your feedback, feel free to join %sdiscord", DisUtil.getCommandPrefix(channel)), channel.getJDA().getSelfUser().getAvatarUrl());
         return b.build();
     }

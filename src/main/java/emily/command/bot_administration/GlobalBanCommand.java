@@ -19,9 +19,9 @@ package emily.command.bot_administration;
 import emily.core.AbstractCommand;
 import emily.db.controllers.CUser;
 import emily.db.model.OUser;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -74,6 +74,6 @@ public class GlobalBanCommand extends AbstractCommand {
                 return "`" + user.name + "` (`" + user.discord_id + "`) has been globally banned";
             }
         }
-        return Template.get("command_no_permission");
+        return Templates.no_permission.format();
     }
 }

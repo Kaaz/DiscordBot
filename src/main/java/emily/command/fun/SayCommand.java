@@ -18,9 +18,9 @@ package emily.command.fun;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -68,11 +68,11 @@ public class SayCommand extends AbstractCommand {
                 if (bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.GUILD_ADMIN)) {
                     return output;
                 }
-                return Template.get("command_say_contains_mention");
+                return Templates.command.SAY_CONTAINS_MENTION.format();
             }
             return output;
         } else {
-            return Template.get("command_say_whatexactly");
+            return Templates.command.SAY_WHATEXACTLY.format();
         }
     }
 }
