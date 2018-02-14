@@ -3,7 +3,6 @@
 A Java bot for [Discord](https://discordapp.com/) using the [JDA library](https://github.com/DV8FromTheWorld/JDA).
 
 It uses sql (mariadb) to store data  
-To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [ffmpeg](https://www.ffmpeg.org/)
 If you'd like to run your own version of this project check the [installation part](#run-the-bot-yourself)
 
 You can play/test it on discord 
@@ -35,17 +34,17 @@ Commands | | | | |
 [catfact](#catfact) | [changename](#changename) | [cla](#cla) | [command](#command) | [commandadmin](#commandadmin)
 [config](#config) | [current](#current) | [debug](#debug) | [donate](#donate) | [exec](#exec)
 [exit](#exit) | [fight](#fight) | [fml](#fml) | [game](#game) | [getrole](#getrole)
-[gif](#gif) | [globalban](#globalban) | [guildstats](#guildstats) | [help](#help) | [importmusic](#importmusic)
-[info](#info) | [invite](#invite) | [join](#join) | [joke](#joke) | [kick](#kick)
-[leaveguild](#leaveguild) | [logging](#logging) | [meme](#meme) | [modcase](#modcase) | [music](#music)
-[mute](#mute) | [pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist)
-[pm](#pm) | [poll](#poll) | [prefix](#prefix) | [purge](#purge) | [queue](#queue)
-[reactionrole](#reactionrole) | [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report)
-[roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [server](#server)
-[skip](#skip) | [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system)
-[tag](#tag) | [tempban](#tempban) | [template](#template) | [todo](#todo) | [ud](#ud)
-[uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume)
-[warn](#warn) | 
+[gif](#gif) | [globalban](#globalban) | [guildstats](#guildstats) | [help](#help) | [info](#info)
+[invite](#invite) | [join](#join) | [joke](#joke) | [kick](#kick) | [leaveguild](#leaveguild)
+[logging](#logging) | [meme](#meme) | [modcase](#modcase) | [music](#music) | [mute](#mute)
+[pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
+[poll](#poll) | [prefix](#prefix) | [purge](#purge) | [queue](#queue) | [reactionrole](#reactionrole)
+[reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report) | [roleadmin](#roleadmin)
+[roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [server](#server) | [skip](#skip)
+[slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag)
+[tempban](#tempban) | [template](#template) | [todo](#todo) | [ud](#ud) | [uptime](#uptime)
+[user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume) | [warn](#warn)
+
 
 ## Games
 
@@ -657,19 +656,6 @@ help            //shows commands grouped by categories, navigable by reactions
 help full       //index of all commands, in case you don't have reactions
 help <command>  //usage for that command
 ```
-### importmusic
-
-Special command for special use case. Imports music files from a directory. Only imports files with a valid id3v[1-2] tag
-
-Aliases: importmusic
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-importmusic <path/to/music>  //imports a folder
-```
 ### info
 
 Shows some general information about me and my future plans.
@@ -1165,7 +1151,6 @@ Usable in public  channels
 subscribe                //check what subscriptions are active
 subscribe <name>         //subscribe to subject
 subscribe stop <name>    //stop subscription to subject
-subscribe info <name>    //information about subject
 subscribe list           //See what subscription options there are
 ```
 ### system
