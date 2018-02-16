@@ -272,13 +272,13 @@ public class JDAEvents extends ListenerAdapter {
         guildMember.joinDate = new Timestamp(System.currentTimeMillis());
         CGuildMember.insertOrUpdate(guildMember);
 
-        if ("true".equals(settings.getOrDefault(GSetting.PM_USER_EVENTS))) {
+        if (settings.getBoolValue(GSetting.PM_USER_EVENTS)) {
             discordBot.out.sendPrivateMessage(guild.getOwner().getUser(), String.format("[user-event] **%s#%s** joined the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()),
                     null
             );
         }
         discordBot.logGuildEvent(guild, "\uD83D\uDC64", "**" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator() + "** joined the guild");
-        if ("true".equals(settings.getOrDefault(GSetting.WELCOME_NEW_USERS))) {
+        if (settings.getBoolValue(GSetting.WELCOME_NEW_USERS)) {
             TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
             if (defaultChannel != null && defaultChannel.canTalk() && !discordBot.security.isBotAdmin(user.getIdLong())) {
                 Template template = firstTime ? Templates.welcome_new_user : Templates.welcome_back_user;
@@ -318,10 +318,10 @@ public class JDAEvents extends ListenerAdapter {
             return;
         }
         Guild guild = event.getGuild();
-        if ("true".equals(GuildSettings.get(guild).getOrDefault(GSetting.PM_USER_EVENTS))) {
+        if (GuildSettings.get(guild).getBoolValue(GSetting.PM_USER_EVENTS)) {
             discordBot.out.sendPrivateMessage(guild.getOwner().getUser(), String.format("[user-event] **%s#%s** left the guild **%s**", user.getName(), user.getDiscriminator(), guild.getName()));
         }
-        if ("true".equals(GuildSettings.get(guild).getOrDefault(GSetting.WELCOME_NEW_USERS))) {
+        if (GuildSettings.get(guild).getBoolValue(GSetting.WELCOME_NEW_USERS)) {
             TextChannel defaultChannel = discordBot.getDefaultChannel(guild);
             if (defaultChannel != null && defaultChannel.canTalk()) {
                 discordBot.queue.add(defaultChannel.sendMessage(

@@ -93,7 +93,7 @@ public class GuildSettings {
     }
 
     public static GuildSettings get(Guild guild) {
-        return get(Long.parseLong(guild.getId()));
+        return get(guild.getIdLong());
     }
 
     public static GuildSettings get(String guildId) {
@@ -114,6 +114,9 @@ public class GuildSettings {
      */
     public String getOrDefault(GSetting setting) {
         return settings[setting.ordinal()] == null ? setting.getDefaultValue() : settings[setting.ordinal()];
+    }
+    public boolean getBoolValue(GSetting setting) {
+        return setting.getSettingType() instanceof BooleanSettingType && "true".equals(getOrDefault(setting));
     }
 
     public String getOrDefault(String key) {
