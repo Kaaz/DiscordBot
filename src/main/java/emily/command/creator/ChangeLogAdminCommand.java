@@ -21,11 +21,11 @@ import emily.db.controllers.CBotVersionChanges;
 import emily.db.controllers.CBotVersions;
 import emily.db.model.OBotVersion;
 import emily.db.model.OBotVersionChange;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.main.ProgramVersion;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Message;
@@ -68,7 +68,7 @@ public class ChangeLogAdminCommand extends AbstractCommand {
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.CREATOR)) {
-            return Template.get(channel, "command_no_permission");
+            return Templates.no_permission.format();
         }
         if (args.length == 1) {
             switch (args[0].toLowerCase()) {
@@ -77,7 +77,7 @@ public class ChangeLogAdminCommand extends AbstractCommand {
             }
         }
         if (args.length < 3) {
-            return Template.get("command_invalid_use");
+            return Templates.invalid_use.format();
         }
         ProgramVersion v;
         OBotVersion version;
@@ -90,7 +90,7 @@ public class ChangeLogAdminCommand extends AbstractCommand {
         } else if (args[0].equalsIgnoreCase("next")) {
             v = CBotVersions.versionAfter(Launcher.getVersion()).getVersion();
             if (Launcher.getVersion().isHigherThan(v)) {
-                return Template.get("command_cla_version_not_found", args[0]);
+                return Templates.command.cla.version_not_found.format(args[0]);
             }
             version = CBotVersions.findBy(v);
         } else {
@@ -106,21 +106,21 @@ public class ChangeLogAdminCommand extends AbstractCommand {
         }
         OBotVersionChange.ChangeType changeType = OBotVersionChange.ChangeType.fromCode(args[1]);
         if (changeType.equals(OBotVersionChange.ChangeType.UNKNOWN)) {
-            return Template.get("command_cla_type_unknown", args[1]);
+            return Templates.command.cla.type_unknown.format(args[1]);
         }
         String description = Misc.joinStrings(args, 2);
         if (description.length() < 5) {
-            return Template.get("command_cla_desc_short");
+            return Templates.command.cla.desc_short.format();
         }
         CBotVersionChanges.insert(version.id, changeType, description);
         return Emojibet.THUMBS_UP;
     }
 
     private String printTypes() {
-        String ret = "The following changelog types exist:\n\n";
+        StringBuilder ret = new StringBuilder("The following changelog types exist:\n\n");
         for (OBotVersionChange.ChangeType type : OBotVersionChange.ChangeType.values()) {
-            ret += String.format("%s %s\n", type.getCode(), type.getTitle());
+            ret.append(String.format("%s %s\n", type.getCode(), type.getTitle()));
         }
-        return ret;
+        return ret.toString();
     }
 }

@@ -17,8 +17,8 @@
 package emily.command.fun;
 
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -95,13 +95,13 @@ public class RollCommand extends AbstractCommand {
                 int sides = Misc.parseInt(match.group(2), 6);
                 int bonus = 0;
                 if (dice > max_dice) {
-                    return Template.get("command_roll_dice_count", max_dice);
+                    return Templates.command.roll.dice_count.format(max_dice);
                 }
                 if (dice < 1) {
-                    return Template.get("command_roll_no_dice");
+                    return Templates.command.roll.no_dice.format();
                 }
                 if (sides < min_sides) {
-                    return Template.get("command_roll_side_count", min_sides);
+                    return Templates.command.roll.side_count.format(min_sides);
                 }
                 if (match.group(3) != null && !"null".equals(match.group(3))) {
                     bonus = Misc.parseInt("" + match.group(3), 0);

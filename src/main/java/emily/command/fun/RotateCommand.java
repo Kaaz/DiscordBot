@@ -17,8 +17,8 @@
 package emily.command.fun;
 
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -132,24 +132,24 @@ public class RotateCommand extends AbstractCommand {
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         List<String> inputArray = new ArrayList<>();
-        String output = "";
+        StringBuilder output = new StringBuilder();
         for (String arg : args) {
             inputArray.add(" ");
             Collections.addAll(inputArray, arg.split(""));
         }
         if (inputArray.size() <= 3) {
-            return Template.get("command_rotate_too_short");
+            return Templates.command.rotate_too_short.format();
         }
         for (int i = inputArray.size() - 1; i >= 0; i--) {
             if (inputArray.get(i) == null) {
                 continue;
             }
             if (charMap.containsKey(inputArray.get(i))) {
-                output += charMap.get(inputArray.get(i));
+                output.append(charMap.get(inputArray.get(i)));
             } else {
-                output += inputArray.get(i);
+                output.append(inputArray.get(i));
             }
         }
-        return output;
+        return output.toString();
     }
 }

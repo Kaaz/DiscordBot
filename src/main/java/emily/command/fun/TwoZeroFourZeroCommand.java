@@ -24,8 +24,8 @@ import emily.core.AbstractCommand;
 import emily.games.GameState;
 import emily.games.game2048.Game2048;
 import emily.games.game2048.Game2048Turn;
-import emily.handler.Template;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import net.dv8tion.jda.core.Permission;
@@ -69,7 +69,7 @@ public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandR
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (!DisUtil.hasPermission(channel, channel.getJDA().getSelfUser(), Permission.MESSAGE_ADD_REACTION)) {
-            return Template.get("permission_missing", Permission.MESSAGE_ADD_REACTION.toString());
+            return Templates.permission_missing.format(Permission.MESSAGE_ADD_REACTION.toString());
         }
         Game2048 game = new Game2048();
         game.addPlayer(author);
@@ -87,7 +87,7 @@ public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandR
                 Game2048Turn turn = new Game2048Turn();
                 turn.parseInput(reaction);
                 if (!game.isValidMove(message.getJDA().getUserById(userId), turn)) {
-                    message.editMessage(game.toString() + "\n" + Template.get("playmode_not_a_valid_move")).complete();
+                    message.editMessage(game.toString() + "\n" + Templates.playmode_not_a_valid_move.format()).complete();
                 } else {
                     game.playTurn(message.getJDA().getUserById(userId), turn);
                     message.editMessage(game.toString()).complete();

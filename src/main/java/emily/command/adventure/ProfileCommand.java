@@ -18,10 +18,10 @@ package emily.command.adventure;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.modules.profile.ProfileImageV1;
 import emily.modules.profile.ProfileImageV3;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -79,7 +79,7 @@ public class ProfileCommand extends AbstractCommand {
                 }
             }
             if (user == null) {
-                return Template.get("cant_find_user", args[0]);
+                return Templates.config.cant_find_user.format(args[0]);
             }
         }
         try {

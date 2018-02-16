@@ -19,6 +19,7 @@ package emily.templates;
 import emily.db.WebDb;
 import emily.db.controllers.CGuild;
 import emily.main.BotContainer;
+import net.dv8tion.jda.core.entities.Guild;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -107,7 +108,12 @@ public class TemplateCache {
         }
         guildDictionary.get(guildId).get(keyphrase).add(text);
     }
-
+    public static String getGuild(Guild guild, String keyPhrase){
+        if(guild == null){
+            return getGlobal(keyPhrase);
+        }
+        return getGuild(CGuild.getCachedId(guild.getIdLong()), keyPhrase);
+    }
     public static String getGuild(int guildId, String keyPhrase) {
         if (!guildDictionary.containsKey(guildId) || !guildDictionary.get(guildId).containsKey(keyPhrase)) {
             return getGlobal(keyPhrase);

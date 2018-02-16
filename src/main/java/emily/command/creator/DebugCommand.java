@@ -21,10 +21,10 @@ import emily.db.controllers.CGuild;
 import emily.db.controllers.CGuildMember;
 import emily.db.controllers.CUser;
 import emily.db.model.OGuildMember;
-import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Guild;
@@ -73,7 +73,7 @@ public class DebugCommand extends AbstractCommand {
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.CREATOR)) {
-            return Template.get(channel, "command_no_permission");
+            return Templates.no_permission.formatGuild(channel, "command_no_permission");
         }
         if (args.length == 0) {
             return Emojibet.EYES;

@@ -26,9 +26,9 @@ import emily.db.controllers.CUser;
 import emily.db.model.OBank;
 import emily.db.model.OBet;
 import emily.db.model.OBetOption;
-import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
@@ -92,29 +92,29 @@ public class BetCommand extends AbstractCommand {
         OBank bank = CBanks.findBy(author.getId());
         int guildId = CGuild.getCachedId(guild.getId());
         if (args.length == 0) {
-            String ret = "Bet overview \n\n";
+            StringBuilder ret = new StringBuilder("Bet overview \n\n");
             List<OBet> activeBets = CBet.getActiveBetsForGuild(guildId);
             if (activeBets.isEmpty()) {
-                ret = Template.get("command_bet_no_bets");
+                ret = new StringBuilder(Templates.command.bet.no_bets.format());
             }
             for (OBet bet : activeBets) {
-                ret += String.format("\\#%d - %s\n", bet.id, bet.title);
+                ret.append(String.format("\\#%d - %s\n", bet.id, bet.title));
             }
             OBet record = CBet.getActiveBet(guildId, CUser.getCachedId(author.getId()));
             if (record.status.equals(OBet.Status.PREPARING)) {
-                ret += printWipBet(record);
+                ret.append(printWipBet(record));
             }
-            return ret;
+            return ret.toString();
         }
         switch (args[0].toLowerCase()) {
             case "create":
                 if (args.length < 3) {
-                    return Template.get("command_invalid_use");
+                    return Templates.invalid_use.format();
                 }
                 int amount = Misc.parseInt(args[1], 0);
                 long maxBetAmount = Math.min(CBet.MAX_BET_AMOUNT, bank.currentBalance);
                 if (amount <= 0 || amount >= maxBetAmount) {
-                    return Template.get("command_bet_amount_between", 1, maxBetAmount);
+                    return Templates.command.bet.amount_between.format(1, maxBetAmount);
                 }
                 String title = Misc.joinStrings(args, 2);
                 if (title.length() > 128) {
@@ -122,34 +122,34 @@ public class BetCommand extends AbstractCommand {
                 }
                 OBet record = CBet.getActiveBet(guildId, CUser.getCachedId(author.getId()));
                 if (!record.status.equals(OBet.Status.PREPARING)) {
-                    return Template.get("command_bet_already_preparing");
+                    return Templates.command.bet.already_preparing.format();
                 }
                 record.title = title;
                 record.price = amount;
                 record.guildId = guildId;
                 record.ownerId = CUser.getCachedId(author.getId());
                 CBet.insert(record);
-                return Template.get("command_bet_create_success");
+                return Templates.command.bet.create_success.format();
             case "option":
             case "options":
                 OBet myBet = CBet.getActiveBet(guildId, CUser.getCachedId(author.getId()));
                 if (!myBet.status.equals(OBet.Status.PREPARING)) {
-                    return Template.get("command_bet_edit_prepare_only");
+                    return Templates.command.bet.edit_prepare_only.format();
                 }
                 if (args.length == 1) {
                     return printWipBet(myBet);
                 }
                 if (args.length < 3) {
-                    return Template.get("command_invalid_use");
+                    return Templates.invalid_use.format();
                 }
                 switch (args[1].toLowerCase()) {
                     case "edit":
                         OBetOption option = CBetOption.findById(myBet.id, Misc.parseInt(args[2], -1));
                         if (option.id == 0) {
-                            return Template.get("command_bet_option_not_found");
+                            return Templates.command.bet.option_not_found.format();
                         }
                         if (args.length < 4) {
-                            return Template.get("command_invalid_use");
+                            return Templates.invalid_use.format();
                         }
                         option.description = Misc.joinStrings(args, 3);
                         CBetOption.update(option);
@@ -160,17 +160,17 @@ public class BetCommand extends AbstractCommand {
                     case "remove":
                         OBetOption toRemove = CBetOption.findById(myBet.id, Misc.parseInt(args[2], -1));
                         if (toRemove.id == 0) {
-                            return Template.get("command_bet_option_not_found");
+                            return Templates.command.bet.option_not_found.format();
                         }
                         CBetOption.delete(toRemove);
                         return printWipBet(myBet);
                     default:
-                        return Template.get("command_invalid_use");
+                        return Templates.invalid_use.format();
                 }
             case "open":
             case "refund":
             case "cancel":
-                return Template.get("not_implemented_yet");
+                return Templates.not_implemented_yet.format();
         }
         /**
          * table bets
@@ -186,7 +186,7 @@ public class BetCommand extends AbstractCommand {
          */
 
 
-        return Template.get("command_invalid_use");
+        return Templates.invalid_use.format();
     }
 
     private String printWipBet(OBet bet) {

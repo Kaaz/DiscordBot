@@ -19,9 +19,9 @@ package emily.command.informative;
 import emily.core.AbstractCommand;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -63,12 +63,11 @@ public class PrefixCommand extends AbstractCommand {
             TextChannel text = (TextChannel) channel;
             GuildSettings guildSettings = GuildSettings.get(text.getGuild());
             if (guildSettings.set(text.getGuild(), GSetting.COMMAND_PREFIX, args[0])) {
-                return Template.get(channel, "command_prefix_saved", args[0]);
+                return Templates.command.prefix_saved.format(args[0]);
             }
-            return Template.get(channel, "command_prefix_invalid",
-                    args[0],
-                    "```" + "\n" + GSetting.COMMAND_PREFIX.getDescription() + "\n" + "```");
+            return Templates.command.prefix_invalid.format(args[0]) +
+                    "```" + "\n" + GSetting.COMMAND_PREFIX.getDescription() + "\n" + "```";
         }
-        return Template.get(channel, "command_prefix_is", DisUtil.getCommandPrefix(channel));
+        return Templates.command.prefix_is.format(DisUtil.getCommandPrefix(channel));
     }
 }

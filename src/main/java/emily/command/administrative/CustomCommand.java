@@ -20,9 +20,9 @@ import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.handler.CommandHandler;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import emoji4j.EmojiUtils;
@@ -97,20 +97,20 @@ public class CustomCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Template.get("permission_denied");
+            return Templates.no_permission.format();
         }
         int guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());
         String prefix = DisUtil.getCommandPrefix(channel);
         if (args.length >= 2 && Arrays.asList(valid_actions).contains(args[0])) {
             if (args[0].equals("add") && args.length > 2) {
-                String output = "";
+                StringBuilder output = new StringBuilder();
                 for (int i = 2; i < args.length; i++) {
-                    output += args[i] + " ";
+                    output.append(args[i]).append(" ");
                 }
                 if (args[0].startsWith(prefix)) {
                     args[0] = args[0].substring(prefix.length());
                 }
-                CommandHandler.addCustomCommand(guildId, args[1], EmojiUtils.shortCodify(output.trim()));
+                CommandHandler.addCustomCommand(guildId, args[1], EmojiUtils.shortCodify(output.toString().trim()));
                 return "Added " + prefix + args[1];
             } else if (args[0].equals("delete")) {
                 CommandHandler.removeCustomCommand(guildId, args[1]);
@@ -122,6 +122,6 @@ public class CustomCommand extends AbstractCommand {
             return "```" + "\n" +
                     getDescription() + "\n" + "```";
         }
-        return Template.get("permission_denied");
+        return Templates.no_permission.format();
     }
 }

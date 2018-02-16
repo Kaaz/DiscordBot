@@ -90,6 +90,10 @@ public class TemplateCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         int guildId = CGuild.getCachedId(channel);
+        if(guildId == 0){
+            return "";
+        }
+        long discordId = ((TextChannel) channel).getGuild().getIdLong();
         if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
             return Templates.no_permission.format();
         }
@@ -104,11 +108,11 @@ public class TemplateCommand extends AbstractCommand {
             }
         }
         if (args.length == 0) {
-            String usage = ":gear: **Options**:```php" + "\n";
+            StringBuilder usage = new StringBuilder(":gear: **Options**:```php" + "\n");
             for (String line : getUsage()) {
-                usage += line + "\n";
+                usage.append(line).append("\n");
             }
-            return usage + "```";
+            return usage.toString() + "```";
         }
         switch (args[0]) {
             case "var":
@@ -118,7 +122,7 @@ public class TemplateCommand extends AbstractCommand {
                     if (template == null) {
                         return Templates.command.invalid_use.formatGuild(channel);
                     }
-                    return template.formatFull(null, true);
+                    return template.formatFull(0, true);
                 }
                 StringBuilder sb = new StringBuilder("Template variables\n\n")
                         .append("Variables are predefined texts which are replaced based on context\n\n")
@@ -151,9 +155,9 @@ public class TemplateCommand extends AbstractCommand {
                             TemplateCache.add(guildId, args[1], EmojiUtils.shortCodify(text));
                             return Templates.command.template.added.format();
                         }
-                        System.out.println(tmp.formatFull(CGuild.getCachedDiscordId(guildId), true));
-                        return Templates.command.template.added_failed.formatGuild(CGuild.getCachedDiscordId(guildId)) + "\n\n" +
-                                tmp.formatFull(CGuild.getCachedDiscordId(guildId), true);
+                        System.out.println(tmp.formatFull(discordId, true));
+                        return Templates.command.template.added_failed.formatGuild(discordId) + "\n\n" +
+                                tmp.formatFull(discordId, true);
                     }
                 }
                 return Templates.command.template.added_failed.format();
@@ -174,7 +178,6 @@ public class TemplateCommand extends AbstractCommand {
             case "search":
                 int currentPage = 0;
                 int itemsPerPage = 5;
-                int uniq = Templates.uniquePhraseCount();
                 int maxPage = (int) Math.ceil((double) Templates.uniquePhraseCount() / (double) itemsPerPage);
                 if (args.length >= 2 && !args[1].matches("\\d+")) {
                     List<String> allKeyphrases = Templates.getAllKeyphrases(args[1]);
@@ -197,7 +200,7 @@ public class TemplateCommand extends AbstractCommand {
                 List<String> templates = TemplateCache.getAllFor(guildId, args[0]);
                 if (args.length == 1) {
                     if (templates.isEmpty()) {
-                        return Templates.command.template.not_found.formatGuild(CGuild.getCachedDiscordId(guildId), args[0]);
+                        return Templates.command.template.not_found.formatGuild(Long.parseLong(CGuild.getCachedDiscordId(guildId)), args[0]);
                     }
                     List<List<String>> body = new ArrayList<>();
                     int index = 0;

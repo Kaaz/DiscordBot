@@ -19,9 +19,9 @@ package emily.command.bot_administration;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Icon;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -68,7 +68,7 @@ public class ChangeAvatar extends AbstractCommand {
         SimpleRank rank = bot.security.getSimpleRank(author);
 
         if (!rank.isAtLeast(SimpleRank.CREATOR)) {
-            return Template.get(channel, "command_no_permission");
+            return Templates.no_permission.format();
         }
         if (args.length <= 1) {
             try {

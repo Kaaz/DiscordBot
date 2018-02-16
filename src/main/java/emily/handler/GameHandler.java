@@ -22,6 +22,7 @@ import emily.games.GameTurn;
 import emily.guildsettings.GSetting;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -156,13 +157,13 @@ public class GameHandler {
             case "enter":
             case "play":
                 enterPlayMode(channel, player);
-                bot.out.sendAsyncMessage(channel, Template.get("playmode_entering_mode"));
+                bot.out.sendAsyncMessage(channel, Templates.playmode_entering_mode.format());
                 return;
             case "exit":
             case "leave":
             case "stop":
                 if (leavePlayMode(player)) {
-                    bot.out.sendAsyncMessage(channel, Template.get("playmode_leaving_mode"));
+                    bot.out.sendAsyncMessage(channel, Templates.playmode_leaving_mode.format());
                 }
                 return;
             default:
@@ -171,7 +172,7 @@ public class GameHandler {
         String[] args = message.split(" ");
         String gameMessage = executeGameMove(args, player, channel);
         if (isInPlayMode(player, channel)) {
-            gameMessage = "*note: " + Template.get("playmode_in_mode_warning") + "*" + "\n" + gameMessage;
+            gameMessage = "*note: " + Templates.playmode_in_mode_warning.format() + "*" + "\n" + gameMessage;
         } else if ("".equals(message) || "help".equals(message)) {
             gameMessage = showList(channel);
         }
@@ -227,41 +228,41 @@ public class GameHandler {
             if (gameClassMap.containsKey(gameCode)) {
                 AbstractGame gameInstance = createGameInstance(gameCode);
                 if (gameInstance == null) {
-                    return Template.get("playmode_cant_create_instance");
+                    return Templates.playmode_cant_create_instance.format();
                 }
                 if (createGame(player.getId(), gameInstance)) {
-                    return Template.get("playmode_cant_register_instance");
+                    return Templates.playmode_cant_register_instance.format();
                 }
                 gameInstance.addPlayer(player);
                 if (gameInstance.waitingForPlayer()) {
-                    return Template.get("playmode_created_waiting_for_player") + "\n" + gameInstance.toString();
+                    return Templates.playmode_created_waiting_for_player.format() + "\n" + gameInstance.toString();
                 }
                 return gameInstance.toString();
             }
-            return Template.get("playmode_invalid_gamecode");
+            return Templates.playmode_invalid_gamecode.format();
         }
-        return Template.get("playmode_already_in_game") + "\n" + getGame(player.getId());
+        return Templates.playmode_already_in_game.format() + "\n" + getGame(player.getId());
     }
 
     private String cancelGame(User player) {
         if (isInAGame(player.getId())) {
             removeGame(player.getId());
-            return Template.get("playmode_canceled_game");
+            return Templates.playmode_canceled_game.format();
         }
-        return Template.get("playmode_not_in_game");
+        return Templates.playmode_not_in_game.format();
     }
 
     private String createGamefromUserMention(TextChannel channel, User player, String theMention, String gamecode) {
         if (isInAGame(player.getId())) {
-            return Template.get("playmode_already_in_game");
+            return Templates.playmode_already_in_game.format();
         }
         String userId = DisUtil.mentionToId(theMention);
         User targetUser = bot.getJda().getUserById(userId);
         if (targetUser.isBot()) {
-            return Template.get("playmode_not_vs_bots");
+            return Templates.playmode_not_vs_bots.format();
         }
         if (targetUser.equals(player) && !bot.security.getSimpleRank(player).isAtLeast(SimpleRank.CREATOR)) {
-            return Template.get("playmode_not_vs_self");
+            return Templates.playmode_not_vs_self.format();
         }
         if (isInAGame(targetUser.getId())) {
             AbstractGame otherGame = getGame(targetUser.getId());
@@ -269,17 +270,17 @@ public class GameHandler {
                 otherGame.addPlayer(player);
                 otherGame.setLastPrefix(DisUtil.getCommandPrefix(channel));
                 joinGame(player.getId(), targetUser.getId());
-                return Template.get("playmode_joined_target") + "\n" + otherGame.toString();
+                return Templates.playmode_joined_target.format() + "\n" + otherGame.toString();
             }
-            return Template.get("playmode_target_already_in_a_game");
+            return Templates.playmode_target_already_in_a_game.format();
         }
         if (!gameClassMap.containsKey(gamecode)) {
-            return Template.get("playmode_invalid_gamecode");
+            return Templates.playmode_invalid_gamecode.format();
         }
 
         AbstractGame newGame = createGameInstance(gamecode);
         if (newGame == null) {
-            return Template.get("playmode_cant_create_instance");
+            return Templates.playmode_cant_create_instance.format();
         }
         createGame(player.getId(), newGame);
         newGame.addPlayer(player);
@@ -315,7 +316,7 @@ public class GameHandler {
                 if (args.length > 1) {
                     return createGamefromUserMention(channel, player, args[0], args[1]);
                 }
-                return Template.get("playmode_invalid_usage");
+                return Templates.playmode_invalid_usage.format();
             } else if (args.length > 1 && DisUtil.isUserMention(args[1])) {
                 return createGamefromUserMention(channel, player, args[1], args[0]);
             }
@@ -324,20 +325,20 @@ public class GameHandler {
         if (isInAGame(player.getId())) {
             return String.valueOf(getGame(player.getId()));
         }
-        return Template.get("playmode_not_in_game");
+        return Templates.playmode_not_in_game.format();
     }
 
     private String playTurn(User player, String input, TextChannel channel) {
         if (isInAGame(player.getId())) {
             AbstractGame game = getGame(player.getId());
             if (game == null) {
-                return Template.get("playmode_game_corrupt");
+                return Templates.playmode_game_corrupt.format();
             }
             if (game.waitingForPlayer()) {
-                return Template.get("playmode_waiting_for_player");
+                return Templates.playmode_waiting_for_player.format();
             }
             if (!game.isTurnOf(player)) {
-                return game.toString() + "\n" + Template.get("playmode_not_your_turn");
+                return game.toString() + "\n" + Templates.playmode_not_your_turn.format();
             }
             GameTurn gameTurnInstance = game.getGameTurnInstance();
             if (gameTurnInstance == null) {
@@ -347,7 +348,7 @@ public class GameHandler {
                 if (isInPlayMode(player, channel)) {
                     if (usersInPlayMode.get(player.getId()).failedAttempts >= GAMEMODE_LEAVE_AFTER) {
                         leavePlayMode(player);
-                        return Template.get("playmode_leaving_mode");
+                        return Templates.playmode_leaving_mode.format();
                     }
                     usersInPlayMode.get(player.getId()).failedAttempts++;
                 }
@@ -359,7 +360,7 @@ public class GameHandler {
             }
             gameTurnInstance.setCommandPrefix(DisUtil.getCommandPrefix(channel));
             if (!game.isValidMove(player, gameTurnInstance)) {
-                return game.toString() + "\n" + Template.get("playmode_not_a_valid_move");
+                return game.toString() + "\n" + Templates.playmode_not_a_valid_move.format();
             }
             game.playTurn(player, gameTurnInstance);
             String gamestr = game.toString();
@@ -368,7 +369,7 @@ public class GameHandler {
             }
             return gamestr;
         }
-        return Template.get("playmode_not_in_game");
+        return Templates.playmode_not_in_game.format();
     }
 
     private boolean isInAGame(String playerId) {

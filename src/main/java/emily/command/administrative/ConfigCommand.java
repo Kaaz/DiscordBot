@@ -25,21 +25,16 @@ import emily.core.AbstractCommand;
 import emily.guildsettings.DefaultGuildSettings;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.ArrayList;
@@ -126,7 +121,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1 && DisUtil.matchesGuildSearch(args[0])) {
             guild = DisUtil.findGuildBy(args[0], bot.getContainer());
             if (guild == null) {
-                return Template.get("command_config_cant_find_guild");
+                return Templates.config.cant_find_guild.format();
             }
             args = Arrays.copyOfRange(args, 1, args.length);
         } else {
@@ -134,14 +129,14 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         }
 
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Template.get("command_config_no_permission");
+            return Templates.no_permission.format();
         }
         if (args.length > 0 && args[0].equalsIgnoreCase("reset")) {
             if (args.length > 1 && args[1].equalsIgnoreCase("yesimsure")) {
                 GuildSettings.get(guild).reset();
-                return Template.get(channel, "command_config_reset_success");
+                return Templates.config.reset_success.format();
             }
-            return Template.get(channel, "command_config_reset_warning");
+            return Templates.config.reset_warning.format();
         }
         String tag = null;
         if (args.length > 0) {
@@ -208,17 +203,18 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
 
 
         if (!DefaultGuildSettings.isValidKey(args[0])) {
-            return Template.get("command_config_key_not_exists");
+            return Templates.command.config.key_not_exists.format();
         }
         if (DefaultGuildSettings.get(args[0]).isInternal() && !rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-            return Template.get("command_config_key_read_only");
+            return Templates.command.config.key_read_only.format();
         }
 
         if (args.length >= 2) {
-            String newValue = args[1];
+            StringBuilder newValueBuilder = new StringBuilder(args[1]);
             for (int i = 2; i < args.length; i++) {
-                newValue += " " + args[i];
+                newValueBuilder.append(" ").append(args[i]);
             }
+            String newValue = newValueBuilder.toString();
             if (newValue.length() > 64) {
                 newValue = newValue.substring(0, 64);
             }
@@ -228,7 +224,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
             }
 
             if (GuildSettings.get(guild).set(guild, args[0], newValue)) {
-                return Template.get("command_config_key_modified");
+                return Templates.command.config.key_modified.format();
             }
         }
 

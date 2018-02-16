@@ -71,19 +71,19 @@ public class SystemCommand extends AbstractCommand {
     }
 
     private String getProgressbar(long current, long max) {
-        String bar = "";
+        StringBuilder bar = new StringBuilder();
         final String BLOCK_INACTIVE = "▬";
         final String BLOCK_ACTIVE = ":large_blue_circle:";
         final int BLOCK_PARTS = 12;
         int activeBLock = (int) (((float) current / (float) max) * (float) BLOCK_PARTS);
         for (int i = 0; i < BLOCK_PARTS; i++) {
             if (i == activeBLock) {
-                bar += BLOCK_ACTIVE;
+                bar.append(BLOCK_ACTIVE);
             } else {
-                bar += BLOCK_INACTIVE;
+                bar.append(BLOCK_INACTIVE);
             }
         }
-        return bar;
+        return bar.toString();
     }
 
     private String numberInMb(long number) {

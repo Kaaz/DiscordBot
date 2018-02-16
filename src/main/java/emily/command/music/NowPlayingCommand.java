@@ -29,9 +29,9 @@ import emily.db.model.OUser;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
@@ -112,12 +112,12 @@ public class NowPlayingCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Template.get(channel, "music_required_role_not_found", guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)).getName());
+            return Templates.music.required_role_not_found.format(guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));
         }
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         OMusic song = CMusic.findById(player.getCurrentlyPlaying());
         if (song.id == 0 && (args.length == 0 || !args[0].equals("clear"))) {
-            return Template.get("command_currentlyplaying_nosong");
+            return Templates.command.currentlyplaying.nosong.format();
         }
         if (args.length == 0 && PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
             bot.queue.add(channel.sendMessage(MusicUtil.nowPlayingMessage(player, song, null)));
@@ -138,9 +138,9 @@ public class NowPlayingCommand extends AbstractCommand {
                     return "vote is registered (" + vote + ")";
                 }
                 if (voteRecord.vote > 0) {
-                    return Template.get("music_your_vote", song.youtubeTitle, voteRecord.vote);
+                    return Templates.music.your_vote.format(song.youtubeTitle, voteRecord.vote);
                 } else {
-                    return Template.get("music_not_voted", DisUtil.getCommandPrefix(channel) + "np vote ");
+                    return Templates.music.not_voted.format(DisUtil.getCommandPrefix(channel) + "np vote ");
                 }
             }
         }
@@ -155,25 +155,25 @@ public class NowPlayingCommand extends AbstractCommand {
                     boolean repeatMode = !player.isInRepeatMode();
                     player.setRepeat(repeatMode);
                     if (repeatMode) {
-                        return Template.get("music_repeat_mode");
+                        return Templates.music.repeat_mode.format();
                     }
-                    return Template.get("music_repeat_mode_stopped");
+                    return Templates.music.repeat_mode_stopped.format();
                 case "ban":
                     if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getId()).hasPermission(OUser.PermissionNode.BAN_TRACKS)) {
                         song.banned = 1;
                         CMusic.update(song);
                         player.forceSkip();
-                        return Template.get("command_current_banned_success");
+                        return Templates.command.current_banned_success.format();
                     }
-                    return Template.get("no_permission");
+                    return Templates.no_permission.format();
                 case "source":
-                    return Template.get(channel, "music_source_location", "<https://www.youtube.com/watch?v=" + song.youtubecode + ">");
+                    return Templates.music.source_location.formatGuild(channel, "<https://www.youtube.com/watch?v=" + song.youtubecode + ">");
                 case "pm":
                     bot.out.sendPrivateMessage(author,
                             "The track I'm playing now is: " + song.youtubeTitle + "\n" +
                                     "You can find it here: https://www.youtube.com/watch?v=" + song.youtubecode
                     );
-                    return Template.get(channel, "private_message_sent", guild.getMember(author).getEffectiveName());
+                    return Templates.private_message_sent.format(guild.getMember(author).getEffectiveName());
                 case "clear":
                     boolean adminOnly = "true".equals(GuildSettings.getFor(channel, GSetting.MUSIC_CLEAR_ADMIN_ONLY));
                     if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && args.length > 2 && args[1].equals("admin") && args[2].equalsIgnoreCase("toggle")) {
@@ -181,9 +181,9 @@ public class NowPlayingCommand extends AbstractCommand {
                         adminOnly = !adminOnly;
                     } else if ((userRank.isAtLeast(SimpleRank.GUILD_ADMIN) || !adminOnly) && args.length == 1) {
                         player.clearQueue();
-                        return Template.get("music_queue_cleared");
+                        return Templates.music.queue_cleared.format();
                     }
-                    return Template.get("music_clear_mode", adminOnly ? "admin-only" : "normal");
+                    return Templates.music.clear_mode.format(adminOnly ? "admin-only" : "normal");
             }
         }
 
@@ -240,11 +240,11 @@ public class NowPlayingCommand extends AbstractCommand {
             return "";
         } else if (args.length >= 1 && args[0].equals("updatetitle")) {
             if (!userRank.isAtLeast(SimpleRank.USER)) {
-                return Template.get(channel, "command_no_permission");
+                return Templates.no_permission.formatGuild(channel, "command_no_permission");
             }
             if (player.isUpdateChannelTitle()) {
                 player.setUpdateChannelTitle(false);
-                return Template.get("music_channel_autotitle_stop");
+                return Templates.music.channel_autotitle_stop.format();
             } else {
                 TextChannel musicChannel = (TextChannel) channel;
                 if (PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
@@ -264,9 +264,9 @@ public class NowPlayingCommand extends AbstractCommand {
                                         (nowPlaying.id > 0 ? "\uD83C\uDFB6 " + nowPlaying.youtubeTitle : "")
                         ));
                     }, 10_000L, 10_000L);
-                    return Template.get("music_channel_autotitle_start");
+                    return Templates.music.channel_autotitle_start.format();
                 }
-                return Template.get("permission_missing_manage_channel");
+                return Templates.permission_missing.format(Permission.MANAGE_CHANNEL.toString());
             }
         }
         return (player.isInRepeatMode() ? "\uD83D\uDD01 " : "") + ret;

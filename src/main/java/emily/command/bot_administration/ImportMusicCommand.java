@@ -17,9 +17,9 @@
 package emily.command.bot_administration;
 
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -35,6 +35,11 @@ public class ImportMusicCommand extends AbstractCommand {
     private AtomicBoolean isInProgress = new AtomicBoolean(false);
     private AtomicInteger filesImported = new AtomicInteger(0);
     private AtomicInteger filesScanned = new AtomicInteger(0);
+
+    @Override
+    public boolean isListed() {
+        return false;
+    }
 
     public ImportMusicCommand() {
         super();
@@ -87,7 +92,7 @@ public class ImportMusicCommand extends AbstractCommand {
             }
             return ":face_palm: Not how you use it";
         }
-        return Template.get("command_no_permission");
+        return Templates.no_permission.format();
     }
 
     public void importDirectory(File file) {

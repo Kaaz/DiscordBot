@@ -18,8 +18,8 @@ package emily.command.fun;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.Emojibet;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -71,7 +71,7 @@ public class EmojifyCommand extends AbstractCommand {
             String combined = Joiner.on(" ").join(args).toLowerCase();
             int strlen = combined.length();
             if (combined.length() > MAX_SIZE) {
-                return Template.get("command_emojify_max_exceeded", MAX_SIZE);
+                return Templates.command.emojify_max_exceeded.format(MAX_SIZE);
             }
             StringBuilder output = new StringBuilder();
             for (int i = 0; i < strlen; i++) {
@@ -80,7 +80,7 @@ public class EmojifyCommand extends AbstractCommand {
             }
             return output.toString();
         } else {
-            return Template.get("command_say_whatexactly");
+            return Templates.command.SAY_WHATEXACTLY.format();
         }
     }
 }

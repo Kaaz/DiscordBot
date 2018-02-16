@@ -21,9 +21,9 @@ import emily.core.AbstractCommand;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -75,19 +75,19 @@ public class VolumeCommand extends AbstractCommand {
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         if (args.length > 0) {
             if (GuildSettings.getFor(channel, GSetting.MUSIC_VOLUME_ADMIN).equals("true") && !bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.GUILD_ADMIN)) {
-                return Template.get("command_volume_invalid_permissions");
+                return Templates.no_permission.format();
             }
             int volume;
             try {
                 volume = Integer.parseInt(args[0]);
                 if (volume > 0 && volume <= 100) {
                     player.setVolume(volume);
-                    GuildSettings.get(guild).set(guild, GSetting.MUSIC_VOLUME_ADMIN, String.valueOf(player.getVolume()));
-                    return Template.get("command_volume_changed", player.getVolume());
+                    GuildSettings.get(guild).set(guild, GSetting.MUSIC_VOLUME, String.valueOf(player.getVolume()));
+                    return Templates.command.volume_changed.format(player.getVolume());
                 }
             } catch (NumberFormatException ignored) {
             }
-            return Template.get("command_volume_invalid_parameters");
+            return Templates.command.volume_invalid_parameters.format();
         }
         return "Current volume: " + player.getVolume() + "%";
     }

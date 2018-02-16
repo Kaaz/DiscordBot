@@ -33,9 +33,10 @@ import emily.handler.MusicReactionHandler;
 import emily.handler.OutgoingContentHandler;
 import emily.handler.RoleReactionHandler;
 import emily.handler.SecurityHandler;
-import emily.handler.Template;
 import emily.handler.discord.RestQueue;
 import emily.role.RoleRankings;
+import emily.templates.TemplateCache;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import net.dv8tion.jda.core.AccountType;
@@ -199,9 +200,9 @@ public class DiscordBot {
         if (channel == null || !channel.canTalk()) {
 //            GuildSettings.get(guild).set(guild, null, "false");
             if (channel == null) {
-                out.sendAsyncMessage(getDefaultChannel(guild), Template.get("guild_logchannel_not_found", channelIdentifier));
+                out.sendAsyncMessage(getDefaultChannel(guild), Templates.config.cant_find_logchannel.format(channelIdentifier));
             } else {
-                out.sendAsyncMessage(getDefaultChannel(guild), Template.get("guild_logchannel_no_permission", channelIdentifier));
+                out.sendAsyncMessage(getDefaultChannel(guild), Templates.config.cant_talk_in_channel.format(channelIdentifier));
             }
             return;
         }
@@ -326,7 +327,6 @@ public class DiscordBot {
      */
     public void clearGuildData(Guild guild) {
         GuildSettings.remove(guild.getId());
-        Template.removeGuild(CGuild.getCachedId(guild.getId()));
         autoReplyhandler.removeGuild(guild.getId());
         MusicPlayerHandler.removeGuild(guild);
         commandReactionHandler.removeGuild(guild.getId());
@@ -339,7 +339,6 @@ public class DiscordBot {
      */
     public void loadGuild(Guild guild) {
         int cachedId = CGuild.getCachedId(guild.getId());
-        Template.initialize(cachedId);
         CommandHandler.loadCustomCommands(cachedId);
     }
 

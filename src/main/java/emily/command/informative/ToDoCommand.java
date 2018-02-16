@@ -23,8 +23,8 @@ import emily.db.controllers.CTodoLists;
 import emily.db.controllers.CUser;
 import emily.db.model.OTodoItem;
 import emily.db.model.OTodoList;
-import emily.handler.Template;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
@@ -73,7 +73,7 @@ public class ToDoCommand extends AbstractCommand {
         OTodoList rec = CTodoLists.findBy(CUser.getCachedId(author.getId()));
         if (args.length == 0) {
             if (rec.id == 0) {
-                return Template.get("todo_your_list_not_found");
+                return Templates.todo.your_list_not_found.format();
             }
             return makeListFor(author, rec);
         }
@@ -92,30 +92,30 @@ public class ToDoCommand extends AbstractCommand {
                     rec.userId = CUser.getCachedId(author.getId());
                 }
                 CTodoLists.update(rec);
-                return Template.get("todo_list_updated");
+                return Templates.todo.list_updated.format();
             case "clearchecked":
             case "deletechecked":
                 if (rec.id == 0) {
-                    return Template.get("todo_your_list_not_found");
+                    return Templates.todo.your_list_not_found.format();
                 }
                 CTodoItems.deleteChecked(rec.id);
-                return Template.get("todo_list_cleared");
+                return Templates.todo.list_cleared.format();
             case "user":
                 if (args.length == 1) {
-                    return Template.get("command_invalid_use");
+                    return Templates.invalid_use.format();
                 }
                 User user = DisUtil.findUser((TextChannel) channel, Misc.joinStrings(args, 1));
                 if (user == null) {
-                    return Template.get("cant_find_user", Misc.joinStrings(args, 1));
+                    return Templates.config.cant_find_user.format(Misc.joinStrings(args, 1));
                 }
                 OTodoList userList = CTodoLists.findBy(CUser.getCachedId(user.getId()));
                 if (userList.id == 0) {
-                    return Template.get("todo_user_list_not_found", user.getName());
+                    return Templates.todo.user_list_not_found.format(user);
                 }
                 return makeListFor(user, rec);
         }
         if (rec.id == 0 || args.length < 2) {
-            return Template.get("command_invalid_use");
+            return Templates.invalid_use.format();
         }
         switch (args[0].toLowerCase()) {
             case "add":
@@ -123,34 +123,34 @@ public class ToDoCommand extends AbstractCommand {
                 item.listId = rec.id;
                 item.description = Misc.joinStrings(args, 1);
                 CTodoItems.insert(item);
-                return Template.get("todo_item_add_success");
+                return Templates.todo.item_add_success.format();
             case "remove":
                 OTodoItem editItem = CTodoItems.findBy(Misc.parseInt(args[1], 0));
                 if (editItem.listId != rec.id) {
-                    return Template.get("todo_not_your_item");
+                    return Templates.todo.not_your_item.format();
                 }
                 CTodoItems.delete(editItem);
-                return Template.get("todo_item_removed");
+                return Templates.todo.item_removed.format();
             case "uncheck":
             case "check":
                 OTodoItem check = CTodoItems.findBy(Misc.parseInt(args[1], 0));
                 if (check.listId != rec.id || check.id == 0) {
-                    return Template.get("todo_not_your_item");
+                    return Templates.todo.not_your_item.format();
                 }
                 check.checked = args[0].equals("check") ? 1 : 0;
                 CTodoItems.update(check);
-                return Template.get("todo_item_updated");
+                return Templates.todo.item_updated.format();
             case "priority":
                 if (args.length < 3) {
-                    return Template.get("command_invalid_use");
+                    return Templates.invalid_use.format();
                 }
                 OTodoItem priority = CTodoItems.findBy(Misc.parseInt(args[1], 0));
                 if (priority.listId != rec.id || priority.id == 0) {
-                    return Template.get("todo_not_your_item");
+                    return Templates.todo.not_your_item.format();
                 }
                 priority.priority = Misc.parseInt(args[2], 0);
                 CTodoItems.update(priority);
-                return Template.get("todo_item_updated");
+                return Templates.todo.item_updated.format();
         }
         return Emojibet.EYES;
     }
@@ -161,16 +161,16 @@ public class ToDoCommand extends AbstractCommand {
         if (list.isEmpty()) {
             return "The todo list is empty!";
         }
-        String out = "Todo list for " + user.getName() + ": \n\n" + Emojibet.NOTEPAD + " " + rec.listName + " \n\n";
+        StringBuilder out = new StringBuilder("Todo list for " + user.getName() + ": \n\n" + Emojibet.NOTEPAD + " " + rec.listName + " \n\n");
         for (OTodoItem item : list) {
-            out += String.format("%s`\u200B%5d` %s %s\n",
+            out.append(String.format("%s`\u200B%5d` %s %s\n",
                     item.checked == 1 ? Emojibet.CHECK_MARK_GREEN : Emojibet.CHECK_BOX_UNCHECKED,
                     item.id,
                     Emojibet.HASH,
                     item.description
-            );
+            ));
         }
-        return out;
+        return out.toString();
     }
 
     private String makePageFor(String userId, int page) {

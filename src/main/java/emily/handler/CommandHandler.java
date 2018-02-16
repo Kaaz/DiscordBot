@@ -34,6 +34,7 @@ import emily.guildsettings.GSetting;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.TimeUtil;
@@ -132,16 +133,16 @@ public class CommandHandler {
             if (command.canBeDisabled() && isDisabled(guildId, channel.getId(), command.getCommand())) {
                 commandSuccess = false;
                 if (GuildSettings.getFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS).equals("true")) {
-                    outMsg = Template.get("command_is_blacklisted", input[0]);
+                    outMsg = Templates.command.is_blacklisted.format(input[0]);
                 }
             } else if (cooldown > 0) {
-                outMsg = Template.get("command_on_cooldown", TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false));
+                outMsg = Templates.command.on_cooldown.format(TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false));
 
             } else if (!hasRightVisibility(channel, command.getVisibility())) {
                 if (channel instanceof PrivateChannel) {
-                    outMsg = Template.get("command_not_for_private");
+                    outMsg = Templates.command.not_for_private.format();
                 } else {
-                    outMsg = Template.get("command_not_for_public");
+                    outMsg = Templates.command.not_for_public.format();
                 }
             } else {
                 String commandOutput;
@@ -179,7 +180,7 @@ public class CommandHandler {
         } else if (BotConfig.BOT_COMMAND_SHOW_UNKNOWN ||
                 GuildSettings.getFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS).equals("true")) {
             commandSuccess = false;
-            outMsg = Template.get("unknown_command", GuildSettings.getFor(channel, GSetting.COMMAND_PREFIX) + "help");
+            outMsg = Templates.unknown_command.format(GuildSettings.getFor(channel, GSetting.COMMAND_PREFIX) + "help");
         }
         if (!outMsg.isEmpty()) {
             bot.out.sendAsyncMessage(channel, outMsg);

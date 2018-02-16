@@ -18,10 +18,10 @@ package emily.command.creator;
 
 import emily.core.AbstractCommand;
 import emily.core.ExitCode;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -65,6 +65,6 @@ public class ExitCommand extends AbstractCommand {
                 Launcher.stop(ExitCode.STOP);
             });
         }
-        return Template.get("command_no_permission");
+        return Templates.no_permission.format();
     }
 }

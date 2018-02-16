@@ -22,9 +22,11 @@ import emily.db.controllers.CReplyPattern;
 import emily.db.controllers.CUser;
 import emily.db.model.OGuild;
 import emily.db.model.OReplyPattern;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Template;
+import emily.templates.TemplateCache;
+import emily.templates.Templates;
 import emily.util.Misc;
 import emily.util.TimeUtil;
 import emoji4j.EmojiUtils;
@@ -93,7 +95,7 @@ public class AutoReplyCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank rank = bot.security.getSimpleRankForGuild(author, guild);
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Template.get("no_permission");
+            return Templates.no_permission.format();
         }
         if (args.length == 0) {
             List<OReplyPattern> all = CReplyPattern.getAll(CGuild.getCachedId(guild.getId()));
@@ -112,7 +114,7 @@ public class AutoReplyCommand extends AbstractCommand {
         }
         if (args.length >= 2) {
             if (args[1].length() < MIN_TAG_LENGTH) {
-                return Template.get("command_autoreply_tag_length", MIN_TAG_LENGTH);
+                return Templates.command.autoreply.tag_length.format(MIN_TAG_LENGTH);
             }
             OReplyPattern replyPattern = CReplyPattern.findBy(args[1]);
             if (args[0].equals("create")) {
@@ -122,18 +124,18 @@ public class AutoReplyCommand extends AbstractCommand {
                     replyPattern.guildId = rank.isAtLeast(SimpleRank.CREATOR) ? 0 : CGuild.getCachedId(guild.getId());
                     replyPattern.cooldown = TimeUnit.MINUTES.toMillis(1);
                     CReplyPattern.insert(replyPattern);
-                    return Template.get("command_autoreply_created", args[1]);
+                    return Templates.command.autoreply.created.format(args[1]);
                 }
-                return Template.get("command_autoreply_already_exists", args[1]);
+                return Templates.command.autoreply.already_exists.format(args[1]);
             }
             if (replyPattern.id == 0) {
-                return Template.get("command_autoreply_not_exists", args[1]);
+                return Templates.command.autoreply.not_exists.format(args[1]);
             }
-            String restOfArgs = "";
+            StringBuilder restOfArgs = new StringBuilder();
             for (int i = 2; i < args.length; i++) {
-                restOfArgs += args[i];
+                restOfArgs.append(args[i]);
                 if (i != args.length - 1) {
-                    restOfArgs += " ";
+                    restOfArgs.append(" ");
                 }
             }
             switch (args[0].toLowerCase()) {
@@ -144,32 +146,30 @@ public class AutoReplyCommand extends AbstractCommand {
                         CReplyPattern.delete(replyPattern);
                         bot.reloadAutoReplies();
                     }
-                    return Template.get("command_autoreply_deleted", args[1]);
+                    return Templates.command.autoreply.deleted.format(args[1]);
                 case "regex":
                 case "pattern":
                 case "trigger":
                     try {
-                        Pattern pattern = Pattern.compile(restOfArgs);//used to see if a patterns is valid, invalid = exception ;)
-                        replyPattern.pattern = restOfArgs;
+                        Pattern pattern = Pattern.compile(restOfArgs.toString());//used to see if a patterns is valid, invalid = exception ;)
+                        replyPattern.pattern = restOfArgs.toString();
                         CReplyPattern.update(replyPattern);
                     } catch (PatternSyntaxException exception) {
-                        return Template.get("command_autoreply_regex_invalid") + "\n" +
-                                exception.getDescription() + "\n" +
-                                Misc.makeTable(exception.getMessage());
+                        return Templates.command.autoreply.regex_invalid.format() + "\n" + exception.getDescription() + "\n" + Misc.makeTable(exception.getMessage());
                     }
                     bot.reloadAutoReplies();
-                    return Template.get("command_autoreply_regex_saved");
+                    return Templates.command.autoreply.regex_saved.format();
                 case "guild":
                 case "gid":
                     if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-                        return Template.get("no_permission");
+                        return Templates.no_permission.format();
                     }
                     if (args[2].equalsIgnoreCase("this")) {
                         replyPattern.guildId = CGuild.getCachedId(guild.getId());
                     } else if (!args[2].equals("0")) {
                         OGuild server = CGuild.findBy(args[2]);
                         if (server.id == 0) {
-                            return Template.get("command_autoreply_guild_invalid", args[2]);
+                            return Templates.command.autoreply.guild_invalid.format(args[2]);
                         }
                         replyPattern.guildId = server.id;
                     } else {
@@ -177,40 +177,40 @@ public class AutoReplyCommand extends AbstractCommand {
                     }
                     CReplyPattern.update(replyPattern);
                     bot.reloadAutoReplies();
-                    return Template.get("command_autoreply_guild_saved", args[2]);
+                    return Templates.command.autoreply.guild_saved.format(args[2]);
                 case "response":
                 case "reply":
-                    replyPattern.reply = EmojiUtils.shortCodify(restOfArgs);
+                    replyPattern.reply = EmojiUtils.shortCodify(restOfArgs.toString());
                     CReplyPattern.update(replyPattern);
                     bot.reloadAutoReplies();
-                    return Template.get("command_autoreply_response_saved");
+                    return Templates.command.autoreply.response_saved.format();
                 case "tag":
                     replyPattern.tag = args[2];
                     CReplyPattern.update(replyPattern);
                     bot.reloadAutoReplies();
-                    return Template.get("command_autoreply_tag_saved");
+                    return Templates.command.autoreply.tag_saved.format();
                 case "cd":
                 case "cooldown":
                     replyPattern.cooldown = Math.max(TimeUnit.MINUTES.toMillis(1), Long.parseLong(args[2]));
                     CReplyPattern.update(replyPattern);
                     bot.reloadAutoReplies();
-                    return Template.get("command_autoreply_cooldown_saved");
+                    return Templates.command.autoreply.cooldown_saved.format();
                 case "test":
                     Pattern pattern = Pattern.compile(replyPattern.pattern);
-                    Matcher matcher = pattern.matcher(restOfArgs);
+                    Matcher matcher = pattern.matcher(restOfArgs.toString());
                     if (matcher.find()) {
 //						return String.format("`%s` matches `%s`", restOfArgs, replyPattern.pattern);
                         return replyPattern.reply;
                     }
-                    return Template.get("command_autoreply_no_match");
+                    return Templates.command.autoreply.no_match.format();
                 default:
-                    return Template.get("invalid_use");
+                    return Templates.invalid_use.format();
             }
         }
         if (args.length == 1) {
             OReplyPattern replyPattern = CReplyPattern.findBy(args[0]);
             if (replyPattern.id == 0) {
-                return Template.get("command_autoreply_not_exists", args[0]);
+                return Templates.command.autoreply.not_exists.format(args[0]);
             }
             List<List<String>> tbl = new ArrayList<>();
             tbl.add(Arrays.asList("created on ", "" + replyPattern.createdOn));
@@ -222,6 +222,6 @@ public class AutoReplyCommand extends AbstractCommand {
             tbl.add(Arrays.asList("cooldown", "" + TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 1000L) / 1000L, false, false)));
             return "Auto reply information for `" + args[0] + "`:" + Misc.makeAsciiTable(Arrays.asList("Property", "Value"), tbl, null);
         }
-        return Template.get("invalid_use");
+        return Templates.invalid_use.format();
     }
 }

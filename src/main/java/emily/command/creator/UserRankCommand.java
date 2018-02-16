@@ -25,9 +25,9 @@ import emily.db.model.ORank;
 import emily.db.model.OUser;
 import emily.db.model.OUserRank;
 import emily.handler.SecurityHandler;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Member;
@@ -87,10 +87,10 @@ public class UserRankCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank authorRank = bot.security.getSimpleRank(author);
         if (!authorRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-            return Template.get("no_permission");
+            return Templates.no_permission.formatGuild(channel);
         }
         if (args.length == 0) {
-            return Template.get("command_invalid_use");
+            return Templates.invalid_use.formatGuild(channel);
         }
         if (args[0].equals("permlist")) {
             return "Available permissions: " + "\n" +
@@ -114,18 +114,18 @@ public class UserRankCommand extends AbstractCommand {
             }
         }
         if (user == null) {
-            return Template.get("cant_find_user", args[0]);
+            return Templates.config.cant_find_user.formatGuild(channel, args[0]);
         }
         SimpleRank targetOldRank = bot.security.getSimpleRank(user);
         OUser dbUser = CUser.findBy(user.getId());
         if (args.length == 1) {
             OUserRank userRank = CUserRank.findBy(user.getId());
             if (userRank.rankId == 0 && !targetOldRank.isAtLeast(SimpleRank.CREATOR)) {
-                return Template.get("command_userrank_no_rank", user.getName());
+                return Templates.command.userrank.no_rank.format(user.getName());
             } else if (targetOldRank.isAtLeast(SimpleRank.CREATOR)) {
-                return Template.get("command_userrank_rank", user.getName(), "creator");
+                return Templates.command.userrank.rank.format(user, "creator");
             } else {
-                return Template.get("command_userrank_rank", user.getName(), CRank.findById(userRank.rankId).codeName);
+                return Templates.command.userrank.rank.format(user, CRank.findById(userRank.rankId).codeName);
             }
         } else if (args[1].equals("perm")) {
 
@@ -163,10 +163,10 @@ public class UserRankCommand extends AbstractCommand {
         } else if (args.length == 2) {
             SimpleRank targetNewRank = args[1].equals("none") ? SimpleRank.USER : SimpleRank.findRank(args[1]);
             if (targetNewRank == null) {
-                return Template.get("command_userrank_rank_not_exists", args[1]);
+                return Templates.command.userrank.not_exists.format(args[1]);
             }
             if (!authorRank.isHigherThan(targetNewRank) || !authorRank.isHigherThan(targetOldRank)) {
-                return Template.get("no_permission");
+                return Templates.no_permission.format();
             }
             ORank targetDbRank = CRank.findBy(args[1]);
             if (targetDbRank.id == 0) {
@@ -178,9 +178,9 @@ public class UserRankCommand extends AbstractCommand {
             userRank.rankId = targetDbRank.id;
             CUserRank.insertOrUpdate(userRank);
             SecurityHandler.initialize();
-            return Template.get("command_userrank_rank", user.getName(), targetDbRank.codeName);
+            return Templates.command.userrank.rank.format(user, targetDbRank.codeName);
         }
-        return Template.get("command_invalid_use");
+        return Templates.invalid_use.format();
     }
 
     private String tableFor(Collection<OUser.PermissionNode> nodes) {

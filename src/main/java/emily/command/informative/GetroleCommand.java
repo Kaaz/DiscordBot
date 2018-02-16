@@ -21,8 +21,8 @@ import emily.core.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CGuildRoleAssignable;
 import emily.db.model.OGuildRoleAssignable;
-import emily.handler.Template;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import net.dv8tion.jda.core.Permission;
@@ -80,22 +80,22 @@ public class GetroleCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         Guild guild = ((TextChannel) channel).getGuild();
         if (!PermissionUtil.checkPermission(guild.getSelfMember(), Permission.MANAGE_ROLES)) {
-            return Template.get("permission_missing_manage_roles");
+            return Templates.permission_missing.format(Permission.MANAGE_ROLES.toString());
         }
         if (args.length == 0 || args[0].equalsIgnoreCase("list")) {
             List<OGuildRoleAssignable> roles = CGuildRoleAssignable.getRolesFor(CGuild.getCachedId(guild.getId()));
             if (roles.isEmpty()) {
-                return Template.get("command_getrole_empty");
+                return Templates.command.getrole.empty.format();
             }
-            String ret = "You can request the following roles:" + "\n" + "\n";
+            StringBuilder ret = new StringBuilder("You can request the following roles:" + "\n" + "\n");
             for (OGuildRoleAssignable role : roles) {
-                ret += "`" + role.roleName + "`" + "\n";
+                ret.append("`").append(role.roleName).append("`").append("\n");
                 if (!role.description.isEmpty()) {
-                    ret += " -> " + role.description + "\n";
+                    ret.append(" -> ").append(role.description).append("\n");
                 }
-                ret += "\n";
+                ret.append("\n");
             }
-            return ret;
+            return ret.toString();
         }
         int startIndex = 0;
         boolean isAdding = true;
@@ -104,28 +104,28 @@ public class GetroleCommand extends AbstractCommand {
             startIndex = 1;
         }
         if (startIndex >= args.length) {
-            return Template.get("command_invalid_use");
+            return Templates.invalid_use.format();
         }
         String roleName = Misc.joinStrings(args, startIndex);
         Role role = DisUtil.findRole(guild, roleName);
         if (role == null) {
-            return Template.get("command_getrole_not_assignable");
+            return Templates.command.getrole.not_assignable.format();
         }
         OGuildRoleAssignable roleAssignable = CGuildRoleAssignable.findBy(CGuild.getCachedId(guild.getId()), role.getId());
         if (roleAssignable.guildId == 0) {
-            return Template.get("command_getrole_not_assignable");
+            return Templates.command.getrole.not_assignable.format();
         }
         if (isAdding) {
             bot.out.addRole(author, role);
             if (guild.getMember(author).getRoles().contains(role)) {
-                return Template.get("command_getrole_not_assigned", role.getName());
+                return Templates.command.getrole.not_assigned.format(role);
             }
-            return Template.get("command_getrole_assigned", role.getName());
+            return Templates.command.getrole.assigned.format(role);
         }
         if (!guild.getMember(author).getRoles().contains(role)) {
-            return Template.get("command_getrole_not_removed");
+            return Templates.command.getrole.not_removed.format();
         }
         bot.out.removeRole(author, role);
-        return Template.get("command_getrole_removed", role.getName());
+        return Templates.command.getrole.removed.format(role);
     }
 }

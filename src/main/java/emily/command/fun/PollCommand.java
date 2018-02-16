@@ -18,8 +18,8 @@ package emily.command.fun;
 
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.Misc;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
@@ -90,7 +90,7 @@ public class PollCommand extends AbstractCommand {
                 return "Invalid usage! Need at least 2 options " + getUsage()[1];
             }
             if (split[0].trim().length() < 3) {
-                return Template.get("command_poll_question_too_short");
+                return Templates.command.poll_question_too_short.format();
             }
             String outtext = "A poll has been created by " + author.getName() + "\n" + "\n";
             outtext += "**" + split[0].trim() + "**" + "\n" + "\n";
@@ -104,7 +104,6 @@ public class PollCommand extends AbstractCommand {
                 }
             });
         }
-//		return Template.get("command_not_implemented");
         return "";
     }
 }

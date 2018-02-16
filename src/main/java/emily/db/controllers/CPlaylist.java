@@ -155,7 +155,7 @@ public class CPlaylist {
     public static String getRandomMusic(int playlistId) {
         List<String> potentialSongs = new ArrayList<>();
         try (ResultSet rs = WebDb.get().select(
-                "SELECT m.id, m.filename " +
+                "SELECT m.id, m.youtubecode " +
                         "FROM music m " +
                         "JOIN playlist_item pi ON pi.music_id = m.id " +
                         "JOIN playlist pl ON pl.id = pi.playlist_id  " +
@@ -163,7 +163,7 @@ public class CPlaylist {
                         "ORDER BY pi.last_played ASC " +
                         "LIMIT 5", playlistId)) {
             while (rs.next()) {
-                potentialSongs.add(rs.getString("filename"));
+                potentialSongs.add(rs.getString("youtubecode"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,7 +177,7 @@ public class CPlaylist {
     public static String getNextMusic(int playlistId) {
         String filename = null;
         try (ResultSet rs = WebDb.get().select(
-                "SELECT m.id, m.filename " +
+                "SELECT m.id, m.youtubecode " +
                         "FROM music m " +
                         "JOIN playlist_item pi ON pi.music_id = m.id " +
                         "JOIN playlist pl ON pl.id = pi.playlist_id  " +
@@ -185,7 +185,7 @@ public class CPlaylist {
                         "ORDER BY pi.last_played ASC " +
                         "LIMIT 1", playlistId)) {
             while (rs.next()) {
-                filename = rs.getString("filename");
+                filename = rs.getString("youtubecode");
             }
         } catch (Exception e) {
             e.printStackTrace();

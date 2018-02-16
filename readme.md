@@ -3,22 +3,21 @@
 A Java bot for [Discord](https://discordapp.com/) using the [JDA library](https://github.com/DV8FromTheWorld/JDA).
 
 It uses sql (mariadb) to store data  
-To get music from youtube it makes use of [youtube-dl](https://github.com/rg3/youtube-dl) and [ffmpeg](https://www.ffmpeg.org/)
 If you'd like to run your own version of this project check the [installation part](#run-the-bot-yourself)
 
 You can play/test it on discord 
-[![Discord](https://discordapp.com/api/guilds/225168913808228352/widget.png)](https://discord.gg/eaywDDt)
+[![Discord](https://discordapp.com/api/guilds/365760529899192322/widget.png)](https://discord.gg/7aKuSj5)
 ## What can it do?
 
 
-* Respond to commands
-* Add custom commands
-* play/download music
+* Ton of commands
+* Add your own
+* play music
 * [customizable globally](#global-configuration) and [per guild](#per-guild-configuration)
 * play games against other users
 * subscription system
 * various optional modules
-* auto self updates
+* auto self updates with [this project](https://github.com/Kaaz/discord-bot-manager)
 * [auto ranking system](#ranking-system)
 
 ### Commands
@@ -34,21 +33,22 @@ Commands | | | | |
 [8ball](#8ball) | [ban](#ban) | [blackjack](#blackjack) | [botstatus](#botstatus) | [case](#case)
 [catfact](#catfact) | [changename](#changename) | [cla](#cla) | [command](#command) | [commandadmin](#commandadmin)
 [config](#config) | [current](#current) | [debug](#debug) | [donate](#donate) | [exec](#exec)
-[exit](#exit) | [fml](#fml) | [game](#game) | [getrole](#getrole) | [gif](#gif)
-[globalban](#globalban) | [guildstats](#guildstats) | [help](#help) | [importmusic](#importmusic) | [info](#info)
+[exit](#exit) | [fight](#fight) | [fml](#fml) | [game](#game) | [getrole](#getrole)
+[gif](#gif) | [globalban](#globalban) | [guildstats](#guildstats) | [help](#help) | [info](#info)
 [invite](#invite) | [join](#join) | [joke](#joke) | [kick](#kick) | [leaveguild](#leaveguild)
 [logging](#logging) | [meme](#meme) | [modcase](#modcase) | [music](#music) | [mute](#mute)
 [pause](#pause) | [ping](#ping) | [play](#play) | [playlist](#playlist) | [pm](#pm)
-[poll](#poll) | [prefix](#prefix) | [purge](#purge) | [reboot](#reboot) | [reddit](#reddit)
-[reload](#reload) | [report](#report) | [roleadmin](#roleadmin) | [roll](#roll) | [rotate](#rotate)
-[sendfile](#sendfile) | [server](#server) | [skip](#skip) | [slot](#slot) | [stop](#stop)
-[subscribe](#subscribe) | [system](#system) | [tag](#tag) | [tempban](#tempban) | [template](#template)
-[test](#test) | [todo](#todo) | [ud](#ud) | [uptime](#uptime) | [user](#user)
-[userrank](#userrank) | [version](#version) | [volume](#volume) | [warn](#warn) | [fight](#fight)
+[poll](#poll) | [prefix](#prefix) | [purge](#purge) | [queue](#queue) | [reactionrole](#reactionrole)
+[reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report) | [roleadmin](#roleadmin)
+[roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [server](#server) | [skip](#skip)
+[slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag)
+[tempban](#tempban) | [template](#template) | [todo](#todo) | [ud](#ud) | [uptime](#uptime)
+[user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume) | [warn](#warn)
+
 
 ## Games
 
-Games can be accessed through the **!game** command
+Games can be accessed though the **!game** command
 
 A list of games:
 
@@ -61,46 +61,183 @@ tic | Tic tac toe | 2
 
 ## Per guild configuration
 
-The per-guild configuration can be accessed through the **!config** command, to use it you must be the server owner, or have the discord-administrator permission
+The per-guild configuration can be accessed though the **!config** command, to use it you must be the server owner, or have the discord-administrator permission
  
 The following settings can be changed per guild:
 
 Key | Default | Description |
 --- | --- | ---|
-auto_reply | false | use the auto reply feature?<br/>Looks for patterns in messages and replies to them (with a cooldown)<br/>true -> enable auto replying to matched messages<br/>false -> disable auto replying
+auto_reply | false | use the auto reply feature?
+Looks for patterns in messages and replies to them (with a cooldown)
+true -> enable auto replying to matched messages
+false -> disable auto replying
 bot_channel | general | Channel where the bots default output goes to
-bot_command_logging_channel | false | The channel command usage will be logged to<br/><br/>Example output:<br/>Kaaz#9436 has used `say` in #general<br/>aruments: this is not a test<br/>output: this is not a test<br/><br/>Setting this to 'false' will disable it (without the quotes)<br/><br/>To enable it, set this setting to match the channel name where you want the command logging to happen<br/>If you specify an invalid channel, this setting will disable itself
-bot_debug_templates | true | Show which templates are being used on places.<br/><br/>valid values: <br/>true       -> Shows the keyphrases being used <br/>false      -> Shows normal text <br/><br/>for instance if you don't have permission to access a command:<br/><br/>setting this to true would show:<br/>no_permission<br/><br/>false would show:<br/>You don't have permission to use that!
-bot_listen | all | What channels to listen to? (all;mine)<br/>all -> responds to all channels<br/>mine -> only responds to messages in configured channel
-bot_logging_channel | false | The channel where the logging of events happens. Such as users joining/leaving <br/><br/>Setting this to 'false' will disable it (without the quotes)<br/><br/>To enable it, set this setting to match the channel name where you want the logging to happen<br/>If you specify an invalid channel, this setting will disable itself
-bot_modlog_channel | false | The channel where mod-logging happens.<br/>A case will appear if a user has been banned/kicked/warned/muted<br/><br/>Setting this to 'false' will disable it (without the quotes)<br/><br/>To enable it, set this setting to match the channel name where you want the moderation-cases to go<br/>If you specify an invalid channel, this setting will disable itself
-bot_mute_role | false | This is the role which is applied to those who you use the mute command on<br/><br/>Setting this value to false will disable the role applied with the mute command
-bot_update_warning | playing | Show a warning that there is an update and that the bot will be updating soon.<br/>always  -> always show the message in the bot's configured default channel<br/>playing -> only announce when the bot is playing music and in the bot's configured music channel<br/>off     -> don't announce when the bot is going down for an update
-chat_bot_enabled | false | Chat with people<br/><br/>Setting this to true will make it so that it responds to every message in the configured bot_channel
-cleanup_messages | no | Delete messages after a while?<br/>yes         -> Always delete messages<br/>no          -> Never delete messages<br/>nonstandard -> delete messages outside of bot's default channel
-command_prefix | $ | Prefix for commands (between 1 and 4 characters)
-help_in_pm | false | show help in a private message?<br/>true  -> send a message to the user requesting help<br/>false -> output help to the channel where requested
-module_economy | false | Use the economy feature?<br/>false -> nope!<br/>true -> yep!
+bot_logging_channel | false | The channel where the logging of events happens. Such as users joining/leaving
+
+Setting this to 'false' will disable it (without the quotes)
+
+To enable it, set this setting to match the channel name where you want the logging to happen
+If you specify an invalid channel, this setting will disable itself
+bot_modlog_channel | false | The channel where mod-logging happens.
+A case will appear if a user has been banned/kicked/warned/muted
+
+Setting this to 'false' will disable it (without the quotes)
+
+To enable it, set this setting to match the channel name where you want the moderation-cases to go
+If you specify an invalid channel, this setting will disable itself
+bot_mute_role | false | This is the role which is applied to those who you use the mute command on
+
+Setting this value to false will disable the role applied with the mute command
+bot_update_warning | playing | Show a warning that there is an update and that the bot will be updating soon.
+always  -> always show the message in the bot's configured default channel
+playing -> only announce when the bot is playing music and in the bot's configured music channel
+off     -> don't announce when the bot is going down for an update
+chat_bot_enabled | false | Setting this to true will make it so that it responds to every message in the configured bot_channel
+cleanup_messages | no | Delete messages after a while?
+yes         -> Always delete messages
+no          -> Never delete messages
+nonstandard -> delete messages outside of bot's default channel
+command_logging_channel | false | The channel command usage will be logged to
+
+Example output:
+Kaaz#9436 has used `say` in #general
+arguments: this is not a test
+output: this is not a test
+
+Setting this to 'false' will disable it (without the quotes)
+To enable it, set this setting to match the channel name where you want the command logging to happen
+If you specify an invalid channel, this setting will disable itself
+command_prefix | ! | Prefix for commands (between 1 and 4 characters)
+debug | false | Show some debug information.
+
+valid values: 
+true       -> Show a lot more additional information
+ false      -> don't 
+
+If you want to check if certain things are (not) working.
+
+
+help_in_pm | false | show help in a private message?
+true  -> send a message to the user requesting help
+false -> output help to the channel where requested
+module_economy | true | Use the economy feature?
+false -> nope!
+true -> yep!
 module_games | true | Let people play games against each other
-music_channel | music | Channel where the bots music-related output goes to
-music_channel_auto | false | The channel where I automatically connect to if a user joins<br/><br/>false:<br/>Not using this setting, wont auto-connect to anything.<br/><br/>setting this to match a voice channel name:<br/>The moment a user connects to the specified channel I connect too and start to play music.<br/><br/>Important to note: <br/>* If the configured channel does not exist, this setting will be turned off<br/>* If I'm already connected to a different voice-channel I won't use this setting
-music_channel_title | false | Updates the music channel's topic with the currently playing song<br/><br/>auto  -> update the title every 10 seconds with the track its playing<br/>true  -> yes change the topic at the beginning of every song<br/>false -> leave the channel topic title alone!
-music_clear_admin_only | true | Only allow admins to clear the music queue?<br/><br/>true<br/>Only admins can clear the music queue<br/><br/>false<br/>Everyone can clear the queue
-music_playing_message | clear | Clear the now playing message?<br/>clear  -> sends a message and deletes it when the song is over or skipped<br/>normal -> send the message and just leave it be<br/>off    -> don't send now playing messages
-music_playlist_id | 0 | used to store the last used playlist 
-music_queue_only | false | Stop playing music once the queue is empty?<br/><br/>true<br/>once the queue is empty I stop playing music and leave the voice channel<br/><br/>false<br/>If the queue is empty, I'm gonna pick the track.
-music_role_requirement | false | In order to use music commands you need this role!<br/>Setting this value to false will disable the requirement
-music_show_listeners | false | Show who's listening in the *current* command<br/>true  -> List all the people who are currently listening to music<br/>false -> Don't show listeners
-music_skip_admin_only | false | Only allow admins to use the skip command?<br/><br/>true<br/>Only admins have permission to use the skip command<br/><br/>false<br/>Everyone can use the skip command
-music_volume | 10 | sets the default volume of the music player<br/>So the next time the bot connects it starts with this volume<br/><br/>Accepts a value between 0 and 100
-music_volume_admin | false | Require a guild admin to change the volume<br/><br/>true -> only allow guild admins to change the bot's volume<br/>false -> allow all users to change the bot's volume
-music_vote_percent | 40 | Percentage of users (rounded down) required to skip the currently playing track<br/><br/>eg; when set to 25, and 5 listeners it would require 2 users to vote skip <br/><br/>Accepts a value between 1 and 100
-pm_user_events | false | Send a private message to owner when something happens to a user?<br/>true  -> sends a private message to guild-owner<br/>false -> does absolutely nothing
-show_unknown_commands | false | Show message on nonexistent commands and blacklisted commands<br/>true -> returns a help message<br/>false -> stays silent
-user_time_ranks | false | This setting will require me to have the manage role permission!<br/>Users are given a role based on their time spend in the discord server<br/>If you'd like to use the time based ranks, be sure to check out the other settings first!<br/>Setting:  Use time based ranks?<br/>true  -> yes<br/>false -> no
-user_time_ranks_notify | no | Send a notification whenever a user goes up a rank?<br/>no      -> Don't notify anyone, stay silent!<br/>false   -> Don't notify anyone, stay silent!<br/>private -> send a private message to the user who ranked up<br/>public  -> announce it in a channel<br/>both    -> perform both private and public actions 
-user_time_ranks_prefix | [rank] | The prefix of the role name for the time based role ranking<br/>Using this prefix to manage roles so make sure its somewhat unique! Or you'll have to cleanup yourself :)<br/>If you'd like to use the time based ranks make sure to set this first!<br/><br/>The prefix can be between 3 and 8 in length
-welcome_new_users | false | Show a welcome message to new users?<br/>Valid options:<br/>true  -> shows a welcome when a user joins or leaves the guild<br/>false -> Disabled, doesn't say anything<br/><br/>The welcome message can be set with the template: <br/>welcome_new_user<br/><br/>The welcome back message can be set with the template (if the user had joined before): <br/>welcome_back_user<br/><br/>The leave message can be set with the template: <br/>message_user_leaves<br/><br/>If multiple templates are set a random one will be chosen<br/>See the template command for more details
+music_channel | false | Channel where the bots music-related output goes to
+music_channel_auto | false | The channel where I automatically connect to if a user joins
+
+false:
+Not using this setting, wont auto-connect to anything.
+
+setting this to match a voice channel name:
+The moment a user connects to the specified channel I connect too and start to play music.
+
+Important to note: 
+* If the configured channel does not exist, this setting will be turned off
+* If I'm already connected to a different voice-channel I won't use this setting
+
+music_channel_title | false | Updates the music channel's topic with the currently playing song
+
+auto  -> update the title every 10 seconds with the track its playing
+true  -> yes change the topic at the beginning of every song
+false -> leave the channel topic title alone!
+music_clear_admin_only | true | Only allow admins to clear the music add?
+
+true
+Only admins can clear the music add
+
+false
+Everyone can clear the add
+music_playing_message | clear | Clear the now playing message?
+clear  -> sends a message and deletes it when the song is over or skipped
+normal -> send the message and just leave it be
+off    -> don't send now playing messages
+music_playlist_id | 0 | stores the last used playlist
+music_queue_only | false | Stop playing music once the add is empty?
+
+true
+once the add is empty I stop playing music and leave the voice channel
+
+false
+If the add is empty, I'm gonna pick the track.
+music_result_picker | 1 | the amount of results the `play` command returns
+
+If its set to 1, it will always use the first result (no manual choice)
+
+If its set higher (max 5) it will respond with reactions where each button is a choice
+Note: This setting does require the add reactions permission
+music_role_requirement | false | In order to use music commands you need this role!
+Setting this value to false will disable the requirement
+music_show_listeners | false | Show who's listening in the *current* command
+true  -> List all the people who are currently listening to music
+false -> Don't show listeners
+music_skip_admin_only | false | Only allow admins to use the skip command?
+
+true
+Only admins have permission to use the skip command
+
+false
+Everyone can use the skip command
+music_volume | 100 | sets the default volume of the music player
+So the next time the bot connects it starts with this volume
+
+Accepts a value between 0 and 100
+music_volume_admin | false | Require a guild admin to change the volume
+
+true -> only allow guild admins to change the bot's volume
+false -> allow all users to change the bot's volume
+music_vote_percent | 40 | Percentage of users (rounded down) required to skip the currently playing track
+
+eg; when set to 25, and 5 listeners it would require 2 users to vote skip
+
+Accepts a value between 1 and 100
+pm_user_events | false | Send a private message to owner when something happens to a user?
+true  -> sends a private message to guild-owner
+false -> does absolutely nothing
+show_templates | false | Show which templates are being used on places.
+
+valid values: 
+true       -> Shows the keyphrases being used
+ false      -> Shows normal text 
+
+for instance if you don't have permission to access a command:
+
+setting this to true would show:
+no_permission
+
+false would show:
+You don't have permission to use that!
+show_unknown_commands | false | Show message on nonexistent commands and blacklisted commands
+true -> returns a help message
+false -> stays silent
+user_time_ranks | false | This setting will require me to have the manage role permission!
+Users are given a role based on their time spend in the discord server
+If you'd like to use the time based ranks, be sure to check out the other settings first!
+Setting:  Use time based ranks?
+true  -> yes
+false -> no
+user_time_ranks_prefix | [rank] | The prefix of the role name for the time based role ranking
+Using this prefix to manage roles so make sure its somewhat unique! Or you'll have to cleanup yourself :)
+If you'd like to use the time based ranks make sure to set this first!
+
+The prefix can be between 3 and 8 in length
+welcome_new_users | false | Show a welcome message to new users?
+Valid options:
+true  -> shows a welcome when a user joins or leaves the guild
+false -> Disabled, doesn't say anything
+
+The welcome message can be set with the template: 
+welcome_new_user
+
+The welcome back message can be set with the template (if the user had joined before): 
+welcome_back_user
+
+The leave message can be set with the template: 
+message_user_leaves
+
+If multiple templates are set a random one will be chosen
+See the template command for more details
 
 
 
@@ -137,13 +274,6 @@ Consul | 500 days
 
 ## Run the bot yourself
 
-Before we get started I want to note that this tutorial is written for people with some hosting experience. We do not support self-hosted versions of Emily, ie. We will not answer help requests or fix personal issues with the bot. The source code is here in the interest of transparency.
-
-Also note that running the bot requires basic experience with the command line 
-(or your OS's equivalent like CMD/PowerShell on Windows) and the ability to add software to you System's path.
-
-Right, so lets get started. Before starting make sure you at least have the following installed:
-
 * [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 * [git](https://git-scm.com/)
 * [maven](https://maven.apache.org/)
@@ -153,9 +283,8 @@ Then continue with the following steps.
 
 1. Create a database
 
-    Emily uses a SQL database to store information. Create a database using the utf8mb4 character set. Emily will create/update the used tables.<br/>
+    Create a database using the utf8mb4 character set. <br/>
     To make this easier you can do this using a SQL management tool like [PHPMyAdmin](https://www.phpmyadmin.net/) or [HeidiSQL](http://www.heidisql.com/).
-         Due to the myriad amount of hosters and possible configurations it's propbably better to contact your hoster instead of other people in case something goes wrong here.
 
 2. Clone the project with git
 
@@ -169,7 +298,7 @@ Then continue with the following steps.
     `cd` into the directory that git just created (should be called `DiscordBot`).<br>
     Then type `mvn install`. This might take some time so be patient :)
     
-4. Build Emily
+4. Build
     
     Type `mvn clean process-resources compile assembly:single` in the `DiscordBot` folder.
     In the target map there should be a file called `Discordbot-VERSION_full.jar` (where version is the latest version number).
@@ -179,21 +308,9 @@ Then continue with the following steps.
 
     You can launch the bot with the following command:
     `java -jar <jarfilename>`
-    On her first launch, Emily will generate an `application.cfg` file and exit.<br>
+    On first launch, It will generate an `application.cfg` file and exit.<br>
     You'll have to edit the config file and add in your token, database configuration, etc.
 
-6. Extras
-
-    If you want to use the musicbot you'll also need to install [youtube-dl](https://rg3.github.io/youtube-dl/download.html) and [ffmpeg](https://ffmpeg.zeranoe.com/builds/).
-    The config setting `youtubedl_exe` has to point to the youtube-dl executable.
-    For ffmpeg, the binaries have to be either in the same directory as the bot.jar or be included in in the    system path somewhere.
-
-
-
-
-## Warning
-
-This project is still in an early stage. Some things might not work or get changed drastically.
 
 ## Usage
 
@@ -205,16 +322,16 @@ On the first run it will generate a config file and stop running. You'll need to
 
 See what the magic 8ball has to say
 
-Accessible through: 8ball
+Aliases: 8ball
 
 Usable in public and private channels
 ### ban
 
 bans a member from your guild
 
-Accessible through: ban
+Aliases: ban
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -225,7 +342,7 @@ ban <user>     //Permanently removes user from guild user from guild
 
 play a game of blackjack!
 
-Accessible through: blackjack, bj
+Aliases: blackjack, bj
 
 Usable in public and private channels
 
@@ -240,7 +357,7 @@ blackjack stand  //stands
 
 Set the game I'm currently playing
 
-Accessible through: botstatus
+Aliases: botstatus
 
 Usable in public and private channels
 
@@ -255,9 +372,9 @@ botstatus stream <username> <game>   //streaming twitch.tv/<username> playing <g
 
 Moderate the mod-cases
 
-Accessible through: case
+Aliases: case
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -269,21 +386,21 @@ case reason last <message> //sets/modified the reason of the last added case by 
 
 Cat facts!
 
-Accessible through: catfact
+Aliases: catfact
 
 Usable in public and private channels
 ### changename
 
 Changes my name
 
-Accessible through: changename
+Aliases: changename
 
 Usable in public and private channels
 ### cla
 
 manage the changelog
 
-Accessible through: cla
+Aliases: cla
 
 Usable in public and private channels
 
@@ -320,9 +437,9 @@ Key                Replacement
 %rand-user%        random user in guild
 %rand-user-online% random ONLINE user in guild
 
-Accessible through: command, cmd, customcommand
+Aliases: command, cmd, customcommand
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -338,9 +455,9 @@ A channel specific setting will always override the guild setting
 
 You can also give/deny permission to roles to use certain commands
 
-Accessible through: commandadmin, ca
+Aliases: commandadmin, ca
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -362,9 +479,9 @@ ca meme enable #spam                        //overrides and meme is enabled in #
 
 Gets/sets the configuration of the bot
 
-Accessible through: config, setting, cfg
+Aliases: config, setting, cfg
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -382,14 +499,15 @@ config reset yesimsure    //resets the configuration to the default settings
 
 retrieves information about the song currently playing
 
-Accessible through: current, playing, np, nowplaying
+Aliases: current, playing, np, nowplaying
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
 ```php
 current                 //info about the currently playing song
+current seek <time>     //go to specified timestamp of track (eg. 3m10s)
 current vote <1-10>     //Cast your vote to the song; 1=worst, 10=best
 current repeat          //repeats the currently playing song
 current update          //updates the now playing message every 10 seconds
@@ -405,7 +523,7 @@ current clear admin toggle  //switch between admin-only and normal
 
 some debugging tools
 
-Accessible through: debug
+Aliases: debug
 
 Usable in public and private channels
 
@@ -418,30 +536,30 @@ fixusernames, fixrelations, youtube
 
 general info about how to contribute or donate to Emily
 
-Accessible through: donate, contribute
+Aliases: donate, contribute
 
 Usable in public and private channels
 ### exec
 
 executes commandline stuff
 
-Accessible through: exec
+Aliases: exec
 
 Usable in public and private channels
 ### exit
 
 completely shuts the bot down
 
-Accessible through: exit, brexit
+Aliases: exit, brexit
 
 Usable in public and private channels
 ### fight
 
 get in an epic fight; (gif fight)
 
-Accessible through: fight
+Aliases: fight
 
-Useable in public and private channels
+Usable in public  channels
 
 #### Usage
 
@@ -453,16 +571,16 @@ fight <user>  //<user> fights
 
 fmylife! Returns a random entry from fmylife.com
 
-Accessible through: fml
+Aliases: fml
 
 Usable in public and private channels
 ### game
 
 play games against eachother!
 
-Accessible through: game
+Aliases: game
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -475,9 +593,9 @@ game cancel               //cancel an active game!
 
 allows users to request a role
 
-Accessible through: getrole
+Aliases: getrole
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -490,7 +608,7 @@ remove <rolename>   //removes the <rolename> from you
 
 Gifs from giphy
 
-Accessible through: gif
+Aliases: gif
 
 Usable in public and private channels
 
@@ -504,14 +622,14 @@ gif <tags>  //random gif based on tags
 
 Ban those nasty humans
 
-Accessible through: globalban
+Aliases: globalban
 
 Usable in public and private channels
 ### guildstats
 
 shows some statistics
 
-Accessible through: guildstats, stats
+Aliases: guildstats, stats
 
 Usable in public and private channels
 
@@ -527,7 +645,7 @@ stats activity//last activity per shard
 
 An attempt to help out
 
-Accessible through: help, ?, halp, helpme, h, commands
+Aliases: help, ?, halp, helpme, h, commands
 
 Usable in public and private channels
 
@@ -538,24 +656,11 @@ help            //shows commands grouped by categories, navigable by reactions
 help full       //index of all commands, in case you don't have reactions
 help <command>  //usage for that command
 ```
-### importmusic
-
-Special command for special use case. Imports music files from a directory. Only imports files with a valid id3v[1-2] tag
-
-Accessible through: importmusic
-
-Usable in public and private channels
-
-#### Usage
-
-```php
-importmusic <path/to/music>  //imports a folder
-```
 ### info
 
 Shows some general information about me and my future plans.
 
-Accessible through: info, about
+Aliases: info, about
 
 Usable in public and private channels
 
@@ -563,24 +668,21 @@ Usable in public and private channels
 
 ```php
 info          //general info
-info planned  //see whats planned in the near future
-info bugs     //known bugs
-info progress //see whats currently being worked on
 ```
 ### invite
 
 Provides an invite link to add the bot to your server.
 
-Accessible through: invite, inv
+Aliases: invite, inv
 
 Usable in public and private channels
 ### join
 
 joins a voicechannel
 
-Accessible through: join
+Aliases: join
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -592,16 +694,16 @@ join <channelname>  //attempts to join channelname
 
 An attempt to be funny
 
-Accessible through: joke
+Aliases: joke
 
 Usable in public and private channels
 ### kick
 
 Kicks a member from your guild
 
-Accessible through: kick
+Aliases: kick
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -612,7 +714,7 @@ kick <user>     //Remove user from the guild user from guild
 
 leaves guild :(
 
-Accessible through: leaveguild
+Aliases: leaveguild
 
 Usable in public and private channels
 
@@ -625,14 +727,14 @@ leaveguild     //leaves the guild
 
 log all the things! Configure how/where/what is being logged
 
-Accessible through: logging, log
+Aliases: logging, log
 
 Usable in public and private channels
 ### meme
 
 generate a meme!
 
-Accessible through: meme
+Aliases: meme
 
 Usable in public and private channels
 
@@ -650,9 +752,9 @@ meme sohappy If I could use this meme | I would be so happy
 
 Modcases
 
-Accessible through: modcase, case
+Aliases: modcase, case
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -663,9 +765,9 @@ kick <user>            //kicks user
 
 gets and sets the music-related settings
 
-Accessible through: music
+Aliases: music
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -676,9 +778,9 @@ music                   //shows music configuration
 
 Mute a member from your guild
 
-Accessible through: mute
+Aliases: mute
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -689,23 +791,30 @@ mute <user>     //Adds the configured muted role to user user from guild
 
 pauses the music or resumes it if its paused
 
-Accessible through: pause, resume
+Aliases: pause, resume
 
-Usable in public channels
+Usable in public  channels
 ### ping
 
 checks the latency of the bot
 
-Accessible through: ping
+Aliases: ping
 
 Usable in public and private channels
+
+#### Usage
+
+```php
+ping                         //Check bot latency
+ping fancy                   //Check bot latency in a fancier way
+```
 ### play
 
 Plays a song from youtube
 
-Accessible through: play, p
+Aliases: play, p
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -718,9 +827,9 @@ play                  //just start playing something
 
 information about the playlists
 
-Accessible through: playlist, pl
+Aliases: playlist, pl
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -751,7 +860,7 @@ playlist playtype <new type>         //change the play-type of a playlist
 
 Send a message to user
 
-Accessible through: pm
+Aliases: pm
 
 Usable in public and private channels
 
@@ -764,9 +873,9 @@ pm <@user> <message..>
 
 Strawpoll: propose a question and choices for the chat to vote on
 
-Accessible through: poll
+Aliases: poll
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -780,7 +889,7 @@ poll 1-9      //vote on the options
 
 Forgot what the prefix is? I got you covered
 
-Accessible through: prefix
+Aliases: prefix
 
 Usable in public and private channels
 
@@ -794,9 +903,9 @@ prefix <prefix>                  //sets the prefix to <prefix>
 
 deletes non-pinned messages
 
-Accessible through: purge, clear, delete
+Aliases: purge, clear, delete
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -820,11 +929,45 @@ purge commands
 //deletes bot messages
 purge bot
 ```
+### queue
+
+check whats in the music queue
+
+Aliases: queue, q
+
+Usable in public  channels
+
+#### Usage
+
+```php
+queue        //overview
+```
+### reactionrole
+
+Adds and removes roles from users based on reactions from a message
+
+You save messages/reactions to keys to make maintaining them a little easier.
+
+Aliases: reactionrole, rr
+
+Usable in public  channels
+
+#### Usage
+
+```php
+rr //overview of all the configured keys
+rr add <key> <emote> <role> //adds a reaction with role to the message
+rr remove <key> <emote>     //removes emote reaction from key
+rr delete <key>             //deletes the set
+rr message <key> <message>  //updates the message
+rr display <key> [channel]  //displays the message in this channel
+                            //or in the channel you specified
+```
 ### reboot
 
 restarts the bot
 
-Accessible through: reboot, restart
+Aliases: reboot, restart
 
 Usable in public and private channels
 
@@ -842,7 +985,7 @@ reboot shard <guildid>  //reboots shard for guild-id
 
 Posts something from reddit
 
-Accessible through: reddit, r
+Aliases: reddit, r
 
 Usable in public and private channels
 
@@ -855,14 +998,14 @@ r <subreddit>
 
 reloads the configuration
 
-Accessible through: reload
+Aliases: reload
 
-Usable in public channels
+Usable in public  channels
 ### report
 
 Report bugs/abuse/incidents
 
-Accessible through: report
+Aliases: report
 
 Usable in private channels
 
@@ -878,14 +1021,14 @@ You can give users the ability to self-assign roles.
 
 Note: 
 self-assignable roles are not created by emily!
-To add an assignable role, you'll first have to add that role through discord.
+To add an assignable role, you'll first have to add that role though discord.
 
 
 Users can get/remove their own roles with the `getrole` command 
 
-Accessible through: roleadmin, ra
+Aliases: roleadmin, ra
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -896,6 +1039,9 @@ roleadmin self                                 //check what roles are self-assig
 roleadmin self add <rolename>                  //add a role to the list of assignable roles
 roleadmin self remove <rolename>               //remove a role from the list of assignable roles
 
+//You can use everyone as <user> and it'll apply to everyone
+roleadmin give <user> <role>     //gives a user a role
+roleadmin take <user> <role>     //takes away role
 
 roleadmin                        //lists roles
 roleadmin cleanup                //cleans up the roles from the time-based rankings
@@ -905,7 +1051,7 @@ roleadmin setup                  //creates the roles for the time-based rankings
 
 if you ever need a random number
 
-Accessible through: roll, dice, rng
+Aliases: roll, dice, rng
 
 Usable in public and private channels
 
@@ -922,7 +1068,7 @@ roll XdY+z         //eg. 2d5+2 rolls 2 dice of 1-5 and returns the sum plus 2
 
 Rotate text!
 
-Accessible through: rotate
+Aliases: rotate
 
 Usable in public and private channels
 
@@ -935,23 +1081,23 @@ rotate <text..>
 
 executes commandline stuff
 
-Accessible through: sendfile
+Aliases: sendfile
 
 Usable in public and private channels
 ### server
 
 Information about the server
 
-Accessible through: server
+Aliases: server
 
-Usable in public channels
+Usable in public  channels
 ### skip
 
 skip current track
 
-Accessible through: skip, next
+Aliases: skip, next
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -965,7 +1111,7 @@ skip force            //admin-only, force a skip
 
 Feeling lucky? try the slotmachine! You might just win a hand full of air!
 
-Accessible through: slot
+Aliases: slot
 
 Usable in public and private channels
 
@@ -980,9 +1126,9 @@ slot info         //info about payout
 
 stops playing music
 
-Accessible through: stop, leave
+Aliases: stop, leave
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -995,9 +1141,9 @@ stop afternp  //stops and leaves after the now playing track is over
 
 subscribe the channel to certain events
 
-Accessible through: subscribe, sub
+Aliases: subscribe, sub
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -1005,23 +1151,22 @@ Usable in public channels
 subscribe                //check what subscriptions are active
 subscribe <name>         //subscribe to subject
 subscribe stop <name>    //stop subscription to subject
-subscribe info <name>    //information about subject
 subscribe list           //See what subscription options there are
 ```
 ### system
 
 Shows memory usage
 
-Accessible through: system, sysinfo, sys
+Aliases: system, sysinfo, sys
 
 Usable in public and private channels
 ### tag
 
 Tags!
 
-Accessible through: tag, t, tags
+Aliases: tag, t, tags
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -1040,9 +1185,9 @@ tag <name> <content>    //creates the tag
 
 Bans a user for a while
 
-Accessible through: tempban
+Aliases: tempban
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -1053,7 +1198,7 @@ tempban <user>     //Remove user from guild, unable to rejoin for a while user f
 
 adds/removes templates
 
-Accessible through: template, tpl
+Aliases: template, tpl
 
 Usable in public and private channels
 
@@ -1065,44 +1210,21 @@ template add <keyphrase> <text...>    //adds a template for keyphrase
 template search <contains>            //searches for keyphrases matching part of the <contains>
 template list <page>                  //lists all keyphrases
 template remove <keyphrase> <index>   //removes selected template for keyphrase
+template debug [on/off]               //enables/disabled debugging of templates
 
 There are a few keywords you can utilize in templates. These keywords will be replaced by its value 
+To see which variables are at your disposal:
+
+template variable                    //all variables
+template variable <keyphrase>        //variables for that keyphrase
 
 for users with botadmin+, use 'template global ...' for global templates
-Key                Replacement
----                ---
-%user%             Username 
-%user-mention%     Mentions user 
-%user-id%          ID of user
-%nick%             Nickname
-%discrim%          discrim
-%guild%            Guild name
-%guild-id%         guild id
-%guild-users%      amount of users in the guild
-%channel%          channel name
-%channel-id%       channel id
-%channel-mention%  Mentions channel
-%rand-user%        random user in guild
-%rand-user-online% random ONLINE user in guild
-```
-### test
-
-kaaz's test command
-
-Accessible through: test
-
-Usable in public channels
-
-#### Usage
-
-```php
-NOPE
 ```
 ### todo
 
 administer todo items
 
-Accessible through: todo
+Aliases: todo
 
 Usable in public and private channels
 
@@ -1123,7 +1245,7 @@ todo priority <number> <priority>     //sets a priority of a todo item
 
 A veritable cornucopia of streetwise lingo
 
-Accessible through: ud
+Aliases: ud
 
 Usable in public and private channels
 
@@ -1136,14 +1258,14 @@ ud <anything>  //looks up what it means on urban dictionary
 
 How long am I running for?
 
-Accessible through: uptime
+Aliases: uptime
 
 Usable in public and private channels
 ### user
 
 Shows information about the user
 
-Accessible through: user, whois
+Aliases: user, whois
 
 Usable in public and private channels
 
@@ -1160,9 +1282,9 @@ user guilds @user                //what guilds/shards @user most likely uses
 
 This command is intended for bot admins
 
-Accessible through: userrank, ur
+Aliases: userrank, ur
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -1177,7 +1299,7 @@ userrank ranks                    //lists all ranks
 
 Shows what versions I'm using
 
-Accessible through: version, v
+Aliases: version, v
 
 Usable in public and private channels
 
@@ -1190,9 +1312,9 @@ version  //version usage
 
 gets and sets the volume of the music
 
-Accessible through: volume, vol
+Aliases: volume, vol
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -1204,9 +1326,9 @@ volume <1 to 100>   //sets volume
 
 Give a user a warning
 
-Accessible through: warn
+Aliases: warn
 
-Usable in public channels
+Usable in public  channels
 
 #### Usage
 
@@ -1225,7 +1347,7 @@ The following settings can be set globally:
 Setting name | default | description
 ---|---|---
 BOT_ENABLED | false | Enables the bot<br/> This must be set to true in order to run the bot
-BOT_AUTO_UPDATE | false | Enable automatic updates. <br/>For this to work you'll have to launch the bot through my other project<br/>https://github.com/Kaaz/ConfigurationBuilder
+BOT_AUTO_UPDATE | false | Enable automatic updates. <br/>For this to work you'll have to launch the bot though my other project<br/>https://github.com/Kaaz/ConfigurationBuilder
 BOT_NAME | "NovaBot" | the default name of the bot,
 BOT_CHANNEL_ID | "225170823898464256" | Discord channel is of the bot's own channel
 BOT_TOKEN | "mybottokenhere" | token used to login to discord

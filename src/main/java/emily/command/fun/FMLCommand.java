@@ -17,10 +17,10 @@
 package emily.command.fun;
 
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -85,7 +85,7 @@ public class FMLCommand extends AbstractCommand {
                 Launcher.logToDiscord(e, "fml-command", "interrupted");
             }
         }
-        return Template.get("command_fml_not_today");
+        return Templates.command.fml_not_today.format();
     }
 
     private void getFMLItems() {

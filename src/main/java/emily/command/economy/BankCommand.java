@@ -22,9 +22,9 @@ import emily.db.controllers.CBankTransactions;
 import emily.db.controllers.CBanks;
 import emily.db.model.OBank;
 import emily.db.model.OBankTransaction;
-import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
@@ -89,18 +89,18 @@ public class BankCommand extends AbstractCommand {
             case "send":
             case "transfer":
                 if (args.length < 3) {
-                    return Template.get("command_invalid_use");
+                    return Templates.invalid_use.format();
                 }
                 int amount = Misc.parseInt(args[2], 0);
                 if (amount < 1) {
-                    return Template.get("bank_transfer_minimum", 1, BotConfig.ECONOMY_CURRENCY_NAME);
+                    return Templates.bank_transfer_minimum.format(1, BotConfig.ECONOMY_CURRENCY_NAME);
                 }
                 if (amount > bank.currentBalance) {
-                    return Template.get("bank_insufficient_funds", amount, amount == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
+                    return Templates.bank_insufficient_funds.format(amount, amount == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
                 }
                 User targetUser = DisUtil.findUser((TextChannel) channel, args[1]);
                 if (targetUser == null) {
-                    return Template.get("cant_find_user", args[1]);
+                    return Templates.config.cant_find_user.format(args[1]);
                 }
                 OBank targetBank = CBanks.findBy(targetUser.getId());
                 String description = "Gift!";
@@ -108,16 +108,15 @@ public class BankCommand extends AbstractCommand {
                     description = Misc.joinStrings(args, 3);
                 }
                 if (bank.transferTo(targetBank, amount, description)) {
-                    return Template.get("bank_transfer_success", targetUser.getName(), amount, amount == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
+                    return Templates.bank_transfer_success.format(targetUser.getName(), amount, amount == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
                 }
-                return Template.get("bank_transfer_failed");
+                return Templates.bank_transfer_failed.format();
             case "history":
                 List<OBankTransaction> history = CBankTransactions.getHistoryFor(bank.id);
                 String ret = "Your transaction history:\n \n";
                 for (OBankTransaction transaction : history) {
                     ret += String.format("%s`\u200B%+4d`%s`\u200B%24s`%s%s *%s*\n",
                             transaction.bankFrom == bank.id ? Emojibet.TRIANGLE_RED_DOWN : ":arrow_up_small:",
-//                            transaction.bankFrom == bank.id ? Emojibet.TRIANGLE_RED_DOWN : Emojibet.INBOX_TRAY,
                             transaction.bankFrom == bank.id ? -transaction.amount : transaction.amount,
                             BotConfig.ECONOMY_CURRENCY_ICON,
                             transaction.bankFrom == bank.id ? transaction.userTo : transaction.userFrom,
@@ -128,7 +127,7 @@ public class BankCommand extends AbstractCommand {
                 return ret;
 
             default:
-                return Template.get("command_invalid_use");
+                return Templates.invalid_use.format();
 
         }
     }

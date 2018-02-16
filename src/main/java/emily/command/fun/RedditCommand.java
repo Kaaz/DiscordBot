@@ -17,12 +17,12 @@
 package emily.command.fun;
 
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.modules.reddit.RedditScraper;
 import emily.modules.reddit.pojo.Image;
 import emily.modules.reddit.pojo.ImagePreview;
 import emily.modules.reddit.pojo.Post;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -50,16 +50,14 @@ import java.util.Set;
  */
 public class RedditCommand extends AbstractCommand {
 
-    private static final Set<String> whitelistedDomains = new HashSet<>(Arrays.asList(new String[]{
-            "imgur.com",
+    private static final Set<String> whitelistedDomains = new HashSet<>(Arrays.asList("imgur.com",
             "i.imgur.com",
             "i.redd.it",
             "pbs.twimg.com",
             "gfycat.com",
             "file1.answcdn.com",
             "i.reddituploads.com",
-            "youtube.com"
-    }));
+            "youtube.com"));
 
     public RedditCommand() {
         super();
@@ -95,7 +93,7 @@ public class RedditCommand extends AbstractCommand {
         }
         List<Post> dailyTop = RedditScraper.getDailyTop(subReddit);
         if (dailyTop.size() == 0) {
-            return Template.get("command_reddit_sub_not_found");
+            return Templates.command.reddit_sub_not_found.format();
         }
         Random rng = new Random();
         Post post;
@@ -119,7 +117,7 @@ public class RedditCommand extends AbstractCommand {
         if (preview != null && preview.images.size() > 0) {
             if (channel.getType().equals(ChannelType.TEXT) &&
                     !PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
-                return Template.get("permission_missing_attach_files");
+                return Templates.permission_missing.format("MESSAGE_ATTACH_FILES");
             }
             for (Image image : preview.images) {
                 try (InputStream in = new URL(StringEscapeUtils.unescapeHtml4(image.source.url)).openStream()) {
@@ -132,6 +130,6 @@ public class RedditCommand extends AbstractCommand {
                 }
             }
         }
-        return Template.get("command_reddit_nothing");
+        return Templates.command.reddit_nothing.format();
     }
 }

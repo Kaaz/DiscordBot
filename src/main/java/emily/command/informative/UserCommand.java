@@ -27,10 +27,10 @@ import emily.db.model.OGuildMember;
 import emily.db.model.OUser;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
-import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import emily.util.TimeUtil;
@@ -102,7 +102,7 @@ public class UserCommand extends AbstractCommand {
                 System.out.println(Misc.joinStrings(args, 1));
                 User user = DisUtil.findUser((TextChannel) channel, Misc.joinStrings(args, 1));
                 if (user == null) {
-                    return Template.get("command_user_not_found");
+                    return Templates.config.cant_find_user.format(Misc.joinStrings(args, 1));
                 }
                 List<OGuild> guilds = CGuild.getMostUsedGuildsFor(CUser.getCachedId(user.getId()));
                 List<List<String>> tbl = new ArrayList<>();
@@ -117,7 +117,7 @@ public class UserCommand extends AbstractCommand {
             }
         }
         if (infoUser == null) {
-            return Template.get("command_user_not_found");
+            return Templates.config.cant_find_user.format(Misc.joinStrings(args, 0));
         }
 
         int userId = CUser.getCachedId(infoUser.getId(), infoUser.getName());
@@ -139,9 +139,9 @@ public class UserCommand extends AbstractCommand {
                         member.joinDate = new Timestamp(joindateFormat.parse(args[2].replace("-", "/")).getTime());
                     }
                     CGuildMember.insertOrUpdate(member);
-                    return Template.get("command_user_joindate_set", infoUser.getName(), joindateFormat.format(member.joinDate));
+                    return Templates.command.user_joindate_set.format(infoUser, joindateFormat.format(member.joinDate));
                 } catch (ParseException e) {
-                    return Template.get("command_invalid_use");
+                    return Templates.invalid_use.format();
                 }
             }
         }

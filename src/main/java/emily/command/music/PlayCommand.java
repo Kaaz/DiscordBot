@@ -29,10 +29,10 @@ import emily.guildsettings.GSetting;
 import emily.handler.CommandHandler;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
-import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.Misc;
 import emily.util.Pair;
 import emily.util.YTSearch;
@@ -71,12 +71,12 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
             CMusic.registerPlayRequest(record.id);
             player.addToQueue(videoCode, invoker);
             if (useTemplates) {
-                return Template.get("music_added_to_queue", record.youtubeTitle);
+                return Templates.music.added_to_queue.format(record.youtubeTitle);
             }
             return "\u25AA " + record.youtubeTitle;
         } catch (Exception e) {
             bot.getContainer().reportError(e, "ytcode", videoCode);
-            return Template.get("music_file_error");
+            return Templates.music.file_error.format();
         }
     }
 
@@ -140,7 +140,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
         GuildSettings guildSettings = GuildSettings.get(guild);
         if (!guildSettings.canUseMusicCommands(author, userRank)) {
             Role role = guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT));
-            return Template.get(channel, "music_required_role_not_found", role == null ? "UNKNOWN" : role.getName());
+            return Templates.music.required_role_not_found.format(role == null ? "UNKNOWN" : role.getName());
         }
 
         if (!PermissionUtil.checkPermission(txt, guild.getSelfMember(), Permission.MESSAGE_WRITE)) {
@@ -155,16 +155,16 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
             try {
                 if (player.isConnected()) {
                     if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-                        return Template.get("music_not_same_voicechannel");
+                        return Templates.music.not_same_voicechannel.format();
                     }
                     player.leave();
                 }
                 if (!PermissionUtil.checkPermission(vc, guild.getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
-                    return Template.get("music_join_no_permission", vc.getName());
+                    return Templates.music.join_no_permission.format(vc.getName());
                 }
                 if (!PermissionUtil.checkPermission(vc, guild.getSelfMember(), Permission.MANAGE_CHANNEL)
                         && vc.getUserLimit() != 0 && vc.getUserLimit() <= vc.getMembers().size()) {
-                    return Template.get("music_join_channel_full", vc.getName());
+                    return Templates.music.join_channel_full.format(vc.getName());
                 }
                 player.connectTo(vc);
             } catch (Exception e) {
@@ -172,7 +172,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                 return "Can't connect to you";
             }
         } else if (MusicPlayerHandler.getFor(guild, bot).getUsersInVoiceChannel().size() == 0) {
-            return Template.get("music_no_users_in_channel");
+            return Templates.music.no_users_in_channel.format();
         }
         if (args.length > 0) {
             final String videoTitle;
@@ -180,7 +180,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
             String playlistCode = YTUtil.getPlayListCode(args[0]);
             if (playlistCode != null) {
                 if (!ytSearch.hasValidKey()) {
-                    return Template.get("music_no_valid_youtube_key", YTUtil.nextApiResetTime());
+                    return Templates.music.no_valid_youtube_key.format(YTUtil.nextApiResetTime());
                 }
                 if (userRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
                     List<YTSearch.SimpleResult> items = ytSearch.getPlayListItems(playlistCode);
@@ -196,7 +196,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
             }
             if (!YTUtil.isValidYoutubeCode(videoCode)) {
                 if (!ytSearch.hasValidKey()) {
-                    return Template.get("music_no_valid_youtube_key", YTUtil.nextApiResetTime());
+                    return Templates.music.no_valid_youtube_key.format(YTUtil.nextApiResetTime());
                 }
                 int maxResultCount = Integer.parseInt(guildSettings.getOrDefault(GSetting.MUSIC_RESULT_PICKER));
                 String searchCriteria = Joiner.on(" ").join(args);
@@ -242,7 +242,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
             if (videoCode != null && YTUtil.isValidYoutubeCode(videoCode)) {
                 return processTrack(player, bot, (TextChannel) channel, author, videoCode, videoTitle, true);
             } else {
-                return Template.get("command_play_no_results");
+                return Templates.command.play_no_results.format();
             }
         } else {
             if (player.isPlaying()) {
@@ -252,15 +252,15 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                 return "";
             }
             if (player.playRandomSong()) {
-                return Template.get("music_started_playing_random");
+                return Templates.music.started_playing_random.format();
             } else {
                 OPlaylist pl = CPlaylist.findById(player.getActivePLaylistId());
                 if (!pl.isGlobalList()) {
                     if (CPlaylist.getMusicCount(pl.id) == 0) {
-                        return Template.get("music_failed_playlist_empty", pl.title);
+                        return Templates.music.failed_playlist_empty.format(pl.title);
                     }
                 }
-                return Template.get("music_failed_to_start");
+                return Templates.music.failed_to_start.format();
             }
         }
     }

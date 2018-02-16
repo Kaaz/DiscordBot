@@ -154,7 +154,7 @@ public class ReadmeHelper {
             }
             text += "### " + command.getCommand() + "\n" + "\n";
             text += command.getDescription() + "\n" + "\n";
-            text += "Accessible though: " + command.getCommand();
+            text += "Aliases: " + command.getCommand();
             for (String alias : command.getAliases()) {
                 text += ", " + alias;
             }

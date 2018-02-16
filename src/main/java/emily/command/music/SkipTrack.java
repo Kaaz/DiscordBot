@@ -21,9 +21,9 @@ import emily.core.AbstractCommand;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -79,16 +79,16 @@ public class SkipTrack extends AbstractCommand {
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         boolean adminOnly = "true".equals(GuildSettings.getFor(channel, GSetting.MUSIC_SKIP_ADMIN_ONLY));
         if (adminOnly && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Template.get(channel, "music_skip_admin_only");
+            return Templates.music.skip_admin_only.format();
         }
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Template.get(channel, "music_required_role_not_found", guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)).getName());
+            return Templates.music.required_role_not_found.format(guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));
         }
         if (!player.isPlaying()) {
-            return Template.get("command_currentlyplaying_nosong");
+            return Templates.command.currentlyplaying.nosong.format();
         }
         if (!player.isInVoiceWith(guild, author)) {
-            return Template.get("music_not_same_voicechannel");
+            return Templates.music.not_same_voicechannel.format();
         }
         if (args.length >= 1) {
             switch (args[0]) {
@@ -97,19 +97,19 @@ public class SkipTrack extends AbstractCommand {
                         player.forceSkip();
                         return "";
                     }
-                    return Template.get("music_skip_admin_only");
+                    return Templates.music.skip_admin_only.format();
                 case "perm":
                 case "permanent":
-                    return Template.get("command_skip_permanent_success");
+                    return Templates.command.skip_permanent_success.format();
                 case "admin":
                 case "adminonly":
                     if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && args.length > 1 && args[1].equalsIgnoreCase("toggle")) {
                         GuildSettings.get(guild).set(guild, GSetting.MUSIC_SKIP_ADMIN_ONLY, adminOnly ? "false" : "true");
                         adminOnly = !adminOnly;
                     }
-                    return Template.get("music_skip_mode", adminOnly ? "admin-only" : "normal");
+                    return Templates.music.skip_mode.format(adminOnly ? "admin-only" : "normal");
                 default:
-                    return Template.get("command_invalid_use");
+                    return Templates.invalid_use.format();
             }
         }
         if (player.getRequiredVotes() == 1) {
@@ -119,11 +119,11 @@ public class SkipTrack extends AbstractCommand {
         boolean voteRegistered = player.voteSkip(author);
         if (player.getVoteCount() >= player.getRequiredVotes()) {
             player.forceSkip();
-            return Template.get("command_skip_song_skipped");
+            return Templates.command.skip_song_skipped.format();
         }
         if (voteRegistered) {
-            return Template.get("command_skip_vote_success", player.getVoteCount(), player.getRequiredVotes());
+            return Templates.command.skip_vote_success.format(player.getVoteCount(), player.getRequiredVotes());
         }
-        return Template.get("command_skip_vote_failed");
+        return Templates.command.skip_vote_failed.format();
     }
 }

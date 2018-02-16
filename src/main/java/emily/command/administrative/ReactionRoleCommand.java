@@ -21,9 +21,9 @@ import emily.core.AbstractCommand;
 import emily.db.controllers.CReactionRole;
 import emily.db.model.OReactionRoleKey;
 import emily.db.model.OReactionRoleMessage;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
@@ -102,7 +102,7 @@ public class ReactionRoleCommand extends AbstractCommand {
         SimpleRank rank = bot.security.getSimpleRank(author);
         TextChannel t = (TextChannel) channel;
         if (!PermissionUtil.checkPermission(t.getGuild().getSelfMember(), Permission.MANAGE_ROLES)) {
-            return Template.get("i_require_manage_roles");
+            return Templates.permission_missing.format("manage_roles");
         }
         if (args.length == 0) {
             List<OReactionRoleKey> list = CReactionRole.getKeysForGuild(t.getGuild().getId());
@@ -167,7 +167,7 @@ public class ReactionRoleCommand extends AbstractCommand {
 
         }
 
-        return Template.get("command_no_permission");
+        return Templates.no_permission.format();
     }
 
     private void updateText(TextChannel channel, OReactionRoleKey key) {
@@ -186,16 +186,16 @@ public class ReactionRoleCommand extends AbstractCommand {
                 tchan.deleteMessageById(key.messageId).queue();
             }
         }
-        String msg = key.message;
-        msg += "\n Use the reactions to give/remove the role\n";
+        StringBuilder msg = new StringBuilder(key.message);
+        msg.append("\n Use the reactions to give/remove the role\n");
         List<OReactionRoleMessage> reactions = CReactionRole.getReactionsForKey(key.id);
         for (OReactionRoleMessage reaction : reactions) {
-            msg += String.format("%s %s %s\n",
+            msg.append(String.format("%s %s %s\n",
                     reaction.isNormalEmote ? reaction.emoji : channel.getJDA().getEmoteById(reaction.emoji),
                     Emojibet.THUMBS_RIGHT,
-                    channel.getGuild().getRoleById(reaction.roleId));
+                    channel.getGuild().getRoleById(reaction.roleId)));
         }
-        channel.sendMessage(msg).queue(message -> {
+        channel.sendMessage(msg.toString()).queue(message -> {
             key.messageId = message.getIdLong();
             key.channelId = channel.getIdLong();
             CReactionRole.update(key);

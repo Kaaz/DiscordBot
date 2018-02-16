@@ -21,9 +21,9 @@ import emily.core.AbstractCommand;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
-import emily.handler.Template;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -72,19 +72,19 @@ public class PauseCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Template.get(channel, "music_required_role_not_found", guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)).getName());
+            return Templates.music.required_role_not_found.format(guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));
         }
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         if (!player.canTogglePause()) {
-            return Template.get("music_state_not_started");
+            return Templates.music.state_not_started.format();
         }
         VoiceChannel userVoice = guild.getMember(author).getVoiceState().getChannel();
         if (userVoice == null || !player.isConnectedTo(userVoice)) {
-            return Template.get(channel, "music_not_same_voicechannel");
+            return Templates.music.not_same_voicechannel.format();
         }
         if (player.togglePause()) {
-            return Template.get("music_state_paused");
+            return Templates.music.state_paused.format();
         }
-        return Template.get("music_state_resumed");
+        return Templates.music.state_resumed.format();
     }
 }

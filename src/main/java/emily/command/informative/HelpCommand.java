@@ -23,10 +23,10 @@ import emily.core.AbstractCommand;
 import emily.guildsettings.GSetting;
 import emily.handler.CommandHandler;
 import emily.handler.GuildSettings;
-import emily.handler.Template;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
@@ -107,7 +107,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
                 }
                 return ret;
             }
-            return Template.get("command_help_donno");
+            return Templates.command.help.donno.format();
         }
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         String ret = "I know the following commands: " + "\n" + "\n";
@@ -127,7 +127,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
         if (showHelpInPM) {
             bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + "\n" +
                     ":exclamation: In private messages the prefix for commands is **" + BotConfig.BOT_COMMAND_PREFIX + "**");
-            return Template.get("command_help_send_private");
+            return Templates.command.help.send_private.format();
         } else {
             return ret + "for more details about a command use **" + commandPrefix + "help <command>**";
         }
@@ -154,13 +154,13 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
     }
 
     private String styleTablePerCategory(HashMap<CommandCategory, ArrayList<String>> map) {
-        String table = "";
+        StringBuilder table = new StringBuilder();
         for (CommandCategory category : CommandCategory.values()) {
             if (map.containsKey(category)) {
-                table += styleTableCategory(category, map.get(category));
+                table.append(styleTableCategory(category, map.get(category)));
             }
         }
-        return table;
+        return table.toString();
     }
 
     private String styleTableCategory(CommandCategory category, ArrayList<String> commands) {
@@ -168,7 +168,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
     }
 
     private String writeFancyHeader(MessageChannel channel, CommandCategory active, Set<CommandCategory> categories) {
-        String header = "Help Overview  | without reactions use `" + DisUtil.getCommandPrefix(channel) + "help full`\n\n|";
+        StringBuilder header = new StringBuilder("Help Overview  | without reactions use `" + DisUtil.getCommandPrefix(channel) + "help full`\n\n|");
 
         for (CommandCategory cat : CommandCategory.values()) {
             if (!categories.contains(cat)) {
@@ -176,11 +176,11 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
             }
 
             if (cat.equals(active)) {
-                header += "__**" + Emojibet.DIAMOND_BLUE_SMALL + cat.getDisplayName() + "**__";
+                header.append("__**" + Emojibet.DIAMOND_BLUE_SMALL).append(cat.getDisplayName()).append("**__");
             } else {
-                header += cat.getDisplayName();
+                header.append(cat.getDisplayName());
             }
-            header += " | ";
+            header.append(" | ");
         }
         return header + "\n\n";
     }

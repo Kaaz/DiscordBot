@@ -19,8 +19,8 @@ package emily.command.poe;
 import emily.core.AbstractCommand;
 import emily.db.controllers.CPoEToken;
 import emily.db.model.OPoEToken;
-import emily.handler.Template;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -82,7 +82,7 @@ public class PoeCurrency extends AbstractCommand {
             } else if (args[0].equalsIgnoreCase("league")) {
                 return "not implemented yet sorry boys!";
             }
-            return Template.get("command_invalid_use");
+            return Templates.invalid_use.format();
         }
         OPoEToken token = CPoEToken.findBy(author.getId());
         AuthInfo account = new AuthInfo(token.session_id);

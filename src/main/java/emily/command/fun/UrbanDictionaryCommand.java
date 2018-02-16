@@ -21,8 +21,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.DiscordBot;
+import emily.templates.Templates;
 import emily.util.Emojibet;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -71,7 +71,7 @@ public class UrbanDictionaryCommand extends AbstractCommand {
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (args.length == 0) {
-            return Template.get("command_invalid_use");
+            return Templates.invalid_use.format();
         }
         String search = Joiner.on(" ").join(args);
         try {
@@ -79,7 +79,7 @@ public class UrbanDictionaryCommand extends AbstractCommand {
             HttpResponse<JsonNode> json = future.get(30, TimeUnit.SECONDS);
             JSONArray list = json.getBody().getObject().getJSONArray("list");
             if (list.length() == 0) {
-                return Template.get("command_ud_no_results", search);
+                return Templates.ud_no_results.format(search);
             }
             JSONObject item = list.getJSONObject(0);
             return String.format("Urban Dictionary " + "\n" + "\n"
@@ -96,6 +96,6 @@ public class UrbanDictionaryCommand extends AbstractCommand {
             System.out.println(ignored.getMessage());
             ignored.printStackTrace();
         }
-        return Template.get("command_ud_no_results", search);
+        return Templates.ud_no_results.format(search);
     }
 }

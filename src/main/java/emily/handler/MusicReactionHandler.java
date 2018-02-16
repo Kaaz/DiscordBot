@@ -24,6 +24,7 @@ import emily.db.model.OPlaylist;
 import emily.guildsettings.GSetting;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.Emojibet;
 import net.dv8tion.jda.core.entities.MessageReaction;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -95,10 +96,10 @@ public class MusicReactionHandler {
             if (isAdding) {
                 CPlaylist.addToPlayList(playlist.id, player.getCurrentlyPlaying());
                 discordBot.out.sendPrivateMessage(invoker,
-                        Template.get("reaction_playlist_item_added_private", np.youtubecode, np.youtubeTitle, playlist.code));
+                        Templates.reaction.playlist_item_added_private.format(np.youtubecode, np.youtubeTitle, playlist.code));
             } else {
                 discordBot.out.sendPrivateMessage(invoker,
-                        Template.get("reaction_playlist_item_removed_private", np.youtubecode, np.youtubeTitle, playlist.code));
+                        Templates.reaction.playlist_item_removed_private.format(np.youtubecode, np.youtubeTitle, playlist.code));
                 CPlaylist.removeFromPlayList(playlist.id, player.getCurrentlyPlaying());
             }
             return true;

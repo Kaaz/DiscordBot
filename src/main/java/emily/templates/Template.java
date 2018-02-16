@@ -74,29 +74,29 @@ public class Template {
     }
 
     public String format(Object... vars) {
-        return formatFull(null, false, vars);
+        return formatFull(0, false, vars);
     }
 
     public String formatGuild(MessageChannel channel, Object... vars) {
         if (channel.getType().equals(ChannelType.TEXT)) {
-            return formatFull(((TextChannel) channel).getGuild().getId(), false, vars);
+            return formatFull(((TextChannel) channel).getGuild().getIdLong(), false, vars);
         }
-        return formatFull(null, false, vars);
+        return formatFull(0, false, vars);
     }
 
-    public String formatGuild(String guildId, Object... vars) {
+    public String formatGuild(long guildId, Object... vars) {
         return formatFull(guildId, false, vars);
     }
 
-    public String formatFull(String guildId, boolean forceDebug, Object... vars) {
+    public String formatFull(long guildId, boolean forceDebug, Object... vars) {
         if (templateArguments.length == 0 && optionalArgs.length == 0) {
-            if (guildId == null) {
+            if (guildId == 0) {
                 return TemplateCache.getGlobal(getKey());
             }
             return TemplateCache.getGuild(CGuild.getCachedId(guildId), getKey());
         }
         boolean showTemplates = forceDebug || BotConfig.SHOW_KEYPHRASE;
-        if (!forceDebug && guildId != null && !guildId.isEmpty()) {
+        if (!forceDebug && guildId > 0) {
             showTemplates = "true".equals(GuildSettings.get(guildId).getOrDefault(GSetting.SHOW_TEMPLATES));
         }
         TemplateVariables env = TemplateVariables.create(vars);
@@ -124,7 +124,7 @@ public class Template {
             sb.append("```");
             return sb.toString();
         } else {
-            String tmp = guildId != null && !guildId.isEmpty() ? TemplateCache.getGuild(CGuild.getCachedId(guildId), getKey()) : TemplateCache.getGlobal(getKey());
+            String tmp = guildId > 0 ? TemplateCache.getGuild(CGuild.getCachedId(guildId), getKey()) : TemplateCache.getGlobal(getKey());
             for (TemplateArgument arg : templateArguments) {
                 tmp = tmp.replace(arg.getPattern(), arg.parse(env));
             }

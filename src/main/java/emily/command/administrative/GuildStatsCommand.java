@@ -17,10 +17,10 @@
 package emily.command.administrative;
 
 import emily.core.AbstractCommand;
-import emily.handler.Template;
 import emily.main.BotContainer;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DebugUtil;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Guild;
@@ -107,7 +107,7 @@ public class GuildStatsCommand extends AbstractCommand {
                 return lastShardActivity(bot.getContainer());
             case "users":
                 if (!(channel instanceof TextChannel)) {
-                    return Template.get("command_invalid_use");
+                    return Templates.invalid_use.format();
                 }
                 TreeMap<Date, Integer> map = new TreeMap<>();
                 Guild guild = ((TextChannel) channel).getGuild();
@@ -169,12 +169,12 @@ public class GuildStatsCommand extends AbstractCommand {
             }
         }
         if (activeVoice == 0) {
-            return Template.get("command_stats_not_playing_music");
+            return Templates.command.stats.not_playing_music.format();
         }
         if (!showGuildnames) {
-            return Template.get("command_stats_playing_music_on", activeVoice);
+            return Templates.command.stats.playing_music_on.format(activeVoice);
         }
-        return Template.get("command_stats_playing_music_on", activeVoice) + "\n" +
+        return Templates.command.stats.playing_music_on.format(activeVoice) + "\n" +
                 Misc.makeAsciiTable(Arrays.asList("Discord Id", "Name", "users", "in voice"),
                         body,
                         activeVoice > 1 ? Arrays.asList("TOTAL", "" + activeVoice, "" + totUsersInGuilds, "" + totUsersInVoice) : null);
@@ -225,16 +225,16 @@ public class GuildStatsCommand extends AbstractCommand {
 
     private String lastShardActivity(BotContainer container) {
         long now = System.currentTimeMillis();
-        String msg = "Last event per shard: " + new Date(now).toString() + "\n\n";
+        StringBuilder msg = new StringBuilder("Last event per shard: " + new Date(now).toString() + "\n\n");
         String comment = "";
         for (DiscordBot shard : container.getShards()) {
             if (shard == null || !shard.isReady()) {
-                msg += "#shard is being reset and is reloading\n";
+                msg.append("#shard is being reset and is reloading\n");
                 continue;
             }
             long lastEventReceived = now - container.getLastAction(shard.getShardId());
-            msg += String.format("#%02d: %s sec ago\n", shard.getShardId(), lastEventReceived / 1000L);
+            msg.append(String.format("#%02d: %s sec ago\n", shard.getShardId(), lastEventReceived / 1000L));
         }
-        return msg + comment;
+        return msg.toString() + comment;
     }
 }

@@ -21,6 +21,7 @@ import emily.core.AbstractCommand;
 import emily.db.WebDb;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import emily.templates.Templates;
 import emily.util.DebugUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
@@ -69,10 +70,10 @@ public class QueryCommand extends AbstractCommand {
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
-            return ":upside_down: You have to be a bot administrator";
+            return Templates.no_permission.format();
         }
         if (args.length == 0) {
-            return ":face_palm: I expected you to know how to use it";
+            return Templates.invalid_use.format();
         }
         String query = Joiner.on(" ").join(args);
         if (!query.startsWith("select")) {
