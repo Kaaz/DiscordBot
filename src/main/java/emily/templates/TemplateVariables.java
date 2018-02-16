@@ -42,7 +42,7 @@ public class TemplateVariables {
     public Guild guild = null;
     public Role role = null;
     public String args = null;
-    public String arg = null;
+    public String[] arg = {null, null, null};
 
     private static void init() {
         mapper.put(User.class, (var, object) -> var.user = (User) object);
@@ -55,8 +55,15 @@ public class TemplateVariables {
         mapper.put(RoleImpl.class, (var, object) -> var.role = (Role) object);
 
         mapper.put(String.class, (var, object) -> {
-            var.args = (String) object;
-            var.arg = (String) object;
+            if (var.args == null) {
+                var.args = (String) object;
+            }
+            for (int i = 0; i < var.arg.length; i++) {
+                if (var.arg[i] == null) {
+                    var.arg[i] = (String) object;
+                    break;
+                }
+            }
         });
         mapper.put(String[].class, (var, object) -> var.args = Joiner.on(" ").join((String[]) object));
     }

@@ -19,7 +19,9 @@ package emily.templates;
 import emily.main.BotConfig;
 
 public enum TemplateArgument {
-    ARG("arg1", "First input argument", e -> e.arg != null ? e.arg : ""),
+    ARG("arg1", "First input argument", e -> e.arg[0] != null ? e.arg[0] : ""),
+    ARG2("arg2", "Second argument", e -> e.arg[1] != null ? e.arg[1] : ""),
+    ARG3("arg3", "Third argument", e -> e.arg[2] != null ? e.arg[2] : ""),
     ARGS("allargs", "All input arguments", e -> e.args != null ? e.args : ""),
 
     USER("user", "Username", e -> e.user != null ? e.user.getName() : ""),

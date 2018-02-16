@@ -35,7 +35,6 @@ import emily.handler.RoleReactionHandler;
 import emily.handler.SecurityHandler;
 import emily.handler.discord.RestQueue;
 import emily.role.RoleRankings;
-import emily.templates.TemplateCache;
 import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
