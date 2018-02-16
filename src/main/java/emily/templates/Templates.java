@@ -93,7 +93,7 @@ public final class Templates {
     }
 
     public static final Template unknown_command = new Template(TemplateArgument.ARG);
-    public static final Template bot_self_update_restart = new Template(TemplateArgument.ARG);
+    public static final Template bot_self_update_restart = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
     public static final Template announce_reboot = new Template();
     public static final Template bot_reboot_more_shards = new Template();
     public static final Template private_message_sent = new Template();
@@ -118,9 +118,9 @@ public final class Templates {
     public static final Template playmode_in_mode_warning = new Template();
     public static final Template gamble_ai_lose = new Template();
     public static final Template ud_no_results = new Template(TemplateArgument.ARG);
-    public static final Template gamble_insufficient_funds = new Template(TemplateArgument.ARG);
-    public static final Template bank_transfer_minimum = new Template(TemplateArgument.ARG);
-    public static final Template bank_transfer_success = new Template(TemplateArgument.ARG);
+    public static final Template gamble_insufficient_funds = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
+    public static final Template bank_transfer_minimum = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
+    public static final Template bank_transfer_success = new Template(TemplateArgument.ARG, TemplateArgument.ARG2, TemplateArgument.ARG3);
     public static final Template bank_transfer_failed = new Template();
     public static final Template bank_insufficient_funds = new Template(TemplateArgument.ARG);
     public static final Template permission_missing = new Template(TemplateArgument.ARG);
@@ -149,7 +149,7 @@ public final class Templates {
 
     final public static class command {
         public static final Template volume_changed = new Template(TemplateArgument.ARG);
-        public static final Template skip_vote_success = new Template(TemplateArgument.ARG);
+        public static final Template skip_vote_success = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
         public static final Template is_blacklisted = new Template(TemplateArgument.ARG);
         public static final Template on_cooldown = new Template(TemplateArgument.ARG);
         public static final Template skip_song_skipped = new Template();
@@ -247,7 +247,7 @@ public final class Templates {
             public static final Template edit_prepare_only = new Template();
             public static final Template create_success = new Template();
             public static final Template already_preparing = new Template();
-            public static final Template amount_between = new Template(TemplateArgument.ARGS);
+            public static final Template amount_between = new Template(TemplateArgument.ARGS, TemplateArgument.ARG2);
 
         }
 
@@ -369,19 +369,19 @@ public final class Templates {
     final public static class playlist {
         public static final Template global_readonly = new Template();
         public static final Template setting_not_numeric = new Template(TemplateArgument.ARG);
-        public static final Template setting_updated = new Template(TemplateArgument.ARG);
-        public static final Template setting_invalid = new Template(TemplateArgument.ARG);
+        public static final Template setting_updated = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
+        public static final Template setting_invalid = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
         public static final Template title_updated = new Template(TemplateArgument.ARG);
-        public static final Template music_already_added = new Template(TemplateArgument.ARG);
-        public static final Template music_added = new Template(TemplateArgument.ARG);
-        public static final Template music_removed = new Template(TemplateArgument.ARG);
+        public static final Template music_already_added = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
+        public static final Template music_added = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
+        public static final Template music_removed = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
         public static final Template music_removed_all = new Template(TemplateArgument.ARG);
 
     }
 
     final public static class reaction {
-        public static final Template playlist_item_added_private = new Template(TemplateArgument.ARG);
-        public static final Template playlist_item_removed_private = new Template(TemplateArgument.ARG);
+        public static final Template playlist_item_added_private = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
+        public static final Template playlist_item_removed_private = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
 
     }
 
@@ -413,7 +413,7 @@ public final class Templates {
         public static final Template repeat_mode_stopped = new Template();
         public static final Template source_location = new Template(TemplateArgument.ARG);
         public static final Template not_voted = new Template(TemplateArgument.ARG);
-        public static final Template your_vote = new Template(TemplateArgument.ARG);
+        public static final Template your_vote = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
         public static final Template join_no_permission = new Template(TemplateArgument.ARG);
         public static final Template join_channel_full = new Template(TemplateArgument.ARG);
         public static final Template required_role_not_found = new Template(TemplateArgument.ROLE);
