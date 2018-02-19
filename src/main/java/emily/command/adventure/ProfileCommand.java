@@ -79,7 +79,7 @@ public class ProfileCommand extends AbstractCommand {
                 }
             }
             if (user == null) {
-                return Templates.config.cant_find_user.format(args[0]);
+                return Templates.config.cant_find_user.formatGuild(channel, args[0]);
             }
         }
         try {

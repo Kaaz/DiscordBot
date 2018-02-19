@@ -75,7 +75,7 @@ public class VolumeCommand extends AbstractCommand {
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         if (args.length > 0) {
             if (GuildSettings.getFor(channel, GSetting.MUSIC_VOLUME_ADMIN).equals("true") && !bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.GUILD_ADMIN)) {
-                return Templates.no_permission.format();
+                return Templates.no_permission.formatGuild(channel);
             }
             int volume;
             try {
@@ -83,11 +83,11 @@ public class VolumeCommand extends AbstractCommand {
                 if (volume > 0 && volume <= 100) {
                     player.setVolume(volume);
                     GuildSettings.get(guild).set(guild, GSetting.MUSIC_VOLUME, String.valueOf(player.getVolume()));
-                    return Templates.command.volume_changed.format(player.getVolume());
+                    return Templates.command.volume_changed.formatGuild(channel, player.getVolume());
                 }
             } catch (NumberFormatException ignored) {
             }
-            return Templates.command.volume_invalid_parameters.format();
+            return Templates.command.volume_invalid_parameters.formatGuild(channel);
         }
         return "Current volume: " + player.getVolume() + "%";
     }

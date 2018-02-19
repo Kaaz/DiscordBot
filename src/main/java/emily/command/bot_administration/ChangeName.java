@@ -58,7 +58,7 @@ public class ChangeName extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author);
         if (!rank.isAtLeast(SimpleRank.CREATOR)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         if (args.length > 0) {
             bot.setUserName(Joiner.on(" ").join(args));

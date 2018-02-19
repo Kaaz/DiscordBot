@@ -112,12 +112,12 @@ public class NowPlayingCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Templates.music.required_role_not_found.format(guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));
+            return Templates.music.required_role_not_found.formatGuild(channel, guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));
         }
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         OMusic song = CMusic.findById(player.getCurrentlyPlaying());
         if (song.id == 0 && (args.length == 0 || !args[0].equals("clear"))) {
-            return Templates.command.currentlyplaying.nosong.format();
+            return Templates.command.currentlyplaying.nosong.formatGuild(channel);
         }
         if (args.length == 0 && PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
             bot.queue.add(channel.sendMessage(MusicUtil.nowPlayingMessage(player, song, null)));
@@ -138,9 +138,9 @@ public class NowPlayingCommand extends AbstractCommand {
                     return "vote is registered (" + vote + ")";
                 }
                 if (voteRecord.vote > 0) {
-                    return Templates.music.your_vote.format(song.youtubeTitle, voteRecord.vote);
+                    return Templates.music.your_vote.formatGuild(channel, song.youtubeTitle, voteRecord.vote);
                 } else {
-                    return Templates.music.not_voted.format(DisUtil.getCommandPrefix(channel) + "np vote ");
+                    return Templates.music.not_voted.formatGuild(channel, DisUtil.getCommandPrefix(channel) + "np vote ");
                 }
             }
         }
@@ -155,17 +155,17 @@ public class NowPlayingCommand extends AbstractCommand {
                     boolean repeatMode = !player.isInRepeatMode();
                     player.setRepeat(repeatMode);
                     if (repeatMode) {
-                        return Templates.music.repeat_mode.format();
+                        return Templates.music.repeat_mode.formatGuild(channel);
                     }
-                    return Templates.music.repeat_mode_stopped.format();
+                    return Templates.music.repeat_mode_stopped.formatGuild(channel);
                 case "ban":
                     if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getIdLong()).hasPermission(OUser.PermissionNode.BAN_TRACKS)) {
                         song.banned = 1;
                         CMusic.update(song);
                         player.forceSkip();
-                        return Templates.command.current_banned_success.format();
+                        return Templates.command.current_banned_success.formatGuild(channel);
                     }
-                    return Templates.no_permission.format();
+                    return Templates.no_permission.formatGuild(channel);
                 case "source":
                     return Templates.music.source_location.formatGuild(channel, "<https://www.youtube.com/watch?v=" + song.youtubecode + ">");
                 case "pm":
@@ -173,7 +173,7 @@ public class NowPlayingCommand extends AbstractCommand {
                             "The track I'm playing now is: " + song.youtubeTitle + "\n" +
                                     "You can find it here: https://www.youtube.com/watch?v=" + song.youtubecode
                     );
-                    return Templates.private_message_sent.format(guild.getMember(author).getEffectiveName());
+                    return Templates.private_message_sent.formatGuild(channel, guild.getMember(author).getEffectiveName());
                 case "clear":
                     boolean adminOnly = "true".equals(GuildSettings.getFor(channel, GSetting.MUSIC_CLEAR_ADMIN_ONLY));
                     if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && args.length > 2 && args[1].equals("admin") && args[2].equalsIgnoreCase("toggle")) {
@@ -181,9 +181,9 @@ public class NowPlayingCommand extends AbstractCommand {
                         adminOnly = !adminOnly;
                     } else if ((userRank.isAtLeast(SimpleRank.GUILD_ADMIN) || !adminOnly) && args.length == 1) {
                         player.clearQueue();
-                        return Templates.music.queue_cleared.format();
+                        return Templates.music.queue_cleared.formatGuild(channel);
                     }
-                    return Templates.music.clear_mode.format(adminOnly ? "admin-only" : "normal");
+                    return Templates.music.clear_mode.formatGuild(channel, adminOnly ? "admin-only" : "normal");
             }
         }
 
@@ -244,7 +244,7 @@ public class NowPlayingCommand extends AbstractCommand {
             }
             if (player.isUpdateChannelTitle()) {
                 player.setUpdateChannelTitle(false);
-                return Templates.music.channel_autotitle_stop.format();
+                return Templates.music.channel_autotitle_stop.formatGuild(channel);
             } else {
                 TextChannel musicChannel = (TextChannel) channel;
                 if (PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
@@ -264,9 +264,9 @@ public class NowPlayingCommand extends AbstractCommand {
                                         (nowPlaying.id > 0 ? "\uD83C\uDFB6 " + nowPlaying.youtubeTitle : "")
                         ));
                     }, 10_000L, 10_000L);
-                    return Templates.music.channel_autotitle_start.format();
+                    return Templates.music.channel_autotitle_start.formatGuild(channel);
                 }
-                return Templates.permission_missing.format(Permission.MANAGE_CHANNEL.toString());
+                return Templates.permission_missing.formatGuild(channel, Permission.MANAGE_CHANNEL.toString());
             }
         }
         return (player.isInRepeatMode() ? "\uD83D\uDD01 " : "") + ret;

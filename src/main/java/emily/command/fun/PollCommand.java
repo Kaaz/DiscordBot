@@ -90,7 +90,7 @@ public class PollCommand extends AbstractCommand {
                 return "Invalid usage! Need at least 2 options " + getUsage()[1];
             }
             if (split[0].trim().length() < 3) {
-                return Templates.command.poll_question_too_short.format();
+                return Templates.command.poll_question_too_short.formatGuild(channel);
             }
             String outtext = "A poll has been created by " + author.getName() + "\n" + "\n";
             outtext += "**" + split[0].trim() + "**" + "\n" + "\n";

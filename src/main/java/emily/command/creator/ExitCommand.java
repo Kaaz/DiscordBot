@@ -65,6 +65,6 @@ public class ExitCommand extends AbstractCommand {
                 Launcher.stop(ExitCode.STOP);
             });
         }
-        return Templates.no_permission.format();
+        return Templates.no_permission.formatGuild(channel);
     }
 }

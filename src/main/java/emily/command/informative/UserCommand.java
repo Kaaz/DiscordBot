@@ -102,7 +102,7 @@ public class UserCommand extends AbstractCommand {
                 System.out.println(Misc.joinStrings(args, 1));
                 User user = DisUtil.findUser((TextChannel) channel, Misc.joinStrings(args, 1));
                 if (user == null) {
-                    return Templates.config.cant_find_user.format(Misc.joinStrings(args, 1));
+                    return Templates.config.cant_find_user.formatGuild(channel, Misc.joinStrings(args, 1));
                 }
                 List<OGuild> guilds = CGuild.getMostUsedGuildsFor(CUser.getCachedId(user.getIdLong()));
                 List<List<String>> tbl = new ArrayList<>();
@@ -117,7 +117,7 @@ public class UserCommand extends AbstractCommand {
             }
         }
         if (infoUser == null) {
-            return Templates.config.cant_find_user.format(Misc.joinStrings(args, 0));
+            return Templates.config.cant_find_user.formatGuild(channel, Misc.joinStrings(args, 0));
         }
 
         int userId = CUser.getCachedId(infoUser.getIdLong(), infoUser.getName());
@@ -139,9 +139,9 @@ public class UserCommand extends AbstractCommand {
                         member.joinDate = new Timestamp(joindateFormat.parse(args[2].replace("-", "/")).getTime());
                     }
                     CGuildMember.insertOrUpdate(member);
-                    return Templates.command.user_joindate_set.format(infoUser, joindateFormat.format(member.joinDate));
+                    return Templates.command.user_joindate_set.formatGuild(channel, infoUser, joindateFormat.format(member.joinDate));
                 } catch (ParseException e) {
-                    return Templates.invalid_use.format();
+                    return Templates.invalid_use.formatGuild(channel);
                 }
             }
         }

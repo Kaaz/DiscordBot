@@ -108,6 +108,6 @@ public class BlackJackCommand extends AbstractCommand {
             return "You are not playing a game, to start use **" + DisUtil.getCommandPrefix(channel) + "blackjack hit**";
         }
 
-        return Templates.invalid_use.format();
+        return Templates.invalid_use.formatGuild(channel);
     }
 }

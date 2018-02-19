@@ -97,7 +97,7 @@ public class CustomCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         int guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getIdLong());
         String prefix = DisUtil.getCommandPrefix(channel);
@@ -122,6 +122,6 @@ public class CustomCommand extends AbstractCommand {
             return "```" + "\n" +
                     getDescription() + "\n" + "```";
         }
-        return Templates.no_permission.format();
+        return Templates.no_permission.formatGuild(channel);
     }
 }

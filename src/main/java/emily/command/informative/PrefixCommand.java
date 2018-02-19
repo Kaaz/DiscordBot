@@ -63,11 +63,11 @@ public class PrefixCommand extends AbstractCommand {
             TextChannel text = (TextChannel) channel;
             GuildSettings guildSettings = GuildSettings.get(text.getGuild());
             if (guildSettings.set(text.getGuild(), GSetting.COMMAND_PREFIX, args[0])) {
-                return Templates.command.prefix_saved.format(args[0]);
+                return Templates.command.prefix_saved.formatGuild(channel, args[0]);
             }
-            return Templates.command.prefix_invalid.format(args[0]) +
+            return Templates.command.prefix_invalid.formatGuild(channel, args[0]) +
                     "```" + "\n" + GSetting.COMMAND_PREFIX.getDescription() + "\n" + "```";
         }
-        return Templates.command.prefix_is.format(DisUtil.getCommandPrefix(channel));
+        return Templates.command.prefix_is.formatGuild(channel, DisUtil.getCommandPrefix(channel));
     }
 }

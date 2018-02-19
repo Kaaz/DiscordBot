@@ -68,7 +68,7 @@ public class ChangeLogAdminCommand extends AbstractCommand {
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.CREATOR)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         if (args.length == 1) {
             switch (args[0].toLowerCase()) {
@@ -77,7 +77,7 @@ public class ChangeLogAdminCommand extends AbstractCommand {
             }
         }
         if (args.length < 3) {
-            return Templates.invalid_use.format();
+            return Templates.invalid_use.formatGuild(channel);
         }
         ProgramVersion v;
         OBotVersion version;
@@ -90,7 +90,7 @@ public class ChangeLogAdminCommand extends AbstractCommand {
         } else if (args[0].equalsIgnoreCase("next")) {
             v = CBotVersions.versionAfter(Launcher.getVersion()).getVersion();
             if (Launcher.getVersion().isHigherThan(v)) {
-                return Templates.command.cla.version_not_found.format(args[0]);
+                return Templates.command.cla.version_not_found.formatGuild(channel, args[0]);
             }
             version = CBotVersions.findBy(v);
         } else {
@@ -106,11 +106,11 @@ public class ChangeLogAdminCommand extends AbstractCommand {
         }
         OBotVersionChange.ChangeType changeType = OBotVersionChange.ChangeType.fromCode(args[1]);
         if (changeType.equals(OBotVersionChange.ChangeType.UNKNOWN)) {
-            return Templates.command.cla.type_unknown.format(args[1]);
+            return Templates.command.cla.type_unknown.formatGuild(channel, args[1]);
         }
         String description = Misc.joinStrings(args, 2);
         if (description.length() < 5) {
-            return Templates.command.cla.desc_short.format();
+            return Templates.command.cla.desc_short.formatGuild(channel);
         }
         CBotVersionChanges.insert(version.id, changeType, description);
         return Emojibet.THUMBS_UP;

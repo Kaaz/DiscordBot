@@ -73,12 +73,12 @@ public class ServerCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         Guild guild = ((TextChannel) channel).getGuild();
         if (!PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-            return Templates.permission_missing.format(Permission.MESSAGE_EMBED_LINKS.toString());
+            return Templates.permission_missing.formatGuild(channel, Permission.MESSAGE_EMBED_LINKS.toString());
         }
         if (bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.BOT_ADMIN) && args.length > 0 && DisUtil.matchesGuildSearch(args[0])) {
             guild = DisUtil.findGuildBy(args[0], bot.getContainer());
             if (guild == null) {
-                return Templates.config.cant_find_guild.format(args[0]);
+                return Templates.config.cant_find_guild.formatGuild(channel, args[0]);
             }
         }
         EmbedBuilder b = new EmbedBuilder();

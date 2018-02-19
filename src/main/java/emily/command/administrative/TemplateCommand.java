@@ -95,11 +95,11 @@ public class TemplateCommand extends AbstractCommand {
         }
         long discordId = ((TextChannel) channel).getGuild().getIdLong();
         if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         if (!userRank.isAtLeast(SimpleRank.BOT_ADMIN)) {
             if (!(channel instanceof TextChannel)) {
-                return Templates.error.command_public_only.format();
+                return Templates.error.command_public_only.formatGuild(channel);
             }
         } else {
             if (args.length > 1 && args[0].equals("global")) {
@@ -145,7 +145,7 @@ public class TemplateCommand extends AbstractCommand {
                         }
                     }
                 }
-                return Templates.no_permission.format();
+                return Templates.no_permission.formatGuild(channel);
             case "add":
                 if (args.length >= 3) {
                     String text = Misc.joinStrings(args, 2);
@@ -153,27 +153,27 @@ public class TemplateCommand extends AbstractCommand {
                         Template tmp = Templates.getByKey(args[1]);
                         if (tmp.isValidTemplate(text)) {
                             TemplateCache.add(guildId, args[1], EmojiUtils.shortCodify(text));
-                            return Templates.command.template.added.format();
+                            return Templates.command.template.added.formatGuild(channel);
                         }
                         System.out.println(tmp.formatFull(discordId, true));
                         return Templates.command.template.added_failed.formatGuild(discordId) + "\n\n" +
                                 tmp.formatFull(discordId, true);
                     }
                 }
-                return Templates.command.template.added_failed.format();
+                return Templates.command.template.added_failed.formatGuild(channel);
             case "delete":
             case "del":
             case "remove":
                 if (args.length < 3 || !args[2].matches("^\\d+$")) {
-                    return Templates.command.template.invalid_option.format();
+                    return Templates.command.template.invalid_option.formatGuild(channel);
                 }
                 int deleteIndex = Integer.parseInt(args[2]);
                 List<String> templateList = TemplateCache.getAllFor(guildId, args[1]);
                 if (templateList.size() > deleteIndex) {
                     TemplateCache.remove(guildId, args[1], templateList.get(deleteIndex));
-                    return Templates.command.template.delete_success.format();
+                    return Templates.command.template.delete_success.formatGuild(channel);
                 }
-                return Templates.command.template.delete_failed.format();
+                return Templates.command.template.delete_failed.formatGuild(channel);
             case "list":
             case "search":
                 int currentPage = 0;
@@ -210,7 +210,7 @@ public class TemplateCommand extends AbstractCommand {
                     return "Template overview for `" + args[0] + "`" + "\n" +
                             Misc.makeAsciiTable(Arrays.asList("#", "value"), body, null);
                 }
-                return Templates.command.template.invalid_option.format();
+                return Templates.command.template.invalid_option.formatGuild(channel);
         }
     }
 }

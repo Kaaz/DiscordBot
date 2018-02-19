@@ -76,17 +76,17 @@ public class ReportCommand extends AbstractCommand {
             }
         }
         if (!seperatorFound) {
-            return Templates.command.report_no_seperator.format();
+            return Templates.command.report_no_seperator.formatGuild(channel);
         }
         if (body.length() < 20 || title.length() < 3) {
-            return Templates.command.report_message_too_short.format();
+            return Templates.command.report_message_too_short.formatGuild(channel);
         }
         bot.out.sendPrivateMessage(channel.getJDA().getUserById(BotConfig.CREATOR_ID), "new :e_mail: Report coming in!" + "\n" + "\n" +
                 ":bust_in_silhouette: user:  " + author.getName() + " ( " + author.getAsMention() + " )" + "\n" +
                 "Title: " + "\n" + title + "\n" + "\n" +
                 "Message: " + "\n" + body
         );
-        return Templates.command.report_success.format() + "\n\n" +
+        return Templates.command.report_success.formatGuild(channel) + "\n\n" +
                 "Note: This is 1-way communication, if you'd like give feedback or need assistance feel free to join my **!discord**";
     }
 }

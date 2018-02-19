@@ -66,12 +66,12 @@ public class ReloadCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-            return Templates.command.reload.success.format();
+            return Templates.command.reload.success.formatGuild(channel);
         }
         if (rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
             bot.loadGuild(guild);
-            return Templates.command.reload.success.format();
+            return Templates.command.reload.success.formatGuild(channel);
         }
-        return Templates.no_permission.format();
+        return Templates.no_permission.formatGuild(channel);
     }
 }

@@ -140,9 +140,9 @@ public class CommandHandler {
 
             } else if (!hasRightVisibility(channel, command.getVisibility())) {
                 if (channel instanceof PrivateChannel) {
-                    outMsg = Templates.command.not_for_private.format();
+                    outMsg = Templates.command.not_for_private.formatGuild(channel);
                 } else {
-                    outMsg = Templates.command.not_for_public.format();
+                    outMsg = Templates.command.not_for_public.formatGuild(channel);
                 }
             } else {
                 String commandOutput;

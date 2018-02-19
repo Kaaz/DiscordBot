@@ -70,10 +70,10 @@ public class QueryCommand extends AbstractCommand {
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         if (args.length == 0) {
-            return Templates.invalid_use.format();
+            return Templates.invalid_use.formatGuild(channel);
         }
         String query = Joiner.on(" ").join(args);
         if (!query.startsWith("select")) {

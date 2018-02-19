@@ -99,7 +99,7 @@ public class Subscribe extends AbstractCommand {
                         "This channel is currenty subscribed for: " +
                         Misc.makeAsciiTable(headers, tbl, null);
             }
-            return Templates.command.subscribe.channel_has_no_subscriptions.format() + "\n" +
+            return Templates.command.subscribe.channel_has_no_subscriptions.formatGuild(channel) + "\n" +
                     "Possible options to subscribe to: " +
                     getServicesTable();
         }
@@ -107,22 +107,22 @@ public class Subscribe extends AbstractCommand {
             if (args.length > 1) {
                 OService service = CServices.findBy(args[1].trim());
                 if (service.id == 0) {
-                    return Templates.command.subscribe.invalid_service.format();
+                    return Templates.command.subscribe.invalid_service.formatGuild(channel);
                 }
                 OSubscription subscription = CSubscriptions.findBy(CGuild.getCachedId(txt.getGuild().getIdLong()), CChannels.getCachedId(channel.getIdLong(), txt.getGuild().getIdLong()), service.id);
                 if (subscription.subscribed == 1) {
                     subscription.subscribed = 0;
                     CSubscriptions.insertOrUpdate(subscription);
-                    return Templates.command.subscribe.unsubscribed_success.format(service.displayName);
+                    return Templates.command.subscribe.unsubscribed_success.formatGuild(channel, service.displayName);
                 }
-                return Templates.command.subscribe.not_subscribed.format();
+                return Templates.command.subscribe.not_subscribed.formatGuild(channel);
             }
-            return Templates.invalid_use.format();
+            return Templates.invalid_use.formatGuild(channel);
         } else if (args[0].equalsIgnoreCase("info")) {
             if (args.length > 1) {
-                Templates.not_implemented_yet.format(); //@todo <--
+                Templates.not_implemented_yet.formatGuild(channel); //@todo <--
             }
-            return Templates.invalid_use.format();
+            return Templates.invalid_use.formatGuild(channel);
         } else if (args[0].equalsIgnoreCase("list")) {
             return "Subscriptions" + "\n" +
                     "Possible options to subscribe to: " +
@@ -130,7 +130,7 @@ public class Subscribe extends AbstractCommand {
         }
         OService service = CServices.findBy(args[0].trim());
         if (service.id == 0) {
-            return Templates.command.subscribe.invalid_service.format();
+            return Templates.command.subscribe.invalid_service.formatGuild(channel);
         }
         OSubscription subscription = CSubscriptions.findBy(CGuild.getCachedId(txt.getGuild().getIdLong()), CChannels.getCachedId(channel.getIdLong(), ((TextChannel) channel).getGuild().getIdLong()), service.id);
         if (subscription.subscribed == 0) {
@@ -139,9 +139,9 @@ public class Subscribe extends AbstractCommand {
             subscription.serverId = CGuild.getCachedId(txt.getGuild().getIdLong());
             subscription.serviceId = service.id;
             CSubscriptions.insertOrUpdate(subscription);
-            return Templates.command.subscribe.success.format();
+            return Templates.command.subscribe.success.formatGuild(channel);
         }
-        return Templates.command.subscribe.already_subscribed.format();
+        return Templates.command.subscribe.already_subscribed.formatGuild(channel);
     }
 
     private String getServicesTable() {

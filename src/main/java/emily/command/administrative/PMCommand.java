@@ -59,7 +59,7 @@ public class PMCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (!rank.isAtLeast(SimpleRank.USER)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         if (args.length > 1) {
             User targetUser = DisUtil.findUser((TextChannel) channel, args[0]);
@@ -70,11 +70,11 @@ public class PMCommand extends AbstractCommand {
                     message += " " + args[i];
                 }
                 bot.out.sendPrivateMessage(targetUser, "You got a message from " + author.getAsMention() + ": " + message);
-                return Templates.command.pm_success.format();
+                return Templates.command.pm_success.formatGuild(channel);
             } else {
-                return Templates.command.pm_cant_find_user.format();
+                return Templates.command.pm_cant_find_user.formatGuild(channel);
             }
         }
-        return Templates.invalid_use.format();
+        return Templates.invalid_use.formatGuild(channel);
     }
 }

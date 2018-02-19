@@ -80,12 +80,12 @@ public class GetroleCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         Guild guild = ((TextChannel) channel).getGuild();
         if (!PermissionUtil.checkPermission(guild.getSelfMember(), Permission.MANAGE_ROLES)) {
-            return Templates.permission_missing.format(Permission.MANAGE_ROLES.toString());
+            return Templates.permission_missing.formatGuild(channel, Permission.MANAGE_ROLES.toString());
         }
         if (args.length == 0 || args[0].equalsIgnoreCase("list")) {
             List<OGuildRoleAssignable> roles = CGuildRoleAssignable.getRolesFor(CGuild.getCachedId(guild.getIdLong()));
             if (roles.isEmpty()) {
-                return Templates.command.getrole.empty.format();
+                return Templates.command.getrole.empty.formatGuild(channel);
             }
             StringBuilder ret = new StringBuilder("You can request the following roles:" + "\n" + "\n");
             for (OGuildRoleAssignable role : roles) {
@@ -104,28 +104,28 @@ public class GetroleCommand extends AbstractCommand {
             startIndex = 1;
         }
         if (startIndex >= args.length) {
-            return Templates.invalid_use.format();
+            return Templates.invalid_use.formatGuild(channel);
         }
         String roleName = Misc.joinStrings(args, startIndex);
         Role role = DisUtil.findRole(guild, roleName);
         if (role == null) {
-            return Templates.command.getrole.not_assignable.format();
+            return Templates.command.getrole.not_assignable.formatGuild(channel);
         }
         OGuildRoleAssignable roleAssignable = CGuildRoleAssignable.findBy(CGuild.getCachedId(guild.getIdLong()), role.getId());
         if (roleAssignable.guildId == 0) {
-            return Templates.command.getrole.not_assignable.format();
+            return Templates.command.getrole.not_assignable.formatGuild(channel);
         }
         if (isAdding) {
             bot.out.addRole(author, role);
             if (guild.getMember(author).getRoles().contains(role)) {
-                return Templates.command.getrole.not_assigned.format(role);
+                return Templates.command.getrole.not_assigned.formatGuild(channel, role);
             }
-            return Templates.command.getrole.assigned.format(role);
+            return Templates.command.getrole.assigned.formatGuild(channel, role);
         }
         if (!guild.getMember(author).getRoles().contains(role)) {
-            return Templates.command.getrole.not_removed.format();
+            return Templates.command.getrole.not_removed.formatGuild(channel);
         }
         bot.out.removeRole(author, role);
-        return Templates.command.getrole.removed.format(role);
+        return Templates.command.getrole.removed.formatGuild(channel, role);
     }
 }

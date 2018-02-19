@@ -89,7 +89,7 @@ public class MemeCommand extends AbstractCommand {
         if (channel instanceof TextChannel) {
             TextChannel txt = (TextChannel) channel;
             if (!PermissionUtil.checkPermission(txt, txt.getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
-                return Templates.permission_missing.format("MESSAGE_ATTACH_FILES");
+                return Templates.permission_missing.formatGuild(channel, "MESSAGE_ATTACH_FILES");
             }
         }
         String msg = "Use one of the following meme types:" + "\n";
@@ -97,7 +97,7 @@ public class MemeCommand extends AbstractCommand {
             loadMemeOptions();
         }
         if (args.length == 0) {
-            return Templates.invalid_use.format() + "\n" +
+            return Templates.invalid_use.formatGuild(channel) + "\n" +
                     msg + Misc.makeTable(new ArrayList<>(memeTypes)) + "\n" +
                     "Usage:" + "\n" +
                     DisUtil.getCommandPrefix(channel) + "meme <type> <toptext> | <bottomtext>Config.EOL+Config.EOL" + "\n" + "\n" +
@@ -114,7 +114,7 @@ public class MemeCommand extends AbstractCommand {
         }
         String type = args[0].toLowerCase();
         if (!memeTypes.contains(type)) {
-            return Templates.command.meme_invalid_type.format() +
+            return Templates.command.meme_invalid_type.formatGuild(channel) +
                     msg + Misc.makeTable(new ArrayList<>(memeTypes)) + "\n" + "\n" +
                     "Example:" + "\n" +
                     "meme sohappy If I could use this meme | I would be so happy";

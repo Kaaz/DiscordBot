@@ -98,7 +98,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
         if (args.length == 0 || args[0].equals("list")) {
             List<OTag> tags = CTag.getTagsFor(guild.getIdLong());
             if (tags.isEmpty()) {
-                return Templates.command.tag.no_tags.format();
+                return Templates.command.tag.no_tags.formatGuild(channel);
             }
             int tagCount = CTag.countTagsOn(CGuild.getCachedId(guild.getIdLong()));
             if (tagCount <= TAGS_PER_PAGE) {
@@ -115,14 +115,14 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
         } else if (args[0].equalsIgnoreCase("mine")) {
             List<OTag> tags = CTag.getTagsFor(guild.getIdLong(), author.getIdLong());
             if (tags.isEmpty()) {
-                return Templates.command.tag.no_tags.format();
+                return Templates.command.tag.no_tags.formatGuild(channel);
             }
             return "You have made the following tags: " + "\n" + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("details")) {
             OTag tag = CTag.findBy(CGuild.getCachedId(guild.getIdLong()), args[1]);
             if (tag.id == 0) {
-                return Templates.command.tag.not_set.format();
+                return Templates.command.tag.not_set.formatGuild(channel);
             }
             User user = channel.getJDA().getUserById(CUser.getCachedDiscordId(tag.userId));
             String username = "???";
@@ -135,40 +135,40 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
         if (args.length == 2 && args[0].equalsIgnoreCase("by")) {
             User user = DisUtil.findUser((TextChannel) channel, args[1]);
             if (user == null) {
-                return Templates.config.cant_find_user.format(args[1]);
+                return Templates.config.cant_find_user.formatGuild(channel, args[1]);
             }
             List<OTag> tags = CTag.findByUser(CGuild.getCachedId(guild.getIdLong()), CUser.getCachedId(user.getIdLong()));
             return user.getName() + " made the following tags: " + "\n" + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
         }
         if (args.length > 1 && args[0].equalsIgnoreCase("deleteuser")) {
             if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-                return Templates.no_permission.format();
+                return Templates.no_permission.formatGuild(channel);
             }
             User user = DisUtil.findUser((TextChannel) channel, args[1]);
             if (user == null) {
-                return Templates.config.cant_find_user.format(args[1]);
+                return Templates.config.cant_find_user.formatGuild(channel, args[1]);
             }
             CTag.deleteTagsBy(CGuild.getCachedId(guild.getIdLong()), CUser.getCachedId(user.getIdLong()));
-            return Templates.command.tag.by_user_deleted.format(user);
+            return Templates.command.tag.by_user_deleted.formatGuild(channel, user);
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("delete")) {
             OTag tag = CTag.findBy(guild.getIdLong(), args[1]);
             if (tag.id > 0) {
                 if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && CUser.getCachedId(author.getIdLong()) != tag.userId) {
-                    return Templates.command.tag.only_delete_own.format();
+                    return Templates.command.tag.only_delete_own.formatGuild(channel);
                 }
                 CTag.delete(tag);
-                return Templates.command.tag.delete_success.format();
+                return Templates.command.tag.delete_success.formatGuild(channel);
             }
-            return Templates.command.tag.nothing_to_delete.format();
+            return Templates.command.tag.nothing_to_delete.formatGuild(channel);
         }
         if (DisUtil.hasMention(args[0])) {
-            return Templates.command.tag.no_mention.format();
+            return Templates.command.tag.no_mention.formatGuild(channel);
         }
         OTag tag = CTag.findBy(guild.getIdLong(), args[0]);
         if (args.length > 1) {
             if (tag.id > 0 && tag.userId != CUser.getCachedId(author.getIdLong())) {
-                return Templates.command.tag.only_creator_can_edit.format();
+                return Templates.command.tag.only_creator_can_edit.formatGuild(channel);
             }
             String output = Misc.joinStrings(args, 1);
             output = output.trim();
@@ -183,13 +183,13 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
                 tag.response = tag.response.substring(0, 1999);
             }
             CTag.insert(tag);
-            return Templates.command.tag.saved.format();
+            return Templates.command.tag.saved.formatGuild(channel);
         }
         if (tag.id > 0) {
             return tag.response;
 
         }
-        return Templates.command.tag.not_set.format();
+        return Templates.command.tag.not_set.formatGuild(channel);
     }
 
     private String makePage(Guild guild, int activePage, int maxPage) {

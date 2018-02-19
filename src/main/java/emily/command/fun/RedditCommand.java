@@ -93,7 +93,7 @@ public class RedditCommand extends AbstractCommand {
         }
         List<Post> dailyTop = RedditScraper.getDailyTop(subReddit);
         if (dailyTop.size() == 0) {
-            return Templates.command.reddit_sub_not_found.format();
+            return Templates.command.reddit_sub_not_found.formatGuild(channel);
         }
         Random rng = new Random();
         Post post;
@@ -117,7 +117,7 @@ public class RedditCommand extends AbstractCommand {
         if (preview != null && preview.images.size() > 0) {
             if (channel.getType().equals(ChannelType.TEXT) &&
                     !PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
-                return Templates.permission_missing.format("MESSAGE_ATTACH_FILES");
+                return Templates.permission_missing.formatGuild(channel, "MESSAGE_ATTACH_FILES");
             }
             for (Image image : preview.images) {
                 try (InputStream in = new URL(StringEscapeUtils.unescapeHtml4(image.source.url)).openStream()) {
@@ -130,6 +130,6 @@ public class RedditCommand extends AbstractCommand {
                 }
             }
         }
-        return Templates.command.reddit_nothing.format();
+        return Templates.command.reddit_nothing.formatGuild(channel);
     }
 }

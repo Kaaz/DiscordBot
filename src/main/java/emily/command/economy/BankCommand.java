@@ -89,18 +89,18 @@ public class BankCommand extends AbstractCommand {
             case "send":
             case "transfer":
                 if (args.length < 3) {
-                    return Templates.invalid_use.format();
+                    return Templates.invalid_use.formatGuild(channel);
                 }
                 int amount = Misc.parseInt(args[2], 0);
                 if (amount < 1) {
-                    return Templates.bank_transfer_minimum.format(1, BotConfig.ECONOMY_CURRENCY_NAME);
+                    return Templates.bank_transfer_minimum.formatGuild(channel, 1, BotConfig.ECONOMY_CURRENCY_NAME);
                 }
                 if (amount > bank.currentBalance) {
-                    return Templates.bank_insufficient_funds.format(amount, amount == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
+                    return Templates.bank_insufficient_funds.formatGuild(channel, amount, amount == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
                 }
                 User targetUser = DisUtil.findUser((TextChannel) channel, args[1]);
                 if (targetUser == null) {
-                    return Templates.config.cant_find_user.format(args[1]);
+                    return Templates.config.cant_find_user.formatGuild(channel, args[1]);
                 }
                 OBank targetBank = CBanks.findBy(targetUser.getIdLong());
                 String description = "Gift!";
@@ -108,9 +108,9 @@ public class BankCommand extends AbstractCommand {
                     description = Misc.joinStrings(args, 3);
                 }
                 if (bank.transferTo(targetBank, amount, description)) {
-                    return Templates.bank_transfer_success.format(targetUser.getName(), amount, amount == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
+                    return Templates.bank_transfer_success.formatGuild(channel, targetUser.getName(), amount, amount == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
                 }
-                return Templates.bank_transfer_failed.format();
+                return Templates.bank_transfer_failed.formatGuild(channel);
             case "history":
                 List<OBankTransaction> history = CBankTransactions.getHistoryFor(bank.id);
                 String ret = "Your transaction history:\n \n";
@@ -127,7 +127,7 @@ public class BankCommand extends AbstractCommand {
                 return ret;
 
             default:
-                return Templates.invalid_use.format();
+                return Templates.invalid_use.formatGuild(channel);
 
         }
     }

@@ -73,7 +73,7 @@ public class ToDoCommand extends AbstractCommand {
         OTodoList rec = CTodoLists.findBy(CUser.getCachedId(author.getIdLong()));
         if (args.length == 0) {
             if (rec.id == 0) {
-                return Templates.todo.your_list_not_found.format();
+                return Templates.todo.your_list_not_found.formatGuild(channel);
             }
             return makeListFor(author, rec);
         }
@@ -92,30 +92,30 @@ public class ToDoCommand extends AbstractCommand {
                     rec.userId = CUser.getCachedId(author.getIdLong());
                 }
                 CTodoLists.update(rec);
-                return Templates.todo.list_updated.format();
+                return Templates.todo.list_updated.formatGuild(channel);
             case "clearchecked":
             case "deletechecked":
                 if (rec.id == 0) {
-                    return Templates.todo.your_list_not_found.format();
+                    return Templates.todo.your_list_not_found.formatGuild(channel);
                 }
                 CTodoItems.deleteChecked(rec.id);
-                return Templates.todo.list_cleared.format();
+                return Templates.todo.list_cleared.formatGuild(channel);
             case "user":
                 if (args.length == 1) {
-                    return Templates.invalid_use.format();
+                    return Templates.invalid_use.formatGuild(channel);
                 }
                 User user = DisUtil.findUser((TextChannel) channel, Misc.joinStrings(args, 1));
                 if (user == null) {
-                    return Templates.config.cant_find_user.format(Misc.joinStrings(args, 1));
+                    return Templates.config.cant_find_user.formatGuild(channel, Misc.joinStrings(args, 1));
                 }
                 OTodoList userList = CTodoLists.findBy(CUser.getCachedId(user.getIdLong()));
                 if (userList.id == 0) {
-                    return Templates.todo.user_list_not_found.format(user);
+                    return Templates.todo.user_list_not_found.formatGuild(channel, user);
                 }
                 return makeListFor(user, rec);
         }
         if (rec.id == 0 || args.length < 2) {
-            return Templates.invalid_use.format();
+            return Templates.invalid_use.formatGuild(channel);
         }
         switch (args[0].toLowerCase()) {
             case "add":
@@ -123,34 +123,34 @@ public class ToDoCommand extends AbstractCommand {
                 item.listId = rec.id;
                 item.description = Misc.joinStrings(args, 1);
                 CTodoItems.insert(item);
-                return Templates.todo.item_add_success.format();
+                return Templates.todo.item_add_success.formatGuild(channel);
             case "remove":
                 OTodoItem editItem = CTodoItems.findBy(Misc.parseInt(args[1], 0));
                 if (editItem.listId != rec.id) {
-                    return Templates.todo.not_your_item.format();
+                    return Templates.todo.not_your_item.formatGuild(channel);
                 }
                 CTodoItems.delete(editItem);
-                return Templates.todo.item_removed.format();
+                return Templates.todo.item_removed.formatGuild(channel);
             case "uncheck":
             case "check":
                 OTodoItem check = CTodoItems.findBy(Misc.parseInt(args[1], 0));
                 if (check.listId != rec.id || check.id == 0) {
-                    return Templates.todo.not_your_item.format();
+                    return Templates.todo.not_your_item.formatGuild(channel);
                 }
                 check.checked = args[0].equals("check") ? 1 : 0;
                 CTodoItems.update(check);
-                return Templates.todo.item_updated.format();
+                return Templates.todo.item_updated.formatGuild(channel);
             case "priority":
                 if (args.length < 3) {
-                    return Templates.invalid_use.format();
+                    return Templates.invalid_use.formatGuild(channel);
                 }
                 OTodoItem priority = CTodoItems.findBy(Misc.parseInt(args[1], 0));
                 if (priority.listId != rec.id || priority.id == 0) {
-                    return Templates.todo.not_your_item.format();
+                    return Templates.todo.not_your_item.formatGuild(channel);
                 }
                 priority.priority = Misc.parseInt(args[2], 0);
                 CTodoItems.update(priority);
-                return Templates.todo.item_updated.format();
+                return Templates.todo.item_updated.formatGuild(channel);
         }
         return Emojibet.EYES;
     }

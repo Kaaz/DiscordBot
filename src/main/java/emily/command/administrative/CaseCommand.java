@@ -74,18 +74,18 @@ public class CaseCommand extends AbstractCommand {
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         Guild guild = ((TextChannel) channel).getGuild();
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         if (args.length > 0) {
             switch (args[0].toLowerCase()) {
                 case "reason":
                     if (args.length < 3) {
-                        return Templates.invalid_use.format();
+                        return Templates.invalid_use.formatGuild(channel);
                     }
                     return editReason(bot, guild, guild.getMember(author), channel, args[1], Misc.joinStrings(args, 2));
             }
         }
-        return Templates.invalid_use.format();
+        return Templates.invalid_use.formatGuild(channel);
     }
 
     private String editReason(DiscordBot bot, Guild guild, Member moderator, MessageChannel feedbackChannel, String caseId, String reason) {
@@ -96,20 +96,20 @@ public class CaseCommand extends AbstractCommand {
             oCase = CModerationCase.findById(Misc.parseInt(caseId, -1));
         }
         if (oCase.id == 0 || oCase.guildId != CGuild.getCachedId(guild.getIdLong())) {
-            return Templates.command.case_not_found.format(oCase.id);
+            return Templates.command.case_not_found.formatGuild(guild.getIdLong(), oCase.id);
         }
         oCase.reason = reason;
         CModerationCase.update(oCase);
         TextChannel channel = guild.getTextChannelById(GuildSettings.get(guild).getOrDefault(GSetting.BOT_CHANNEL));
         if (channel == null) {
-            return Templates.config.modlog_not_found.format();
+            return Templates.config.modlog_not_found.formatGuild(guild.getIdLong());
         }
         bot.queue.add(channel.getMessageById(oCase.messageId),
                 msg -> {
                     if (msg != null) {
                         bot.queue.add(msg.editMessage(new MessageBuilder().setEmbed(CModerationCase.buildCase(guild, oCase)).build()));
                     } else {
-                        bot.queue.add(feedbackChannel.sendMessage(Templates.command.case_reason_modified.format()));
+                        bot.queue.add(feedbackChannel.sendMessage(Templates.command.case_reason_modified.formatGuild(channel)));
                     }
                 });
 

@@ -248,14 +248,14 @@ public class FightCommand extends AbstractCommand implements ICommandCooldown {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         TextChannel txt = (TextChannel) channel;
         if (!PermissionUtil.checkPermission(txt, txt.getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {
-            return Templates.permission_missing.format("MESSAGE_ATTACH_FILES");
+            return Templates.permission_missing.formatGuild(channel, "MESSAGE_ATTACH_FILES");
         }
         User user = author;
         if (args.length > 0) {
             user = DisUtil.findUser(txt, Misc.joinStrings(args, 0));
         }
         if (user == null) {
-            return Templates.config.cant_find_user.format(args[0]);
+            return Templates.config.cant_find_user.formatGuild(channel, args[0]);
         }
         txt.sendTyping().queue(); //since it might take a while
         try {

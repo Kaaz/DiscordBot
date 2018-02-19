@@ -85,7 +85,7 @@ public class FMLCommand extends AbstractCommand {
                 Launcher.logToDiscord(e, "fml-command", "interrupted");
             }
         }
-        return Templates.command.fml_not_today.format();
+        return Templates.command.fml_not_today.formatGuild(channel);
     }
 
     private void getFMLItems() {

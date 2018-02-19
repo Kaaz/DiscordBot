@@ -63,12 +63,12 @@ public class LeaveGuildCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1 && args[0].matches("^\\d{10,}$")) {
             guild = channel.getJDA().getGuildById(args[0]);
             if (guild == null) {
-                return Templates.config.cant_find_guild.format();
+                return Templates.config.cant_find_guild.formatGuild(channel);
             }
             if (args.length == 1) {
                 return "are you sure? :sob: type **`" + DisUtil.getCommandPrefix(channel) + "leaveguild " + args[0] + " confirm`** to leave _" + guild.getName() + "_";

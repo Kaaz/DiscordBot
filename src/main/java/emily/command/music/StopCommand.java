@@ -75,35 +75,35 @@ public class StopCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Templates.music.required_role_not_found.format(guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));
+            return Templates.music.required_role_not_found.formatGuild(channel, guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));
         }
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         if (args.length > 0) {
             if (args[0].equals("force") && userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
                 player.leave();
-                return Templates.command.stop_success.format();
+                return Templates.command.stop_success.formatGuild(channel);
             }
         }
         if (!player.isPlaying()) {
             player.leave();
-            return Templates.command.currentlyplaying.nosong.format();
+            return Templates.command.currentlyplaying.nosong.formatGuild(channel);
         }
         if (player.isConnected()) {
             if (!player.canUseVoiceCommands(author, userRank)) {
-                return Templates.music.not_same_voicechannel.format();
+                return Templates.music.not_same_voicechannel.formatGuild(channel);
             }
             if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && player.aListenerIsAtLeast(SimpleRank.GUILD_ADMIN)) {
-                return Templates.music.not_while_admin_listening.format();
+                return Templates.music.not_while_admin_listening.formatGuild(channel);
             }
             if (args.length > 0 && args[0].equals("afternp")) {
                 player.stopAfterTrack(true);
-                return Templates.command.stop_after_track.format();
+                return Templates.command.stop_after_track.formatGuild(channel);
             } else {
                 player.leave();
             }
-            return Templates.command.stop_success.format();
+            return Templates.command.stop_success.formatGuild(channel);
         }
-        return Templates.command.currentlyplaying.nosong.format();
+        return Templates.command.currentlyplaying.nosong.formatGuild(channel);
 
     }
 }

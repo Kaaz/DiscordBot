@@ -110,13 +110,13 @@ public class CommandAdminCommand extends AbstractCommand {
         TextChannel textChannel = (TextChannel) channel;
         Guild guild = textChannel.getGuild();
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         int guildId = CGuild.getCachedId(channel);
         if (args.length == 0) {
             List<OBlacklistCommand> blacklist = CBlacklistCommand.getBlacklistedFor(guildId);
             if (blacklist.isEmpty()) {
-                return Templates.command.blacklist.command_empty.format();
+                return Templates.command.blacklist.command_empty.formatGuild(channel);
             }
             StringBuilder ret = new StringBuilder().append("The following commands are restricted: ").append("\n").append("\n");
             String lastCommand = blacklist.get(0).command;
@@ -157,34 +157,34 @@ public class CommandAdminCommand extends AbstractCommand {
         switch (args[0].toLowerCase()) {
             case "resetchannel":
                 if (args.length != 2) {
-                    return Templates.invalid_use.format();
+                    return Templates.invalid_use.formatGuild(channel);
                 }
                 String channelId = DisUtil.mentionToId(args[1]);
                 TextChannel c = channel.getJDA().getTextChannelById(channelId);
                 if (c == null) {
-                    return Templates.invalid_use.format();
+                    return Templates.invalid_use.formatGuild(channel);
                 }
                 CBlacklistCommand.deleteOverridesInChannel(guildId, channelId);
                 CommandHandler.reloadBlackListFor(guildId);
-                return Templates.command.blacklist.reset_channel.format(c.getAsMention());
+                return Templates.command.blacklist.reset_channel.formatGuild(channel, c.getAsMention());
             case "resetallchannels":
                 CBlacklistCommand.deleteAllOverrides(guildId);
                 CommandHandler.reloadBlackListFor(guildId);
-                return Templates.command.blacklist.reset_all_channels.format();
+                return Templates.command.blacklist.reset_all_channels.formatGuild(channel);
             case "reset":
                 if (args.length != 2) {
-                    return Templates.invalid_use.format();
+                    return Templates.invalid_use.formatGuild(channel);
                 }
                 CBlacklistCommand.deleteGuild(guildId);
                 CommandHandler.reloadBlackListFor(guildId);
-                return Templates.command.blacklist.reset.format();
+                return Templates.command.blacklist.reset.formatGuild(channel);
         }
         if (args[0].equals("role")) {
             if (args.length < 2) {
-                Templates.not_implemented_yet.format();
+                Templates.not_implemented_yet.formatGuild(channel);
             }
             if (args.length < 4) {
-                Templates.invalid_use.format();
+                Templates.invalid_use.formatGuild(channel);
             }
             String type = args[1];
             String roleName = args[2];
@@ -193,10 +193,10 @@ public class CommandAdminCommand extends AbstractCommand {
             Role role = DisUtil.findRole(guild, roleName);
             AbstractCommand cmd = CommandHandler.getCommand(commandName.toLowerCase());
             if (cmd == null) {
-                return Templates.command.blacklist.command_not_found.format(commandName);
+                return Templates.command.blacklist.command_not_found.formatGuild(channel, commandName);
             }
             if (!cmd.canBeDisabled()) {
-                return Templates.command.blacklist.not_blacklistable.format(cmd.getCommand());
+                return Templates.command.blacklist.not_blacklistable.formatGuild(channel, cmd.getCommand());
             }
 
             if (role == null) {
@@ -205,7 +205,7 @@ public class CommandAdminCommand extends AbstractCommand {
             return "Action = " + type;
         }
         if (args.length < 2) {
-            return Templates.invalid_use.format();
+            return Templates.invalid_use.formatGuild(channel);
         }
         AbstractCommand command = CommandHandler.getCommand(args[0].toLowerCase());
         String commandName;
@@ -213,32 +213,32 @@ public class CommandAdminCommand extends AbstractCommand {
             commandName = args[0];
         } else {
             if (command == null) {
-                return Templates.command.blacklist.command_not_found.format(args[0]);
+                return Templates.command.blacklist.command_not_found.formatGuild(channel, args[0]);
             }
             if (!command.canBeDisabled()) {
-                return Templates.command.blacklist.not_blacklistable.format(args[0]);
+                return Templates.command.blacklist.not_blacklistable.formatGuild(channel, args[0]);
             }
             commandName = command.getCommand();
         }
         if (!args[1].equals("enable") && !args[1].equals("disable")) {
-            return Templates.invalid_use.format();
+            return Templates.invalid_use.formatGuild(channel);
         }
         boolean blacklist = args[1].equals("disable");
         String channelId = "0";//guild-wide
         if (args.length > 2) {
             if (!DisUtil.isChannelMention(args[2])) {
-                return Templates.invalid_use.format();
+                return Templates.invalid_use.formatGuild(channel);
             }
             channelId = DisUtil.mentionToId(args[2]);
             TextChannel c = channel.getJDA().getTextChannelById(channelId);
             if (c == null) {
-                return Templates.invalid_use.format();
+                return Templates.invalid_use.formatGuild(channel);
             }
         }
         if (blacklist) {
             CBlacklistCommand.insertOrUpdate(guildId, commandName, channelId, true);
             CommandHandler.reloadBlackListFor(guildId);
-            return Templates.command.blacklist.command_disabled.format(commandName);
+            return Templates.command.blacklist.command_disabled.formatGuild(channel, commandName);
         } else {
             if (!channelId.equals("0")) {
                 CBlacklistCommand.insertOrUpdate(guildId, commandName, channelId, false);
@@ -246,7 +246,7 @@ public class CommandAdminCommand extends AbstractCommand {
                 CBlacklistCommand.delete(guildId, commandName, channelId);
             }
             CommandHandler.reloadBlackListFor(guildId);
-            return Templates.command.blacklist.command_enabled.format(commandName);
+            return Templates.command.blacklist.command_enabled.formatGuild(channel, commandName);
         }
     }
 }

@@ -84,6 +84,6 @@ public class CatFactCommand extends AbstractCommand {
         if (catFact != null) {
             return StringEscapeUtils.unescapeHtml4(catFact);
         }
-        return Templates.command.catfact_not_today.format();
+        return Templates.command.catfact_not_today.formatGuild(channel);
     }
 }

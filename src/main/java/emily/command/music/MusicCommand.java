@@ -105,7 +105,7 @@ public class MusicCommand extends AbstractCommand {
         }
         if (args.length > 0 && rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
 
-            return Templates.not_implemented_yet.format();
+            return Templates.not_implemented_yet.formatGuild(channel);
         }
 
         OPlaylist playlist = CPlaylist.findById(Integer.parseInt(settings.getOrDefault(GSetting.MUSIC_PLAYLIST_ID)));

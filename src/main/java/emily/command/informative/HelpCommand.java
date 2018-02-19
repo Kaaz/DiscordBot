@@ -107,7 +107,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
                 }
                 return ret;
             }
-            return Templates.command.help.donno.format();
+            return Templates.command.help.donno.formatGuild(channel);
         }
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         String ret = "I know the following commands: " + "\n" + "\n";
@@ -127,7 +127,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
         if (showHelpInPM) {
             bot.out.sendPrivateMessage(author, ret + "for more details about a command use **" + commandPrefix + "help <command>**" + "\n" +
                     ":exclamation: In private messages the prefix for commands is **" + BotConfig.BOT_COMMAND_PREFIX + "**");
-            return Templates.command.help.send_private.format();
+            return Templates.command.help.send_private.formatGuild(channel);
         } else {
             return ret + "for more details about a command use **" + commandPrefix + "help <command>**";
         }

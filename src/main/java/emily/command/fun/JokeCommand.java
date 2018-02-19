@@ -66,7 +66,7 @@ public class JokeCommand extends AbstractCommand {
 
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
-        bot.out.sendAsyncMessage(channel, Templates.command.joke_wait.format(), message -> {
+        bot.out.sendAsyncMessage(channel, Templates.command.joke_wait.formatGuild(channel), message -> {
             String joketxt = "";
             if (new Random().nextInt(100) < 80) {
                 joketxt = CommandHandler.getCommand("reddit").execute(bot, new String[]{"jokes"}, channel, author, null);
@@ -79,7 +79,7 @@ public class JokeCommand extends AbstractCommand {
             if (joketxt != null && !joketxt.isEmpty()) {
                 bot.out.editAsync(message, StringEscapeUtils.unescapeHtml4(joketxt.replace(author.getName(), "<@" + author.getId() + ">")));
             } else {
-                bot.out.editAsync(message, Templates.command.joke_not_today.format());
+                bot.out.editAsync(message, Templates.command.joke_not_today.formatGuild(channel));
             }
         });
         return "";

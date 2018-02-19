@@ -65,24 +65,24 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
         Guild guild = chan.getGuild();
         if (getRequiredPermission() != null) {
             if (!PermissionUtil.checkPermission(guild.getMember(author), getRequiredPermission())) {
-                return Templates.no_permission.format();
+                return Templates.no_permission.formatGuild(channel);
             }
             if (!PermissionUtil.checkPermission(guild.getSelfMember(), getRequiredPermission())) {
-                return Templates.permission_missing.format(getRequiredPermission().name());
+                return Templates.permission_missing.formatGuild(channel, getRequiredPermission().name());
             }
         }
         if (args.length == 0) {
-            return Templates.command.modaction_empty.format(getPunishType().getKeyword().toLowerCase());
+            return Templates.command.modaction_empty.formatGuild(channel, getPunishType().getKeyword().toLowerCase());
         }
         User targetUser = DisUtil.findUser(chan, Joiner.on(" ").join(args));
         if (targetUser == null) {
-            return Templates.config.cant_find_user.format(Joiner.on(" ").join(args));
+            return Templates.config.cant_find_user.formatGuild(channel, Joiner.on(" ").join(args));
         }
         if (targetUser.getId().equals(guild.getSelfMember().getUser().getId())) {
-            return Templates.command.modaction_not_self.format(getPunishType().getKeyword().toLowerCase());
+            return Templates.command.modaction_not_self.formatGuild(channel, getPunishType().getKeyword().toLowerCase());
         }
         if (!PermissionUtil.canInteract(guild.getSelfMember(), guild.getMember(targetUser)) || !punish(bot, guild, guild.getMember(targetUser))) {
-            return Templates.command.modaction_failed.format(getPunishType().getKeyword().toLowerCase(), targetUser);
+            return Templates.command.modaction_failed.formatGuild(channel, getPunishType().getKeyword().toLowerCase(), targetUser);
         }
         int caseId = CModerationCase.insert(guild, targetUser, author, getPunishType(), null);
         TextChannel modlogChannel = bot.getModlogChannel(guild.getIdLong());
@@ -94,6 +94,6 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
                         CModerationCase.update(modCase);
                     });
         }
-        return Templates.command.modaction_success.format(targetUser, getPunishType().getVerb().toLowerCase());
+        return Templates.command.modaction_success.formatGuild(channel, targetUser, getPunishType().getVerb().toLowerCase());
     }
 }

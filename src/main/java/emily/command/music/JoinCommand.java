@@ -74,16 +74,16 @@ public class JoinCommand extends AbstractCommand {
         if (args.length == 0) {
             VoiceChannel voiceChannel = chan.getGuild().getMember(author).getVoiceState().getChannel();
             if (voiceChannel == null) {
-                return Templates.command.join.cantfindyou.format();
+                return Templates.command.join.cantfindyou.formatGuild(channel);
             }
             if (player.isConnectedTo(voiceChannel)) {
-                return Templates.command.join.already_there.format();
+                return Templates.command.join.already_there.formatGuild(channel);
             }
             if (!PermissionUtil.checkPermission(voiceChannel, voiceChannel.getGuild().getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
-                return Templates.music.join_no_permission.format(voiceChannel.getName());
+                return Templates.music.join_no_permission.formatGuild(channel, voiceChannel.getName());
             }
             player.connectTo(voiceChannel);
-            return Templates.command.join.joinedyou.format();
+            return Templates.command.join.joinedyou.formatGuild(channel);
         } else {
             String channelname = Misc.concat(args);
             VoiceChannel targetChannel = null;
@@ -95,17 +95,17 @@ public class JoinCommand extends AbstractCommand {
             }
             if (targetChannel != null) {
                 if (player.isConnectedTo(targetChannel)) {
-                    return Templates.command.join.already_there.format();
+                    return Templates.command.join.already_there.formatGuild(channel);
                 }
                 if (!PermissionUtil.checkPermission(targetChannel, targetChannel.getGuild().getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
-                    return Templates.music.join_no_permission.format(targetChannel.getName());
+                    return Templates.music.join_no_permission.formatGuild(channel, targetChannel.getName());
                 }
                 player.leave();
                 player.connectTo(targetChannel);
 //					return Template.get("command_join_nopermssiontojoin");
-                return Templates.command.join.joinedyou.format();
+                return Templates.command.join.joinedyou.formatGuild(channel);
             }
-            return Templates.command.join.cantfindyou.format();
+            return Templates.command.join.cantfindyou.formatGuild(channel);
         }
     }
 }

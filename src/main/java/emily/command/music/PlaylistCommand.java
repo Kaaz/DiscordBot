@@ -123,7 +123,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         int nowPlayingId = player.getCurrentlyPlaying();
         OMusic musicRec = CMusic.findById(nowPlayingId);
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Templates.music.required_role_not_found.format(guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));
+            return Templates.music.required_role_not_found.formatGuild(channel, guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));
         }
         OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
         if (playlist.id == 0) {
@@ -132,10 +132,10 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         String cp = DisUtil.getCommandPrefix(channel);
         if (args.length == 0) {
             if (playlist.isGlobalList()) {
-                return Templates.music.playlist_using.format(playlist.title) + " See `" + cp + "pl help` for more info" + "\n" +
+                return Templates.music.playlist_using.formatGuild(channel, playlist.title) + " See `" + cp + "pl help` for more info" + "\n" +
                         "You can switch to a different playlist with `" + cp + "pl guild` to the guild's list or `" + cp + "pl mine` to your own one";
             }
-            return Templates.music.playlist_using.format(playlist.title) +
+            return Templates.music.playlist_using.formatGuild(channel, playlist.title) +
                     "Settings " + makeSettingsTable(playlist) +
                     "To add the currently playing music to the playlist use `" + DisUtil.getCommandPrefix(channel) + "pl add`, check out `" + DisUtil.getCommandPrefix(channel) + "help pl` for more info";
         }
@@ -160,29 +160,29 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         }
         if (newlist != null) {
             player.setActivePlayListId(newlist.id);
-            return Templates.music.playlist_changed.format(newlist.title);
+            return Templates.music.playlist_changed.formatGuild(channel, newlist.title);
         }
 
         switch (args[0].toLowerCase()) {
             case "add":
             case "+":
                 if (nowPlayingId == 0) {
-                    return Templates.command.currentlyplaying.nosong.format();
+                    return Templates.command.currentlyplaying.nosong.formatGuild(channel);
                 }
                 if (canAddTracks(playlist, (TextChannel) channel, author, userRank)) {
                     if (CPlaylist.isInPlaylist(playlist.id, nowPlayingId)) {
-                        return Templates.playlist.music_already_added.format(musicRec.youtubeTitle, playlist.title);
+                        return Templates.playlist.music_already_added.formatGuild(channel, musicRec.youtubeTitle, playlist.title);
                     }
                     CPlaylist.addToPlayList(playlist.id, nowPlayingId);
-                    return Templates.playlist.music_added.format(musicRec.youtubeTitle, playlist.title);
+                    return Templates.playlist.music_added.formatGuild(channel, musicRec.youtubeTitle, playlist.title);
                 }
-                return Templates.no_permission.format();
+                return Templates.no_permission.formatGuild(channel);
             case "removeall":
                 if (isPlaylistAdmin(playlist, (TextChannel) channel, author, userRank)) {
                     CPlaylist.resetPlaylist(playlist.id);
-                    return Templates.playlist.music_removed_all.format(playlist.title);
+                    return Templates.playlist.music_removed_all.formatGuild(channel, playlist.title);
                 }
-                return Templates.no_permission.format();
+                return Templates.no_permission.formatGuild(channel);
             case "remove":
             case "del":
             case "-":
@@ -196,14 +196,14 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                     nowPlayingId = musicRec.id;
                 }
                 if (!canRemoveTracks(playlist, (TextChannel) channel, author, userRank)) {
-                    return Templates.no_permission.format();
+                    return Templates.no_permission.formatGuild(channel);
                 }
                 CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);
-                return Templates.playlist.music_removed.format(musicRec.youtubeTitle, playlist.title);
+                return Templates.playlist.music_removed.formatGuild(channel, musicRec.youtubeTitle, playlist.title);
             case "list":
             case "music":
                 if (playlist.isGlobalList()) {
-                    return Templates.playlist.global_readonly.format();
+                    return Templates.playlist.global_readonly.formatGuild(channel);
                 }
                 final int currentPage = 1;
                 int totalTracks = CPlaylist.getMusicCount(playlist.id);
@@ -226,18 +226,18 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
             return makeSettingsTable(playlist);
         }
         if (playlist.isGlobalList()) {
-            return Templates.playlist.global_readonly.format();
+            return Templates.playlist.global_readonly.formatGuild(channel);
         }
         boolean isPlaylistAdmin = isPlaylistAdmin(playlist, (TextChannel) channel, author, userRank);
         switch (args[0].toLowerCase()) {
             case "title":
                 if (args.length == 1 || !isPlaylistAdmin) {
-                    return Templates.command.playlist_title.format(playlist.title);
+                    return Templates.command.playlist_title.formatGuild(channel, playlist.title);
                 }
                 playlist.title = EmojiUtils.shortCodify(Joiner.on(" ").join(Arrays.copyOfRange(args, 1, args.length)));
                 CPlaylist.update(playlist);
                 player.setActivePlayListId(playlist.id);
-                return Templates.playlist.title_updated.format(playlist.title);
+                return Templates.playlist.title_updated.formatGuild(channel, playlist.title);
             case "edit-type":
             case "edittype":
             case "edit":
@@ -255,14 +255,14 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 if (args.length > 1 && args[1].matches("^\\d+$")) {
                     OPlaylist.EditType editType = OPlaylist.EditType.fromId(Integer.parseInt(args[1]));
                     if (editType.equals(OPlaylist.EditType.UNKNOWN)) {
-                        Templates.playlist.setting_invalid.format(args[1], "edittype");
+                        Templates.playlist.setting_invalid.formatGuild(channel, args[1], "edittype");
                     }
                     playlist.setEditType(editType);
                     CPlaylist.update(playlist);
                     player.setActivePlayListId(playlist.id);
-                    return Templates.playlist.setting_updated.format("edittype", args[1]);
+                    return Templates.playlist.setting_updated.formatGuild(channel, "edittype", args[1]);
                 }
-                return Templates.playlist.setting_not_numeric.format("edittype");
+                return Templates.playlist.setting_not_numeric.formatGuild(channel, "edittype");
             case "vis":
             case "visibility":
                 if (args.length == 1 || !isPlaylistAdmin) {
@@ -279,14 +279,14 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 if (args.length > 1 && args[1].matches("^\\d+$")) {
                     OPlaylist.Visibility visibility = OPlaylist.Visibility.fromId(Integer.parseInt(args[1]));
                     if (visibility.equals(OPlaylist.Visibility.UNKNOWN)) {
-                        Templates.playlist.setting_invalid.format(args[1], "visibility");
+                        Templates.playlist.setting_invalid.formatGuild(channel, args[1], "visibility");
                     }
                     playlist.setVisibility(visibility);
                     CPlaylist.update(playlist);
                     player.setActivePlayListId(playlist.id);
-                    return Templates.playlist.setting_updated.format("visibility", args[1]);
+                    return Templates.playlist.setting_updated.formatGuild(channel, "visibility", args[1]);
                 }
-                return Templates.playlist.setting_not_numeric.format("visibility");
+                return Templates.playlist.setting_not_numeric.formatGuild(channel, "visibility");
             case "play":
                 if (args.length > 1) {
                     OMusic record = null;
@@ -299,12 +299,12 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                         if (player.canUseVoiceCommands(author, userRank)) {
                             player.connectTo(guild.getMember(author).getVoiceState().getChannel());
                             player.addToQueue(record.youtubeTitle, author);
-                            return Templates.music.added_to_queue.format(record.youtubeTitle);
+                            return Templates.music.added_to_queue.formatGuild(channel, record.youtubeTitle);
                         }
                     }
-                    return Templates.music.not_added_to_queue.format(args[1]);
+                    return Templates.music.not_added_to_queue.formatGuild(channel, args[1]);
                 }
-                return Templates.invalid_use.format();
+                return Templates.invalid_use.formatGuild(channel);
             case "playtype":
             case "play-type":
                 if (args.length == 1) {
@@ -322,12 +322,12 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                     playlist.setPlayType(playType);
                     CPlaylist.update(playlist);
                     player.setActivePlayListId(playlist.id);
-                    return Templates.playlist.setting_updated.format("play-type", args[1]);
+                    return Templates.playlist.setting_updated.formatGuild(channel, "play-type", args[1]);
                 }
-                return Templates.playlist.setting_not_numeric.format("play-type");
+                return Templates.playlist.setting_not_numeric.formatGuild(channel, "play-type");
 
         }
-        return Templates.invalid_use.format();
+        return Templates.invalid_use.formatGuild(channel);
     }
 
     /**

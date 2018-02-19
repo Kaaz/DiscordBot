@@ -69,7 +69,7 @@ public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandR
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (!DisUtil.hasPermission(channel, channel.getJDA().getSelfUser(), Permission.MESSAGE_ADD_REACTION)) {
-            return Templates.permission_missing.format(Permission.MESSAGE_ADD_REACTION.toString());
+            return Templates.permission_missing.formatGuild(channel, Permission.MESSAGE_ADD_REACTION.toString());
         }
         Game2048 game = new Game2048();
         game.addPlayer(author);

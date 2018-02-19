@@ -121,7 +121,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1 && DisUtil.matchesGuildSearch(args[0])) {
             guild = DisUtil.findGuildBy(args[0], bot.getContainer());
             if (guild == null) {
-                return Templates.config.cant_find_guild.format();
+                return Templates.config.cant_find_guild.formatGuild(channel);
             }
             args = Arrays.copyOfRange(args, 1, args.length);
         } else {
@@ -129,14 +129,14 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         }
 
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         if (args.length > 0 && args[0].equalsIgnoreCase("reset")) {
             if (args.length > 1 && args[1].equalsIgnoreCase("yesimsure")) {
                 GuildSettings.get(guild).reset();
-                return Templates.config.reset_success.format();
+                return Templates.config.reset_success.formatGuild(channel);
             }
-            return Templates.config.reset_warning.format();
+            return Templates.config.reset_warning.formatGuild(channel);
         }
         String tag = null;
         if (args.length > 0) {
@@ -203,10 +203,10 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
 
 
         if (!DefaultGuildSettings.isValidKey(args[0])) {
-            return Templates.command.config.key_not_exists.format();
+            return Templates.command.config.key_not_exists.formatGuild(channel);
         }
         if (DefaultGuildSettings.get(args[0]).isInternal() && !rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-            return Templates.command.config.key_read_only.format();
+            return Templates.command.config.key_read_only.formatGuild(channel);
         }
 
         if (args.length >= 2) {
@@ -224,7 +224,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
             }
 
             if (GuildSettings.get(guild).set(guild, args[0], newValue)) {
-                return Templates.command.config.key_modified.format();
+                return Templates.command.config.key_modified.formatGuild(channel);
             }
         }
 

@@ -70,12 +70,12 @@ public class RebootCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (bot.security.getSimpleRank(author).isAtLeast(SimpleRank.BOT_ADMIN)) {
             if (args.length == 0) {
-                return Templates.invalid_use.format();
+                return Templates.invalid_use.formatGuild(channel);
             }
             switch (args[0].toLowerCase()) {
                 case "update":
                     if (UpdateUtil.getLatestVersion().isHigherThan(Launcher.getVersion())) {
-                        bot.out.sendAsyncMessage(channel, Templates.command.reboot.update.format(), message -> {
+                        bot.out.sendAsyncMessage(channel, Templates.command.reboot.update.formatGuild(channel), message -> {
                             if (args.length > 1 && args[1].equals("firm")) {
                                 bot.getContainer().firmRequestExit(ExitCode.UPDATE);
                             } else {
@@ -85,7 +85,7 @@ public class RebootCommand extends AbstractCommand {
                         return "";
                     }
                 case "now":
-                    bot.out.sendAsyncMessage(channel, Templates.command.reboot.success.format(), message -> {
+                    bot.out.sendAsyncMessage(channel, Templates.command.reboot.success.formatGuild(channel), message -> {
                         if (args.length > 1 && args[1].equals("firm")) {
                             bot.getContainer().firmRequestExit(ExitCode.REBOOT);
                         } else {
@@ -95,7 +95,7 @@ public class RebootCommand extends AbstractCommand {
                     return "";
                 case "forceupdate":
                 case "fursupdate":
-                    bot.out.sendAsyncMessage(channel, Templates.command.reboot.forceupdate.format(), message -> bot.getContainer().requestExit(ExitCode.UPDATE));
+                    bot.out.sendAsyncMessage(channel, Templates.command.reboot.forceupdate.formatGuild(channel), message -> bot.getContainer().requestExit(ExitCode.UPDATE));
                     return "";
                 case "shard":
                     if (args.length < 2) {
@@ -117,21 +117,21 @@ public class RebootCommand extends AbstractCommand {
                     if (shardId == -1 || shardId >= bot.getContainer().getShards().length) {
                         break;
                     }
-                    bot.out.sendAsyncMessage(channel, Templates.command.reboot.shard.format(shardId), message -> {
+                    bot.out.sendAsyncMessage(channel, Templates.command.reboot.shard.formatGuild(channel, shardId), message -> {
                         boolean isThisShard = shardId == bot.getShardId();
                         boolean restartSuccess = bot.getContainer().tryRestartingShard(shardId);
                         if (!isThisShard) {
                             if (restartSuccess) {
-                                bot.queue.add(message.editMessage(Templates.command.reboot.shard_success.format(shardId)));
+                                bot.queue.add(message.editMessage(Templates.command.reboot.shard_success.formatGuild(channel, shardId)));
                             } else {
-                                bot.queue.add(message.editMessage(Templates.command.reboot.shard_failed.format(shardId)));
+                                bot.queue.add(message.editMessage(Templates.command.reboot.shard_failed.formatGuild(channel, shardId)));
                             }
                         }
                     });
                     return "";
             }
-            return Templates.invalid_use.format();
+            return Templates.invalid_use.formatGuild(channel);
         }
-        return Templates.no_permission.format();
+        return Templates.no_permission.formatGuild(channel);
     }
 }

@@ -71,7 +71,7 @@ public class EmojifyCommand extends AbstractCommand {
             String combined = Joiner.on(" ").join(args).toLowerCase();
             int strlen = combined.length();
             if (combined.length() > MAX_SIZE) {
-                return Templates.command.emojify_max_exceeded.format(MAX_SIZE);
+                return Templates.command.emojify_max_exceeded.formatGuild(channel, MAX_SIZE);
             }
             StringBuilder output = new StringBuilder();
             for (int i = 0; i < strlen; i++) {
@@ -80,7 +80,7 @@ public class EmojifyCommand extends AbstractCommand {
             }
             return output.toString();
         } else {
-            return Templates.command.SAY_WHATEXACTLY.format();
+            return Templates.command.SAY_WHATEXACTLY.formatGuild(channel);
         }
     }
 }

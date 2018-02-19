@@ -95,13 +95,13 @@ public class RollCommand extends AbstractCommand {
                 int sides = Misc.parseInt(match.group(2), 6);
                 int bonus = 0;
                 if (dice > max_dice) {
-                    return Templates.command.roll.dice_count.format(max_dice);
+                    return Templates.command.roll.dice_count.formatGuild(channel, max_dice);
                 }
                 if (dice < 1) {
-                    return Templates.command.roll.no_dice.format();
+                    return Templates.command.roll.no_dice.formatGuild(channel);
                 }
                 if (sides < min_sides) {
-                    return Templates.command.roll.side_count.format(min_sides);
+                    return Templates.command.roll.side_count.formatGuild(channel, min_sides);
                 }
                 if (match.group(3) != null && !"null".equals(match.group(3))) {
                     bonus = Misc.parseInt("" + match.group(3), 0);

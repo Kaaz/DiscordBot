@@ -102,7 +102,7 @@ public class ReactionRoleCommand extends AbstractCommand {
         SimpleRank rank = bot.security.getSimpleRank(author);
         TextChannel t = (TextChannel) channel;
         if (!PermissionUtil.checkPermission(t.getGuild().getSelfMember(), Permission.MANAGE_ROLES)) {
-            return Templates.permission_missing.format("manage_roles");
+            return Templates.permission_missing.formatGuild(channel, "manage_roles");
         }
         if (args.length == 0) {
             List<OReactionRoleKey> list = CReactionRole.getKeysForGuild(t.getGuild().getIdLong());
@@ -167,7 +167,7 @@ public class ReactionRoleCommand extends AbstractCommand {
 
         }
 
-        return Templates.no_permission.format();
+        return Templates.no_permission.formatGuild(channel);
     }
 
     private void updateText(TextChannel channel, OReactionRoleKey key) {

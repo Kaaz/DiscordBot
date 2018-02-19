@@ -64,10 +64,10 @@ public class BotStatusCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author);
         if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         if (args.length == 0) {
-            return Templates.invalid_use.format();
+            return Templates.invalid_use.formatGuild(channel);
         }
         if (args.length > 0) {
             switch (args[0].toLowerCase()) {
@@ -76,13 +76,13 @@ public class BotStatusCommand extends AbstractCommand {
                     return Emojibet.THUMBS_UP;
                 case "game":
                     if (args.length < 2) {
-                        return Templates.invalid_use.format();
+                        return Templates.invalid_use.formatGuild(channel);
                     }
                     channel.getJDA().getPresence().setGame(Game.of(Game.GameType.DEFAULT, Misc.joinStrings(args, 1)));
                     break;
                 case "stream":
                     if (args.length < 3) {
-                        return Templates.invalid_use.format();
+                        return Templates.invalid_use.formatGuild(channel);
                     }
                     try {
                         channel.getJDA().getPresence().setGame(Game.of(Game.GameType.DEFAULT, Misc.joinStrings(args, 2), "http://www.twitch.tv/" + args[1]));
@@ -91,7 +91,7 @@ public class BotStatusCommand extends AbstractCommand {
                     }
                     break;
                 default:
-                    return Templates.invalid_use.format();
+                    return Templates.invalid_use.formatGuild(channel);
             }
             bot.getContainer().setStatusLocked(true);
             try {
@@ -100,6 +100,6 @@ public class BotStatusCommand extends AbstractCommand {
             }
             return Emojibet.THUMBS_UP;
         }
-        return Templates.invalid_use.format();
+        return Templates.invalid_use.formatGuild(channel);
     }
 }

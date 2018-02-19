@@ -92,7 +92,7 @@ public class ImportMusicCommand extends AbstractCommand {
             }
             return ":face_palm: Not how you use it";
         }
-        return Templates.no_permission.format();
+        return Templates.no_permission.formatGuild(channel);
     }
 
     public void importDirectory(File file) {

@@ -107,7 +107,7 @@ public class RoleAdminCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         if (args.length == 0 || args[0].equals("list")) {
             String out = "I found the following roles" + "\n";
@@ -121,7 +121,7 @@ public class RoleAdminCommand extends AbstractCommand {
             return out;
         }
         if (!PermissionUtil.checkPermission(guild.getSelfMember(), Permission.MANAGE_ROLES)) {
-            return Templates.permission_missing.format("manage_roles");
+            return Templates.permission_missing.formatGuild(channel, "manage_roles");
         }
         switch (args[0].toLowerCase()) {
             case "self":
@@ -129,7 +129,7 @@ public class RoleAdminCommand extends AbstractCommand {
                     return "this will say something useful in future";
                 }
                 if (args.length < 3) {
-                    return Templates.invalid_use.format();
+                    return Templates.invalid_use.formatGuild(channel);
                 }
                 String roleName = Misc.joinStrings(args, 2);
                 Role role = DisUtil.findRole(guild, roleName);
@@ -143,14 +143,14 @@ public class RoleAdminCommand extends AbstractCommand {
                     case "add":
                     case "+":
                         CGuildRoleAssignable.insertOrUpdate(CGuild.getCachedId(guild.getIdLong()), role.getIdLong(), role.getName());
-                        return Templates.command.role_admin.adding.format(role.getName());
+                        return Templates.command.role_admin.adding.formatGuild(channel, role.getName());
                     case "remove":
                     case "-":
                     case "delete":
                         CGuildRoleAssignable.delete(CGuild.getCachedId(guild.getIdLong()), role.getIdLong(), roleName);
-                        return Templates.command.role_admin.removing.format(role.getName());
+                        return Templates.command.role_admin.removing.formatGuild(channel, role.getName());
                     case "describe":
-                        return Templates.not_implemented_yet.format();
+                        return Templates.not_implemented_yet.formatGuild(channel);
                 }
             case "cleanup":
                 RoleRankings.cleanUpRoles(guild, channel.getJDA().getSelfUser());

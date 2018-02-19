@@ -95,7 +95,7 @@ public class BetCommand extends AbstractCommand {
             StringBuilder ret = new StringBuilder("Bet overview \n\n");
             List<OBet> activeBets = CBet.getActiveBetsForGuild(guildId);
             if (activeBets.isEmpty()) {
-                ret = new StringBuilder(Templates.command.bet.no_bets.format());
+                ret = new StringBuilder(Templates.command.bet.no_bets.formatGuild(channel));
             }
             for (OBet bet : activeBets) {
                 ret.append(String.format("\\#%d - %s\n", bet.id, bet.title));
@@ -109,12 +109,12 @@ public class BetCommand extends AbstractCommand {
         switch (args[0].toLowerCase()) {
             case "create":
                 if (args.length < 3) {
-                    return Templates.invalid_use.format();
+                    return Templates.invalid_use.formatGuild(channel);
                 }
                 int amount = Misc.parseInt(args[1], 0);
                 long maxBetAmount = Math.min(CBet.MAX_BET_AMOUNT, bank.currentBalance);
                 if (amount <= 0 || amount >= maxBetAmount) {
-                    return Templates.command.bet.amount_between.format(1, maxBetAmount);
+                    return Templates.command.bet.amount_between.formatGuild(channel, 1, maxBetAmount);
                 }
                 String title = Misc.joinStrings(args, 2);
                 if (title.length() > 128) {
@@ -122,34 +122,34 @@ public class BetCommand extends AbstractCommand {
                 }
                 OBet record = CBet.getActiveBet(guildId, CUser.getCachedId(author.getIdLong()));
                 if (!record.status.equals(OBet.Status.PREPARING)) {
-                    return Templates.command.bet.already_preparing.format();
+                    return Templates.command.bet.already_preparing.formatGuild(channel);
                 }
                 record.title = title;
                 record.price = amount;
                 record.guildId = guildId;
                 record.ownerId = CUser.getCachedId(author.getIdLong());
                 CBet.insert(record);
-                return Templates.command.bet.create_success.format();
+                return Templates.command.bet.create_success.formatGuild(channel);
             case "option":
             case "options":
                 OBet myBet = CBet.getActiveBet(guildId, CUser.getCachedId(author.getIdLong()));
                 if (!myBet.status.equals(OBet.Status.PREPARING)) {
-                    return Templates.command.bet.edit_prepare_only.format();
+                    return Templates.command.bet.edit_prepare_only.formatGuild(channel);
                 }
                 if (args.length == 1) {
                     return printWipBet(myBet);
                 }
                 if (args.length < 3) {
-                    return Templates.invalid_use.format();
+                    return Templates.invalid_use.formatGuild(channel);
                 }
                 switch (args[1].toLowerCase()) {
                     case "edit":
                         OBetOption option = CBetOption.findById(myBet.id, Misc.parseInt(args[2], -1));
                         if (option.id == 0) {
-                            return Templates.command.bet.option_not_found.format();
+                            return Templates.command.bet.option_not_found.formatGuild(channel);
                         }
                         if (args.length < 4) {
-                            return Templates.invalid_use.format();
+                            return Templates.invalid_use.formatGuild(channel);
                         }
                         option.description = Misc.joinStrings(args, 3);
                         CBetOption.update(option);
@@ -160,17 +160,17 @@ public class BetCommand extends AbstractCommand {
                     case "remove":
                         OBetOption toRemove = CBetOption.findById(myBet.id, Misc.parseInt(args[2], -1));
                         if (toRemove.id == 0) {
-                            return Templates.command.bet.option_not_found.format();
+                            return Templates.command.bet.option_not_found.formatGuild(channel);
                         }
                         CBetOption.delete(toRemove);
                         return printWipBet(myBet);
                     default:
-                        return Templates.invalid_use.format();
+                        return Templates.invalid_use.formatGuild(channel);
                 }
             case "open":
             case "refund":
             case "cancel":
-                return Templates.not_implemented_yet.format();
+                return Templates.not_implemented_yet.formatGuild(channel);
         }
         /**
          * table bets
@@ -186,7 +186,7 @@ public class BetCommand extends AbstractCommand {
          */
 
 
-        return Templates.invalid_use.format();
+        return Templates.invalid_use.formatGuild(channel);
     }
 
     private String printWipBet(OBet bet) {

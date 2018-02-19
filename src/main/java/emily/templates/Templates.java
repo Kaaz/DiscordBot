@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * usage/examples in commands/etc:
  * Templates.TEST.format(User, Guild)
  * Templates.permission_missing.format("some permission")
- * Templates.command.SAY_CONTAINS_MENTION.format()
+ * Templates.command.SAY_CONTAINS_MENTION.formatGuild(channel)
  */
 public final class Templates {
     final private static HashMap<String, Template> dictionary = new HashMap<>();

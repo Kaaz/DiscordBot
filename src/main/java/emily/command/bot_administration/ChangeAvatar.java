@@ -68,7 +68,7 @@ public class ChangeAvatar extends AbstractCommand {
         SimpleRank rank = bot.security.getSimpleRank(author);
 
         if (!rank.isAtLeast(SimpleRank.CREATOR)) {
-            return Templates.no_permission.format();
+            return Templates.no_permission.formatGuild(channel);
         }
         if (args.length <= 1) {
             try {

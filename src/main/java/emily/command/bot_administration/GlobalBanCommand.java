@@ -74,6 +74,6 @@ public class GlobalBanCommand extends AbstractCommand {
                 return "`" + user.name + "` (`" + user.discord_id + "`) has been globally banned";
             }
         }
-        return Templates.no_permission.format();
+        return Templates.no_permission.formatGuild(channel);
     }
 }

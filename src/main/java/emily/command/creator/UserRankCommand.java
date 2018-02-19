@@ -121,11 +121,11 @@ public class UserRankCommand extends AbstractCommand {
         if (args.length == 1) {
             OUserRank userRank = CUserRank.findBy(user.getIdLong());
             if (userRank.rankId == 0 && !targetOldRank.isAtLeast(SimpleRank.CREATOR)) {
-                return Templates.command.userrank.no_rank.format(user.getName());
+                return Templates.command.userrank.no_rank.formatGuild(channel, user.getName());
             } else if (targetOldRank.isAtLeast(SimpleRank.CREATOR)) {
-                return Templates.command.userrank.rank.format(user, "creator");
+                return Templates.command.userrank.rank.formatGuild(channel, user, "creator");
             } else {
-                return Templates.command.userrank.rank.format(user, CRank.findById(userRank.rankId).codeName);
+                return Templates.command.userrank.rank.formatGuild(channel, user, CRank.findById(userRank.rankId).codeName);
             }
         } else if (args[1].equals("perm")) {
 
@@ -163,10 +163,10 @@ public class UserRankCommand extends AbstractCommand {
         } else if (args.length == 2) {
             SimpleRank targetNewRank = args[1].equals("none") ? SimpleRank.USER : SimpleRank.findRank(args[1]);
             if (targetNewRank == null) {
-                return Templates.command.userrank.not_exists.format(args[1]);
+                return Templates.command.userrank.not_exists.formatGuild(channel, args[1]);
             }
             if (!authorRank.isHigherThan(targetNewRank) || !authorRank.isHigherThan(targetOldRank)) {
-                return Templates.no_permission.format();
+                return Templates.no_permission.formatGuild(channel);
             }
             ORank targetDbRank = CRank.findBy(args[1]);
             if (targetDbRank.id == 0) {
@@ -178,9 +178,9 @@ public class UserRankCommand extends AbstractCommand {
             userRank.rankId = targetDbRank.id;
             CUserRank.insertOrUpdate(userRank);
             SecurityHandler.initialize();
-            return Templates.command.userrank.rank.format(user, targetDbRank.codeName);
+            return Templates.command.userrank.rank.formatGuild(channel, user, targetDbRank.codeName);
         }
-        return Templates.invalid_use.format();
+        return Templates.invalid_use.formatGuild(channel);
     }
 
     private String tableFor(Collection<OUser.PermissionNode> nodes) {

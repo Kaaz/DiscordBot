@@ -107,7 +107,7 @@ public class GuildStatsCommand extends AbstractCommand {
                 return lastShardActivity(bot.getContainer());
             case "users":
                 if (!(channel instanceof TextChannel)) {
-                    return Templates.invalid_use.format();
+                    return Templates.invalid_use.formatGuild(channel);
                 }
                 TreeMap<Date, Integer> map = new TreeMap<>();
                 Guild guild = ((TextChannel) channel).getGuild();

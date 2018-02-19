@@ -90,7 +90,7 @@ public class ChangelogCommand extends AbstractCommand {
         message = printVersion(channel, version, bot.security.getSimpleRank(author, channel));
         if (message != null) {
             if (channel instanceof TextChannel && !PermissionUtil.checkPermission((TextChannel) channel, ((TextChannel) channel).getGuild().getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
-                return Templates.permission_missing.format(Permission.MESSAGE_EMBED_LINKS.toString());
+                return Templates.permission_missing.formatGuild(channel, Permission.MESSAGE_EMBED_LINKS.toString());
             }
             bot.queue.add(channel.sendMessage(message));
             return "";

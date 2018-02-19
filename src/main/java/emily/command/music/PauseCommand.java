@@ -72,19 +72,19 @@ public class PauseCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
         if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {
-            return Templates.music.required_role_not_found.format(guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));
+            return Templates.music.required_role_not_found.formatGuild(channel, guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));
         }
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         if (!player.canTogglePause()) {
-            return Templates.music.state_not_started.format();
+            return Templates.music.state_not_started.formatGuild(channel);
         }
         VoiceChannel userVoice = guild.getMember(author).getVoiceState().getChannel();
         if (userVoice == null || !player.isConnectedTo(userVoice)) {
-            return Templates.music.not_same_voicechannel.format();
+            return Templates.music.not_same_voicechannel.formatGuild(channel);
         }
         if (player.togglePause()) {
-            return Templates.music.state_paused.format();
+            return Templates.music.state_paused.formatGuild(channel);
         }
-        return Templates.music.state_resumed.format();
+        return Templates.music.state_resumed.formatGuild(channel);
     }
 }

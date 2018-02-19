@@ -138,7 +138,7 @@ public class RotateCommand extends AbstractCommand {
             Collections.addAll(inputArray, arg.split(""));
         }
         if (inputArray.size() <= 3) {
-            return Templates.command.rotate_too_short.format();
+            return Templates.command.rotate_too_short.formatGuild(channel);
         }
         for (int i = inputArray.size() - 1; i >= 0; i--) {
             if (inputArray.get(i) == null) {

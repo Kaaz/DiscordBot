@@ -57,6 +57,6 @@ public class LoggingCommand extends AbstractCommand {
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author);
-        return Templates.no_permission.format();
+        return Templates.no_permission.formatGuild(channel);
     }
 }

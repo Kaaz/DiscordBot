@@ -67,9 +67,9 @@ public class StreamCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         TextChannel tc = (TextChannel) channel;
         if (!tc.getGuild().getAudioManager().isConnected()) {
-            return Templates.music.no_users_in_channel.format();
+            return Templates.music.no_users_in_channel.formatGuild(channel);
         }
         bot.addStreamToQueue(args[0], tc.getGuild());
-        return Templates.music.streaming_from_url.format();
+        return Templates.music.streaming_from_url.formatGuild(channel);
     }
 }

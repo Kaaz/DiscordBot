@@ -72,6 +72,6 @@ public class GifCommand extends AbstractCommand {
         } catch (Exception ignored) {
             //this exception is about as useful as a nipple on a male
         }
-        return Templates.command.gif_not_today.format();
+        return Templates.command.gif_not_today.formatGuild(channel);
     }
 }

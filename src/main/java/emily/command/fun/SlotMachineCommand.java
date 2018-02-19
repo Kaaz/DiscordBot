@@ -92,7 +92,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
             if (betAmount > 0) {
                 OBank bank = CBanks.findBy(author.getIdLong());
                 if (bank.currentBalance < betAmount) {
-                    return Templates.gamble_insufficient_funds.format(betAmount, BotConfig.ECONOMY_CURRENCY_ICON);
+                    return Templates.gamble_insufficient_funds.formatGuild(channel, betAmount, BotConfig.ECONOMY_CURRENCY_ICON);
                 }
                 bank.transferTo(CBanks.getBotAccount(), betAmount, "slot machine");
             }
@@ -115,7 +115,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
                                     gameResult = "You rolled " + slotMachine.getWinSlotTimes() + " **" + slotMachine.getWinSlot().getEmote() + "** and won **nothing**";
                                 }
                             } else {
-                                gameResult = Templates.gamble_ai_lose.format();
+                                gameResult = Templates.gamble_ai_lose.formatGuild(channel);
                             }
                             bot.queue.add(message.editMessage(slotMachine.toString() + "\n" + gameResult));
                             f[0].cancel(false);
