@@ -68,11 +68,11 @@ public class SayCommand extends AbstractCommand {
                 if (bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.GUILD_ADMIN)) {
                     return output;
                 }
-                return Templates.command.SAY_CONTAINS_MENTION.format();
+                return Templates.command.SAY_CONTAINS_MENTION.formatGuild(channel);
             }
             return output;
         } else {
-            return Templates.command.SAY_WHATEXACTLY.format();
+            return Templates.command.SAY_WHATEXACTLY.formatGuild(channel);
         }
     }
 }

@@ -89,15 +89,18 @@ public class Template {
     }
 
     public String formatFull(long guildId, boolean forceDebug, Object... vars) {
+        boolean showTemplates = forceDebug || BotConfig.SHOW_KEYPHRASE;
+        if (!forceDebug && guildId > 0) {
+            showTemplates = GuildSettings.get(guildId).getBoolValue(GSetting.SHOW_TEMPLATES);
+        }
         if (templateArguments.length == 0 && optionalArgs.length == 0) {
+            if (showTemplates) {
+                return "`" + getKey() + "`";
+            }
             if (guildId == 0) {
                 return TemplateCache.getGlobal(getKey());
             }
             return TemplateCache.getGuild(CGuild.getCachedId(guildId), getKey());
-        }
-        boolean showTemplates = forceDebug || BotConfig.SHOW_KEYPHRASE;
-        if (!forceDebug && guildId > 0) {
-            showTemplates = "true".equals(GuildSettings.get(guildId).getOrDefault(GSetting.SHOW_TEMPLATES));
         }
         TemplateVariables env = TemplateVariables.create(vars);
         if (showTemplates) {
