@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MusicReactionHandler {
 
-    private final Map<Long, HashSet<String>> listeningMessages;
+    private final Map<Long, HashSet<Long>> listeningMessages;
     private final DiscordBot discordBot;
 
     public MusicReactionHandler(DiscordBot discordBot) {
@@ -44,18 +44,18 @@ public class MusicReactionHandler {
         listeningMessages = new ConcurrentHashMap<>();
     }
 
-    public synchronized void addMessage(long guildId, String id) {
+    public synchronized void addMessage(long guildId, long id) {
         if (!listeningMessages.containsKey(guildId)) {
             listeningMessages.put(guildId, new HashSet<>());
         }
         listeningMessages.get(guildId).add(id);
     }
 
-    public synchronized boolean isListening(long guildId, String messageId) {
+    public synchronized boolean isListening(long guildId, long messageId) {
         return listeningMessages.containsKey(guildId) && listeningMessages.get(guildId).contains(messageId);
     }
 
-    public synchronized void removeMessage(long guildId, String id) {
+    public synchronized void removeMessage(long guildId, long id) {
         if (listeningMessages.containsKey(guildId))
             listeningMessages.get(guildId).remove(id);
     }
@@ -66,7 +66,7 @@ public class MusicReactionHandler {
         }
     }
 
-    public synchronized boolean handle(String messageId, TextChannel channel, User invoker, MessageReaction.ReactionEmote emote, boolean isAdding) {
+    public synchronized boolean handle(long messageId, TextChannel channel, User invoker, MessageReaction.ReactionEmote emote, boolean isAdding) {
         long guildId = channel.getGuild().getIdLong();
         if (!isListening(guildId, messageId)) {
             return false;

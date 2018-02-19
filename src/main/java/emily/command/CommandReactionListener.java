@@ -26,12 +26,12 @@ import java.util.function.Consumer;
 public class CommandReactionListener<T> {
 
     private final LinkedHashMap<String, Consumer<Message>> reactions;
-    private final String userId;
+    private final long userId;
     private volatile T data;
     private Long expiresIn, lastAction;
     private boolean active;
 
-    public CommandReactionListener(String userId, T data) {
+    public CommandReactionListener(long userId, T data) {
         this.data = data;
         this.userId = userId;
         reactions = new LinkedHashMap<>();
@@ -121,7 +121,7 @@ public class CommandReactionListener<T> {
         return lastAction + expiresIn;
     }
 
-    public String getUserId() {
+    public long getUserId() {
         return userId;
     }
 }

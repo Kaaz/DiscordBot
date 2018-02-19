@@ -18,5 +18,5 @@ package emily.command;
 
 public interface ICommandReactionListener<T> {
 
-    CommandReactionListener<T> getReactionListener(String userId, T initialData);
+    CommandReactionListener<T> getReactionListener(long userId, T initialData);
 }

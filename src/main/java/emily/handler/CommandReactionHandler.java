@@ -29,13 +29,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandReactionHandler {
-    private final ConcurrentHashMap<String, ConcurrentHashMap<String, CommandReactionListener<?>>> reactions;
+    private final ConcurrentHashMap<Long, ConcurrentHashMap<Long, CommandReactionListener<?>>> reactions;
 
     public CommandReactionHandler() {
         reactions = new ConcurrentHashMap<>();
     }
 
-    public void addReactionListener(String guildId, Message message, CommandReactionListener<?> handler) {
+    public void addReactionListener(long guildId, Message message, CommandReactionListener<?> handler) {
         if (handler == null) {
             return;
         }
@@ -47,11 +47,11 @@ public class CommandReactionHandler {
         if (!reactions.containsKey(guildId)) {
             reactions.put(guildId, new ConcurrentHashMap<>());
         }
-        if (!reactions.get(guildId).containsKey(message.getId())) {
+        if (!reactions.get(guildId).containsKey(message.getIdLong())) {
             for (String emote : handler.getEmotes()) {
                 message.addReaction(emote).complete();
             }
-            reactions.get(guildId).put(message.getId(), handler);
+            reactions.get(guildId).put(message.getIdLong(), handler);
         }
     }
 
@@ -63,12 +63,12 @@ public class CommandReactionHandler {
      * @param userId    id of the user reacting
      * @param reaction  the reaction
      */
-    public void handle(TextChannel channel, String messageId, String userId, MessageReaction reaction) {
-        CommandReactionListener<?> listener = reactions.get(channel.getGuild().getId()).get(messageId);
+    public void handle(TextChannel channel, long messageId, long userId, MessageReaction reaction) {
+        CommandReactionListener<?> listener = reactions.get(channel.getGuild().getIdLong()).get(messageId);
         if (!listener.isActive() || listener.getExpiresInTimestamp() < System.currentTimeMillis()) {
-            reactions.get(channel.getGuild().getId()).remove(messageId);
-        } else if (listener.hasReaction(reaction.getReactionEmote().getName()) && listener.getUserId().equals(userId)) {
-            reactions.get(channel.getGuild().getId()).get(messageId).updateLastAction();
+            reactions.get(channel.getGuild().getIdLong()).remove(messageId);
+        } else if (listener.hasReaction(reaction.getReactionEmote().getName()) && listener.getUserId() == userId) {
+            reactions.get(channel.getGuild().getIdLong()).get(messageId).updateLastAction();
             Message message = channel.getMessageById(messageId).complete();
             listener.react(reaction.getReactionEmote().getName(), message);
         }
@@ -82,11 +82,11 @@ public class CommandReactionHandler {
      * @param messageId id of the message
      * @return do we have an handler?
      */
-    public boolean canHandle(String guildId, String messageId) {
+    public boolean canHandle(long guildId, long messageId) {
         return reactions.containsKey(guildId) && reactions.get(guildId).containsKey(messageId);
     }
 
-    public synchronized void removeGuild(String guildId) {
+    public synchronized void removeGuild(long guildId) {
         reactions.remove(guildId);
     }
 
@@ -95,8 +95,8 @@ public class CommandReactionHandler {
      */
     public synchronized void cleanCache() {
         long now = System.currentTimeMillis();
-        for (Iterator<Map.Entry<String, ConcurrentHashMap<String, CommandReactionListener<?>>>> iterator = reactions.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry<String, ConcurrentHashMap<String, CommandReactionListener<?>>> mapEntry = iterator.next();
+        for (Iterator<Map.Entry<Long, ConcurrentHashMap<Long, CommandReactionListener<?>>>> iterator = reactions.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<Long, ConcurrentHashMap<Long, CommandReactionListener<?>>> mapEntry = iterator.next();
             mapEntry.getValue().values().removeIf(listener -> !listener.isActive() || listener.getExpiresInTimestamp() < now);
             if (mapEntry.getValue().values().isEmpty()) {
                 reactions.remove(mapEntry.getKey());

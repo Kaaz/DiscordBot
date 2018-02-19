@@ -218,12 +218,12 @@ public class JDAEvents extends ListenerAdapter {
             return;
         }
         TextChannel channel = (TextChannel) e.getChannel();
-        if (discordBot.commandReactionHandler.canHandle(channel.getGuild().getId(), e.getMessageId())) {
-            discordBot.commandReactionHandler.handle(channel, e.getMessageId(), e.getUser().getId(), e.getReaction());
+        if (discordBot.commandReactionHandler.canHandle(channel.getGuild().getIdLong(), e.getMessageIdLong())) {
+            discordBot.commandReactionHandler.handle(channel, e.getMessageIdLong(), e.getUser().getIdLong(), e.getReaction());
             return;
         }
         if (!discordBot.gameHandler.executeReaction(e.getUser(), e.getChannel(), e.getReaction(), e.getMessageId())) {
-            if (!discordBot.musicReactionHandler.handle(e.getMessageId(), channel, e.getUser(), e.getReactionEmote(), adding)) {
+            if (!discordBot.musicReactionHandler.handle(e.getMessageIdLong(), channel, e.getUser(), e.getReactionEmote(), adding)) {
                 discordBot.roleReactionHandler.handle(e.getMessageId(), channel, e.getUser(), e.getReactionEmote(), adding);
             }
         }

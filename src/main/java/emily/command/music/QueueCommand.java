@@ -82,8 +82,8 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
                     msg -> {
                         if (maxPage > 1) {
                             bot.commandReactionHandler.addReactionListener(
-                                    guild.getId(), msg,
-                                    getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild)));
+                                    guild.getIdLong(), msg,
+                                    getReactionListener(author.getIdLong(), new PaginationInfo(1, maxPage, guild)));
                         }
                     }
             );
@@ -118,7 +118,7 @@ public class QueueCommand extends AbstractCommand implements ICommandReactionLis
     }
 
     @Override
-    public CommandReactionListener<PaginationInfo> getReactionListener(String userId, PaginationInfo initialData) {
+    public CommandReactionListener<PaginationInfo> getReactionListener(long userId, PaginationInfo initialData) {
         CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(userId, initialData);
         listener.setExpiresIn(TimeUnit.MINUTES, 2);
         listener.registerReaction(Emojibet.PREV_TRACK, o -> {

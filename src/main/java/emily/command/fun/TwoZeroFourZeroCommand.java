@@ -73,13 +73,13 @@ public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandR
         }
         Game2048 game = new Game2048();
         game.addPlayer(author);
-        bot.queue.add(channel.sendMessage(game.toString()), message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message, getReactionListener(author.getId(), game)));
+        bot.queue.add(channel.sendMessage(game.toString()), message -> bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getIdLong(), message, getReactionListener(author.getIdLong(), game)));
         return "";
 
     }
 
     @Override
-    public CommandReactionListener<Game2048> getReactionListener(String userId, Game2048 game) {
+    public CommandReactionListener<Game2048> getReactionListener(long userId, Game2048 game) {
         CommandReactionListener<Game2048> listener = new CommandReactionListener<>(userId, game);
         listener.setExpiresIn(TimeUnit.MINUTES, 5);
         for (String reaction : game.getReactions()) {

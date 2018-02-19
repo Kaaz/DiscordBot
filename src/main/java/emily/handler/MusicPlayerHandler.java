@@ -349,7 +349,7 @@ public class MusicPlayerHandler {
                     if (aListenerIsAtLeast(SimpleRank.BOT_ADMIN)) {
                         message.addReaction(Emojibet.NO_ENTRY).complete();
                     }
-                    bot.musicReactionHandler.addMessage(guildId, message.getId());
+                    bot.musicReactionHandler.addMessage(guildId, message.getIdLong());
                 }
             };
             Guild guild = bot.getJda().getGuildById(guildId);

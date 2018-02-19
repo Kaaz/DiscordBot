@@ -212,7 +212,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                     }
                     ret += "\nYou can pick a song by clicking one of the reactions";
                     txt.sendMessage(ret).queue(msg -> {
-                        CommandReactionListener<Integer> listener = new CommandReactionListener<>(author.getId(), null);
+                        CommandReactionListener<Integer> listener = new CommandReactionListener<>(author.getIdLong(), null);
                         for (Pair<String, String> reaction : reactions) {
                             listener.registerReaction(reaction.getKey(),
                                     message -> {
@@ -224,7 +224,7 @@ public class PlayCommand extends AbstractCommand implements ICommandCleanup {
                                         }
                                     });
                         }
-                        bot.commandReactionHandler.addReactionListener(guild.getId(), msg, listener);
+                        bot.commandReactionHandler.addReactionListener(guild.getIdLong(), msg, listener);
                     });
                     return "";
                 }

@@ -161,8 +161,8 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
                 }
                 bot.queue.add(channel.sendMessage(makeEmbedConfig(guild, activePage)),
                         message ->
-                                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), message,
-                                        getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild))));
+                                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getIdLong(), message,
+                                        getReactionListener(author.getIdLong(), new PaginationInfo(1, maxPage, guild))));
 
                 return "";
             }
@@ -240,7 +240,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
     }
 
     @Override
-    public CommandReactionListener<PaginationInfo> getReactionListener(String userId, PaginationInfo data) {
+    public CommandReactionListener<PaginationInfo> getReactionListener(long userId, PaginationInfo data) {
 
         CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(userId, data);
         listener.setExpiresIn(TimeUnit.MINUTES, 2);

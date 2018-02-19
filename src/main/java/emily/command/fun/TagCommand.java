@@ -108,8 +108,8 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
             bot.queue.add(channel.sendMessage(makePage(guild, 1, maxPage)),
                     message ->
                             bot.commandReactionHandler.addReactionListener(
-                                    guild.getId(), message,
-                                    getReactionListener(author.getId(), new PaginationInfo(1, maxPage, guild))));
+                                    guild.getIdLong(), message,
+                                    getReactionListener(author.getIdLong(), new PaginationInfo(1, maxPage, guild))));
             return "";
 
         } else if (args[0].equalsIgnoreCase("mine")) {
@@ -200,7 +200,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
     }
 
     @Override
-    public CommandReactionListener<PaginationInfo> getReactionListener(String userId, PaginationInfo initialData) {
+    public CommandReactionListener<PaginationInfo> getReactionListener(long userId, PaginationInfo initialData) {
         CommandReactionListener<PaginationInfo> listener = new CommandReactionListener<>(userId, initialData);
         listener.setExpiresIn(TimeUnit.MINUTES, 2);
         listener.registerReaction(Emojibet.PREV_TRACK, o -> {

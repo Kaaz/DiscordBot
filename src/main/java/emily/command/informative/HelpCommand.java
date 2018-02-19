@@ -118,7 +118,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
                 CommandCategory cat = CommandCategory.getFirstWithPermission(userRank);
                 bot.queue.add(channel.sendMessage(writeFancyHeader(channel, cat, map.keySet()) + styleTableCategory(cat, map.get(cat)) + writeFancyFooter(channel)),
                         msg ->
-                                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), msg, getReactionListener(author.getId(), new ReactionData(userRank, cat))));
+                                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getIdLong(), msg, getReactionListener(author.getIdLong(), new ReactionData(userRank, cat))));
 
                 return "";
             }
@@ -190,7 +190,7 @@ public class HelpCommand extends AbstractCommand implements ICommandReactionList
     }
 
     @Override
-    public CommandReactionListener<ReactionData> getReactionListener(String userId, ReactionData data) {
+    public CommandReactionListener<ReactionData> getReactionListener(long userId, ReactionData data) {
         CommandReactionListener<ReactionData> listener = new CommandReactionListener<>(userId, data);
         HashMap<CommandCategory, ArrayList<String>> map = getCommandMap(data.getRank());
         for (CommandCategory category : CommandCategory.values()) {

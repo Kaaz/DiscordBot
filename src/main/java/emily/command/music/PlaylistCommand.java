@@ -212,8 +212,8 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 bot.queue.add(channel.sendMessage(makePage(guild, playlist, currentPage, maxPage)),
                         msg -> {
                             if (maxPage > 1) {
-                                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getId(), msg,
-                                        getReactionListener(author.getId(), new PaginationInfo<>(currentPage, maxPage, guild, finalPlaylist)));
+                                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getIdLong(), msg,
+                                        getReactionListener(author.getIdLong(), new PaginationInfo<>(currentPage, maxPage, guild, finalPlaylist)));
                             }
                         });
                 return "";
@@ -474,7 +474,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
     }
 
     @Override
-    public CommandReactionListener<PaginationInfo<OPlaylist>> getReactionListener(String userId, PaginationInfo<OPlaylist> initialData) {
+    public CommandReactionListener<PaginationInfo<OPlaylist>> getReactionListener(long userId, PaginationInfo<OPlaylist> initialData) {
         CommandReactionListener<PaginationInfo<OPlaylist>> listener = new CommandReactionListener<>(userId, initialData);
         listener.setExpiresIn(TimeUnit.MINUTES, 2);
         listener.registerReaction(Emojibet.PREV_TRACK, o -> {

@@ -316,7 +316,7 @@ public class DiscordBot {
         GuildSettings.remove(guild.getId());
         autoReplyhandler.removeGuild(guild.getId());
         MusicPlayerHandler.removeGuild(guild);
-        commandReactionHandler.removeGuild(guild.getId());
+        commandReactionHandler.removeGuild(guild.getIdLong());
     }
 
     /**
