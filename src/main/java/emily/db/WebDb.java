@@ -40,7 +40,7 @@ public class WebDb {
 
     public static void init() {
         connections.clear();
-        connections.put("discord", new MySQLAdapter(BotConfig.DB_HOST, BotConfig.DB_USER, BotConfig.DB_PASS, BotConfig.DB_NAME));
+        connections.put("discord", new MySQLAdapter(BotConfig.DB_HOST, BotConfig.DB_PORT, BotConfig.DB_USER, BotConfig.DB_PASS, BotConfig.DB_NAME));
         try {
             get().query("SET NAMES utf8mb4");
         } catch (SQLException e) {

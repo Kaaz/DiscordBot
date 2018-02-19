@@ -186,23 +186,12 @@ public class DiscordBot {
     }
 
     public void logGuildEvent(Guild guild, String category, String message) {
-        String channelIdentifier = GuildSettings.get(guild).getOrDefault(GSetting.BOT_LOGGING_CHANNEL);
-        if ("false".equalsIgnoreCase(channelIdentifier)) {
+        TextChannel channel = getChannelFor(guild.getIdLong(), GSetting.BOT_LOGGING_CHANNEL);
+        if (channel == null) {
             return;
         }
-        TextChannel channel;
-        if (channelIdentifier.matches("\\d{12,}")) {
-            channel = guild.getTextChannelById(channelIdentifier);
-        } else {
-            channel = DisUtil.findChannel(guild, channelIdentifier);
-        }
-        if (channel == null || !channel.canTalk()) {
-//            GuildSettings.get(guild).set(guild, null, "false");
-            if (channel == null) {
-                out.sendAsyncMessage(getDefaultChannel(guild), Templates.config.cant_find_logchannel.format(channelIdentifier));
-            } else {
-                out.sendAsyncMessage(getDefaultChannel(guild), Templates.config.cant_talk_in_channel.format(channelIdentifier));
-            }
+        if (!channel.canTalk()) {
+            out.sendAsyncMessage(getDefaultChannel(guild), Templates.config.cant_talk_in_channel.format(GuildSettings.get(guild).getOrDefault(GSetting.BOT_LOGGING_CHANNEL)));
             return;
         }
         out.sendAsyncMessage(channel, String.format("%s %s", category, message));
@@ -224,13 +213,7 @@ public class DiscordBot {
      * @return default chat channel
      */
     public synchronized TextChannel getDefaultChannel(Guild guild) {
-        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(GSetting.BOT_CHANNEL);
-        TextChannel defaultChannel;
-        if (channelIdentifier.matches("\\d{12,}")) {
-            defaultChannel = guild.getTextChannelById(channelIdentifier);
-        } else {
-            defaultChannel = DisUtil.findChannel(guild, channelIdentifier);
-        }
+        TextChannel defaultChannel = getChannelFor(guild.getIdLong(), GSetting.BOT_CHANNEL);
         if (defaultChannel != null) {
             return defaultChannel;
         }
@@ -244,22 +227,15 @@ public class DiscordBot {
      * @return default music channel
      */
     public synchronized TextChannel getMusicChannel(Guild guild) {
-        return getMusicChannel(guild.getId());
+        return getMusicChannel(guild.getIdLong());
     }
 
-    public synchronized TextChannel getMusicChannel(String guildId) {
+    public synchronized TextChannel getMusicChannel(long guildId) {
         Guild guild = getJda().getGuildById(guildId);
         if (guild == null) {
             return null;
         }
-        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(GSetting.MUSIC_CHANNEL);
-        TextChannel channel;
-        if (channelIdentifier.matches("\\d{12,}")) {
-            channel = guild.getTextChannelById(channelIdentifier);
-        } else {
-            channel = DisUtil.findChannel(guild, channelIdentifier);
-        }
-
+        TextChannel channel = getChannelFor(guildId, GSetting.MUSIC_CHANNEL);
         if (channel == null) {
             channel = getDefaultChannel(guild);
         }
@@ -275,13 +251,29 @@ public class DiscordBot {
      * @param guildId the guild to get the modlog-channel for
      * @return channel || null
      */
-    public synchronized TextChannel getModlogChannel(String guildId) {
+    public synchronized TextChannel getModlogChannel(long guildId) {
+        return getChannelFor(guildId, GSetting.BOT_MODLOG_CHANNEL);
+    }
+
+    /**
+     * retrieves a channel for setting
+     *
+     * @param guildId the guild
+     * @param setting the channel setting
+     * @return A text channel Or null in case it can't be found
+     */
+    private synchronized TextChannel getChannelFor(long guildId, GSetting setting) {
         Guild guild = getJda().getGuildById(guildId);
-//        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault();
-//        if ("false".equals(channelIdentifier)) {
+        if (guild == null) {
+            return null;
+        }
+        String channelId = GuildSettings.get(guild.getIdLong()).getOrDefault(setting);
+        if (channelId.matches("\\d{12,}")) {
+            return guild.getTextChannelById(channelId);
+        } else if (!channelId.isEmpty() && !"false".equals(channelId)) {
+            return DisUtil.findChannel(guild, channelId);
+        }
         return null;
-//        }
-//        return guild.getTextChannelById(channelIdentifier);
     }
 
     /**
@@ -290,12 +282,8 @@ public class DiscordBot {
      * @param guild the guild to get the modlog-channel for
      * @return channel || null
      */
-    public synchronized TextChannel getCommandLogChannel(Guild guild) {
-//        String channelIdentifier = GuildSettings.get(guild.getId()).getOrDefault(SettingCommandLoggingChannel.class);
-//        if ("false".equals(channelIdentifier)) {
-        return null;
-//        }
-//        return guild.getTextChannelById(channelIdentifier);
+    public synchronized TextChannel getCommandLogChannel(long guild) {
+        return getChannelFor(guild, GSetting.COMMAND_LOGGING_CHANNEL);
     }
 
     /**

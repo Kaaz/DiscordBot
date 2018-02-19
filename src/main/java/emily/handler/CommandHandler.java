@@ -188,7 +188,7 @@ public class CommandHandler {
         if (commandSuccess) {
             if (channel instanceof TextChannel) {
                 TextChannel tc = (TextChannel) channel;
-                TextChannel commandLogChannel = bot.getCommandLogChannel(tc.getGuild());
+                TextChannel commandLogChannel = bot.getCommandLogChannel(tc.getGuild().getIdLong());
                 if (commandLogChannel != null && commandLogChannel.canTalk()) {
                     bot.queue.add(commandLogChannel.sendMessage(
                             String.format("%s **%s#%s** used %s `%s` in %s",

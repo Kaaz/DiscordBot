@@ -165,6 +165,10 @@ public class BotConfig {
     @ConfigurationOption
     public static String DB_HOST = "localhost";
 
+    //mysql port
+    @ConfigurationOption
+    public static int DB_PORT = 3306;
+
     //mysql user
     @ConfigurationOption
     public static String DB_USER = "root";

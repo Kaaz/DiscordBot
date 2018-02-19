@@ -80,7 +80,7 @@ public class MusicPlayerHandler {
     private final DiscordBot bot;
     private final TrackScheduler scheduler;
     private final HashSet<User> skipVotes;
-    private final String guildId;
+    private final long guildId;
     private volatile boolean inRepeatMode = false;
     private volatile boolean stopAfterTrack = false;
     private volatile int currentlyPlaying = 0;
@@ -92,7 +92,6 @@ public class MusicPlayerHandler {
     private volatile OPlaylist playlist;
     private Random rng;
     private volatile LinkedList<OMusic> queue;
-    //
 
     private MusicPlayerHandler(Guild guild, DiscordBot bot) {
 
@@ -100,7 +99,7 @@ public class MusicPlayerHandler {
         AudioManager guildManager = guild.getAudioManager();
         player = playerManager.createPlayer();
         this.bot = bot;
-        this.guildId = guild.getId();
+        this.guildId = guild.getIdLong();
         guildManager.setSendingHandler(new AudioPlayerSendHandler(player));
         queue = new LinkedList<>();
         scheduler = new TrackScheduler(player);
@@ -158,7 +157,7 @@ public class MusicPlayerHandler {
         return playlist;
     }
 
-    public String getGuild() {
+    public long getGuild() {
         return guildId;
     }
 

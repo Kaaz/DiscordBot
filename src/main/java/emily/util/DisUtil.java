@@ -22,7 +22,6 @@ import emily.db.model.OGuild;
 import emily.guildsettings.DefaultGuildSettings;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
-import emily.main.BotConfig;
 import emily.main.BotContainer;
 import emily.main.Launcher;
 import net.dv8tion.jda.core.JDA;
@@ -370,14 +369,11 @@ public class DisUtil {
     }
 
     public static String getCommandPrefix(Guild guild) {
-        return getCommandPrefix(guild.getId());
+        return getCommandPrefix(guild.getIdLong());
     }
 
-    public static String getCommandPrefix(String guildId) {
-        if (guildId != null) {
-            return GuildSettings.get(guildId).getOrDefault(GSetting.COMMAND_PREFIX);
-        }
-        return BotConfig.BOT_COMMAND_PREFIX;
+    public static String getCommandPrefix(long guildId) {
+        return GuildSettings.get(guildId).getOrDefault(GSetting.COMMAND_PREFIX);
     }
 
     /**

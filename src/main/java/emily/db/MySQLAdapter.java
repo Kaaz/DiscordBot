@@ -33,17 +33,19 @@ import java.util.Calendar;
 
 public class MySQLAdapter {
 
-    protected String DB_NAME;
-    protected String DB_USER;
-    protected String DB_ADRES;
-    protected String DB_PASSWORD;
+    private String DB_NAME;
+    private String DB_USER;
+    private String DB_ADRES;
+    private int DB_PORT;
+    private String DB_PASSWORD;
     private Connection c;
 
-    public MySQLAdapter(String server, String databaseUser, String databasePassword, String databaseName) {
+    public MySQLAdapter(String server, int port, String databaseUser, String databasePassword, String databaseName) {
         DB_ADRES = server;
         DB_USER = databaseUser;
         DB_PASSWORD = databasePassword;
         DB_NAME = databaseName;
+        DB_PORT = port;
     }
 
     private Connection createConnection() {
@@ -52,7 +54,7 @@ public class MySQLAdapter {
             dataSource.setUser(DB_USER);
             dataSource.setPassword(DB_PASSWORD);
             dataSource.setServerName(DB_ADRES);
-            dataSource.setPort(3306);
+            dataSource.setPort(DB_PORT);
             dataSource.setDatabaseName(DB_NAME);
             dataSource.setZeroDateTimeBehavior("convertToNull");
             dataSource.setUseUnicode(true);

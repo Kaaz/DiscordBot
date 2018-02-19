@@ -85,7 +85,7 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
             return Templates.command.modaction_failed.format(getPunishType().getKeyword().toLowerCase(), targetUser);
         }
         int caseId = CModerationCase.insert(guild, targetUser, author, getPunishType(), null);
-        TextChannel modlogChannel = bot.getModlogChannel(guild.getId());
+        TextChannel modlogChannel = bot.getModlogChannel(guild.getIdLong());
         if (modlogChannel != null) {
             bot.queue.add(modlogChannel.sendMessage(CModerationCase.buildCase(guild, caseId)),
                     message -> {
