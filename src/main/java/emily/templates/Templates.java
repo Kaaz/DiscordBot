@@ -37,7 +37,7 @@ public final class Templates {
     final private static HashMap<String, Template> dictionary = new HashMap<>();
 
     public static Template getByKey(String templateKey) {
-        return dictionary.get(templateKey);
+        return dictionary.get(templateKey.toLowerCase());
     }
 
     public static int uniquePhraseCount() {
@@ -57,7 +57,7 @@ public final class Templates {
      * @return list of filtered keyphrases
      */
     public static List<String> getAllKeyphrases(String contains) {
-        List<String> matching = dictionary.keySet().stream().filter(s -> s.contains(contains)).collect(Collectors.toList());
+        List<String> matching = dictionary.keySet().stream().filter(s -> s.contains(contains.toLowerCase())).collect(Collectors.toList());
         if (matching.size() > 25) {
             return matching.subList(0, 25);
         }
@@ -65,7 +65,7 @@ public final class Templates {
     }
 
     public static boolean templateExists(String key) {
-        return dictionary.containsKey(key);
+        return dictionary.containsKey(key.toLowerCase());
     }
 
     public static void init() {

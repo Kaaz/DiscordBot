@@ -100,6 +100,7 @@ public class TemplateCache {
     }
 
     private static void addToGuildCache(int guildId, String keyphrase, String text) {
+        keyphrase = keyphrase.toLowerCase();
         if (!guildDictionary.containsKey(guildId)) {
             guildDictionary.put(guildId, new ConcurrentHashMap<>());
         }
@@ -115,19 +116,19 @@ public class TemplateCache {
         return getGuild(CGuild.getCachedId(guild.getIdLong()), keyPhrase);
     }
     public static String getGuild(int guildId, String keyPhrase) {
-        if (!guildDictionary.containsKey(guildId) || !guildDictionary.get(guildId).containsKey(keyPhrase)) {
+        if (!guildDictionary.containsKey(guildId) || !guildDictionary.get(guildId).containsKey(keyPhrase.toLowerCase())) {
             return getGlobal(keyPhrase);
         }
-        List<String> list = guildDictionary.get(guildId).get(keyPhrase);
+        List<String> list = guildDictionary.get(guildId).get(keyPhrase.toLowerCase());
         return list.get(rng.nextInt(list.size()));
     }
 
     public static String getGlobal(String keyPhrase) {
-        if (dictionary.containsKey(keyPhrase)) {
-            List<String> list = dictionary.get(keyPhrase);
+        if (dictionary.containsKey(keyPhrase.toLowerCase())) {
+            List<String> list = dictionary.get(keyPhrase.toLowerCase());
             return list.get(rng.nextInt(list.size()));
         }
-        return "**`" + keyPhrase + "`**";
+        return "**`" + keyPhrase.toLowerCase() + "`**";
     }
 
     /**
@@ -137,20 +138,21 @@ public class TemplateCache {
      * @return list
      */
     public static List<String> getAllFor(String keyphrase) {
-        if (dictionary.containsKey(keyphrase)) {
-            return dictionary.get(keyphrase);
+        if (dictionary.containsKey(keyphrase.toLowerCase())) {
+            return dictionary.get(keyphrase.toLowerCase());
         }
         return new ArrayList<>();
     }
 
     public static List<String> getAllFor(int guildId, String keyphrase) {
-        if (guildId > 0 && guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyphrase)) {
-            return guildDictionary.get(guildId).get(keyphrase);
+        if (guildId > 0 && guildDictionary.containsKey(guildId) && guildDictionary.get(guildId).containsKey(keyphrase.toLowerCase())) {
+            return guildDictionary.get(guildId).get(keyphrase.toLowerCase());
         }
         return getAllFor(keyphrase);
     }
 
     public static synchronized void remove(int guildId, String keyPhrase, String text) {
+        keyPhrase = keyPhrase.toLowerCase();
         if (guildId == 0) {
             removeGlobal(keyPhrase, text);
             return;
@@ -172,6 +174,7 @@ public class TemplateCache {
      * @param text      text
      */
     public static synchronized void removeGlobal(String keyPhrase, String text) {
+        keyPhrase = keyPhrase.toLowerCase();
         if (dictionary.containsKey(keyPhrase) && dictionary.get(keyPhrase).contains(text)) {
             try {
                 WebDb.get().query("DELETE FROM template_texts WHERE keyphrase = ? AND text = ? ", keyPhrase, text);
@@ -194,6 +197,7 @@ public class TemplateCache {
         if (!Templates.templateExists(keyPhrase)) {
             return false;
         }
+        keyPhrase = keyPhrase.toLowerCase();
         if (guildId == 0) {
             addGlobal(keyPhrase, text);
             return true;
@@ -222,6 +226,7 @@ public class TemplateCache {
      */
     public static synchronized void addGlobal(String keyPhrase, String text) {
         try {
+            keyPhrase = keyPhrase.toLowerCase();
             WebDb.get().query("INSERT INTO template_texts(keyphrase,text,guild_id) VALUES(?, ?, 0)", keyPhrase, text);
             if (!dictionary.containsKey(keyPhrase)) {
                 dictionary.put(keyPhrase, new ArrayList<>());
