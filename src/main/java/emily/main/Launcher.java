@@ -135,9 +135,7 @@ public class Launcher {
      * helper function, retrieves youtubeTitle for mp3 files which contain youtube videocode as filename
      */
     public static void fixExistingYoutubeFiles() {
-        File folder = new File(BotConfig.MUSIC_DIRECTORY);
-        String[] fileList = folder.list((dir, name) -> name.toLowerCase().endsWith(".mp3"));
-        for (String file : fileList) {
+        for (String file : new String[]{}) {
             System.out.println(file);
             String videocode = file.replace(".mp3", "");
             OMusic rec = CMusic.findByYoutubeId(videocode);

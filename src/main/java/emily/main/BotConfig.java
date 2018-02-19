@@ -87,8 +87,6 @@ public class BotConfig {
     @ConfigurationOption
     public static boolean BOT_AUTO_UPDATE = false;
 
-    @ConfigurationOption
-    public static boolean BOT_ON_BOT_ACTION = false;
     //display name of the bot
     @ConfigurationOption
     public static String BOT_NAME = "Emily";
@@ -113,10 +111,6 @@ public class BotConfig {
     @ConfigurationOption
     public static String BOT_TOKEN = "mybottokenhere";
 
-    //token used to login to discord by the restart bot, used when BOT_RESTART_INACTIVE_SHARDS is true
-    @ConfigurationOption
-    public static String BOT_RESTART_TOKEN = "mybottokenhere";
-
     //prefix for all commands !help etc.
     @ConfigurationOption
     public static boolean BOT_CHATTING_ENABLED = true;
@@ -137,29 +131,12 @@ public class BotConfig {
     @ConfigurationOption
     public static boolean BOT_COMMAND_SHOW_UNKNOWN = false;
 
-    //shows console output from the youtube-dl process
-    @ConfigurationOption
-    public static volatile boolean YOUTUBEDL_DEBUG_PROCESS = false;
-
-    //location of youtubedl.exe
-    @ConfigurationOption
-    public static String YOUTUBEDL_EXE = "H:/youtube-dl.exe";
-
     //directory where all the music is stored
     @ConfigurationOption
     public static String MUSIC_DIRECTORY = "H:/music/";
 
     @ConfigurationOption
     public static int MUSIC_MAX_PLAYLIST_SIZE = 50;
-
-    //save music on a different location while its being processed?
-    @ConfigurationOption
-    public static boolean MUSIC_USE_CACHE_DIR = false;
-
-    //where the downloading music is placed till its processed
-    @ConfigurationOption
-    public static String MUSIC_CACHE_DIR = "/tmp/";
-
 
     //mysql hostname
     @ConfigurationOption
@@ -192,10 +169,6 @@ public class BotConfig {
     //enable hearthstone globally
     @ConfigurationOption
     public static boolean MODULE_HEARTHSTONE_ENABLED = false;
-
-    //enable music globally
-    @ConfigurationOption
-    public static boolean MODULE_MUSIC_ENABLED = true;
 
     //name of the currency
     @ConfigurationOption

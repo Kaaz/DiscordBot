@@ -61,7 +61,7 @@ public class DebugCommand extends AbstractCommand {
     @Override
     public String[] getUsage() {
         return new String[]{
-                "fixusernames, fixrelations, youtube ",
+                "fixusernames, fixrelations ",
         };
     }
 
@@ -78,11 +78,6 @@ public class DebugCommand extends AbstractCommand {
         if (args.length == 0) {
             return Emojibet.EYES;
         }
-        boolean value = false;
-        boolean updating = args.length > 1;
-        if (updating) {
-            value = Misc.isFuzzyTrue(args[1]);
-        }
         switch (args[0].toLowerCase()) {
             case "fixusernames":
                 fixUserNames(bot, channel);
@@ -90,20 +85,9 @@ public class DebugCommand extends AbstractCommand {
             case "fixrelations":
                 fixMemberships(bot, channel);
                 return "";
-            case "yt":
-            case "youtube":
-                if (updating) {
-                    BotConfig.YOUTUBEDL_DEBUG_PROCESS = value;
-                }
-                value = BotConfig.YOUTUBEDL_DEBUG_PROCESS;
-                break;
             default:
                 return Emojibet.SHRUG;
         }
-        if (updating) {
-            return Emojibet.OKE_SIGN + " " + args[0] + " is set to " + value;
-        }
-        return Emojibet.UNLOCKED + " " + args[0] + " = `" + value + "`";
     }
 
     private void fixUserNames(DiscordBot bot, MessageChannel channel) {
