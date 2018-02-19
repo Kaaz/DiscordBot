@@ -278,7 +278,10 @@ public class MusicPlayerHandler {
 
                 @Override
                 public void loadFailed(FriendlyException exception) {
-                    bot.out.sendMessageToCreator("file:" + trackToAdd.youtubecode + "\n" + "Message: " + exception.getMessage());
+                    TextChannel musicChannel = bot.getMusicChannel(guildId);
+                    if(musicChannel != null){
+                        bot.queue.add(musicChannel.sendMessage(String.format("can't play `%s`. Reason: %s", trackToAdd.youtubecode, exception.getMessage())));
+                    }
                     if (finalKeepGoing) {
                         trackEnded();
                     }
