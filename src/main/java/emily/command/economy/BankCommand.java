@@ -81,7 +81,7 @@ public class BankCommand extends AbstractCommand {
 
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
-        OBank bank = CBanks.findBy(author.getId());
+        OBank bank = CBanks.findBy(author.getIdLong());
         if (args.length == 0) {
             return String.format("Your current balance is `%s` %s ", bank.currentBalance, BotConfig.ECONOMY_CURRENCY_ICON);
         }
@@ -102,7 +102,7 @@ public class BankCommand extends AbstractCommand {
                 if (targetUser == null) {
                     return Templates.config.cant_find_user.format(args[1]);
                 }
-                OBank targetBank = CBanks.findBy(targetUser.getId());
+                OBank targetBank = CBanks.findBy(targetUser.getIdLong());
                 String description = "Gift!";
                 if (args.length > 3) {
                     description = Misc.joinStrings(args, 3);

@@ -223,7 +223,7 @@ public class RoleRankings {
      */
     public static void assignUserRole(DiscordBot bot, Guild guild, User user) {
         List<Role> roles = guild.getMember(user).getRoles();
-        OGuildMember membership = CGuildMember.findBy(guild.getId(), user.getId());
+        OGuildMember membership = CGuildMember.findBy(guild.getIdLong(), user.getIdLong());
         boolean hasTargetRole = false;
         String prefix = RoleRankings.getPrefix(guild);
         if (membership.joinDate == null) {

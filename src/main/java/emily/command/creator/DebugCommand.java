@@ -120,7 +120,7 @@ public class DebugCommand extends AbstractCommand {
         long usersCompleted = 0;
         for (DiscordBot shard : shards) {
             for (User user : shard.getJda().getUsers()) {
-                CUser.getCachedId(user.getId(), user.getName());
+                CUser.getCachedId(user.getIdLong(), user.getName());
                 usersCompleted++;
                 if (usersCompleted % updateInterval == 0L) {
                     try {
@@ -159,8 +159,8 @@ public class DebugCommand extends AbstractCommand {
             for (Guild guild : shard.getJda().getGuilds()) {
                 for (Member member : guild.getMembers()) {
                     User guildUser = member.getUser();
-                    int userId = CUser.getCachedId(guildUser.getId(), guildUser.getName());
-                    OGuildMember guildMember = CGuildMember.findBy(CGuild.getCachedId(Long.parseLong(guild.getId())), userId);
+                    int userId = CUser.getCachedId(guildUser.getIdLong(), guildUser.getName());
+                    OGuildMember guildMember = CGuildMember.findBy(CGuild.getCachedId(guild.getIdLong()), userId);
                     guildMember.joinDate = new Timestamp(member.getJoinDate().toInstant().toEpochMilli());
                     CGuildMember.insertOrUpdate(guildMember);
                     usersCompleted++;

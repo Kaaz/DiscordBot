@@ -83,7 +83,7 @@ public class GetroleCommand extends AbstractCommand {
             return Templates.permission_missing.format(Permission.MANAGE_ROLES.toString());
         }
         if (args.length == 0 || args[0].equalsIgnoreCase("list")) {
-            List<OGuildRoleAssignable> roles = CGuildRoleAssignable.getRolesFor(CGuild.getCachedId(guild.getId()));
+            List<OGuildRoleAssignable> roles = CGuildRoleAssignable.getRolesFor(CGuild.getCachedId(guild.getIdLong()));
             if (roles.isEmpty()) {
                 return Templates.command.getrole.empty.format();
             }
@@ -111,7 +111,7 @@ public class GetroleCommand extends AbstractCommand {
         if (role == null) {
             return Templates.command.getrole.not_assignable.format();
         }
-        OGuildRoleAssignable roleAssignable = CGuildRoleAssignable.findBy(CGuild.getCachedId(guild.getId()), role.getId());
+        OGuildRoleAssignable roleAssignable = CGuildRoleAssignable.findBy(CGuild.getCachedId(guild.getIdLong()), role.getId());
         if (roleAssignable.guildId == 0) {
             return Templates.command.getrole.not_assignable.format();
         }

@@ -30,26 +30,26 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created on 10-8-2016
  */
 public class CChannels {
-    private static Map<String, Integer> channelCache = new ConcurrentHashMap<>();
+    private static Map<Long, Integer> channelCache = new ConcurrentHashMap<>();
 
-    public static int getCachedId(String discordId, String serverId) {
-        return getCachedId(discordId, CGuild.getCachedId(serverId));
+    public static int getCachedId(long discordChannelId, long discordGuildId) {
+        return getCachedId(discordChannelId, CGuild.getCachedId(discordGuildId));
     }
 
-    public static int getCachedId(String discordId, int serverId) {
-        if (!channelCache.containsKey(discordId)) {
-            OChannel channel = findBy(discordId);
+    public static int getCachedId(long channelId, int serverId) {
+        if (!channelCache.containsKey(channelId)) {
+            OChannel channel = findBy(channelId);
             if (channel.id == 0) {
-                channel.discord_id = discordId;
+                channel.discord_id = String.valueOf(channelId);
                 channel.server_id = serverId;
                 insert(channel);
             }
-            channelCache.put(discordId, channel.id);
+            channelCache.put(channelId, channel.id);
         }
-        return channelCache.get(discordId);
+        return channelCache.get(channelId);
     }
 
-    public static OChannel findBy(String discordId) {
+    public static OChannel findBy(long discordId) {
         OChannel s = new OChannel();
         try (ResultSet rs = WebDb.get().select(
                 "SELECT id, discord_id, server_id, name " +

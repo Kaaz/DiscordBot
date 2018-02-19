@@ -117,9 +117,9 @@ public class UserRankCommand extends AbstractCommand {
             return Templates.config.cant_find_user.formatGuild(channel, args[0]);
         }
         SimpleRank targetOldRank = bot.security.getSimpleRank(user);
-        OUser dbUser = CUser.findBy(user.getId());
+        OUser dbUser = CUser.findBy(user.getIdLong());
         if (args.length == 1) {
-            OUserRank userRank = CUserRank.findBy(user.getId());
+            OUserRank userRank = CUserRank.findBy(user.getIdLong());
             if (userRank.rankId == 0 && !targetOldRank.isAtLeast(SimpleRank.CREATOR)) {
                 return Templates.command.userrank.no_rank.format(user.getName());
             } else if (targetOldRank.isAtLeast(SimpleRank.CREATOR)) {
@@ -174,7 +174,7 @@ public class UserRankCommand extends AbstractCommand {
                 targetDbRank.fullName = targetNewRank.name().toLowerCase();
                 CRank.insert(targetDbRank);
             }
-            OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getId(), user.getName()));
+            OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getIdLong(), user.getName()));
             userRank.rankId = targetDbRank.id;
             CUserRank.insertOrUpdate(userRank);
             SecurityHandler.initialize();

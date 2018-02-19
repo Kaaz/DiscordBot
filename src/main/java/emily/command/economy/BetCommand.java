@@ -89,8 +89,8 @@ public class BetCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         TextChannel tc = (TextChannel) channel;
         Guild guild = tc.getGuild();
-        OBank bank = CBanks.findBy(author.getId());
-        int guildId = CGuild.getCachedId(guild.getId());
+        OBank bank = CBanks.findBy(author.getIdLong());
+        int guildId = CGuild.getCachedId(guild.getIdLong());
         if (args.length == 0) {
             StringBuilder ret = new StringBuilder("Bet overview \n\n");
             List<OBet> activeBets = CBet.getActiveBetsForGuild(guildId);
@@ -100,7 +100,7 @@ public class BetCommand extends AbstractCommand {
             for (OBet bet : activeBets) {
                 ret.append(String.format("\\#%d - %s\n", bet.id, bet.title));
             }
-            OBet record = CBet.getActiveBet(guildId, CUser.getCachedId(author.getId()));
+            OBet record = CBet.getActiveBet(guildId, CUser.getCachedId(author.getIdLong()));
             if (record.status.equals(OBet.Status.PREPARING)) {
                 ret.append(printWipBet(record));
             }
@@ -120,19 +120,19 @@ public class BetCommand extends AbstractCommand {
                 if (title.length() > 128) {
                     title = title.substring(0, 127);
                 }
-                OBet record = CBet.getActiveBet(guildId, CUser.getCachedId(author.getId()));
+                OBet record = CBet.getActiveBet(guildId, CUser.getCachedId(author.getIdLong()));
                 if (!record.status.equals(OBet.Status.PREPARING)) {
                     return Templates.command.bet.already_preparing.format();
                 }
                 record.title = title;
                 record.price = amount;
                 record.guildId = guildId;
-                record.ownerId = CUser.getCachedId(author.getId());
+                record.ownerId = CUser.getCachedId(author.getIdLong());
                 CBet.insert(record);
                 return Templates.command.bet.create_success.format();
             case "option":
             case "options":
-                OBet myBet = CBet.getActiveBet(guildId, CUser.getCachedId(author.getId()));
+                OBet myBet = CBet.getActiveBet(guildId, CUser.getCachedId(author.getIdLong()));
                 if (!myBet.status.equals(OBet.Status.PREPARING)) {
                     return Templates.command.bet.edit_prepare_only.format();
                 }

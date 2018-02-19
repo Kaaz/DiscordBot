@@ -48,7 +48,7 @@ public class ProfileImageV3 extends ProfileImage {
         } else {
             fontSize = 14;
         }
-        OUser dbuser = CUser.findBy(getUser().getId());
+        OUser dbuser = CUser.findBy(getUser().getIdLong());
         double level = Math.log(dbuser.commandsUsed + 1);//+1 for this command
         int xpPercent = (int) ((level % 1D) * 100D);
         int skillPoints = (int) level + 3;

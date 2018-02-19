@@ -68,10 +68,10 @@ public class SecurityHandler {
         List<OUserRank> contributor = CUserRank.getUsersWith(CRank.findBy("CONTRIBUTOR").id);
         List<OUserRank> bot_admin = CUserRank.getUsersWith(CRank.findBy("BOT_ADMIN").id);
         List<OUserRank> system_admin = CUserRank.getUsersWith(CRank.findBy("SYSTEM_ADMIN").id);
-        contributors.addAll(contributor.stream().map(oUserRank -> Long.parseLong(CUser.getCachedDiscordId(oUserRank.userId))).collect(Collectors.toList()));
-        interactionBots.addAll(interaction_bots.stream().map(oUserRank -> Long.parseLong(CUser.getCachedDiscordId(oUserRank.userId))).collect(Collectors.toList()));
-        botAdmins.addAll(bot_admin.stream().map(oUserRank -> Long.parseLong(CUser.getCachedDiscordId(oUserRank.userId))).collect(Collectors.toList()));
-        systemAdmins.addAll(system_admin.stream().map(oUserRank -> Long.parseLong(CUser.getCachedDiscordId(oUserRank.userId))).collect(Collectors.toList()));
+        contributors.addAll(contributor.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
+        interactionBots.addAll(interaction_bots.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
+        botAdmins.addAll(bot_admin.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
+        systemAdmins.addAll(system_admin.stream().map(oUserRank -> CUser.getCachedDiscordId(oUserRank.userId)).collect(Collectors.toList()));
     }
 
     public boolean isInteractionBot(long userId) {

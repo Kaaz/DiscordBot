@@ -35,18 +35,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CUser {
 
-    private static Map<String, Integer> userCache = new ConcurrentHashMap<>();
-    private static Map<Integer, String> discordCache = new ConcurrentHashMap<>();
+    private static Map<Long, Integer> userCache = new ConcurrentHashMap<>();
+    private static Map<Integer, Long> discordCache = new ConcurrentHashMap<>();
 
-    public static int getCachedId(String discordId) {
-        return getCachedId(discordId, discordId);
+    public static int getCachedId(long discordId) {
+        return getCachedId(discordId, String.valueOf(discordId));
     }
 
-    public static int getCachedId(String discordId, String username) {
+    public static int getCachedId(long discordId, String username) {
         if (!userCache.containsKey(discordId)) {
             OUser user = findBy(discordId);
             if (user.id == 0) {
-                user.discord_id = discordId;
+                user.discord_id = String.valueOf(discordId);
                 user.name = username;
                 insert(user);
             }
@@ -59,19 +59,19 @@ public class CUser {
         return userCache.get(discordId);
     }
 
-    public static String getCachedDiscordId(int userId) {
+    public static long getCachedDiscordId(int userId) {
         if (!discordCache.containsKey(userId)) {
             OUser user = findById(userId);
             if (user.id == 0) {
-                return "";
+                return 0L;
             }
-            discordCache.put(userId, user.discord_id);
+            discordCache.put(userId, Long.parseLong(user.discord_id));
         }
         return discordCache.get(userId);
     }
 
 
-    public static OUser findBy(String discordId) {
+    public static OUser findBy(long discordId) {
         OUser s = new OUser();
         try (ResultSet rs = WebDb.get().select(
                 "SELECT *  " +

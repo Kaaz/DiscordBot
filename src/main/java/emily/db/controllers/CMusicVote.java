@@ -28,7 +28,7 @@ import java.sql.Timestamp;
  * data communication with the controllers `music_votes`
  */
 public class CMusicVote {
-    public static OMusicVote findBy(int songId, String userDiscordId) {
+    public static OMusicVote findBy(int songId, long userDiscordId) {
         return findBy(songId, CUser.getCachedId(userDiscordId));
     }
 
@@ -57,7 +57,7 @@ public class CMusicVote {
         return record;
     }
 
-    public static void insertOrUpdate(int songId, String userDiscordId, int vote) {
+    public static void insertOrUpdate(int songId, long userDiscordId, int vote) {
         insertOrUpdate(songId, CUser.getCachedId(userDiscordId), vote);
     }
 

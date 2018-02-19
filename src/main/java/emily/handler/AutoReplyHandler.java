@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * Handles the automatic responses to messages
  */
 public class AutoReplyHandler {
-    private final Map<String, Long[]> cooldowns;
+    private final Map<Long, Long[]> cooldowns;
     private DiscordBot bot;
     private volatile AutoReply[] replies;
 
@@ -46,7 +46,7 @@ public class AutoReplyHandler {
         reload();
     }
 
-    public void removeGuild(String discordGuildId) {
+    public void removeGuild(long discordGuildId) {
         if (cooldowns.containsKey(discordGuildId)) {
             cooldowns.remove(discordGuildId);
         }
@@ -60,7 +60,7 @@ public class AutoReplyHandler {
             return false;
         }
         TextChannel channel = (TextChannel) message.getChannel();
-        String guildId = channel.getGuild().getId();
+        long guildId = channel.getGuild().getIdLong();
         int internalGuildId = CGuild.getCachedId(guildId);
         Long now = System.currentTimeMillis();
         for (int index = 0; index < replies.length; index++) {
@@ -79,7 +79,7 @@ public class AutoReplyHandler {
         return false;
     }
 
-    private long getCooldown(String guildId, int index) {
+    private long getCooldown(long guildId, int index) {
         if (!cooldowns.containsKey(guildId)) {
             cooldowns.put(guildId, new Long[replies.length]);
         }
@@ -89,7 +89,7 @@ public class AutoReplyHandler {
         return cooldowns.get(guildId)[index];
     }
 
-    private void saveCooldown(String guildId, int index, long value) {
+    private void saveCooldown(long guildId, int index, long value) {
         if (!cooldowns.containsKey(guildId)) {
             cooldowns.put(guildId, new Long[replies.length]);
         }

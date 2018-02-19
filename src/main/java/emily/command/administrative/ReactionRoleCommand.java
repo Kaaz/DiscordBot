@@ -105,7 +105,7 @@ public class ReactionRoleCommand extends AbstractCommand {
             return Templates.permission_missing.format("manage_roles");
         }
         if (args.length == 0) {
-            List<OReactionRoleKey> list = CReactionRole.getKeysForGuild(t.getGuild().getId());
+            List<OReactionRoleKey> list = CReactionRole.getKeysForGuild(t.getGuild().getIdLong());
             String result = "";
             if (list.isEmpty()) {
                 return "No keys are configured";
@@ -119,7 +119,7 @@ public class ReactionRoleCommand extends AbstractCommand {
             case "add":// eg. !rr add <key> <emote> <role>
                 if (args.length >= 4) {
                     Role role = DisUtil.findRole(t.getGuild(), args[3]);
-                    OReactionRoleKey key = CReactionRole.findOrCreate(t.getGuild().getId(), args[1]);
+                    OReactionRoleKey key = CReactionRole.findOrCreate(t.getGuild().getIdLong(), args[1]);
                     if (!isEmote(bot, args[2])) {
                         return "no emote found";
                     }
@@ -141,7 +141,7 @@ public class ReactionRoleCommand extends AbstractCommand {
             case "msg":
             case "text"://eg. !rr message key <newtext>
                 if (args.length >= 2) {
-                    OReactionRoleKey key = CReactionRole.findBy(t.getGuild().getId(), args[1]);
+                    OReactionRoleKey key = CReactionRole.findBy(t.getGuild().getIdLong(), args[1]);
                     if (key.id == 0) {
                         return String.format("key `%s` doesn't exist", args[1]);
                     }
@@ -158,7 +158,7 @@ public class ReactionRoleCommand extends AbstractCommand {
                 if (args.length < 2) {
                     return "invalid usage! see help for more info";
                 }
-                OReactionRoleKey key = CReactionRole.findBy(t.getGuild().getId(), args[1]);
+                OReactionRoleKey key = CReactionRole.findBy(t.getGuild().getIdLong(), args[1]);
                 if (key.id == 0) {
                     return String.format("key `%s` not found!", args[1]);
                 }

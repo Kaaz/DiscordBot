@@ -99,7 +99,7 @@ public class CustomCommand extends AbstractCommand {
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
             return Templates.no_permission.format();
         }
-        int guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());
+        int guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getIdLong());
         String prefix = DisUtil.getCommandPrefix(channel);
         if (args.length >= 2 && Arrays.asList(valid_actions).contains(args[0])) {
             if (args[0].equals("add") && args.length > 2) {

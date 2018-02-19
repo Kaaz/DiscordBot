@@ -104,7 +104,7 @@ public class UserCommand extends AbstractCommand {
                 if (user == null) {
                     return Templates.config.cant_find_user.format(Misc.joinStrings(args, 1));
                 }
-                List<OGuild> guilds = CGuild.getMostUsedGuildsFor(CUser.getCachedId(user.getId()));
+                List<OGuild> guilds = CGuild.getMostUsedGuildsFor(CUser.getCachedId(user.getIdLong()));
                 List<List<String>> tbl = new ArrayList<>();
                 for (OGuild guild : guilds) {
                     tbl.add(Arrays.asList("" + bot.getContainer().calcShardId(guild.discord_id), Long.toString(guild.discord_id), guild.name));
@@ -120,12 +120,12 @@ public class UserCommand extends AbstractCommand {
             return Templates.config.cant_find_user.format(Misc.joinStrings(args, 0));
         }
 
-        int userId = CUser.getCachedId(infoUser.getId(), infoUser.getName());
+        int userId = CUser.getCachedId(infoUser.getIdLong(), infoUser.getName());
         int guildId = 0;
 
         String nickname = infoUser.getName();
         if (channel instanceof TextChannel) {
-            guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());
+            guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getIdLong());
             nickname = ((TextChannel) channel).getGuild().getMember(infoUser).getEffectiveName();
         }
         if (args.length >= 3 && guildId > 0) {
@@ -146,7 +146,7 @@ public class UserCommand extends AbstractCommand {
             }
         }
         StringBuilder sb = new StringBuilder();
-        OUser dbUser = CUser.findBy(infoUser.getId());
+        OUser dbUser = CUser.findBy(infoUser.getIdLong());
         sb.append("Querying for ").append(nickname).append("\n");
         sb.append(":bust_in_silhouette: User: ").append(infoUser.getName()).append("#").append(infoUser.getDiscriminator()).append("\n");
         sb.append(":id: Discord id: ").append(infoUser.getId()).append("\n");

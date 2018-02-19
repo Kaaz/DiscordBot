@@ -543,7 +543,7 @@ public class MusicPlayerHandler {
             } else if (playlist.isPersonal()) {
                 switch (playlist.getEditType()) {
                     case PRIVATE_AUTO:
-                        if (playlist.ownerId != CUser.getCachedId(user.getId())) {
+                        if (playlist.ownerId != CUser.getCachedId(user.getIdLong())) {
                             break;
                         }
                     case PUBLIC_AUTO:

@@ -134,7 +134,7 @@ public class RoleAdminCommand extends AbstractCommand {
                 String roleName = Misc.joinStrings(args, 2);
                 Role role = DisUtil.findRole(guild, roleName);
                 if (role == null) {
-                    List selfRoleList = CGuildRoleAssignable.getRolesFor(CGuild.getCachedId(guild.getId()));
+                    List selfRoleList = CGuildRoleAssignable.getRolesFor(CGuild.getCachedId(guild.getIdLong()));
                     if (!selfRoleList.contains(roleName)) {
                         return "role not found :frowning:";
                     }
@@ -142,12 +142,12 @@ public class RoleAdminCommand extends AbstractCommand {
                 switch (args[1].toLowerCase()) {
                     case "add":
                     case "+":
-                        CGuildRoleAssignable.insertOrUpdate(CGuild.getCachedId(guild.getId()), role.getId(), role.getName());
+                        CGuildRoleAssignable.insertOrUpdate(CGuild.getCachedId(guild.getIdLong()), role.getIdLong(), role.getName());
                         return Templates.command.role_admin.adding.format(role.getName());
                     case "remove":
                     case "-":
                     case "delete":
-                        CGuildRoleAssignable.delete(CGuild.getCachedId(guild.getId()), role.getId(), roleName);
+                        CGuildRoleAssignable.delete(CGuild.getCachedId(guild.getIdLong()), role.getIdLong(), roleName);
                         return Templates.command.role_admin.removing.format(role.getName());
                     case "describe":
                         return Templates.not_implemented_yet.format();

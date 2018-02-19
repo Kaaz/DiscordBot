@@ -60,7 +60,7 @@ public class GlobalBanCommand extends AbstractCommand {
         SimpleRank rank = bot.security.getSimpleRank(author);
         if (rank.isAtLeast(SimpleRank.BOT_ADMIN) && args.length >= 1) {
             boolean unban = args.length > 1 && Misc.isFuzzyFalse(args[1]);
-            OUser user = CUser.findBy(args[0]);
+            OUser user = CUser.findBy(Long.parseLong(args[0]));
             user.banned = unban ? 0 : 1;
             if (user.id == 0) {
                 return "User `" + args[0] + "` not found";

@@ -166,7 +166,7 @@ public class CBlacklistCommand {
      * @param discordGuildId discord guild id
      * @param command        command name
      */
-    public static void insertOrUpdate(String discordGuildId, String command) {
+    public static void insertOrUpdate(long discordGuildId, String command) {
         insertOrUpdate(CGuild.getCachedId(discordGuildId), command, "0", true);
     }
 
@@ -177,7 +177,7 @@ public class CBlacklistCommand {
      * @param command        command name
      * @param channel        discord channel id
      */
-    public static void insertOrUpdate(String discordGuildId, String command, String channel) {
+    public static void insertOrUpdate(long discordGuildId, String command, String channel) {
         insertOrUpdate(CGuild.getCachedId(discordGuildId), command, channel, true);
     }
 

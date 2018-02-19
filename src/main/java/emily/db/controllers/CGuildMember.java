@@ -28,7 +28,7 @@ import java.sql.SQLException;
  */
 public class CGuildMember {
 
-    public static OGuildMember findBy(String guildDiscordId, String userDiscordId) {
+    public static OGuildMember findBy(long guildDiscordId, long userDiscordId) {
         return findBy(CGuild.getCachedId(guildDiscordId), CUser.getCachedId(userDiscordId));
     }
 

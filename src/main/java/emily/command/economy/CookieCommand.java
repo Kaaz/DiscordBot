@@ -62,13 +62,13 @@ public class CookieCommand extends AbstractCommand {
 
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
-        OUser user = CUser.findBy(author.getId());
+        OUser user = CUser.findBy(author.getIdLong());
         if (user.id == 0) {
             user.discord_id = author.getId();
             user.name = author.getName();
             CUser.insert(user);
         }
-        OBank userAccount = CBanks.findBy(author.getId());
+        OBank userAccount = CBanks.findBy(author.getIdLong());
         if (userAccount.currentBalance > CBanks.CURRENCY_NO_HELP_AFTER) {
             return "not helping you anymore";
         }

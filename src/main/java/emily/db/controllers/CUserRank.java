@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class CUserRank {
 
-    public static OUserRank findBy(String userDiscordId) {
+    public static OUserRank findBy(long userDiscordId) {
         return findBy(CUser.getCachedId(userDiscordId));
     }
 

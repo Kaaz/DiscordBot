@@ -65,7 +65,7 @@ public class RoleReactionHandler {
         if (forceReload) {
             removeGuild(guildId);
         }
-        List<OReactionRoleKey> keys = CReactionRole.getKeysForGuild(String.valueOf(guildId));
+        List<OReactionRoleKey> keys = CReactionRole.getKeysForGuild(guildId);
         for (OReactionRoleKey key : keys) {
             if (key.messageId <= 0) {
                 continue;

@@ -209,7 +209,7 @@ public class PurgeComand extends AbstractCommand {
                 if (deletedCount == finalDeleteLimit) {
                     break;
                 }
-                if (msg.isPinned() || Long.parseLong(msg.getId()) < twoWeeksAgo) {
+                if (msg.isPinned() || msg.getIdLong() < twoWeeksAgo) {
                     oldMessageDetected = true;
                     break;
                 }

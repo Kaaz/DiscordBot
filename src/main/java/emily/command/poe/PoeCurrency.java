@@ -75,7 +75,7 @@ public class PoeCurrency extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (args.length > 1) {
             if (args[0].equalsIgnoreCase("token")) {
-                OPoEToken token = CPoEToken.findBy(author.getId());
+                OPoEToken token = CPoEToken.findBy(author.getIdLong());
                 token.session_id = args[1];
                 CPoEToken.insertOrUpdate(token);
                 return "Updated your token!";
@@ -84,7 +84,7 @@ public class PoeCurrency extends AbstractCommand {
             }
             return Templates.invalid_use.format();
         }
-        OPoEToken token = CPoEToken.findBy(author.getId());
+        OPoEToken token = CPoEToken.findBy(author.getIdLong());
         AuthInfo account = new AuthInfo(token.session_id);
         DataReader reader = new DataReader(account);
         if (!reader.authenticate()) {

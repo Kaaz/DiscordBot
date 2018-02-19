@@ -112,7 +112,7 @@ public class CommandHandler {
         }
 
         if (channel instanceof TextChannel) {
-            guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getId());
+            guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getIdLong());
             if (!((TextChannel) channel).canTalk()) {
                 return;
             }
@@ -160,8 +160,8 @@ public class CommandHandler {
                         usedArguments.append(arg).append(" ");
                     }
                     if (channel instanceof TextChannel) {
-                        CCommandLog.saveLog(CUser.getCachedId(author.getId(), EmojiUtils.shortCodify(author.getName())),
-                                CGuild.getCachedId(((TextChannel) channel).getGuild().getId()),
+                        CCommandLog.saveLog(CUser.getCachedId(author.getIdLong(), EmojiUtils.shortCodify(author.getName())),
+                                CGuild.getCachedId(((TextChannel) channel).getGuild().getIdLong()),
                                 command.getCommand(),
                                 EmojiUtils.shortCodify(usedArguments.toString()).trim());
                     }
@@ -212,7 +212,7 @@ public class CommandHandler {
                         "user-name", author.getName(),
                         "response", outMsg);
             }
-            CUser.registerCommandUse(CUser.getCachedId(author.getId()));
+            CUser.registerCommandUse(CUser.getCachedId(author.getIdLong()));
         }
     }
 

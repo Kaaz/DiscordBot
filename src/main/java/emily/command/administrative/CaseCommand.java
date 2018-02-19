@@ -26,7 +26,6 @@ import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
-import emily.templates.Template;
 import emily.templates.Templates;
 import emily.util.Misc;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -92,11 +91,11 @@ public class CaseCommand extends AbstractCommand {
     private String editReason(DiscordBot bot, Guild guild, Member moderator, MessageChannel feedbackChannel, String caseId, String reason) {
         OModerationCase oCase;
         if (caseId.equalsIgnoreCase("last")) {
-            oCase = CModerationCase.findLastFor(CGuild.getCachedId(guild.getId()), CUser.getCachedId(moderator.getUser().getId()));
+            oCase = CModerationCase.findLastFor(CGuild.getCachedId(guild.getIdLong()), CUser.getCachedId(moderator.getUser().getIdLong()));
         } else {
             oCase = CModerationCase.findById(Misc.parseInt(caseId, -1));
         }
-        if (oCase.id == 0 || oCase.guildId != CGuild.getCachedId(guild.getId())) {
+        if (oCase.id == 0 || oCase.guildId != CGuild.getCachedId(guild.getIdLong())) {
             return Templates.command.case_not_found.format(oCase.id);
         }
         oCase.reason = reason;

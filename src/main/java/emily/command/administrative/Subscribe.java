@@ -87,7 +87,7 @@ public class Subscribe extends AbstractCommand {
         List<List<String>> tbl = new ArrayList<>();
         if (args.length == 0) {
             Collections.addAll(headers, "code", "name");
-            List<QActiveSubscriptions> subscriptionsForChannel = CSubscriptions.getSubscriptionsForChannel(CChannels.getCachedId(txt.getId(), txt.getGuild().getId()));
+            List<QActiveSubscriptions> subscriptionsForChannel = CSubscriptions.getSubscriptionsForChannel(CChannels.getCachedId(txt.getIdLong(), txt.getGuild().getIdLong()));
             for (QActiveSubscriptions subscriptions : subscriptionsForChannel) {
                 ArrayList<String> row = new ArrayList<>();
                 row.add(subscriptions.code);
@@ -109,7 +109,7 @@ public class Subscribe extends AbstractCommand {
                 if (service.id == 0) {
                     return Templates.command.subscribe.invalid_service.format();
                 }
-                OSubscription subscription = CSubscriptions.findBy(CGuild.getCachedId(txt.getGuild().getId()), CChannels.getCachedId(channel.getId(), txt.getGuild().getId()), service.id);
+                OSubscription subscription = CSubscriptions.findBy(CGuild.getCachedId(txt.getGuild().getIdLong()), CChannels.getCachedId(channel.getIdLong(), txt.getGuild().getIdLong()), service.id);
                 if (subscription.subscribed == 1) {
                     subscription.subscribed = 0;
                     CSubscriptions.insertOrUpdate(subscription);
@@ -132,11 +132,11 @@ public class Subscribe extends AbstractCommand {
         if (service.id == 0) {
             return Templates.command.subscribe.invalid_service.format();
         }
-        OSubscription subscription = CSubscriptions.findBy(CGuild.getCachedId(txt.getGuild().getId()), CChannels.getCachedId(channel.getId(), ((TextChannel) channel).getGuild().getId()), service.id);
+        OSubscription subscription = CSubscriptions.findBy(CGuild.getCachedId(txt.getGuild().getIdLong()), CChannels.getCachedId(channel.getIdLong(), ((TextChannel) channel).getGuild().getIdLong()), service.id);
         if (subscription.subscribed == 0) {
             subscription.subscribed = 1;
-            subscription.channelId = CChannels.getCachedId(channel.getId(), txt.getGuild().getId());
-            subscription.serverId = CGuild.getCachedId(txt.getGuild().getId());
+            subscription.channelId = CChannels.getCachedId(channel.getIdLong(), txt.getGuild().getIdLong());
+            subscription.serverId = CGuild.getCachedId(txt.getGuild().getIdLong());
             subscription.serviceId = service.id;
             CSubscriptions.insertOrUpdate(subscription);
             return Templates.command.subscribe.success.format();

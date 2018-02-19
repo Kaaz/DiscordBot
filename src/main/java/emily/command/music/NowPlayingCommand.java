@@ -131,10 +131,10 @@ public class NowPlayingCommand extends AbstractCommand {
             }
             Matcher m = votePattern.matcher(voteInput);
             if (m.find()) {
-                OMusicVote voteRecord = CMusicVote.findBy(song.id, author.getId());
+                OMusicVote voteRecord = CMusicVote.findBy(song.id, author.getIdLong());
                 if (m.group(1) != null) {
                     int vote = Math.max(1, Math.min(10, Misc.parseInt(m.group(1), 0)));
-                    CMusicVote.insertOrUpdate(song.id, author.getId(), vote);
+                    CMusicVote.insertOrUpdate(song.id, author.getIdLong(), vote);
                     return "vote is registered (" + vote + ")";
                 }
                 if (voteRecord.vote > 0) {
@@ -159,7 +159,7 @@ public class NowPlayingCommand extends AbstractCommand {
                     }
                     return Templates.music.repeat_mode_stopped.format();
                 case "ban":
-                    if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getId()).hasPermission(OUser.PermissionNode.BAN_TRACKS)) {
+                    if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getIdLong()).hasPermission(OUser.PermissionNode.BAN_TRACKS)) {
                         song.banned = 1;
                         CMusic.update(song);
                         player.forceSkip();

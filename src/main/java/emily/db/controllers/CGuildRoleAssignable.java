@@ -68,7 +68,7 @@ public class CGuildRoleAssignable {
         return record;
     }
 
-    public static void delete(int guildId, String discordRoleId, String roleName) {
+    public static void delete(int guildId, long discordRoleId, String roleName) {
         try {
             WebDb.get().query(
                     "DELETE FROM guild_roles_self WHERE guild_id = ? AND (discord_role_id = ? OR role_name = '?')", guildId, discordRoleId, roleName);
@@ -77,10 +77,10 @@ public class CGuildRoleAssignable {
         }
     }
 
-    public static void insertOrUpdate(int guildId, String discordRoleId, String roleName) {
+    public static void insertOrUpdate(int guildId, long discordRoleId, String roleName) {
         OGuildRoleAssignable role = new OGuildRoleAssignable();
         role.guildId = guildId;
-        role.discordRoleId = discordRoleId;
+        role.discordRoleId = String.valueOf(discordRoleId);
         role.roleName = roleName;
         insertOrUpdate(role);
     }

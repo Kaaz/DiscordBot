@@ -25,7 +25,6 @@ import emily.games.SlotMachine;
 import emily.games.slotmachine.Slot;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
-import emily.templates.Template;
 import emily.templates.Templates;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Message;
@@ -91,7 +90,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
                 betAmount = 0;
             }
             if (betAmount > 0) {
-                OBank bank = CBanks.findBy(author.getId());
+                OBank bank = CBanks.findBy(author.getIdLong());
                 if (bank.currentBalance < betAmount) {
                     return Templates.gamble_insufficient_funds.format(betAmount, BotConfig.ECONOMY_CURRENCY_ICON);
                 }
@@ -111,7 +110,7 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
                             if (winMulti > 0) {
                                 if (betAmount > 0) {
                                     gameResult = String.format("%s %s - Thats %s %s for you!", slotMachine.getWinSlotTimes(), slotMachine.getWinSlot().getEmote(), betAmount * winMulti, BotConfig.ECONOMY_CURRENCY_ICON);
-                                    CBanks.getBotAccount().transferTo(CBanks.findBy(author.getId()), betAmount * winMulti, "slot winnings!");
+                                    CBanks.getBotAccount().transferTo(CBanks.findBy(author.getIdLong()), betAmount * winMulti, "slot winnings!");
                                 } else {
                                     gameResult = "You rolled " + slotMachine.getWinSlotTimes() + " **" + slotMachine.getWinSlot().getEmote() + "** and won **nothing**";
                                 }

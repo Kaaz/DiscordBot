@@ -45,14 +45,11 @@ public class CGuild {
      */
     public static int getCachedId(MessageChannel channel) {
         if (channel instanceof TextChannel) {
-            return getCachedId(((TextChannel) channel).getGuild().getId());
+            return getCachedId(((TextChannel) channel).getGuild().getIdLong());
         }
         return 0;
     }
 
-    public static int getCachedId(String discordId) {
-        return getCachedId(Long.parseLong(discordId));
-    }
 
     public static int getCachedId(long discordId) {
         if (!guildIdCache.containsKey(discordId)) {

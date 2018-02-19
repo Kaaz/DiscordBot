@@ -187,7 +187,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
             case "del":
             case "-":
                 if (args.length > 1 && (args[1].equals("guild") || args[1].equals("g"))) {
-                    playlist = CPlaylist.findBy(0, CGuild.getCachedId(guild.getId()));
+                    playlist = CPlaylist.findBy(0, CGuild.getCachedId(guild.getIdLong()));
                 } else if (args.length > 1 && args[1].matches("^\\d+$")) {
                     musicRec = CMusic.findById(Integer.parseInt(args[1]));
                     nowPlayingId = musicRec.id;
@@ -361,7 +361,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
             return userRank.isAtLeast(SimpleRank.GUILD_ADMIN);
         }
         if (playlist.isPersonal()) {
-            return CUser.getCachedId(invoker.getId()) == playlist.ownerId;
+            return CUser.getCachedId(invoker.getIdLong()) == playlist.ownerId;
         }
         return userRank.isAtLeast(SimpleRank.CREATOR);
     }
@@ -387,23 +387,23 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                         return false;
                     }
                 } else if (playlist.isPersonal()) {
-                    return CUser.getCachedId(invoker.getId()) == playlist.ownerId;
+                    return CUser.getCachedId(invoker.getIdLong()) == playlist.ownerId;
                 }
             case PUBLIC_ADD:
                 if (!isAdding) {
                     if (playlist.isGuildList()) {
                         return userRank.isAtLeast(SimpleRank.GUILD_ADMIN);
                     } else if (playlist.isPersonal()) {
-                        return CUser.getCachedId(invoker.getId()) == playlist.ownerId;
+                        return CUser.getCachedId(invoker.getIdLong()) == playlist.ownerId;
                     }
                     return false;
                 }
                 return true;
             case PRIVATE:
-                if (playlist.isGuildList() && playlist.guildId == CGuild.getCachedId(channel.getGuild().getId()) && userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
+                if (playlist.isGuildList() && playlist.guildId == CGuild.getCachedId(channel.getGuild().getIdLong()) && userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
                     return true;
                 } else if (playlist.isPersonal()) {
-                    return CUser.getCachedId(invoker.getId()) == playlist.ownerId;
+                    return CUser.getCachedId(invoker.getIdLong()) == playlist.ownerId;
                 }
                 return false;
         }
@@ -412,13 +412,13 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
 
     private OPlaylist findPlaylist(String search, String code, User user, Guild guild) {
         int userId;
-        int guildId = CGuild.getCachedId(guild.getId());
+        int guildId = CGuild.getCachedId(guild.getIdLong());
         OPlaylist playlist;
         String title;
         switch (search.toLowerCase()) {
             case "mine":
                 title = user.getName() + "'s " + code + " list";
-                userId = CUser.getCachedId(user.getId(), user.getName());
+                userId = CUser.getCachedId(user.getIdLong(), user.getName());
                 playlist = CPlaylist.findBy(userId, 0, code);
                 break;
             case "guild":

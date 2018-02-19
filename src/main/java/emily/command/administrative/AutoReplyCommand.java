@@ -24,8 +24,6 @@ import emily.db.model.OGuild;
 import emily.db.model.OReplyPattern;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
-import emily.templates.Template;
-import emily.templates.TemplateCache;
 import emily.templates.Templates;
 import emily.util.Misc;
 import emily.util.TimeUtil;
@@ -98,7 +96,7 @@ public class AutoReplyCommand extends AbstractCommand {
             return Templates.no_permission.format();
         }
         if (args.length == 0) {
-            List<OReplyPattern> all = CReplyPattern.getAll(CGuild.getCachedId(guild.getId()));
+            List<OReplyPattern> all = CReplyPattern.getAll(CGuild.getCachedId(guild.getIdLong()));
             List<List<String>> tbl = new ArrayList<>();
             for (OReplyPattern replyPattern : all) {
                 List<String> row = new ArrayList<>();
@@ -120,8 +118,8 @@ public class AutoReplyCommand extends AbstractCommand {
             if (args[0].equals("create")) {
                 if (replyPattern.id == 0) {
                     replyPattern.tag = args[1];
-                    replyPattern.userId = CUser.getCachedId(author.getId(), author.getName());
-                    replyPattern.guildId = rank.isAtLeast(SimpleRank.CREATOR) ? 0 : CGuild.getCachedId(guild.getId());
+                    replyPattern.userId = CUser.getCachedId(author.getIdLong(), author.getName());
+                    replyPattern.guildId = rank.isAtLeast(SimpleRank.CREATOR) ? 0 : CGuild.getCachedId(guild.getIdLong());
                     replyPattern.cooldown = TimeUnit.MINUTES.toMillis(1);
                     CReplyPattern.insert(replyPattern);
                     return Templates.command.autoreply.created.format(args[1]);
@@ -142,7 +140,7 @@ public class AutoReplyCommand extends AbstractCommand {
                 case "delete":
                 case "remove":
                 case "del":
-                    if (rank.isAtLeast(SimpleRank.CREATOR) || (rank.isAtLeast(SimpleRank.GUILD_ADMIN) && CGuild.getCachedId(guild.getId()) == replyPattern.guildId)) {
+                    if (rank.isAtLeast(SimpleRank.CREATOR) || (rank.isAtLeast(SimpleRank.GUILD_ADMIN) && CGuild.getCachedId(guild.getIdLong()) == replyPattern.guildId)) {
                         CReplyPattern.delete(replyPattern);
                         bot.reloadAutoReplies();
                     }
@@ -165,7 +163,7 @@ public class AutoReplyCommand extends AbstractCommand {
                         return Templates.no_permission.format();
                     }
                     if (args[2].equalsIgnoreCase("this")) {
-                        replyPattern.guildId = CGuild.getCachedId(guild.getId());
+                        replyPattern.guildId = CGuild.getCachedId(guild.getIdLong());
                     } else if (!args[2].equals("0")) {
                         OGuild server = CGuild.findBy(args[2]);
                         if (server.id == 0) {

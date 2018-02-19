@@ -27,7 +27,7 @@ import java.sql.SQLException;
  * data communication with the controllers `poe_token`
  */
 public class CPoEToken {
-    public static OPoEToken findBy(String discordId) {
+    public static OPoEToken findBy(long discordId) {
         OPoEToken token = new OPoEToken();
         int userId = CUser.getCachedId(discordId);
         token.userId = userId;

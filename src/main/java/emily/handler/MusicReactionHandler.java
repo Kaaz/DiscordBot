@@ -87,7 +87,7 @@ public class MusicReactionHandler {
             return true;
         }
         if (Emojibet.STAR.equals(emote.getName())) {
-            OPlaylist playlist = CPlaylist.findBy(CUser.getCachedId(invoker.getId()), 0);
+            OPlaylist playlist = CPlaylist.findBy(CUser.getCachedId(invoker.getIdLong()), 0);
             if (playlist.id == 0) {
                 playlist.setEditType(OPlaylist.EditType.PRIVATE_AUTO);
                 CPlaylist.insert(playlist);

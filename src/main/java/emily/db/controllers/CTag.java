@@ -27,7 +27,7 @@ import java.util.List;
 
 public class CTag {
 
-    public static OTag findBy(String discordGuildId, String tagname) {
+    public static OTag findBy(long discordGuildId, String tagname) {
         return findBy(CGuild.getCachedId(discordGuildId), tagname);
     }
 
@@ -64,7 +64,7 @@ public class CTag {
     }
 
 
-    public static List<OTag> getTagsFor(String guildDiscordId, String userDiscordId) {
+    public static List<OTag> getTagsFor(long guildDiscordId, long userDiscordId) {
         return getTagsFor(CGuild.getCachedId(guildDiscordId), CUser.getCachedId(userDiscordId));
     }
 
@@ -85,11 +85,11 @@ public class CTag {
 
     }
 
-    public static List<OTag> getTagsFor(String guildDiscordId) {
+    public static List<OTag> getTagsFor(long guildDiscordId) {
         return getTagsFor(guildDiscordId, 0, 25);
     }
 
-    public static List<OTag> getTagsFor(String guildDiscordId, int offset, int limit) {
+    public static List<OTag> getTagsFor(long guildDiscordId, int offset, int limit) {
         return getTagsFor(CGuild.getCachedId(guildDiscordId), offset, limit);
     }
 

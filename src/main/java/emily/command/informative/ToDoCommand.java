@@ -70,7 +70,7 @@ public class ToDoCommand extends AbstractCommand {
 
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
-        OTodoList rec = CTodoLists.findBy(CUser.getCachedId(author.getId()));
+        OTodoList rec = CTodoLists.findBy(CUser.getCachedId(author.getIdLong()));
         if (args.length == 0) {
             if (rec.id == 0) {
                 return Templates.todo.your_list_not_found.format();
@@ -89,7 +89,7 @@ public class ToDoCommand extends AbstractCommand {
                 rec.listName = name;
                 if (rec.id == 0) {
                     rec.guildId = CGuild.getCachedId(channel);
-                    rec.userId = CUser.getCachedId(author.getId());
+                    rec.userId = CUser.getCachedId(author.getIdLong());
                 }
                 CTodoLists.update(rec);
                 return Templates.todo.list_updated.format();
@@ -108,7 +108,7 @@ public class ToDoCommand extends AbstractCommand {
                 if (user == null) {
                     return Templates.config.cant_find_user.format(Misc.joinStrings(args, 1));
                 }
-                OTodoList userList = CTodoLists.findBy(CUser.getCachedId(user.getId()));
+                OTodoList userList = CTodoLists.findBy(CUser.getCachedId(user.getIdLong()));
                 if (userList.id == 0) {
                     return Templates.todo.user_list_not_found.format(user);
                 }

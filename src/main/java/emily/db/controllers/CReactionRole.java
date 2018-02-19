@@ -28,11 +28,11 @@ import java.util.List;
 
 public class CReactionRole {
 
-    public static OReactionRoleKey findBy(String discordGuildId, String key) {
+    public static OReactionRoleKey findBy(long discordGuildId, String key) {
         return findBy(CGuild.getCachedId(discordGuildId), key);
     }
 
-    public static OReactionRoleKey findOrCreate(String discordGuildid, String key) {
+    public static OReactionRoleKey findOrCreate(long discordGuildid, String key) {
         OReactionRoleKey rec = findBy(CGuild.getCachedId(discordGuildid), key);
         if (rec.id == 0) {
             rec.guildId = CGuild.getCachedId(discordGuildid);
@@ -58,7 +58,7 @@ public class CReactionRole {
         return t;
     }
 
-    public static List<OReactionRoleKey> getKeysForGuild(String guildDiscordId) {
+    public static List<OReactionRoleKey> getKeysForGuild(long guildDiscordId) {
         return getKeysForGuild(CGuild.getCachedId(guildDiscordId));
     }
 
@@ -111,7 +111,7 @@ public class CReactionRole {
         }
     }
 
-    public static void deleteGuild(String guildId) {
+    public static void deleteGuild(long guildId) {
         deleteGuild(CGuild.getCachedId(guildId));
     }
 

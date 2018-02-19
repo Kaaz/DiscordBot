@@ -95,10 +95,10 @@ public class CModerationCase {
 
     public static int insert(Guild guild, User targetUser, User moderator, OModerationCase.PunishType punishType, Timestamp expires) {
         OModerationCase rec = new OModerationCase();
-        rec.guildId = CGuild.getCachedId(guild.getId());
-        rec.userId = CUser.getCachedId(targetUser.getId());
+        rec.guildId = CGuild.getCachedId(guild.getIdLong());
+        rec.userId = CUser.getCachedId(targetUser.getIdLong());
         rec.userName = targetUser.getName() + "\\#" + targetUser.getDiscriminator();
-        rec.moderatorId = CUser.getCachedId(moderator.getId());
+        rec.moderatorId = CUser.getCachedId(moderator.getIdLong());
         rec.moderatorName = moderator.getName() + "\\#" + moderator.getDiscriminator();
         rec.punishment = punishType;
         rec.expires = expires;

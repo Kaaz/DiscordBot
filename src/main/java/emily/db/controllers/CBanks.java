@@ -40,7 +40,7 @@ public class CBanks {
     public static int CURRENCY_GIVEAWAY_MAX = (int) (CURRENCY_PER_HOUR * 24D);
     private static volatile OBank BOT_BANK_ACCOUNT = null;
 
-    public static OBank findBy(String discordId) {
+    public static OBank findBy(long discordId) {
         return findBy(CUser.getCachedId(discordId));
     }
 
@@ -120,11 +120,11 @@ public class CBanks {
         }
     }
 
-    public static void init(String botId, String botName) {
+    public static void init(long botId, String botName) {
         OUser user = CUser.findBy(botId);
-        if (user.id == 0 || botId.equals(user.name) || user.name.isEmpty()) {
+        if (user.id == 0 || botName.equals(user.name) || user.name.isEmpty()) {
             user.name = botName;
-            user.discord_id = botId;
+            user.discord_id = String.valueOf(botId);
             CUser.update(user);
         }
         BOT_BANK_ACCOUNT = findBy(botId);

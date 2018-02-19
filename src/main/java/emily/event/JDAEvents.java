@@ -95,7 +95,7 @@ public class JDAEvents extends ListenerAdapter {
     public void onGuildJoin(GuildJoinEvent event) {
         Guild guild = event.getGuild();
         User owner = guild.getOwner().getUser();
-        OUser user = CUser.findBy(owner.getId());
+        OUser user = CUser.findBy(owner.getIdLong());
         user.discord_id = owner.getId();
         user.name = EmojiUtils.shortCodify(owner.getName());
         CUser.update(user);
@@ -167,7 +167,7 @@ public class JDAEvents extends ListenerAdapter {
         discordBot.getContainer().sendStatsToDiscordlistNet();
         for (Member member : event.getGuild().getMembers()) {
             User guildUser = member.getUser();
-            int userId = CUser.getCachedId(guildUser.getId(), guildUser.getName());
+            int userId = CUser.getCachedId(guildUser.getIdLong(), guildUser.getName());
             OGuildMember guildMember = CGuildMember.findBy(dbGuild.id, userId);
             guildMember.joinDate = new Timestamp(member.getJoinDate().toInstant().toEpochMilli());
             CGuildMember.insertOrUpdate(guildMember);
@@ -210,7 +210,7 @@ public class JDAEvents extends ListenerAdapter {
 
     private void handleReaction(GenericMessageReactionEvent e, boolean adding) {
         if (e.getUser().isBot()) {
-            if (!discordBot.security.isInteractionBot(Long.parseLong(e.getUser().getId()))) {
+            if (!discordBot.security.isInteractionBot(e.getUser().getIdLong())) {
                 return;
             }
         }
@@ -267,7 +267,7 @@ public class JDAEvents extends ListenerAdapter {
         User user = event.getMember().getUser();
         Guild guild = event.getGuild();
         GuildSettings settings = GuildSettings.get(guild);
-        OGuildMember guildMember = CGuildMember.findBy(guild.getId(), user.getId());
+        OGuildMember guildMember = CGuildMember.findBy(guild.getIdLong(), user.getIdLong());
         boolean firstTime = guildMember.joinDate == null;
         guildMember.joinDate = new Timestamp(System.currentTimeMillis());
         CGuildMember.insertOrUpdate(guildMember);
@@ -338,7 +338,7 @@ public class JDAEvents extends ListenerAdapter {
                 "guild-name", guild.getName(),
                 "user-id", user.getId(),
                 "user-name", user.getName());
-        OGuildMember guildMember = CGuildMember.findBy(guild.getId(), user.getId());
+        OGuildMember guildMember = CGuildMember.findBy(guild.getIdLong(), user.getIdLong());
         guildMember.joinDate = new Timestamp(System.currentTimeMillis());
         CGuildMember.insertOrUpdate(guildMember);
         discordBot.logGuildEvent(guild, "\uD83C\uDFC3", "**" + user.getName() + "#" + user.getDiscriminator() + "** left the guild");

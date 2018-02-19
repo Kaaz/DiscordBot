@@ -314,7 +314,7 @@ public class DiscordBot {
      */
     public void clearGuildData(Guild guild) {
         GuildSettings.remove(guild.getId());
-        autoReplyhandler.removeGuild(guild.getId());
+        autoReplyhandler.removeGuild(guild.getIdLong());
         MusicPlayerHandler.removeGuild(guild);
         commandReactionHandler.removeGuild(guild.getIdLong());
     }
@@ -325,7 +325,7 @@ public class DiscordBot {
      * @param guild guild to load for
      */
     public void loadGuild(Guild guild) {
-        int cachedId = CGuild.getCachedId(guild.getId());
+        int cachedId = CGuild.getCachedId(guild.getIdLong());
         CommandHandler.loadCustomCommands(cachedId);
     }
 
@@ -441,6 +441,6 @@ public class DiscordBot {
     }
 
     public void initOnce() {
-        CBanks.init(getJda().getSelfUser().getId(), getJda().getSelfUser().getName());
+        CBanks.init(getJda().getSelfUser().getIdLong(), getJda().getSelfUser().getName());
     }
 }
