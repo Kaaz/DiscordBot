@@ -67,7 +67,7 @@ public class CommandHandler {
     private static final HashMap<String, AbstractCommand> commandsAlias = new HashMap<>();
     private static final Map<String, String> customCommands = new ConcurrentHashMap<>();
     private static final Map<Integer, Map<String, String>> guildCommands = new ConcurrentHashMap<>();
-    private static final Map<Integer, Map<String, Map<String, Boolean>>> commandBlacklist = new ConcurrentHashMap<>();
+    private static final Map<Integer, Map<Long, Map<String, Boolean>>> commandBlacklist = new ConcurrentHashMap<>();
 
     /**
      * checks if the the message in channel is a command
@@ -130,7 +130,7 @@ public class CommandHandler {
             AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
             commandUsed = command.getCommand();
             long cooldown = getCommandCooldown(command, author, channel);
-            if (command.canBeDisabled() && isDisabled(guildId, channel.getId(), command.getCommand())) {
+            if (command.canBeDisabled() && isDisabled(guildId, channel.getIdLong(), command.getCommand())) {
                 commandSuccess = false;
                 if (GuildSettings.getFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS).equals("true")) {
                     outMsg = Templates.command.is_blacklisted.format(input[0]);
@@ -271,7 +271,7 @@ public class CommandHandler {
         return 0;
     }
 
-    private static boolean isDisabled(int guildId, String channelId, String commandName) {
+    private static boolean isDisabled(int guildId, long channelId, String commandName) {
         if (guildId == 0) {
             return false;
         }
@@ -287,12 +287,12 @@ public class CommandHandler {
             }
             return false;
         }
-        if (commandBlacklist.get(guildId).containsKey("0")) {
-            if (commandBlacklist.get(guildId).get("0").containsKey(commandName)) {
-                return commandBlacklist.get(guildId).get("0").get(commandName);
+        if (commandBlacklist.get(guildId).containsKey(0L)) {
+            if (commandBlacklist.get(guildId).get(0L).containsKey(commandName)) {
+                return commandBlacklist.get(guildId).get(0L).get(commandName);
             }
-            if (commandBlacklist.get(guildId).get("0").containsKey(ALL_COMMANDS)) {
-                return commandBlacklist.get(guildId).get("0").get(ALL_COMMANDS);
+            if (commandBlacklist.get(guildId).get(0L).containsKey(ALL_COMMANDS)) {
+                return commandBlacklist.get(guildId).get(0L).get(ALL_COMMANDS);
             }
             return false;
         }
@@ -504,13 +504,14 @@ public class CommandHandler {
         commandBlacklist.clear();
         List<OBlacklistCommand> blacklisted = CBlacklistCommand.getAllBlacklisted();
         for (OBlacklistCommand item : blacklisted) {
+            long channelId = Long.parseLong(item.channelId);
             if (!commandBlacklist.containsKey(item.guildId)) {
                 commandBlacklist.put(item.guildId, new HashMap<>());
             }
-            if (!commandBlacklist.get(item.guildId).containsKey(item.channelId)) {
-                commandBlacklist.get(item.guildId).put(item.channelId, new HashMap<>());
+            if (!commandBlacklist.get(item.guildId).containsKey(channelId)) {
+                commandBlacklist.get(item.guildId).put(channelId, new HashMap<>());
             }
-            commandBlacklist.get(item.guildId).get(item.channelId).put(item.command, item.blacklisted);
+            commandBlacklist.get(item.guildId).get(channelId).put(item.command, item.blacklisted);
         }
     }
 
@@ -527,10 +528,11 @@ public class CommandHandler {
         }
         List<OBlacklistCommand> blacklisted = CBlacklistCommand.getBlacklistedFor(guildId);
         for (OBlacklistCommand item : blacklisted) {
-            if (!commandBlacklist.get(item.guildId).containsKey(item.channelId)) {
-                commandBlacklist.get(item.guildId).put(item.channelId, new HashMap<>());
+            long channelId = Long.parseLong(item.channelId);
+            if (!commandBlacklist.get(item.guildId).containsKey(channelId)) {
+                commandBlacklist.get(item.guildId).put(channelId, new HashMap<>());
             }
-            commandBlacklist.get(item.guildId).get(item.channelId).put(item.command, item.blacklisted);
+            commandBlacklist.get(item.guildId).get(channelId).put(item.command, item.blacklisted);
         }
     }
 }

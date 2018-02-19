@@ -55,7 +55,7 @@ public class GameHandler {
     private final Map<String, String> reactionMessages = new ConcurrentHashMap<>();
     private Map<String, AbstractGame> playerGames = new ConcurrentHashMap<>();
     private Map<String, String> playersToGames = new ConcurrentHashMap<>();
-    private Map<String, PlayData> usersInPlayMode = new ConcurrentHashMap<>();
+    private Map<Long, PlayData> usersInPlayMode = new ConcurrentHashMap<>();
 
     public GameHandler(DiscordBot bot) {
         this.bot = bot;
@@ -123,16 +123,16 @@ public class GameHandler {
     }
 
     private boolean isInPlayMode(User user, TextChannel channel) {
-        return usersInPlayMode.containsKey(user.getId()) && usersInPlayMode.get(user.getId()).getChannelId().equals(channel.getId());
+        return usersInPlayMode.containsKey(user.getIdLong()) && usersInPlayMode.get(user.getIdLong()).getChannelId().equals(channel.getId());
     }
 
     private void enterPlayMode(TextChannel channel, User player) {
-        usersInPlayMode.put(player.getId(), new PlayData(player.getId(), channel.getId()));
+        usersInPlayMode.put(player.getIdLong(), new PlayData(player.getId(), channel.getId()));
     }
 
     private boolean leavePlayMode(User player) {
-        if (usersInPlayMode.containsKey(player.getId())) {
-            usersInPlayMode.remove(player.getId());
+        if (usersInPlayMode.containsKey(player.getIdLong())) {
+            usersInPlayMode.remove(player.getIdLong());
             return true;
         }
         return false;
@@ -346,16 +346,16 @@ public class GameHandler {
             }
             if (!gameTurnInstance.parseInput(input)) {
                 if (isInPlayMode(player, channel)) {
-                    if (usersInPlayMode.get(player.getId()).failedAttempts >= GAMEMODE_LEAVE_AFTER) {
+                    if (usersInPlayMode.get(player.getIdLong()).failedAttempts >= GAMEMODE_LEAVE_AFTER) {
                         leavePlayMode(player);
                         return Templates.playmode_leaving_mode.format();
                     }
-                    usersInPlayMode.get(player.getId()).failedAttempts++;
+                    usersInPlayMode.get(player.getIdLong()).failedAttempts++;
                 }
                 return game.toString() + "\n" + ":exclamation: " + gameTurnInstance.getInputErrorMessage();
             } else {
                 if (isInPlayMode(player, channel)) {
-                    usersInPlayMode.get(player.getId()).failedAttempts = 0;
+                    usersInPlayMode.get(player.getIdLong()).failedAttempts = 0;
                 }
             }
             gameTurnInstance.setCommandPrefix(DisUtil.getCommandPrefix(channel));
