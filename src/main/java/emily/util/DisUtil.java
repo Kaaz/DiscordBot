@@ -23,7 +23,9 @@ import emily.guildsettings.DefaultGuildSettings;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.main.BotContainer;
+import emily.main.DiscordBot;
 import emily.main.Launcher;
+import emoji4j.EmojiUtils;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.Permission;
@@ -447,4 +449,24 @@ public class DisUtil {
         return profileImg;
     }
 
+    public static boolean isEmote(DiscordBot bot, String emote) {
+        if (EmojiUtils.isEmoji(emote) || Misc.isGuildEmote(emote)) {
+            return true;
+        }
+        if (emote.matches("\\d+")) {
+            return bot.getJda().getEmoteById(emote) != null;
+        }
+        return false;
+    }
+
+    public static String emoteToDisplay(DiscordBot bot, String emote) {
+        if (EmojiUtils.isEmoji(emote)) {
+            return emote;
+        } else if (Misc.isGuildEmote(emote)) {
+            return bot.getJda().getEmoteById(Misc.getGuildEmoteId(emote)).getAsMention();
+        } else if (bot.getJda().getEmoteById(emote) != null) {
+            return bot.getJda().getEmoteById(emote).getAsMention();
+        }
+        return "";
+    }
 }

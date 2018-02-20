@@ -115,12 +115,12 @@ public class RoleReactionHandler {
             if (isAdding) {
                 channel.getGuild().getController().addRolesToMember(channel.getGuild().getMember(invoker), role).queue();
                 if (GuildSettings.getBoolFor(channel, GSetting.DEBUG)) {
-                    channel.sendMessage(String.format("Giving the role '%s' to %s", role.getName(), invoker.getName())).queue();
+                    channel.sendMessage(String.format("[DEBUG] Giving the role '%s' to %s", role.getName(), invoker.getName())).queue();
                 }
             } else {
                 channel.getGuild().getController().removeRolesFromMember(channel.getGuild().getMember(invoker), role).queue();
                 if (GuildSettings.getBoolFor(channel, GSetting.DEBUG)) {
-                    channel.sendMessage(String.format("Removing the role '%s' to %s", role.getName(), invoker.getName())).queue();
+                    channel.sendMessage(String.format("[DEBUG] Removing the role '%s' to %s", role.getName(), invoker.getName())).queue();
                 }
             }
             return true;

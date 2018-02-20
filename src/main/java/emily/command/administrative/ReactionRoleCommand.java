@@ -46,21 +46,6 @@ public class ReactionRoleCommand extends AbstractCommand {
         super();
     }
 
-    public static boolean isEmote(DiscordBot bot, String emote) {
-        return EmojiUtils.isEmoji(emote) || Misc.isGuildEmote(emote) || bot.getJda().getEmoteById(emote) != null;
-    }
-
-    public static String toDisplay(DiscordBot bot, String emote) {
-        if (EmojiUtils.isEmoji(emote)) {
-            return emote;
-        } else if (Misc.isGuildEmote(emote)) {
-            return bot.getJda().getEmoteById(Misc.getGuildEmoteId(emote)).getAsMention();
-        } else if (bot.getJda().getEmoteById(emote) != null) {
-            return bot.getJda().getEmoteById(emote).getAsMention();
-        }
-        return "";
-    }
-
     @Override
     public String getDescription() {
         return "Adds and removes roles from users based on reactions from a message\n\n" +
@@ -120,7 +105,7 @@ public class ReactionRoleCommand extends AbstractCommand {
                 if (args.length >= 4) {
                     Role role = DisUtil.findRole(t.getGuild(), args[3]);
                     OReactionRoleKey key = CReactionRole.findOrCreate(t.getGuild().getIdLong(), args[1]);
-                    if (!isEmote(bot, args[2])) {
+                    if (!DisUtil.isEmote(bot, args[2])) {
                         return "no emote found";
                     }
                     if (role == null) {
@@ -132,7 +117,7 @@ public class ReactionRoleCommand extends AbstractCommand {
                         return "can't find guild-emote";
                     }
                     CReactionRole.addReaction(key.id, isNormalEmote ? args[2] : emoteId, isNormalEmote, role.getIdLong());
-                    return String.format("adding to key `%s` the reaction %s with role `%s`", args[1], toDisplay(bot, args[2]), role.getName());
+                    return String.format("adding to key `%s` the reaction %s with role `%s`", args[1], DisUtil.emoteToDisplay(bot, args[2]), role.getName());
                 }
                 return "invalid usage! see help for more info";
             case "remove"://eg. !rr remove key <emote>
@@ -162,6 +147,14 @@ public class ReactionRoleCommand extends AbstractCommand {
                 if (key.id == 0) {
                     return String.format("key `%s` not found!", args[1]);
                 }
+                if (args.length == 3) {
+                    if (DisUtil.isChannelMention(args[2])) {
+                        t = ((TextChannel) channel).getGuild().getTextChannelById(DisUtil.extractId(args[2]));
+                        if (t == null) {
+                            return Templates.config.cant_talk_in_channel.formatGuild(channel, args[2]);
+                        }
+                    }
+                }
                 displayMessage(bot, t, key);
                 return "";
 
@@ -174,9 +167,21 @@ public class ReactionRoleCommand extends AbstractCommand {
         if (key.messageId > 0 && key.channelId > 0) {
             TextChannel tchan = channel.getGuild().getTextChannelById(key.channelId);
             if (tchan != null && tchan.canTalk()) {
-                tchan.editMessageById(String.valueOf(key.messageId), key.message + "\n Use the reactions to give/remove the role").queue();
+                tchan.editMessageById(String.valueOf(key.messageId), buildMessage(channel, key, CReactionRole.getReactionsForKey(key.id))).queue();
             }
         }
+    }
+
+    private String buildMessage(TextChannel channel, OReactionRoleKey key, List<OReactionRoleMessage> reactions) {
+        StringBuilder msg = new StringBuilder(key.message);
+        msg.append("\n Use the reactions below to give/remove the role\n");
+        for (OReactionRoleMessage reaction : reactions) {
+            msg.append(String.format("%s %s %s\n",
+                    reaction.isNormalEmote ? reaction.emoji : channel.getJDA().getEmoteById(reaction.emoji),
+                    Emojibet.THUMBS_RIGHT,
+                    channel.getGuild().getRoleById(reaction.roleId)));
+        }
+        return msg.toString();
     }
 
     private void displayMessage(DiscordBot bot, TextChannel channel, OReactionRoleKey key) {
@@ -186,16 +191,8 @@ public class ReactionRoleCommand extends AbstractCommand {
                 tchan.deleteMessageById(key.messageId).queue();
             }
         }
-        StringBuilder msg = new StringBuilder(key.message);
-        msg.append("\n Use the reactions to give/remove the role\n");
         List<OReactionRoleMessage> reactions = CReactionRole.getReactionsForKey(key.id);
-        for (OReactionRoleMessage reaction : reactions) {
-            msg.append(String.format("%s %s %s\n",
-                    reaction.isNormalEmote ? reaction.emoji : channel.getJDA().getEmoteById(reaction.emoji),
-                    Emojibet.THUMBS_RIGHT,
-                    channel.getGuild().getRoleById(reaction.roleId)));
-        }
-        channel.sendMessage(msg.toString()).queue(message -> {
+        channel.sendMessage(buildMessage(channel, key, reactions)).queue(message -> {
             key.messageId = message.getIdLong();
             key.channelId = channel.getIdLong();
             CReactionRole.update(key);
