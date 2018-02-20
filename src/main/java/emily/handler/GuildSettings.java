@@ -93,6 +93,17 @@ public class GuildSettings {
         }
     }
 
+    /**
+     * @param channel the channel to look up the guild settings
+     * @return Setting object for guild If its a TextChannel otherwise null
+     */
+    public static GuildSettings get(MessageChannel channel) {
+        if (channel != null && channel instanceof TextChannel) {
+            return GuildSettings.get(((TextChannel) channel).getGuild());
+        }
+        return null;
+    }
+
     public static GuildSettings get(Guild guild) {
         return get(guild.getIdLong());
     }
