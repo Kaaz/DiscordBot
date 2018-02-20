@@ -25,6 +25,7 @@ import emily.db.model.OChannel;
 import emily.db.model.OServiceVariable;
 import emily.db.model.OSubscription;
 import emily.db.model.QActiveSubscriptions;
+import emily.main.BotConfig;
 import emily.main.BotContainer;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
@@ -64,13 +65,15 @@ public abstract class AbstractService {
             if (botChannel != null) {
                 channels.add(botChannel);
             } else {
-                OSubscription subscription = CSubscriptions.findBy(databaseChannel.server_id, databaseChannel.id, CServices.getCachedId(getIdentifier()));
-                subscription.subscribed = 0;
-                CSubscriptions.insertOrUpdate(subscription);
-                botInstance.getContainer().reportError(new Exception("Subscription channel not found"),
-                        "result", "Now unsubscribed!",
-                        "channelID", databaseChannel.discord_id,
-                        "subscription", getIdentifier());
+                if (BotConfig.SUBSCRIBE_UNSUB_ON_NOT_FOUND) {
+                    OSubscription subscription = CSubscriptions.findBy(databaseChannel.server_id, databaseChannel.id, CServices.getCachedId(getIdentifier()));
+                    subscription.subscribed = 0;
+                    CSubscriptions.insertOrUpdate(subscription);
+                    botInstance.getContainer().reportError(new Exception("Subscription channel not found"),
+                            "result", "Now unsubscribed!",
+                            "channelID", databaseChannel.discord_id,
+                            "subscription", getIdentifier());
+                }
             }
         }
         return channels;

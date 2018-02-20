@@ -39,6 +39,9 @@ public class BotConfig {
     public static boolean BOT_ENABLED = false;
 
     @ConfigurationOption
+    public static boolean SUBSCRIBE_UNSUB_ON_NOT_FOUND = false;
+
+    @ConfigurationOption
     public static boolean BOT_RESTART_INACTIVE_SHARDS = false;
 
     //send stats to discordlist.net?
