@@ -146,7 +146,7 @@ public class GuildSettings {
      * @return the role or null
      */
     public Role getRoleValue(GSetting setting, Guild guild) {
-        if (!(setting.getSettingType() instanceof RoleSettingType)) {
+        if (!(setting.getSettingType() instanceof RoleSettingType) || guild == null) {
             return null;
         }
         return guild.getRoleById(getOrDefault(setting));
@@ -241,18 +241,16 @@ public class GuildSettings {
     }
 
     public boolean canUseMusicCommands(User user, SimpleRank userRank) {
-        String requiredRole = getOrDefault(GSetting.MUSIC_ROLE_REQUIREMENT);
-        boolean roleFound = true;
-        if (!requiredRole.isEmpty() && !"false".equals(requiredRole) && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
-            roleFound = false;
-            List<Role> roles = user.getJDA().getGuildById(Long.toString(guildId)).getMember(user).getRoles();
-            for (Role role : roles) {
-                if (role.getId().equals(requiredRole)) {
-                    roleFound = true;
-                    break;
-                }
+        Role requiredRole = getRoleValue(GSetting.MUSIC_ROLE_REQUIREMENT, user.getJDA().getGuildById(guildId));
+        if (requiredRole == null || userRank.isAtLeast(SimpleRank.GUILD_BOT_ADMIN)) {
+            return true;
+        }
+        List<Role> roles = user.getJDA().getGuildById(Long.toString(guildId)).getMember(user).getRoles();
+        for (Role role : roles) {
+            if (role.getIdLong() == requiredRole.getIdLong()) {
+                return true;
             }
         }
-        return roleFound;
+        return false;
     }
 }

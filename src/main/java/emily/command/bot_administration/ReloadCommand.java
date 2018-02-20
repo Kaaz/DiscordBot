@@ -18,6 +18,7 @@ package emily.command.bot_administration;
 
 import emily.command.CommandVisibility;
 import emily.core.AbstractCommand;
+import emily.handler.SecurityHandler;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.templates.Templates;
@@ -66,6 +67,7 @@ public class ReloadCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         if (rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+            SecurityHandler.initialize();
             return Templates.command.reload.success.formatGuild(channel);
         }
         if (rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {

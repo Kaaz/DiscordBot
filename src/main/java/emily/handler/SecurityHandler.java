@@ -45,23 +45,23 @@ import java.util.stream.Collectors;
  * Manages permissions/bans for discord
  */
 public class SecurityHandler {
-    private static HashSet<Long> bannedGuilds;
-    private static HashSet<Long> bannedUsers;
-    private static HashSet<Long> interactionBots;
-    private static HashSet<Long> contributors;
-    private static HashSet<Long> botAdmins;
-    private static HashSet<Long> systemAdmins;
+    private final static HashSet<Long> bannedGuilds = new HashSet<>();
+    private final static HashSet<Long> bannedUsers = new HashSet<>();
+    private final static HashSet<Long> interactionBots = new HashSet<>();
+    private final static HashSet<Long> contributors = new HashSet<>();
+    private final static HashSet<Long> botAdmins = new HashSet<>();
+    private final static HashSet<Long> systemAdmins = new HashSet<>();
 
     public SecurityHandler() {
     }
 
     public static synchronized void initialize() {
-        bannedGuilds = new HashSet<>();
-        bannedUsers = new HashSet<>();
-        interactionBots = new HashSet<>();
-        contributors = new HashSet<>();
-        botAdmins = new HashSet<>();
-        systemAdmins = new HashSet<>();
+        bannedGuilds.clear();
+        bannedUsers.clear();
+        interactionBots.clear();
+        contributors.clear();
+        botAdmins.clear();
+        systemAdmins.clear();
         List<OGuild> bannedList = CGuild.getBannedGuilds();
         bannedGuilds.addAll(bannedList.stream().map(guild -> guild.discord_id).collect(Collectors.toList()));
         CUser.addBannedUserIds(bannedUsers);
