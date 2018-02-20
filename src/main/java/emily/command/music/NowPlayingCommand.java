@@ -90,10 +90,6 @@ public class NowPlayingCommand extends AbstractCommand {
                 "current clear               //clears everything in the queue",
                 "current clear admin         //check if clear is admin-only",
                 "current clear admin toggle  //switch between admin-only and normal",
-//				"current artist        //sets the artist of current song",
-//				"current correct       //accept the systems suggestion of title/artist",
-//				"current reversed      //accept the systems suggestion in reverse [title=artist,artist=title]",
-//				"current title <title> //sets title of current song",
         };
     }
 

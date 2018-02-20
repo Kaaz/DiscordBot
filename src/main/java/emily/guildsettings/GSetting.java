@@ -36,6 +36,9 @@ public enum GSetting {
     BOT_CHANNEL("general", GuildSettingType.TEXT_CHANNEL_MANDATORY,
             "Channel where the bots default output goes to",
             GSettingTag.CHANNEL),
+    BOT_ADMIN_ROLE("", GuildSettingType.ROLE_OPTIONAL,
+            "Users with this role are considered admins for the bot",
+            GSettingTag.ROLE),
     SHOW_TEMPLATES(BotConfig.SHOW_KEYPHRASE ? "true" : "false", GuildSettingType.TOGGLE,
             "Show which templates are being used on places.\n\n" +
                     "valid values: \n" +

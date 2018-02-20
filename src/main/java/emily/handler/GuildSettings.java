@@ -23,6 +23,7 @@ import emily.guildsettings.DefaultGuildSettings;
 import emily.guildsettings.GSetting;
 import emily.guildsettings.IGuildSettingType;
 import emily.guildsettings.types.BooleanSettingType;
+import emily.guildsettings.types.RoleSettingType;
 import emily.permission.SimpleRank;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -115,8 +116,29 @@ public class GuildSettings {
     public String getOrDefault(GSetting setting) {
         return settings[setting.ordinal()] == null ? setting.getDefaultValue() : settings[setting.ordinal()];
     }
+
+    /**
+     * helper method to simplify getting boolean type settings
+     *
+     * @param setting the setting
+     * @return false if its not a boolean setting otherwise the setting
+     */
     public boolean getBoolValue(GSetting setting) {
         return setting.getSettingType() instanceof BooleanSettingType && "true".equals(getOrDefault(setting));
+    }
+
+    /**
+     * helper method to simplify getting Role type settings
+     *
+     * @param setting the Role setting
+     * @param guild   the guild object
+     * @return the role or null
+     */
+    public Role getRoleValue(GSetting setting, Guild guild) {
+        if (!(setting.getSettingType() instanceof RoleSettingType)) {
+            return null;
+        }
+        return guild.getRoleById(getOrDefault(setting));
     }
 
     public String getOrDefault(String key) {
@@ -141,7 +163,7 @@ public class GuildSettings {
                 String key = rs.getString("name").toUpperCase();
                 String value = rs.getString("config");
                 if (DefaultGuildSettings.isValidKey(key)) {
-                        settings[GSetting.valueOf(key).ordinal()] = value;
+                    settings[GSetting.valueOf(key).ordinal()] = value;
                 }
             }
             rs.getStatement().close();

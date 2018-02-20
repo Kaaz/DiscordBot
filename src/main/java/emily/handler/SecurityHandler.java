@@ -22,6 +22,7 @@ import emily.db.controllers.CUser;
 import emily.db.controllers.CUserRank;
 import emily.db.model.OGuild;
 import emily.db.model.OUserRank;
+import emily.guildsettings.GSetting;
 import emily.main.BotConfig;
 import emily.main.GuildCheckResult;
 import emily.permission.SimpleRank;
@@ -29,6 +30,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.utils.MiscUtil;
@@ -166,6 +168,10 @@ public class SecurityHandler {
             }
             if (PermissionUtil.checkPermission(guild.getMember(user), Permission.ADMINISTRATOR)) {
                 return SimpleRank.GUILD_ADMIN;
+            }
+            Role role = GuildSettings.get(guild).getRoleValue(GSetting.BOT_ADMIN_ROLE, guild);
+            if (role != null && guild.getMember(user).getRoles().contains(role)) {
+                return SimpleRank.GUILD_BOT_ADMIN;
             }
         }
         return SimpleRank.USER;

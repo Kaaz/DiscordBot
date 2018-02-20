@@ -24,6 +24,7 @@ public enum SimpleRank {
     BOT("Will be ignored"),
     USER("Regular user"),
     INTERACTION_BOT("Bot can interact"),
+    GUILD_BOT_ADMIN("Bot admin for a guild"),
     GUILD_ADMIN("Admin in a guild"),
     GUILD_OWNER("Owner of a guild"),
     CONTRIBUTOR("Contributor"),
