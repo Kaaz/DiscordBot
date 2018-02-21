@@ -149,7 +149,11 @@ public class GuildSettings {
         if (!(setting.getSettingType() instanceof RoleSettingType) || guild == null) {
             return null;
         }
-        return guild.getRoleById(getOrDefault(setting));
+        String roleName = getOrDefault(setting);
+        if (roleName == null || roleName.isEmpty() || roleName.equals("false")) {
+            return null;
+        }
+        return guild.getRoleById(roleName);
     }
 
     public String getOrDefault(String key) {
