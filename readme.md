@@ -42,9 +42,9 @@ Commands | | | | |
 [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report) | [roleadmin](#roleadmin)
 [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [server](#server) | [skip](#skip)
 [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag)
-[tempban](#tempban) | [template](#template) | [todo](#todo) | [ud](#ud) | [uptime](#uptime)
-[user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume) | [warn](#warn)
-
+[tempban](#tempban) | [template](#template) | [test](#test) | [todo](#todo) | [ud](#ud)
+[uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume)
+[warn](#warn) | 
 
 ## Games
 
@@ -71,6 +71,7 @@ auto_reply | false | use the auto reply feature?
 Looks for patterns in messages and replies to them (with a cooldown)
 true -> enable auto replying to matched messages
 false -> disable auto replying
+bot_admin_role |  | Users with this role are considered admins for the bot
 bot_channel | general | Channel where the bots default output goes to
 bot_logging_channel | false | The channel where the logging of events happens. Such as users joining/leaving
 
@@ -107,7 +108,7 @@ output: this is not a test
 Setting this to 'false' will disable it (without the quotes)
 To enable it, set this setting to match the channel name where you want the command logging to happen
 If you specify an invalid channel, this setting will disable itself
-command_prefix | ! | Prefix for commands (between 1 and 4 characters)
+command_prefix | $ | Prefix for commands (between 1 and 4 characters)
 debug | false | Show some debug information.
 
 valid values: 
@@ -530,7 +531,7 @@ Usable in public and private channels
 #### Usage
 
 ```php
-fixusernames, fixrelations, youtube 
+fixusernames, fixrelations 
 ```
 ### donate
 
@@ -1219,6 +1220,19 @@ template variable                    //all variables
 template variable <keyphrase>        //variables for that keyphrase
 
 for users with botadmin+, use 'template global ...' for global templates
+```
+### test
+
+kaaz's test command
+
+Aliases: test
+
+Usable in public  channels
+
+#### Usage
+
+```php
+NOPE
 ```
 ### todo
 
