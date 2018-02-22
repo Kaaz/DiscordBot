@@ -22,6 +22,7 @@ import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.permission.SimpleRank;
 import emily.templates.Templates;
+import emily.util.Emojibet;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -64,6 +65,7 @@ public class ExitCommand extends AbstractCommand {
             bot.out.sendAsyncMessage(channel, "I am being killed :sob: farewell world! :wave: ", message -> {
                 Launcher.stop(ExitCode.STOP);
             });
+            return Emojibet.THUMBS_UP;
         }
         return Templates.no_permission.formatGuild(channel);
     }
