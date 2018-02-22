@@ -26,10 +26,10 @@ import java.util.regex.Pattern;
  * Created on 22-9-2016
  */
 public class UpdateUtil {
-    private static final Pattern versionPattern = Pattern.compile("<version>([0-9]+\\.[0-9]+\\.[0-9]+)</version>");
+    private static final Pattern versionPattern = Pattern.compile("version = '([0-9]+\\.[0-9]+\\.[0-9]+)'");
 
     public static ProgramVersion getLatestVersion() {
-        String request = HttpHelper.doRequest("https://raw.githubusercontent.com/Kaaz/DiscordBot/master/pom.xml");
+        String request = HttpHelper.doRequest("https://raw.githubusercontent.com/Kaaz/DiscordBot/master/build.gradle");
         Matcher matcher = versionPattern.matcher(request);
         if (matcher.find()) {
             return ProgramVersion.fromString(matcher.group(1));
