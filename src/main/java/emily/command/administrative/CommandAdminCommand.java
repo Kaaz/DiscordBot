@@ -24,16 +24,10 @@ import emily.db.model.OBlacklistCommand;
 import emily.handler.CommandHandler;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
-import emily.templates.Template;
 import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
 import java.util.List;
 

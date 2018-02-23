@@ -28,12 +28,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import emily.db.WebDb;
-import emily.db.controllers.CBotPlayingOn;
-import emily.db.controllers.CGuild;
-import emily.db.controllers.CMusic;
-import emily.db.controllers.CMusicLog;
-import emily.db.controllers.CPlaylist;
-import emily.db.controllers.CUser;
+import emily.db.controllers.*;
 import emily.db.model.OMusic;
 import emily.db.model.OPlaylist;
 import emily.guildsettings.GSetting;
@@ -47,25 +42,14 @@ import emily.util.MusicUtil;
 import emily.util.YTUtil;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.GuildVoiceState;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -75,7 +59,7 @@ import java.util.stream.Collectors;
 
 public class MusicPlayerHandler {
     private final static DefaultAudioPlayerManager playerManager = new DefaultAudioPlayerManager();
-    private final static Map<String, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
+    private final static Map<Long, MusicPlayerHandler> playerInstances = new ConcurrentHashMap<>();
     public final AudioPlayer player;
     private final DiscordBot bot;
     private final TrackScheduler scheduler;
@@ -105,7 +89,7 @@ public class MusicPlayerHandler {
         scheduler = new TrackScheduler(player);
         player.addListener(scheduler);
         player.setVolume(Integer.parseInt(GuildSettings.get(guild.getId()).getOrDefault(GSetting.MUSIC_VOLUME)));
-        playerInstances.put(guild.getId(), this);
+        playerInstances.put(guild.getIdLong(), this);
         int savedPlaylist = Integer.parseInt(GuildSettings.get(guild.getId()).getOrDefault(GSetting.MUSIC_PLAYLIST_ID));
         if (savedPlaylist > 0) {
             playlist = CPlaylist.findById(savedPlaylist);
@@ -128,22 +112,22 @@ public class MusicPlayerHandler {
     }
 
     public static void removeGuild(Guild guild, boolean saveStatus) {
-        if (playerInstances.containsKey(guild.getId())) {
-            if (saveStatus && playerInstances.get(guild.getId()).isConnected()) {
+        if (playerInstances.containsKey(guild.getIdLong())) {
+            if (saveStatus && playerInstances.get(guild.getIdLong()).isConnected()) {
                 CBotPlayingOn.insert(guild.getId(), guild.getAudioManager().getConnectedChannel().getId());
             }
-            playerInstances.get(guild.getId()).leave();
-            playerInstances.remove(guild.getId());
+            playerInstances.get(guild.getIdLong()).leave();
+            playerInstances.remove(guild.getIdLong());
         }
     }
 
     public static MusicPlayerHandler getFor(Guild guild) {
-        return playerInstances.get(guild.getId());
+        return playerInstances.get(guild.getIdLong());
     }
 
     public static MusicPlayerHandler getFor(Guild guild, DiscordBot bot) {
-        if (playerInstances.containsKey(guild.getId())) {
-            return playerInstances.get(guild.getId());
+        if (playerInstances.containsKey(guild.getIdLong())) {
+            return playerInstances.get(guild.getIdLong());
         } else {
             return new MusicPlayerHandler(guild, bot);
         }
@@ -233,17 +217,18 @@ public class MusicPlayerHandler {
         boolean keepGoing = false;
         if (scheduler.queue.isEmpty()) {
             if (queue.isEmpty()) {
-                if (!stopAfterTrack && "false".equals(GuildSettings.get(guildId).getOrDefault(GSetting.MUSIC_QUEUE_ONLY))) {
+                if (!stopAfterTrack && !GuildSettings.get(guildId).getBoolValue(GSetting.MUSIC_QUEUE_ONLY)) {
                     keepGoing = true;
                     if (!playRandomSong()) {
                         player.destroy();
                         bot.queue.add(bot.getMusicChannel(guildId).sendMessage("Stopped playing because the playlist is empty"));
-                        leave();
+                        bot.schedule(() -> MusicPlayerHandler.removeGuild(bot.getJda().getGuildById(guildId)), 10L, TimeUnit.SECONDS);
                         return;
                     }
                 } else {
                     stopAfterTrack = false;
-                    leave();
+                    bot.schedule(() -> MusicPlayerHandler.removeGuild(bot.getJda().getGuildById(guildId)), 10L, TimeUnit.SECONDS);
+                    return;
                 }
             }
             final OMusic trackToAdd = queue.poll();
@@ -278,7 +263,7 @@ public class MusicPlayerHandler {
                 @Override
                 public void loadFailed(FriendlyException exception) {
                     TextChannel musicChannel = bot.getMusicChannel(guildId);
-                    if(musicChannel != null){
+                    if (musicChannel != null) {
                         bot.queue.add(musicChannel.sendMessage(String.format("can't play `%s`. Reason: %s", trackToAdd.youtubecode, exception.getMessage())));
                     }
                     if (finalKeepGoing) {
