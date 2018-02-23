@@ -90,9 +90,9 @@ public class Launcher {
 
     private static void init() throws IOException, InterruptedException, SQLException {
         Properties props = new Properties();
-        props.load(Launcher.class.getClassLoader().getResourceAsStream("version.properties"));
+        props.load(Launcher.class.getClassLoader().getResourceAsStream("project.properties"));
         Launcher.version = ProgramVersion.fromString(String.valueOf(props.getOrDefault("version", "1")));
-        DiscordBot.LOGGER.info("Started with version: " + Launcher.version);
+        System.out.println(String.format("Started Emily with version %s", Launcher.version));
         DbUpdate dbUpdate = new DbUpdate(WebDb.get());
         dbUpdate.updateToCurrent();
         Launcher.GRAYLOG = new GrayLogThread();

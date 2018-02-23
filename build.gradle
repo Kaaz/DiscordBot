@@ -1,4 +1,7 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 apply plugin: 'java'
+apply plugin: 'idea'
 apply plugin: 'maven'
 
 group = 'com.github.Kaaz'
@@ -9,7 +12,7 @@ description = "Emily discord bot"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
 task fatJar(type: Jar) {
     manifest {
@@ -21,37 +24,44 @@ task fatJar(type: Jar) {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
+processResources {
+    filesMatching('**/project.properties') {
+        filter ReplaceTokens, tokens: [
+                'version': version
+        ]
+    }
+}
 
 
 repositories {
-        
-     maven { url "https://jitpack.io" }
-     maven { url "http://jcenter.bintray.com" }
-     maven { url "http://repo.maven.apache.org/maven2" }
+
+    maven { url "https://jitpack.io" }
+    maven { url "http://jcenter.bintray.com" }
+    maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
-    compile group: 'com.google.code.gson', name: 'gson', version:'2.8.2'
-    compile group: 'org.json', name: 'json', version:'20170516'
-    compile group: 'com.github.rithms', name: 'riot-api-java', version:'4.0.1'
-    compile group: 'org.jsoup', name: 'jsoup', version:'1.10.3'
-    compile group: 'org.graylog2', name: 'gelfclient', version:'1.4.0'
-    compile group: 'org.knowm.xchart', name: 'xchart', version:'3.2.1'
-    compile group: 'com.google.apis', name: 'google-api-services-youtube', version:'v3-rev192-1.23.0'
-    compile group: 'com.kcthota', name: 'emoji4j', version:'5.0'
-    compile group: 'net.dv8tion', name: 'JDA', version:'3.5.1_339'
-    compile group: 'com.sedmelluq', name: 'lavaplayer', version:'1.2.47'
-    compile group: 'org.reflections', name: 'reflections', version:'0.9.10'
-    compile group: 'mysql', name: 'mysql-connector-java', version:'5.1.40'
-    compile group: 'com.github.Kaaz', name: 'trello4j', version:'master-SNAPSHOT'
-    compile group: 'com.github.Kaaz', name: 'ConfigurationBuilder', version:'0c4957579e'
-    compile group: 'com.github.Kaaz', name: 'lib-poe', version:'1.1'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.5.5'
-    compile group: 'com.mashape.unirest', name: 'unirest-java', version:'1.4.9'
-    compile group: 'org.apache.httpcomponents', name: 'httpmime', version:'4.5.3'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.6'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version:'2.8.2'
-    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.25'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version:'2.8.2'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.9.3'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.9.3'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
+    compile group: 'org.json', name: 'json', version: '20170516'
+    compile group: 'com.github.rithms', name: 'riot-api-java', version: '4.0.1'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.10.3'
+    compile group: 'org.graylog2', name: 'gelfclient', version: '1.4.0'
+    compile group: 'org.knowm.xchart', name: 'xchart', version: '3.2.1'
+    compile group: 'com.google.apis', name: 'google-api-services-youtube', version: 'v3-rev192-1.23.0'
+    compile group: 'com.kcthota', name: 'emoji4j', version: '5.0'
+    compile group: 'net.dv8tion', name: 'JDA', version: '3.5.1_339'
+    compile group: 'com.sedmelluq', name: 'lavaplayer', version: '1.2.47'
+    compile group: 'org.reflections', name: 'reflections', version: '0.9.10'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.40'
+    compile group: 'com.github.Kaaz', name: 'trello4j', version: 'master-SNAPSHOT'
+    compile group: 'com.github.Kaaz', name: 'ConfigurationBuilder', version: '0c4957579e'
+    compile group: 'com.github.Kaaz', name: 'lib-poe', version: '1.1'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+    compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
+    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.3'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8.2'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.8.2'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.3'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.3'
 }
