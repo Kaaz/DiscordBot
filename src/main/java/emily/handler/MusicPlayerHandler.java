@@ -39,7 +39,6 @@ import emily.main.Launcher;
 import emily.permission.SimpleRank;
 import emily.util.Emojibet;
 import emily.util.MusicUtil;
-import emily.util.YTUtil;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -287,10 +286,6 @@ public class MusicPlayerHandler {
         if (info != null) {
             record = CMusic.findByYoutubeId(info.identifier);
             if (record.id > 0) {
-                if (record.duration == 0) {
-                    YTUtil.getTrackDuration(record);
-                    CMusic.update(record);
-                }
                 if (((scheduler.getLastRequester() != null) && !scheduler.getLastRequester().isEmpty()) || !playlist.isGlobalList()) {
                     if (scheduler.getLastRequester() != null && !scheduler.getLastRequester().isEmpty()) {
                         record.playCount++;

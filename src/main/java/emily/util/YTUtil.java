@@ -16,20 +16,12 @@
 
 package emily.util;
 
-import emily.db.controllers.CMusic;
-import emily.db.model.OMusic;
-import emily.main.BotConfig;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.json.JSONObject;
-import sun.misc.IOUtils;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -124,43 +116,5 @@ public class YTUtil {
         return TimeUtil.getRelativeTime(
                 (System.currentTimeMillis() +
                         (c.getTimeInMillis() - System.currentTimeMillis()) % TimeUnit.DAYS.toMillis(1)) / 1000L, false);
-    }
-
-    public static String getOutputPath(String videoCode) {
-        return BotConfig.MUSIC_DIRECTORY + videoCode + ".opus";
-    }
-
-    public static boolean getTrackDuration(OMusic record) {
-        if (record.fileExists == 0 || record.duration > 0) {
-            return false;
-        }
-        Process ffprobeProcess = null;
-        try {
-            ffprobeProcess = new ProcessBuilder().command(Arrays.asList(
-                    "ffprobe",
-                    "-show_format",
-                    "-print_format", "json",
-                    "-loglevel", "0",
-                    "-i", record.filename
-            )).start();
-            InputStream ffprobeStream = ffprobeProcess.getInputStream();
-            byte[] infoData = IOUtils.readFully(ffprobeStream, -1, false);
-            ffprobeProcess.waitFor(30, TimeUnit.SECONDS);
-            if (infoData != null && infoData.length > 0) {
-                JSONObject json = new JSONObject(new String(infoData)).getJSONObject("format");
-                int duration = (int) json.optDouble("duration", 0);
-                if (duration != 0) {
-                    record.duration = duration;
-                    CMusic.update(record);
-                    return true;
-                }
-            }
-        } catch (IOException | InterruptedException ignored) {
-        } finally {
-            if (ffprobeProcess != null) {
-                ffprobeProcess.destroyForcibly();
-            }
-        }
-        return false;
     }
 }
