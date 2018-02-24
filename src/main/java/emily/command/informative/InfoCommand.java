@@ -24,6 +24,7 @@ import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.util.DisUtil;
+import emily.util.Emojibet;
 import emily.util.TimeUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -103,22 +104,12 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
                     break;
             }//
         }
-        channel.sendTyping();
         String onlineFor = TimeUtil.getRelativeTime(bot.startupTimeStamp, false);
-        String response = bot.chatBotHandler.chat("emily", "What are you?");
-        String purpose = bot.chatBotHandler.chat("emily", "What is your purpose?");
         String prefix = DisUtil.getCommandPrefix(channel);
-        if (response.isEmpty()) {
-            response = "I'm batman";
-        }
-        if (purpose.isEmpty()) {
-            purpose = "I don't know";
-        }
-        return "\u2139 > Info  " + "\n" + "\n" +
-                "*" + bot.chatBotHandler.chat("emily", "information") + "* " + "\n" + "\n" +
-                "**What am I?** *" + response + "* " + "\n" +
-                "**My purpose?** *" + purpose + "* " + "\n" +
-                "**Who made me?** *Kaaz*" + "\n" + "\n" +
+        return "\u2139 > Info  \n" +
+                "Where should I start :thinking:\n" +
+                "**What am I?** I'm batman\n" +
+                "**My purpose?** About as clear as yours " + "\n" +
                 "The last time I restarted was  " + onlineFor + "." + "\n" +
                 "Running version `" + Launcher.getVersion().toString() + "`. You can use `" + prefix + "changelog` to see what changed." + "\n" + "\n" +
                 "Type **" + prefix + "help** to see what I'll allow you to do. In total there are " + CommandHandler.getCommands().length + " commands I can perform." + "\n" + "\n" +

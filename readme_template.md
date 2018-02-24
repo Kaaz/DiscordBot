@@ -65,7 +65,7 @@ The rankings go according to the table below:
 
 * [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 * [git](https://git-scm.com/)
-* [maven](https://maven.apache.org/)
+* [gradle](https://gradle.org/)
 
 Also prepare a [MariaDB SQL](https://mariadb.org/) server (either hosted or installed locally).<br/>
 Then continue with the following steps.
@@ -85,12 +85,12 @@ Then continue with the following steps.
 3. Collect dependencies
     
     `cd` into the directory that git just created (should be called `DiscordBot`).<br>
-    Then type `mvn install`. This might take some time so be patient :)
+    Then type `gradle install`.
     
 4. Build
     
-    Type `mvn clean process-resources compile assembly:single` in the `DiscordBot` folder.
-    In the target map there should be a file called `Discordbot-VERSION_full.jar` (where version is the latest version number).
+    Type `mvn fatJar` in the `DiscordBot` folder.
+    In the build/libs/ folder there should be a file called `Emily-all-{VERSION}.jar` (where version is the latest version number).
     Move this file over to a location wherever you want to start the bot from.
     
 5. Run
