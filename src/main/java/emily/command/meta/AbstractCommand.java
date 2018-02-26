@@ -59,7 +59,7 @@ public abstract class AbstractCommand {
      */
     public abstract String[] getAliases();
 
-    public CommandCategory getCommandCategory() {
+    public final CommandCategory getCommandCategory() {
         return commandCategory;
     }
 

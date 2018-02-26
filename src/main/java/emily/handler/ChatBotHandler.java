@@ -18,60 +18,55 @@ package emily.handler;
 
 
 import emily.main.BotConfig;
-import emily.modules.cleverbotio.CleverbotIO;
+import emily.main.DiscordBot;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import org.bots4j.wit.WitClient;
+import org.bots4j.wit.beans.EntityMap;
+import org.bots4j.wit.beans.GetIntentViaTextResponse;
+import org.bots4j.wit.beans.Outcome;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class ChatBotHandler {
-    private static final List<String> BANNED = Arrays.asList("discord.gg", "http", "clan", "server", "you");
-    private final Map<String, ChatBotInstance> sessions;
+    private final Map<Long, ChatBotInstance> sessions;
+    private final DiscordBot bot;
 
-    public ChatBotHandler() {
+    public ChatBotHandler(DiscordBot bot) {
+        this.bot = bot;
         sessions = new ConcurrentHashMap<>();
     }
 
-    private static boolean acceptableMessage(String s) {
-        s = s.toLowerCase();
-        if (Character.isLetter(s.charAt(0))) return false;
-        for (String s1 : BANNED) {
-            if (s.contains(s1)) return false;
-        }
-        return true;
-    }
-
-    private CleverbotIO getSession(String nick) {
-        return new CleverbotIO(BotConfig.CLEVERBOT_IO_USER, BotConfig.CLEVERBOT_IO_KEY, nick);
+    private WitClient createSession() {
+        return new WitClient(BotConfig.WIT_AI_TOKEN);
     }
 
     public void cleanCache() {
         long deleteBefore = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(30);
-        Iterator<Map.Entry<String, ChatBotInstance>> iterator = sessions.entrySet().iterator();
+        Iterator<Map.Entry<Long, ChatBotInstance>> iterator = sessions.entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry<String, ChatBotInstance> entry = iterator.next();
+            Map.Entry<Long, ChatBotInstance> entry = iterator.next();
             if (entry.getValue().getLastInteraction() < deleteBefore) {
                 sessions.remove(entry.getKey());
             }
         }
     }
 
-    public String chat(String guildId, String input) {
+    public String chat(long guildId, String input, MessageChannel channel) {
         if (!sessions.containsKey(guildId)) {
-            sessions.put(guildId, new ChatBotInstance(getSession(guildId)));
+            sessions.put(guildId, new ChatBotInstance(createSession()));
         }
-        return sessions.get(guildId).chat(input);
+        return sessions.get(guildId).chat(input, channel);
     }
 
     private class ChatBotInstance {
         private long lastInteraction;
         private int failedAttempts = 0;
-        private CleverbotIO botsession = null;
+        private WitClient botsession;
 
-        ChatBotInstance(CleverbotIO session) {
+        ChatBotInstance(WitClient session) {
             botsession = session;
         }
 
@@ -79,23 +74,65 @@ public class ChatBotHandler {
             return lastInteraction;
         }
 
-        public String chat(String input) {
+        public String chat(String input, MessageChannel channel) {
             if (failedAttempts > 25) {
                 return "";
             }
             try {
                 failedAttempts = 0;
                 lastInteraction = System.currentTimeMillis();
-                String string;
-                while (!acceptableMessage(string = new String(botsession.ask(input).getBytes("UTF-8"), "UTF-8"))) {
-                    Thread.sleep(250);
+                GetIntentViaTextResponse intent = botsession.getIntentViaText(input, null, null, null, null);
+                if (intent.getOutcomes().isEmpty()) {
+                    return "";
                 }
-                return string;
+                Outcome outcome = intent.getOutcomes().get(0);
+                EntityMap entities = outcome.getEntities();
+                for (Map.Entry<String, Object> stringObjectEntry : entities.entrySet()) {
+                    System.out.println(stringObjectEntry.getKey() + " ++ " + stringObjectEntry.getValue());
+                }
+                String search = entities.firstEntityValue("search_query");
+                ResponseCategory category = ResponseCategory.get(entities.firstEntityValue("intent"));
+                switch (category){
+                    case COMMANDHELP:
+                        if(CommandHandler.commandExists(search)){
+                            return CommandHandler.getCommand("help").execute(bot, new String[]{search}, channel, null, null);
+                        }
+                        return "No info for `"+search+"`";
+                    case COMMANDEXECUTE:
+                        search = search.replace(" ","");
+                        if(CommandHandler.commandExists(search)){
+                            return CommandHandler.getCommand(search).execute(bot, new String[]{}, channel, bot.getJda().getSelfUser(), null);
+                        }
+                        return "Cant find a command for `"+search+"`";
+                }
+                return String.format("category: %s; details: `%s`", category, search);
             } catch (Exception ignored) {
                 failedAttempts++;
             }
             return "";
         }
+    }
+    enum ResponseCategory{
+        COMMANDHELP("command-help"),
+        COMMANDEXECUTE("command-execute"),
+        UNKNOWN("?");
 
+        private final String categoryname;
+
+        ResponseCategory(String categoryname) {
+            this.categoryname = categoryname;
+        }
+
+        public String getCategoryname() {
+            return categoryname;
+        }
+        public static ResponseCategory get(String text){
+            for (ResponseCategory responseCategory : values()) {
+                if(responseCategory.getCategoryname().equals(text)){
+                    return responseCategory;
+                }
+            }
+            return UNKNOWN;
+        }
     }
 }

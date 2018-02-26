@@ -42,7 +42,7 @@ public class CatFactCommand extends AbstractCommand {
 
     public static String getCatFact() {
         try {
-            URL loginurl = new URL("http://catfacts-api.appspot.com/api/facts");
+            URL loginurl = new URL("https://catfact.ninja/fact");
             URLConnection yc = loginurl.openConnection();
             yc.setConnectTimeout(10 * 1000);
             BufferedReader in = new BufferedReader(
@@ -51,7 +51,7 @@ public class CatFactCommand extends AbstractCommand {
             String inputLine = in.readLine();
             JsonParser parser = new JsonParser();
             JsonObject array = parser.parse(inputLine).getAsJsonObject();
-            return ":cat:  " + array.get("facts").getAsString();
+            return ":cat:  " + array.get("fact").getAsString();
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -75,7 +75,7 @@ public class CatFactCommand extends AbstractCommand {
 
     @Override
     public String[] getAliases() {
-        return new String[]{};
+        return new String[]{"catfacts"};
     }
 
     @Override

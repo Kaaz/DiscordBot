@@ -176,7 +176,7 @@ public class CommandHandler {
         } else if (startedWithMention && BotConfig.BOT_CHATTING_ENABLED) {
             commandSuccess = false;
             channel.sendTyping().queue();
-            outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat((guildId > 0 ? CGuild.getCachedDiscordId(guildId) : "private"), inputMessage);
+            outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat(guildId > 0 ? Long.parseLong(CGuild.getCachedDiscordId(guildId)) : 0L, inputMessage, channel);
         } else if (BotConfig.BOT_COMMAND_SHOW_UNKNOWN ||
                 GuildSettings.getFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS).equals("true")) {
             commandSuccess = false;
@@ -440,6 +440,9 @@ public class CommandHandler {
      */
     public static String[] getCommands() {
         return commands.keySet().toArray(new String[commands.keySet().size()]);
+    }
+    public static boolean commandExists(String cmd){
+        return commands.containsKey(cmd) || commandsAlias.containsKey(cmd);
     }
 
     /**

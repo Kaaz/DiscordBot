@@ -93,7 +93,7 @@ public class DiscordBot {
         this.totShards = numShards;
         registerHandlers();
         setContainer(container);
-        chatBotHandler = new ChatBotHandler();
+        chatBotHandler = new ChatBotHandler(this);
         startupTimeStamp = System.currentTimeMillis() / 1000L;
         while (true) {
             try {
@@ -364,7 +364,7 @@ public class DiscordBot {
             CommandHandler.process(this, channel, author, message);
         } else {
             channel.sendTyping().queue();
-            this.out.sendAsyncMessage(channel, this.chatBotHandler.chat("private", message.getContentRaw()), null);
+            this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(0L, message.getContentRaw(), channel), null);
         }
     }
 
@@ -393,7 +393,7 @@ public class DiscordBot {
                 channel.getId().equals(GuildSettings.get(channel.getGuild()).getOrDefault(GSetting.BOT_CHANNEL))) {
             if (PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_WRITE)) {
                 channel.sendTyping().queue();
-                this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(guild.getId(), message.getContentRaw()), null);
+                this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(guild.getIdLong(), message.getContentRaw(), channel), null);
             }
         }
     }
