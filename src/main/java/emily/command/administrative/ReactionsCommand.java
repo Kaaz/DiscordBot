@@ -16,9 +16,9 @@
 
 package emily.command.administrative;
 
-import emily.command.reactions.ReactionType;
-import emily.command.reactions.Reactions;
-import emily.core.AbstractCommand;
+import emily.command.meta.ReactionType;
+import emily.command.meta.Reactions;
+import emily.command.meta.AbstractCommand;
 import emily.main.DiscordBot;
 import emily.util.Emojibet;
 import net.dv8tion.jda.core.entities.Message;

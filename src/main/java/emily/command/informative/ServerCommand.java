@@ -19,7 +19,7 @@ package emily.command.informative;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import emily.command.CommandVisibility;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.templates.Templates;

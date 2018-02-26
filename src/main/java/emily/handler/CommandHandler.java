@@ -18,8 +18,8 @@ package emily.handler;
 
 import emily.command.CommandCategory;
 import emily.command.CommandVisibility;
-import emily.command.ICommandCooldown;
-import emily.core.AbstractCommand;
+import emily.command.meta.ICommandCooldown;
+import emily.command.meta.AbstractCommand;
 import emily.db.WebDb;
 import emily.db.controllers.CBlacklistCommand;
 import emily.db.controllers.CBotEvent;

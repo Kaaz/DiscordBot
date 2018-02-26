@@ -18,9 +18,9 @@ package emily.command.fun;
 
 import emily.command.CommandReactionListener;
 import emily.command.CooldownScope;
-import emily.command.ICommandCooldown;
-import emily.command.ICommandReactionListener;
-import emily.core.AbstractCommand;
+import emily.command.meta.ICommandCooldown;
+import emily.command.meta.ICommandReactionListener;
+import emily.command.meta.AbstractCommand;
 import emily.games.GameState;
 import emily.games.game2048.Game2048;
 import emily.games.game2048.Game2048Turn;

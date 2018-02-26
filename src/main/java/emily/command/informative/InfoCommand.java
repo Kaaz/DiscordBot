@@ -17,14 +17,13 @@
 package emily.command.informative;
 
 import emily.command.CooldownScope;
-import emily.command.ICommandCooldown;
-import emily.core.AbstractCommand;
+import emily.command.meta.ICommandCooldown;
+import emily.command.meta.AbstractCommand;
 import emily.handler.CommandHandler;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.util.DisUtil;
-import emily.util.Emojibet;
 import emily.util.TimeUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;

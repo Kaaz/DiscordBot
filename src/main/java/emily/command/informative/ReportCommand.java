@@ -17,7 +17,7 @@
 package emily.command.informative;
 
 import emily.command.CommandVisibility;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.templates.Templates;

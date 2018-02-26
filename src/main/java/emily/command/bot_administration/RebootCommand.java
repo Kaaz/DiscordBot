@@ -16,7 +16,7 @@
 
 package emily.command.bot_administration;
 
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.core.ExitCode;
 import emily.db.controllers.CGuild;
 import emily.main.DiscordBot;

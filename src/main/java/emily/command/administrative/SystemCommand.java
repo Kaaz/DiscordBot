@@ -16,7 +16,7 @@
 
 package emily.command.administrative;
 
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import net.dv8tion.jda.core.entities.Message;

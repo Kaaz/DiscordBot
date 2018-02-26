@@ -17,7 +17,7 @@
 package emily.command.creator;
 
 import emily.command.CommandVisibility;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CRank;
 import emily.db.controllers.CUser;
 import emily.db.controllers.CUserRank;

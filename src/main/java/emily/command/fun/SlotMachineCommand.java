@@ -17,8 +17,8 @@
 package emily.command.fun;
 
 import emily.command.CooldownScope;
-import emily.command.ICommandCooldown;
-import emily.core.AbstractCommand;
+import emily.command.meta.ICommandCooldown;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CBanks;
 import emily.db.model.OBank;
 import emily.games.SlotMachine;

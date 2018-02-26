@@ -17,7 +17,7 @@
 package emily.command.poe;
 
 import com.google.common.base.Joiner;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.main.DiscordBot;
 import emily.modules.pathofexile.ItemAnalyzer;
 import net.dv8tion.jda.core.entities.Message;

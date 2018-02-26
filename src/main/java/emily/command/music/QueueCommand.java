@@ -18,9 +18,9 @@ package emily.command.music;
 
 import emily.command.CommandReactionListener;
 import emily.command.CommandVisibility;
-import emily.command.ICommandReactionListener;
-import emily.command.PaginationInfo;
-import emily.core.AbstractCommand;
+import emily.command.meta.ICommandReactionListener;
+import emily.command.meta.PaginationInfo;
+import emily.command.meta.AbstractCommand;
 import emily.db.model.OMusic;
 import emily.handler.MusicPlayerHandler;
 import emily.main.DiscordBot;

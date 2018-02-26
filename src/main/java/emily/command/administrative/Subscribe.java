@@ -17,7 +17,7 @@
 package emily.command.administrative;
 
 import emily.command.CommandVisibility;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CChannels;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CServices;

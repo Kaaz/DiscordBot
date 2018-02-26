@@ -17,7 +17,7 @@
 package emily.command.fun;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.templates.Templates;

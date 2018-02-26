@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package emily.core;
+package emily.command.meta;
 
 import emily.command.CommandCategory;
 import emily.command.CommandVisibility;
@@ -114,7 +114,7 @@ public abstract class AbstractCommand {
      * @param args         arguments for the command
      * @param channel      channel where the command is executed
      * @param author       who invoked the command
-     * @param inputMessage
+     * @param inputMessage the incoming message object
      * @return the message to output or an empty string for nothing
      */
     public abstract String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage);

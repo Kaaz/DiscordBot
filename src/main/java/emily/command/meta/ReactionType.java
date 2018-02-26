@@ -1,4 +1,4 @@
-package emily.command.reactions;
+package emily.command.meta;
 
 import java.util.ArrayList;
 

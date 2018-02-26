@@ -16,17 +16,15 @@
 
 package emily.command.creator;
 
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CGuildMember;
 import emily.db.controllers.CUser;
 import emily.db.model.OGuildMember;
-import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.templates.Templates;
 import emily.util.Emojibet;
-import emily.util.Misc;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;

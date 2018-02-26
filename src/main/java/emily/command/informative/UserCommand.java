@@ -16,7 +16,7 @@
 
 package emily.command.informative;
 
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CBanks;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CGuildMember;

@@ -17,7 +17,7 @@
 package emily.command.administrative;
 
 import emily.command.CommandVisibility;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CReactionRole;
 import emily.db.model.OReactionRoleKey;
 import emily.db.model.OReactionRoleMessage;

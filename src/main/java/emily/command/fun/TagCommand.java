@@ -18,9 +18,9 @@ package emily.command.fun;
 
 import emily.command.CommandReactionListener;
 import emily.command.CommandVisibility;
-import emily.command.ICommandReactionListener;
-import emily.command.PaginationInfo;
-import emily.core.AbstractCommand;
+import emily.command.meta.ICommandReactionListener;
+import emily.command.meta.PaginationInfo;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CTag;
 import emily.db.controllers.CUser;

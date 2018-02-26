@@ -16,7 +16,7 @@
 
 package emily.command.bot_administration;
 
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CUser;
 import emily.db.model.OUser;
 import emily.main.DiscordBot;

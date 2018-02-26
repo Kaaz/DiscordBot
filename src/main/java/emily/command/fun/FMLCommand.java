@@ -16,7 +16,7 @@
 
 package emily.command.fun;
 
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.main.Launcher;

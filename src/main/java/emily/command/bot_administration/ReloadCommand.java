@@ -17,7 +17,7 @@
 package emily.command.bot_administration;
 
 import emily.command.CommandVisibility;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.handler.SecurityHandler;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;

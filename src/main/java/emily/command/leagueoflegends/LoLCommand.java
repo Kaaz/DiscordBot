@@ -17,7 +17,7 @@
 package emily.command.leagueoflegends;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.util.Emojibet;

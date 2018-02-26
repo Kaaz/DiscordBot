@@ -16,7 +16,7 @@
 
 package emily.command.informative;
 
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.main.DiscordBot;

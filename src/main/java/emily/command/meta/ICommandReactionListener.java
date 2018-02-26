@@ -14,24 +14,11 @@
  * limitations under the License.
  */
 
-package emily.command;
+package emily.command.meta;
 
-/**
- * Limits the usage of commands by adding a cooldown to commands
- */
-public interface ICommandCooldown {
+import emily.command.CommandReactionListener;
 
-    /**
-     * gets the cooldown of a command
-     *
-     * @return cooldown in seconds
-     */
-    long getCooldownDuration();
+public interface ICommandReactionListener<T> {
 
-    /**
-     * cooldown on what scale?
-     *
-     * @return scope of the cooldown
-     */
-    CooldownScope getScope();
+    CommandReactionListener<T> getReactionListener(long userId, T initialData);
 }

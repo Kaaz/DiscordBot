@@ -18,7 +18,7 @@ package emily.command.administrative.modactions;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import emily.command.CommandVisibility;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CModerationCase;
 import emily.db.model.OModerationCase;
 import emily.main.DiscordBot;

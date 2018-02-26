@@ -17,7 +17,7 @@
 package emily.command.music;
 
 import emily.command.CommandVisibility;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.main.DiscordBot;
 import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Message;

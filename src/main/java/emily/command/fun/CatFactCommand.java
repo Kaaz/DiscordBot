@@ -18,7 +18,7 @@ package emily.command.fun;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.main.DiscordBot;
 import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.Message;

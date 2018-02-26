@@ -17,7 +17,7 @@
 package emily.command.economy;
 
 import emily.command.CommandVisibility;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CBankTransactions;
 import emily.db.controllers.CBanks;
 import emily.db.model.OBank;

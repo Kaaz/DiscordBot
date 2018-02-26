@@ -16,8 +16,8 @@
 
 package emily.service;
 
-import emily.command.ICommandCleanup;
-import emily.core.AbstractCommand;
+import emily.command.meta.ICommandCleanup;
+import emily.command.meta.AbstractCommand;
 import emily.core.AbstractService;
 import emily.handler.CommandHandler;
 import emily.main.BotContainer;

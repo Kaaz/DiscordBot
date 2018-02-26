@@ -14,15 +14,26 @@
  * limitations under the License.
  */
 
-package emily.command;
+package emily.command.meta;
+
+import emily.command.CooldownScope;
 
 /**
- * Indicating that a command has data/cache to clean up after a while
+ * Limits the usage of commands by adding a cooldown to commands
  */
-public interface ICommandCleanup {
+public interface ICommandCooldown {
+
     /**
-     * This method is called in the cleanup service {@see emily.service.BotCleanupService}
-     * to clean up cached data
+     * gets the cooldown of a command
+     *
+     * @return cooldown in seconds
      */
-    public void cleanup();
+    long getCooldownDuration();
+
+    /**
+     * cooldown on what scale?
+     *
+     * @return scope of the cooldown
+     */
+    CooldownScope getScope();
 }

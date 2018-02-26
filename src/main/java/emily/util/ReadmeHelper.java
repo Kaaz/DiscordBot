@@ -17,7 +17,7 @@
 package emily.util;
 
 import com.kaaz.configuration.ConfigurationBuilder;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.WebDb;
 import emily.games.AbstractGame;
 import emily.guildsettings.GSetting;

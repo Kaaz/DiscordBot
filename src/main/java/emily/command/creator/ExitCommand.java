@@ -16,7 +16,7 @@
 
 package emily.command.creator;
 
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.core.ExitCode;
 import emily.main.DiscordBot;
 import emily.main.Launcher;

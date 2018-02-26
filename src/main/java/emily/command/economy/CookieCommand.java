@@ -16,7 +16,7 @@
 
 package emily.command.economy;
 
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CBanks;
 import emily.db.controllers.CUser;
 import emily.db.model.OBank;

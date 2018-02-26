@@ -16,7 +16,7 @@
 
 package emily.command.poe;
 
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.main.DiscordBot;
 import emily.modules.reddit.RedditScraper;
 import emily.modules.reddit.pojo.Comment;

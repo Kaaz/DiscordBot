@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package emily.command;
+package emily.command.meta;
 
 import net.dv8tion.jda.core.entities.Guild;
 

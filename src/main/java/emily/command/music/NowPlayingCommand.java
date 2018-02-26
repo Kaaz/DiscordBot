@@ -17,7 +17,7 @@
 package emily.command.music;
 
 import emily.command.CommandVisibility;
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CMusic;
 import emily.db.controllers.CMusicVote;
 import emily.db.controllers.CPlaylist;

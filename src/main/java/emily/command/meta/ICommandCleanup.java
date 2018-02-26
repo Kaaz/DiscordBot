@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
-package emily.command;
+package emily.command.meta;
 
-public interface ICommandReactionListener<T> {
-
-    CommandReactionListener<T> getReactionListener(long userId, T initialData);
+/**
+ * Indicating that a command has data/cache to clean up after a while
+ */
+public interface ICommandCleanup {
+    /**
+     * This method is called in the cleanup service {@link emily.service.BotCleanupService}
+     * to clean up cached data
+     */
+    void cleanup();
 }

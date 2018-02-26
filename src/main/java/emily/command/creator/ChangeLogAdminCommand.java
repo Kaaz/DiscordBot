@@ -16,7 +16,7 @@
 
 package emily.command.creator;
 
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CBotVersionChanges;
 import emily.db.controllers.CBotVersions;
 import emily.db.model.OBotVersion;

@@ -16,7 +16,7 @@
 
 package emily.command.poe;
 
-import emily.core.AbstractCommand;
+import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CPoEToken;
 import emily.db.model.OPoEToken;
 import emily.main.DiscordBot;

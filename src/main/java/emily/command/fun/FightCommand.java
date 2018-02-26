@@ -18,8 +18,8 @@ package emily.command.fun;
 
 import emily.command.CommandVisibility;
 import emily.command.CooldownScope;
-import emily.command.ICommandCooldown;
-import emily.core.AbstractCommand;
+import emily.command.meta.ICommandCooldown;
+import emily.command.meta.AbstractCommand;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.templates.Templates;
