@@ -34,16 +34,30 @@ import java.util.Random;
 public class CPlaylist {
     private static Random rng = new Random();
 
-    public static OPlaylist findBy(int userId) {
-        OPlaylist s = new OPlaylist();
+    public static ArrayList<OPlaylist> getPlaylistsForUser(int userId) {
+        ArrayList<OPlaylist> s = new ArrayList<>();
         try (ResultSet rs = WebDb.get().select(
-                "SELECT id, title, owner_id, guild_id, visibility_level, play_type, edit_type, create_date  " +
+                "SELECT id,code, title, owner_id, guild_id, visibility_level, play_type, edit_type, create_date  " +
                         "FROM playlist " +
                         "WHERE owner_id = ? ", userId)) {
-            if (rs.next()) {
-                s = fillRecord(rs);
-            } else {
-                s.ownerId = userId;
+            while (rs.next()) {
+                s.add(fillRecord(rs));
+            }
+            rs.getStatement().close();
+        } catch (Exception e) {
+            Logger.fatal(e);
+        }
+        return s;
+    }
+
+    public static ArrayList<OPlaylist> getPlaylistsForGuild(int guildId) {
+        ArrayList<OPlaylist> s = new ArrayList<>();
+        try (ResultSet rs = WebDb.get().select(
+                "SELECT id,code, title, owner_id, guild_id, visibility_level, play_type, edit_type, create_date  " +
+                        "FROM playlist " +
+                        "WHERE guild_id = ? ", guildId)) {
+            while (rs.next()) {
+                s.add(fillRecord(rs));
             }
             rs.getStatement().close();
         } catch (Exception e) {

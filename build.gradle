@@ -25,7 +25,7 @@ task fatJar(type: Jar) {
     with jar
 }
 processResources {
-    filesMatching('**/project.properties') {
+    filesMatching('**project.properties') {
         filter ReplaceTokens, tokens: [
                 'version': version
         ]

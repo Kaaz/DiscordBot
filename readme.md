@@ -42,9 +42,9 @@ Commands | | | | |
 [reboot](#reboot) | [reddit](#reddit) | [reload](#reload) | [report](#report) | [roleadmin](#roleadmin)
 [roll](#roll) | [rotate](#rotate) | [sendfile](#sendfile) | [server](#server) | [skip](#skip)
 [slot](#slot) | [stop](#stop) | [subscribe](#subscribe) | [system](#system) | [tag](#tag)
-[tempban](#tempban) | [template](#template) | [todo](#todo) | [ud](#ud) | [uptime](#uptime)
-[user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume) | [warn](#warn)
-
+[tempban](#tempban) | [template](#template) | [test](#test) | [todo](#todo) | [ud](#ud)
+[uptime](#uptime) | [user](#user) | [userrank](#userrank) | [version](#version) | [volume](#volume)
+[warn](#warn) | 
 
 ## Games
 
@@ -108,7 +108,7 @@ output: this is not a test
 Setting this to 'false' will disable it (without the quotes)
 To enable it, set this setting to match the channel name where you want the command logging to happen
 If you specify an invalid channel, this setting will disable itself
-command_prefix | ! | Prefix for commands (between 1 and 4 characters)
+command_prefix | $ | Prefix for commands (between 1 and 4 characters)
 debug | false | Show some debug information.
 
 valid values: 
@@ -387,7 +387,7 @@ case reason last <message> //sets/modified the reason of the last added case by 
 
 Cat facts!
 
-Aliases: catfact
+Aliases: catfact, catfacts
 
 Usable in public and private channels
 ### changename
@@ -836,14 +836,16 @@ Usable in public  channels
 
 ```php
 -- using playlists 
-playlist mine           //use your default playlist
-playlist mine <code>    //use your playlist with code
-playlist guild          //use the guild's default playlist
-playlist guild <code>   //use the guild's playlist with code
-playlist global         //use the global playlist
-playlist settings       //check the settings for the active playlist
-playlist                //info about the current playlist
-playlist list <page>    //Shows the music in the playlist
+playlist mine          //use your default playlist
+playlist mine <code>   //use your playlist with code
+playlist lists         //see what playlists you have 
+playlist guildlists    //see what playlists the guild has
+playlist guild         //use the guild's default playlist
+playlist guild <code>  //use the guild's playlist with code
+playlist global        //use the global playlist
+playlist settings      //check the settings for the active playlist
+playlist               //info about the current playlist
+playlist list <page>   //Shows the music in the playlist
 
 -- Adding and removing music from the playlist
 playlist add                         //adds the currently playing music
@@ -1220,6 +1222,19 @@ template variable                    //all variables
 template variable <keyphrase>        //variables for that keyphrase
 
 for users with botadmin+, use 'template global ...' for global templates
+```
+### test
+
+kaaz's test command
+
+Aliases: test
+
+Usable in public  channels
+
+#### Usage
+
+```php
+NOPE
 ```
 ### todo
 

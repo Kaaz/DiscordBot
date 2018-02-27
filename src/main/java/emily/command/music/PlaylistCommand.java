@@ -19,9 +19,9 @@ package emily.command.music;
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import emily.command.CommandReactionListener;
 import emily.command.CommandVisibility;
+import emily.command.meta.AbstractCommand;
 import emily.command.meta.ICommandReactionListener;
 import emily.command.meta.PaginationInfo;
-import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CMusic;
 import emily.db.controllers.CPlaylist;
@@ -39,11 +39,7 @@ import emily.util.Emojibet;
 import emily.util.Misc;
 import emily.util.YTUtil;
 import emoji4j.EmojiUtils;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,14 +71,16 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
     public String[] getUsage() {
         return new String[]{
                 "-- using playlists ",
-                "playlist mine           //use your default playlist",
-                "playlist mine <code>    //use your playlist with code",
-                "playlist guild          //use the guild's default playlist",
-                "playlist guild <code>   //use the guild's playlist with code",
-                "playlist global         //use the global playlist",
-                "playlist settings       //check the settings for the active playlist",
-                "playlist                //info about the current playlist",
-                "playlist list <page>    //Shows the music in the playlist",
+                "playlist mine          //use your default playlist",
+                "playlist mine <code>   //use your playlist with code",
+                "playlist lists         //see what playlists you have ",
+                "playlist guildlists    //see what playlists the guild has",
+                "playlist guild         //use the guild's default playlist",
+                "playlist guild <code>  //use the guild's playlist with code",
+                "playlist global        //use the global playlist",
+                "playlist settings      //check the settings for the active playlist",
+                "playlist               //info about the current playlist",
+                "playlist list <page>   //Shows the music in the playlist",
                 "",
                 "-- Adding and removing music from the playlist",
 //				"playlist show <pagenumber>           //shows music in the playlist",
@@ -140,8 +138,26 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                     "To add the currently playing music to the playlist use `" + DisUtil.getCommandPrefix(channel) + "pl add`, check out `" + DisUtil.getCommandPrefix(channel) + "help pl` for more info";
         }
         OPlaylist newlist = null;
-
+        ArrayList<OPlaylist> playlists = null;
+        StringBuilder out = null;
         switch (args[0].toLowerCase()) {
+            case "list":
+            case "lists":
+                playlists = CPlaylist.getPlaylistsForUser(CUser.getCachedId(author.getIdLong()));
+                out = new StringBuilder("You have the following playlists:\n");
+            case "guildlist":
+            case "guildlists":
+                if (playlists == null) {
+                    playlists = CPlaylist.getPlaylistsForGuild(CGuild.getCachedId(guild.getIdLong()));
+                    out = new StringBuilder("The guild has the following plalists: \n");
+                }
+                if(playlists.isEmpty()){
+                    return "No playlists found";
+                }
+                for (OPlaylist list : playlists) {
+                    out.append("`").append(list.code).append("`").append(" - ").append(list.title).append("\n");
+                }
+                return out.toString();
             case "mine":
             case "guild":
             case "global":
@@ -222,7 +238,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 break;
         }
 
-        if (args.length < 1 || args[0].equals("settings")) {
+        if (args[0].equals("settings")) {
             return makeSettingsTable(playlist);
         }
         if (playlist.isGlobalList()) {
@@ -252,7 +268,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                             "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl edit 3` sets it to PUBLIC_ADD " + "\n" + "\n" +
                             "Private in a guild context refers to users with admin privileges";
                 }
-                if (args.length > 1 && args[1].matches("^\\d+$")) {
+                if (args[1].matches("^\\d+$")) {
                     OPlaylist.EditType editType = OPlaylist.EditType.fromId(Integer.parseInt(args[1]));
                     if (editType.equals(OPlaylist.EditType.UNKNOWN)) {
                         Templates.playlist.setting_invalid.formatGuild(channel, args[1], "edittype");
@@ -317,7 +333,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                             Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + "\n" +
                             "Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
                 }
-                if (args.length > 1 && args[1].matches("^\\d+$")) {
+                if (args[1].matches("^\\d+$")) {
                     OPlaylist.PlayType playType = OPlaylist.PlayType.fromId(Integer.parseInt(args[1]));
                     playlist.setPlayType(playType);
                     CPlaylist.update(playlist);
@@ -452,8 +468,6 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         body.add(Arrays.asList("Owner", owner));
         body.add(Arrays.asList("edit-type", playlist.getEditType().getDescription()));
         body.add(Arrays.asList("play-type", playlist.getPlayType().getDescription()));
-//		body.add(Arrays.asList("visibility", playlist.getVisibility().getDescription()));
-//		body.add(Arrays.asList("created", TimeUtil.formatYMD(playlist.createdOn)));
         return Misc.makeAsciiTable(Arrays.asList("Name", "Value"), body, null);
     }
 
@@ -462,9 +476,9 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         if (items.isEmpty()) {
             return "The playlist is empty!";
         }
-        String playlistTable = "\n";
+        StringBuilder playlistTable = new StringBuilder("\n");
         for (OMusic item : items) {
-            playlistTable += String.format("`%11s` | %s" + "\n", item.youtubecode, item.youtubeTitle);
+            playlistTable.append(String.format("`%11s` | %s" + "\n", item.youtubecode, item.youtubeTitle));
         }
         return String.format("Music in the playlist: %s" + "\n", playlist.title) +
                 playlistTable + "\n" +
