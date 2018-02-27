@@ -71,7 +71,7 @@ public class MusicPlayerHandler {
     private volatile long pauseStart = 0;
     private volatile boolean updateChannelTitle = false;
     private volatile long currentSongStartTimeInSeconds = 0;
-    private volatile int activePlayListId = 0;
+    private volatile int activePlayListId;
     private volatile OPlaylist playlist;
     private Random rng;
     private volatile LinkedList<OMusic> queue;
@@ -87,9 +87,9 @@ public class MusicPlayerHandler {
         queue = new LinkedList<>();
         scheduler = new TrackScheduler(player);
         player.addListener(scheduler);
-        player.setVolume(Integer.parseInt(GuildSettings.get(guild.getId()).getOrDefault(GSetting.MUSIC_VOLUME)));
+        player.setVolume(Integer.parseInt(GuildSettings.get(guild.getIdLong()).getOrDefault(GSetting.MUSIC_VOLUME)));
         playerInstances.put(guild.getIdLong(), this);
-        int savedPlaylist = Integer.parseInt(GuildSettings.get(guild.getId()).getOrDefault(GSetting.MUSIC_PLAYLIST_ID));
+        int savedPlaylist = Integer.parseInt(GuildSettings.get(guild.getIdLong()).getOrDefault(GSetting.MUSIC_PLAYLIST_ID));
         if (savedPlaylist > 0) {
             playlist = CPlaylist.findById(savedPlaylist);
         }

@@ -64,7 +64,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         int elements = 0;
         for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < endIndex; i++) {
             String key = keys.get(i);
-            b.addField(key.toLowerCase(), GuildSettings.get(guild.getId()).getDisplayValue(guild, key), true);
+            b.addField(key.toLowerCase(), GuildSettings.get(guild.getIdLong()).getDisplayValue(guild, key), true);
             elements++;
         }
         if (elements % 3 == 2) {
@@ -191,7 +191,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
                 } else if (!settings[gSetting.ordinal()].equals(DefaultGuildSettings.getDefault(key))) {
                     indicator = "* ";
                 }
-                ret += String.format(cfgFormat, indicator + key, GuildSettings.get(guild.getId()).getDisplayValue(guild, key));
+                ret += String.format(cfgFormat, indicator + key, GuildSettings.get(guild.getIdLong()).getDisplayValue(guild, key));
                 isEmpty = false;
             }
             if (isEmpty && tag != null) {
@@ -232,7 +232,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         GuildSettings setting = GuildSettings.get(guild);
         tblContent += setting.getDescription(args[0]);
         return "Config help for **" + args[0] + "**" + "\n" + "\n" +
-                "Current value: \"**" + GuildSettings.get(guild.getId()).getDisplayValue(guild, args[0]) + "**\"" + "\n" +
+                "Current value: \"**" + GuildSettings.get(guild.getIdLong()).getDisplayValue(guild, args[0]) + "**\"" + "\n" +
                 "Default value: \"**" + setting.getDefaultValue(args[0]) + "**\"" + "\n" + "\n" +
                 "Description: " + "\n" +
                 Misc.makeTable(tblContent) +

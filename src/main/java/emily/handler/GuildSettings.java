@@ -108,10 +108,6 @@ public class GuildSettings {
         return get(guild.getIdLong());
     }
 
-    public static GuildSettings get(String guildId) {
-        return get(Long.parseLong(guildId));
-    }
-
     public static GuildSettings get(long guild) {
         if (settingInstance.containsKey(guild)) {
             return settingInstance.get(guild);

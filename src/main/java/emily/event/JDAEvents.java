@@ -327,7 +327,7 @@ public class JDAEvents extends ListenerAdapter {
                 discordBot.queue.add(defaultChannel.sendMessage(
                         Templates.message_user_leaves.formatGuild(guild.getIdLong(), user, guild)),
                         message -> {
-                            if (!"no".equals(GuildSettings.get(guild.getId()).getOrDefault(GSetting.CLEANUP_MESSAGES))) {
+                            if (!"no".equals(GuildSettings.get(guild.getIdLong()).getOrDefault(GSetting.CLEANUP_MESSAGES))) {
                                 discordBot.schedule(() -> discordBot.out.saveDelete(message), BotConfig.DELETE_MESSAGES_AFTER * 5, TimeUnit.MILLISECONDS);
                             }
                         });

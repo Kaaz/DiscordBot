@@ -375,7 +375,7 @@ public class DiscordBot {
         if (security.isBanned(author)) {
             return;
         }
-        GuildSettings settings = GuildSettings.get(guild.getId());
+        GuildSettings settings = GuildSettings.get(guild.getIdLong());
         if (gameHandler.isGameInput(channel, author, message.getContentRaw().toLowerCase())) {
             gameHandler.execute(author, channel, message.getContentRaw(), null);
             return;
