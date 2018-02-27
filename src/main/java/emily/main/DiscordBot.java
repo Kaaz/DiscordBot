@@ -313,7 +313,7 @@ public class DiscordBot {
      * @param guild the guild to clear
      */
     public void clearGuildData(Guild guild) {
-        GuildSettings.remove(guild.getId());
+        GuildSettings.remove(guild.getIdLong());
         autoReplyhandler.removeGuild(guild.getIdLong());
         MusicPlayerHandler.removeGuild(guild);
         commandReactionHandler.removeGuild(guild.getIdLong());
@@ -369,7 +369,7 @@ public class DiscordBot {
     }
 
     public void handleMessage(Guild guild, TextChannel channel, User author, Message message) {
-        if (author == null || (author.isBot() && !security.isInteractionBot(Long.parseLong(author.getId())))) {
+        if (author == null || (author.isBot() && !security.isInteractionBot(author.getIdLong()))) {
             return;
         }
         if (security.isBanned(author)) {

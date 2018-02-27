@@ -87,9 +87,9 @@ public class GuildSettings {
         return setting.getSettingType() instanceof BooleanSettingType && "true".equals(getFor(channel, setting));
     }
 
-    public static void remove(String guildId) {
-        if (settingInstance.containsKey(Long.parseLong(guildId))) {
-            settingInstance.remove(Long.parseLong(guildId));
+    public static void remove(long guildId) {
+        if (settingInstance.containsKey(guildId)) {
+            settingInstance.remove(guildId);
         }
     }
 

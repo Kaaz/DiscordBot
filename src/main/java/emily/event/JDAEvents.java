@@ -100,7 +100,7 @@ public class JDAEvents extends ListenerAdapter {
         user.name = EmojiUtils.shortCodify(owner.getName());
         CUser.update(user);
         OGuild dbGuild = CGuild.findBy(guild.getId());
-        dbGuild.discord_id = Long.parseLong(guild.getId());
+        dbGuild.discord_id = guild.getIdLong();
         dbGuild.name = EmojiUtils.shortCodify(guild.getName());
         dbGuild.owner = user.id;
         if (dbGuild.id == 0) {

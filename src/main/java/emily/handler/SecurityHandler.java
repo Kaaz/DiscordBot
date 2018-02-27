@@ -81,7 +81,7 @@ public class SecurityHandler {
     }
 
     public boolean isBanned(User user) {
-        return bannedUsers.contains(Long.parseLong(user.getId()));
+        return bannedUsers.contains(user.getIdLong());
     }
 
     public synchronized void addUserBan(long discordId) {
@@ -97,7 +97,7 @@ public class SecurityHandler {
     }
 
     public boolean isBanned(Guild guild) {
-        return bannedGuilds.contains(Long.parseLong(guild.getId()));
+        return bannedGuilds.contains(guild.getIdLong());
     }
 
     public SimpleRank getSimpleRank(User user) {
@@ -140,7 +140,7 @@ public class SecurityHandler {
     }
 
     public SimpleRank getSimpleRankForGuild(User user, Guild guild) {
-        long userId = Long.parseLong(user.getId());
+        long userId = user.getIdLong();
         if (user.getIdLong() == BotConfig.CREATOR_ID) {
             return SimpleRank.CREATOR;
         }

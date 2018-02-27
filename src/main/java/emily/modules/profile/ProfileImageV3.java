@@ -37,7 +37,7 @@ public class ProfileImageV3 extends ProfileImage {
     }
 
     public File getProfileImage() throws IOException {
-        Random rng = new Random(Long.parseLong(getUser().getId()));
+        Random rng = new Random(getUser().getIdLong());
         int fontSize;
         if (getUser().getName().length() <= 4) {
             fontSize = 32;
