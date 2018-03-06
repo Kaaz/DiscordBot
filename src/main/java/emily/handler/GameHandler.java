@@ -16,9 +16,9 @@
 
 package emily.handler;
 
-import emily.games.AbstractGame;
-import emily.games.GameState;
-import emily.games.GameTurn;
+import emily.games.meta.AbstractGame;
+import emily.games.meta.GameState;
+import emily.games.meta.GameTurn;
 import emily.guildsettings.GSetting;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;

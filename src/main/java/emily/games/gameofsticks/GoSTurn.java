@@ -16,7 +16,7 @@
 
 package emily.games.gameofsticks;
 
-import emily.games.GameTurn;
+import emily.games.meta.GameTurn;
 
 public class GoSTurn extends GameTurn {
     private int substract = 0;

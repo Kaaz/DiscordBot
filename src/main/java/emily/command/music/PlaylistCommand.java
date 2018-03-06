@@ -237,7 +237,6 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
             default:
                 break;
         }
-
         if (args[0].equals("settings")) {
             return makeSettingsTable(playlist);
         }

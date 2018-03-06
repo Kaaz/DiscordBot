@@ -16,7 +16,7 @@
 
 package emily.games.tictactoe;
 
-import emily.games.GameTurn;
+import emily.games.meta.GameTurn;
 
 public class TicGameTurn extends GameTurn {
     private int boardIndex = 0;

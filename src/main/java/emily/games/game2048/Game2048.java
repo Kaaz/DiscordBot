@@ -16,7 +16,7 @@
 
 package emily.games.game2048;
 
-import emily.games.AbstractGame;
+import emily.games.meta.AbstractGame;
 import net.dv8tion.jda.core.entities.User;
 
 /**

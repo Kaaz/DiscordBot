@@ -16,7 +16,7 @@
 
 package emily.games.connect4;
 
-import emily.games.GameTurn;
+import emily.games.meta.GameTurn;
 
 /**
  * Created on 2016-09-10.

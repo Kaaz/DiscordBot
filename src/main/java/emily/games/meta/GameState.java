@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package emily.games;
+package emily.games.meta;
 
-public class StrawPoll {
+public enum GameState {
+    INITIALIZING, READY, IN_PROGRESS, OVER;
 }

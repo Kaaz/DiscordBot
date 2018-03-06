@@ -149,7 +149,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
                 tag = args[1].toLowerCase();
             }
         }
-        if (args.length == 0 || tag != null || args.length > 0 && args[0].equals("page")) {
+        if (args.length == 0 || tag != null || args[0].equals("page")) {
             String[] settings = GuildSettings.get(guild).getSettings();
             ArrayList<String> keys = new ArrayList<>(DefaultGuildSettings.getAllKeys());
             Collections.sort(keys);
@@ -163,15 +163,14 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
                         message ->
                                 bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getIdLong(), message,
                                         getReactionListener(author.getIdLong(), new PaginationInfo(1, maxPage, guild))));
-
                 return "";
             }
 
-            String ret = "Current Settings for " + guild.getName() + "\n" + "\n";
+            StringBuilder ret = new StringBuilder("Current Settings for " + guild.getName() + "\n" + "\n");
             if (tag != null) {
-                ret += "Only showing settings with the tag `" + tag + "`" + "\n";
+                ret.append("Only showing settings with the tag `").append(tag).append("`").append("\n");
             }
-            ret += ":information_source: Settings indicated with a `*` are different from the default value" + "\n" + "\n";
+            ret.append(":information_source: Settings indicated with a `*` are different from the default value" + "\n" + "\n");
             String cfgFormat = "`\u200B%-24s:`  %s" + "\n";
             boolean isEmpty = true;
             for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < activePage * CFG_PER_PAGE + CFG_PER_PAGE; i++) {
@@ -191,14 +190,14 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
                 } else if (!settings[gSetting.ordinal()].equals(DefaultGuildSettings.getDefault(key))) {
                     indicator = "* ";
                 }
-                ret += String.format(cfgFormat, indicator + key, GuildSettings.get(guild.getIdLong()).getDisplayValue(guild, key));
+                ret.append(String.format(cfgFormat, indicator + key, GuildSettings.get(guild.getIdLong()).getDisplayValue(guild, key)));
                 isEmpty = false;
             }
             if (isEmpty && tag != null) {
                 return "No settings found matching the tag `" + tag + "`";
             }
 
-            return ret;
+            return ret.toString();
         }
 
 

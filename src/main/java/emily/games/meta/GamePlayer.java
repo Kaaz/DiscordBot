@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package emily.games;
+package emily.games.meta;
 
 public enum GamePlayer {
     FREE, PLAYER1, PLAYER2;
