@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package emily.games;
+package emily.games.blackjack;
 
-import emily.games.blackjack.BlackJackHand;
 import emily.games.card.Card;
 
 import java.util.ArrayList;

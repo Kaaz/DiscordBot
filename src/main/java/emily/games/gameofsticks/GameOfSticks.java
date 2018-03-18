@@ -16,8 +16,8 @@
 
 package emily.games.gameofsticks;
 
-import emily.games.AbstractGame;
-import emily.games.GameState;
+import emily.games.meta.AbstractGame;
+import emily.games.meta.GameState;
 import net.dv8tion.jda.core.entities.User;
 
 /**

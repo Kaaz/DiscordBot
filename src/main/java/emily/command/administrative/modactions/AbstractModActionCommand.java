@@ -22,16 +22,10 @@ import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CModerationCase;
 import emily.db.model.OModerationCase;
 import emily.main.DiscordBot;
-import emily.permission.SimpleRank;
 import emily.templates.Templates;
 import emily.util.DisUtil;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 
@@ -60,7 +54,6 @@ abstract public class AbstractModActionCommand extends AbstractCommand {
 
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
-        SimpleRank rank = bot.security.getSimpleRank(author);
         TextChannel chan = (TextChannel) channel;
         Guild guild = chan.getGuild();
         if (getRequiredPermission() != null) {

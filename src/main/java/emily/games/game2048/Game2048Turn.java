@@ -16,7 +16,7 @@
 
 package emily.games.game2048;
 
-import emily.games.GameTurn;
+import emily.games.meta.GameTurn;
 
 public class Game2048Turn extends GameTurn {
     private Game2048Direction direction = Game2048Direction.UNKNOWN;

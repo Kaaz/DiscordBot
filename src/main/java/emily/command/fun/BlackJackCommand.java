@@ -17,7 +17,7 @@
 package emily.command.fun;
 
 import emily.command.meta.AbstractCommand;
-import emily.games.Blackjack;
+import emily.games.blackjack.Blackjack;
 import emily.main.DiscordBot;
 import emily.templates.Templates;
 import emily.util.DisUtil;

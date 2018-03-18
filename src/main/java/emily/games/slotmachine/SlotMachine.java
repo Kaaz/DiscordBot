@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package emily.games;
-
-import emily.games.slotmachine.Slot;
+package emily.games.slotmachine;
 
 import java.util.Random;
 

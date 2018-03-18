@@ -21,7 +21,7 @@ import emily.command.meta.ICommandCooldown;
 import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CBanks;
 import emily.db.model.OBank;
-import emily.games.SlotMachine;
+import emily.games.slotmachine.SlotMachine;
 import emily.games.slotmachine.Slot;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;

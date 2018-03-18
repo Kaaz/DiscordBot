@@ -34,10 +34,7 @@ import emily.handler.MusicPlayerHandler;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.templates.Templates;
-import emily.util.DisUtil;
-import emily.util.Emojibet;
-import emily.util.Misc;
-import emily.util.YTUtil;
+import emily.util.*;
 import emoji4j.EmojiUtils;
 import net.dv8tion.jda.core.entities.*;
 
@@ -151,13 +148,29 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                     playlists = CPlaylist.getPlaylistsForGuild(CGuild.getCachedId(guild.getIdLong()));
                     out = new StringBuilder("The guild has the following plalists: \n");
                 }
-                if(playlists.isEmpty()){
+                if (playlists.isEmpty()) {
                     return "No playlists found";
                 }
                 for (OPlaylist list : playlists) {
                     out.append("`").append(list.code).append("`").append(" - ").append(list.title).append("\n");
                 }
                 return out.toString();
+            case "export":
+                if (args.length == 1) {
+                    newlist = findPlaylist("mine", "default", author, guild);
+                } else {
+                    newlist = findPlaylist("mine", Misc.joinStrings(args, 1), author, guild);
+                }
+                out = new StringBuilder();
+                out.append(newlist.code).append(" - ").append(newlist.title).append("\n");
+                for (OMusic music : CPlaylist.getMusic(newlist.id, 1000, 0)) {
+                    out.append("youtube.com/watch?v=").append(music.youtubecode).append("\n");
+                }
+                if (out.length() > 0) {
+                    DebugUtil.handleDebug(bot, channel, out.toString());
+                    return "";
+                }
+                return "Playlist is empty";
             case "mine":
             case "guild":
             case "global":
@@ -237,7 +250,6 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
             default:
                 break;
         }
-
         if (args[0].equals("settings")) {
             return makeSettingsTable(playlist);
         }

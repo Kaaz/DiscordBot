@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package emily.games;
+package emily.games.meta;
 
 import emily.main.BotConfig;
 

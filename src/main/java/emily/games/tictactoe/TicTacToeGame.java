@@ -16,8 +16,8 @@
 
 package emily.games.tictactoe;
 
-import emily.games.AbstractGame;
-import emily.games.GameState;
+import emily.games.meta.AbstractGame;
+import emily.games.meta.GameState;
 import emily.util.Misc;
 import net.dv8tion.jda.core.entities.User;
 
