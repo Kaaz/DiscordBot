@@ -17,8 +17,8 @@
 package emily.command.music;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
-import emily.command.CommandReactionListener;
-import emily.command.CommandVisibility;
+import emily.command.meta.CommandReactionListener;
+import emily.command.meta.CommandVisibility;
 import emily.command.meta.AbstractCommand;
 import emily.command.meta.ICommandReactionListener;
 import emily.command.meta.PaginationInfo;

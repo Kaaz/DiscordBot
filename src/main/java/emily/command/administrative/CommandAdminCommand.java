@@ -16,7 +16,7 @@
 
 package emily.command.administrative;
 
-import emily.command.CommandVisibility;
+import emily.command.meta.CommandVisibility;
 import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CBlacklistCommand;
 import emily.db.controllers.CGuild;

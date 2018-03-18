@@ -16,8 +16,8 @@
 
 package emily.handler;
 
-import emily.command.CommandCategory;
-import emily.command.CommandVisibility;
+import emily.command.meta.CommandCategory;
+import emily.command.meta.CommandVisibility;
 import emily.command.meta.ICommandCooldown;
 import emily.command.meta.AbstractCommand;
 import emily.db.WebDb;

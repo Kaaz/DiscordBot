@@ -19,7 +19,7 @@ package emily.command.fun;
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import emily.command.CommandVisibility;
+import emily.command.meta.CommandVisibility;
 import emily.command.meta.AbstractCommand;
 import emily.main.BotConfig;
 import emily.main.DiscordBot;

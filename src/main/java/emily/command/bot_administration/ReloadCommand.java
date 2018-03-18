@@ -16,7 +16,7 @@
 
 package emily.command.bot_administration;
 
-import emily.command.CommandVisibility;
+import emily.command.meta.CommandVisibility;
 import emily.command.meta.AbstractCommand;
 import emily.handler.SecurityHandler;
 import emily.main.DiscordBot;

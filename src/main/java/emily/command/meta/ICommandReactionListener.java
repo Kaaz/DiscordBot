@@ -16,8 +16,6 @@
 
 package emily.command.meta;
 
-import emily.command.CommandReactionListener;
-
 public interface ICommandReactionListener<T> {
 
     CommandReactionListener<T> getReactionListener(long userId, T initialData);

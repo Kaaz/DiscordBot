@@ -16,8 +16,8 @@
 
 package emily.command.fun;
 
-import emily.command.CommandReactionListener;
-import emily.command.CommandVisibility;
+import emily.command.meta.CommandReactionListener;
+import emily.command.meta.CommandVisibility;
 import emily.command.meta.ICommandReactionListener;
 import emily.command.meta.PaginationInfo;
 import emily.command.meta.AbstractCommand;

@@ -16,8 +16,6 @@
 
 package emily.command.meta;
 
-import emily.command.CommandCategory;
-import emily.command.CommandVisibility;
 import emily.main.DiscordBot;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;

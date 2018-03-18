@@ -16,7 +16,7 @@
 
 package emily.handler;
 
-import emily.command.CommandReactionListener;
+import emily.command.meta.CommandReactionListener;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;

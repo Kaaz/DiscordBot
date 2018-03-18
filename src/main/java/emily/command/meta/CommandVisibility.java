@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package emily.command;
+package emily.command.meta;
 
 /**
  * Visibility of a command

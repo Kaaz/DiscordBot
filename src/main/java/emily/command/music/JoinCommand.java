@@ -16,7 +16,7 @@
 
 package emily.command.music;
 
-import emily.command.CommandVisibility;
+import emily.command.meta.CommandVisibility;
 import emily.command.meta.AbstractCommand;
 import emily.handler.MusicPlayerHandler;
 import emily.main.DiscordBot;

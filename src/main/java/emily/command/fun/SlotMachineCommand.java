@@ -16,7 +16,7 @@
 
 package emily.command.fun;
 
-import emily.command.CooldownScope;
+import emily.command.meta.CooldownScope;
 import emily.command.meta.ICommandCooldown;
 import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CBanks;

@@ -16,8 +16,8 @@
 
 package emily.command.fun;
 
-import emily.command.CommandVisibility;
-import emily.command.CooldownScope;
+import emily.command.meta.CommandVisibility;
+import emily.command.meta.CooldownScope;
 import emily.command.meta.ICommandCooldown;
 import emily.command.meta.AbstractCommand;
 import emily.main.DiscordBot;

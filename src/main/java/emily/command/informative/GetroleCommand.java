@@ -16,7 +16,7 @@
 
 package emily.command.informative;
 
-import emily.command.CommandVisibility;
+import emily.command.meta.CommandVisibility;
 import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CGuildRoleAssignable;

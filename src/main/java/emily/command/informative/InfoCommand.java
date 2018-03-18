@@ -16,7 +16,7 @@
 
 package emily.command.informative;
 
-import emily.command.CooldownScope;
+import emily.command.meta.CooldownScope;
 import emily.command.meta.ICommandCooldown;
 import emily.command.meta.AbstractCommand;
 import emily.handler.CommandHandler;

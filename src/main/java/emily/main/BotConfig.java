@@ -112,7 +112,7 @@ public class BotConfig {
 
     //prefix for all commands !help etc.
     @ConfigurationOption
-    public static boolean BOT_CHATTING_ENABLED = true;
+    public static boolean BOT_CHATTING_ENABLED = false;
 
     //default prefix to mark messages as commands
     @ConfigurationOption

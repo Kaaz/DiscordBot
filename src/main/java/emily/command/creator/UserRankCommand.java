@@ -16,7 +16,7 @@
 
 package emily.command.creator;
 
-import emily.command.CommandVisibility;
+import emily.command.meta.CommandVisibility;
 import emily.command.meta.AbstractCommand;
 import emily.db.controllers.CRank;
 import emily.db.controllers.CUser;

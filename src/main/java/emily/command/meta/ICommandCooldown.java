@@ -16,8 +16,6 @@
 
 package emily.command.meta;
 
-import emily.command.CooldownScope;
-
 /**
  * Limits the usage of commands by adding a cooldown to commands
  */

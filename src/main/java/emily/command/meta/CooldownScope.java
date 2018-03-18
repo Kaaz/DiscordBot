@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package emily.command;
+package emily.command.meta;
 
 /**
  * The scale of the cooldown, is it based per user, channel, guild or global?

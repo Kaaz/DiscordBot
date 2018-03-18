@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package emily.command;
+package emily.command.meta;
 
 import emily.permission.SimpleRank;
 import emily.util.Emojibet;

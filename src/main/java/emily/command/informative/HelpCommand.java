@@ -16,8 +16,8 @@
 
 package emily.command.informative;
 
-import emily.command.CommandCategory;
-import emily.command.CommandReactionListener;
+import emily.command.meta.CommandCategory;
+import emily.command.meta.CommandReactionListener;
 import emily.command.meta.ICommandReactionListener;
 import emily.command.meta.AbstractCommand;
 import emily.guildsettings.GSetting;

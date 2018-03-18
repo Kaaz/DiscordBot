@@ -16,8 +16,8 @@
 
 package emily.command.fun;
 
-import emily.command.CommandReactionListener;
-import emily.command.CooldownScope;
+import emily.command.meta.CommandReactionListener;
+import emily.command.meta.CooldownScope;
 import emily.command.meta.ICommandCooldown;
 import emily.command.meta.ICommandReactionListener;
 import emily.command.meta.AbstractCommand;
