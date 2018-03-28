@@ -33,6 +33,8 @@ public enum GSetting {
                     "true -> enable auto replying to matched messages\n" +
                     "false -> disable auto replying",
             GSettingTag.MODERATION),
+    BOT_LANGUAGE("en", new EnumSettingType("en", "nl", "de"),
+            "The output language of the bot"),
     BOT_CHANNEL("general", GuildSettingType.TEXT_CHANNEL_MANDATORY,
             "Channel where the bots default output goes to",
             GSettingTag.CHANNEL),
