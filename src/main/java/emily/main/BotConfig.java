@@ -39,6 +39,9 @@ public class BotConfig {
     public static boolean BOT_ENABLED = false;
 
     @ConfigurationOption
+    public static int MUSIC_MAX_VOLUME = 100;
+
+    @ConfigurationOption
     public static boolean SUBSCRIBE_UNSUB_ON_NOT_FOUND = false;
 
     @ConfigurationOption

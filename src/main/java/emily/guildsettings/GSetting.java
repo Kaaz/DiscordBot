@@ -219,7 +219,7 @@ public enum GSetting {
                     "false\n" +
                     "Everyone can use the skip command",
             GSettingTag.MUSIC, GSettingTag.ADMIN),
-    MUSIC_VOLUME("100", GuildSettingType.PERCENTAGE,
+    MUSIC_VOLUME("100", GuildSettingType.VOLUME,
             "sets the default volume of the music player\n" +
                     "So the next time the bot connects it starts with this volume\n\n" +
                     "Accepts a value between 0 and 100",

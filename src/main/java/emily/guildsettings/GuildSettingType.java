@@ -22,11 +22,13 @@ import emily.guildsettings.types.NumberBetweenSettingType;
 import emily.guildsettings.types.RoleSettingType;
 import emily.guildsettings.types.TextChannelSettingType;
 import emily.guildsettings.types.VoiceChannelSettingType;
+import emily.main.BotConfig;
 
 public class GuildSettingType {
     public static final IGuildSettingType INTERNAL = new NoSettingType();
     public static final IGuildSettingType TOGGLE = new BooleanSettingType();
     public static final IGuildSettingType PERCENTAGE = new NumberBetweenSettingType(0, 100);
+    public static final IGuildSettingType VOLUME = new NumberBetweenSettingType(0, BotConfig.MUSIC_MAX_VOLUME);
     public static final IGuildSettingType TEXT_CHANNEL_OPTIONAL = new TextChannelSettingType(true);
     public static final IGuildSettingType TEXT_CHANNEL_MANDATORY = new TextChannelSettingType(false);
     public static final IGuildSettingType ROLE_OPTIONAL = new RoleSettingType(true);

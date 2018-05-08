@@ -21,6 +21,7 @@ import emily.command.meta.AbstractCommand;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.templates.Templates;
@@ -80,7 +81,7 @@ public class VolumeCommand extends AbstractCommand {
             int volume;
             try {
                 volume = Integer.parseInt(args[0]);
-                if (volume > 0 && volume <= 100) {
+                if (volume > 0 && volume <= BotConfig.MUSIC_MAX_VOLUME) {
                     player.setVolume(volume);
                     GuildSettings.get(guild).set(guild, GSetting.MUSIC_VOLUME, String.valueOf(player.getVolume()));
                     return Templates.command.volume_changed.formatGuild(channel, player.getVolume());
