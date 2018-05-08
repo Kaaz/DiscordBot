@@ -421,7 +421,7 @@ public class CommandHandler {
     private static boolean isCommandCategoryEnabled(CommandCategory category) {
         switch (category) {
             case MUSIC:
-                return BotConfig.MODULE_ECONOMY_ENABLED;
+                return BotConfig.MODULE_MUSIC_ENABLED;
             case ECONOMY:
                 return BotConfig.MODULE_ECONOMY_ENABLED;
             case POE:

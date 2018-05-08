@@ -130,10 +130,6 @@ public class BotConfig {
     @ConfigurationOption
     public static boolean BOT_COMMAND_SHOW_UNKNOWN = false;
 
-    //directory where all the music is stored
-    @ConfigurationOption
-    public static String MUSIC_DIRECTORY = "H:/music/";
-
     @ConfigurationOption
     public static int MUSIC_MAX_PLAYLIST_SIZE = 50;
 
@@ -156,6 +152,10 @@ public class BotConfig {
     //mysql database name
     @ConfigurationOption
     public static String DB_NAME = "discord";
+
+    //enable economy globally
+    @ConfigurationOption
+    public static boolean MODULE_MUSIC_ENABLED = true;
 
     //enable economy globally
     @ConfigurationOption
