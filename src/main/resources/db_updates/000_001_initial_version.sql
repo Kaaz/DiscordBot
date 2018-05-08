@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS `bank_reserverations` (
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
-
 DROP TABLE IF EXISTS `bank_transactions`;
 
 CREATE TABLE IF NOT EXISTS `bank_transactions` (

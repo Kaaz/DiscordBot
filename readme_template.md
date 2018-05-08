@@ -89,7 +89,7 @@ Then continue with the following steps.
     
 4. Build
     
-    Type `mvn fatJar` in the `DiscordBot` folder.
+    Type `gradle fatJar` in the `DiscordBot` folder.
     In the build/libs/ folder there should be a file called `Emily-all-{VERSION}.jar` (where version is the latest version number).
     Move this file over to a location wherever you want to start the bot from.
     

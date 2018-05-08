@@ -73,6 +73,7 @@ true -> enable auto replying to matched messages
 false -> disable auto replying
 bot_admin_role |  | Users with this role are considered admins for the bot
 bot_channel | general | Channel where the bots default output goes to
+bot_language | en | The output language of the bot
 bot_logging_channel | false | The channel where the logging of events happens. Such as users joining/leaving
 
 Setting this to 'false' will disable it (without the quotes)
@@ -301,7 +302,7 @@ Then continue with the following steps.
     
 4. Build
     
-    Type `mvn fatJar` in the `DiscordBot` folder.
+    Type `gradle fatJar` in the `DiscordBot` folder.
     In the build/libs/ folder there should be a file called `Emily-all-{VERSION}.jar` (where version is the latest version number).
     Move this file over to a location wherever you want to start the bot from.
     
