@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `banks` (
   `id`              INT(11)   NOT NULL AUTO_INCREMENT,
   `user`            INT(11)   NOT NULL,
   `current_balance` INT(11)            DEFAULT NULL,
-  `created_on`      TIMESTAMP NULL     DEFAULT '0000-00-00 00:00:00',
+  `created_on`      TIMESTAMP NULL     DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `bank_reserverations` (
   `bank`             INT(11)   NOT NULL,
   `amount`           INT(11)   NOT NULL,
   `reason`           VARCHAR(255)   DEFAULT NULL,
-  `reservation_time` TIMESTAMP NULL DEFAULT '0000-00-00 00:00:00',
+  `reservation_time` TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `bank_transactions` (
   `id`               INT(11)   NOT NULL AUTO_INCREMENT,
   `bank_from`        INT(11)   NOT NULL,
   `bank_to`          INT(11)   NOT NULL,
-  `transaction_date` TIMESTAMP NULL     DEFAULT '0000-00-00 00:00:00',
+  `transaction_date` TIMESTAMP NULL     DEFAULT NULL,
   `description`      VARCHAR(255)       DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
