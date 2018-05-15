@@ -65,100 +65,96 @@ public class ReadmeHelper {
     }
 
     private static String readmeListOfAutoRanks() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         List<MemberShipRole> allRoles = RoleRankings.getAllRoles();
-        s += "Name | Time spend |" + "\n";
-        s += "--- | --- | " + "\n";
+        s.append("Name | Time spend |" + "\n");
+        s.append("--- | --- | " + "\n");
         for (MemberShipRole role : allRoles) {
-            s += role.getName() + " | ";
-            s += TimeUtil.getRelativeTime((System.currentTimeMillis() + role.getMembershipTime()) / 1000L + 1000L, false, false) + "\n";
+            s.append(role.getName()).append(" | ");
+            s.append(TimeUtil.getRelativeTime((System.currentTimeMillis() + role.getMembershipTime()) / 1000L + 1000L, false, false)).append("\n");
         }
 
-        return s;
+        return s.toString();
     }
 
     private static String readmeListOfgames() {
         GameHandler.initialize();
         GameHandler gameHandler = new GameHandler(null);
         List<AbstractGame> gameList = gameHandler.getGameList();
-        String s = "";
-        s += "Key | Name | Players |" + "\n";
-        s += "--- | --- | --- |" + "\n";
+        StringBuilder s = new StringBuilder();
+        s.append("Key | Name | Players |" + "\n");
+        s.append("--- | --- | --- |" + "\n");
         for (AbstractGame game : gameList) {
-            s += game.getCodeName() + " | ";
-            s += game.getFullname() + " | ";
-            s += game.getTotalPlayers();
-            s += "\n";
+            s.append(game.getCodeName()).append(" | ");
+            s.append(game.getFullname()).append(" | ");
+            s.append(game.getTotalPlayers());
+            s.append("\n");
         }
 
-        return s;
+        return s.toString();
     }
 
     private static String readmeGuildConfiguration() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         Map<String, GSetting> defaults = new HashMap<>();
         for (GSetting setting : GSetting.values()) {
             defaults.put(setting.name(), setting);
         }
         ArrayList<String> skeys = new ArrayList<>(defaults.keySet());
         Collections.sort(skeys);
-        s += "Key | Default | Description |" + "\n";
-        s += "--- | --- | ---|" + "\n";
         for (String skey : skeys) {
-
-            s += defaults.get(skey).name().toLowerCase() + " | ";
-            s += defaults.get(skey).getDefaultValue() + " | ";
-            s += defaults.get(skey).getDescription();
-            s += "\n";
+            s.append("\n### ").append(defaults.get(skey).name()).append("\n");
+            s.append("default: `").append(defaults.get(skey).getDefaultValue()).append("`\n\n");
+            s.append(defaults.get(skey).getDescription());
         }
 
-        return s;
+        return s.toString();
     }
 
     /**
      * makes a sorted list of all commands with description
      */
     private static String readmeCommandSimpleList() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         ArrayList<String> sortedCommandList = new ArrayList<>();
         Collections.addAll(sortedCommandList, CommandHandler.getCommands());
         Collections.sort(sortedCommandList);
-        s += "Commands | | | | |" + "\n";
-        s += "--- | --- | ---| ---| ---" + "\n";
+        s.append("Commands | | | | |" + "\n");
+        s.append("--- | --- | ---| ---| ---" + "\n");
         int columns = 5;
         int currentColumn = 0;
         for (String commandName : sortedCommandList) {
             AbstractCommand command = CommandHandler.getCommand(commandName);
-            if (command.isListed() && command.isEnabled()) {
-                s += "[" + command.getCommand() + "](#" + command.getCommand() + ")";
+            if (command != null && command.isListed() && command.isEnabled()) {
+                s.append("[").append(command.getCommand()).append("](#").append(command.getCommand()).append(")");
                 if (currentColumn % columns <= (columns - 2)) {
-                    s += " | ";
+                    s.append(" | ");
                 } else {
-                    s += "\n";
+                    s.append("\n");
                 }
                 currentColumn++;
             }
         }
-        return s;
+        return s.toString();
     }
 
     private static String readmeCommandDetailsList() {
-        String text = "";
+        StringBuilder text = new StringBuilder();
         ArrayList<String> sortedCommandList = new ArrayList<>();
         Collections.addAll(sortedCommandList, CommandHandler.getCommands());
         Collections.sort(sortedCommandList);
         for (String commandName : sortedCommandList) {
             AbstractCommand command = CommandHandler.getCommand(commandName);
-            if (!command.isEnabled() || !command.isListed()) {
+            if (command == null || !command.isEnabled() || !command.isListed()) {
                 continue;
             }
-            text += "### " + command.getCommand() + "\n" + "\n";
-            text += command.getDescription() + "\n" + "\n";
-            text += "Aliases: " + command.getCommand();
+            text.append("### ").append(command.getCommand()).append("\n").append("\n");
+            text.append(command.getDescription()).append("\n").append("\n");
+            text.append("Aliases: ").append(command.getCommand());
             for (String alias : command.getAliases()) {
-                text += ", " + alias;
+                text.append(", ").append(alias);
             }
-            text += "\n" + "\n";
+            text.append("\n" + "\n");
             String visibility;
             switch (command.getVisibility()) {
                 case PRIVATE:
@@ -174,17 +170,17 @@ public class ReadmeHelper {
                     visibility = "Nowhere";
                     break;
             }
-            text += "Usable " + visibility + "\n";
+            text.append("Usable ").append(visibility).append("\n");
             if (command.getUsage().length > 0) {
-                text += "\n";
-                text += "#### Usage" + "\n" + "\n";
-                text += "```php" + "\n";
+                text.append("\n");
+                text.append("#### Usage" + "\n" + "\n");
+                text.append("```php" + "\n");
                 for (String line : command.getUsage()) {
-                    text += line + "\n";
+                    text.append(line).append("\n");
                 }
-                text += ("```") + "\n";
+                text.append(("```") + "\n");
             }
         }
-        return text;
+        return text.toString();
     }
 }
