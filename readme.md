@@ -75,20 +75,15 @@ bot_admin_role |  | Users with this role are considered admins for the bot
 bot_channel | general | Channel where the bots default output goes to
 bot_language | en | The output language of the bot
 bot_logging_channel | false | The channel where the logging of events happens. Such as users joining/leaving
-
 Setting this to 'false' will disable it (without the quotes)
-
 To enable it, set this setting to match the channel name where you want the logging to happen
 If you specify an invalid channel, this setting will disable itself
 bot_modlog_channel | false | The channel where mod-logging happens.
 A case will appear if a user has been banned/kicked/warned/muted
-
 Setting this to 'false' will disable it (without the quotes)
-
 To enable it, set this setting to match the channel name where you want the moderation-cases to go
 If you specify an invalid channel, this setting will disable itself
 bot_mute_role | false | This is the role which is applied to those who you use the mute command on
-
 Setting this value to false will disable the role applied with the mute command
 bot_update_warning | playing | Show a warning that there is an update and that the bot will be updating soon.
 always  -> always show the message in the bot's configured default channel
@@ -100,25 +95,19 @@ yes         -> Always delete messages
 no          -> Never delete messages
 nonstandard -> delete messages outside of bot's default channel
 command_logging_channel | false | The channel command usage will be logged to
-
 Example output:
 Kaaz#9436 has used `say` in #general
 arguments: this is not a test
 output: this is not a test
-
 Setting this to 'false' will disable it (without the quotes)
 To enable it, set this setting to match the channel name where you want the command logging to happen
 If you specify an invalid channel, this setting will disable itself
 command_prefix | $ | Prefix for commands (between 1 and 4 characters)
 debug | false | Show some debug information.
-
-valid values: 
+valid values:
 true       -> Show a lot more additional information
  false      -> don't 
-
 If you want to check if certain things are (not) working.
-
-
 help_in_pm | false | show help in a private message?
 true  -> send a message to the user requesting help
 false -> output help to the channel where requested
@@ -128,27 +117,20 @@ true -> yep!
 module_games | true | Let people play games against each other
 music_channel | false | Channel where the bots music-related output goes to
 music_channel_auto | false | The channel where I automatically connect to if a user joins
-
 false:
 Not using this setting, wont auto-connect to anything.
-
 setting this to match a voice channel name:
 The moment a user connects to the specified channel I connect too and start to play music.
-
-Important to note: 
+Important to note:
 * If the configured channel does not exist, this setting will be turned off
 * If I'm already connected to a different voice-channel I won't use this setting
-
 music_channel_title | false | Updates the music channel's topic with the currently playing song
-
 auto  -> update the title every 10 seconds with the track its playing
 true  -> yes change the topic at the beginning of every song
 false -> leave the channel topic title alone!
 music_clear_admin_only | true | Only allow admins to clear the music add?
-
 true
 Only admins can clear the music add
-
 false
 Everyone can clear the add
 music_playing_message | clear | Clear the now playing message?
@@ -157,16 +139,12 @@ normal -> send the message and just leave it be
 off    -> don't send now playing messages
 music_playlist_id | 0 | stores the last used playlist
 music_queue_only | false | Stop playing music once the add is empty?
-
 true
 once the add is empty I stop playing music and leave the voice channel
-
 false
 If the add is empty, I'm gonna pick the track.
 music_result_picker | 1 | the amount of results the `play` command returns
-
 If its set to 1, it will always use the first result (no manual choice)
-
 If its set higher (max 5) it will respond with reactions where each button is a choice
 Note: This setting does require the add reactions permission
 music_role_requirement | false | In order to use music commands you need this role!
@@ -175,39 +153,29 @@ music_show_listeners | false | Show who's listening in the *current* command
 true  -> List all the people who are currently listening to music
 false -> Don't show listeners
 music_skip_admin_only | false | Only allow admins to use the skip command?
-
 true
 Only admins have permission to use the skip command
-
 false
 Everyone can use the skip command
 music_volume | 100 | sets the default volume of the music player
 So the next time the bot connects it starts with this volume
-
 Accepts a value between 0 and 100
 music_volume_admin | false | Require a guild admin to change the volume
-
 true -> only allow guild admins to change the bot's volume
 false -> allow all users to change the bot's volume
 music_vote_percent | 40 | Percentage of users (rounded down) required to skip the currently playing track
-
 eg; when set to 25, and 5 listeners it would require 2 users to vote skip
-
 Accepts a value between 1 and 100
 pm_user_events | false | Send a private message to owner when something happens to a user?
 true  -> sends a private message to guild-owner
 false -> does absolutely nothing
 show_templates | false | Show which templates are being used on places.
-
-valid values: 
+valid values:
 true       -> Shows the keyphrases being used
  false      -> Shows normal text 
-
 for instance if you don't have permission to access a command:
-
 setting this to true would show:
 no_permission
-
 false would show:
 You don't have permission to use that!
 show_unknown_commands | false | Show message on nonexistent commands and blacklisted commands
@@ -222,25 +190,19 @@ false -> no
 user_time_ranks_prefix | [rank] | The prefix of the role name for the time based role ranking
 Using this prefix to manage roles so make sure its somewhat unique! Or you'll have to cleanup yourself :)
 If you'd like to use the time based ranks make sure to set this first!
-
 The prefix can be between 3 and 8 in length
 welcome_new_users | false | Show a welcome message to new users?
 Valid options:
 true  -> shows a welcome when a user joins or leaves the guild
 false -> Disabled, doesn't say anything
-
-The welcome message can be set with the template: 
+The welcome message can be set with the template:
 welcome_new_user
-
-The welcome back message can be set with the template (if the user had joined before): 
+The welcome back message can be set with the template (if the user had joined before):
 welcome_back_user
-
-The leave message can be set with the template: 
+The leave message can be set with the template:
 message_user_leaves
-
 If multiple templates are set a random one will be chosen
 See the template command for more details
-
 
 
 ## Ranking system
