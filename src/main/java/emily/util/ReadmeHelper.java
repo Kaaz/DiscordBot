@@ -21,6 +21,7 @@ import emily.command.meta.AbstractCommand;
 import emily.db.WebDb;
 import emily.games.meta.AbstractGame;
 import emily.guildsettings.GSetting;
+import emily.guildsettings.GuildSettingType;
 import emily.handler.CommandHandler;
 import emily.handler.GameHandler;
 import emily.main.BotConfig;
@@ -103,9 +104,17 @@ public class ReadmeHelper {
         ArrayList<String> skeys = new ArrayList<>(defaults.keySet());
         Collections.sort(skeys);
         for (String skey : skeys) {
+            if(defaults.get(skey).getSettingType() == GuildSettingType.INTERNAL){
+                continue;
+            }
             s.append("\n### ").append(defaults.get(skey).name()).append("\n");
-            s.append("default: `").append(defaults.get(skey).getDefaultValue()).append("`\n\n");
-            s.append(defaults.get(skey).getDescription());
+            s.append("default: ");
+            String def = defaults.get(skey).getDefaultValue();
+            if(def != null && !def.isEmpty()) {
+                s.append("`").append(def).append("`");
+            }
+            s.append("\n\nsetting type: `").append(defaults.get(skey).getSettingType().typeName()).append("`\n\n");
+            s.append(defaults.get(skey).getDescription().replace("\n","  \n"));
         }
 
         return s.toString();
