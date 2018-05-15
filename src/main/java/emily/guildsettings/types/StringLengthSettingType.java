@@ -37,7 +37,7 @@ public class StringLengthSettingType implements IGuildSettingType {
 
     @Override
     public String typeName() {
-        return "enum";
+        return "String-length";
     }
 
     @Override
