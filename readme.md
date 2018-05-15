@@ -67,36 +67,31 @@ The following settings can be changed per guild:
 
 
 ### AUTO_REPLY
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 use the auto reply feature?  
 Looks for patterns in messages and replies to them (with a cooldown)  
 true -> enable auto replying to matched messages  
 false -> disable auto replying
 ### BOT_ADMIN_ROLE
-default: 
-
-setting type: `discord-role`
+default:   
+setting-type: `discord-role`
 
 Users with this role are considered admins for the bot
 ### BOT_CHANNEL
-default: `general`
-
-setting type: `text-channel`
+default: `general`  
+setting-type: `text-channel`
 
 Channel where the bots default output goes to
 ### BOT_LANGUAGE
-default: `en`
-
-setting type: `enum`
+default: `en`  
+setting-type: `enum [de, en, nl]`
 
 The output language of the bot
 ### BOT_LOGGING_CHANNEL
-default: `false`
-
-setting type: `text-channel`
+default: `false`  
+setting-type: `text-channel`
 
 The channel where the logging of events happens. Such as users joining/leaving  
   
@@ -105,9 +100,8 @@ Setting this to 'false' will disable it (without the quotes)
 To enable it, set this setting to match the channel name where you want the logging to happen  
 If you specify an invalid channel, this setting will disable itself
 ### BOT_MODLOG_CHANNEL
-default: `false`
-
-setting type: `text-channel`
+default: `false`  
+setting-type: `text-channel`
 
 The channel where mod-logging happens.  
 A case will appear if a user has been banned/kicked/warned/muted  
@@ -117,41 +111,36 @@ Setting this to 'false' will disable it (without the quotes)
 To enable it, set this setting to match the channel name where you want the moderation-cases to go  
 If you specify an invalid channel, this setting will disable itself
 ### BOT_MUTE_ROLE
-default: `false`
-
-setting type: `discord-role`
+default: `false`  
+setting-type: `discord-role`
 
 This is the role which is applied to those who you use the mute command on  
   
 Setting this value to false will disable the role applied with the mute command
 ### BOT_UPDATE_WARNING
-default: `playing`
-
-setting type: `enum`
+default: `playing`  
+setting-type: `enum [always, playing, off]`
 
 Show a warning that there is an update and that the bot will be updating soon.  
 always  -> always show the message in the bot's configured default channel  
 playing -> only announce when the bot is playing music and in the bot's configured music channel  
 off     -> don't announce when the bot is going down for an update
 ### CHAT_BOT_ENABLED
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 Setting this to true will make it so that it responds to every message in the configured bot_channel
 ### CLEANUP_MESSAGES
-default: `no`
-
-setting type: `enum`
+default: `no`  
+setting-type: `enum [no, yes, nonstandard]`
 
 Delete messages after a while?  
 yes         -> Always delete messages  
 no          -> Never delete messages  
 nonstandard -> delete messages outside of bot's default channel
 ### COMMAND_LOGGING_CHANNEL
-default: `false`
-
-setting type: `text-channel`
+default: `false`  
+setting-type: `text-channel`
 
 The channel command usage will be logged to  
   
@@ -164,15 +153,13 @@ Setting this to 'false' will disable it (without the quotes)
 To enable it, set this setting to match the channel name where you want the command logging to happen  
 If you specify an invalid channel, this setting will disable itself
 ### COMMAND_PREFIX
-default: `$`
-
-setting type: `enum`
+default: `$`  
+setting-type: `enum`
 
 Prefix for commands (between 1 and 4 characters)
 ### DEBUG
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 Show some debug information.  
   
@@ -184,37 +171,32 @@ If you want to check if certain things are (not) working.
   
 
 ### HELP_IN_PM
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 show help in a private message?  
 true  -> send a message to the user requesting help  
 false -> output help to the channel where requested
 ### MODULE_ECONOMY
-default: `true`
-
-setting type: `toggle`
+default: `true`  
+setting-type: `toggle`
 
 Use the economy feature?  
 false -> nope!  
 true -> yep!
 ### MODULE_GAMES
-default: `true`
-
-setting type: `toggle`
+default: `true`  
+setting-type: `toggle`
 
 Let people play games against each other
 ### MUSIC_CHANNEL
-default: `false`
-
-setting type: `text-channel`
+default: `false`  
+setting-type: `text-channel`
 
 Channel where the bots music-related output goes to
 ### MUSIC_CHANNEL_AUTO
-default: `false`
-
-setting type: `voice-channel`
+default: `false`  
+setting-type: `voice-channel`
 
 The channel where I automatically connect to if a user joins  
   
@@ -229,9 +211,8 @@ Important to note:
 * If I'm already connected to a different voice-channel I won't use this setting  
 
 ### MUSIC_CHANNEL_TITLE
-default: `false`
-
-setting type: `enum`
+default: `false`  
+setting-type: `enum [auto, true, false]`
 
 Updates the music channel's topic with the currently playing song  
   
@@ -239,9 +220,8 @@ auto  -> update the title every 10 seconds with the track its playing
 true  -> yes change the topic at the beginning of every song  
 false -> leave the channel topic title alone!
 ### MUSIC_CLEAR_ADMIN_ONLY
-default: `true`
-
-setting type: `toggle`
+default: `true`  
+setting-type: `toggle`
 
 Only allow admins to clear the music add?  
   
@@ -251,18 +231,16 @@ Only admins can clear the music add
 false  
 Everyone can clear the add
 ### MUSIC_PLAYING_MESSAGE
-default: `clear`
-
-setting type: `enum`
+default: `clear`  
+setting-type: `enum [normal, clear, off]`
 
 Clear the now playing message?  
 clear  -> sends a message and deletes it when the song is over or skipped  
 normal -> send the message and just leave it be  
 off    -> don't send now playing messages
 ### MUSIC_QUEUE_ONLY
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 Stop playing music once the add is empty?  
   
@@ -272,9 +250,8 @@ once the add is empty I stop playing music and leave the voice channel
 false  
 If the add is empty, I'm gonna pick the track.
 ### MUSIC_RESULT_PICKER
-default: `1`
-
-setting type: `enum`
+default: `1`  
+setting-type: `enum`
 
 the amount of results the `play` command returns  
   
@@ -283,24 +260,21 @@ If its set to 1, it will always use the first result (no manual choice)
 If its set higher (max 5) it will respond with reactions where each button is a choice  
 Note: This setting does require the add reactions permission
 ### MUSIC_ROLE_REQUIREMENT
-default: `false`
-
-setting type: `discord-role`
+default: `false`  
+setting-type: `discord-role`
 
 In order to use music commands you need this role!  
 Setting this value to false will disable the requirement
 ### MUSIC_SHOW_LISTENERS
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 Show who's listening in the *current* command  
 true  -> List all the people who are currently listening to music  
 false -> Don't show listeners
 ### MUSIC_SKIP_ADMIN_ONLY
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 Only allow admins to use the skip command?  
   
@@ -310,27 +284,24 @@ Only admins have permission to use the skip command
 false  
 Everyone can use the skip command
 ### MUSIC_VOLUME
-default: `100`
-
-setting type: `enum`
+default: `100`  
+setting-type: `enum`
 
 sets the default volume of the music player  
 So the next time the bot connects it starts with this volume  
   
 Accepts a value between 0 and 100
 ### MUSIC_VOLUME_ADMIN
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 Require a guild admin to change the volume  
   
 true -> only allow guild admins to change the bot's volume  
 false -> allow all users to change the bot's volume
 ### MUSIC_VOTE_PERCENT
-default: `40`
-
-setting type: `enum`
+default: `40`  
+setting-type: `enum`
 
 Percentage of users (rounded down) required to skip the currently playing track  
   
@@ -338,17 +309,15 @@ eg; when set to 25, and 5 listeners it would require 2 users to vote skip
   
 Accepts a value between 1 and 100
 ### PM_USER_EVENTS
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 Send a private message to owner when something happens to a user?  
 true  -> sends a private message to guild-owner  
 false -> does absolutely nothing
 ### SHOW_TEMPLATES
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 Show which templates are being used on places.  
   
@@ -364,17 +333,15 @@ no_permission
 false would show:  
 You don't have permission to use that!
 ### SHOW_UNKNOWN_COMMANDS
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 Show message on nonexistent commands and blacklisted commands  
 true -> returns a help message  
 false -> stays silent
 ### USER_TIME_RANKS
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 This setting will require me to have the manage role permission!  
 Users are given a role based on their time spend in the discord server  
@@ -383,9 +350,8 @@ Setting:  Use time based ranks?
 true  -> yes  
 false -> no
 ### USER_TIME_RANKS_PREFIX
-default: `[rank]`
-
-setting type: `enum`
+default: `[rank]`  
+setting-type: `enum`
 
 The prefix of the role name for the time based role ranking  
 Using this prefix to manage roles so make sure its somewhat unique! Or you'll have to cleanup yourself :)  
@@ -393,9 +359,8 @@ If you'd like to use the time based ranks make sure to set this first!
   
 The prefix can be between 3 and 8 in length
 ### WELCOME_NEW_USERS
-default: `false`
-
-setting type: `toggle`
+default: `false`  
+setting-type: `toggle`
 
 Show a welcome message to new users?  
 Valid options:  

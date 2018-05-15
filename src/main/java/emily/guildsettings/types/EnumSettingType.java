@@ -53,4 +53,8 @@ public class EnumSettingType implements IGuildSettingType {
     public String toDisplay(Guild guild, String value) {
         return value;
     }
+
+    public String[] getValidOptions() {
+        return options.toArray(new String[]{});
+    }
 }

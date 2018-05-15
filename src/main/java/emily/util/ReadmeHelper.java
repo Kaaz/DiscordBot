@@ -16,12 +16,15 @@
 
 package emily.util;
 
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import com.kaaz.configuration.ConfigurationBuilder;
 import emily.command.meta.AbstractCommand;
 import emily.db.WebDb;
 import emily.games.meta.AbstractGame;
 import emily.guildsettings.GSetting;
 import emily.guildsettings.GuildSettingType;
+import emily.guildsettings.IGuildSettingType;
+import emily.guildsettings.types.EnumSettingType;
 import emily.handler.CommandHandler;
 import emily.handler.GameHandler;
 import emily.main.BotConfig;
@@ -34,11 +37,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Collection of methods to help me out in maintaining the readme file
@@ -104,17 +103,24 @@ public class ReadmeHelper {
         ArrayList<String> skeys = new ArrayList<>(defaults.keySet());
         Collections.sort(skeys);
         for (String skey : skeys) {
-            if(defaults.get(skey).getSettingType() == GuildSettingType.INTERNAL){
+            IGuildSettingType settingType = defaults.get(skey).getSettingType();
+            if (settingType == GuildSettingType.INTERNAL) {
                 continue;
             }
             s.append("\n### ").append(defaults.get(skey).name()).append("\n");
             s.append("default: ");
             String def = defaults.get(skey).getDefaultValue();
-            if(def != null && !def.isEmpty()) {
+            if (def != null && !def.isEmpty()) {
                 s.append("`").append(def).append("`");
             }
-            s.append("\n\nsetting type: `").append(defaults.get(skey).getSettingType().typeName()).append("`\n\n");
-            s.append(defaults.get(skey).getDescription().replace("\n","  \n"));
+            s.append("  \nsetting-type: `").append(settingType.typeName());
+            if (settingType instanceof EnumSettingType) {
+                s.append(" [");
+                s.append(Joiner.on(", ").join(((EnumSettingType) settingType).getValidOptions()));
+                s.append("]");
+            }
+            s.append("`\n\n");
+            s.append(defaults.get(skey).getDescription().replace("\n", "  \n"));
         }
 
         return s.toString();
