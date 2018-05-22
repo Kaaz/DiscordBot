@@ -80,7 +80,7 @@ public class Launcher {
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();
-                Launcher.stop(ExitCode.SHITTY_CONFIG);
+                Launcher.stop(ExitCode.SHITTY_CONFIG, e);
             }
         } else {
             Logger.fatal("Bot not enabled, enable it in the config. You can do this by setting bot_enabled=true");
@@ -88,6 +88,7 @@ public class Launcher {
         }
     }
 
+    //
     private static void init() throws IOException, InterruptedException, SQLException {
         Properties props = new Properties();
         props.load(Launcher.class.getClassLoader().getResourceAsStream("project.properties"));
@@ -105,11 +106,18 @@ public class Launcher {
      * @param reason why!?
      */
     public static void stop(ExitCode reason) {
+        stop(reason, null);
+    }
+
+    public static void stop(ExitCode reason, Exception e) {
         if (isBeingKilled) {
             return;
         }
         isBeingKilled = true;
         DiscordBot.LOGGER.error("Exiting because: " + reason);
+        if (e != null) {
+            System.out.println(e);
+        }
         System.exit(reason.getCode());
     }
 

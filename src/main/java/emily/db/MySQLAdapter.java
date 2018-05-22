@@ -62,7 +62,7 @@ public class MySQLAdapter {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             DiscordBot.LOGGER.error("Can't connect to the database! Make sure the database settings are corrent and the database server is running AND the database `" + DB_NAME + "` exists");
-            Launcher.stop(ExitCode.SHITTY_CONFIG);
+            Launcher.stop(ExitCode.SHITTY_CONFIG, e);
         }
         return null;
     }
