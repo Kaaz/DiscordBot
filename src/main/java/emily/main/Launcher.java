@@ -123,6 +123,7 @@ public class Launcher {
 
     /**
      * shutdown hook, closing connections
+     *
      */
     private static void shutdownHook() {
         if (botContainer != null) {
@@ -136,7 +137,6 @@ public class Launcher {
                 discordBot.getJda().shutdown();
             }
         }
-
     }
 
     /**
