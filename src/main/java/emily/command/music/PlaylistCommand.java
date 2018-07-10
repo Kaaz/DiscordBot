@@ -326,7 +326,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                     if (record != null && record.id > 0) {
                         if (player.canUseVoiceCommands(author, userRank)) {
                             player.connectTo(guild.getMember(author).getVoiceState().getChannel());
-                            player.addToQueue(record.youtubeTitle, author);
+                            player.addToQueue(record.youtubecode, author);
                             return Templates.music.added_to_queue.formatGuild(channel, record.youtubeTitle);
                         }
                     }
