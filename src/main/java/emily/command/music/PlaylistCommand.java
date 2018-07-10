@@ -138,7 +138,6 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         ArrayList<OPlaylist> playlists = null;
         StringBuilder out = null;
         switch (args[0].toLowerCase()) {
-            case "list":
             case "lists":
                 playlists = CPlaylist.getPlaylistsForUser(CUser.getCachedId(author.getIdLong()));
                 out = new StringBuilder("You have the following playlists:\n");
@@ -353,7 +352,6 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                     return Templates.playlist.setting_updated.formatGuild(channel, "play-type", args[1]);
                 }
                 return Templates.playlist.setting_not_numeric.formatGuild(channel, "play-type");
-
         }
         return Templates.invalid_use.formatGuild(channel);
     }
