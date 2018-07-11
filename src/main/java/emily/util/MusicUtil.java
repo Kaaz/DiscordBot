@@ -63,7 +63,7 @@ public class MusicUtil {
                 optionsField += "Role req.: " + role.getName() + "\n";
             }
         }
-        if (GuildSettings.get(player.getGuild()).getOrDefault(GSetting.MUSIC_QUEUE_ONLY).equals("false")) {
+        if (!GuildSettings.get(player.getGuild()).getBoolValue(GSetting.MUSIC_QUEUE_ONLY)) {
             optionsField += "Random after queue";
         } else {
             optionsField += "Stop after queue";
@@ -72,14 +72,14 @@ public class MusicUtil {
         List<OMusic> queue = player.getQueue();
         int show = 3;
         if (!queue.isEmpty()) {
-            String x = "";
+            StringBuilder x = new StringBuilder();
             for (int i = 0; i < Math.min(show, queue.size()); i++) {
-                x += queue.get(i).youtubeTitle + "\n";
+                x.append(queue.get(i).youtubeTitle).append("\n");
             }
             if (queue.size() > show) {
-                x += ".. and **" + (queue.size() - 3) + "** more";
+                x.append(".. and **").append(queue.size() - 3).append("** more");
             }
-            embed.addField("Next up", x, true);
+            embed.addField("Next up", x.toString(), true);
         }
         if (member != null) {
             embed.setFooter("requested by " + member.getEffectiveName(), member.getUser().getAvatarUrl());
@@ -102,21 +102,21 @@ public class MusicUtil {
      */
     public static String getMediaplayerProgressbar(long startTime, long duration, float volume, boolean isPaused) {
         long current = System.currentTimeMillis() / 1000 - startTime;
-        String bar = isPaused ? "\u23EF" : "\u23F8 ";
+        StringBuilder bar = new StringBuilder(isPaused ? "\u23EF" : "\u23F8 ");
         int activeBLock = (int) ((float) current / (float) duration * (float) BLOCK_PARTS);
         for (int i = 0; i < BLOCK_PARTS; i++) {
             if (i == activeBLock) {
-                bar += BLOCK_ACTIVE;
+                bar.append(BLOCK_ACTIVE);
             } else {
-                bar += BLOCK_INACTIVE;
+                bar.append(BLOCK_INACTIVE);
             }
         }
-        bar += " [" + Misc.getDurationString(current) + "/" + Misc.getDurationString(duration) + "] ";
+        bar.append(" [").append(Misc.getDurationString(current)).append("/").append(Misc.getDurationString(duration)).append("] ");
         if (volume >= SOUND_TRESHHOLD) {
-            bar += SOUND_LOUD;
+            bar.append(SOUND_LOUD);
         } else {
-            bar += SOUND_CHILL;
+            bar.append(SOUND_CHILL);
         }
-        return bar;
+        return bar.toString();
     }
 }
