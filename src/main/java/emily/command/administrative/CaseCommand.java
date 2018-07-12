@@ -55,7 +55,9 @@ public class CaseCommand extends AbstractCommand {
     public String[] getUsage() {
         return new String[]{
                 "case reason <id> <message>  //sets/modifies the reason of a case",
-                "case reason last <message> //sets/modified the reason of the last added case by you"
+                "case reason last <message>  //sets/modified the reason of the last added case by you",
+                "case user <name/id/mention> //shows a list of cases for this user",
+                "case show <id/username>     //shows case"
         };
     }
 

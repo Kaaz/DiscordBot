@@ -34,6 +34,7 @@ import emily.db.model.OPlaylist;
 import emily.guildsettings.GSetting;
 import emily.handler.audio.AudioPlayerSendHandler;
 import emily.handler.audio.QueuedAudioTrack;
+import emily.handler.discord.MessageMetaData;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emily.permission.SimpleRank;
@@ -45,7 +46,6 @@ import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -75,6 +75,17 @@ public class MusicPlayerHandler {
     private volatile OPlaylist playlist;
     private Random rng;
     private volatile LinkedList<OMusic> queue;
+    private final ArrayList<MessageMetaData> messagesToDelete = new ArrayList<>();
+
+    /**
+     * Will delete the message when the currently playing track ends
+     *
+     * @param channelId the channel the message is put in
+     * @param messageId the id of the message
+     */
+    public void deleteMessageAfterTrack(long channelId, long messageId) {
+        messagesToDelete.add(new MessageMetaData(channelId, messageId));
+    }
 
     private MusicPlayerHandler(Guild guild, DiscordBot bot) {
 
@@ -179,9 +190,7 @@ public class MusicPlayerHandler {
             return false;
         }
         if (guild.getAudioManager().getConnectedChannel() != null) {
-            if (!guild.getAudioManager().getConnectedChannel().equals(userVoice)) {
-                return false;
-            }
+            return guild.getAudioManager().getConnectedChannel().equals(userVoice);
         }
         return true;
     }
@@ -214,6 +223,16 @@ public class MusicPlayerHandler {
     private synchronized void trackEnded() {
         currentSongLength = 0;
         boolean keepGoing = false;
+        if (!messagesToDelete.isEmpty()) {
+            for (MessageMetaData messageMetaData : messagesToDelete) {
+                TextChannel chan = getJDA().getTextChannelById(messageMetaData.getChannelId());
+                if (chan != null) {
+                    chan.deleteMessageById(messageMetaData.getMessageId()).queue();
+                }
+            }
+            messagesToDelete.clear();
+        }
+
         if (scheduler.queue.isEmpty()) {
             if (queue.isEmpty()) {
                 if (!stopAfterTrack && !GuildSettings.get(guildId).getBoolValue(GSetting.MUSIC_QUEUE_ONLY)) {
@@ -273,7 +292,7 @@ public class MusicPlayerHandler {
         }
     }
 
-    private synchronized void trackStarted() throws IOException {
+    private synchronized void trackStarted() {
         if (currentlyPlaying != 0 && pauseStart > 0) {
             pauseStart = 0;
             return;
@@ -316,10 +335,9 @@ public class MusicPlayerHandler {
             if (musicChannel == null || !musicChannel.canTalk()) {
                 return;
             }
-            final long deleteAfter = Math.min(Math.max(currentSongLength * 1000L, 60_000L), 7200_000L);
             Consumer<Message> callback = (message) -> {
                 if (messageType.equals("clear")) {
-                    bot.schedule(() -> bot.out.saveDelete(message), deleteAfter, TimeUnit.MILLISECONDS);
+                    deleteMessageAfterTrack(message.getChannel().getIdLong(), message.getIdLong());
                 }
                 bot.musicReactionHandler.clearGuild(guildId);
                 Guild guild = bot.getJda().getGuildById(guildId);
@@ -677,12 +695,7 @@ public class MusicPlayerHandler {
 
         @Override
         public void onTrackStart(AudioPlayer player, AudioTrack track) {
-            try {
-                trackStarted();
-            } catch (IOException e) {
-                Launcher.logToDiscord(e);
-                e.printStackTrace();
-            }
+            trackStarted();
         }
 
         public void skipTrack() {
