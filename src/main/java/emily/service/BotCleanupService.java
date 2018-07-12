@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  * delete cached stuff, etc.
  */
 public class BotCleanupService extends AbstractService {
-    int runCount = 0;
+    private int runCount = 0;
 
     public BotCleanupService(BotContainer b) {
         super(b);

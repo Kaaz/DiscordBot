@@ -86,10 +86,10 @@ public class YTUtil {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(
                             yc.getInputStream()));
-            String input = "";
+            StringBuilder input = new StringBuilder();
             String inputLine;
             while ((inputLine = in.readLine()) != null)
-                input += inputLine;
+                input.append(inputLine);
             in.close();
             int start = input.indexOf("<title>");
             int end = input.indexOf("</title>");

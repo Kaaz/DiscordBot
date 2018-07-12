@@ -18,15 +18,7 @@ package emily.util;
 
 import com.google.common.base.Strings;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -110,10 +102,7 @@ public class Misc {
      * @return true if it can be considered true
      */
     public static boolean isFuzzyTrue(String text) {
-        if (text == null) {
-            return false;
-        }
-        return fuzzyTrue.contains(text);
+        return text != null && fuzzyTrue.contains(text);
     }
 
     /**
@@ -123,10 +112,7 @@ public class Misc {
      * @return true if it can be considered false
      */
     public static boolean isFuzzyFalse(String text) {
-        if (text == null) {
-            return false;
-        }
-        return fuzzyFalse.contains(text);
+        return text != null && fuzzyFalse.contains(text);
     }
 
     /**
@@ -186,17 +172,17 @@ public class Misc {
      * @return formatted controllers
      */
     public static String makeTable(List<String> items, int columnLength, int columns) {
-        String ret = "```xl" + "\n";
+        StringBuilder ret = new StringBuilder("```xl" + "\n");
         int counter = 0;
         for (String item : items) {
             counter++;
-            ret += String.format("%-" + columnLength + "s", item);
+            ret.append(String.format("%-" + columnLength + "s", item));
             if (counter % columns == 0) {
-                ret += "\n";
+                ret.append("\n");
             }
         }
         if (counter % columns != 0) {
-            ret += "\n";
+            ret.append("\n");
         }
         return ret + "```" + "\n";
     }
@@ -244,7 +230,7 @@ public class Misc {
     /**
      * @param headers array containing the headers
      * @param table   array[n size] of array's[header size], containing the rows of the controllers
-     * @param footer
+     * @param footer  array containing the footers
      * @return a formatted controllers
      */
     public static String makeAsciiTable(List<String> headers, List<List<String>> table, List<String> footer) {
@@ -271,20 +257,20 @@ public class Misc {
             }
         }
         sb.append("```").append("\n");
-        String formatLine = "|";
+        StringBuilder formatLine = new StringBuilder("|");
         for (int width : widths) {
-            formatLine += " %-" + width + "s |";
+            formatLine.append(" %-").append(width).append("s |");
         }
-        formatLine += "\n";
+        formatLine.append("\n");
         sb.append(appendSeparatorLine("+", "+", "+", padding, widths));
-        sb.append(String.format(formatLine, headers.toArray()));
+        sb.append(String.format(formatLine.toString(), headers.toArray()));
         sb.append(appendSeparatorLine("+", "+", "+", padding, widths));
         for (List<String> row : table) {
-            sb.append(String.format(formatLine, row.toArray()));
+            sb.append(String.format(formatLine.toString(), row.toArray()));
         }
         if (footer != null) {
             sb.append(appendSeparatorLine("+", "+", "+", padding, widths));
-            sb.append(String.format(formatLine, footer.toArray()));
+            sb.append(String.format(formatLine.toString(), footer.toArray()));
         }
         sb.append(appendSeparatorLine("+", "+", "+", padding, widths));
         sb.append("```");
@@ -341,7 +327,7 @@ public class Misc {
      */
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
         List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
-        Collections.sort(list, (o1, o2) -> -(o1.getValue()).compareTo(o2.getValue()));
+        list.sort((o1, o2) -> -(o1.getValue()).compareTo(o2.getValue()));
 
         Map<K, V> result = new LinkedHashMap<>();
         for (Map.Entry<K, V> entry : list) {
@@ -371,12 +357,12 @@ public class Misc {
      */
     public static String joinStrings(String[] strings, int startIndex, int endIndex) {
         if (startIndex < strings.length) {
-            String ret = strings[startIndex];
+            StringBuilder ret = new StringBuilder(strings[startIndex]);
             endIndex = Math.min(endIndex, strings.length);
             for (int i = startIndex + 1; i < endIndex; i++) {
-                ret += " " + strings[i];
+                ret.append(" ").append(strings[i]);
             }
-            return ret;
+            return ret.toString();
         }
         return "";
     }

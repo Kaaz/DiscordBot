@@ -108,7 +108,7 @@ public class GithubService extends AbstractService {
             } else {
                 embed.setTitle(String.format("There have been **%s** commits to my repository", commitCount), null);
             }
-            String description = "** Hash**          **Description**" + "\n";
+            StringBuilder description = new StringBuilder("** Hash**          **Description**" + "\n");
             int maxCharsPerline = 65;
             for (Map.Entry<String, String> entry : commitMap.entrySet()) {
                 String cmt = String.format("[`%s`](" + commitUrl + ")", entry.getKey().substring(0, 7), gitUser, gitRepo, entry.getKey());
@@ -134,15 +134,15 @@ public class GithubService extends AbstractService {
                     for (String s : subCommitLine) {
                         if (first) {
                             first = false;
-                            description += cmt + "     " + s + "\n";
+                            description.append(cmt).append("     ").append(s).append("\n");
                         } else {
-                            description += "`.......`     " + s + "\n";
+                            description.append("`.......`     ").append(s).append("\n");
                         }
                     }
                 }
-                description += "\n";
+                description.append("\n");
             }
-            embed.setDescription(description);
+            embed.setDescription(description.toString());
             for (TextChannel chan : getSubscribedChannels()) {
                 sendTo(chan, embed.build());
             }

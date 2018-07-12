@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TimeUtil {
-    public static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
     private static final int SECOND_MILLIS = 1000;
     private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
@@ -123,19 +122,19 @@ public class TimeUtil {
     public static long toMillis(String s) {
         s = s.toLowerCase();
         long val = 0;
-        String working = "";
+        StringBuilder working = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
             if (Character.isDigit(s.charAt(i))) {
-                working += s.charAt(i);
+                working.append(s.charAt(i));
             } else if (TIME_SYMBOLS.containsKey(s.charAt(i))) {
-                if (!working.isEmpty()) {
-                    val += Misc.parseInt(working, 0) * TIME_SYMBOLS.get(s.charAt(i));
-                    working = "";
+                if (working.length() > 0) {
+                    val += Misc.parseInt(working.toString(), 0) * TIME_SYMBOLS.get(s.charAt(i));
+                    working = new StringBuilder();
                 }
             }
         }
         if (working.length() != 0) {
-            val += Misc.parseInt(working, 0);
+            val += Misc.parseInt(working.toString(), 0);
         }
         return val;
     }

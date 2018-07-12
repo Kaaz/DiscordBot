@@ -26,7 +26,6 @@ import emily.main.BotContainer;
 import emily.main.DiscordBot;
 import emily.main.Launcher;
 import emoji4j.EmojiUtils;
-import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -39,6 +38,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -125,7 +125,7 @@ public class DisUtil {
      * @param guild the guild to search in
      * @return TextChannel || null
      */
-    public static TextChannel findFirstWriteableChannel(JDA client, Guild guild) {
+    public static TextChannel findFirstWriteableChannel(Guild guild) {
         for (TextChannel channel : guild.getTextChannels()) {
             if (channel.canTalk()) {
                 return channel;
@@ -437,7 +437,7 @@ public class DisUtil {
         try {
             profileImg = ImageIO.read(connection.getInputStream());
         } catch (Exception ignored) {
-            profileImg = ImageIO.read(Launcher.class.getClassLoader().getResource("default_profile.jpg"));
+            profileImg = ImageIO.read(Objects.requireNonNull(Launcher.class.getClassLoader().getResource("default_profile.jpg")));
         }
         return profileImg;
     }

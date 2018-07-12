@@ -217,7 +217,7 @@ public class DiscordBot {
         if (defaultChannel != null) {
             return defaultChannel;
         }
-        return DisUtil.findFirstWriteableChannel(getJda(), guild);
+        return DisUtil.findFirstWriteableChannel(guild);
     }
 
     /**

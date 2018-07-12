@@ -25,7 +25,7 @@ public class DebugUtil {
     /**
      * Handles the debug output + response
      *
-     * @param bot
+     * @param bot     the bot
      * @param channel the channel to send the messages to
      * @param output  the output to upload
      */
