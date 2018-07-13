@@ -16,8 +16,8 @@
 
 package emily.command.music;
 
-import emily.command.meta.CommandVisibility;
 import emily.command.meta.AbstractCommand;
+import emily.command.meta.CommandVisibility;
 import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
 import emily.handler.MusicPlayerHandler;
@@ -25,11 +25,7 @@ import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
 import emily.templates.Templates;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
 /**
  * !volume [vol]
@@ -75,7 +71,7 @@ public class VolumeCommand extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         if (args.length > 0) {
-            if (GuildSettings.getFor(channel, GSetting.MUSIC_VOLUME_ADMIN).equals("true") && !bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.GUILD_ADMIN)) {
+            if (GuildSettings.getBoolFor(channel, GSetting.MUSIC_VOLUME_ADMIN) && !bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.GUILD_ADMIN)) {
                 return Templates.no_permission.formatGuild(channel);
             }
             int volume;

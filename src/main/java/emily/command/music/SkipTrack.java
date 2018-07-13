@@ -77,7 +77,7 @@ public class SkipTrack extends AbstractCommand {
         Guild guild = ((TextChannel) channel).getGuild();
         MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);
         SimpleRank userRank = bot.security.getSimpleRank(author, channel);
-        boolean adminOnly = "true".equals(GuildSettings.getFor(channel, GSetting.MUSIC_SKIP_ADMIN_ONLY));
+        boolean adminOnly = GuildSettings.getBoolFor(channel, GSetting.MUSIC_SKIP_ADMIN_ONLY);
         if (adminOnly && !userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
             return Templates.music.skip_admin_only.formatGuild(channel);
         }

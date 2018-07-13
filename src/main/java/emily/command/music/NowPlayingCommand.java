@@ -171,7 +171,7 @@ public class NowPlayingCommand extends AbstractCommand {
                     );
                     return Templates.private_message_sent.formatGuild(channel, guild.getMember(author).getEffectiveName());
                 case "clear":
-                    boolean adminOnly = "true".equals(GuildSettings.getFor(channel, GSetting.MUSIC_CLEAR_ADMIN_ONLY));
+                    boolean adminOnly = GuildSettings.getBoolFor(channel, GSetting.MUSIC_CLEAR_ADMIN_ONLY);
                     if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN) && args.length > 2 && args[1].equals("admin") && args[2].equalsIgnoreCase("toggle")) {
                         GuildSettings.get(guild).set(guild, GSetting.MUSIC_SKIP_ADMIN_ONLY, adminOnly ? "false" : "true");
                         adminOnly = !adminOnly;
@@ -195,7 +195,7 @@ public class NowPlayingCommand extends AbstractCommand {
         MusicPlayerHandler musicHandler = MusicPlayerHandler.getFor(guild, bot);
         ret += MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + "\n" + "\n";
 
-        if (GuildSettings.get(guild).getOrDefault(GSetting.MUSIC_SHOW_LISTENERS).equals("true")) {
+        if (GuildSettings.get(guild).getBoolValue(GSetting.MUSIC_SHOW_LISTENERS)) {
             List<Member> userList = musicHandler.getUsersInVoiceChannel();
             if (userList.size() > 0) {
                 ret += "\uD83C\uDFA7  Listeners" + "\n";

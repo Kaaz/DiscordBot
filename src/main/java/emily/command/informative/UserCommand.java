@@ -34,12 +34,7 @@ import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Misc;
 import emily.util.TimeUtil;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -151,7 +146,7 @@ public class UserCommand extends AbstractCommand {
         sb.append(":bust_in_silhouette: User: ").append(infoUser.getName()).append("#").append(infoUser.getDiscriminator()).append("\n");
         sb.append(":id: Discord id: ").append(infoUser.getId()).append("\n");
         sb.append(":keyboard: Commands used: ").append(dbUser.commandsUsed).append("\n");
-        if (guildId == 0 || "true".equals(GuildSettings.getFor(channel, GSetting.MODULE_ECONOMY))) {
+        if (guildId == 0 || GuildSettings.getBoolFor(channel, GSetting.MODULE_ECONOMY)) {
             OBank bankAccount = CBanks.findBy(userId);
             sb.append(BotConfig.ECONOMY_CURRENCY_ICON).append(" ").append(BotConfig.ECONOMY_CURRENCY_NAMES).append(": ").append(bankAccount.currentBalance).append("\n");
         }

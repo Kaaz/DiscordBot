@@ -22,17 +22,7 @@ import emily.db.controllers.CGuild;
 import emily.event.JDAEventManager;
 import emily.event.JDAEvents;
 import emily.guildsettings.GSetting;
-import emily.handler.AutoReplyHandler;
-import emily.handler.ChatBotHandler;
-import emily.handler.CommandHandler;
-import emily.handler.CommandReactionHandler;
-import emily.handler.GameHandler;
-import emily.handler.GuildSettings;
-import emily.handler.MusicPlayerHandler;
-import emily.handler.MusicReactionHandler;
-import emily.handler.OutgoingContentHandler;
-import emily.handler.RoleReactionHandler;
-import emily.handler.SecurityHandler;
+import emily.handler.*;
 import emily.handler.discord.RestQueue;
 import emily.role.RoleRankings;
 import emily.templates.Templates;
@@ -42,13 +32,7 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Emote;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.PrivateChannel;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 import org.apache.logging.log4j.LogManager;
@@ -384,12 +368,12 @@ public class DiscordBot {
             CommandHandler.process(this, channel, author, message);
             return;
         }
-        if (GuildSettings.getFor(channel, GSetting.AUTO_REPLY).equals("true")) {
+        if (GuildSettings.getBoolFor(channel, GSetting.AUTO_REPLY)) {
             if (autoReplyhandler.autoReplied(message)) {
                 return;
             }
         }
-        if (BotConfig.BOT_CHATTING_ENABLED && settings.getOrDefault(GSetting.CHAT_BOT_ENABLED).equals("true") &&
+        if (BotConfig.BOT_CHATTING_ENABLED && settings.getBoolValue(GSetting.CHAT_BOT_ENABLED) &&
                 channel.getId().equals(GuildSettings.get(channel.getGuild()).getOrDefault(GSetting.BOT_CHANNEL))) {
             if (PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_WRITE)) {
                 channel.sendTyping().queue();

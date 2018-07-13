@@ -323,7 +323,7 @@ public class MusicPlayerHandler {
             record = new OMusic();
         }
         TextChannel musicChannel = bot.getMusicChannel(guildId);
-        if ("true".equals(GuildSettings.get(guildId).getOrDefault(GSetting.MUSIC_CHANNEL_TITLE))) {
+        if (GuildSettings.get(guildId).getBoolValue(GSetting.MUSIC_CHANNEL_TITLE)) {
             Guild guild = bot.getJda().getGuildById(guildId);
             if (musicChannel != null && PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {
                 if (!isUpdateChannelTitle()) {

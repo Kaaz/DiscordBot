@@ -188,7 +188,7 @@ public class DisUtil {
      */
     public static boolean useEconomy(Channel channel) {
         return channel != null && channel instanceof TextChannel
-                && GuildSettings.getFor(((TextChannel) channel), GSetting.MODULE_ECONOMY).equals("true");
+                && GuildSettings.getBoolFor(((TextChannel) channel), GSetting.MODULE_ECONOMY);
     }
 
     /**

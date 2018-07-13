@@ -202,7 +202,7 @@ public class RoleRankings {
         for (Guild guild : guilds) {
             try {
                 if (GuildSettings.get(guild) != null) {
-                    if (!"true".equals(GuildSettings.get(guild).getOrDefault(GSetting.USER_TIME_RANKS))) {
+                    if (!GuildSettings.get(guild).getBoolValue(GSetting.USER_TIME_RANKS)) {
                         continue;
                     }
                     if (canModifyRoles(guild, guild.getJDA().getSelfUser())) {

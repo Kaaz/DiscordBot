@@ -123,7 +123,7 @@ public class MusicReactionHandler {
     }
 
     private void handleVoteSkip(MusicPlayerHandler player, TextChannel channel, User invoker, SimpleRank rank, boolean isAdding) {
-        if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && "true".equals(GuildSettings.getFor(channel, GSetting.MUSIC_SKIP_ADMIN_ONLY))) {
+        if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) && GuildSettings.getBoolFor(channel, GSetting.MUSIC_SKIP_ADMIN_ONLY)) {
             return;
         }
         if (isAdding) {

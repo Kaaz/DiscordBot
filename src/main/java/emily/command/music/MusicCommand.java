@@ -16,8 +16,8 @@
 
 package emily.command.music;
 
-import emily.command.meta.CommandVisibility;
 import emily.command.meta.AbstractCommand;
+import emily.command.meta.CommandVisibility;
 import emily.db.controllers.CPlaylist;
 import emily.db.model.OPlaylist;
 import emily.guildsettings.GSetting;
@@ -29,13 +29,7 @@ import emily.templates.Templates;
 import emily.util.Emojibet;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.List;
@@ -120,7 +114,7 @@ public class MusicCommand extends AbstractCommand {
         ret += "**auto-join voice-channel:** " + "\n";
         ret += (autoVoice != null ? autoVoice.getName() : "disabled") + "\n" + "\n";
         ret += "**music from queue only?**" + "\n";
-        ret += (settings.getOrDefault(GSetting.MUSIC_QUEUE_ONLY).equals("true") ? "Only music from the queue will be played" : "A track from the configured playlist will be played once the queue is empty.") + "\n" + "\n";
+        ret += (settings.getBoolValue(GSetting.MUSIC_QUEUE_ONLY) ? "Only music from the queue will be played" : "A track from the configured playlist will be played once the queue is empty.") + "\n" + "\n";
         ret += "**vote-skipping percentage required?**" + "\n";
         ret += settings.getOrDefault(GSetting.MUSIC_VOTE_PERCENT) + "%" + "\n" + "\n";
         ret += "**now-playing message?**" + "\n";
@@ -132,11 +126,11 @@ public class MusicCommand extends AbstractCommand {
         ret += "" + "\n";
         ret += "__Admin-only options__" + "\n";
         ret += "**skip the playing track?** " + "\n";
-        ret += (settings.getOrDefault(GSetting.MUSIC_SKIP_ADMIN_ONLY).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + "\n" + "\n";
+        ret += (settings.getBoolValue(GSetting.MUSIC_SKIP_ADMIN_ONLY) ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + "\n" + "\n";
         ret += "**Clear the music-queue?**" + "\n";
-        ret += (settings.getOrDefault(GSetting.MUSIC_CLEAR_ADMIN_ONLY).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + "\n" + "\n";
+        ret += (settings.getBoolValue(GSetting.MUSIC_CLEAR_ADMIN_ONLY) ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + "\n" + "\n";
         ret += "**Change the volume?**" + "\n";
-        ret += (settings.getOrDefault(GSetting.MUSIC_VOLUME_ADMIN).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + "\n" + "\n";
+        ret += (settings.getBoolValue(GSetting.MUSIC_VOLUME_ADMIN) ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can") + "\n" + "\n";
         ret += "" + "\n";
         ret += "" + "\n";
         EmbedBuilder embedBuilder = new EmbedBuilder();
@@ -145,16 +139,16 @@ public class MusicCommand extends AbstractCommand {
         embedBuilder.addField("Required role to use music-commands", (requiredRole != null ? requiredRole.getName() : "none"), true);
         embedBuilder.addField("Music output text-channel", (outputChannel != null ? outputChannel.getAsMention() : Emojibet.WARNING + " channel not found"), true);
         embedBuilder.addField("auto-join voice-channel", (autoVoice != null ? autoVoice.getName() : "disabled"), true);
-        embedBuilder.addField("music from queue only", (settings.getOrDefault(GSetting.MUSIC_QUEUE_ONLY).equals("true") ? "Only music from the queue will be played" : "A track from the configured playlist will be played once the queue is empty."), true);
+        embedBuilder.addField("music from queue only", (settings.getBoolValue(GSetting.MUSIC_QUEUE_ONLY) ? "Only music from the queue will be played" : "A track from the configured playlist will be played once the queue is empty."), true);
         embedBuilder.addField("vote-skipping percentage required", settings.getOrDefault(GSetting.MUSIC_VOTE_PERCENT) + "%", true);
         embedBuilder.addField("now-playing message", settings.getOrDefault(GSetting.MUSIC_PLAYING_MESSAGE), true);
         embedBuilder.addField("Playlist", playlist.title, true);
         embedBuilder.addField("Volume", settings.getOrDefault(GSetting.MUSIC_VOLUME) + "%", true);
         embedBuilder.addBlankField(true);
         embedBuilder.addBlankField(false);
-        embedBuilder.addField("skip the playing track", (settings.getOrDefault(GSetting.MUSIC_SKIP_ADMIN_ONLY).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
-        embedBuilder.addField("Clear the music-queue", (settings.getOrDefault(GSetting.MUSIC_CLEAR_ADMIN_ONLY).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
-        embedBuilder.addField("Change the volume", (settings.getOrDefault(GSetting.MUSIC_VOLUME_ADMIN).equals("true") ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
+        embedBuilder.addField("skip the playing track", (settings.getBoolValue(GSetting.MUSIC_SKIP_ADMIN_ONLY) ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
+        embedBuilder.addField("Clear the music-queue", (settings.getBoolValue(GSetting.MUSIC_CLEAR_ADMIN_ONLY) ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
+        embedBuilder.addField("Change the volume", (settings.getBoolValue(GSetting.MUSIC_VOLUME_ADMIN) ? Emojibet.NO_ENTRY + " Only admins" : Emojibet.OKE_SIGN + " Anyone can"), true);
         if (PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {
             bot.queue.add(channel.sendMessage(embedBuilder.build()));
             return "";

@@ -132,7 +132,7 @@ public class CommandHandler {
             long cooldown = getCommandCooldown(command, author, channel);
             if (command.canBeDisabled() && isDisabled(guildId, channel.getIdLong(), command.getCommand())) {
                 commandSuccess = false;
-                if (GuildSettings.getFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS).equals("true")) {
+                if (GuildSettings.getBoolFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS)) {
                     outMsg = Templates.command.is_blacklisted.format(input[0]);
                 }
             } else if (cooldown > 0) {
@@ -178,7 +178,7 @@ public class CommandHandler {
             channel.sendTyping().queue();
             outMsg = author.getAsMention() + ", " + bot.chatBotHandler.chat(guildId > 0 ? Long.parseLong(CGuild.getCachedDiscordId(guildId)) : 0L, inputMessage, channel);
         } else if (BotConfig.BOT_COMMAND_SHOW_UNKNOWN ||
-                GuildSettings.getFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS).equals("true")) {
+                GuildSettings.getBoolFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS)) {
             commandSuccess = false;
             outMsg = Templates.unknown_command.format(GuildSettings.getFor(channel, GSetting.COMMAND_PREFIX) + "help");
         }

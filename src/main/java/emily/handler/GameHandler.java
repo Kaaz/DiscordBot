@@ -139,10 +139,8 @@ public class GameHandler {
     }
 
     public boolean isGameInput(TextChannel channel, User player, String message) {
-        if (GuildSettings.getFor(channel, GSetting.MODULE_GAMES).equals("true")) {
-            if (isInPlayMode(player, channel) || message.startsWith(DisUtil.getCommandPrefix(channel) + COMMAND_NAME)) {
-                return true;
-            }
+        if (GuildSettings.getBoolFor(channel, GSetting.MODULE_GAMES)) {
+            return isInPlayMode(player, channel) || message.startsWith(DisUtil.getCommandPrefix(channel) + COMMAND_NAME);
         }
         return false;
     }
@@ -209,9 +207,7 @@ public class GameHandler {
     }
 
     public List<AbstractGame> getGameList() {
-        List<AbstractGame> gamelist = new ArrayList<>();
-        gamelist.addAll(gameInfoMap.values());
-        return gamelist;
+        return new ArrayList<>(gameInfoMap.values());
     }
 
     private AbstractGame createGameInstance(String gameCode) {

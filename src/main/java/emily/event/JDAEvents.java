@@ -306,7 +306,7 @@ public class JDAEvents extends ListenerAdapter {
                 "user-id", user.getId(),
                 "user-name", user.getName());
 
-        if ("true".equals(settings.getOrDefault(GSetting.USER_TIME_RANKS)) && !user.isBot()) {
+        if (settings.getBoolValue(GSetting.USER_TIME_RANKS) && !user.isBot()) {
             RoleRankings.assignUserRole(discordBot, guild, user);
         }
     }
