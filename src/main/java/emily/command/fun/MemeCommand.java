@@ -92,16 +92,16 @@ public class MemeCommand extends AbstractCommand {
                 return Templates.permission_missing.formatGuild(channel, "MESSAGE_ATTACH_FILES");
             }
         }
-        String msg = "Use one of the following meme types:" + "\n";
+        String msg = "Use one of the following meme types:\n";
         if (memeTypes.isEmpty()) {
             loadMemeOptions();
         }
         if (args.length == 0) {
             return Templates.invalid_use.formatGuild(channel) + "\n" +
                     msg + Misc.makeTable(new ArrayList<>(memeTypes)) + "\n" +
-                    "Usage:" + "\n" +
-                    DisUtil.getCommandPrefix(channel) + "meme <type> <toptext> | <bottomtext>Config.EOL+Config.EOL" + "\n" + "\n" +
-                    "Example:" + "\n" +
+                    "Usage:\n" +
+                    DisUtil.getCommandPrefix(channel) + "meme <type> <toptext> | <bottomtext>\n\n" +
+                    "Example:\n" +
                     "meme sohappy If I could use this meme | I would be so happy";
         }
         switch (args[0].toLowerCase()) {
@@ -115,8 +115,8 @@ public class MemeCommand extends AbstractCommand {
         String type = args[0].toLowerCase();
         if (!memeTypes.contains(type)) {
             return Templates.command.meme_invalid_type.formatGuild(channel) +
-                    msg + Misc.makeTable(new ArrayList<>(memeTypes)) + "\n" + "\n" +
-                    "Example:" + "\n" +
+                    msg + Misc.makeTable(new ArrayList<>(memeTypes)) + "\n\n" +
+                    "Example:\n" +
                     "meme sohappy If I could use this meme | I would be so happy";
         }
         String topText = "-";

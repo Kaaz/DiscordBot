@@ -87,7 +87,7 @@ public class GetroleCommand extends AbstractCommand {
             if (roles.isEmpty()) {
                 return Templates.command.getrole.empty.formatGuild(channel);
             }
-            StringBuilder ret = new StringBuilder("You can request the following roles:" + "\n" + "\n");
+            StringBuilder ret = new StringBuilder("You can request the following roles:\n\n");
             for (OGuildRoleAssignable role : roles) {
                 ret.append("`").append(role.roleName).append("`").append("\n");
                 if (!role.description.isEmpty()) {

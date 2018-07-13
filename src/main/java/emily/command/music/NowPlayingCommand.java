@@ -184,39 +184,39 @@ public class NowPlayingCommand extends AbstractCommand {
         }
 
         OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
         if (player.getRequiredVotes() > 1) {
-            ret += player.getVoteCount() + "/" + player.getRequiredVotes() + Emojibet.NEXT_TRACK;
+            ret.append(player.getVoteCount()).append("/").append(player.getRequiredVotes()).append(Emojibet.NEXT_TRACK);
         }
-        ret += "[`" + DisUtil.getCommandPrefix(channel) + "pl` " + playlist.title + "] " + "\uD83C\uDFB6 ";
-        ret += song.youtubeTitle;
-        final String autoUpdateText = ret;
-        ret += "\n" + "\n";
+        ret.append("[`").append(DisUtil.getCommandPrefix(channel)).append("pl` ").append(playlist.title).append("] ").append("\uD83C\uDFB6 ");
+        ret.append(song.youtubeTitle);
+        final String autoUpdateText = ret.toString();
+        ret.append("\n\n");
         MusicPlayerHandler musicHandler = MusicPlayerHandler.getFor(guild, bot);
-        ret += MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + "\n" + "\n";
+        ret.append(MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused())).append("\n\n");
 
         if (GuildSettings.get(guild).getBoolValue(GSetting.MUSIC_SHOW_LISTENERS)) {
             List<Member> userList = musicHandler.getUsersInVoiceChannel();
             if (userList.size() > 0) {
-                ret += "\uD83C\uDFA7  Listeners" + "\n";
+                ret.append("\uD83C\uDFA7  Listeners\n");
                 ArrayList<String> displayList = userList.stream().map(Member::getEffectiveName).collect(Collectors.toCollection(ArrayList::new));
-                ret += Misc.makeTable(displayList);
+                ret.append(Misc.makeTable(displayList));
             }
         }
         List<OMusic> queue = musicHandler.getQueue();
         if (queue.size() > 0) {
-            ret += "\n" + "\uD83C\uDFB5 *Next up:* " + "\n";
+            ret.append("\n\uD83C\uDFB5 *Next up:*\n");
             for (int i = 0; i < Math.min(2, queue.size()); i++) {
-                ret += "\uD83D\uDC49 " + queue.get(i).youtubeTitle + "\n";
+                ret.append("\uD83D\uDC49 ").append(queue.get(i).youtubeTitle).append("\n");
             }
             if (queue.size() > 2) {
-                ret += "\n" + "... And **" + (queue.size() - 2) + "** more!";
+                ret.append("\n... And **").append(queue.size() - 2).append("** more!");
             }
 
         }
         if (args.length == 1 && args[0].equals("update")) {
             final Future<?>[] f = {null};
-            bot.queue.add(channel.sendMessage(ret),
+            bot.queue.add(channel.sendMessage(ret.toString()),
                     message -> {
                         if (message == null) {
                             return;
@@ -228,7 +228,7 @@ public class NowPlayingCommand extends AbstractCommand {
                                         return;
                                     }
                                     bot.queue.add(message.editMessage((player.isInRepeatMode() ? "\uD83D\uDD02 " : "") + autoUpdateText + "\n" +
-                                            MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + "\n" + "\n"
+                                            MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + "\n\n"
                                     ));
                                 }, 10_000L, 10_000L
                         );

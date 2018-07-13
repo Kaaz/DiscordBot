@@ -107,7 +107,7 @@ public class AutoReplyCommand extends AbstractCommand {
                 row.add(replyPattern.reply.substring(0, Math.min(40, replyPattern.reply.length())));
                 tbl.add(row);
             }
-            return "The following All Auto replies information. For details about a specific one use **`ar <tag>`**" + "\n" +
+            return "The following All Auto replies information. For details about a specific one use **`ar <tag>`**\n" +
                     Misc.makeAsciiTable(Arrays.asList("tag", "trigger", "cooldown", "response"), tbl, null);
         }
         if (args.length >= 2) {

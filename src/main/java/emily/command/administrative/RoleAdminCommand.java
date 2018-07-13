@@ -51,14 +51,12 @@ public class RoleAdminCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Management of roles & general permissions " + "\n" +
-                "You can give users the ability to self-assign roles. " + "\n" +
-                "" + "\n" +
-                "Note: " + "\n" +
-                "self-assignable roles are not created by emily!" + "\n" +
-                "To add an assignable role, you'll first have to add that role though discord." + "\n" +
-                "" + "\n" +
-                "" + "\n" +
+        return "Management of roles & general permissions \n" +
+                "You can give users the ability to self-assign roles. \n\n" +
+                "Note:\n" +
+                "self-assignable roles are not created by emily!\n" +
+                "To add an assignable role, you'll first have to add that role though discord.\n" +
+                "\n\n" +
                 "Users can get/remove their own roles with the `getrole` command ";
     }
 
@@ -110,13 +108,13 @@ public class RoleAdminCommand extends AbstractCommand {
             return Templates.no_permission.formatGuild(channel);
         }
         if (args.length == 0 || args[0].equals("list")) {
-            String out = "I found the following roles" + "\n";
+            String out = "I found the following roles\n";
             List<Role> roles = guild.getRoles();
             for (Role role : roles) {
                 if (role.getPosition() == -1) {
                     continue;
                 }
-                out += String.format("%s (%s)" + "\n", role.getName(), role.getId());
+                out += String.format("%s (%s)\n", role.getName(), role.getId());
             }
             return out;
         }

@@ -221,34 +221,34 @@ public class BotContainer {
      */
 
     public void reportError(Throwable error, Object... details) {
-        String errorMessage = "I've encountered a **" + error.getClass().getName() + "**" + "\n";
+        StringBuilder errorMessage = new StringBuilder("I've encountered a **" + error.getClass().getName() + "**\n");
         if (error.getMessage() != null) {
-            errorMessage += "Message: " + "\n";
-            errorMessage += error.getMessage() + "\n" + "\n";
+            errorMessage.append("Message:\n");
+            errorMessage.append(error.getMessage()).append("\n\n");
         }
-        String stack = "";
+        StringBuilder stack = new StringBuilder();
         int maxTrace = 10;
         StackTraceElement[] stackTrace1 = error.getStackTrace();
         for (int i = 0; i < stackTrace1.length; i++) {
             StackTraceElement stackTrace = stackTrace1[i];
-            stack += stackTrace.toString() + "\n";
+            stack.append(stackTrace.toString()).append("\n");
             if (i > maxTrace) {
                 break;
             }
         }
         if (details.length > 0) {
-            errorMessage += "Extra information: " + "\n";
+            errorMessage.append("Extra information:\n");
             for (int i = 1; i < details.length; i += 2) {
                 if (details[i] != null) {
-                    errorMessage += details[i - 1] + " = " + details[i] + "\n";
+                    errorMessage.append(details[i - 1]).append(" = ").append(details[i]).append("\n");
                 } else if (details[i - 1] != null) {
-                    errorMessage += details[i - 1];
+                    errorMessage.append(details[i - 1]);
                 }
             }
-            errorMessage += "\n" + "\n";
+            errorMessage.append("\n\n");
         }
-        errorMessage += "Accompanied stacktrace: " + "\n" + Misc.makeTable(stack) + "\n";
-        reportError(errorMessage);
+        errorMessage.append("Accompanied stacktrace:\n").append(Misc.makeTable(stack.toString())).append("\n");
+        reportError(errorMessage.toString());
     }
 
     public void reportError(String message) {

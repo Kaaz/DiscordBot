@@ -127,7 +127,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         String cp = DisUtil.getCommandPrefix(channel);
         if (args.length == 0) {
             if (playlist.isGlobalList()) {
-                return Templates.music.playlist_using.formatGuild(channel, playlist.title) + " See `" + cp + "pl help` for more info" + "\n" +
+                return Templates.music.playlist_using.formatGuild(channel, playlist.title) + " See `" + cp + "pl help` for more info\n" +
                         "You can switch to a different playlist with `" + cp + "pl guild` to the guild's list or `" + cp + "pl mine` to your own one";
             }
             return Templates.music.playlist_using.formatGuild(channel, playlist.title) +
@@ -274,9 +274,9 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                         if (editType.getId() < 1) continue;
                         tbl.add(Arrays.asList((editType == playlist.getEditType() ? "*" : " ") + editType.getId(), editType.toString(), editType.getDescription()));
                     }
-                    return "the edit-type of the playlist. A `*` indicates the selected option" + "\n" +
+                    return "the edit-type of the playlist. A `*` indicates the selected option\n" +
                             Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + "\n" +
-                            "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl edit 3` sets it to PUBLIC_ADD " + "\n" + "\n" +
+                            "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl edit 3` sets it to PUBLIC_ADD \n\n" +
                             "Private in a guild context refers to users with admin privileges";
                 }
                 if (args[1].matches("^\\d+$")) {
@@ -298,9 +298,9 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                         if (visibility.getId() < 1) continue;
                         tbl.add(Arrays.asList((visibility == playlist.getVisibility() ? "*" : " ") + visibility.getId(), visibility.toString(), visibility.getDescription()));
                     }
-                    return "the visibility-type of the playlist. A `*` indicates the selected option" + "\n" +
+                    return "the visibility-type of the playlist. A `*` indicates the selected option\n" +
                             Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + "\n" +
-                            "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl vis 3` sets it to guild " + "\n" + "\n" +
+                            "To change the type use the \\#, for instance `" + DisUtil.getCommandPrefix(channel) + "pl vis 3` sets it to guild \n\n" +
                             "Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
                 }
                 if (args.length > 1 && args[1].matches("^\\d+$")) {
@@ -340,7 +340,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                         if (playType.getId() < 1) continue;
                         tbl.add(Arrays.asList((playType == playlist.getPlayType() ? "*" : " ") + playType.getId(), playType.toString(), playType.getDescription()));
                     }
-                    return "the play-type of the playlist. A `*` indicates the selected option" + "\n" +
+                    return "the play-type of the playlist. A `*` indicates the selected option\n" +
                             Misc.makeAsciiTable(Arrays.asList("#", "Code", "Description"), tbl, null) + "\n" +
                             "Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it";
                 }
@@ -488,12 +488,12 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
         }
         StringBuilder playlistTable = new StringBuilder("\n");
         for (OMusic item : items) {
-            playlistTable.append(String.format("`%11s` | %s" + "\n", item.youtubecode, item.youtubeTitle));
+            playlistTable.append(String.format("`%11s` | %s\n", item.youtubecode, item.youtubeTitle));
         }
-        return String.format("Music in the playlist: %s" + "\n", playlist.title) +
+        return String.format("Music in the playlist: %s\n", playlist.title) +
                 playlistTable + "\n" +
-                String.format("Showing [page %s/%s]", currentPage, maxPage) + "\n" + "\n" +
-                "_You can use the `#` to remove an item from the playlist._" + "\n" + "\n" +
+                String.format("Showing [page %s/%s]", currentPage, maxPage) + "\n\n" +
+                "_You can use the `#` to remove an item from the playlist._" + "\n\n" +
                 "_Example:_ `" + DisUtil.getCommandPrefix(guild) + "pl del QnTYIBU7Ueg`";
     }
 

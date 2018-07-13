@@ -80,10 +80,9 @@ public class GameOfSticks extends AbstractGame<GoSTurn> {
 
     @Override
     public String toString() {
-        String ret = "A Game of sticks." + "\n";
-        ret += "Take away a few sticks, the player to take away the last stick loses!" + "\n";
-        ret += "There are currently **" + sticksleft + "** Sticks left";
-        ret += "\n" + "\n";
+        String ret = "A Game of sticks.\n";
+        ret += "Take away a few sticks, the player to take away the last stick loses!\n";
+        ret += "There are currently **" + sticksleft + "** Sticks left\n\n";
         if (getGameState().equals(GameState.IN_PROGRESS) || getGameState().equals(GameState.READY)) {
             ret += "It's the turn of " + getActivePlayer().getAsMention() + "\n";
             ret += "to play type **" + getLastPrefix() + "game 1-3**";

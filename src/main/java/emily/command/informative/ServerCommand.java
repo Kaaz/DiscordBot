@@ -86,8 +86,8 @@ public class ServerCommand extends AbstractCommand {
         b.setThumbnail(guild.getIconUrl());
 
         b.setDescription(
-                "Discord-id `" + guild.getId() + "`" + "\n" +
-                        "On shard `" + bot.getShardId() + "`" + "\n" +
+                "Discord-id `" + guild.getId() + "`\n" +
+                        "On shard `" + bot.getShardId() + "`\n" +
                         (PermissionUtil.checkPermission(guild.getSelfMember(), Permission.ADMINISTRATOR)
                                 ? Emojibet.POLICE + " Administrator" : "")
         );

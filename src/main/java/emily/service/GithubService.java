@@ -108,7 +108,7 @@ public class GithubService extends AbstractService {
             } else {
                 embed.setTitle(String.format("There have been **%s** commits to my repository", commitCount), null);
             }
-            StringBuilder description = new StringBuilder("** Hash**          **Description**" + "\n");
+            StringBuilder description = new StringBuilder("** Hash**          **Description**\n");
             int maxCharsPerline = 65;
             for (Map.Entry<String, String> entry : commitMap.entrySet()) {
                 String cmt = String.format("[`%s`](" + commitUrl + ")", entry.getKey().substring(0, 7), gitUser, gitRepo, entry.getKey());

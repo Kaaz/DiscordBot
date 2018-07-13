@@ -131,29 +131,29 @@ public class ConnectFourGame extends AbstractGame<Connect4Turn> {
 
     @Override
     public String toString() {
-        String ret = "A Connect 4 game." + "\n";
-        ret += board.toString();
+        StringBuilder ret = new StringBuilder("A Connect 4 game.\n");
+        ret.append(board.toString());
         for (int i = 0; i < COLS; i++) {
             if (board.canPlaceInColumn(i)) {
-                ret += Misc.numberToEmote(i + 1);
+                ret.append(Misc.numberToEmote(i + 1));
             } else {
-                ret += Emojibet.NO_ENTRY;
+                ret.append(Emojibet.NO_ENTRY);
             }
         }
-        ret += "\n" + "\n";
+        ret.append("\n\n");
         if (getGameState().equals(GameState.IN_PROGRESS) || getGameState().equals(GameState.READY)) {
-            ret += board.intToPlayer(0) + " = " + getPlayer(0).getName() + "\n";
-            ret += board.intToPlayer(1) + " = " + getPlayer(1).getName() + "\n";
-            ret += "It's the turn of " + getActivePlayer().getAsMention() + "\n";
-            ret += "to play type **" + getLastPrefix() + "game <columnnumber>**";
+            ret.append(board.intToPlayer(0)).append(" = ").append(getPlayer(0).getName()).append("\n");
+            ret.append(board.intToPlayer(1)).append(" = ").append(getPlayer(1).getName()).append("\n");
+            ret.append("It's the turn of ").append(getActivePlayer().getAsMention()).append("\n");
+            ret.append("to play type **").append(getLastPrefix()).append("game <columnnumber>**");
         }
         if (getGameState().equals(GameState.OVER)) {
             if (getWinnerIndex() == getTotalPlayers()) {
-                ret += "Its over! And its a draw!";
+                ret.append("Its over! And its a draw!");
             } else {
-                ret += "Its over! The winner is " + getPlayer(getWinnerIndex()).getAsMention();
+                ret.append("Its over! The winner is ").append(getPlayer(getWinnerIndex()).getAsMention());
             }
         }
-        return ret;
+        return ret.toString();
     }
 }

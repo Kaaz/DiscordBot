@@ -45,8 +45,8 @@ public class CustomCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Add and remove custom commands." + "\n" +
-                "There are a few keywords you can use in commands. These tags will be replaced by its value " + "\n" + "\n" +
+        return "Add and remove custom commands.\n" +
+                "There are a few keywords you can use in commands. These tags will be replaced by its value \n\n" +
                 "Key                Replacement\n" +
                 "---                ---\n" +
                 "%user%             Username \n" +
@@ -117,10 +117,10 @@ public class CustomCommand extends AbstractCommand {
                 return "Removed " + prefix + args[1];
             }
         } else if (args.length == 0 || (args.length > 0 && args[0].equalsIgnoreCase("list"))) {
-            return "All custom commands: " + "\n" + Misc.makeTable(CommandHandler.getCustomCommands(guildId));
+            return "All custom commands: \n" + Misc.makeTable(CommandHandler.getCustomCommands(guildId));
         } else {
-            return "```" + "\n" +
-                    getDescription() + "\n" + "```";
+            return "```\n" +
+                    getDescription() + "\n```";
         }
         return Templates.no_permission.formatGuild(channel);
     }

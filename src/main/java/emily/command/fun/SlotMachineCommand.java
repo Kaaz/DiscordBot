@@ -129,10 +129,10 @@ public class SlotMachineCommand extends AbstractCommand implements ICommandCoold
                 }, 1000L, SPIN_INTERVAL);
             });
         } else {
-            StringBuilder ret = new StringBuilder("The slotmachine!" + "\n");
-            ret.append("payout is as follows: " + "\n");
+            StringBuilder ret = new StringBuilder("The slotmachine!\n");
+            ret.append("payout is as follows: \n");
             for (Slot s : Slot.values()) {
-                ret.append(String.format("%1$s %1$s %1$s = %2$s" + "\n", s.getEmote(), s.getTriplePayout()));
+                ret.append(String.format("%1$s %1$s %1$s = %2$s\n", s.getEmote(), s.getTriplePayout()));
             }
             ret.append("type **slot play** to give it a shot!");
             return ret.toString();

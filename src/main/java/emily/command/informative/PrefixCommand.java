@@ -66,7 +66,7 @@ public class PrefixCommand extends AbstractCommand {
                 return Templates.command.prefix_saved.formatGuild(channel, args[0]);
             }
             return Templates.command.prefix_invalid.formatGuild(channel, args[0]) +
-                    "```" + "\n" + GSetting.COMMAND_PREFIX.getDescription() + "\n" + "```";
+                    "```\n" + GSetting.COMMAND_PREFIX.getDescription() + "\n```";
         }
         return Templates.command.prefix_is.formatGuild(channel, DisUtil.getCommandPrefix(channel));
     }

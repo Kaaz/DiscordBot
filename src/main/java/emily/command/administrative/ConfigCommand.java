@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * gets/sets the configuration of the bot
  */
 public class ConfigCommand extends AbstractCommand implements ICommandReactionListener<PaginationInfo> {
-    public static final int CFG_PER_PAGE = 15;
+    private static final int CFG_PER_PAGE = 15;
 
     public ConfigCommand() {
         super();
@@ -73,7 +73,7 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         String commandPrefix = DisUtil.getCommandPrefix(guild);
         b.setFooter("Page " + (activePage + 1) + " / " + maxPage + " | Press the buttons for other pages", null);
         b.setDescription(String.format("To see more details about a setting:\n" +
-                "`%1$scfg settingname`" + "\n" + "\n", commandPrefix));
+                "`%1$scfg settingname`\n\n", commandPrefix));
         b.setTitle("Current Settings for " + guild.getName() + " [" + (1 + activePage) + " / " + maxPage + "]", null);
         return b.build();
     }
@@ -141,8 +141,8 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         String tag = null;
         if (args.length > 0) {
             if (args[0].equals("tags")) {
-                return "The following tags exist for settings: " + "\n" + "\n" +
-                        Joiner.on(", ").join(DefaultGuildSettings.getAllTags()) + "\n" + "\n" +
+                return "The following tags exist for settings: \n\n" +
+                        Joiner.on(", ").join(DefaultGuildSettings.getAllTags()) + "\n\n" +
                         "`" + DisUtil.getCommandPrefix(channel) + "cfg tag tagname` to see settings with tagname";
             }
             if (args[0].equals("tag") && args.length > 1) {
@@ -166,12 +166,12 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
                 return "";
             }
 
-            StringBuilder ret = new StringBuilder("Current Settings for " + guild.getName() + "\n" + "\n");
+            StringBuilder ret = new StringBuilder("Current Settings for " + guild.getName() + "\n\n");
             if (tag != null) {
                 ret.append("Only showing settings with the tag `").append(tag).append("`").append("\n");
             }
-            ret.append(":information_source: Settings indicated with a `*` are different from the default value" + "\n" + "\n");
-            String cfgFormat = "`\u200B%-24s:`  %s" + "\n";
+            ret.append(":information_source: Settings indicated with a `*` are different from the default value\n\n");
+            String cfgFormat = "`\u200B%-24s:`  %s\n";
             boolean isEmpty = true;
             for (int i = activePage * CFG_PER_PAGE; i < keys.size() && i < activePage * CFG_PER_PAGE + CFG_PER_PAGE; i++) {
                 String key = keys.get(i);
@@ -230,10 +230,10 @@ public class ConfigCommand extends AbstractCommand implements ICommandReactionLi
         String tblContent = "";
         GuildSettings setting = GuildSettings.get(guild);
         tblContent += setting.getDescription(args[0]);
-        return "Config help for **" + args[0] + "**" + "\n" + "\n" +
-                "Current value: \"**" + GuildSettings.get(guild.getIdLong()).getDisplayValue(guild, args[0]) + "**\"" + "\n" +
-                "Default value: \"**" + setting.getDefaultValue(args[0]) + "**\"" + "\n" + "\n" +
-                "Description: " + "\n" +
+        return "Config help for **" + args[0] + "**\n\n" +
+                "Current value: \"**" + GuildSettings.get(guild.getIdLong()).getDisplayValue(guild, args[0]) + "**\"\n" +
+                "Default value: \"**" + setting.getDefaultValue(args[0]) + "**\"\n\n" +
+                "Description: \n" +
                 Misc.makeTable(tblContent) +
                 "To set it back to default: `" + DisUtil.getCommandPrefix(channel) + "cfg " + args[0] + " " + setting.getDefaultValue(args[0]) + "`";
     }

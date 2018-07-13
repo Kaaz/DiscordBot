@@ -108,7 +108,7 @@ public class TemplateCommand extends AbstractCommand {
             }
         }
         if (args.length == 0) {
-            StringBuilder usage = new StringBuilder(":gear: **Options**:```php" + "\n");
+            StringBuilder usage = new StringBuilder(":gear: **Options**:```php\n");
             for (String line : getUsage()) {
                 usage.append(line).append("\n");
             }
@@ -207,7 +207,7 @@ public class TemplateCommand extends AbstractCommand {
                     for (String template : templates) {
                         body.add(Arrays.asList(String.valueOf(index++), template));
                     }
-                    return "Template overview for `" + args[0] + "`" + "\n" +
+                    return "Template overview for `" + args[0] + "`\n" +
                             Misc.makeAsciiTable(Arrays.asList("#", "value"), body, null);
                 }
                 return Templates.command.template.invalid_option.formatGuild(channel);

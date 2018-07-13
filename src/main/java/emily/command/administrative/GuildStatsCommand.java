@@ -93,8 +93,8 @@ public class GuildStatsCommand extends AbstractCommand {
             return "Not fully loaded yet!";
         }
         if (args.length == 0) {
-            return "Statistics! " + "\n" +
-                    getTotalTable(bot, false) + "\n" + "You are on shard # " + bot.getShardId();
+            return "Statistics! \n" +
+                    getTotalTable(bot, false) + "\nYou are on shard # " + bot.getShardId();
         }
         SimpleRank userrank = bot.security.getSimpleRank(author, channel);
         switch (args[0].toLowerCase()) {

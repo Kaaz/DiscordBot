@@ -41,8 +41,8 @@ public class CommandAdminCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Commands can be enabled/disabled through this command." + "\n" +
-                "A channel specific setting will always override the guild setting" + "\n" + "\n" +
+        return "Commands can be enabled/disabled through this command.\n" +
+                "A channel specific setting will always override the guild setting \n\n" +
                 "You can also give/deny permission to roles to use certain commands";
     }
 

@@ -172,7 +172,7 @@ public class Misc {
      * @return formatted controllers
      */
     public static String makeTable(List<String> items, int columnLength, int columns) {
-        StringBuilder ret = new StringBuilder("```xl" + "\n");
+        StringBuilder ret = new StringBuilder("```xl\n");
         int counter = 0;
         for (String item : items) {
             counter++;
@@ -184,7 +184,7 @@ public class Misc {
         if (counter % columns != 0) {
             ret.append("\n");
         }
-        return ret + "```" + "\n";
+        return ret + "```\n";
     }
 
     /**
@@ -192,9 +192,7 @@ public class Misc {
      * @return formatted controllers
      */
     public static String makeTable(String tableText) {
-        return "```" + "\n"
-                + tableText + "\n" +
-                "```" + "\n";
+        return "```\n" + tableText + "\n```\n";
     }
 
     /**

@@ -101,7 +101,7 @@ public class QueryCommand extends AbstractCommand {
             if (output.length() < 2000) {
                 return output;
             } else {
-                DebugUtil.handleDebug(bot, channel, query + "\n" + "\n" + output);
+                DebugUtil.handleDebug(bot, channel, query + "\n\n" + output);
                 return "";
             }
         } catch (SQLException e) {

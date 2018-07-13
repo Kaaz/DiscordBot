@@ -106,11 +106,11 @@ public class Blackjack {
 
     @Override
     public String toString() {
-        StringBuilder game = new StringBuilder("Blackjack game: " + "\n");
-        game.append(String.format("Dealers hand (%s):" + "\n", getDealerValue()));
+        StringBuilder game = new StringBuilder("Blackjack game:\n");
+        game.append(String.format("Dealers hand (%s):\n", getDealerValue()));
         game.append(dealerHand.printHand()).append("\n");
         game.append("\n");
-        game.append(String.format("%s's hand (%s):" + "\n", playerMention, getPlayerValue()));
+        game.append(String.format("%s's hand (%s):\n", playerMention, getPlayerValue()));
         game.append(playerHand.printHand()).append("\n");
         if (getPlayerValue() > 21) {
             game.append("**Bust!** I win, better luck next time.").append("\n");

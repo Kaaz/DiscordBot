@@ -73,7 +73,7 @@ public class BlackJackCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (args.length == 0) {
             if (playerGames.containsKey(author.getId()) && playerGames.get(author.getId()).isInProgress()) {
-                return "You are still in a game. To finish type **blackjack stand**" + "\n" +
+                return "You are still in a game. To finish type **blackjack stand**\n" +
                         playerGames.get(author.getId()).toString();
             }
             return "You are not playing a game, to start use **" + DisUtil.getCommandPrefix(channel) + "blackjack hit**";

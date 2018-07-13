@@ -86,7 +86,7 @@ public class ExecCommand extends AbstractCommand {
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
-            return "Command output:" + "\n" +
+            return "Command output:\n" +
                     Misc.makeTable(sb.toString());
         } catch (InterruptedException | IOException e) {
             return e.getMessage() + "\n" +

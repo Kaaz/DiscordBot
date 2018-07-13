@@ -114,18 +114,18 @@ public class JDAEvents extends ListenerAdapter {
         String cmdPre = GuildSettings.get(guild).getOrDefault(GSetting.COMMAND_PREFIX);
         GuildCheckResult guildCheck = discordBot.security.checkGuild(guild);
         if (dbGuild.active != 1) {
-            String message = "Thanks for adding me to your guild!" + "\n" +
-                    "To see what I can do you can type the command `" + cmdPre + "help`." + "\n" +
-                    "Most of my features are opt-in, which means that you'll have to enable them first. Admins can use `" + cmdPre + "config` to change my settings." + "\n" +
-                    "Most commands has a help portion which can be accessed by typing help after the command; For instance: `" + cmdPre + "skip help` " + "\n" + "\n" +
+            String message = "Thanks for adding me to your guild!\n" +
+                    "To see what I can do you can type the command `" + cmdPre + "help`.\n" +
+                    "Most of my features are opt-in, which means that you'll have to enable them first. Admins can use `" + cmdPre + "config` to change my settings.\n" +
+                    "Most commands has a help portion which can be accessed by typing help after the command; For instance: `" + cmdPre + "skip help`\n\n" +
                     "If you need help or would like to give feedback, feel free to let me know on either `" + cmdPre + "discord` or `" + cmdPre + "github`";
             switch (guildCheck) {
                 case TEST_GUILD:
-                    message += "\n" + "\n" + " :warning: The guild has been categorized as a test guild. This means that I might leave this guild when the next cleanup happens." + "\n" +
+                    message += "\n\n:warning: The guild has been categorized as a test guild. This means that I might leave this guild when the next cleanup happens.\n" +
                             "If this is not a test guild feel free to join my `" + cmdPre + "discord` and ask to have your guild added to the whitelist!";
                     break;
                 case BOT_GUILD:
-                    message += "\n" + "\n" + ":warning: :robot: Too many bots here, I'm leaving! " + "\n" +
+                    message += "\n\n:warning: :robot: Too many bots here, I'm leaving!\n" +
                             "If your guild is not a collection of bots and you actually plan on using me join my `" + cmdPre + "discord` and ask to have your guild added to the whitelist!";
                     break;
                 case SMALL:

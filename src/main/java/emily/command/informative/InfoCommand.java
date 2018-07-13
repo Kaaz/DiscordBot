@@ -93,12 +93,12 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
             switch (args[0].toLowerCase()) {
                 case "planned":
                 case "plan":
-                    return "The following items are planned:" + "\n" + getListFor(BotConfig.TRELLO_LIST_PLANNED, ":date:");
+                    return "The following items are planned:\n" + getListFor(BotConfig.TRELLO_LIST_PLANNED, ":date:");
                 case "bugs":
                 case "bug":
-                    return "The following bugs are known:" + "\n" + getListFor(BotConfig.TRELLO_LIST_BUGS, ":exclamation:");
+                    return "The following bugs are known:\n" + getListFor(BotConfig.TRELLO_LIST_BUGS, ":exclamation:");
                 case "progress":
-                    return "The following items are being worked on:" + "\n" + getListFor(BotConfig.TRELLO_LIST_IN_PROGRESS, ":construction:");
+                    return "The following items are being worked on:\n" + getListFor(BotConfig.TRELLO_LIST_IN_PROGRESS, ":construction:");
                 default:
                     break;
             }//
@@ -108,12 +108,12 @@ public class InfoCommand extends AbstractCommand implements ICommandCooldown {
         return "\u2139 > Info  \n" +
                 "Where should I start :thinking:\n" +
                 "**What am I?** I'm batman\n" +
-                "**My purpose?** About as clear as yours " + "\n" +
-                "The last time I restarted was  " + onlineFor + "." + "\n" +
-                "Running version `" + Launcher.getVersion().toString() + "`. You can use `" + prefix + "changelog` to see what changed." + "\n" + "\n" +
-                "Type **" + prefix + "help** to see what I'll allow you to do. In total there are " + CommandHandler.getCommands().length + " commands I can perform." + "\n" + "\n" +
-                "For help about a specific command type `" + prefix + "<command> help`" + "\n" +
-                "An example: `" + prefix + "skip help` to see what you can do with the skip command." + "\n" + "\n" +
+                "**My purpose?** About as clear as yours \n" +
+                "The last time I restarted was  " + onlineFor + ".\n" +
+                "Running version `" + Launcher.getVersion().toString() + "`. You can use `" + prefix + "changelog` to see what changed.\n\n" +
+                "Type **" + prefix + "help** to see what I'll allow you to do. In total there are " + CommandHandler.getCommands().length + " commands I can perform.\n\n" +
+                "For help about a specific command type `" + prefix + "<command> help`\n" +
+                "An example: `" + prefix + "skip help` to see what you can do with the skip command.\n\n" +
                 "If you need assistance, want to share your thoughts or want to contribute feel free to join my __" + prefix + "discord__";
     }
 

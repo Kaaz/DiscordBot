@@ -170,7 +170,7 @@ public class GameHandler {
         String[] args = message.split(" ");
         String gameMessage = executeGameMove(args, player, channel);
         if (isInPlayMode(player, channel)) {
-            gameMessage = "*note: " + Templates.playmode_in_mode_warning.formatGuild(channel) + "*" + "\n" + gameMessage;
+            gameMessage = "*note: " + Templates.playmode_in_mode_warning.formatGuild(channel) + "*\n" + gameMessage;
         } else if ("".equals(message) || "help".equals(message)) {
             gameMessage = showList(channel);
         }
@@ -292,11 +292,11 @@ public class GameHandler {
 
     private String showList(TextChannel channel) {
         String prefix = DisUtil.getCommandPrefix(channel);
-        return "A list of all available games" + "\n" +
+        return "A list of all available games\n" +
                 getFormattedGameList() + "\n" +
-                "To start a game you can type `" + prefix + COMMAND_NAME + " <@user> <gamecode>`" + "\n" + "\n" +
-                "To stop a game type `" + prefix + COMMAND_NAME + " cancel`" + "\n" + "\n" +
-                "You can enter *gamemode* by typing `" + prefix + COMMAND_NAME + " enter` " + "\n" +
+                "To start a game you can type `" + prefix + COMMAND_NAME + " <@user> <gamecode>`\n\n" +
+                "To stop a game type `" + prefix + COMMAND_NAME + " cancel`\n\n" +
+                "You can enter *gamemode* by typing `" + prefix + COMMAND_NAME + " enter` \n" +
                 "This makes it so that you don't have to prefix your messages with `" + prefix + COMMAND_NAME + "`";
     }
 
@@ -348,7 +348,7 @@ public class GameHandler {
                     }
                     usersInPlayMode.get(player.getIdLong()).failedAttempts++;
                 }
-                return game.toString() + "\n" + ":exclamation: " + gameTurnInstance.getInputErrorMessage();
+                return game.toString() + "\n:exclamation: " + gameTurnInstance.getInputErrorMessage();
             } else {
                 if (isInPlayMode(player, channel)) {
                     usersInPlayMode.get(player.getIdLong()).failedAttempts = 0;

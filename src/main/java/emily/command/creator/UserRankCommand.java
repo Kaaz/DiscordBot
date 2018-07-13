@@ -93,11 +93,11 @@ public class UserRankCommand extends AbstractCommand {
             return Templates.invalid_use.formatGuild(channel);
         }
         if (args[0].equals("permlist")) {
-            return "Available permissions: " + "\n" +
+            return "Available permissions: \n" +
                     tableFor(Arrays.asList(OUser.PermissionNode.values()));
         }
         if (args[0].equals("ranks")) {
-            return "Available permissions: " + "\n" +
+            return "Available permissions: \n" +
                     tableFor(SimpleRank.values());
         }
         User user;

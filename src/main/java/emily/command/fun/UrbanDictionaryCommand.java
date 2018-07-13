@@ -82,13 +82,13 @@ public class UrbanDictionaryCommand extends AbstractCommand {
                 return Templates.ud_no_results.formatGuild(channel, search);
             }
             JSONObject item = list.getJSONObject(0);
-            return String.format("Urban Dictionary " + "\n" + "\n"
-                            + "Definition for **%s**: " + "\n"
-                            + "```" + "\n"
-                            + "%s" + "\n"
-                            + "```" + "\n"
-                            + "**example**: " + "\n"
-                            + "%s" + "\n" + "\n"
+            return String.format("Urban Dictionary \n\n"
+                            + "Definition for **%s**: \n"
+                            + "```\n"
+                            + "%s\n"
+                            + "```\n"
+                            + "**example**: \n"
+                            + "%s" + "\n\n"
                             + "_by %s (" + Emojibet.THUMBS_UP + "%s  " + Emojibet.THUMBS_DOWN + "%s)_"
                     , item.getString("word"), item.getString("definition"), item.getString("example"),
                     item.getString("author"), item.getInt("thumbs_up"), item.getInt("thumbs_down"));

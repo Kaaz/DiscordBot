@@ -119,7 +119,7 @@ public class PoeCurrency extends AbstractCommand {
                 }
             }
         }
-        String text = "Checking your currency in PoE!" + "\n";
+        String text = "Checking your currency in PoE!\n";
         List<List<String>> tbl = new ArrayList<>();
         Misc.sortByValue(currency).forEach((k, v) -> {
             ArrayList<String> row = new ArrayList<>();

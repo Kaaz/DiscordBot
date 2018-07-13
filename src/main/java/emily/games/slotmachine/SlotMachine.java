@@ -92,7 +92,7 @@ public class SlotMachine {
 
     @Override
     public String toString() {
-        String table = "the slotmachine! " + "\n";
+        StringBuilder table = new StringBuilder("the slotmachine!\n");
         String[] machineLine = new String[wheels];
         for (int i = 0; i < wheels; i++) {
             machineLine[i] = "";
@@ -111,9 +111,9 @@ public class SlotMachine {
 
         }
         for (int i = 0; i < wheels; i++) {
-            table += machineLine[i] + "|" + "\n";
+            table.append(machineLine[i]).append("|\n");
         }
-        return table;
+        return table.toString();
     }
 
     public int getWinSlotTimes() {

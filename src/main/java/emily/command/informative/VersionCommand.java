@@ -61,8 +61,8 @@ public class VersionCommand extends AbstractCommand {
 
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
-        return "Info about the versions:" + "\n" +
-                "Current version: `" + Launcher.getVersion() + "`" + "\n" +
-                "Latest  version: `" + UpdateUtil.getLatestVersion() + "`" + "\n";
+        return "Info about the versions:\n" +
+                "Current version: `" + Launcher.getVersion() + "`\n" +
+                "Latest  version: `" + UpdateUtil.getLatestVersion() + "`\n";
     }
 }

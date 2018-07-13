@@ -92,11 +92,11 @@ public class PollCommand extends AbstractCommand {
             if (split[0].trim().length() < 3) {
                 return Templates.command.poll_question_too_short.formatGuild(channel);
             }
-            String outtext = "A poll has been created by " + author.getName() + "\n" + "\n";
-            outtext += "**" + split[0].trim() + "**" + "\n" + "\n";
+            String outtext = "A poll has been created by " + author.getName() + "\n\n";
+            outtext += "**" + split[0].trim() + "**\n\n";
             final int answers = Math.min(8, split.length);
             for (int i = 1; i < answers; i++) {
-                outtext += Misc.numberToEmote(i) + " " + split[i].trim() + "\n" + "\n";
+                outtext += Misc.numberToEmote(i) + " " + split[i].trim() + "\n\n";
             }
             bot.queue.add(channel.sendMessage(outtext), message -> {
                 for (int i = 1; i < answers; i++) {

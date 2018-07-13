@@ -102,7 +102,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
             }
             int tagCount = CTag.countTagsOn(CGuild.getCachedId(guild.getIdLong()));
             if (tagCount <= TAGS_PER_PAGE) {
-                return "The following tags exist: " + "\n" + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
+                return "The following tags exist:\n" + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
             }
             int maxPage = (int) Math.ceil((double) CTag.countTagsOn(CGuild.getCachedId(guild.getIdLong())) / (double) TAGS_PER_PAGE);
             bot.queue.add(channel.sendMessage(makePage(guild, 1, maxPage)),
@@ -117,7 +117,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
             if (tags.isEmpty()) {
                 return Templates.command.tag.no_tags.formatGuild(channel);
             }
-            return "You have made the following tags: " + "\n" + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
+            return "You have made the following tags:\n" + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("details")) {
             OTag tag = CTag.findBy(CGuild.getCachedId(guild.getIdLong()), args[1]);
@@ -138,7 +138,7 @@ public class TagCommand extends AbstractCommand implements ICommandReactionListe
                 return Templates.config.cant_find_user.formatGuild(channel, args[1]);
             }
             List<OTag> tags = CTag.findByUser(CGuild.getCachedId(guild.getIdLong()), CUser.getCachedId(user.getIdLong()));
-            return user.getName() + " made the following tags: " + "\n" + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
+            return user.getName() + " made the following tags:\n" + Misc.makeTable(tags.stream().map(sc -> sc.tagname).collect(Collectors.toList()));
         }
         if (args.length > 1 && args[0].equalsIgnoreCase("deleteuser")) {
             if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {

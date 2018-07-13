@@ -67,8 +67,8 @@ public class ReadmeHelper {
     private static String readmeListOfAutoRanks() {
         StringBuilder s = new StringBuilder();
         List<MemberShipRole> allRoles = RoleRankings.getAllRoles();
-        s.append("Name | Time spend |" + "\n");
-        s.append("--- | --- | " + "\n");
+        s.append("Name | Time spend |\n");
+        s.append("--- | --- | \n");
         for (MemberShipRole role : allRoles) {
             s.append(role.getName()).append(" | ");
             s.append(TimeUtil.getRelativeTime((System.currentTimeMillis() + role.getMembershipTime()) / 1000L + 1000L, false, false)).append("\n");
@@ -82,8 +82,8 @@ public class ReadmeHelper {
         GameHandler gameHandler = new GameHandler(null);
         List<AbstractGame> gameList = gameHandler.getGameList();
         StringBuilder s = new StringBuilder();
-        s.append("Key | Name | Players |" + "\n");
-        s.append("--- | --- | --- |" + "\n");
+        s.append("Key | Name | Players |\n");
+        s.append("--- | --- | --- |\n");
         for (AbstractGame game : gameList) {
             s.append(game.getCodeName()).append(" | ");
             s.append(game.getFullname()).append(" | ");
@@ -134,8 +134,8 @@ public class ReadmeHelper {
         ArrayList<String> sortedCommandList = new ArrayList<>();
         Collections.addAll(sortedCommandList, CommandHandler.getCommands());
         Collections.sort(sortedCommandList);
-        s.append("Commands | | | | |" + "\n");
-        s.append("--- | --- | ---| ---| ---" + "\n");
+        s.append("Commands | | | | |\n");
+        s.append("--- | --- | ---| ---| ---\n");
         int columns = 5;
         int currentColumn = 0;
         for (String commandName : sortedCommandList) {
@@ -169,7 +169,7 @@ public class ReadmeHelper {
             for (String alias : command.getAliases()) {
                 text.append(", ").append(alias);
             }
-            text.append("\n" + "\n");
+            text.append("\n\n");
             String visibility;
             switch (command.getVisibility()) {
                 case PRIVATE:
@@ -188,12 +188,12 @@ public class ReadmeHelper {
             text.append("Usable ").append(visibility).append("\n");
             if (command.getUsage().length > 0) {
                 text.append("\n");
-                text.append("#### Usage" + "\n" + "\n");
-                text.append("```php" + "\n");
+                text.append("#### Usage\n\n");
+                text.append("```php\n");
                 for (String line : command.getUsage()) {
                     text.append(line).append("\n");
                 }
-                text.append(("```") + "\n");
+                text.append("```\n");
             }
         }
         return text.toString();

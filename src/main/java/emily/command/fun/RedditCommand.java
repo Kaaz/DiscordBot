@@ -108,7 +108,7 @@ public class RedditCommand extends AbstractCommand {
             }
         } while (dailyTop.size() > 0);
         if (post.data.is_self) {
-            return ":newspaper:" + "\n" + post.data.getTitle() + "\n" + post.data.getSelftext();
+            return ":newspaper:\n" + post.data.getTitle() + "\n" + post.data.getSelftext();
         }
         if (post.data.url != null && post.data.url.length() > 20) {
             return post.data.title + "\n" + post.data.url;
