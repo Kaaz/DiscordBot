@@ -46,7 +46,7 @@ import java.util.regex.PatternSyntaxException;
  * managing auto replies for the bot
  */
 public class AutoReplyCommand extends AbstractCommand {
-    public final static int MIN_TAG_LENGTH = 2;
+    private final static int MIN_TAG_LENGTH = 2;
 
     public AutoReplyCommand() {
         super();
@@ -197,7 +197,6 @@ public class AutoReplyCommand extends AbstractCommand {
                     Pattern pattern = Pattern.compile(replyPattern.pattern);
                     Matcher matcher = pattern.matcher(restOfArgs.toString());
                     if (matcher.find()) {
-//						return String.format("`%s` matches `%s`", restOfArgs, replyPattern.pattern);
                         return replyPattern.reply;
                     }
                     return Templates.command.autoreply.no_match.formatGuild(channel);
@@ -205,21 +204,18 @@ public class AutoReplyCommand extends AbstractCommand {
                     return Templates.invalid_use.formatGuild(channel);
             }
         }
-        if (args.length == 1) {
-            OReplyPattern replyPattern = CReplyPattern.findBy(args[0]);
-            if (replyPattern.id == 0) {
-                return Templates.command.autoreply.not_exists.formatGuild(channel, args[0]);
-            }
-            List<List<String>> tbl = new ArrayList<>();
-            tbl.add(Arrays.asList("created on ", "" + replyPattern.createdOn));
-            tbl.add(Arrays.asList("tag", replyPattern.tag));
-            tbl.add(Arrays.asList("creator", "" + replyPattern.userId));
-            tbl.add(Arrays.asList("guild", "" + replyPattern.guildId));
-            tbl.add(Arrays.asList("pattern", "" + replyPattern.pattern));
-            tbl.add(Arrays.asList("reply", "" + replyPattern.reply));
-            tbl.add(Arrays.asList("cooldown", "" + TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 1000L) / 1000L, false, false)));
-            return "Auto reply information for `" + args[0] + "`:" + Misc.makeAsciiTable(Arrays.asList("Property", "Value"), tbl, null);
+        OReplyPattern replyPattern = CReplyPattern.findBy(args[0]);
+        if (replyPattern.id == 0) {
+            return Templates.command.autoreply.not_exists.formatGuild(channel, args[0]);
         }
-        return Templates.invalid_use.formatGuild(channel);
+        List<List<String>> tbl = new ArrayList<>();
+        tbl.add(Arrays.asList("created on ", "" + replyPattern.createdOn));
+        tbl.add(Arrays.asList("tag", replyPattern.tag));
+        tbl.add(Arrays.asList("creator", "" + replyPattern.userId));
+        tbl.add(Arrays.asList("guild", "" + replyPattern.guildId));
+        tbl.add(Arrays.asList("pattern", "" + replyPattern.pattern));
+        tbl.add(Arrays.asList("reply", "" + replyPattern.reply));
+        tbl.add(Arrays.asList("cooldown", "" + TimeUtil.getRelativeTime((System.currentTimeMillis() + replyPattern.cooldown + 1000L) / 1000L, false, false)));
+        return "Auto reply information for `" + args[0] + "`:" + Misc.makeAsciiTable(Arrays.asList("Property", "Value"), tbl, null);
     }
 }
