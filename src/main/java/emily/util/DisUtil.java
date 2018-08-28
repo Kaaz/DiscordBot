@@ -51,7 +51,7 @@ public class DisUtil {
     private static final Pattern channelPattern = Pattern.compile("<#!?([0-9]{4,})>");
     private static final Pattern rolePattern = Pattern.compile("<@&([0-9]{4,})>");
     private static final Pattern anyMention = Pattern.compile("<[@#][&!]?([0-9]{4,})>");
-    private static final Pattern discordId = Pattern.compile("\\d{10,}");
+    private static final Pattern discordId = Pattern.compile("(\\d{9,})");
 
 
     /**
