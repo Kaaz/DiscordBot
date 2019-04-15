@@ -29,6 +29,8 @@ import emily.util.DisUtil;
 import emily.util.Emojibet;
 import net.dv8tion.jda.core.entities.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -66,8 +68,9 @@ public class CommandAdminCommand extends AbstractCommand {
         return new String[]{
                 "ca <command> [enable/disable]               //enables/disables commands in the whole guild",
                 "ca <command> [enable/disable] [#channel]    //enables/disables commands in a channel. This overrides the above",
-                "ca all-commands [enable/disable]            //disable/enable all (disable-able commands)",
-                "ca all-commands [enable/disable] [#channel] //disable/enable all commands in that channel",
+                "ca <category> [enable/disable]              //disable/enable all disableable commands for the given category",
+                "ca <category> [enable/disable] [#channel]   //disable/enable all disableable commands for the given category in that channel",
+                "valid category names: all (all commands), administrative, adventure, bot_administration, creator, economy, fun, hearthstone, informative, music, nopackage, poe",
                 "",
                 "ca resetchannel [#channel]                  //resets the overrides for a channel",
                 "ca resetallchannels                         //resets the overrides for all channels",
@@ -103,6 +106,7 @@ public class CommandAdminCommand extends AbstractCommand {
         SimpleRank rank = bot.security.getSimpleRank(author, channel);
         TextChannel textChannel = (TextChannel) channel;
         Guild guild = textChannel.getGuild();
+        ArrayList<String> categories = new ArrayList<>(Arrays.asList("all", "administrative", "adventure", "bot_administration", "creator", "economy", "fun", "hearthstone", "informative", "music", "nopackage", "poe"));
         if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {
             return Templates.no_permission.formatGuild(channel);
         }
@@ -203,7 +207,7 @@ public class CommandAdminCommand extends AbstractCommand {
         }
         AbstractCommand command = CommandHandler.getCommand(args[0].toLowerCase());
         String commandName;
-        if (args[0].equals("all-commands")) {
+        if (categories.contains(args[0])) {
             commandName = args[0];
         } else {
             if (command == null) {

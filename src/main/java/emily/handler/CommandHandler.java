@@ -62,7 +62,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CommandHandler {
 
-    public final static String ALL_COMMANDS = "all-commands";
+    private final static String ALL_COMMANDS = "all";
     private static final HashMap<String, AbstractCommand> commands = new HashMap<>();
     private static final HashMap<String, AbstractCommand> commandsAlias = new HashMap<>();
     private static final Map<String, String> customCommands = new ConcurrentHashMap<>();
@@ -130,7 +130,7 @@ public class CommandHandler {
             AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);
             commandUsed = command.getCommand();
             long cooldown = getCommandCooldown(command, author, channel);
-            if (command.canBeDisabled() && isDisabled(guildId, channel.getIdLong(), command.getCommand())) {
+            if (command.canBeDisabled() && isDisabled(guildId, channel.getIdLong(), command)) {
                 commandSuccess = false;
                 if (GuildSettings.getBoolFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS)) {
                     outMsg = Templates.command.is_blacklisted.format(input[0]);
@@ -271,7 +271,7 @@ public class CommandHandler {
         return 0;
     }
 
-    private static boolean isDisabled(int guildId, long channelId, String commandName) {
+    private static boolean isDisabled(int guildId, long channelId, AbstractCommand command) {
         if (guildId == 0) {
             return false;
         }
@@ -279,20 +279,26 @@ public class CommandHandler {
             return false;
         }
         if (commandBlacklist.get(guildId).containsKey(channelId)) {
-            if (commandBlacklist.get(guildId).get(channelId).containsKey(commandName)) {
-                return commandBlacklist.get(guildId).get(channelId).get(commandName);
+            if (commandBlacklist.get(guildId).get(channelId).containsKey(command.getCommand())) {
+                return commandBlacklist.get(guildId).get(channelId).get(command.getCommand());
             }
             if (commandBlacklist.get(guildId).get(channelId).containsKey(ALL_COMMANDS)) {
                 return commandBlacklist.get(guildId).get(channelId).get(ALL_COMMANDS);
             }
+            if (commandBlacklist.get(guildId).get(channelId).containsKey(command.getCommandCategory().getPackageName())) {
+                return commandBlacklist.get(guildId).get(channelId).get(command.getCommandCategory().getPackageName());
+            }
             return false;
         }
         if (commandBlacklist.get(guildId).containsKey(0L)) {
-            if (commandBlacklist.get(guildId).get(0L).containsKey(commandName)) {
-                return commandBlacklist.get(guildId).get(0L).get(commandName);
+            if (commandBlacklist.get(guildId).get(0L).containsKey(command.getCommand())) {
+                return commandBlacklist.get(guildId).get(0L).get(command.getCommand());
             }
             if (commandBlacklist.get(guildId).get(0L).containsKey(ALL_COMMANDS)) {
                 return commandBlacklist.get(guildId).get(0L).get(ALL_COMMANDS);
+            }
+            if (commandBlacklist.get(guildId).get(0L).containsKey(command.getCommandCategory().getPackageName())) {
+                return commandBlacklist.get(guildId).get(0L).get(command.getCommandCategory().getPackageName());
             }
             return false;
         }
