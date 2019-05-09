@@ -172,6 +172,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                 player.setActivePlayListId(newlist.id);
                 return Templates.music.playlist_changed.formatGuild(channel, newlist.title);
         }
+    		return "";
     }
     
     public String alterCurrentPlaylist(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage,
@@ -234,6 +235,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
 	        default:
 	            break;
 	    }
+	    	return "";
     }
     
     public String changePlaylistSettings(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage, 
@@ -335,6 +337,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
 	            }
 	            return Templates.playlist.setting_not_numeric.formatGuild(channel, "play-type");
 	    }
+	    	return "";
     }
     
     @Override
@@ -362,9 +365,14 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                     "Settings " + makeSettingsTable(playlist) +
                     "To add the currently playing music to the playlist use `" + DisUtil.getCommandPrefix(channel) + "pl add`, check out `" + DisUtil.getCommandPrefix(channel) + "help pl` for more info";
         }
-        
-        return switchPlaylist(bot, args, channel, author, inputMessage, guild, player);
-        return alterCurrentPlaylist(bot, args, channel, author, inputMessage, nowPlayingId, playlist, musicRec, guild, userRank);
+        String switchPlay = switchPlaylist(bot, args, channel, author, inputMessage, guild, player);
+        if(switchPlay != "") {
+        		return switchPlay;
+        }
+        String alter = alterCurrentPlaylist(bot, args, channel, author, inputMessage, nowPlayingId, playlist, musicRec, guild, userRank);
+        if(alter != "") {
+        		return alter;
+        }
         
         if (args[0].equals("settings")) {
             return makeSettingsTable(playlist);
@@ -373,7 +381,10 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
             return Templates.playlist.global_readonly.formatGuild(channel);
         }
         boolean isPlaylistAdmin = isPlaylistAdmin(playlist, (TextChannel) channel, author, userRank);
-        return changePlaylistSettings(bot, args, channel, author, inputMessage, playlist, isPlaylistAdmin, player, guild, userRank);
+        String change = changePlaylistSettings(bot, args, channel, author, inputMessage, playlist, isPlaylistAdmin, player, guild, userRank);
+        if(change != "") {
+        		return change;
+        }
         return Templates.invalid_use.formatGuild(channel);
     }
 
