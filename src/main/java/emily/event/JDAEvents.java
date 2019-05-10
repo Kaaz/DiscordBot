@@ -16,6 +16,7 @@
 
 package emily.event;
 
+import emily.command.administrative.SetupCommand;
 import emily.db.controllers.CBotEvent;
 import emily.db.controllers.CGuild;
 import emily.db.controllers.CGuildMember;
@@ -231,6 +232,12 @@ public class JDAEvents extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+        //if setup command is running, process message accordingly
+        if(SetupCommand.isRunning && event.getAuthor().getId().equalsIgnoreCase(SetupCommand.messageAuthor)){
+            SetupCommand.nextMessage(event.getMessage().getContentDisplay(), event.getChannel());
+        }
+
+        //otherwise, process as a new command
         discordBot.handleMessage(event.getGuild(), event.getChannel(), event.getAuthor(), event.getMessage());
     }
 
