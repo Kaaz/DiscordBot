@@ -234,7 +234,11 @@ public class JDAEvents extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         //if setup command is running, process message accordingly
         if(SetupCommand.isRunning && event.getAuthor().getId().equalsIgnoreCase(SetupCommand.messageAuthor)){
-            SetupCommand.nextMessage(event.getMessage().getContentDisplay(), event.getChannel());
+            if(event.getMessage().getContentDisplay().equalsIgnoreCase("cancel")){
+                SetupCommand.isRunning = false;
+            }else{
+                SetupCommand.nextMessage(event.getMessage().getContentDisplay(), event.getChannel());
+            }
         }
 
         //otherwise, process as a new command
