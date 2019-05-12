@@ -365,7 +365,7 @@ public class PlaylistCommand extends AbstractCommand implements ICommandReaction
                     "Settings " + makeSettingsTable(playlist) +
                     "To add the currently playing music to the playlist use `" + DisUtil.getCommandPrefix(channel) + "pl add`, check out `" + DisUtil.getCommandPrefix(channel) + "help pl` for more info";
         }
-        String switchPlay = switchPlaylist(bot, args, channel, author, inputMessage, guild, player);
+        String switchPlay = switchPlaylists(bot, args, channel, author, inputMessage, guild, player);
         if(switchPlay != "") {
         		return switchPlay;
         }
