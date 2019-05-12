@@ -18,7 +18,9 @@ package emily.command.administrative;
 
 import emily.command.meta.AbstractCommand;
 import emily.command.meta.CommandVisibility;
+import emily.guildsettings.GSetting;
 import emily.handler.GuildSettings;
+import emily.main.BotConfig;
 import emily.main.DiscordBot;
 import emily.templates.Templates;
 import net.dv8tion.jda.core.entities.*;
@@ -32,9 +34,7 @@ import java.util.List;
 public class SetupCommand extends AbstractCommand {
 
     public static boolean isRunning;
-    public static String type;
     private static int step;
-    private static Guild guild;
     public static String messageAuthor;
 
 
@@ -72,108 +72,68 @@ public class SetupCommand extends AbstractCommand {
 
     @Override
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
-        if(args.length == 1){
+        if(args.length == 0) {
             step = 1;
             messageAuthor = author.getId();
-            if(args[0].equalsIgnoreCase("guild")){
-                isRunning = true;
-                type = "guild";
-                channel.sendMessage("What language? Available languages are `en` (english), `de` (german), and `nl` (dutch).").queue();
-            }else if(args[0].equalsIgnoreCase("bot")){
-                isRunning = true;
-                type = "bot";
-            }else{
-                return Templates.invalid_use.formatGuild(channel);
-            }
-            return "";
+            isRunning = true;
+            channel.sendMessage("(Setting 1/9) What role would you like to be considered as the admin role? Type the name of the role without an @.").queue();
+        } else if(args.length == 1 && args[0].equalsIgnoreCase("test")){
+            listSettings(inputMessage);
+        }else{
+            return Templates.invalid_use.formatGuild(channel);
         }
-        return Templates.invalid_use.formatGuild(channel);
+        return "";
     }
 
     public static void nextMessage(String message, TextChannel channel){
-        guild = channel.getGuild();
+        Guild guild = channel.getGuild();
         switch(step){
             case 1:
-                if(type.equalsIgnoreCase("guild")){
-                    if (message.equalsIgnoreCase("en") || message.equalsIgnoreCase("de") || message.equalsIgnoreCase("nl")){
-                        GuildSettings.get(guild).set(guild, "BOT_LANGUAGE", message);
-                        ++step;
-                        channel.sendMessage("What role would you like to be considered as the admin role? Type the name of the role without an @.").queue();
-                    }else{
-                        channel.sendMessage("Invalid language. Available languages are `en` (english), `de` (german), and `nl` (dutch). Enter again.").queue();
-                        return;
-                    }
-                }else if(type.equalsIgnoreCase("bot")){
-                    //TODO: DELETE_MESSAGES_AFTER
+                List<Role> roles = channel.getGuild().getRolesByName(message, true);
+                if(roles.size() == 0){
+                    channel.sendMessage("No role with name `" + message + "` found in this server. Enter again.").queue();
+                }else{
+                    GuildSettings.get(guild).set(guild, "BOT_ADMIN_ROLE", message);
                     ++step;
+                    channel.sendMessage("(Setting 2/9) Use internal error names (such as `invalid_use`) if commands are used incorrectly? Yes or no.").queue();
                 }
                 break;
             case 2:
-                if(type.equalsIgnoreCase("guild")){
-                    List<Role> roles = channel.getGuild().getRolesByName(message, true);
-                    if(roles.size() == 0){
-                        channel.sendMessage("No role with name `" + message + "` found in this server. Enter again.").queue();
-                    }else if(roles.size() > 0){
-                        GuildSettings.get(guild).set(guild, "BOT_ADMIN_ROLE", message);
-                        ++step;
-                        channel.sendMessage("Use internal error names (such as `invalid_use`) if commands are used incorrectly? Yes or no.").queue();
-                    }
-                }else if(type.equalsIgnoreCase("bot")){
-                    ++step;
-                    //TODO: MUSIC_MAX_VOLUME
+                if(!message.equalsIgnoreCase("yes") && !message.equalsIgnoreCase("no")){
+                    channel.sendMessage("Invalid response. Yes or no.").queue();
+                    return;
+                }else if(message.equalsIgnoreCase("Yes")){
+                    GuildSettings.get(guild).set(guild, "SHOW_TEMPLATES", "true");
+                }else if(message.equalsIgnoreCase("No")){
+                    GuildSettings.get(guild).set(guild, "SHOW_TEMPLATES", "false");
                 }
+
+                ++step;
+                channel.sendMessage("(Setting 3/9) Would you like me to delete template messages after sending? Available options are " +
+                        "`yes` (always delete), `no` (never delete), and `nonstandard` (delete messages outside of the default channel.").queue();
                 break;
             case 3:
-                if(type.equalsIgnoreCase("guild")){
-                    if(!message.equalsIgnoreCase("yes") && !message.equalsIgnoreCase("no")){
-                        channel.sendMessage("Invalid response. Yes or no.").queue();
-                        return;
-                    }else if(message.equalsIgnoreCase("Yes")){
-                        GuildSettings.get(guild).set(guild, "SHOW_TEMPLATES", "true");
-                    }else if(message.equalsIgnoreCase("No")){
-                        GuildSettings.get(guild).set(guild, "SHOW_TEMPLATES", "false");
-                    }
+                if(message.equalsIgnoreCase("yes") || message.equalsIgnoreCase("no") || message.equalsIgnoreCase("nonstandard")){
+                    GuildSettings.get(guild).set(guild, "CLEANUP_MESSAGES", message);
                     ++step;
-                    channel.sendMessage("Would you like me to delete my messages after sending? Available options are " +
-                            "`yes` (always delete), `no` (never delete), and `nonstandard` (delete messages outside of the default channel.").queue();
-                }else if(type.equalsIgnoreCase("bot")){
-                    ++step;
-                    //TODO: COMMAND_LOGGING
+                    channel.sendMessage("(Setting 4/9) Enter a prefix for commands. If you want to keep it the same, type `same`.").queue();
+                }else{
+                    channel.sendMessage("Invalid response. Yes, no, or nonstandard.").queue();
                 }
                 break;
             case 4:
-                if(type.equalsIgnoreCase("guild")){
-                    if(message.equalsIgnoreCase("yes") || message.equalsIgnoreCase("no") || message.equalsIgnoreCase("nonstandard")){
-                        GuildSettings.get(guild).set(guild, "CLEANUP_MESSAGES", message);
-                        ++step;
-                        channel.sendMessage("Enter a prefix for commands. If you want to keep it the same, type `same`.").queue();
-                    }else{
-                        channel.sendMessage("Invalid response. Yes, no, or nonstandard.").queue();
-                    }
-                }else if(type.equalsIgnoreCase("bot")){
+                if(message.equalsIgnoreCase("same")){
                     ++step;
-                    //TODO: MAX_PLAYLIST_SIZE
+                    channel.sendMessage("(Setting 5/9) Do you want help commands send directly to you (as opposed to posting in this channel)? Yes or no.").queue();
+                }else if(message.length() > 4){
+                    channel.sendMessage("Too long! Prefix can only be 1-4 characters.").queue();
+                }else{
+                    GuildSettings.get(guild).set(guild, "COMMAND_PREFIX", message);
+                    ++step;
+                    channel.sendMessage("(Setting 5/9) Do you want help commands send directly to you (as opposed to posting in this channel)? Yes or no.").queue();
                 }
                 break;
             case 5:
-                if(type.equalsIgnoreCase("guild")){
-                    if(message.equalsIgnoreCase("same")){
-                        ++step;
-                        channel.sendMessage("Do you want help commands send directly to you (as opposed to posting in this channel? Yes or no.").queue();
-                    }else if(message.length() > 4){
-                        channel.sendMessage("Too long! Prefix can only be 1-4 characters.").queue();
-                    }else{
-                        GuildSettings.get(guild).set(guild, "COMMAND_PREFIX", message);
-                        ++step;
-                        channel.sendMessage("Do you want help commands send directly to you (as opposed to posting in this channel? Yes or no.").queue();
-                    }
-                }else if(type.equalsIgnoreCase("bot")){
-                    //TODO: ECONOMY_CURRENCY_NAME
-                    isRunning = false; //only 5 settings for bot setup option
-                    channel.sendMessage("Setup finished.").queue();
-                }
-                break;
-            case 6:
                 if(!message.equalsIgnoreCase("yes") && !message.equalsIgnoreCase("no")){
                     channel.sendMessage("Invalid response. Yes or no.").queue();
                     return;
@@ -182,24 +142,91 @@ public class SetupCommand extends AbstractCommand {
                 }else if(message.equalsIgnoreCase("No")){
                     GuildSettings.get(guild).set(guild, "HELP_IN_PM", "false");
                 }
+
                 ++step;
-                channel.sendMessage("Do you want the bot to say \"command does not exist\" when using invalid commands? Yes or no.").queue();
+                channel.sendMessage("(Setting 6/9) Do you want me to say \"command does not exist\" when using invalid commands? Yes or no.").queue();
                 break;
-            case 7:
-                if(message.equalsIgnoreCase("yes")){
-                    GuildSettings.get(guild).set(guild, "SHOW_UNKNOWN_COMMANDS", "true");
-                }else if(message.equals("no")) {
-                    GuildSettings.get(guild).set(guild, "SHOW_UNKNOWN_COMMANDS", "false");
-                }else {
+            case 6:
+                if(!message.equalsIgnoreCase("yes") && !message.equalsIgnoreCase("no")){
                     channel.sendMessage("Invalid response. Yes or no.").queue();
                     return;
+                }else if(message.equalsIgnoreCase("yes")){
+                    GuildSettings.get(guild).set(guild, "SHOW_UNKNOWN_COMMANDS", "true");
+                }else if(message.equalsIgnoreCase("no")) {
+                    GuildSettings.get(guild).set(guild, "SHOW_UNKNOWN_COMMANDS", "false");
                 }
-                isRunning = false;
+
+                ++step;
+                channel.sendMessage("(Setting 7/9) How long do you want me to wait (in milliseconds) before deleting my template messages (if you said yes to setting 3)?").queue();
+                break;
+            case 7:
+                try{
+                    BotConfig.DELETE_MESSAGES_AFTER = Long.parseLong(message);
+                    ++step;
+                    channel.sendMessage("(Setting 8/9) Enter a maximum volume for the music player (1-100).").queue();
+                }catch(NumberFormatException e){
+                    channel.sendMessage("Invalid response. Must be a number (in milliseconds).").queue();
+                }
+                break;
+            case 8:
+                try{
+                    int size = Integer.parseInt(message);
+                    if(size < 0 || size > 100){
+                        channel.sendMessage("Invalid response. Must be 1-100.").queue();
+                    }else{
+                        BotConfig.MUSIC_MAX_VOLUME = size;
+                        ++step;
+                        channel.sendMessage("(Setting 9/9) Enter a maximum size for music playlists (1-50).").queue();
+                    }
+                }catch(NumberFormatException e){
+                    channel.sendMessage("Invalid response. Must be a number 1-100.").queue();
+                }
+                break;
+            case 9:
+                try{
+                    int size = Integer.parseInt(message);
+                    if(size < 0 || size > 50){
+                        channel.sendMessage("Invalid response. Must be 1-50.").queue();
+                    }else{
+                        BotConfig.MUSIC_MAX_PLAYLIST_SIZE = size;
+                    }
+                }catch(NumberFormatException e){
+                    channel.sendMessage("Invalid response. Must be a number 1-50.").queue();
+                }
                 channel.sendMessage("Setup finished.").queue();
+                isRunning = false;
                 break;
             default:
-                channel.sendMessage("invalid number ya' dingus").queue();
+                channel.sendMessage("unknown error ya' DINGUS").queue();
 
         }
+    }
+
+    private void listSettings(Message message){
+        String[] settings = GuildSettings.get(message.getGuild()).getSettings();
+        TextChannel channel = message.getTextChannel();
+
+        String roleID = settings[GSetting.BOT_ADMIN_ROLE.ordinal()];
+        String send = "Admin Role Name: " + (roleID == null ? "not set" : channel.getGuild().getRoleById(roleID).getName());
+
+        String errorName = settings[GSetting.SHOW_TEMPLATES.ordinal()];
+        send += "\nUse internal error names? " + (errorName == null ? GSetting.SHOW_TEMPLATES.getDefaultValue() : errorName);
+
+        String delete = settings[GSetting.CLEANUP_MESSAGES.ordinal()];
+        send += "\nDelete messages after sending? " + (delete == null ? GSetting.CLEANUP_MESSAGES.getDefaultValue() : delete);
+
+        String prefix = settings[GSetting.COMMAND_PREFIX.ordinal()];
+        send += "\nCommand prefix: " + (prefix == null ? GSetting.COMMAND_PREFIX.getDefaultValue() : prefix);
+
+        String help = settings[GSetting.HELP_IN_PM.ordinal()];
+        send += "\nSend help commands in DM? " + (help == null ? GSetting.HELP_IN_PM.getDefaultValue() : help);
+
+        String unknown = settings[GSetting.SHOW_UNKNOWN_COMMANDS.ordinal()];
+        send += "\nSay \"command does not exist\" on invalid commands? " + (unknown == null ? GSetting.SHOW_UNKNOWN_COMMANDS.getDefaultValue() : help);
+
+        send += "\nHow long before cleaning up messages? " + BotConfig.DELETE_MESSAGES_AFTER;
+        send += "\nMusic player maximum volume: " + BotConfig.MUSIC_MAX_VOLUME;
+        send += "\nPlaylist maximum size: " + BotConfig.MUSIC_MAX_PLAYLIST_SIZE;
+        channel.sendMessage(send).queue();
     }
 }
