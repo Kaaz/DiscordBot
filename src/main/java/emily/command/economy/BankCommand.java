@@ -58,6 +58,7 @@ public class BankCommand extends AbstractCommand {
                 "bank send @user <amount>            //sends <amount> to @user ",
                 "bank send @user <amount> <message>  //sends <amount> to @user with a message",
                 "bank collect                        //collects salary based on activity",
+                "bank setSalary <user> <amount>      //admin users can set another users salary",
         };
     }
 
