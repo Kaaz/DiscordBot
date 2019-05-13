@@ -57,6 +57,7 @@ public class BankCommand extends AbstractCommand {
                 "bank history                        //shows last transactions",
                 "bank send @user <amount>            //sends <amount> to @user ",
                 "bank send @user <amount> <message>  //sends <amount> to @user with a message",
+                "bank collect                        //collects salary based on activity",
         };
     }
 
@@ -83,7 +84,7 @@ public class BankCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         OBank bank = CBanks.findBy(author.getIdLong());
         if (args.length == 0) {
-            return String.format("Your current balance is `%s` %s ", bank.currentBalance, BotConfig.ECONOMY_CURRENCY_ICON);
+            return String.format("Your current balance is `%s` %s \nYour salary is '%s' %s", bank.currentBalance, BotConfig.ECONOMY_CURRENCY_ICON, bank.currentBalance, BotConfig.ECONOMY_CURRENCY_ICON);
         }
         switch (args[0].toLowerCase()) {
             case "send":
@@ -111,6 +112,24 @@ public class BankCommand extends AbstractCommand {
                     return Templates.bank_transfer_success.formatGuild(channel, targetUser.getName(), amount, amount == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
                 }
                 return Templates.bank_transfer_failed.formatGuild(channel);
+
+            case "collect":
+            case "setSalary":
+                if(args.length != 3){
+                    return Templates.invalid_use.formatGuild(channel);
+                }
+                int salary = Misc.parseInt(args[2], 0);
+                if (salary < 1){
+                    return Templates.invalid_salary.formatGuild(channel, salary == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
+                }
+                User target = DisUtil.findUser((TextChannel) channel, args[1]);
+                if(target == null){
+                    return Templates.config.cant_find_user.formatGuild(channel, args[1]);
+                }
+                OBank targetBanks = CBanks.findBy(target.getIdLong());
+                bank.setSalary(targetBanks, salary);
+                return Templates.salary_set_success.formatGuild(channel, target.getName(), salary, salary == 1 ? BotConfig.ECONOMY_CURRENCY_NAME : BotConfig.ECONOMY_CURRENCY_NAMES);
+
             case "history":
                 List<OBankTransaction> history = CBankTransactions.getHistoryFor(bank.id);
                 String ret = "Your transaction history:\n \n";
@@ -125,6 +144,7 @@ public class BankCommand extends AbstractCommand {
                             transaction.description.substring(0, Math.min(25, transaction.description.length())));
                 }
                 return ret;
+
 
             default:
                 return Templates.invalid_use.formatGuild(channel);

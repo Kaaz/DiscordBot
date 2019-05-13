@@ -127,6 +127,8 @@ public final class Templates {
     public static final Template no_permission = new Template();
     public static final Template invalid_use = new Template();
     public static final Template not_implemented_yet = new Template();
+    public static final Template invalid_salary = new Template(TemplateArgument.ARG, TemplateArgument.ARG2);
+    public static final Template salary_set_success = new Template(TemplateArgument.ARG, TemplateArgument.ARG2, TemplateArgument.ARG3);
     public static final Template TEST = new Template(
             new TemplateArgument[]{TemplateArgument.USER, TemplateArgument.USER_DESCRIMINATOR, TemplateArgument.GUILD},
             new TemplateArgument[]{TemplateArgument.ARG, TemplateArgument.ARGS});

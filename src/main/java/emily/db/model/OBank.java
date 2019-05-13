@@ -30,6 +30,7 @@ public class OBank extends AbstractModel {
     public int id = 0;
     public long currentBalance = 0L;
     public Timestamp createdOn = null;
+    public long salary = 0L;
 
     public boolean transferTo(OBank target, int amount, String description) {
         if (id == 0) {
@@ -49,6 +50,15 @@ public class OBank extends AbstractModel {
         currentBalance -= amount;
         CBanks.updateBalance(id, -amount);
         CBanks.updateBalance(target.id, amount);
+        return true;
+    }
+
+    public void setSalary(OBank target, int salary){
+        target.salary = salary;
+    }
+
+    public boolean collectSalary(OBank user, int amount){
+
         return true;
     }
 }
