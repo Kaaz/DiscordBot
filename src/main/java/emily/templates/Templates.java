@@ -194,6 +194,7 @@ public final class Templates {
         public static final Template case_not_found = new Template(TemplateArgument.ARG);
         public static final Template emojify_max_exceeded = new Template(TemplateArgument.ARG);
         public static final Template case_reason_modified = new Template();
+        public static final Template salary_payout_failed = new Template();
 
         public static final Template reminder_sent_success = new Template();         //added for !remind command
         public static final Template reminder_failed_check_command_statement = new Template();  //added for !remind command

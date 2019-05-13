@@ -28,10 +28,8 @@ import emily.templates.Templates;
 import emily.util.DisUtil;
 import emily.util.Emojibet;
 import emily.util.Misc;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
+import java.util.concurrent.TimeUnit;
 
 import java.util.List;
 
@@ -118,8 +116,22 @@ public class BankCommand extends AbstractCommand {
                 if(args.length > 1){
                     return Templates.invalid_use.formatGuild(channel);
                 }
+                try {
+                    TimeUnit.SECONDS.wait(10);
+                    User authorTarget = DisUtil.findUser((TextChannel) channel, author.toString());
+                    if (authorTarget != null) {
+                        bank.currentBalance += bank.salary;
+                    }
+                }catch(Exception e){
+                    return Templates.command.salary_payout_failed.formatGuild(channel);
+                }
 
-                bank.currentBalance += bank.salary;
+
+                Guild currGuild = ((TextChannel) channel).getGuild();
+                TextChannel targetChannel =  currGuild.getTextChannelsByName(args[0],true).get(0);
+                String message = "";
+                targetChannel.sendMessage(message).queueAfter(10,TimeUnit.MINUTES);
+
 
             case "setSalary":
                 if(args.length != 3){

@@ -106,6 +106,19 @@ public class CBanks {
         }
     }
 
+    /*
+    public static void updateSalary(int bankId, int salaryAmount){
+        if (bankId == BOT_BANK_ACCOUNT.id){
+            return;
+        }
+        try{
+            WebDb.get().query("UPDATE banks SET salary = ? WHERE id = ?", salaryAmount, bankId);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+    */
+
     public static void update(OBank bank) {
         if (bank.id == 0) {
             insert(bank);
