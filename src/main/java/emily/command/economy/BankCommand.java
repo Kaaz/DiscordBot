@@ -115,6 +115,12 @@ public class BankCommand extends AbstractCommand {
                 return Templates.bank_transfer_failed.formatGuild(channel);
 
             case "collect":
+                if(args.length > 1){
+                    return Templates.invalid_use.formatGuild(channel);
+                }
+
+                bank.currentBalance += bank.salary;
+
             case "setSalary":
                 if(args.length != 3){
                     return Templates.invalid_use.formatGuild(channel);
