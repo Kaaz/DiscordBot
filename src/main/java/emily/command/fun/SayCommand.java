@@ -64,7 +64,7 @@ public class SayCommand extends AbstractCommand {
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         if (args.length > 0) {
             String output = Joiner.on(" ").join(args);
-            if (DisUtil.isUserMention(output)) {
+            if (DisUtil.isUserMention(output) || DisUtil.isRoleMention(output)) {
                 if (bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.GUILD_ADMIN)) {
                     return output;
                 }
