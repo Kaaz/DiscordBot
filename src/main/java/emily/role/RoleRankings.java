@@ -26,7 +26,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.managers.RoleManagerUpdatable;
+import net.dv8tion.jda.core.managers.RoleManager;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,37 +129,30 @@ public class RoleRankings {
     private static void fixRole(Guild guild, MemberShipRole rank) {
         List<Role> rolesByName = guild.getRolesByName(getFullName(guild, rank), true);
         Role role;
-        boolean needsUpdate = false;
         if (rolesByName.size() > 0) {
             role = rolesByName.get(0);
         } else {
             Role newRole = guild.getController().createRole().complete();
-            RoleManagerUpdatable manager = newRole.getManagerUpdatable();
-            manager.getNameField().setValue(getFullName(guild, rank));
-            manager.getColorField().setValue(rank.getColor());
-            manager.getHoistedField().setValue(rank.isHoisted());
-            manager.getPermissionField().setPermissions(guild.getPublicRole().getPermissions());
-            manager.getPermissionField().revokePermissions(Permission.MESSAGE_MENTION_EVERYONE);
-            manager.update().complete();
+            RoleManager manager = newRole.getManager();
+            manager.setName(getFullName(guild, rank))
+            .setColor(rank.getColor())
+                    .setHoisted(rank.isHoisted())
+                    .setPermissions(guild.getPublicRole().getPermissions())
+                    .revokePermissions(Permission.MESSAGE_MENTION_EVERYONE)
+                    .complete();
             return;
         }
         if (!PermissionUtil.canInteract(guild.getSelfMember(), role)) {
             return;
         }
         if (!role.getName().equals(getFullName(guild, rank))) {
-            role.getManagerUpdatable().getNameField().setValue(getFullName(guild, rank));
-            needsUpdate = true;
+            role.getManager().setName(getFullName(guild, rank)).complete();
         }
         if (role.getColor() != rank.getColor()) {
-            role.getManagerUpdatable().getColorField().setValue(rank.getColor());
-            needsUpdate = true;
+            role.getManager().setColor(rank.getColor()).complete();
         }
         if (role.getPermissions().contains(Permission.MESSAGE_MENTION_EVERYONE)) {
-            needsUpdate = true;
-            role.getManagerUpdatable().getPermissionField().revokePermissions(Permission.MESSAGE_MENTION_EVERYONE);
-        }
-        if (needsUpdate) {
-            role.getManagerUpdatable().update().complete();
+            role.getManager().revokePermissions(Permission.MESSAGE_MENTION_EVERYONE).complete();
         }
     }
 

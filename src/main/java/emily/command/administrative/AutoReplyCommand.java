@@ -28,11 +28,7 @@ import emily.templates.Templates;
 import emily.util.Misc;
 import emily.util.TimeUtil;
 import emoji4j.EmojiUtils;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

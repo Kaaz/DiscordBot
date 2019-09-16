@@ -58,7 +58,6 @@ import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.GenericMessageReactionEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
-import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.sql.Timestamp;
@@ -80,7 +79,7 @@ public class JDAEvents extends ListenerAdapter {
 
     @Override
     public void onStatusChange(StatusChangeEvent event) {
-        discordBot.getContainer().reportStatus(event.getJDA().getShardInfo() != null ? event.getJDA().getShardInfo().getShardId() : 0, event.getOldStatus(), event.getStatus());
+        discordBot.getContainer().reportStatus(event.getJDA().getShardInfo() != null ? event.getJDA().getShardInfo().getShardId() : 0, event.getOldStatus(), event.getNewStatus());
     }
 
     @Override
@@ -342,10 +341,6 @@ public class JDAEvents extends ListenerAdapter {
         guildMember.joinDate = new Timestamp(System.currentTimeMillis());
         CGuildMember.insertOrUpdate(guildMember);
         discordBot.logGuildEvent(guild, "\uD83C\uDFC3", "**" + user.getName() + "#" + user.getDiscriminator() + "** left the guild");
-    }
-
-    @Override
-    public void onUserGameUpdate(UserGameUpdateEvent event) {
     }
 
     @Override
