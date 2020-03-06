@@ -13,7 +13,7 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'maven'
 apply plugin: 'idea'
-apply plugin: 'com.github.johnrengelman.shadow'
+//apply plugin: 'com.github.johnrengelman.shadow'
 
 mainClassName = 'emily.main.Launcher'
 group = 'com.github.Kaaz'
@@ -39,7 +39,7 @@ repositories {
 
     maven { url "https://jitpack.io" }
     maven { url "http://dl.bintray.com/bots4j/maven-repo" }
-    maven { url "http://jcenter.bintray.com" }
+    maven { url "https://jcenter.bintray.com" }
     maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
