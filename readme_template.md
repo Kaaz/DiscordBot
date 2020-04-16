@@ -89,8 +89,8 @@ Then continue with the following steps.
     
 4. Build
     
-    Type `gradle fatJar` in the `DiscordBot` folder.
-    In the build/libs/ folder there should be a file called `Emily-all-{VERSION}.jar` (where version is the latest version number).
+    Type `gradle shadowJar` in the `DiscordBot` folder.
+    In the build/libs/ folder there should be a file called `Emily-{VERSION}-all.jar` (where version is the latest version number).
     Move this file over to a location wherever you want to start the bot from.
     
 5. Run
